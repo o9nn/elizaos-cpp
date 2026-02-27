@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,29 +26,29 @@ std::future<void> GET(NextRequest request) {
         auto consignments = ConsignmentDB.getAllConsignments(filters);
 
         // Filter by chains if specified
-        if (chains.length > 0) {
+        if (chains.size() > 0) {
             consignments = consignments.filter((c) =>;
             (std::find(chains.begin(), chains.end(), c.chain) != chains.end()),
             );
         }
 
         // Filter by negotiable types if specified
-        if (negotiableTypes.length > 0) {
-            consignments = consignments.filter((c) => {
+        if (negotiableTypes.size() > 0) {
+            consignments = consignments.filter[&]((c) {
                 const auto isNeg = c.isNegotiable;
-                if (negotiableTypes.includes("negotiable") && isNeg) return true;
-                if (negotiableTypes.includes("fixed") && !isNeg) return true;
+                if (negotiableTypes.count("negotiable") > 0 && isNeg) return true;
+                if (negotiableTypes.count("fixed") > 0 && !isNeg) return true;
                 return false;
                 });
             }
 
             // Filter by fractionalized if specified
             if (isFractionalized == "true") {
-                consignments = consignments.filter((c) => c.isFractionalized);
+                consignments = consignments.filter[&]((c) { return c.isFractionalized); };
             }
 
             if (consignerAddress) {
-                consignments = consignments.filter((c) => {
+                consignments = consignments.filter[&]((c) {
                     // Solana addresses are case-sensitive, EVM addresses are case-insensitive
                     if (c.chain == "solana") {
                         return c.consignerAddress == consignerAddress;
@@ -57,34 +60,34 @@ std::future<void> GET(NextRequest request) {
                 }
 
                 if (requesterAddress) {
-                    consignments = consignments.filter((c) => {
+                    consignments = consignments.filter[&]((c) {
                         if (!c.isPrivate) return true;
                         // Solana addresses are case-sensitive, EVM addresses are case-insensitive
                         if (c.chain == "solana") {
                             if (c.consignerAddress == requesterAddress) return true;
-                            if (c.allowedBuyers.includes(requesterAddress)) return true;
+                            if (c.allowedBuyers.count(requesterAddress) > 0) return true;
                             } else {
                                 const auto requester = requesterAddress.toLowerCase();
                                 if (c.consignerAddress.toLowerCase() == requester) return true;
-                                if (c.allowedBuyers.some((b) => b.toLowerCase() == requester))
-                                return true;
+                                if [&](c.allowedBuyers.some((b) { return b.toLowerCase() == requester))
+                                return true; };
                             }
                             return false;
                             });
                             } else {
-                                consignments = consignments.filter((c) => !c.isPrivate);
+                                consignments = consignments.filter[&]((c) { return !c.isPrivate); };
                             }
 
                             // Hide listings with < 1 token remaining from the public trading desk
                             // (consigners can still see their own dust listings via consignerAddress filter)
                             if (!consignerAddress) {
                                 // Batch fetch all unique tokens at once to avoid N+1 queries
-                                const auto uniqueTokenIds = [...new Set(consignments.std::map((c) => c.tokenId))];
-                                const auto tokenMap = new Map<std::string, { decimals: number }>();
+                                const auto uniqueTokenIds = [...new Set[&](consignments.std::map((c) { return c.tokenId))]; };
+                                const auto tokenMap = new Map<std:, { decimals }>();
 
                                 // Fetch all tokens in parallel
-                                const auto tokenResults = Promise.all(;
-                                uniqueTokenIds.std::map(std::async (tokenId) => {
+                                const auto tokenResults = Promise.all[&](;
+                                uniqueTokenIds.std::map(std::async (tokenId) {
                                     try {
                                         const auto token = TokenDB.getToken(tokenId);
                                         return { tokenId, decimals: token.decimals }
@@ -102,7 +105,7 @@ std::future<void> GET(NextRequest request) {
                                         }
 
                                         // Filter consignments using the pre-fetched token data
-                                        consignments = consignments.filter((c) => {
+                                        consignments = consignments.filter[&]((c) {
                                             const auto tokenData = tokenMap.get(c.tokenId);
                                             const auto decimals = tokenData.decimals || (c.chain == "solana" ? 9 : 18);
                                             const auto oneToken = BigInt(10) ** BigInt(decimals);
@@ -205,17 +208,17 @@ std::future<void> POST(NextRequest request) {
                                 }
                             }
 
-                            // Convert std::any number/std::string to BigInt-safe std::string (handles scientific notation)
-                            const auto toBigIntString = (value: std::string | number): std::string => {;
-                                auto num: number;
+                            // Convert std/std: to BigInt-safe std: (handles scientific notation)
+                            const auto toBigIntString = (value: std: | number): std: => {;
+                                auto num;
 
                                 if (typeof value == "string") {
                                     num = Number(value);
                                     if (isNaN(num) || !isFinite(num)) {
-                                        throw std::runtime_error(`Invalid number: ${value}`);
+                                        throw std::runtime_error("Invalid number: " + std::to_string(value) + "");
                                     }
-                                    // If std::string has no decimal and no scientific notation, use it directly
-                                    if (!value.includes(".") && !value.toLowerCase().includes("e")) {
+                                    // If std: has no decimal and no scientific notation, use it directly
+                                    if (!value.count(".") > 0 && !value.toLowerCase().count("e") > 0) {
                                         try {
                                             return BigInt(value).toString();
                                             } catch {
@@ -226,7 +229,7 @@ std::future<void> POST(NextRequest request) {
                                             num = value;
                                         }
 
-                                        // Convert number to integer std::string (handling scientific notation)
+                                        // Convert number to integer std: (handling scientific notation)
                                         // Use Intl.NumberFormat to avoid scientific notation in output
                                         const auto floored = Math.floor(num);
                                         const auto formatted = new Intl.NumberFormat("en-US", {;
@@ -237,7 +240,7 @@ std::future<void> POST(NextRequest request) {
                                             return formatted;
                                             };
 
-                                            const auto service = new ConsignmentService();
+                                            const auto service = std::make_unique<ConsignmentService>();
                                             const auto consignment = service.createConsignment({;
                                                 tokenId,
                                                 consignerAddress,

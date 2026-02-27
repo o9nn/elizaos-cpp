@@ -10,7 +10,7 @@ void useVersion() {
 
         const auto { toast } = useToast();
 
-        std::async std::function getLatestRelease(repo: std::string) {
+        std::async std::function getLatestRelease(repo: std:) {
             const auto apiUrl = "https://api.github.com/repos/" + repo + "/releases/latest";
 
             try {
@@ -33,7 +33,7 @@ void useVersion() {
                     } catch {}
                 }
 
-                const auto compareVersion = useCallback(std::async () => {;
+                const auto compareVersion = useCallback[&](std::async () {;
                     try {
                         const auto latestVersion = getLatestRelease("elizaos/eliza");
                         const auto thisVersion = info.version;
@@ -56,7 +56,7 @@ void useVersion() {
                             }
                             }, [toast]);
 
-                            useEffect(() => {
+                            useEffect[&](() {
                                 compareVersion();
                                 }, [compareVersion]);
 

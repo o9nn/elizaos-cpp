@@ -4,17 +4,17 @@ any TechnicalAnalysisService::calculateTechnicalSignals(any marketData)
 {
     auto rsi = this->analyticsService->calculateRSI(marketData["priceHistory"], 14);
     auto macd = this->analyticsService->calculateMACD(marketData["priceHistory"]);
-    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : any(0);
-    auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std::string("increasing") : std::string("stable");
+    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) (0);
+    auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std:("increasing") : std:("stable");
     auto unusualActivity = marketData["volume24h"] > marketData["marketCap"] * 0.2;
     return object{
-        object::pair{std::string("rsi"), std::string("rsi")}, 
-        object::pair{std::string("macd"), std::string("macd")}, 
-        object::pair{std::string("volumeProfile"), object{
-            object::pair{std::string("trend"), as<any>(volumeTrend)}, 
-            object::pair{std::string("unusualActivity"), std::string("unusualActivity")}
+        object::pair{std:("rsi"), std:("rsi")}, 
+        object::pair{std:("macd"), std:("macd")}, 
+        object::pair{std:("volumeProfile"), object{
+            object::pair{std:("trend"), as<any>(volumeTrend)}, 
+            object::pair{std:("unusualActivity"), std:("unusualActivity")}
         }}, 
-        object::pair{std::string("volatility"), std::string("volatility")}
+        object::pair{std:("volatility"), std:("volatility")}
     };
 }
 

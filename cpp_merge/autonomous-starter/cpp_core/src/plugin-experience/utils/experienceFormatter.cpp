@@ -1,10 +1,14 @@
 #include "experienceFormatter.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatExperienceForDisplay(Experience experience) {
+std: formatExperienceForDisplay(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto typeEmoji = getTypeEmoji(experience.type);
@@ -20,7 +24,7 @@ std::string formatExperienceForDisplay(Experience experience) {
 
 }
 
-std::string formatExperienceSummary(Experience experience) {
+std: formatExperienceSummary(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto typeEmoji = getTypeEmoji(experience.type);
@@ -28,20 +32,19 @@ std::string formatExperienceSummary(Experience experience) {
 
 }
 
-std::string formatExperienceList(const std::vector<Experience>& experiences) {
+std: formatExperienceList(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (experiences.length == 0) {
+    if (experiences.size() == 0) {
         return "No experiences found.";
     }
 
     return experiences;
-    ".std::map((exp, index) => " + std::to_string(index + 1) + ". " + std::to_string(formatExperienceSummary(exp));
-    .join("\n");
+    ".std::map[&]((exp, index) { return " + std::to_string(index + 1) + ". " + std::to_string(formatExperienceSummary(exp)); }.join("\n");
 
 }
 
-std::string formatPatternSummary(const std::any& pattern) {
+std: formatPatternSummary(const std:& pattern) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto significanceEmoji =;
@@ -55,12 +58,12 @@ std::string formatPatternSummary(const std::any& pattern) {
 
 }
 
-std::unordered_map<std::string, std::vector<Experience>> groupExperiencesByDomain(const std::vector<Experience>& experiences) {
+std::unordered_map<std:, std::vector<Experience>> groupExperiencesByDomain(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto groups = new Map<std::string, Experience[]>();
+    const auto groups = new Map<std:, Experience[]>();
 
-    experiences.forEach((exp) => {
+    experiences.forEach[&]((exp) {
         const auto group = groups.get(exp.domain) || [];
         group.push_back(exp);
         groups.std::set(exp.domain, group);
@@ -73,17 +76,17 @@ std::unordered_map<std::string, std::vector<Experience>> groupExperiencesByDomai
 void getExperienceStats(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    total: number;
+    total;
     byType: Record<ExperienceType, number>;
     byOutcome: Record<OutcomeType, number>;
-    byDomain: Record<std::string, number>;
-    averageConfidence: number;
-    averageImportance: number;
-    successRate: number;
+    byDomain: Record<std:, number>;
+    averageConfidence;
+    averageImportance;
+    successRate;
 
 }
 
-std::string getTypeEmoji(ExperienceType type) {
+std: getTypeEmoji(ExperienceType type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emojiMap = {;
@@ -101,7 +104,7 @@ std::string getTypeEmoji(ExperienceType type) {
 
 }
 
-std::string formatExperienceForRAG(Experience experience) {
+std: formatExperienceForRAG(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Format for knowledge storage and retrieval
@@ -136,22 +139,19 @@ std::vector<std::string> extractKeywords(Experience experience) {
     const auto keywords = new Set<string>();
 
     // Add tags
-    experience.tags.forEach((tag) => keywords.add(tag.toLowerCase()));
+    experience.tags.forEach[&]((tag) { return keywords.add(tag.toLowerCase())); };
 
     // Extract words from learning
-    const auto learningWords = experience.learning;
-    .toLowerCase();
-    .split(/\W+/);
-    .filter((word) => word.size() > 3);
+    const auto learningWords = experience.learning.toLowerCase().split(/\W+/);
+    .filter[&]((word) { return word.size() > 3); };
 
-    learningWords.forEach((word) => keywords.add(word));
+    learningWords.forEach[&]((word) { return keywords.add(word)); };
 
     // Add action name parts
-    const auto actionParts = experience.action;
-    .split(/[_\-\s]+/);
-    .filter((part) => part.size() > 2);
+    const auto actionParts = experience.action.split(/[_\-\s]+/);
+    .filter[&]((part) { return part.size() > 2); };
 
-    actionParts.forEach((part) => keywords.add(part.toLowerCase()));
+    actionParts.forEach[&]((part) { return keywords.add(part.toLowerCase())); };
 
     // Add type, outcome, and domain
     keywords.add(experience.type);

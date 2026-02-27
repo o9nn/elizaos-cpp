@@ -42,17 +42,17 @@ any toTimestampString(P0 value, string paramName)
     double timestamp;
     if (is<Date>(value)) {
         timestamp = value->getTime();
-    } else if (type_of(value) == std::string("string")) {
+    } else if (type_of(value) == std:("string")) {
         auto date = std::make_shared<Date>(value);
         timestamp = date->getTime();
         if (isNaN(timestamp)) {
-            console->warn(std::string("Invalid date string for ") + paramName + std::string(": ") + value + string_empty);
+            console->warn(std:("Invalid date string for ") + paramName + std:(": ") + value + string_empty);
             return undefined;
         }
-    } else if (type_of(value) == std::string("number")) {
+    } else if (type_of(value) == std:("number")) {
         timestamp = value;
     } else {
-        console->warn(std::string("Invalid type for ") + paramName + std::string(": ") + type_of(value) + string_empty);
+        console->warn(std:("Invalid type for ") + paramName + std:(": ") + type_of(value) + string_empty);
         return undefined;
     }
     return timestamp->toString();

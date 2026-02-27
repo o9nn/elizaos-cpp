@@ -10,9 +10,9 @@ class DevRelTestSuite;
 class DevRelTestSuite : public TestSuite, public std::enable_shared_from_this<DevRelTestSuite> {
 public:
     using std::enable_shared_from_this<DevRelTestSuite>::shared_from_this;
-    string name = std::string("devrel");
+    string name = std:("devrel");
 
-    string description = std::string("Developer Relations Agent Test Suite");
+    string description = std:("Developer Relations Agent Test Suite");
 
     any scenarioService;
 
@@ -20,81 +20,81 @@ public:
 
     DevRelTestSuite(double completionTimeout = 10000);
     array<object> tests = array<object>{ object{
-        object::pair{std::string("name"), std::string("Test Documentation Query")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Documentation Query")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Doc Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("support")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("How do I implement custom actions in ElizaOS?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Doc Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("support")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("How do I implement custom actions in ElizaOS?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Documentation response timeout")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Documentation response timeout")));
         }
         }
     }, object{
-        object::pair{std::string("name"), std::string("Test Plugin Integration")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Plugin Integration")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Plugin Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("integration")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Can you help me integrate the Discord plugin?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Plugin Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("integration")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Can you help me integrate the Discord plugin?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Plugin integration timeout")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Plugin integration timeout")));
         }
         }
     }, object{
-        object::pair{std::string("name"), std::string("Test Source Code Knowledge")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Source Code Knowledge")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Code Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("code-review")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Where is the AgentRuntime class implemented?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Code Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("code-review")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Where is the AgentRuntime class implemented?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Source code reference timeout")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Source code reference timeout")));
         }
         }
     }, object{
-        object::pair{std::string("name"), std::string("Test Missing Documentation")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Missing Documentation")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Doc Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("support")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("How do I implement custom actions in ElizaOS?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Doc Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("support")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("How do I implement custom actions in ElizaOS?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Documentation not found")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Documentation not found")));
         }
         }
     }, object{
-        object::pair{std::string("name"), std::string("Test Code Navigation")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Code Navigation")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Code Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("code-review")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Where is the AgentRuntime class implemented?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Code Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("code-review")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Where is the AgentRuntime class implemented?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Could not locate code reference")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Could not locate code reference")));
         }
         }
     }, object{
-        object::pair{std::string("name"), std::string("Test Documentation Reference")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Test Documentation Reference")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std::string("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service missing")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Doc Test"), std::string("Test Developer")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("support")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("How do I implement custom actions in ElizaOS?")); });
+            this->scenarioService = runtime->getService(std:("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service missing")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Doc Test"), std:("Test Developer")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("support")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("How do I implement custom actions in ElizaOS?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std::string("Documentation reference missing")));
+            if (!completed) throw any(std::make_shared<Error>(std:("Documentation reference missing")));
         }
         }
     } };

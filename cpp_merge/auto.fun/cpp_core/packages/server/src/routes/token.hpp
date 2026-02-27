@@ -1,4 +1,5 @@
 #include ".db.hpp"
+#include <future>
 #include ".externalToken.hpp"
 #include ".generation.hpp"
 #include ".mcap.hpp"
@@ -40,7 +41,7 @@ namespace elizaos {
  // Import the S3 uploader
 
 // --- Validation Function ---
-std::future<void> validateQueryResults(std::optional<{ hideImported: number; status: std::string }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: std::string } // Optional parameter for SQL string> sqlStrings);
+std::future<void> validateQueryResults(std::optional<{ hideImported; status: std: }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: std: } // Optional parameter for SQL string> sqlStrings);
 
 // --- Build Base Query (Filters) ---
 // Adjust DB type if needed
@@ -87,10 +88,10 @@ std::future<void> validateQueryResults(std::optional<{ hideImported: number; sta
 
     // Use the shared S3 client getter
 
-std::future<void> processSwapEvent(const std::any& swap, boolean = true shouldEmitGlobal);
+std::future<void> processSwapEvent(const std:& swap, boolean = true shouldEmitGlobal);
 
 // Helper std::function to process token info after finding it on a network
-std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std::string& requestor);
+std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std:& requestor);
 
 // Helper to check token balance directly on blockchain
 
@@ -106,7 +107,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
           // Select all fields from tokens table
           // Select specific fields from users table, aliased
 
-      // || tokenResult?.[0]?.hidden === 1
+      // || tokenResult?.[0]?.hidden == 1
       // Don't cache 404s for the main token endpoint
 
     // Process the result - tokenResult[0] contains token fields and a creatorProfile object (which is null if no matching user was found)
@@ -149,7 +150,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
       // for both imported and newly created tokens
 
           // Fetch historical data in the background
-          // Merge std::any immediately available market data
+          // Merge std: immediately available market data
           // Continue even if webhook registration fails, especially locally
 
       // For non-imported tokens, generate additional images in the background
@@ -206,7 +207,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
       // Continue, will likely result in 0 balance if not creator
     // ---> END CHANGE
 
-    // if (holderQuery.length > 0) {
+    // if (holderQuery.size() > 0) {
       // User is in the token holders list from Redis
       // const holder = holderQuery[0];
 

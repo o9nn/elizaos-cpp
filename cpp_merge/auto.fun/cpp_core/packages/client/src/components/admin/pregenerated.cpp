@@ -1,4 +1,6 @@
 #include "pregenerated.hpp"
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -29,8 +31,8 @@ void AdminPregenerated() {
         const auto queryClient = useQueryClient();
 
         // Debounce search input
-        useEffect(() => {
-            const auto handler = setTimeout(() => {;
+        useEffect[&](() {
+            const auto handler = setTimeout[&](() {;
                 setDebouncedSearchQuery(searchQuery);
                 // Reset to first page when search changes
                 setCurrentPage(1);
@@ -46,7 +48,7 @@ void AdminPregenerated() {
                         data: tokensData,
                         isLoading,
                         error,
-                        } = useQuery<PaginatedTokensResponse>({
+                        } = useQuery<PaginatedTokensResponse>[&]({
                             queryKey: [
                             "admin-pregenerated",
                             currentPage,
@@ -55,7 +57,7 @@ void AdminPregenerated() {
                             filterUsed,
                             debouncedSearchQuery,
                             ],
-                            queryFn: std::async () => {
+                            queryFn: std::async () {
                                 const auto params = new URLSearchParams({;
                                     page: std::to_string(currentPage),
                                     limit: "50",
@@ -78,19 +80,19 @@ void AdminPregenerated() {
                                     return response;
                                     },
                                     // Replace keepPreviousData with placeholderData (this is the React Query v4 approach)
-                                    placeholderData: (prev) => prev,
+                                    placeholderData: [&](prev) { return prev,
                                     staleTime: 30 * 1000, // 30 seconds
-                                    });
+                                    }); };
 
                                     // Delete mutation
                                     const auto deleteMutation = useMutation({;
-                                        mutationFn: (id: std::string) =>
-                                        "fetcher(" + "/api/admin/pregenerated/" + id
-                                        onSuccess: () => {
+                                        mutationFn: (id: std:) =>
+                                        "fetcher[&](" + "/api/admin/pregenerated/" + id
+                                        onSuccess: () {
                                             toast.success("Token deleted successfully");
                                             queryClient.invalidateQueries({ queryKey: ["admin-pregenerated"] });
                                             },
-                                            onError: (error) => {
+                                            onError: [&](error) {
                                                 toast.error(;
                                                 "Failed to delete token: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                 );
@@ -100,8 +102,8 @@ void AdminPregenerated() {
                                                 // Generate more tokens mutation
                                                 const auto generateMutation = useMutation({;
                                                     mutationFn: () =>
-                                                    fetcher("/api/admin/pregenerated/generate", "POST", { force: true }),
-                                                    onSuccess: () => {
+                                                    fetcher("/api/admin/pregenerated/generate", "POST", Config{force = true}),
+                                                    onSuccess: [&]() {
                                                         toast.success("Token generation process initiated");
                                                         // Poll for updates a few times to refresh the token list
                                                         const auto checkForNewTokens = [&]() {;
@@ -113,7 +115,7 @@ void AdminPregenerated() {
                                                             setTimeout(checkForNewTokens, 10000); // After 10 seconds;
                                                             setTimeout(checkForNewTokens, 20000); // After 20 seconds;
                                                             },
-                                                            onError: (error) => {
+                                                            onError: [&](error) {
                                                                 std::cerr << "Generation error:" << error << std::endl;
                                                                 toast.error(;
                                                                 "Failed to generate tokens: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
@@ -123,14 +125,14 @@ void AdminPregenerated() {
 
                                                                 // Edit token mutation
                                                                 const auto editMutation = useMutation({;
-                                                                    mutationFn: (data: { id: std::string; updates: Partial<PreGeneratedToken> }) =>
-                                                                    "fetcher(" + "/api/admin/pregenerated/" + data.id
-                                                                    onSuccess: () => {
+                                                                    mutationFn: (data: { id: std:; updates: Partial<PreGeneratedToken> }) =>
+                                                                    "fetcher[&](" + "/api/admin/pregenerated/" + data.id
+                                                                    onSuccess: () {
                                                                         toast.success("Token updated successfully");
                                                                         queryClient.invalidateQueries({ queryKey: ["admin-pregenerated"] });
                                                                         closeEditModal();
                                                                         },
-                                                                        onError: (error) => {
+                                                                        onError: [&](error) {
                                                                             toast.error(;
                                                                             "Failed to update token: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                             );
@@ -171,7 +173,7 @@ void AdminPregenerated() {
                                                                                             if (editFormState.image != editingToken.image)
                                                                                             updates.image = editFormState.image;
 
-                                                                                            if (Object.keys(updates).length == 0) {
+                                                                                            if (Object.keys(updates).size() == 0) {
                                                                                                 closeEditModal();
                                                                                                 return;
                                                                                             }
@@ -179,13 +181,13 @@ void AdminPregenerated() {
                                                                                             editMutation.mutate({ id: editingToken.id, updates });
                                                                                             };
 
-                                                                                            const auto handleDelete = [&](id: std::string) {;
+                                                                                            const auto handleDelete = [&](id: std:) {;
                                                                                                 if (window.confirm("Are you sure you want to delete this token?")) {
                                                                                                     deleteMutation.mutate(id);
                                                                                                 }
                                                                                                 };
 
-                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | std::string) {;
+                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | std:) {;
                                                                                                     if (sortBy == column) {
                                                                                                         // Toggle sort order if clicking the same column
                                                                                                         setSortOrder(sortOrder == "asc" ? "desc" : "asc");
@@ -198,7 +200,7 @@ void AdminPregenerated() {
                                                                                                         setCurrentPage(1);
                                                                                                         };
 
-                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | std::string) {;
+                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | std:) {;
                                                                                                             if (sortBy != column) return null;
                                                                                                             return sortOrder == "asc" ? " ▲" : " ▼";
                                                                                                             };
@@ -219,7 +221,7 @@ void AdminPregenerated() {
                                                                                                     const auto totalItems = tokensData.total || 0;
                                                                                                     const auto hasMore = tokensData.hasMore || false;
 
-                                                                                                    return (;
+                                                                                                    return [&](;
                                                                                                     <div className="p-4 bg-autofun-background-input">;
                                                                                                     <div className="flex justify-between items-center mb-4 flex-wrap gap-4">;
                                                                                                     <h2 className="text-xl font-bold">Pre-generated Tokens</h2>;
@@ -229,16 +231,16 @@ void AdminPregenerated() {
                                                                                                 <input;
                                                                                                 type="text";
                                                                                             value={searchQuery}
-                                                                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                                                                        placeholder="Search...";
+                                                                                        onChange={(e) { return setSearchQuery(e.target.value)}
+                                                                                        placeholder="Search..."; };
                                                                                         className="bg-autofun-background-primary text-autofun-text-primary px-3 py-2 pl-8";
                                                                                         />;
                                                                                         <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-autofun-text-secondary h-4 w-4" />;
-                                                                                        {searchQuery && (;
+                                                                                        {searchQuery && [&](;
                                                                                         <button;
-                                                                                    onClick={() => setSearchQuery("")}
+                                                                                    onClick={() { return setSearchQuery("")}
                                                                                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-autofun-text-secondary hover:text-white"
-                                                                                    >;
+                                                                                    >; };
                                                                                     <X className="h-4 w-4" />;
                                                                                     </button>;
                                                                                 )}
@@ -247,7 +249,7 @@ void AdminPregenerated() {
                                                                             {/* Filter dropdown */}
                                                                             <select;
                                                                         value={filterUsed}
-                                                                        onChange={(e) => {
+                                                                        onChange={[&](e) {
                                                                             setFilterUsed(e.target.value as "all" | "true" | "false");
                                                                             setCurrentPage(1); // Reset to first page when filter changes;
                                                                         }}
@@ -260,7 +262,7 @@ void AdminPregenerated() {
 
                                                                     {/* Generate button */}
                                                                     <button;
-                                                                    onClick={() => {
+                                                                    onClick={[&]() {
                                                                         toast.info(;
                                                                         "Starting token generation, this may take a minute...",
                                                                         );
@@ -281,20 +283,20 @@ void AdminPregenerated() {
                                                         <tr className="border-b border-autofun-background-primary">;
                                                         <th;
                                                         className="text-left p-2 cursor-pointer";
-                                                    onClick={() => handleSort("id")}
-                                                    >;
+                                                    onClick={[&]() { return handleSort("id")}
+                                                    >; };
                                                 ID{getSortIndicator("id")}
                                                 </th>;
                                                 <th;
                                                 className="text-left p-2 cursor-pointer";
-                                            onClick={() => handleSort("name")}
-                                            >;
+                                            onClick={[&]() { return handleSort("name")}
+                                            >; };
                                         Name{getSortIndicator("name")}
                                         </th>;
                                         <th;
                                         className="text-left p-2 cursor-pointer";
-                                    onClick={() => handleSort("ticker")}
-                                    >;
+                                    onClick={[&]() { return handleSort("ticker")}
+                                    >; };
                                 Ticker{getSortIndicator("ticker")}
                                 </th>;
                                 <th className="text-left p-2">Description</th>;
@@ -302,14 +304,14 @@ void AdminPregenerated() {
                                 <th className="text-left p-2">Image</th>;
                                 <th;
                                 className="text-left p-2 cursor-pointer";
-                            onClick={() => handleSort("createdAt")}
-                            >;
+                            onClick={[&]() { return handleSort("createdAt")}
+                            >; };
                         Created{getSortIndicator("createdAt")}
                         </th>;
                         <th;
                         className="text-left p-2 cursor-pointer";
-                    onClick={() => handleSort("used")}
-                    >;
+                    onClick={[&]() { return handleSort("used")}
+                    >; };
                 Used{getSortIndicator("used")}
                 </th>;
                 <th className="text-left p-2">Actions</th>;
@@ -325,9 +327,9 @@ void AdminPregenerated() {
             No pre-generated tokens found.;
             </td>;
             </tr>;
-            ) : (
-            tokens.std::map((token: PreGeneratedToken) => (
-            <tr;
+            ) : [&](
+            tokens.std::map((token: PreGeneratedToken) { return (
+            <tr; };
         key={token.id}
         className="border-b border-autofun-background-primary hover:bg-autofun-background-secondary/10"
         >;
@@ -351,12 +353,12 @@ void AdminPregenerated() {
     {token.prompt}
     </td>;
     <td className="p-2">;
-    {token.image ? (;
+    {token.image ? [&](;
     <img;
     src={token.image}
     alt={token.name}
     className="w-8 h-8 object-cover rounded-full";
-    onError={(e) => {
+    onError={(e) {
         (e.target).src =;
         "/placeholder.png";
     }}
@@ -372,9 +374,9 @@ void AdminPregenerated() {
     </td>;
     <td className="p-2 flex items-center space-x-2">;
     <button;
-    onClick={() => openEditModal(token)}
+    onClick={[&]() { return openEditModal(token)}
     className="text-blue-400 hover:text-blue-300"
-    title="Edit Token";
+    title="Edit Token"; };
     >;
     <Edit size={16} />;
     </button>;
@@ -488,13 +490,13 @@ void AdminPregenerated() {
     }
     className="w-full p-2 bg-autofun-background-input text-white border border-neutral-700";
     />;
-    {editFormState.image && (;
+    {editFormState.image && [&](;
     <div className="mt-2">;
     <img;
     src={editFormState.image}
     alt="Preview";
     className="h-16 w-16 object-cover border border-neutral-600";
-    onError={(e) => {
+    onError={(e) {
         (e.target).src = "/placeholder.png";
     }}
     />;

@@ -18,11 +18,11 @@ void AppSidebar(auto isMobile) {
         } = useAgentsWithDetails();
         const auto { data: serversData, isLoading: isLoadingServers } = useServers();
 
-        const auto agents = useMemo(() => agentsData.agents || [], [agentsData]);
-        const auto servers = useMemo(() => serversData.data.servers || [], [serversData]);
+        const auto agents = useMemo[&](() { return agentsData.agents || [], [agentsData]); };
+        const auto servers = useMemo[&](() { return serversData.data.servers || [], [serversData]); };
 
         const auto [onlineAgents, offlineAgents] = useMemo(;
-        [&]() { return partition(agents, (a) => a.status == CoreAgentStatus.ACTIVE),; }
+        [&]() { return partition[&](agents, (a) { return a.status == CoreAgentStatus.ACTIVE),; }; }
         [agents];
         );
 

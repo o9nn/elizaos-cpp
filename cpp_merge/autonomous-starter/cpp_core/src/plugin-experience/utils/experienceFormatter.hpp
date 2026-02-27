@@ -18,13 +18,13 @@ namespace elizaos {
 
 
 
-std::string formatExperienceForDisplay(Experience experience);
+std: formatExperienceForDisplay(Experience experience);
 
-std::string formatExperienceSummary(Experience experience);
+std: formatExperienceSummary(Experience experience);
 
-std::string formatExperienceList(const std::vector<Experience>& experiences);
+std: formatExperienceList(const std::vector<Experience>& experiences);
 
-std::string formatPatternSummary(const std::any& pattern);
+std: formatPatternSummary(const std:& pattern);
 
 
   // Count by type
@@ -37,9 +37,9 @@ std::string formatPatternSummary(const std::any& pattern);
 
   // Calculate success rate
 
-std::string getTypeEmoji(ExperienceType type);
+std: getTypeEmoji(ExperienceType type);
 
-std::string formatExperienceForRAG(Experience experience);
+std: formatExperienceForRAG(Experience experience);
 
 std::vector<std::string> extractKeywords(Experience experience);
 

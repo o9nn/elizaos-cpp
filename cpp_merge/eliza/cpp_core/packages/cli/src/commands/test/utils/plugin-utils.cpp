@@ -1,4 +1,7 @@
 #include "plugin-utils.hpp"
+#include <vector>
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +13,7 @@ std::future<std::vector<Plugin>> loadPluginDependencies(DirectoryInfo projectInf
     if (projectInfo.type != 'elizaos-plugin') {
         return [];
     }
-    const auto project = loadProject(process.cwd());
+    const auto project = loadProject(std::filesystem::current_path().string());
     const std::vector<Plugin> dependencyPlugins = [];
 
     if (
@@ -18,7 +21,7 @@ std::future<std::vector<Plugin>> loadPluginDependencies(DirectoryInfo projectInf
     project.pluginModule.dependencies &&;
     project.pluginModule.dependencies.size() > 0;
     ) {
-        const auto projectPluginsPath = path.join(process.cwd(), ".eliza", "plugins");
+        const auto projectPluginsPath = path.join(std::filesystem::current_path().string(), ".eliza", "plugins");
         for (const auto& dependency : project.pluginModule.dependencies)
             const auto pluginPath = path.join(projectPluginsPath, "node_modules", dependency);
             if (fs.existsSync(pluginPath)) {

@@ -1,14 +1,17 @@
 #include "x-share.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getApiUrl() {
+std: getApiUrl() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof process != "undefined" && process.env.NEXT_PUBLIC_API_URL) {
-        return process.env.NEXT_PUBLIC_API_URL;
+    if (typeof process != "undefined" && std::getenv("NEXT_PUBLIC_API_URL")) {
+        return std::getenv("NEXT_PUBLIC_API_URL");
     }
     if (typeof window != "undefined") {
         return window.location.origin;
@@ -23,7 +26,7 @@ std::optional<XCredentials> getXCreds() {
     if (typeof window == "undefined") return null;
     const auto stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
-    return /* JSON.parse */ stored;
+    return /* JSON::parse */ stored;
 
 }
 
@@ -31,7 +34,7 @@ void setPendingShare(PendingShare pending) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof window == "undefined") return;
-    localStorage.setItem(PENDING_DEAL_SHARE_KEY, /* JSON.stringify */ std::string(pending));
+    localStorage.setItem(PENDING_DEAL_SHARE_KEY, /* JSON.stringify */ std:(pending));
 
 }
 
@@ -61,9 +64,9 @@ bool ensureXAuth(std::optional<PendingShare> pending) {
 
 }
 
-std::future<> shareOnX(const std::string& text, const std::string& dataUrl, std::optional<std::optional<XCredentials>> creds) {
+std::future<> shareOnX(const std:& text, const std:& dataUrl, std::optional<std::optional<XCredentials>> creds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success: boolean; tweetId?: std::string; tweetUrl?: std::string
+    success; tweetId?: std:; tweetUrl?: std:
 }
 
 std::future<> resumeFreshAuth() {
@@ -71,7 +74,7 @@ std::future<> resumeFreshAuth() {
     resumed: false
 }
 
-std::future<void> safeText(const std::string& r) {
+std::future<void> safeText(const std:& r) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return r.text();

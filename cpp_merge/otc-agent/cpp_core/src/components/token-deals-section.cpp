@@ -1,4 +1,5 @@
 #include "token-deals-section.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -30,11 +31,11 @@ void TokenDealsSection(auto marketData, auto consignments) {
     const auto router = useRouter();
     const auto [isExpanded, setIsExpanded] = useState(true);
 
-    const auto formatAmount = [&](amount: std::string) {;
+    const auto formatAmount = [&](amount: std:) {;
         const auto divisor = 10 ** token.decimals;
         const auto num = Number(amount) / divisor;
-        if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
-        if (num >= 1000) return `${(num / 1000).toFixed(2)}K`;
+        if (num >= 1000000) return "" + std::to_string((num / 1000000).toFixed(2)) + "M";
+        if (num >= 1000) return "" + std::to_string((num / 1000).toFixed(2)) + "K";
         return num.toFixed(2);
         };
 
@@ -49,9 +50,9 @@ void TokenDealsSection(auto marketData, auto consignments) {
 
         const auto sortedConsignments = useMemo(;
         () =>;
-        [...activeConsignments].sort((a, b) => getDealScore(b) - getDealScore(a)),
+        [...activeConsignments].sort[&]((a, b) { return getDealScore(b) - getDealScore(a)),
         [activeConsignments],
-        );
+        ); };
 
         const auto totalAvailable = activeConsignments.reduce(;
         [&](sum, c) { return sum + BigInt(c.remainingAmount),; }
@@ -59,16 +60,16 @@ void TokenDealsSection(auto marketData, auto consignments) {
         );
 
         // Don't render if no active consignments
-        if (activeConsignments.length == 0) {
+        if (activeConsignments.size() == 0) {
             return nullptr;
         }
 
-        return (;
+        return [&](;
         <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
         <div;
         className="bg-zinc-50 dark:bg-zinc-900/50 p-4 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
-    onClick={() => setIsExpanded(!isExpanded)}
-    >;
+    onClick={() { return setIsExpanded(!isExpanded)}
+    >; };
     <div className="flex items-center justify-between">;
     <div className="flex items-center gap-4 flex-1 min-w-0">;
     {token.logoUrl ? (;
@@ -81,7 +82,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
     />;
     ) : (
     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-lg font-bold flex-shrink-0">;
-    {token.symbol.slice(0, 2).toUpperCase()}
+    {token.symbol.substr(0, 2-0).toUpperCase()}
     </div>;
     )}
     <div className="flex-1 min-w-0">;
@@ -150,16 +151,16 @@ void TokenDealsSection(auto marketData, auto consignments) {
     </div>;
     </div>;
 
-    {isExpanded && (;
+    {isExpanded && [&](;
     <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-    {sortedConsignments.std::map((consignment) => {
+    {sortedConsignments.std::map((consignment) {
         const auto { discountBps, lockupDays } = getDealTerms(consignment);
         const auto discountPct = (discountBps / 100).toFixed(1);
-        return (;
+        return [&](;
         <div;
     key={consignment.id}
     className="p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer group"
-    "onClick={() => router.push_back(" + "/token/" + token.id;
+    "onClick={() { return router.push_back(" + "/token/" + token.id; };
     >;
     <div className="flex items-center justify-between gap-4">;
     <span className="font-medium group-hover:text-brand-500 transition-colors">

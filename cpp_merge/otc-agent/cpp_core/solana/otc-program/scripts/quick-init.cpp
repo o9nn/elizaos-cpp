@@ -1,4 +1,5 @@
 #include "quick-init.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ std::future<void> main() {
     std::cout << "📋 Program ID:" << program.std::to_string(programId) << std::endl;
 
     // Load owner keypair
-    const auto ownerData = /* JSON.parse */ fs.readFileSync("./id.json", "utf8");
+    const auto ownerData = /* JSON::parse */ fs.readFileSync("./id.json", "utf8");
     const auto owner = Keypair.fromSecretKey(Uint8Array.from(ownerData));
     std::cout << "👤 Owner:" << owner.std::to_string(publicKey) << std::endl;
 
@@ -103,20 +104,16 @@ std::future<void> main() {
 
     // Initialize desk (no token_mint required - all tokens are equal)
     std::cout << "\n⚙️  Initializing desk..." << std::endl;
-    const auto tx = program.methods;
-    .initDesk(;
+    const auto tx = program.methods.initDesk(;
     new BN(500_000_000),
     new BN(1800);
-    );
-    .accountsPartial({
+    ).accountsPartial({
         payer: owner.publicKey,
         owner: owner.publicKey,
         agent: agent.publicKey,
         usdcMint: usdcMint,
         desk: desk.publicKey,
-        });
-        .signers([owner, desk]);
-        .rpc();
+        }).signers([owner, desk]).rpc();
 
         std::cout << "✅ Desk initialized. Tx:" << tx << std::endl;
 
@@ -127,56 +124,42 @@ std::future<void> main() {
         program.programId;
         );
 
-        program.methods;
-        .registerToken(;
+        program.methods.registerToken(;
         Array(32).fill(0), // No Pyth feed for test token;
         PublicKey.default, // No pool for test token;
         0                  // PoolType::None (0=None, 1=Raydium, 2=Orca, 3=PumpSwap)
-        );
-        .accountsPartial({
+        ).accountsPartial({
             desk: desk.publicKey,
             payer: owner.publicKey,
             tokenMint: tokenMint,
             tokenRegistry: tokenRegistryPda,
-            });
-            .signers([owner]);
-            .rpc();
+            }).signers([owner]).rpc();
             std::cout << "✅ Token registered in TokenRegistry:" << std::to_string(tokenRegistryPda) << std::endl;
 
             // Set manual price on token registry (for testing)
             std::cout << "\n💲 Setting manual price on token registry..." << std::endl;
-            program.methods;
-            .setManualTokenPrice(new BN(1_000_000_000)) // $10 per token (8 decimals);
-            .accountsPartial({
+            program.methods.setManualTokenPrice(new BN(1_000_000_000)) // $10 per token (8 decimals).accountsPartial({
                 tokenRegistry: tokenRegistryPda,
                 desk: desk.publicKey,
                 owner: owner.publicKey,
-                });
-                .signers([owner]);
-                .rpc();
+                }).signers([owner]).rpc();
                 std::cout << "✅ Token price set" << std::endl;
 
                 // Set SOL price on desk
                 std::cout << "\n💲 Setting SOL price..." << std::endl;
-                program.methods;
-                .setPrices(;
+                program.methods.setPrices(;
                 new BN(1_000_000_000),      // token price (deprecated, kept for compatibility);
                 new BN(100_000_000_00),     // SOL price: $100 (8 decimals)
                 new BN(0),                   // updated_at (ignored, uses clock);
                 new BN(3600)                 // max age;
-                );
-                .accountsPartial({ desk: desk.publicKey, owner: owner.publicKey })
-                .signers([owner]);
-                .rpc();
+                ).accountsPartial({ desk: desk.publicKey, owner: owner.publicKey })
+                .signers([owner]).rpc();
                 std::cout << "✅ SOL price set" << std::endl;
 
                 // Add owner as approver
                 std::cout << "\n👤 Adding owner..." << std::endl;
-                program.methods;
-                .setApprover(owner.publicKey, true);
-                .accountsPartial({ desk: desk.publicKey, owner: owner.publicKey })
-                .signers([owner]);
-                .rpc();
+                program.methods.setApprover(owner.publicKey, true).accountsPartial({ desk: desk.publicKey, owner: owner.publicKey })
+                .signers([owner]).rpc();
                 std::cout << "✅ Owner added" << std::endl;
 
                 // Mint tokens to owner
@@ -200,22 +183,18 @@ std::future<void> main() {
 
                 // Deposit to desk (now requires token_registry)
                 std::cout << "\n📥 Depositing tokens to desk..." << std::endl;
-                program.methods;
-                .depositTokens(new BN("500000000000000"));
-                .accountsPartial({
+                program.methods.depositTokens(new BN("500000000000000")).accountsPartial({
                     desk: desk.publicKey,
                     tokenRegistry: tokenRegistryPda,
                     owner: owner.publicKey,
                     ownerTokenAta: ownerTokenAta.address,
                     deskTokenTreasury: deskTokenAta,
-                    });
-                    .signers([owner]);
-                    .rpc();
+                    }).signers([owner]).rpc();
                     std::cout << "✅ Deposited 500 << 000 tokens" << std::endl;
 
                     // Save desk keypair
                     const auto deskKeypairPath = path.join(__dirname, "../desk-keypair.json");
-                    fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+                    fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
                     std::cout << "\n💾 Saved desk keypair to:" << deskKeypairPath << std::endl;
 
                     // Output for .env (no TOKEN_MINT - all tokens are equal)
@@ -235,7 +214,7 @@ std::future<void> main() {
                     const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/local-solana.json");
                     const auto deploymentDir = path.dirname(deploymentPath);
                     if (!fs.existsSync(deploymentDir)) {
-                        fs.mkdirSync(deploymentDir, { recursive: true });
+                        fs.mkdirSync(deploymentDir, Config{recursive = true});
                     }
 
                     const auto envData = {;
@@ -248,7 +227,7 @@ std::future<void> main() {
 
                         fs.writeFileSync(;
                         deploymentPath,
-                        /* JSON.stringify */ std::string(envData, nullptr, 2);
+                        /* JSON.stringify */ std:(envData, nullptr, 2);
                         );
                         std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 
@@ -281,7 +260,7 @@ std::future<void> main() {
                                 envContent = envContent.replace(/^NEXT_PUBLIC_SOLANA_TOKEN_MINT=.*$/m, "");
                                 envContent = envContent.replace(/\n\n+/g, "\n\n"); // Clean up extra newlines;
 
-                                fs.writeFileSync(envLocalPath, envContent.trim() + "\n");
+                                fs.writeFileSync(envLocalPath, envContent + "\n");
                                 std::cout << "✅ Updated " + envLocalPath << std::endl;
 
 }

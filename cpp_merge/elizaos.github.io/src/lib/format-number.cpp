@@ -2,9 +2,9 @@
 
 string formatCompactNumber(double number, double maximumFractionDigits)
 {
-    auto formatter = Intl::NumberFormat(std::string("en"), object{
-        object::pair{std::string("notation"), std::string("compact")}, 
-        object::pair{std::string("maximumFractionDigits"), std::string("maximumFractionDigits")}
+    auto formatter = Intl::NumberFormat(std:("en"), object{
+        object::pair{std:("notation"), std:("compact")}, 
+        object::pair{std:("maximumFractionDigits"), std:("maximumFractionDigits")}
     });
     return formatter->format(number);
 };

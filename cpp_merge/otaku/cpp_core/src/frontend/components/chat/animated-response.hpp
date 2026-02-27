@@ -18,10 +18,10 @@ namespace elizaos {
 
 
 struct AnimatedResponseProps {
-    std::string children;
-    std::optional<std::string> className;
+    std: children;
+    std::optional<std:> className;
     std::optional<bool> shouldAnimate;
-    std::optional<std::string> messageId;
+    std::optional<std:> messageId;
     std::optional<double> maxDurationMs;
 };
 

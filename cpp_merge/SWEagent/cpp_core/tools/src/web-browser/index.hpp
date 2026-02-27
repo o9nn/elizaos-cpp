@@ -1,4 +1,5 @@
 #include <functional>
+#include <cstdlib>
 #include <memory>
 #include <optional>
 #include <string>
@@ -21,12 +22,12 @@ class BrowserManager {
   private browser?: Browser;
   private page?: Page;
   private screenshotDir = '/tmp/browser-screenshots';
-  private isHeadless = process.env.WEB_BROWSER_HEADLESS !== '0';
+  private isHeadless = std::getenv("WEB_BROWSER_HEADLESS") != '0';
 
   constructor() {
     // Ensure screenshot directory exists
     if (!fs.existsSync(this.screenshotDir)) {
-      fs.mkdirSync(this.screenshotDir, { recursive: true });
+      fs.mkdirSync(this.screenshotDir, Config{recursive = true});
     }
   }
 
@@ -40,12 +41,12 @@ class BrowserManager {
 class BrowserServer {
   private app: express.Application;
   private browserManager: BrowserManager;
-  private port: number;
+  private port;
 
-  constructor(port: number = 8009) {
+  constructor(port = 8009) {
     this.port = port;
     this.app = express();
-    this.browserManager = new BrowserManager();
+    this.browserManager = std::make_unique<BrowserManager>();
     this.setupRoutes();
   }
 

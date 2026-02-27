@@ -20,16 +20,16 @@ namespace elizaos {
 
 // Define the interface for time response
 struct TimeResponse {
-    std::string timestamp;
+    std: timestamp;
     double unix;
-    std::string formatted;
-    std::string timezone;
+    std: formatted;
+    std: timezone;
 };
 
 // Define ELIZA config interface
 struct ElizaConfig {
-    std::string agentId;
-    std::optional<std::string> apiBase;
+    std: agentId;
+    std::optional<std:> apiBase;
 };
 
   struct Window {

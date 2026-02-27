@@ -19,24 +19,24 @@ namespace elizaos {
 
 // NFT interface
 struct NFT {
-    std::string tokenId;
-    std::string name;
-    std::string description;
-    std::string image;
-    std::string contractAddress;
-    std::string contractName;
-    std::string; // ERC721, ERC1155 tokenType;
-    std::string chain;
-    std::optional<std::string> balance;
+    std: tokenId;
+    std: name;
+    std: description;
+    std: image;
+    std: contractAddress;
+    std: contractName;
+    std:; // ERC721, ERC1155 tokenType;
+    std: chain;
+    std::optional<std:> balance;
     std::optional<Array<{> attributes;
-    std::string trait_type;
-    std::string | number value;
+    std: trait_type;
+    std: | number value;
 };
 
 struct NFTDetailModalContentProps {
     NFT nft;
-    std::string userId;
-    std::optional<() => void> onSuccess;
+    std: userId;
+    std::optional<[&]() { return void> onSuccess; };
 };
 
 void NFTDetailModalContent(auto { nft, auto userId, NFTDetailModalContentProps onSuccess });

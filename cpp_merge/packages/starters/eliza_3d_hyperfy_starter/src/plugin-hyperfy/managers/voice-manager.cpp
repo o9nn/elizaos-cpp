@@ -8,7 +8,7 @@ void VoiceManager::start()
 {
     auto service = this->getService();
     auto world = service->getWorld();
-    world->livekit->on(std::string("audio"), [=](auto data) mutable
+    world->livekit->on(std:("audio"), [=](auto data) mutable
     {
         auto isLoudEnough = [=](auto pcmBuffer, auto threshold) mutable
         {
@@ -26,10 +26,10 @@ void VoiceManager::start()
         auto playerId = data["participant"];
         if (!this->userStates->has(playerId)) {
             this->userStates->set(playerId, object{
-                object::pair{std::string("buffers"), array<any>()}, 
-                object::pair{std::string("totalLength"), 0}, 
-                object::pair{std::string("lastActive"), Date->now()}, 
-                object::pair{std::string("transcriptionText"), string_empty}
+                object::pair{std:("buffers"), array<any>()}, 
+                object::pair{std:("totalLength"), 0}, 
+                object::pair{std:("lastActive"), Date->now()}, 
+                object::pair{std:("transcriptionText"), string_empty}
             });
         }
         auto pcmBuffer = data["buffer"];
@@ -52,7 +52,7 @@ void VoiceManager::handleUserBuffer(any playerId, any buffer)
     }
     catch (const any& error)
     {
-        console->error(std::string("Error processing buffer for user ") + playerId + std::string(":"), error);
+        console->error(std:("Error processing buffer for user ") + playerId + std:(":"), error);
     }
 }
 
@@ -111,12 +111,12 @@ void VoiceManager::processTranscription(std::shared_ptr<UUID> playerId)
         state["totalLength"] = 0;
         auto wavHeader = getWavHeader(inputBuffer->length, 48000);
         auto wavBuffer = Buffer::concat(array<any>{ wavHeader, inputBuffer });
-        logger->debug(std::string("Starting transcription..."));
+        logger->debug(std:("Starting transcription..."));
         auto transcriptionText = std::async([=]() { this->runtime->useModel(ModelType->TRANSCRIPTION, wavBuffer); });
-        console->log(std::string("[VOICE MANAGER] Transcrtion: "), transcriptionText);
+        console->log(std:("[VOICE MANAGER] Transcrtion: "), transcriptionText);
         auto isValidTranscription = [=](auto text) mutable
         {
-            if (OR((!text), (text->includes(std::string("[BLANK_AUDIO]"))))) return false;
+            if (OR((!text), (text->includes(std:("[BLANK_AUDIO]"))))) return false;
             return true;
         };
 
@@ -131,7 +131,7 @@ void VoiceManager::processTranscription(std::shared_ptr<UUID> playerId)
     }
     catch (const any& error)
     {
-        console->error(std::string("Error transcribing audio for user ") + playerId + std::string(":"), error);
+        console->error(std:("Error transcribing audio for user ") + playerId + std:(":"), error);
     }
 }
 
@@ -141,8 +141,8 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
     {
         if (OR((OR((!message), (message->trim() == string_empty))), (message->get_length() < 3))) {
             return object{
-                object::pair{std::string("text"), string_empty}, 
-                object::pair{std::string("actions"), array<string>{ std::string("IGNORE") }}
+                object::pair{std:("text"), string_empty}, 
+                object::pair{std:("actions"), array<string>{ std:("IGNORE") }}
             };
         }
         shared service = this->getService();
@@ -152,62 +152,62 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
         shared name = userName;
         auto _currentWorldId = service->currentWorldId;
         auto channelId = _currentWorldId;
-        shared roomId = createUniqueUuid(this->runtime, OR((_currentWorldId), (std::string("hyperfy-unknown-world"))));
+        shared roomId = createUniqueUuid(this->runtime, OR((_currentWorldId), (std:("hyperfy-unknown-world"))));
         shared entityId = as<std::shared_ptr<UUID>>(createUniqueUuid(this->runtime, playerId));
         shared type = ChannelType->WORLD;
         std::async([=]() { this->runtime->ensureConnection(object{
-            object::pair{std::string("entityId"), std::string("entityId")}, 
-            object::pair{std::string("roomId"), std::string("roomId")}, 
-            object::pair{std::string("userName"), std::string("userName")}, 
-            object::pair{std::string("name"), std::string("name")}, 
-            object::pair{std::string("source"), std::string("hyperfy")}, 
-            object::pair{std::string("channelId"), std::string("channelId")}, 
-            object::pair{std::string("serverId"), std::string("hyperfy")}, 
-            object::pair{std::string("type"), ChannelType->WORLD}, 
-            object::pair{std::string("worldId"), _currentWorldId}, 
-            object::pair{std::string("userId"), playerId}
+            object::pair{std:("entityId"), std:("entityId")}, 
+            object::pair{std:("roomId"), std:("roomId")}, 
+            object::pair{std:("userName"), std:("userName")}, 
+            object::pair{std:("name"), std:("name")}, 
+            object::pair{std:("source"), std:("hyperfy")}, 
+            object::pair{std:("channelId"), std:("channelId")}, 
+            object::pair{std:("serverId"), std:("hyperfy")}, 
+            object::pair{std:("type"), ChannelType->WORLD}, 
+            object::pair{std:("worldId"), _currentWorldId}, 
+            object::pair{std:("userId"), playerId}
         }); });
         shared memory = object{
-            object::pair{std::string("id"), createUniqueUuid(this->runtime, string_empty + channelId + std::string("-voice-message-") + Date->now() + string_empty)}, 
-            object::pair{std::string("agentId"), this->runtime->agentId}, 
-            object::pair{std::string("entityId"), entityId}, 
-            object::pair{std::string("roomId"), std::string("roomId")}, 
-            object::pair{std::string("content"), object{
-                object::pair{std::string("text"), message}, 
-                object::pair{std::string("source"), std::string("hyperfy")}, 
-                object::pair{std::string("name"), name}, 
-                object::pair{std::string("userName"), userName}, 
-                object::pair{std::string("isVoiceMessage"), true}, 
-                object::pair{std::string("channelType"), type}
+            object::pair{std:("id"), createUniqueUuid(this->runtime, string_empty + channelId + std:("-voice-message-") + Date->now() + string_empty)}, 
+            object::pair{std:("agentId"), this->runtime->agentId}, 
+            object::pair{std:("entityId"), entityId}, 
+            object::pair{std:("roomId"), std:("roomId")}, 
+            object::pair{std:("content"), object{
+                object::pair{std:("text"), message}, 
+                object::pair{std:("source"), std:("hyperfy")}, 
+                object::pair{std:("name"), name}, 
+                object::pair{std:("userName"), userName}, 
+                object::pair{std:("isVoiceMessage"), true}, 
+                object::pair{std:("channelType"), type}
             }}, 
-            object::pair{std::string("createdAt"), Date->now()}
+            object::pair{std:("createdAt"), Date->now()}
         };
         auto callback = [=](auto content, auto _files = array<any>()) mutable
         {
-            console->info(std::string("[Hyperfy Voice Chat Callback] Received response: ") + JSON->stringify(content) + string_empty);
+            console->info(std:("[Hyperfy Voice Chat Callback] Received response: ") + JSON->stringify(content) + string_empty);
             try
             {
                 auto responseMemory = object{
-                    object::pair{std::string("id"), createUniqueUuid(this->runtime, string_empty + memory->id + std::string("-voice-response-") + Date->now() + string_empty)}, 
-                    object::pair{std::string("entityId"), this->runtime->agentId}, 
-                    object::pair{std::string("agentId"), this->runtime->agentId}, 
-                    object::pair{std::string("content"), utils::assign(object{
+                    object::pair{std:("id"), createUniqueUuid(this->runtime, string_empty + memory->id + std:("-voice-response-") + Date->now() + string_empty)}, 
+                    object::pair{std:("entityId"), this->runtime->agentId}, 
+                    object::pair{std:("agentId"), this->runtime->agentId}, 
+                    object::pair{std:("content"), utils::assign(object{
                         , 
-                        object::pair{std::string("name"), this->runtime->character->name}, 
-                        object::pair{std::string("inReplyTo"), memory->id}, 
-                        object::pair{std::string("isVoiceMessage"), true}, 
-                        object::pair{std::string("channelType"), type}
+                        object::pair{std:("name"), this->runtime->character->name}, 
+                        object::pair{std:("inReplyTo"), memory->id}, 
+                        object::pair{std:("isVoiceMessage"), true}, 
+                        object::pair{std:("channelType"), type}
                     }, content)}, 
-                    object::pair{std::string("roomId"), std::string("roomId")}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("roomId"), std:("roomId")}, 
+                    object::pair{std:("createdAt"), Date->now()}
                 };
-                std::async([=]() { this->runtime->createMemory(responseMemory, std::string("messages")); });
+                std::async([=]() { this->runtime->createMemory(responseMemory, std:("messages")); });
                 if (responseMemory->content->text->trim()) {
                     auto responseStream = std::async([=]() { this->runtime->useModel(ModelType->TEXT_TO_SPEECH, content->text); });
                     if (responseStream) {
                         auto audioBuffer = std::async([=]() { convertToAudioBuffer(responseStream); });
                         auto emoteManager = service->getEmoteManager();
-                        auto emote = OR((as<string>(content->emote)), (std::string("TALK")));
+                        auto emote = OR((as<string>(content->emote)), (std:("TALK")));
                         emoteManager->playEmote(emote);
                         std::async([=]() { this->playAudio(audioBuffer); });
                     }
@@ -216,16 +216,16 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
             }
             catch (const any& error)
             {
-                console->error(std::string("Error in voice message callback:"), error);
+                console->error(std:("Error in voice message callback:"), error);
                 return array<any>();
             }
         };
         agentActivityLock->enter();
         this->runtime->emitEvent(array<hyperfyEventType>{ hyperfyEventType::VOICE_MESSAGE_RECEIVED }, object{
-            object::pair{std::string("runtime"), this->runtime}, 
-            object::pair{std::string("message"), memory}, 
-            object::pair{std::string("callback"), std::string("callback")}, 
-            object::pair{std::string("onComplete"), [=]() mutable
+            object::pair{std:("runtime"), this->runtime}, 
+            object::pair{std:("message"), memory}, 
+            object::pair{std:("callback"), std:("callback")}, 
+            object::pair{std:("onComplete"), [=]() mutable
             {
                 agentActivityLock->exit();
             }
@@ -234,14 +234,14 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
     }
     catch (const any& error)
     {
-        console->error(std::string("Error processing voice message:"), error);
+        console->error(std:("Error processing voice message:"), error);
     }
 }
 
 void VoiceManager::playAudio(any audioBuffer)
 {
     if (this->processingVoice) {
-        logger->info(std::string("[VOICE MANAER] Current voice is processing....."));
+        logger->info(std:("[VOICE MANAER] Current voice is processing....."));
         return std::shared_ptr<Promise<void>>();
     }
     auto service = this->getService();

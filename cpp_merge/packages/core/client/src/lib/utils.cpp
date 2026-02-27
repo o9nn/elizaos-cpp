@@ -2,25 +2,25 @@
 
 string characterNameToUrl(string name)
 {
-    return name->replace((new RegExp(std::string("\s+"))), std::string("-"));
+    return name->replace((new RegExp(std:("\s+"))), std:("-"));
 };
 
 
 string urlToCharacterName(string urlName)
 {
-    return urlName->replace((new RegExp(std::string("-+"))), std::string(" "));
+    return urlName->replace((new RegExp(std:("-+"))), std:(" "));
 };
 
 
 std::shared_ptr<UUID> randomUUID()
 {
-    return as<std::shared_ptr<UUID>>(URL["createObjectURL"](std::make_shared<Blob>())->split(std::string("/"))->pop());
+    return as<std::shared_ptr<UUID>>(URL["createObjectURL"](std::make_shared<Blob>())->split(std:("/"))->pop());
 };
 
 
 std::shared_ptr<UUID> getEntityId()
 {
-    auto USER_ID_KEY = std::string("elizaos-client-user-id");
+    auto USER_ID_KEY = std:("elizaos-client-user-id");
     auto existingUserId = localStorage->getItem(USER_ID_KEY);
     if (existingUserId) {
         return as<std::shared_ptr<UUID>>(existingUserId);
@@ -48,7 +48,7 @@ std::function<std::shared_ptr<Promise<string>>(std::shared_ptr<File>, any, doubl
                 img->src = as<string>(e->target->result);
                 img->onload = [=]() mutable
                 {
-                    auto canvas = document->createElement(std::string("canvas"));
+                    auto canvas = document->createElement(std:("canvas"));
                     auto width = img->width;
                     auto height = img->height;
                     if (width > height) {
@@ -64,9 +64,9 @@ std::function<std::shared_ptr<Promise<string>>(std::shared_ptr<File>, any, doubl
                     }
                     canvas->width = width;
                     canvas->height = height;
-                    auto ctx = canvas->getContext(std::string("2d"));
+                    auto ctx = canvas->getContext(std:("2d"));
                     ctx->drawImage(img, 0, 0, width, height);
-                    auto resizedBase64 = canvas->toDataURL(std::string("image/jpeg"), quality);
+                    auto resizedBase64 = canvas->toDataURL(std:("image/jpeg"), quality);
                     resolve(resizedBase64);
                 };
                 img->onerror = reject;
@@ -77,7 +77,7 @@ std::function<std::shared_ptr<Promise<string>>(std::shared_ptr<File>, any, doubl
     }
     );
 };
-array<string> AGENT_AVATAR_PLACEHOLDERS = array<string>{ std::string("/images/agents/agent1.png"), std::string("/images/agents/agent2.png"), std::string("/images/agents/agent3.png"), std::string("/images/agents/agent4.png"), std::string("/images/agents/agent5.png") };
+array<string> AGENT_AVATAR_PLACEHOLDERS = array<string>{ std:("/images/agents/agent1.png"), std:("/images/agents/agent2.png"), std:("/images/agents/agent3.png"), std:("/images/agents/agent4.png"), std:("/images/agents/agent5.png") };
 std::function<string(object)> getAgentAvatar = [=](auto agent) mutable
 {
     if (agent["settings"]["avatar"]) {
@@ -94,7 +94,7 @@ std::function<string(object)> getAgentAvatar = [=](auto agent) mutable
         auto index = Math->abs(hash) % AGENT_AVATAR_PLACEHOLDERS->get_length();
         return const_(AGENT_AVATAR_PLACEHOLDERS)[index];
     }
-    return std::string("/elizaos-icon.png");
+    return std:("/elizaos-icon.png");
 };
 std::function<string(any, array<any>, any)> generateGroupName = [=](auto channel, auto participants, P2 currentUserId) mutable
 {
@@ -117,18 +117,18 @@ std::function<string(any, array<any>, any)> generateGroupName = [=](auto channel
                 return p->id == currentUserId;
             }
             );
-            if (currentUserParticipant) return OR((currentUserParticipant->name), (std::string("Unnamed Group")));
-            return std::string("Unnamed Group");
+            if (currentUserParticipant) return OR((currentUserParticipant->name), (std:("Unnamed Group")));
+            return std:("Unnamed Group");
         }
         if (otherParticipants->get_length() > 0) {
             return (otherParticipants->map([=](auto p) mutable
             {
                 return p->name;
             }
-            )->slice(0, 3)->join(std::string(", ")) + ((otherParticipants->get_length() > 3) ? std::string("...") : string_empty));
+            )->slice(0, 3)->join(std:(", ")) + ((otherParticipants->get_length() > 3) ? std:("...") : string_empty));
         }
     }
-    return std::string("Unnamed Group");
+    return std:("Unnamed Group");
 };
 
 void Main(void)

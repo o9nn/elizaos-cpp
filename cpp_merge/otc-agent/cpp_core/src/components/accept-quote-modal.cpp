@@ -1,10 +1,12 @@
 #include "accept-quote-modal.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, const std::string& symbol) {
+std::optional<TokenMetadata> getCachedTokenMetadata(const std:& chain, const std:& symbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
@@ -12,7 +14,7 @@ std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, co
 
 }
 
-void setCachedTokenMetadata(const std::string& chain, const std::string& symbol, TokenMetadata metadata) {
+void setCachedTokenMetadata(const std:& chain, const std:& symbol, TokenMetadata metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
@@ -26,7 +28,7 @@ void setCachedTokenMetadata(const std::string& chain, const std::string& symbol,
 
 }
 
-std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, const std::string& symbol) {
+std::optional<TokenMetadata> loadCachedTokenMetadata(const std:& chain, const std:& symbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check memory cache first
@@ -37,7 +39,7 @@ std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, c
         const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
         const auto stored = "sessionStorage.getItem(" + "token-meta:" + key;
         if (stored) {
-            const auto metadata = /* JSON.parse */ stored;
+            const auto metadata = /* JSON::parse */ stored;
             tokenMetadataCache.std::set(key, metadata);
             return metadata;
         }
@@ -48,7 +50,7 @@ std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, c
 
 }
 
-std::optional<bool> getContractExists(const std::string& key) {
+std::optional<bool> getContractExists(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entry = contractExistsCache.get(key);
@@ -61,7 +63,7 @@ std::optional<bool> getContractExists(const std::string& key) {
 
 }
 
-void setContractExists(const std::string& key, bool exists) {
+void setContractExists(const std:& key, bool exists) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     contractExistsCache.std::set(key, { exists, cachedAt: Date.now() });
@@ -162,21 +164,21 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                 getRequiredPayment,
                 } = useOTC();
 
-                const auto abi = useMemo(() => otcArtifact.abi, []);
+                const auto abi = useMemo[&](() { return otcArtifact.abi, []); };
 
                 // Determine RPC URL based on network configuration
                 const auto networkEnv = getCurrentNetwork();
                 const auto isMainnet = networkEnv == "mainnet";
                 const auto isLocal = networkEnv == "local";
 
-                const auto rpcUrl = useMemo(() => {;
+                const auto rpcUrl = useMemo[&](() {;
                     if (isLocal) {
-                        return process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545";
+                        return std::getenv("NEXT_PUBLIC_RPC_URL") || "http://127.0.0.1:8545";
                     }
                     // Use Base RPC proxy to avoid rate limits on public RPCs
                     // This keeps the Alchemy API key server-side
-                    if (process.env.NEXT_PUBLIC_BASE_RPC_URL) {
-                        return process.env.NEXT_PUBLIC_BASE_RPC_URL;
+                    if (std::getenv("NEXT_PUBLIC_BASE_RPC_URL")) {
+                        return std::getenv("NEXT_PUBLIC_BASE_RPC_URL");
                     }
                     // Use our proxy route for Alchemy (same as wagmi client)
                     if (typeof window != "undefined") {
@@ -190,7 +192,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                     [rpcUrl],
                     );
 
-                    const auto readChain = useMemo(() => {;
+                    const auto readChain = useMemo[&](() {;
                         if (isLocalRpc) {
                             return {
                                 id: 31337,
@@ -248,21 +250,21 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                     const auto { login, ready: privyReady } = usePrivy();
                                     const auto isSolanaActive = activeFamily == "solana";
                                     const auto SOLANA_RPC =;
-                                    (process.env.NEXT_PUBLIC_SOLANA_RPC | std::nullopt) ||;
+                                    (std::getenv("NEXT_PUBLIC_SOLANA_RPC") | std::nullopt) ||;
                                     "http://127.0.0.1:8899";
-                                    const auto SOLANA_DESK = process.env.NEXT_PUBLIC_SOLANA_DESK | std::nullopt;
-                                    const auto SOLANA_USDC_MINT = process.env.NEXT_PUBLIC_SOLANA_USDC_MINT as;
-                                    | std::string;
+                                    const auto SOLANA_DESK = std::getenv("NEXT_PUBLIC_SOLANA_DESK") | std::nullopt;
+                                    const auto SOLANA_USDC_MINT = std::getenv("NEXT_PUBLIC_SOLANA_USDC_MINT") as;
+                                    | std:;
                                     | std::nullopt;
 
                                     // Wallet balances for display and MAX calculation
                                     const auto ethBalance = useBalance({ address });
                                     const auto usdcBalance = useBalance({;
                                         address,
-                                        "token: usdcAddress as " + "0x" + std::string
+                                        "token: usdcAddress as " + "0x" + std:
                                         });
 
-                                        useEffect(() => {
+                                        useEffect[&](() {
                                             if (!isOpen) {
                                                 dispatch({
                                                     type: "RESET",
@@ -283,7 +285,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                     }, [isOpen, initialQuote, activeFamily]);
 
                                                     // Look up token metadata from cache first, then database
-                                                    useEffect(() => {
+                                                    useEffect[&](() {
                                                         if (!isOpen || !initialQuote.tokenSymbol) return;
 
                                                         const auto chain =;
@@ -310,14 +312,14 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                     const auto res = "fetch(" + "/api/tokens?chain=" + chain;
                                                                     const auto data = res.json();
                                                                     if (data.success && data.tokens) {
-                                                                        const auto token = data.tokens.find(;
+                                                                        const auto token = data.tokens.find[&](;
                                                                         (t: {
-                                                                            symbol: std::string;
-                                                                            name: std::string;
-                                                                            logoUrl: std::string;
-                                                                            contractAddress: std::string;
-                                                                            }) => t.symbol.toUpperCase() == symbol.toUpperCase(),
-                                                                            );
+                                                                            symbol: std:;
+                                                                            name: std:;
+                                                                            logoUrl: std:;
+                                                                            contractAddress: std:;
+                                                                            }) { return t.symbol.toUpperCase() == symbol.toUpperCase(),
+                                                                            ); };
                                                                             if (token) {
                                                                                 const TokenMetadata metadata = {;
                                                                                     symbol: token.symbol,
@@ -348,7 +350,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                 ]);
 
                                                                                 // Keep currency coherent with active family when modal opens
-                                                                                useEffect(() => {
+                                                                                useEffect[&](() {
                                                                                     if (!isOpen) return;
                                                                                     if (activeFamily == "solana") {
                                                                                         dispatch({ type: "SET_CURRENCY", payload: "SOL" });
@@ -356,7 +358,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                     }, [isOpen, activeFamily]);
 
                                                                                     // Validate contract exists and read config (EVM only) - with caching
-                                                                                    useEffect(() => {
+                                                                                    useEffect[&](() {
                                                                                         [&](std::async () {
                                                                                             // Skip validation for Solana
                                                                                             if (activeFamily == "solana") {
@@ -388,7 +390,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                 // Check if contract has code at this address
                                                                                                 const auto code = publicClient.getBytecode({;
-                                                                                                    "address: otcAddress as " + "0x" + std::string
+                                                                                                    "address: otcAddress as " + "0x" + std:
                                                                                                     });
 
                                                                                                     const auto exists = Boolean(code && code != "0x");
@@ -411,11 +413,11 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                         // Read contract state (this changes rarely, but should still be fresh)
                                                                                                         // Use type assertion to bypass viem's strict authorizationList requirement
-                                                                                                        const auto readContract = publicClient.readContract as (;
+                                                                                                        const auto readContract = publicClient.readContract as [&](;
                                                                                                         params: unknown,
-                                                                                                        ) => Promise<unknown>;
+                                                                                                        ) { return Promise<unknown>; };
                                                                                                         const auto flag = (readContract({;
-                                                                                                            "address: otcAddress as " + "0x" + std::string
+                                                                                                            "address: otcAddress as " + "0x" + std:
                                                                                                             abi: abi,
                                                                                                             functionName: "requireApproverToFulfill",
                                                                                                             args: [],
@@ -424,7 +426,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                             })();
                                                                                                             }, [isOpen, otcAddress, publicClient, abi, activeFamily, readChain]);
 
-                                                                                                            const auto discountBps = useMemo(() => {;
+                                                                                                            const auto discountBps = useMemo[&](() {;
                                                                                                                 const auto fromQuote = initialQuote.discountBps;
                                                                                                                 if (typeof fromQuote == "number" && !Number.isNaN(fromQuote)) {
                                                                                                                     return fromQuote;
@@ -433,7 +435,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                 return 100;
                                                                                                                 }, [initialQuote.discountBps]);
 
-                                                                                                                const auto lockupDays = useMemo(() => {;
+                                                                                                                const auto lockupDays = useMemo[&](() {;
                                                                                                                     if (typeof initialQuote.lockupDays == "number")
                                                                                                                     return initialQuote.lockupDays;
                                                                                                                     if (typeof initialQuote.lockupMonths == "number")
@@ -447,27 +449,26 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                     defaultUnlockDelaySeconds,
                                                                                                                     ]);
 
-                                                                                                                    const auto contractMaxTokens = useMemo(() => {;
+                                                                                                                    const auto contractMaxTokens = useMemo[&](() {;
                                                                                                                         const auto v = maxTokenPerOrder;
                                                                                                                         ? Number(maxTokenPerOrder / 10n ** 18n);
                                                                                                                         : ONE_MILLION;
                                                                                                                         return Math.max(MIN_TOKENS, Math.min(ONE_MILLION, v));
                                                                                                                         }, [maxTokenPerOrder]);
 
-                                                                                                                        const auto clampAmount = useCallback(;
-                                                                                                                        (value: number) =>
-                                                                                                                        Math.min(contractMaxTokens, Math.max(MIN_TOKENS, Math.floor(value))),
+                                                                                                                        const auto clampAmount = useCallback[&](;
+                                                                                                                        (value) { return Math.min(contractMaxTokens, Math.max(MIN_TOKENS, Math.floor(value))),
                                                                                                                         [contractMaxTokens],
-                                                                                                                        );
+                                                                                                                        ); };
 
                                                                                                                         const auto setTokenAmount = useCallback(;
-                                                                                                                        [&](value: number) {
+                                                                                                                        [&](value) {
                                                                                                                             dispatch({ type: "SET_TOKEN_AMOUNT", payload: clampAmount(value) });
                                                                                                                             },
                                                                                                                             [clampAmount],
                                                                                                                             );
 
-                                                                                                                            const auto setCurrency = useCallback((value: "ETH" | "USDC" | "SOL") => {;
+                                                                                                                            const auto setCurrency = useCallback[&]((value: "ETH" | "USDC" | "SOL") {;
                                                                                                                                 dispatch({ type: "SET_CURRENCY", payload: value });
                                                                                                                                 }, []);
 
@@ -480,11 +481,11 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                 std::async std::function readNextOfferId(): Promise<bigint> {
                                                                                                                                     if (!otcAddress) throw new Error("Missing OTC address");
                                                                                                                                     // Use type assertion to bypass viem's strict authorizationList requirement
-                                                                                                                                    const auto readContract = publicClient.readContract as (;
+                                                                                                                                    const auto readContract = publicClient.readContract as [&](;
                                                                                                                                     params: unknown,
-                                                                                                                                    ) => Promise<unknown>;
+                                                                                                                                    ) { return Promise<unknown>; };
                                                                                                                                     return (readContract({;
-                                                                                                                                        "address: otcAddress as " + "0x" + std::string
+                                                                                                                                        "address: otcAddress as " + "0x" + std:
                                                                                                                                         abi: abi,
                                                                                                                                         functionName: "nextOfferId",
                                                                                                                                         args: [],
@@ -493,7 +494,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                     // Offer std::tuple type from the contract
                                                                                                                                     type OfferTuple = readonly [;
-                                                                                                                                    "0x" + std::string
+                                                                                                                                    "0x" + std:
                                                                                                                                     bigint,
                                                                                                                                     bigint,
                                                                                                                                     bigint,
@@ -505,32 +506,32 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                     boolean,
                                                                                                                                     boolean,
                                                                                                                                     boolean,
-                                                                                                                                    "0x" + std::string
+                                                                                                                                    "0x" + std:
                                                                                                                                     bigint,
                                                                                                                                     ];
 
                                                                                                                                     std::async std::function readOffer(offerId: bigint): Promise<OfferTuple> {
                                                                                                                                         if (!otcAddress) throw new Error("Missing OTC address");
                                                                                                                                         // Use type assertion to bypass viem's strict authorizationList requirement
-                                                                                                                                        const auto readContract = publicClient.readContract as (;
+                                                                                                                                        const auto readContract = publicClient.readContract as [&](;
                                                                                                                                         params: unknown,
-                                                                                                                                        ) => Promise<unknown>;
+                                                                                                                                        ) { return Promise<unknown>; };
                                                                                                                                         return (readContract({;
-                                                                                                                                            "address: otcAddress as " + "0x" + std::string
+                                                                                                                                            "address: otcAddress as " + "0x" + std:
                                                                                                                                             abi: abi,
                                                                                                                                             functionName: "offers",
                                                                                                                                             args: [offerId],
                                                                                                                                             }));
                                                                                                                                         }
 
-                                                                                                                                        std::async std::function wait(ms: number) {
-                                                                                                                                            return new Promise((r) => setTimeout(r, ms));
+                                                                                                                                        std::async std::function wait(ms) {
+                                                                                                                                            return new Promise[&]((r) { return setTimeout(r, ms)); };
                                                                                                                                         }
 
                                                                                                                                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                                                                                                                         std::async std::function fulfillWithRetry(;
                                                                                                                                         offerId: bigint,
-                                                                                                                                        "): Promise<" + "0x" + std::string
+                                                                                                                                        "): Promise<" + "0x" + std:
                                                                                                                                             // Check if already fulfilled
                                                                                                                                             const auto [, , , , , , , , , isPaid, isFulfilled] = readOffer(offerId);
 
@@ -550,19 +551,19 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                             "[AcceptQuote] Required payment: " + requiredAmount + " " + currency
                                                                                                                                             );
 
-                                                                                                                                            "auto txHash: " + "0x" + std::string;
+                                                                                                                                            "auto txHash: " + "0x" + std:;
 
                                                                                                                                             if (isEth) {
                                                                                                                                                 // Pay with ETH (direct from user wallet via MetaMask)
                                                                                                                                                 std::cout << "[AcceptQuote] Fulfilling with ETH..." << std::endl;
-                                                                                                                                                "txHash = (fulfillOffer(offerId, requiredAmount)) as " + "0x" + std::string;
+                                                                                                                                                "txHash = (fulfillOffer(offerId, requiredAmount)) as " + "0x" + std:;
                                                                                                                                                 } else {
                                                                                                                                                     // Pay with USDC (need to approve first)
                                                                                                                                                     std::cout << "[AcceptQuote] Approving USDC allowance..." << std::endl;
                                                                                                                                                     approveUsdc(requiredAmount);
 
                                                                                                                                                     std::cout << "[AcceptQuote] Fulfilling with USDC..." << std::endl;
-                                                                                                                                                    "txHash = (fulfillOffer(offerId)) as " + "0x" + std::string;
+                                                                                                                                                    "txHash = (fulfillOffer(offerId)) as " + "0x" + std:;
                                                                                                                                                 }
 
                                                                                                                                                 // Wait for transaction to be mined with timeout
@@ -578,7 +579,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                             confirmations: 1,
                                                                                                                                                             });
                                                                                                                                                             if (receipt.status == "reverted") {
-                                                                                                                                                                throw std::runtime_error(`Payment transaction reverted. Tx: ${txHash}`);
+                                                                                                                                                                throw std::runtime_error("Payment transaction reverted. Tx: " + std::to_string(txHash) + "");
                                                                                                                                                             }
                                                                                                                                                             console.log(
                                                                                                                                                             "[AcceptQuote] Transaction mined, block:",
@@ -618,7 +619,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                             return txHash;
                                                                                                                                                         }
 
-                                                                                                                                                        const auto handleConfirm = useCallback(std::async () => {;
+                                                                                                                                                        const auto handleConfirm = useCallback[&](std::async () {;
                                                                                                                                                             if (!walletConnected) return;
 
                                                                                                                                                             // CRITICAL: Quote must exist
@@ -654,10 +655,10 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                 ...error,
                                                                                                                                                                                 message: error.message,
                                                                                                                                                                                 cause: error.cause as
-                                                                                                                                                                            | { reason?: std::string; code?: std::string | number }
+                                                                                                                                                                            | { reason?: std:; code?: std: | number }
                                                                                                                                                                             | std::nullopt,
-                                                                                                                                                                            details: (error as { details?: std::string }).details,
-                                                                                                                                                                            shortMessage: (error as { shortMessage?: std::string }).shortMessage,
+                                                                                                                                                                            details: (error as { details?: std: }).details,
+                                                                                                                                                                            shortMessage: (error as { shortMessage?: std: }).shortMessage,
                                                                                                                                                                             };
                                                                                                                                                                             const auto errorMessage = handleTransactionError(txError);
                                                                                                                                                                             dispatch({ type: "TRANSACTION_ERROR", payload: errorMessage });
@@ -671,7 +672,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                         handleTransactionError,
                                                                                                                                                                         ]);
 
-                                                                                                                                                                        const auto executeTransaction = std::async () => {;
+                                                                                                                                                                        const auto executeTransaction = std::async [&]() {;
                                                                                                                                                                             /**
                                                                                                                                                                             * TRANSACTION FLOW (Optimized UX - Backend Pays)
                                                                                                                                                                             *
@@ -800,23 +801,19 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                             );
                                                                                                                                                                                             std::cout << "Token registry PDA:" << std::to_string(tokenRegistryPda) << std::endl;
 
-                                                                                                                                                                                            program.methods;
-                                                                                                                                                                                            .createOffer(;
+                                                                                                                                                                                            program.methods.createOffer(;
                                                                                                                                                                                             tokenAmountWei,
                                                                                                                                                                                             discountBps,
                                                                                                                                                                                             paymentCurrencySol,
                                                                                                                                                                                             lockupSeconds,
-                                                                                                                                                                                            );
-                                                                                                                                                                                            .accountsStrict({
+                                                                                                                                                                                            ).accountsStrict({
                                                                                                                                                                                                 desk,
                                                                                                                                                                                                 tokenRegistry: tokenRegistryPda,
                                                                                                                                                                                                 deskTokenTreasury,
                                                                                                                                                                                                 beneficiary: new SolPubkey(solanaWallet.publicKey.toBase58()),
                                                                                                                                                                                                 offer: offerKeypair.publicKey,
                                                                                                                                                                                                 systemProgram: SolSystemProgram.programId,
-                                                                                                                                                                                                });
-                                                                                                                                                                                                .signers([offerKeypair]);
-                                                                                                                                                                                                .rpc();
+                                                                                                                                                                                                }).signers([offerKeypair]).rpc();
 
                                                                                                                                                                                                 std::cout << "Offer created" << std::endl;
 
@@ -827,7 +824,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                 const auto approveRes = fetch("/api/otc/approve", {;
                                                                                                                                                                                                     method: "POST",
                                                                                                                                                                                                     headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                    body: JSON.stringify({
+                                                                                                                                                                                                    body: nlohmann::json().dump({
                                                                                                                                                                                                         offerId: std::to_string(nextOfferId),
                                                                                                                                                                                                         chain: "solana",
                                                                                                                                                                                                         offerAddress: offerKeypair.std::to_string(publicKey),
@@ -836,7 +833,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                                                                                         if (!approveRes.ok) {
                                                                                                                                                                                                             const auto errorText = approveRes.text();
-                                                                                                                                                                                                            throw std::runtime_error(`Approval failed: ${errorText}`);
+                                                                                                                                                                                                            throw std::runtime_error("Approval failed: " + std::to_string(errorText) + "");
                                                                                                                                                                                                         }
 
                                                                                                                                                                                                         std::cout << "Approval requested << backend will approve and pay..." << std::endl;
@@ -858,7 +855,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                         const auto claimRes = fetch("/api/solana/claim", {;
                                                                                                                                                                                                             method: "POST",
                                                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                            body: JSON.stringify({
+                                                                                                                                                                                                            body: nlohmann::json().dump({
                                                                                                                                                                                                                 offerAddress: offerKeypair.std::to_string(publicKey),
                                                                                                                                                                                                                 beneficiary: solanaWallet.publicKey.toBase58(),
                                                                                                                                                                                                                 }),
@@ -892,7 +889,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                             // Solana addresses are Base58 encoded and case-sensitive - preserve original case
                                                                                                                                                                                                                             const auto solanaWalletAddress = solanaPublicKey || "";
 
-                                                                                                                                                                                                                            // CRITICAL: Capture tokenAmount NOW before std::any std::async operations
+                                                                                                                                                                                                                            // CRITICAL: Capture tokenAmount NOW before std: std::async operations
                                                                                                                                                                                                                             const auto finalTokenAmount = tokenAmount;
 
                                                                                                                                                                                                                             console.log("[Solana] Saving deal completion:", {
@@ -907,7 +904,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                 const auto response = fetch("/api/deal-completion", {;
                                                                                                                                                                                                                                     method: "POST",
                                                                                                                                                                                                                                     headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                                                    body: JSON.stringify({
+                                                                                                                                                                                                                                    body: nlohmann::json().dump({
                                                                                                                                                                                                                                         action: "complete",
                                                                                                                                                                                                                                         quoteId: initialQuote.quoteId,
                                                                                                                                                                                                                                         tokenAmount: std::to_string(finalTokenAmount),
@@ -923,7 +920,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                         if (!response.ok) {
                                                                                                                                                                                                                                             const auto errorText = response.text();
                                                                                                                                                                                                                                             std::cerr << "[Solana] Deal save failed:" << errorText << std::endl;
-                                                                                                                                                                                                                                            throw std::runtime_error(`Failed to save deal: ${errorText}`);
+                                                                                                                                                                                                                                            throw std::runtime_error("Failed to save deal: " + std::to_string(errorText) + "");
                                                                                                                                                                                                                                         }
 
                                                                                                                                                                                                                                         const auto saveResult = response.json();
@@ -955,7 +952,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                                                                                                                                 // Redirect to deal page after showing success
                                                                                                                                                                                                                                                 if (initialQuote.quoteId) {
-                                                                                                                                                                                                                                                    setTimeout(() => {
+                                                                                                                                                                                                                                                    setTimeout[&](() {
                                                                                                                                                                                                                                                         "router.push_back(" + "/deal/" + initialQuote.quoteId;
                                                                                                                                                                                                                                                         }, 2000);
                                                                                                                                                                                                                                                     }
@@ -969,7 +966,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                 initialQuote.beneficiary.toLowerCase() != address.toLowerCase();
                                                                                                                                                                                                                                                 ) {
                                                                                                                                                                                                                                                     throw new Error(
-                                                                                                                                                                                                                                                    "Wallet mismatch: Quote is for " + std::to_string(initialQuote.beneficiary.slice(0, 6)) + "... but you're connected as " + std::to_string(address.slice(0, 6)) + "..."
+                                                                                                                                                                                                                                                    "Wallet mismatch: Quote is for " + std::to_string(initialQuote.beneficiary.substr(0, 6-0)) + "... but you're connected as " + std::to_string(address.substr(0, 6-0)) + "..."
                                                                                                                                                                                                                                                     );
                                                                                                                                                                                                                                                 }
 
@@ -981,7 +978,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                 ? fetch("/api/quote/latest", {
                                                                                                                                                                                                                                                     method: "POST",
                                                                                                                                                                                                                                                     headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                                                                    body: JSON.stringify({
+                                                                                                                                                                                                                                                    body: nlohmann::json().dump({
                                                                                                                                                                                                                                                         quoteId: initialQuote.quoteId,
                                                                                                                                                                                                                                                         beneficiary: address,
                                                                                                                                                                                                                                                         tokenAmount: std::to_string(tokenAmount),
@@ -991,7 +988,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                         discountedUsd: 0,
                                                                                                                                                                                                                                                         paymentAmount: "0",
                                                                                                                                                                                                                                                         }),
-                                                                                                                                                                                                                                                        }).catch(() => {}) // Ignore errors - not critical;
+                                                                                                                                                                                                                                                        }).catch[&](() {}) // Ignore errors - not critical;
                                                                                                                                                                                                                                                         : Promise.resolve(),
                                                                                                                                                                                                                                                         ]);
                                                                                                                                                                                                                                                         const auto newOfferId = nextId;
@@ -1007,7 +1004,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                             discountBps,
                                                                                                                                                                                                                                                             paymentCurrency,
                                                                                                                                                                                                                                                             lockupSeconds,
-                                                                                                                                                                                                                                                            "})) as " + "0x" + std::string;
+                                                                                                                                                                                                                                                            "})) as " + "0x" + std:;
 
                                                                                                                                                                                                                                                             console.log(
                                                                                                                                                                                                                                                             "[AcceptQuote] ✅ Offer created: " + newOfferId + ", tx: " + createTxHash
@@ -1025,7 +1022,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                             dispatch({ type: "SET_STEP", payload: "await_approval" });
 
                                                                                                                                                                                                                                                             // Small delay for UI update
-                                                                                                                                                                                                                                                            new Promise((resolve) => setTimeout(resolve, 100));
+                                                                                                                                                                                                                                                            new Promise[&]((resolve) { return setTimeout(resolve, 100)); };
 
                                                                                                                                                                                                                                                             console.log(
                                                                                                                                                                                                                                                             "[AcceptQuote] Triggering backend approval for offer " + newOfferId + "..."
@@ -1044,7 +1041,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                     approveRes = fetch("/api/otc/approve", {
                                                                                                                                                                                                                                                                         method: "POST",
                                                                                                                                                                                                                                                                         headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                                                                                        body: JSON.stringify({
+                                                                                                                                                                                                                                                                        body: nlohmann::json().dump({
                                                                                                                                                                                                                                                                             offerId: std::to_string(newOfferId),
                                                                                                                                                                                                                                                                             txHash: createTxHash,
                                                                                                                                                                                                                                                                             }),
@@ -1070,7 +1067,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                             if (attempt < maxApproveAttempts) {
                                                                                                                                                                                                                                                                                 const auto delay = Math.pow(2, attempt) * 1000;
                                                                                                                                                                                                                                                                                 std::cout << "[AcceptQuote] Retrying in " + delay + "ms..." << std::endl;
-                                                                                                                                                                                                                                                                                new Promise((resolve) => setTimeout(resolve, delay));
+                                                                                                                                                                                                                                                                                new Promise[&]((resolve) { return setTimeout(resolve, delay)); };
                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                         }
 
@@ -1083,7 +1080,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                         if (!approveRes.ok) {
                                                                                                                                                                                                                                                                             const auto errorText = approveRes.text();
                                                                                                                                                                                                                                                                             std::cerr << "[AcceptQuote] Approval API error:" << errorText << std::endl;
-                                                                                                                                                                                                                                                                            throw std::runtime_error(`Approval failed: ${errorText}`);
+                                                                                                                                                                                                                                                                            throw std::runtime_error("Approval failed: " + std::to_string(errorText) + "");
                                                                                                                                                                                                                                                                         }
 
                                                                                                                                                                                                                                                                         const auto approveData = approveRes.json();
@@ -1126,7 +1123,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                 }
 
                                                                                                                                                                                                                                                                                 const auto paymentTxHash = (approveData.fulfillTx ||;
-                                                                                                                                                                                                                                                                                "approveData.approvalTx) as " + "0x" + std::string;
+                                                                                                                                                                                                                                                                                "approveData.approvalTx) as " + "0x" + std:;
 
                                                                                                                                                                                                                                                                                 if (approveData.fulfillTx) {
                                                                                                                                                                                                                                                                                     std::cout << "[AcceptQuote] ✅ Backend auto-fulfilled:" << paymentTxHash << std::endl;
@@ -1164,7 +1161,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                         const auto saveRes = fetch("/api/deal-completion", {;
                                                                                                                                                                                                                                                                                             method: "POST",
                                                                                                                                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                                                                                                            body: JSON.stringify({
+                                                                                                                                                                                                                                                                                            body: nlohmann::json().dump({
                                                                                                                                                                                                                                                                                                 action: "complete",
                                                                                                                                                                                                                                                                                                 quoteId: initialQuote.quoteId,
                                                                                                                                                                                                                                                                                                 tokenAmount: std::to_string(tokenAmount),
@@ -1197,12 +1194,12 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                         onComplete.({ offerId: newOfferId, txHash: paymentTxHash });
 
                                                                                                                                                                                                                                                                                                         // Auto-redirect after showing success briefly
-                                                                                                                                                                                                                                                                                                        setTimeout(() => {
+                                                                                                                                                                                                                                                                                                        setTimeout[&](() {
                                                                                                                                                                                                                                                                                                             "router.push_back(" + "/deal/" + initialQuote.quoteId;
                                                                                                                                                                                                                                                                                                             }, 2000);
                                                                                                                                                                                                                                                                                                             };
 
-                                                                                                                                                                                                                                                                                                            const auto estPerTokenUsd = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                            const auto estPerTokenUsd = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                 // Use quote's pricePerToken with discount applied for estimation
                                                                                                                                                                                                                                                                                                                 // Actual cost will be determined by on-chain oracle at execution
                                                                                                                                                                                                                                                                                                                 const auto basePrice = initialQuote.pricePerToken || 0;
@@ -1212,7 +1209,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                 return basePrice * discountMultiplier;
                                                                                                                                                                                                                                                                                                                 }, [initialQuote.pricePerToken, initialQuote.discountBps]);
 
-                                                                                                                                                                                                                                                                                                                const auto balanceDisplay = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                                const auto balanceDisplay = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                     // For Solana, we don't have wagmi balances - show dash
                                                                                                                                                                                                                                                                                                                     if (isSolanaActive) {
                                                                                                                                                                                                                                                                                                                         return "—"; // Solana balance fetching not implemented via wagmi;
@@ -1280,7 +1277,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                                                 };
 
                                                                                                                                                                                                                                                                                                                                                 // Calculate max affordable tokens based on balance
-                                                                                                                                                                                                                                                                                                                                                const auto maxAffordableTokens = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                                                                const auto maxAffordableTokens = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                                                     // For Solana, we can't calculate without balance - don't limit
                                                                                                                                                                                                                                                                                                                                                     if (isSolanaActive) return ONE_MILLION;
                                                                                                                                                                                                                                                                                                                                                     if (estPerTokenUsd <= 0) return ONE_MILLION; // Can't calculate, don't limit
@@ -1306,7 +1303,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                                                         ]);
 
                                                                                                                                                                                                                                                                                                                                                         // Validation: enforce token amount limits and check affordability
-                                                                                                                                                                                                                                                                                                                                                        const auto validationError = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                                                                        const auto validationError = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                                                             if (tokenAmount < MIN_TOKENS) {
                                                                                                                                                                                                                                                                                                                                                                 return "Order too small. Minimum is " + std::to_string(MIN_TOKENS.toLocaleString()) + " tokens.";
                                                                                                                                                                                                                                                                                                                                                             }
@@ -1320,7 +1317,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                                                             }, [tokenAmount, contractMaxTokens, estPerTokenUsd, maxAffordableTokens]);
 
                                                                                                                                                                                                                                                                                                                                                             // Estimate payment amount for display
-                                                                                                                                                                                                                                                                                                                                                            const auto estimatedPayment = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                                                                            const auto estimatedPayment = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                                                                 if (estPerTokenUsd <= 0)
                                                                                                                                                                                                                                                                                                                                                                 return { usdc: undefined, eth: undefined, sol: undefined }
                                                                                                                                                                                                                                                                                                                                                                 const auto totalUsd = tokenAmount * estPerTokenUsd;
@@ -1343,7 +1340,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                                                                             }, [tokenAmount, estPerTokenUsd, currency, initialQuote.ethPrice]);
 
                                                                                                                                                                                                                                                                                                                                                                             // Check for insufficient funds
-                                                                                                                                                                                                                                                                                                                                                                            const auto insufficientFunds = useMemo(() => {;
+                                                                                                                                                                                                                                                                                                                                                                            const auto insufficientFunds = useMemo[&](() {;
                                                                                                                                                                                                                                                                                                                                                                                 if (estPerTokenUsd <= 0) return false; // Can't check without price
                                                                                                                                                                                                                                                                                                                                                                                 return tokenAmount > maxAffordableTokens;
                                                                                                                                                                                                                                                                                                                                                                                 }, [estPerTokenUsd, tokenAmount, maxAffordableTokens]);
@@ -1420,8 +1417,8 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                     <button;
                                                                                                                                                                                                                                                                                                                     type="button";
                                                                                                                                                                                                                                                                                                                 "className={" + "px-2 py-1 rounded-md " + std::to_string(currency == "USDC" ? "bg-white text-black" : "text-zinc-300")
-                                                                                                                                                                                                                                                                                                            onClick={() => setCurrency("USDC")}
-                                                                                                                                                                                                                                                                                                            >;
+                                                                                                                                                                                                                                                                                                            onClick={[&]() { return setCurrency("USDC")}
+                                                                                                                                                                                                                                                                                                            >; };
                                                                                                                                                                                                                                                                                                             USDC;
                                                                                                                                                                                                                                                                                                             </button>;
                                                                                                                                                                                                                                                                                                             <span className="text-zinc-600">|</span>;
@@ -1473,20 +1470,20 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                 <div className="flex items-center gap-3 text-right flex-shrink-0">;
                                                                                                                                                                                                                                                             {/* Token Logo */}
                                                                                                                                                                                                                                                             <div className="h-10 w-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden ring-1 ring-white/10">;
-                                                                                                                                                                                                                                                            {tokenMetadata.logoUrl ? (;
+                                                                                                                                                                                                                                                            {tokenMetadata.logoUrl ? [&](;
                                                                                                                                                                                                                                                             <img;
                                                                                                                                                                                                                                                         src={tokenMetadata.logoUrl}
                                                                                                                                                                                                                                                     alt={tokenMetadata.symbol}
                                                                                                                                                                                                                                                     className="h-full w-full object-cover";
-                                                                                                                                                                                                                                                    onError={(e) => {
+                                                                                                                                                                                                                                                    onError={(e) {
                                                                                                                                                                                                                                                         // Fallback to symbol if image fails
                                                                                                                                                                                                                                                         e.currentTarget.style.display = "none";
-                                                                                                                                                                                                                                                        "e.currentTarget.parentElement!.innerHTML = " + "<span class=\"text-brand-400 text-sm font-bold\">" + std::to_string(tokenMetadata.symbol.slice(0, 2) || "₣") + "</span>";
+                                                                                                                                                                                                                                                        "e.currentTarget.parentElement!.innerHTML = " + "<span class=\"text-brand-400 text-sm font-bold\">" + std::to_string(tokenMetadata.symbol.substr(0, 2-0) || "₣") + "</span>";
                                                                                                                                                                                                                                                     }}
                                                                                                                                                                                                                                                     />;
                                                                                                                                                                                                                                                     ) : (
                                                                                                                                                                                                                                                     <span className="text-brand-400 text-sm font-bold">;
-                                                                                                                                                                                                                                                {initialQuote.tokenSymbol.slice(0, 2) || "₣"}
+                                                                                                                                                                                                                                                {initialQuote.tokenSymbol.substr(0, 2-0) || "₣"}
                                                                                                                                                                                                                                                 </span>;
                                                                                                                                                                                                                                             )}
                                                                                                                                                                                                                                             </div>;

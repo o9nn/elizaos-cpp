@@ -2,9 +2,9 @@
 
 void Main(void)
 {
-    describe(std::string("StepOutput"), [=]() mutable
+    describe(std:("StepOutput"), [=]() mutable
     {
-        it(std::string("should create with default values"), [=]() mutable
+        it(std:("should create with default values"), [=]() mutable
         {
             auto step = std::make_shared<StepOutputImpl>();
             expect(step->query)->toEqual(array<object>{ object{} });
@@ -20,116 +20,116 @@ void Main(void)
             expect(step->extraInfo)->toEqual(object{});
         }
         );
-        it(std::string("should convert to template format dict"), [=]() mutable
+        it(std:("should convert to template format dict"), [=]() mutable
         {
             auto step = std::make_shared<StepOutputImpl>();
-            step->thought = std::string("Test thought");
-            step->action = std::string("Test action");
-            step->observation = std::string("Test observation");
+            step->thought = std:("Test thought");
+            step->action = std:("Test action");
+            step->observation = std:("Test observation");
             step->exitStatus = 0;
-            step->submission = std::string("Test submission");
+            step->submission = std:("Test submission");
             step->done = true;
             step->executionTime = 1.5;
             auto dict = step->toTemplateFormatDict();
             expect(dict)->toEqual(object{
-                object::pair{std::string("thought"), std::string("Test thought")}, 
-                object::pair{std::string("action"), std::string("Test action")}, 
-                object::pair{std::string("output"), string_empty}, 
-                object::pair{std::string("observation"), std::string("Test observation")}, 
-                object::pair{std::string("exitStatus"), 0}, 
-                object::pair{std::string("submission"), std::string("Test submission")}, 
-                object::pair{std::string("done"), true}, 
-                object::pair{std::string("executionTime"), 1.5}
+                object::pair{std:("thought"), std:("Test thought")}, 
+                object::pair{std:("action"), std:("Test action")}, 
+                object::pair{std:("output"), string_empty}, 
+                object::pair{std:("observation"), std:("Test observation")}, 
+                object::pair{std:("exitStatus"), 0}, 
+                object::pair{std:("submission"), std:("Test submission")}, 
+                object::pair{std:("done"), true}, 
+                object::pair{std:("executionTime"), 1.5}
             });
         }
         );
     }
     );
-    describe(std::string("TrajectoryStep"), [=]() mutable
+    describe(std:("TrajectoryStep"), [=]() mutable
     {
-        it(std::string("should have correct structure"), [=]() mutable
+        it(std:("should have correct structure"), [=]() mutable
         {
             auto step = object{
-                object::pair{std::string("action"), std::string("test action")}, 
-                object::pair{std::string("observation"), std::string("test observation")}, 
-                object::pair{std::string("response"), std::string("test response")}, 
-                object::pair{std::string("state"), object{
-                    object::pair{std::string("key"), std::string("value")}
+                object::pair{std:("action"), std:("test action")}, 
+                object::pair{std:("observation"), std:("test observation")}, 
+                object::pair{std:("response"), std:("test response")}, 
+                object::pair{std:("state"), object{
+                    object::pair{std:("key"), std:("value")}
                 }}, 
-                object::pair{std::string("thought"), std::string("test thought")}, 
-                object::pair{std::string("executionTime"), 2.5}, 
-                object::pair{std::string("query"), array<object>{ object{
-                    object::pair{std::string("test"), std::string("query")}
+                object::pair{std:("thought"), std:("test thought")}, 
+                object::pair{std:("executionTime"), 2.5}, 
+                object::pair{std:("query"), array<object>{ object{
+                    object::pair{std:("test"), std:("query")}
                 } }}, 
-                object::pair{std::string("extraInfo"), object{
-                    object::pair{std::string("extra"), std::string("info")}
+                object::pair{std:("extraInfo"), object{
+                    object::pair{std:("extra"), std:("info")}
                 }}
             };
-            expect(step->action)->toBe(std::string("test action"));
-            expect(step->state)->toHaveProperty(std::string("key"), std::string("value"));
+            expect(step->action)->toBe(std:("test action"));
+            expect(step->state)->toHaveProperty(std:("key"), std:("value"));
             expect(step->executionTime)->toBe(2.5);
         }
         );
     }
     );
-    describe(std::string("HistoryItem"), [=]() mutable
+    describe(std:("HistoryItem"), [=]() mutable
     {
-        it(std::string("should handle optional fields"), [=]() mutable
+        it(std:("should handle optional fields"), [=]() mutable
         {
             auto item = object{
-                object::pair{std::string("role"), std::string("user")}, 
-                object::pair{std::string("content"), std::string("Test content")}, 
-                object::pair{std::string("messageType"), std::string("thought")}
+                object::pair{std:("role"), std:("user")}, 
+                object::pair{std:("content"), std:("Test content")}, 
+                object::pair{std:("messageType"), std:("thought")}
             };
-            expect(item->role)->toBe(std::string("user"));
-            expect(item->content)->toBe(std::string("Test content"));
-            expect(item->messageType)->toBe(std::string("thought"));
+            expect(item->role)->toBe(std:("user"));
+            expect(item->content)->toBe(std:("Test content"));
+            expect(item->messageType)->toBe(std:("thought"));
             expect(item->agent)->toBeUndefined();
             expect(item->isDemo)->toBeUndefined();
         }
         );
-        it(std::string("should handle all fields"), [=]() mutable
+        it(std:("should handle all fields"), [=]() mutable
         {
             auto item = object{
-                object::pair{std::string("role"), std::string("assistant")}, 
-                object::pair{std::string("content"), array<object>{ object{
-                    object::pair{std::string("type"), std::string("text")}, 
-                    object::pair{std::string("text"), std::string("Hello")}
+                object::pair{std:("role"), std:("assistant")}, 
+                object::pair{std:("content"), array<object>{ object{
+                    object::pair{std:("type"), std:("text")}, 
+                    object::pair{std:("text"), std:("Hello")}
                 } }}, 
-                object::pair{std::string("messageType"), std::string("action")}, 
-                object::pair{std::string("agent"), std::string("test-agent")}, 
-                object::pair{std::string("isDemo"), true}, 
-                object::pair{std::string("thought"), std::string("Thinking...")}, 
-                object::pair{std::string("action"), std::string("Do something")}, 
-                object::pair{std::string("toolCalls"), array<object>{ object{
-                    object::pair{std::string("id"), std::string("id1")}, 
-                    object::pair{std::string("type"), std::string("function")}, 
-                    object::pair{std::string("function"), object{
-                        object::pair{std::string("name"), std::string("tool1")}, 
-                        object::pair{std::string("arguments"), std::string("{}")}
+                object::pair{std:("messageType"), std:("action")}, 
+                object::pair{std:("agent"), std:("test-agent")}, 
+                object::pair{std:("isDemo"), true}, 
+                object::pair{std:("thought"), std:("Thinking...")}, 
+                object::pair{std:("action"), std:("Do something")}, 
+                object::pair{std:("toolCalls"), array<object>{ object{
+                    object::pair{std:("id"), std:("id1")}, 
+                    object::pair{std:("type"), std:("function")}, 
+                    object::pair{std:("function"), object{
+                        object::pair{std:("name"), std:("tool1")}, 
+                        object::pair{std:("arguments"), std:("{}")}
                     }}
                 } }}, 
-                object::pair{std::string("toolCallIds"), array<string>{ std::string("id1") }}, 
-                object::pair{std::string("tags"), array<string>{ std::string("test"), std::string("demo") }}, 
-                object::pair{std::string("cacheControl"), object{
-                    object::pair{std::string("type"), std::string("ephemeral")}
+                object::pair{std:("toolCallIds"), array<string>{ std:("id1") }}, 
+                object::pair{std:("tags"), array<string>{ std:("test"), std:("demo") }}, 
+                object::pair{std:("cacheControl"), object{
+                    object::pair{std:("type"), std:("ephemeral")}
                 }}, 
-                object::pair{std::string("thinkingBlocks"), array<object>{ object{
-                    object::pair{std::string("type"), std::string("thinking")}, 
-                    object::pair{std::string("content"), std::string("thinking")}
+                object::pair{std:("thinkingBlocks"), array<object>{ object{
+                    object::pair{std:("type"), std:("thinking")}, 
+                    object::pair{std:("content"), std:("thinking")}
                 } }}
             };
-            expect(item->agent)->toBe(std::string("test-agent"));
+            expect(item->agent)->toBe(std:("test-agent"));
             expect(item->isDemo)->toBe(true);
-            expect(item->tags)->toContain(std::string("test"));
+            expect(item->tags)->toContain(std:("test"));
             expect(item->toolCallIds)->toHaveLength(1);
         }
         );
     }
     );
-    describe(std::string("AgentInfo"), [=]() mutable
+    describe(std:("AgentInfo"), [=]() mutable
     {
-        it(std::string("should handle optional fields"), [=]() mutable
+        it(std:("should handle optional fields"), [=]() mutable
         {
             auto info = object{};
             expect(info->modelStats)->toBeUndefined();
@@ -137,32 +137,32 @@ void Main(void)
             expect(info->submission)->toBeUndefined();
         }
         );
-        it(std::string("should handle all fields"), [=]() mutable
+        it(std:("should handle all fields"), [=]() mutable
         {
             auto info = object{
-                object::pair{std::string("modelStats"), object{
-                    object::pair{std::string("cost"), 0.5}, 
-                    object::pair{std::string("tokens"), 100}
+                object::pair{std:("modelStats"), object{
+                    object::pair{std:("cost"), 0.5}, 
+                    object::pair{std:("tokens"), 100}
                 }}, 
-                object::pair{std::string("exitStatus"), std::string("success")}, 
-                object::pair{std::string("submission"), std::string("Solution submitted")}, 
-                object::pair{std::string("review"), object{
-                    object::pair{std::string("score"), 0.8}
+                object::pair{std:("exitStatus"), std:("success")}, 
+                object::pair{std:("submission"), std:("Solution submitted")}, 
+                object::pair{std:("review"), object{
+                    object::pair{std:("score"), 0.8}
                 }}, 
-                object::pair{std::string("editedFiles30"), std::string("file1.py")}, 
-                object::pair{std::string("editedFiles50"), std::string("file1.py, file2.py")}, 
-                object::pair{std::string("editedFiles70"), std::string("file1.py, file2.py, file3.py")}, 
-                object::pair{std::string("summarizer"), object{
-                    object::pair{std::string("summary"), std::string("Test summary")}
+                object::pair{std:("editedFiles30"), std:("file1.py")}, 
+                object::pair{std:("editedFiles50"), std:("file1.py, file2.py")}, 
+                object::pair{std:("editedFiles70"), std:("file1.py, file2.py, file3.py")}, 
+                object::pair{std:("summarizer"), object{
+                    object::pair{std:("summary"), std:("Test summary")}
                 }}, 
-                object::pair{std::string("sweAgentHash"), std::string("abc123")}, 
-                object::pair{std::string("sweAgentVersion"), std::string("1.0.0")}, 
-                object::pair{std::string("sweRexVersion"), std::string("0.1.0")}, 
-                object::pair{std::string("sweRexHash"), std::string("def456")}
+                object::pair{std:("sweAgentHash"), std:("abc123")}, 
+                object::pair{std:("sweAgentVersion"), std:("1.0.0")}, 
+                object::pair{std:("sweRexVersion"), std:("0.1.0")}, 
+                object::pair{std:("sweRexHash"), std:("def456")}
             };
-            expect(info->modelStats)->toHaveProperty(std::string("cost"), 0.5);
-            expect(info->exitStatus)->toBe(std::string("success"));
-            expect(info->review)->toHaveProperty(std::string("score"), 0.8);
+            expect(info->modelStats)->toHaveProperty(std:("cost"), 0.5);
+            expect(info->exitStatus)->toBe(std:("success"));
+            expect(info->review)->toHaveProperty(std:("score"), 0.8);
         }
         );
     }

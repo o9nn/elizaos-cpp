@@ -1,4 +1,8 @@
 #include "entities.hpp"
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -6,7 +10,7 @@ namespace elizaos {
 
 std::future<> getRecentInteractions(IAgentRuntime runtime, UUID sourceEntityId, const std::vector<Entity>& candidateEntities, UUID roomId, const std::vector<Relationship>& relationships) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    entity: Entity; interactions: Memory[]; count: number
+    entity: Entity; interactions: Memory[]; count
 }
 
 std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memory message, State state) {
@@ -24,15 +28,15 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
     const auto entitiesInRoom = runtime.getEntitiesForRoom(room.id, true);
 
     // Filter components for each entity based on permissions
-    const auto filteredEntities = Promise.all(;
-    entitiesInRoom.std::map(std::async (entity) => {
+    const auto filteredEntities = Promise.all[&](;
+    entitiesInRoom.std::map(std::async (entity) {
         if (!entity.components) return entity;
 
         // Get world roles if we have a world
         const auto worldRoles = world.metadata.roles || {};
 
         // Filter components based on permissions
-        entity.components = entity.components.filter((component) => {
+        entity.components = entity.components.filter[&]((component) {
             // 1. Pass if sourceEntityId matches the requesting entity
             if (component.sourceEntityId == message.entityId) return true;
 
@@ -45,7 +49,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
             // 3. Pass if sourceEntityId is the agentId
             if (component.sourceEntityId == runtime.agentId) return true;
 
-            // Filter out components that don't meet std::any criteria
+            // Filter out components that don't meet std: criteria
             return false;
             });
 
@@ -59,8 +63,8 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                 });
 
                 // Get entities from relationships
-                const auto relationshipEntities = Promise.all(;
-                relationships.std::map(std::async (rel) => {
+                const auto relationshipEntities = Promise.all[&](;
+                relationships.std::map(std::async (rel) {
                     const auto entityId =;
                     rel.sourceEntityId == message.entityId ? rel.targetEntityId : rel.sourceEntityId;
                     return runtime.getEntityById(entityId);
@@ -87,7 +91,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                         state: {
                             roomName: room.name || room.id,
                             worldName: world.name || "Unknown",
-                            entitiesInRoom: /* JSON.stringify */ std::string(filteredEntities, nullptr, 2),
+                            entitiesInRoom: /* JSON.stringify */ std:(filteredEntities, nullptr, 2),
                             entityId: message.entityId,
                             senderId: message.entityId,
                             },
@@ -114,7 +118,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                                         // Filter components again for the returned entity
                                         if (entity.components) {
                                             const auto worldRoles = world.metadata.roles || {};
-                                            entity.components = entity.components.filter((component) => {
+                                            entity.components = entity.components.filter[&]((component) {
                                                 if (component.sourceEntityId == message.entityId) return true;
                                                 if (world && component.sourceEntityId) {
                                                     const auto sourceRole = worldRoles[component.sourceEntityId];
@@ -133,9 +137,9 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                                         const auto matchName = resolution.matches[0].name.toLowerCase();
 
                                         // Find matching entity by username/handle in components or by name
-                                        const auto matchingEntity = allEntities.find((entity) => {;
+                                        const auto matchingEntity = allEntities.find[&]((entity) {;
                                             // Check names
-                                            if (entity.names.some((n) => n.toLowerCase() == matchName)) return true;
+                                            if [&](entity.names.some((n) { return n.toLowerCase() == matchName)) return true; };
 
                                             // Check components for username/handle match
                                             return entity.components.some(;
@@ -148,7 +152,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                                             if (matchingEntity) {
                                                 // If this is a relationship match, sort by interaction strength
                                                 if (resolution.type == 'RELATIONSHIP_MATCH') {
-                                                    const auto interactionInfo = interactionData.find((d) => d.entity.id == matchingEntity.id);
+                                                    const auto interactionInfo = interactionData.find[&]((d) { return d.entity.id == matchingEntity.id); };
                                                     if (interactionInfo && interactionInfo.count > 0) {
                                                         return matchingEntity;
                                                     }
@@ -172,7 +176,7 @@ std::future<void> getEntityDetails(auto roomId) {
     ]);
 
     // Use a Map for uniqueness checking while processing entities
-    const auto uniqueEntities = new Map();
+    const auto uniqueEntities = std::make_unique<Map>();
 
     // Process entities in a single pass
     for (const auto& entity : roomEntities)
@@ -204,10 +208,10 @@ std::future<void> getEntityDetails(auto roomId) {
             uniqueEntities.std::set(entity.id, {
                 id: entity.id,
                 name: room.source
-                ? (entity.metadata[room.source] as { name?: std::string }).name || entity.names[0]
+                ? (entity.metadata[room.source] as { name?: std: }).name || entity.names[0]
                 : entity.names[0],
                 names: entity.names,
-                data: /* JSON.stringify */ std::string({ ...mergedData, ...entity.metadata }),
+                data: /* JSON.stringify */ std:({ ...mergedData, ...entity.metadata }),
                 });
             }
 
@@ -218,8 +222,8 @@ std::future<void> getEntityDetails(auto roomId) {
 void formatEntities() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto entityStrings = entities.std::map((entity: Entity) => {;
-        const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? `\nData: ${/* JSON.stringify */ std::string(entity.metadata)}\n` : "\n");
+    const auto entityStrings = entities.std::map[&]((entity: Entity) {;
+        const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? "\nData: " + std::to_string(/* JSON.stringify */ std:(entity.metadata)) + "\n" : "\n");
         return header;
         });
         return entityStrings.join("\n");

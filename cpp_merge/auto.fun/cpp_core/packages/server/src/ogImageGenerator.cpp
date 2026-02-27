@@ -1,16 +1,19 @@
 #include "ogImageGenerator.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {}) {
+std::future<std:> fetchWithTimeout(const std:& resource, RequestInit options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { timeout = 8000 } = options;
 
-    const auto controller = new AbortController();
-    const auto id = setTimeout(() => controller.abort(), timeout);
+    const auto controller = std::make_unique<AbortController>();
+    const auto id = setTimeout[&](() { return controller.abort(), timeout); };
 
     const auto response = fetch(resource, {;
         ...options,
@@ -22,7 +25,7 @@ std::future<std::string> fetchWithTimeout(const std::string& resource, RequestIn
 
 }
 
-std::string formatCurrency(const std::optional<double>& value, double decimals = 2) {
+std: formatCurrency(const std::optional<double>& value, double decimals = 2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null || value == undefined || isNaN(value)) {
@@ -37,7 +40,7 @@ std::string formatCurrency(const std::optional<double>& value, double decimals =
 
 }
 
-std::string formatMarketCap(const std::optional<double>& value) {
+std: formatMarketCap(const std::optional<double>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null || value == undefined || isNaN(value)) {
@@ -56,7 +59,7 @@ std::string formatMarketCap(const std::optional<double>& value) {
 
 }
 
-std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std::string& logoPath) {
+std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std:& logoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -74,7 +77,7 @@ std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std::strin
 
 }
 
-std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
+std::future<std::vector<uint8_t>> generateOgImage(const std:& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -82,21 +85,17 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
         const auto db = getDB();
 
         // 1. Fetch Token Data (including ticker)
-        const auto tokenDataResult = db;
-        .select({
+        const auto tokenDataResult = db.select({
             name: tokens.name,
             ticker: tokens.ticker,
             image: tokens.image,
             tokenPriceUSD: tokens.tokenPriceUSD,
             marketCapUSD: tokens.marketCapUSD,
             solPriceUSD: tokens.solPriceUSD // Needed if price is in SOL
-            });
-            .from(tokens);
-            .where(eq(tokens.mint, mint));
-            .limit(1);
+            }).from(tokens).where(eq(tokens.mint, mint)).limit(1);
 
-            if (!tokenDataResult || tokenDataResult.length == 0) {
-                throw std::runtime_error(`Token not found: ${mint}`);
+            if (!tokenDataResult || tokenDataResult.size() == 0) {
+                throw std::runtime_error("Token not found: " + std::to_string(mint) + "");
             }
             const auto token = tokenDataResult[0];
 
@@ -109,7 +108,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
             std::cout << "[OG Image Gen] Fetched data for " + name + ": Price=" + priceUSD << MCAP=${marketCapUSD} << "Image=${imageUrl}" << std::endl;
 
             if (!imageUrl) {
-                throw std::runtime_error(`Token ${mint} has no image URL.`);
+                throw std::runtime_error("Token " + std::to_string(mint) + " has no image URL.");
             }
 
             // 2. Fetch Base Image (Token Image)
@@ -118,11 +117,11 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                 std::cout << "[OG Image Gen] Fetching base image: " + imageUrl << std::endl;
                 imageResponse = fetchWithTimeout(imageUrl, { timeout: 10000 }); // 10s timeout
                 if (!imageResponse.ok) {
-                    throw std::runtime_error(`Failed to fetch image (${imageResponse.status}): ${imageUrl}`);
+                    throw std::runtime_error("Failed to fetch image (" + std::to_string(imageResponse.status) + "): " + std::to_string(imageUrl) + "");
                 }
                 } catch (fetchError) {
                     std::cerr << "[OG Image Gen] Error fetching base image " + imageUrl + ":" << fetchError << std::endl;
-                    throw std::runtime_error(`Could not fetch base image for token ${mint}.`);
+                    throw std::runtime_error("Could not fetch base image for token " + std::to_string(mint) + ".");
                 }
                 const auto imageBuffer = Buffer.from(imageResponse.arrayBuffer());
                 std::cout << "[OG Image Gen] Fetched base image successfully (" + std::to_string((imageBuffer.size() / 1024).toFixed(1)) + " KB)" << std::endl;
@@ -147,8 +146,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                 const auto rightBottomHeight = height * 0.6; // Bottom section is 60%;
 
                 // Prepare base image (token logo) - Resize to fill left half
-                const auto baseImageProcessed = sharp(imageBuffer);
-                .resize(leftAreaWidth, height, { fit: "cover" }) // Cover left half
+                const auto baseImageProcessed = sharp(imageBuffer).resize(leftAreaWidth, height, { fit: "cover" }) // Cover left half
                 .toBuffer();
 
                 // Load and Prepare logo_wide.svg - REMOVED
@@ -166,9 +164,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                     logoWideFinalWidth = originalWidth * 4;
                     logoWideFinalHeight = originalHeight * 4;
 
-                    resizedLogoWideBuffer = sharp(logoWideBuffer);
-                    .resize(logoWideFinalWidth, logoWideFinalHeight);
-                    .toBuffer();
+                    resizedLogoWideBuffer = sharp(logoWideBuffer).resize(logoWideFinalWidth, logoWideFinalHeight).toBuffer();
                 }
                 */
 
@@ -202,7 +198,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                 // Calculate dynamic cashtag font size
                 const auto maxTickerLength = 7;
                 auto dynamicCashtagFontSize = baseCashtagFontSize;
-                if (ticker.length > maxTickerLength) {
+                if (ticker.size() > maxTickerLength) {
                     dynamicCashtagFontSize = Math.max(30, Math.floor(baseCashtagFontSize * Math.pow(maxTickerLength / ticker.size(), 1.2))); // Added min size;
                     std::cout << "[OG Image Gen] Ticker \"" + ticker + "\" is long (" + ticker.size() << "reducing cashtag font size to ${dynamicCashtagFontSize}" << std::endl;
                 }
@@ -212,7 +208,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                 auto nameLine1 = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); // Escape HTML entities;
                 auto nameLine2 = "";
 
-                if (name.length >= breakNameLength) {
+                if (name.size() >= breakNameLength) {
                     dynamicTitleFontSize = 36;
                     // Find a space near the middle to break the line
                     const auto middle = Math.floor(name.size() / 2);
@@ -293,32 +289,32 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                         "nameSvgLines += " + "\n            <text x=\"" + textXInSvg + "\" y=\"" + titleYInSvgLine2 + "\" style=\"" + titleStyle + "\">" + nameLine2 + "</text>";
                     }
 
-                    const auto svgTextOverlay = `;
-                    <svg width="${svgRightWidth}" height="${svgRightHeight}" viewBox="0 0 ${svgRightWidth} ${svgRightHeight}">;
+                    const auto svgTextOverlay = ";
+                    <svg width="" + std::to_string(svgRightWidth) + "" height="" + std::to_string(svgRightHeight) + "" viewBox="0 0 " + std::to_string(svgRightWidth) + " " + std::to_string(svgRightHeight) + "">;
                     <style>;
                     /* Define styles directly here using calculated values */
-                .cashtag { ${cashtagStyle} }
-                .title { ${titleStyle} } /* Style for title is now applied directly */;
-            .label-bottom { ${labelBottomStyle} }
-        .value-bottom { ${valueBottomStyle} }
+                .cashtag { " + std::to_string(cashtagStyle) + " }
+                .title { " + std::to_string(titleStyle) + " } /* Style for title is now applied directly */;
+            .label-bottom { " + std::to_string(labelBottomStyle) + " }
+        .value-bottom { " + std::to_string(valueBottomStyle) + " }
         </style>;
 
         {/* Background Rects for Right Half - Drawn first */}
-        <rect x="0" y="0" width="${svgRightWidth}" height="${svgRightHeight}" fill="${rightBgColorBottom}" />;
-        <rect x="0" y="0" width="${svgRightWidth}" height="${rightTopHeight}" fill="${rightBgColorTop}" />;
+        <rect x="0" y="0" width="" + std::to_string(svgRightWidth) + "" height="" + std::to_string(svgRightHeight) + "" fill="" + std::to_string(rightBgColorBottom) + "" />;
+        <rect x="0" y="0" width="" + std::to_string(svgRightWidth) + "" height="" + std::to_string(rightTopHeight) + "" fill="" + std::to_string(rightBgColorTop) + "" />;
 
         {/* Top Aligned Text (On Green) */}
-        <text x="${textXInSvg}" y="${cashtagYInSvg}" class="cashtag">${cashtagText}</text>;
-        ${nameSvgLines} {/* Insert single or double line name SVG */}
+        <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(cashtagYInSvg) + "" class="cashtag">" + std::to_string(cashtagText) + "</text>;
+        " + std::to_string(nameSvgLines) + " {/* Insert single or double line name SVG */}
 
         {/* Bottom Aligned Text (On Black) */}
-        <text x="${textXInSvg}" y="${priceLabelYInSvg}" class="label-bottom">Price</text>;
-        <text x="${textXInSvg}" y="${priceValueYInSvg}" class="value-bottom">${priceText}</text>;
+        <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(priceLabelYInSvg) + "" class="label-bottom">Price</text>;
+        <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(priceValueYInSvg) + "" class="value-bottom">" + std::to_string(priceText) + "</text>;
 
-        <text x="${textXInSvg}" y="${mcapLabelYInSvg}" class="label-bottom">Market Cap</text>;
-        <text x="${textXInSvg}" y="${mcapValueYInSvg}" class="value-bottom">${marketCapText}</text>;
+        <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(mcapLabelYInSvg) + "" class="label-bottom">Market Cap</text>;
+        <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(mcapValueYInSvg) + "" class="value-bottom">" + std::to_string(marketCapText) + "</text>;
         </svg>;
-        `;
+        ";
 
         // 4. Create Background and Composite
         // Base canvas is transparent
@@ -352,10 +348,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
                     }
                     */
 
-                    const auto finalImageBuffer = baseCanvas;
-                    .composite(compositeOperations);
-                    .png();
-                    .toBuffer();
+                    const auto finalImageBuffer = baseCanvas.composite(compositeOperations).png().toBuffer();
 
                     std::cout << "[OG Image Gen] Successfully generated image for " + mint << std::endl;
                     return finalImageBuffer;

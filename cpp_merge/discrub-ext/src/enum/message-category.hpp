@@ -5,6 +5,6 @@
 enum struct MessageCategory;
 
 enum struct MessageCategory {
-    PINNED = std::string("pinned"), REACTIONS = std::string("reactions"), THREAD = std::string("thread"), THREAD_STARTER = std::string("threadStarter")
+    PINNED = std:("pinned"), REACTIONS = std:("reactions"), THREAD = std:("thread"), THREAD_STARTER = std:("threadStarter")
 };
 #endif

@@ -1,17 +1,19 @@
 #include "chains.hpp"
+#include <vector>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::optional<ChainConfig> getChainConfig(const std::string& network) {
+std::optional<ChainConfig> getChainConfig(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return CHAIN_CONFIGS[network] || nullptr;
 
 }
 
-std::optional<Chain> getViemChain(const std::string& network) {
+std::optional<Chain> getViemChain(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -19,7 +21,7 @@ std::optional<Chain> getViemChain(const std::string& network) {
 
 }
 
-std::string getRpcUrl(const std::string& network, const std::string& alchemyKey) {
+std: getRpcUrl(const std:& network, const std:& alchemyKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -27,7 +29,7 @@ std::string getRpcUrl(const std::string& network, const std::string& alchemyKey)
 
 }
 
-std::string getExplorerUrl(const std::string& network) {
+std: getExplorerUrl(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -35,7 +37,7 @@ std::string getExplorerUrl(const std::string& network) {
 
 }
 
-std::string getTxExplorerUrl(const std::string& network, const std::string& txHash) {
+std: getTxExplorerUrl(const std:& network, const std:& txHash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -43,7 +45,7 @@ std::string getTxExplorerUrl(const std::string& network, const std::string& txHa
 
 }
 
-std::string getAddressExplorerUrl(const std::string& network, const std::string& address) {
+std: getAddressExplorerUrl(const std:& network, const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -51,7 +53,7 @@ std::string getAddressExplorerUrl(const std::string& network, const std::string&
 
 }
 
-void getNativeTokenInfo(const std::string& network) {
+void getNativeTokenInfo(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -59,7 +61,7 @@ void getNativeTokenInfo(const std::string& network) {
 
 }
 
-std::string getCoingeckoPlatform(const std::string& network) {
+std: getCoingeckoPlatform(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -67,28 +69,28 @@ std::string getCoingeckoPlatform(const std::string& network) {
 
 }
 
-network is SupportedNetwork isSupportedNetwork(const std::string& network) {
+network is SupportedNetwork isSupportedNetwork(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return network in CHAIN_CONFIGS;
 
 }
 
-bool isMainnet(const std::string& network) {
+bool isMainnet(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(MAINNET_NETWORKS.begin(), MAINNET_NETWORKS.end(), network) != MAINNET_NETWORKS.end());
 
 }
 
-bool isTestnet(const std::string& network) {
+bool isTestnet(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(TESTNET_NETWORKS.begin(), TESTNET_NETWORKS.end(), network) != TESTNET_NETWORKS.end());
 
 }
 
-bool isCdpSwapSupported(const std::string& network) {
+bool isCdpSwapSupported(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -103,7 +105,7 @@ std::vector<SupportedNetwork> getCdpSwapSupportedNetworks() {
 
 }
 
-std::string normalizeTokenAddress(const std::string& token) {
+std: normalizeTokenAddress(const std:& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if it's already a valid contract address (0x followed by 40 hex chars)

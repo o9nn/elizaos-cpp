@@ -1,10 +1,14 @@
 #include "merge-predictions.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void mergePredictions(const std::vector<std::string>& directories, std::optional<std::string> output) {
+void mergePredictions(const std::vector<std::string>& directories, std::optional<std:> output) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -14,12 +18,12 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
         for (const auto& directory : directories)
             const auto predFiles = findPredFiles(directory);
             preds.push_back(...predFiles);
-            logger.debug(`Found ${predFiles.length} predictions in ${directory}`);
+            logger.debug("Found " + std::to_string(predFiles.size()) + " predictions in " + std::to_string(directory) + "");
         }
 
         std::cout << "Found " + preds.size() + " predictions" << std::endl;
 
-        if (preds.length == 0) {
+        if (preds.size() == 0) {
             std::cout << "No predictions found in " + std::to_string(directories.join(", ")) << std::endl;
             return;
         }
@@ -28,11 +32,11 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
             output = path.join(directories[0], "preds.json");
         }
 
-        const std::unordered_map<std::string, std::any> data = {};
+        const std::unordered_map<std:, std:> data = {};
 
         for (const auto& pred : preds)
             const auto content = fs.readFileSync(pred, "utf-8");
-            const auto predData = /* JSON.parse */ content;
+            const auto predData = /* JSON::parse */ content;
             const auto instanceId = predData.instance_id;
 
             if (!('model_patch' in predData)) {
@@ -40,12 +44,12 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
                 continue;
             }
 
-            // Ensure model_patch is a std::string
+            // Ensure model_patch is a std:
             predData.model_patch =;
             predData.model_patch != nullptr && predData.model_patch != std::nullopt ? std::to_string(predData.model_patch) : "";
 
             if (instanceId in data) {
-                throw std::runtime_error(`Duplicate instance ID found: ${instanceId}`);
+                throw std::runtime_error("Duplicate instance ID found: " + std::to_string(instanceId) + "");
             }
 
             data[instanceId] = predData;
@@ -54,10 +58,10 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
         // Create output directory if it doesn't exist
         const auto outputDir = path.dirname(output);
         if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
+            fs.mkdirSync(outputDir, Config{recursive = true});
         }
 
-        fs.writeFileSync(output, /* JSON.stringify */ std::string(data, nullptr, 4));
+        fs.writeFileSync(output, /* JSON.stringify */ std:(data, nullptr, 4));
         std::cout << "Wrote merged predictions to " + output << std::endl;
 
     } catch (const std::exception& e) {
@@ -66,7 +70,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
     }
 }
 
-std::vector<std::string> findPredFiles(const std::string& directory) {
+std::vector<std::string> findPredFiles(const std:& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> results = [];
@@ -75,7 +79,7 @@ std::vector<std::string> findPredFiles(const std::string& directory) {
         return results;
     }
 
-    std::function walk(dir: std::string) {
+    std::function walk(dir: std:) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)
@@ -84,7 +88,7 @@ std::vector<std::string> findPredFiles(const std::string& directory) {
 
             if (stat.isDirectory()) {
                 walk(filePath);
-                } else if (file.endsWith(".pred")) {
+                } else if (file.rfind(".pred")) {
                     results.push_back(filePath);
                 }
             }

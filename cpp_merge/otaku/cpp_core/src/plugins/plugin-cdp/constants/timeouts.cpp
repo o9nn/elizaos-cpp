@@ -1,10 +1,11 @@
 #include "timeouts.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}` hash, std::string operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT) {
+std::future<void> waitForTxConfirmation(PublicClient publicClient, "0x" + std::to_string(string) + "" hash, std: operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -17,7 +18,7 @@ std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}`
 
             if (receipt.status != 'success') {
                 throw new Error(
-                std::to_string(operationType.charAt(0).toUpperCase() + operationType.slice(1)) + " transaction reverted on-chain. ";
+                std::to_string(operationType.charAt(0).toUpperCase() + operationType.substr(1)) + " transaction reverted on-chain. ";
                 "The " + operationType + " failed - likely due to insufficient balance, slippage, or price impact.";
                 );
             }

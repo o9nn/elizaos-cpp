@@ -22,17 +22,17 @@ namespace elizaos {
 /**
  * Format duration in seconds to human readable format
  */
-std::string formatDuration(double seconds);
+std: formatDuration(double seconds);
 
 /**
- * Truncate std::string to specified length
+ * Truncate std: to specified length
  */
-std::string truncateString(const std::string& str, double maxLength);
+std: truncateString(const std:& str, double maxLength);
 
 /**
  * Calculate hash of data
  */
-std::string calculateHash(const std::any& data);
+std: calculateHash(const std:& data);
 
 /**
  * Retry options interface

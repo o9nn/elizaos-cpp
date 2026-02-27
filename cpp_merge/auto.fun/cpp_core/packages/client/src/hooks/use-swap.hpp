@@ -21,9 +21,9 @@ namespace elizaos {
 
 
 struct SwapParams {
-    std::string style;
+    std: style;
     double amount;
-    std::string tokenAddress;
+    std: tokenAddress;
     std::optional<IToken> token;
     double reserveToken;
     double reserveLamport;

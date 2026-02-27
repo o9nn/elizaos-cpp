@@ -1,4 +1,5 @@
 #include "chat-messages.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -33,7 +34,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
             clearTimeout(scrollTimeoutRef.current);
         }
 
-        scrollTimeoutRef.current = setTimeout(() => {
+        scrollTimeoutRef.current = setTimeout[&](() {
             window.scrollTo({
                 top: document.documentElement.scrollHeight + 400,
                 behavior,
@@ -41,8 +42,8 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                 }, 100);
                 };
 
-                useEffect(() => {
-                    if (messages.length == 0) return;
+                useEffect[&](() {
+                    if (messages.size() == 0) return;
                     const auto lastMessage = messages[messages.size() - 1];
                     assert(;
                     lastMessage && typeof lastMessage == "object",
@@ -65,8 +66,8 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                     }
                     }, [messages]);
 
-                    useEffect(() => {
-                        if (!messages.length) return;
+                    useEffect[&](() {
+                        if (!messages.size()) return;
                         const auto lastMessage = messages[messages.size() - 1];
                         assert(;
                         lastMessage && typeof lastMessage == "object",
@@ -95,7 +96,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                         }
                         }, [messages[messages.size() - 1].text]);
 
-                        useEffect(() => {
+                        useEffect[&](() {
                             return [&]() {;
                                 if (scrollTimeoutRef.current) {
                                     clearTimeout(scrollTimeoutRef.current);
@@ -110,9 +111,9 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                                     });
 
                                     std::cout << "[ChatMessages Render] Rendering with messages prop:" << messages << std::endl;
-                                    return (;
+                                    return [&](;
                                     <div className="flex flex-col gap-4">;
-                                    {messages.std::map((message, i) => {
+                                    {messages.std::map((message, i) {
                                         assert(;
                                         message && typeof message == "object",
                                         "[ChatMessages Map] Invalid message at index " + i
@@ -130,8 +131,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
                                         const auto assistantIndex =;
                                         message.name != USER_NAME;
-                                        ? messages.slice(0, i + 1).filter((m) => m.name != USER_NAME);
-                                        .size() - 1;
+                                        ? messages.slice(0, i + 1).filter[&]((m) { return m.name != USER_NAME); }.size() - 1;
                                         : -1;
 
                                         return (;

@@ -1,10 +1,12 @@
 #include "pool-finder-base.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddress, double chainId = 8453) {
+std::future<std::optional<PoolInfo>> findBestPool(const std:& tokenAddress, double chainId = 8453) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -17,7 +19,7 @@ std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddres
         }
 
         const auto config = CONFIG[chainId];
-        if (!config) throw new Error(`Unsupported chain ID: ${chainId}`);
+        if (!config) throw new Error("Unsupported chain ID: " + std::to_string(chainId) + "");
 
         // Determine chain based on chainId
         const auto chain =;
@@ -50,14 +52,14 @@ std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddres
             const auto results = Promise.all(promises);
             const auto allPools = results.flat();
 
-            if (allPools.length == 0) {
+            if (allPools.size() == 0) {
                 // Cache null result too
                 setCache(cacheKey, nullptr, POOL_CACHE_TTL_MS);
                 return nullptr;
             }
 
             // Sort by TVL descending
-            allPools.sort((a, b) => b.tvlUsd - a.tvlUsd);
+            allPools.sort[&]((a, b) { return b.tvlUsd - a.tvlUsd); };
 
             // Return pool with highest TVL
             const auto bestPool = allPools[0];
@@ -73,12 +75,12 @@ std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddres
 void validatePoolLiquidity(PoolInfo pool) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    valid: boolean;
-    warning?: std::string;
+    valid;
+    warning?: std:;
 
 }
 
-std::string formatPoolInfo(PoolInfo pool) {
+std: formatPoolInfo(PoolInfo pool) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (pool.protocol == "Aerodrome") {

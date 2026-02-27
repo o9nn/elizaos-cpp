@@ -19,6 +19,6 @@ namespace elizaos {
 
 
 
-std::future<void> createTokenPrompt(std::optional<std::any> validatedData);
+std::future<void> createTokenPrompt(std::optional<std:> validatedData);
 
 } // namespace elizaos

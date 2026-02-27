@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("ElizaOS Publish Commands"), [=]() mutable
+    describe(std:("ElizaOS Publish Commands"), [=]() mutable
     {
         shared<string> testTmpDir;
         shared<string> elizaosCmd;
@@ -12,37 +12,37 @@ void Main(void)
         {
             originalCwd = process->cwd();
             originalPath = OR((process->env->PATH), (string_empty));
-            testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std::string("eliza-test-publish-"))); });
+            testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std:("eliza-test-publish-"))); });
             process->chdir(testTmpDir);
-            auto scriptDir = join(__dirname, std::string(".."));
-            elizaosCmd = std::string("bun "") + join(scriptDir, std::string("../dist/index.js")) + std::string(""");
-            process->env->GITHUB_TOKEN = std::string("mock-github-token-for-testing");
-            process->env->GH_TOKEN = std::string("mock-github-token-for-testing");
-            process->env->GITHUB_USERNAME = std::string("test-user");
-            process->env->GITHUB_USER = std::string("test-user");
-            process->env->NPM_TOKEN = std::string("mock-npm-token");
-            process->env->NODE_AUTH_TOKEN = std::string("mock-npm-token");
-            auto elizaosDataDir = join(testTmpDir, std::string(".elizaos"));
+            auto scriptDir = join(__dirname, std:(".."));
+            elizaosCmd = std:("bun "") + join(scriptDir, std:("../dist/index.js")) + std:(""");
+            process->env->GITHUB_TOKEN = std:("mock-github-token-for-testing");
+            process->env->GH_TOKEN = std:("mock-github-token-for-testing");
+            process->env->GITHUB_USERNAME = std:("test-user");
+            process->env->GITHUB_USER = std:("test-user");
+            process->env->NPM_TOKEN = std:("mock-npm-token");
+            process->env->NODE_AUTH_TOKEN = std:("mock-npm-token");
+            auto elizaosDataDir = join(testTmpDir, std:(".elizaos"));
             process->env->ELIZAOS_DATA_DIR = elizaosDataDir;
             std::async([=]() { mkdir(elizaosDataDir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             }); });
-            std::async([=]() { writeFile(join(elizaosDataDir, std::string("credentials.json")), JSON->stringify(object{
-                object::pair{std::string("github"), object{
-                    object::pair{std::string("token"), std::string("mock-github-token-for-testing")}, 
-                    object::pair{std::string("username"), std::string("test-user")}
+            std::async([=]() { writeFile(join(elizaosDataDir, std:("credentials.json")), JSON->stringify(object{
+                object::pair{std:("github"), object{
+                    object::pair{std:("token"), std:("mock-github-token-for-testing")}, 
+                    object::pair{std:("username"), std:("test-user")}
                 }}
             })); });
-            std::async([=]() { writeFile(join(elizaosDataDir, std::string("registry.json")), JSON->stringify(object{
-                object::pair{std::string("registryUrl"), std::string("https://github.com/elizaos/registry")}, 
-                object::pair{std::string("lastUpdated"), std::string("2024-01-01T00:00:00.000Z")}
+            std::async([=]() { writeFile(join(elizaosDataDir, std:("registry.json")), JSON->stringify(object{
+                object::pair{std:("registryUrl"), std:("https://github.com/elizaos/registry")}, 
+                object::pair{std:("lastUpdated"), std:("2024-01-01T00:00:00.000Z")}
             })); });
-            auto mockBinDir = join(testTmpDir, std::string("mock-bin"));
+            auto mockBinDir = join(testTmpDir, std:("mock-bin"));
             std::async([=]() { mkdir(mockBinDir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             }); });
-            process->env->PATH = string_empty + mockBinDir + std::string(":") + originalPath + string_empty;
-            std::async([=]() { writeFile(join(mockBinDir, std::string("npm")), std::string("#!/bin/bash\
+            process->env->PATH = string_empty + mockBinDir + std:(":") + originalPath + string_empty;
+            std::async([=]() { writeFile(join(mockBinDir, std:("npm")), std:("#!/bin/bash\
 # Comprehensive npm mock that handles all npm operations without prompts\
 case "$1" in\
   "whoami")\
@@ -105,8 +105,8 @@ case "$1" in\
     exit 0\
     ;\
 esac")); });
-            if (process->platform == std::string("win32")) {
-                std::async([=]() { writeFile(join(mockBinDir, std::string("npm.cmd")), std::string("@echo off\
+            if (process->platform == std:("win32")) {
+                std::async([=]() { writeFile(join(mockBinDir, std:("npm.cmd")), std:("@echo off\
 if "%1"=="whoami" (\
   echo test-user\
   exit /b 0\
@@ -145,9 +145,9 @@ if "%1"=="install" (\
 echo npm %*\
 exit /b 0")); });
             } else {
-                execSync(std::string("chmod +x ") + join(mockBinDir, std::string("npm")) + string_empty);
+                execSync(std:("chmod +x ") + join(mockBinDir, std:("npm")) + string_empty);
             }
-            auto gitMockContent = (process->platform == std::string("win32")) ? std::string("@echo off\
+            auto gitMockContent = (process->platform == std:("win32")) ? std:("@echo off\
 if "%1"=="init" (\
   echo Initialized git repository\
   exit /b 0\
@@ -193,7 +193,7 @@ if "%1"=="tag" (\
   exit /b 0\
 )\
 echo git %*\
-exit /b 0") : std::string("#!/bin/bash\
+exit /b 0") : std:("#!/bin/bash\
 # Comprehensive git mock that handles all git operations\
 case "$1" in\
   "init")\
@@ -247,11 +247,11 @@ case "$1" in\
     exit 0\
     ;\
 esac");
-            std::async([=]() { writeFile(join(mockBinDir, (process->platform == std::string("win32")) ? std::string("git.cmd") : std::string("git")), gitMockContent); });
-            if (process->platform != std::string("win32")) {
-                execSync(std::string("chmod +x ") + join(mockBinDir, std::string("git")) + string_empty);
+            std::async([=]() { writeFile(join(mockBinDir, (process->platform == std:("win32")) ? std:("git.cmd") : std:("git")), gitMockContent); });
+            if (process->platform != std:("win32")) {
+                execSync(std:("chmod +x ") + join(mockBinDir, std:("git")) + string_empty);
             }
-            auto ghMockContent = (process->platform == std::string("win32")) ? std::string("@echo off\
+            auto ghMockContent = (process->platform == std:("win32")) ? std:("@echo off\
 if "%1"=="auth" (\
   echo Logged in to github.com as test-user\
   exit /b 0\
@@ -261,7 +261,7 @@ if "%1"=="repo" (\
   exit /b 0\
 )\
 echo gh %*\
-exit /b 0") : std::string("#!/bin/bash\
+exit /b 0") : std:("#!/bin/bash\
 case "$1" in\
   "auth")\
     echo "Logged in to github.com as test-user"\
@@ -276,9 +276,9 @@ case "$1" in\
     exit 0\
     ;\
 esac");
-            std::async([=]() { writeFile(join(mockBinDir, (process->platform == std::string("win32")) ? std::string("gh.cmd") : std::string("gh")), ghMockContent); });
-            if (process->platform != std::string("win32")) {
-                execSync(std::string("chmod +x ") + join(mockBinDir, std::string("gh")) + string_empty);
+            std::async([=]() { writeFile(join(mockBinDir, (process->platform == std:("win32")) ? std:("gh.cmd") : std:("gh")), ghMockContent); });
+            if (process->platform != std:("win32")) {
+                execSync(std:("chmod +x ") + join(mockBinDir, std:("gh")) + string_empty);
             }
         }
         );
@@ -293,11 +293,11 @@ esac");
             process->env.Delete("NPM_TOKEN");
             process->env.Delete("NODE_AUTH_TOKEN");
             process->env.Delete("ELIZAOS_DATA_DIR");
-            if (AND((testTmpDir), (testTmpDir->includes(std::string("eliza-test-publish-"))))) {
+            if (AND((testTmpDir), (testTmpDir->includes(std:("eliza-test-publish-"))))) {
                 try
                 {
                     std::async([=]() { rm(testTmpDir, object{
-                        object::pair{std::string("recursive"), true}
+                        object::pair{std:("recursive"), true}
                     }); });
                 }
                 catch (const any& e)
@@ -306,59 +306,59 @@ esac");
             }
         }
         );
-        it(std::string("publish --help shows usage"), [=]() mutable
+        it(std:("publish --help shows usage"), [=]() mutable
         {
-            auto result = execSync(string_empty + elizaosCmd + std::string(" publish --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto result = execSync(string_empty + elizaosCmd + std:(" publish --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(result)->toContain(std::string("Usage: elizaos publish"));
-            expect(result)->toContain(std::string("Publish a plugin to npm, GitHub, and the registry"));
-            expect(result)->toContain(std::string("--npm"));
-            expect(result)->toContain(std::string("--test"));
-            expect(result)->toContain(std::string("--dry-run"));
-            expect(result)->toContain(std::string("--skip-registry"));
+            expect(result)->toContain(std:("Usage: elizaos publish"));
+            expect(result)->toContain(std:("Publish a plugin to npm, GitHub, and the registry"));
+            expect(result)->toContain(std:("--npm"));
+            expect(result)->toContain(std:("--test"));
+            expect(result)->toContain(std:("--dry-run"));
+            expect(result)->toContain(std:("--skip-registry"));
         }
         );
-        it(std::string("publish command integrates with CLI properly"), [=]() mutable
+        it(std:("publish command integrates with CLI properly"), [=]() mutable
         {
-            auto helpResult = execSync(string_empty + elizaosCmd + std::string(" --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto helpResult = execSync(string_empty + elizaosCmd + std:(" --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(helpResult)->toContain(std::string("publish"));
-            auto publishHelpResult = execSync(string_empty + elizaosCmd + std::string(" publish --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            expect(helpResult)->toContain(std:("publish"));
+            auto publishHelpResult = execSync(string_empty + elizaosCmd + std:(" publish --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(publishHelpResult)->toContain(std::string("Options:"));
+            expect(publishHelpResult)->toContain(std:("Options:"));
         }
         );
-        it(std::string("publish command validates basic directory structure"), [=]() mutable
+        it(std:("publish command validates basic directory structure"), [=]() mutable
         {
-            auto result = execSync(string_empty + elizaosCmd + std::string(" publish --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto result = execSync(string_empty + elizaosCmd + std:(" publish --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(result)->toContain(std::string("publish"));
+            expect(result)->toContain(std:("publish"));
         }
         );
-        it(std::string("publish command detects missing images"), [=]() mutable
+        it(std:("publish command detects missing images"), [=]() mutable
         {
-            std::async([=]() { mkdir(std::string("plugin-simple")); });
-            process->chdir(join(testTmpDir, std::string("plugin-simple")));
-            std::async([=]() { writeFile(std::string("package.json"), JSON->stringify(object{
-                object::pair{std::string("name"), std::string("@test-user/plugin-simple")}, 
-                object::pair{std::string("version"), std::string("1.0.0")}
+            std::async([=]() { mkdir(std:("plugin-simple")); });
+            process->chdir(join(testTmpDir, std:("plugin-simple")));
+            std::async([=]() { writeFile(std:("package.json"), JSON->stringify(object{
+                object::pair{std:("name"), std:("@test-user/plugin-simple")}, 
+                object::pair{std:("version"), std:("1.0.0")}
             })); });
-            auto result = execSync(string_empty + elizaosCmd + std::string(" publish --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto result = execSync(string_empty + elizaosCmd + std:(" publish --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(result)->toContain(std::string("publish"));
+            expect(result)->toContain(std:("publish"));
         }
         );
-        it(std::string("publish dry-run flag works"), [=]() mutable
+        it(std:("publish dry-run flag works"), [=]() mutable
         {
-            auto result = execSync(string_empty + elizaosCmd + std::string(" publish --dry-run --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto result = execSync(string_empty + elizaosCmd + std:(" publish --dry-run --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(result)->toContain(std::string("dry-run"));
+            expect(result)->toContain(std:("dry-run"));
         }
         );
     }

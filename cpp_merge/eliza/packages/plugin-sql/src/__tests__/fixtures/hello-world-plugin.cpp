@@ -1,41 +1,41 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/fixtures/hello-world-plugin.h"
 
-any helloWorldTable = pgTable(std::string("hello_world"), object{
-    object::pair{std::string("id"), uuid(std::string("id"))->defaultRandom()->primaryKey()}, 
-    object::pair{std::string("message"), varchar(std::string("message"), object{
-        object::pair{std::string("length"), 255}
+any helloWorldTable = pgTable(std:("hello_world"), object{
+    object::pair{std:("id"), uuid(std:("id"))->defaultRandom()->primaryKey()}, 
+    object::pair{std:("message"), varchar(std:("message"), object{
+        object::pair{std:("length"), 255}
     })->notNull()}, 
-    object::pair{std::string("author"), varchar(std::string("author"), object{
-        object::pair{std::string("length"), 100}
+    object::pair{std:("author"), varchar(std:("author"), object{
+        object::pair{std:("length"), 100}
     })}, 
-    object::pair{std::string("createdAt"), timestamp(std::string("created_at"))->defaultNow()->notNull()}
+    object::pair{std:("createdAt"), timestamp(std:("created_at"))->defaultNow()->notNull()}
 });
-any greetingsTable = pgTable(std::string("greetings"), object{
-    object::pair{std::string("id"), uuid(std::string("id"))->defaultRandom()->primaryKey()}, 
-    object::pair{std::string("greeting"), varchar(std::string("greeting"), object{
-        object::pair{std::string("length"), 100}
+any greetingsTable = pgTable(std:("greetings"), object{
+    object::pair{std:("id"), uuid(std:("id"))->defaultRandom()->primaryKey()}, 
+    object::pair{std:("greeting"), varchar(std:("greeting"), object{
+        object::pair{std:("length"), 100}
     })->notNull()}, 
-    object::pair{std::string("language"), varchar(std::string("language"), object{
-        object::pair{std::string("length"), 20}
-    })->notNull()->default(std::string("en"))}, 
-    object::pair{std::string("isActive"), varchar(std::string("is_active"), object{
-        object::pair{std::string("length"), 10}
-    })->notNull()->default(std::string("true"))}, 
-    object::pair{std::string("updatedAt"), timestamp(std::string("updated_at"))->defaultNow()->notNull()}
+    object::pair{std:("language"), varchar(std:("language"), object{
+        object::pair{std:("length"), 20}
+    })->notNull()->default(std:("en"))}, 
+    object::pair{std:("isActive"), varchar(std:("is_active"), object{
+        object::pair{std:("length"), 10}
+    })->notNull()->default(std:("true"))}, 
+    object::pair{std:("updatedAt"), timestamp(std:("updated_at"))->defaultNow()->notNull()}
 });
 object helloWorldSchema = object{
-    object::pair{std::string("helloWorldTable"), std::string("helloWorldTable")}, 
-    object::pair{std::string("greetingsTable"), std::string("greetingsTable")}
+    object::pair{std:("helloWorldTable"), std:("helloWorldTable")}, 
+    object::pair{std:("greetingsTable"), std:("greetingsTable")}
 };
 std::shared_ptr<Plugin> helloWorldPlugin = object{
-    object::pair{std::string("name"), std::string("test-hello-world")}, 
-    object::pair{std::string("description"), std::string("Test plugin for dynamic migration testing")}, 
-    object::pair{std::string("schema"), helloWorldSchema}, 
-    object::pair{std::string("priority"), 100}, 
-    object::pair{std::string("dependencies"), array<string>{ std::string("@elizaos/plugin-sql") }}, 
-    object::pair{std::string("init"), [=](auto _config, auto _runtime) mutable
+    object::pair{std:("name"), std:("test-hello-world")}, 
+    object::pair{std:("description"), std:("Test plugin for dynamic migration testing")}, 
+    object::pair{std:("schema"), helloWorldSchema}, 
+    object::pair{std:("priority"), 100}, 
+    object::pair{std:("dependencies"), array<string>{ std:("@elizaos/plugin-sql") }}, 
+    object::pair{std:("init"), [=](auto _config, auto _runtime) mutable
     {
-        console->log(std::string("Hello World Plugin initialized!"));
+        console->log(std:("Hello World Plugin initialized!"));
     }
     }
 };

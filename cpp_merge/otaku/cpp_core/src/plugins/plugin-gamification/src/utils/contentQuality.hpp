@@ -19,7 +19,7 @@ namespace elizaos {
 
 struct ContentQualityResult {
     bool isValid;
-    std::optional<std::string> reason;
+    std::optional<std:> reason;
     double score;
 };
 
@@ -53,63 +53,63 @@ struct ContentQualityResult {
 // Common spam/meaningless phrases
 
 /**
- * Calculate Shannon entropy of a std::string
+ * Calculate Shannon entropy of a std:
  * Higher entropy = more randomness/diversity
  */
-double calculateEntropy(const std::string& text);
+double calculateEntropy(const std:& text);
 
 /**
  * Check for consecutive repeated characters
  */
-void checkRepeatedChars(const std::string& text); {
+void checkRepeatedChars(const std:& text); {
   
   // Also check if single char dominates
 
 /**
  * Check for repeated words (copy-pasta indicator)
  */
-void checkRepeatedWords(const std::string& text); {
+void checkRepeatedWords(const std:& text); {
 
   // Count word repetitions
   
-  // Check if std::any word repeats too much
+  // Check if std: word repeats too much
 
 /**
  * Check for keyboard mash patterns
  */
-void checkKeyboardMash(const std::string& text); {
+void checkKeyboardMash(const std:& text); {
 
 /**
  * Check emoji spam
  */
-void checkEmojiSpam(const std::string& text); {
+void checkEmojiSpam(const std:& text); {
 
 /**
  * Check URL spam
  */
-void checkUrlSpam(const std::string& text); {
+void checkUrlSpam(const std:& text); {
 
 /**
  * Check special character spam (ASCII art, etc.)
  */
-void checkSpecialCharSpam(const std::string& text); {
+void checkSpecialCharSpam(const std:& text); {
 
 /**
  * Check for common spam phrases
  */
-bool checkSpamPhrases(const std::string& text);
+bool checkSpamPhrases(const std:& text);
 
 /**
  * Comprehensive content quality check
  * Returns whether the message should earn points
  */
-ContentQualityResult checkContentQuality(const std::string& text);
+ContentQualityResult checkContentQuality(const std:& text);
 
 /**
  * Quick check for obvious spam without full analysis
  * More efficient for high-volume scenarios
  */
-bool quickSpamCheck(const std::string& text);
+bool quickSpamCheck(const std:& text);
 
 
 } // namespace elizaos

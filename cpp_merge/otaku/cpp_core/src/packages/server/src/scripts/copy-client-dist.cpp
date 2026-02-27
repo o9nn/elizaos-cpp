@@ -1,4 +1,5 @@
 #include "copy-client-dist.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,12 +21,12 @@ std::future<void> copyClientDist() {
         if (!existsSync(clientDistPath)) {
             std::cerr << "Client dist not found at:" << clientDistPath << std::endl;
             std::cerr << "Please build the client package first: cd packages/client && bun run build" << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
 
         // Create server dist directory if it doesn't exist
         if (!existsSync(serverDistPath)) {
-            mkdirSync(serverDistPath, { recursive: true });
+            mkdirSync(serverDistPath, Config{recursive = true});
         }
 
         // Remove existing client files in server dist if they exist
@@ -36,12 +37,12 @@ std::future<void> copyClientDist() {
 
         // Copy client dist to server dist/client
         std::cout << "Copying from " + clientDistPath + " to " + targetPath + "..." << std::endl;
-        cpSync(clientDistPath, targetPath, { recursive: true });
+        cpSync(clientDistPath, targetPath, Config{recursive = true});
 
         std::cout << " Client dist files copied successfully to:" << targetPath << std::endl;
         } catch (error) {
             std::cerr << "Error copying client dist files:" << error << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
 
 }

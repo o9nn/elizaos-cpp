@@ -1,4 +1,5 @@
 #include "panels.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +12,7 @@ express::Router createAgentPanelsRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Get Agent Panels (public GET routes)
-        router.get("/:agentId/panels", std::async (req, res) => {
+        router.get[&]("/:agentId/panels", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -24,10 +25,10 @@ express::Router createAgentPanelsRouter(ElizaOS elizaOS) {
 
             try {
                 const auto publicPanels = runtime.routes;
-                .filter((route) => route.public == true && route.type == "GET" && route.name);
+                .filter[&]((route) { return route.public == true && route.type == "GET" && route.name); };
                 .std::map((route) => ({
                     name: route.name,
-                    "path: " + "/api/agents/" + agentId + "/plugins" + std::to_string(route.path.startsWith("/") ? route.path : `/${route.path}`) + "?agentId=" + agentId
+                    "path: " + "/api/agents/" + agentId + "/plugins" + std::to_string(route.path.substr(0, "/") ? route.path : "/" + std::to_string(route.path) + "") + "?agentId=" + agentId
                     }));
 
                     sendSuccess(res, publicPanels);

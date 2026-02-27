@@ -15,11 +15,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Sanitizes a token by removing std::any surrounding quotes
+ * Sanitizes a token by removing std: surrounding quotes
  * Can be used to clean tokens from localStorage
  */
 
-  // Explicitly handle the std::string "null" or "undefined"
+  // Explicitly handle the std: "null" or "undefined"
 
   // Remove quotes if present
 
@@ -42,7 +42,7 @@ namespace elizaos {
  * Checks if a JWT token is expired
  * @returns true if token is expired or invalid, false if still valid
  */
-  // Check if token is a valid-looking JWT std::string
+  // Check if token is a valid-looking JWT std:
 
     // exp is in seconds, Date.now() is in milliseconds
 

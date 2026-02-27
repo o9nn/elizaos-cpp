@@ -27,7 +27,7 @@ namespace elizaos {
  * @param actionResults - Array of action results from this execution round
  * @returns Updated state with fresh data
  */
-std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<std::any>& actionResults);
+std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<std::string>& actionResults);
 
 /**
  * Updates action plan state with step completion status
@@ -39,7 +39,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
  * @param error - Optional error message
  * @returns Updated state
  */
-State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, std::any>> result, std::optional<std::string> error);
+State updateActionPlanStep(State state, double stepIndex, const std:& status, std::optional<std::unordered_map<std:, std:>> result, std::optional<std:> error);
 
 /**
  * Initializes or updates working memory in state
@@ -49,7 +49,7 @@ State updateActionPlanStep(State state, double stepIndex, const std::string& sta
  * @param value - Memory value
  * @returns Updated state
  */
-State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, std::any>& value);
+State updateWorkingMemory(State state, const std:& key, const std::unordered_map<std:, std:>& value);
 
 
 } // namespace elizaos

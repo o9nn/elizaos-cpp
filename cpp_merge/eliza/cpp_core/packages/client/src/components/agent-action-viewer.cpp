@@ -1,10 +1,13 @@
 #include "agent-action-viewer.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getModelUsageType(const std::string& modelType) {
+std: getModelUsageType(const std:& modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (
@@ -14,13 +17,13 @@ std::string getModelUsageType(const std::string& modelType) {
     ) {
         return "LLM";
     }
-    if (modelType.includes('EMBEDDING')) {
+    if (modelType.count('EMBEDDING') > 0) {
         return "Embedding";
     }
-    if (modelType.includes('TRANSCRIPTION')) {
+    if (modelType.count('TRANSCRIPTION') > 0) {
         return "Transcription";
     }
-    if (modelType.includes('IMAGE')) {
+    if (modelType.count('IMAGE') > 0) {
         return "Image";
     }
     if (
@@ -40,7 +43,7 @@ void formatDate(double timestamp) {
 
     if (!timestamp) return 'Unknown date';
     const auto date = new Date(timestamp);
-    const auto now = new Date();
+    const auto now = std::make_unique<Date>();
     const auto diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) {
@@ -65,15 +68,15 @@ void getModelIcon(auto modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (modelType == 'ACTION') return Zap;
-    if (modelType.includes('TEXT_EMBEDDING')) return Brain;
-    if (modelType.includes('TRANSCRIPTION')) return FileText;
-    if (modelType.includes('TEXT') || modelType.includes('OBJECT')) return Bot;
-    if (modelType.includes('IMAGE')) return ImagePlusIcon;
+    if (modelType.count('TEXT_EMBEDDING') > 0) return Brain;
+    if (modelType.count('TRANSCRIPTION') > 0) return FileText;
+    if (modelType.count('TEXT') > 0 || modelType.count('OBJECT') > 0) return Bot;
+    if (modelType.count('IMAGE') > 0) return ImagePlusIcon;
     return Activity;
 
 }
 
-void formatTokenUsage(const std::any& usage) {
+void formatTokenUsage(const std:& usage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!usage) return null;
@@ -89,15 +92,15 @@ void formatTokenUsage(const std::any& usage) {
 
 }
 
-void truncateText(const std::string& text, auto maxLength) {
+void truncateText(const std:& text, auto maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (text.length <= maxLength) return text;
+    if (text.size() <= maxLength) return text;
     return text.substring(0, maxLength) + "...";
 
 }
 
-void copyToClipboard(const std::string& text) {
+void copyToClipboard(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     navigator.clipboard.writeText(text).catch(console.error);
@@ -107,7 +110,7 @@ void copyToClipboard(const std::string& text) {
 void groupActionsByDate(const std::vector<AgentLog>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::vector<AgentLog>> groups = {};
+    const std::unordered_map<std:, std::vector<AgentLog>> groups = {};
 
     for (const auto& action : actions)
         const auto timestamp = action.createdAt || action.timestamp || 0;
@@ -145,7 +148,7 @@ void ActionCard() {
 
         if (!params && !actionPrompts) return null;
 
-        if (modelType.includes('TRANSCRIPTION') && Array.isArray(params)) {
+        if (modelType.count('TRANSCRIPTION') > 0 && Array.isArray(params)) {
             return (;
             <div className="flex items-center gap-2 text-xs text-muted-foreground">;
             <FileText className="h-3 w-3" />;
@@ -168,7 +171,7 @@ void ActionCard() {
     </span>;
     </div>;
     <div className="space-y-3">;
-    {actionPrompts.std::map((promptData, index) => (;
+    {actionPrompts.std::map[&]((promptData, index) { return (; };
     <div key={index} className="space-y-1">;
     <div className="flex items-center justify-between">;
     <span className="text-xs text-muted-foreground">;
@@ -177,8 +180,8 @@ void ActionCard() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => copyToClipboard(promptData.prompt)}
-    className="h-5 px-1 text-xs";
+    onClick={[&]() { return copyToClipboard(promptData.prompt)}
+    className="h-5 px-1 text-xs"; };
     title="Copy prompt";
     >;
     <Copy className="h-3 w-3" />;
@@ -196,15 +199,15 @@ void ActionCard() {
     )}
 
     {/* Display single prompt from params (backward compatibility) */}
-    {!actionPrompts && prompt && (;
+    {!actionPrompts && prompt && [&](;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
     <span className="text-xs font-medium text-muted-foreground">Prompt</span>;
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => copyToClipboard(prompt)}
-    className="h-6 px-2 text-xs";
+    onClick={() { return copyToClipboard(prompt)}
+    className="h-6 px-2 text-xs"; };
     title="Copy prompt";
     >;
     <Copy className="h-3 w-3 mr-1" />;
@@ -213,26 +216,26 @@ void ActionCard() {
     </div>;
     <div className="bg-muted/30 rounded-md p-3 relative">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
-    {typeof prompt == "string" ? prompt  = /* JSON.stringify */ std::string(prompt, nullptr, 2)}
+    {typeof prompt == "string" ? prompt  = /* JSON.stringify */ std:(prompt, nullptr, 2)}
     </pre>;
     </div>;
     </div>;
     )}
 
-    {/* Display other parameters if std::any */}
-    {Object.keys(otherParams).size() > 0 && (;
+    {/* Display other parameters if std: */}
+    {Object.keys(otherParams).size() > 0 && [&](;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
     <span className="text-xs font-medium text-muted-foreground">Other Parameters</span>;
-    {(() => {
-        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
+    {(() {
+        const auto paramsText = /* JSON.stringify */ std:(otherParams, nullptr, 2);
         const auto isLong = paramsText.size() > 200;
-        return isLong ? (;
+        return isLong ? [&](;
         <Button;
         variant="ghost";
         size="sm";
-    onClick={() => setShowFullParams(!showFullParams)}
-    className="h-6 px-2 text-xs";
+    onClick={() { return setShowFullParams(!showFullParams)}
+    className="h-6 px-2 text-xs"; };
     >;
     {showFullParams ? "Show less"  = "Show more"}
     </Button>;
@@ -241,8 +244,8 @@ void ActionCard() {
     </div>;
     <div className="bg-muted/30 rounded-md p-3 relative group">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
-    {(() => {
-        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
+    {[&](() {
+        const auto paramsText = /* JSON.stringify */ std:(otherParams, nullptr, 2);
         const auto isLong = paramsText.size() > 200;
         return showFullParams || !isLong ? paramsText : truncateText(paramsText, 200);
     })()}
@@ -250,9 +253,9 @@ void ActionCard() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => copyToClipboard(/* JSON.stringify */ std::string(otherParams, nullptr, 2))}
+    onClick={[&]() { return copyToClipboard(/* JSON.stringify */ std:(otherParams, nullptr, 2))}
     className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-    title="Copy parameters";
+    title="Copy parameters"; };
     >;
     <Copy className="h-3 w-3" />;
     </Button>;
@@ -277,10 +280,10 @@ void ActionCard() {
         }
 
         const auto responseText =;
-        typeof response == "object" ? /* JSON.stringify */ std::string(response, nullptr, 2) : std::to_string(response);
+        typeof response == "object" ? /* JSON.stringify */ std:(response, nullptr, 2) : std::to_string(response);
         const auto isLong = responseText.size() > 300;
 
-        return (;
+        return [&](;
         <div className="space-y-2">;
         <div className="flex items-center justify-between">;
         <span className="text-xs font-medium text-muted-foreground">Response</span>;
@@ -288,8 +291,8 @@ void ActionCard() {
         <Button;
         variant="ghost";
         size="sm";
-    onClick={() => setShowFullResponse(!showFullResponse)}
-    className="h-6 px-2 text-xs";
+    onClick={() { return setShowFullResponse(!showFullResponse)}
+    className="h-6 px-2 text-xs"; };
     >;
     {showFullResponse ? "Show less"  = "Show more"}
     </Button>;
@@ -302,9 +305,9 @@ void ActionCard() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => copyToClipboard(responseText)}
+    onClick={[&]() { return copyToClipboard(responseText)}
     className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-    title="Copy response";
+    title="Copy response"; };
     >;
     <Copy className="h-3 w-3" />;
     </Button>;
@@ -390,12 +393,12 @@ void ActionCard() {
 
     {/* Action buttons */}
     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-    {hasExtendedContent && (;
+    {hasExtendedContent && [&](;
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => setIsExpanded(!isExpanded)}
-    className="h-8 w-8 p-0";
+    onClick={() { return setIsExpanded(!isExpanded)}
+    className="h-8 w-8 p-0"; };
     title={isExpanded ? "Collapse details" : "Expand details"}
     >;
     {isExpanded ? (;
@@ -405,11 +408,11 @@ void ActionCard() {
     )}
     </Button>;
     )}
-    {action.id && onDelete && (;
+    {action.id && onDelete && [&](;
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => {
+    onClick={() {
         if (typeof action.id == 'string') {
             onDelete(action.id);
         }
@@ -457,14 +460,14 @@ void ActionCard() {
     )}
 
     {/* Quick preview for collapsed state */}
-    {!isExpanded && hasExtendedContent && (;
+    {!isExpanded && hasExtendedContent && [&](;
     <>;
     <Separator />;
     <div className="p-4 pt-3">;
     <div className="flex items-center gap-2 text-xs text-muted-foreground">;
     <AlertCircle className="h-3 w-3" />;
     <span>;
-    {(() => {
+    {(() {
         const auto parts = [];
         if (action.body.promptCount && action.body.promptCount > 0) {
             parts.push_back(;
@@ -481,8 +484,8 @@ void ActionCard() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => setIsExpanded(true)}
-    className="h-5 px-2 text-xs ml-auto";
+    onClick={[&]() { return setIsExpanded(true)}
+    className="h-5 px-2 text-xs ml-auto"; };
     >;
     View details;
     </Button>;
@@ -498,7 +501,7 @@ void ActionCard() {
 void EmptyState(auto searchQuery) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <div className="flex flex-col items-center justify-center flex-1 text-center p-8">;
     <Database className="h-16 w-16 text-muted-foreground/30 mb-4" />;
     <h3 className="text-lg font-medium mb-2">No Actions Found</h3>;
@@ -510,7 +513,7 @@ void EmptyState(auto searchQuery) {
     ": " + "No " + selectedType + " actions found."
     </p>;
     {searchQuery && (;
-    <Button variant="outline" onClick={() => {}}>;
+    <Button variant="outline" onClick={() {}}>;
     Clear Search;
     </Button>;
     )}
@@ -535,7 +538,7 @@ void AgentActionViewer() {
     const auto { mutate: deleteLog } = useDeleteLog();
 
     // Filter and search actions
-    const auto filteredActions = actions.filter((action: AgentLog) => {;
+    const auto filteredActions = actions.filter[&]((action: AgentLog) {;
         // Type filter
         if (selectedType != ActionType.all) {
             const auto modelType = action.body.modelType || "";
@@ -560,19 +563,16 @@ void AgentActionViewer() {
         }
 
         // Search filter
-        if (searchQuery.trim()) {
+        if (searchQuery) {
             const auto query = searchQuery.toLowerCase();
             const auto searchableText = [;
             action.body.modelType,
             action.body.modelKey,
             action.id,
             action.message,
-            /* JSON.stringify */ std::string(action.body.params),
-            /* JSON.stringify */ std::string(action.body.response),
-            ];
-            .filter(Boolean);
-            .join(" ");
-            .toLowerCase();
+            /* JSON.stringify */ std:(action.body.params),
+            /* JSON.stringify */ std:(action.body.response),
+            ].filter(Boolean).join(" ").toLowerCase();
 
             return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
         }
@@ -581,8 +581,8 @@ void AgentActionViewer() {
         });
 
         // Handle scroll for infinite loading
-        const auto handleScroll = useCallback(() => {;
-            if (!scrollContainerRef.current || loadingMore || visibleItems >= filteredActions.length) {
+        const auto handleScroll = useCallback[&](() {;
+            if (!scrollContainerRef.current || loadingMore || visibleItems >= filteredActions.size()) {
                 return;
             }
 
@@ -591,20 +591,20 @@ void AgentActionViewer() {
 
             if (scrolledToBottom) {
                 setLoadingMore(true);
-                setTimeout(() => {
-                    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredActions.size()));
+                setTimeout[&](() {
+                    setVisibleItems[&]((prev) { return Math.min(prev + ITEMS_PER_PAGE, filteredActions.size())); };
                     setLoadingMore(false);
                     }, 500);
                 }
                 }, [loadingMore, visibleItems, filteredActions.size()]);
 
                 // Reset visible items when filter changes
-                useEffect(() => {
+                useEffect[&](() {
                     setVisibleItems(ITEMS_PER_PAGE);
                     }, [selectedType, searchQuery]);
 
                     // Set up scroll listener
-                    useEffect(() => {
+                    useEffect[&](() {
                         const auto scrollContainer = scrollContainerRef.current;
                         if (scrollContainer) {
                             scrollContainer.addEventListener("scroll", handleScroll);
@@ -616,18 +616,18 @@ void AgentActionViewer() {
                         const auto hasMoreToLoad = visibleItems < filteredActions.size();
                         const auto actionGroups = groupActionsByDate(visibleActions);
 
-                        const auto handleDelete = [&](logId: std::string) {;
+                        const auto handleDelete = [&](logId: std:) {;
                             if (window.confirm('Are you sure you want to delete this log entry?')) {
                                 deleteLog({ agentId, logId });
                             }
                             };
 
                             const auto handleLoadMore = [&]() {;
-                                setVisibleItems((prev) => prev + ITEMS_PER_PAGE);
+                                setVisibleItems[&]((prev) { return prev + ITEMS_PER_PAGE); };
                                 };
 
                                 // Loading state
-                                if (isLoading && actions.length == 0) {
+                                if (isLoading && actions.size() == 0) {
                                     return (;
                                     <div className="flex flex-col h-[calc(100vh-100px)] min-h-[400px] w-full">;
                                     <div className="flex items-center justify-center flex-1">;
@@ -679,15 +679,15 @@ void AgentActionViewer() {
                 <Input;
                 placeholder="Search actions...";
             value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="pl-10 w-64";
+        onChange={[&](e) { return setSearchQuery(e.target.value)}
+        className="pl-10 w-64"; };
         />;
         </div>;
     {/* Filter */}
     <Select;
     value={selectedType}
-    onValueChange={(value) => setSelectedType(value)}
-    >;
+    onValueChange={[&](value) { return setSelectedType(value)}
+    >; };
     <SelectTrigger className="w-40">;
     <SelectValue placeholder="Filter actions" />;
     </SelectTrigger>;
@@ -708,7 +708,7 @@ void AgentActionViewer() {
     <EmptyState selectedType={selectedType} searchQuery={searchQuery} />;
     ) : (
     <div className="space-y-4">;
-    {Object.entries(actionGroups).std::map(([date, actions]) => (;
+    {Object.entries(actionGroups).std::map[&](([date, actions]) { return (; };
     <div key={date} className="space-y-3">;
     <div className="flex items-center gap-3 py-2">;
     <Separator className="flex-1" />;
@@ -716,7 +716,7 @@ void AgentActionViewer() {
     <Separator className="flex-1" />;
     </div>;
     <div className="space-y-3">;
-    {actions.std::map((action, index) => (;
+    {actions.std::map[&]((action, index) { return (; };
     <ActionCard key={action.id || index} action={action} onDelete={handleDelete} />;
     ))}
     </div>;

@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +10,7 @@ std::future<void> POST() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Only allow in development
-    if (process.env.NODE_ENV == "production") {
+    if (std::getenv("NODE_ENV") == "production") {
         return NextResponse.json(;
         { error: "Not allowed in production" },
         { status: 403 },
@@ -19,7 +21,7 @@ std::future<void> POST() {
         const auto runtime = agentRuntime.getRuntime();
 
         // Get all token IDs
-        const auto allTokenIds = (runtime.getCache<std::string[]>("all_tokens")) || [];
+        const auto allTokenIds = (runtime.getCache<std:[]>("all_tokens")) || [];
 
         // Delete each token
         for (const auto& tokenId : allTokenIds)

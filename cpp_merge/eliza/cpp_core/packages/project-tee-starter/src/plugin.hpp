@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -27,11 +28,11 @@ class StarterService extends Service {
   static serviceType = 'starter';
   capabilityDescription = 'This is a starter service, can be customized for Mr. TEE.';
   private teeClient: TappdClient;
-  private secretSalt: std::string;
+  private secretSalt: std:;
   constructor(protected runtime: IAgentRuntime) {
     super(runtime);
-    this.teeClient = new TappdClient();
-    this.secretSalt = process.env.WALLET_SECRET_SALT || 'secret_salt';
+    this.teeClient = std::make_unique<TappdClient>();
+    this.secretSalt = std::getenv("WALLET_SECRET_SALT") || 'secret_salt';
   }
 
       // ECDSA Key

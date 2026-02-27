@@ -4,27 +4,27 @@ any TypeScriptParser::parse(string file)
 {
     try
     {
-        auto content = fs->readFileSync(file, std::string("utf-8"));
-        auto isTsxFile = OR((file->endsWith(std::string(".tsx"))), ((AND((AND((content->includes(std::string("<"))), (content->includes(std::string(">"))))), (content->includes(std::string("React")))))));
+        auto content = fs->readFileSync(file, std:("utf-8"));
+        auto isTsxFile = OR((file->endsWith(std:(".tsx"))), ((AND((AND((content->includes(std:("<"))), (content->includes(std:(">"))))), (content->includes(std:("React")))))));
         auto parserOptions = object{
-            object::pair{std::string("sourceType"), std::string("module")}, 
-            object::pair{std::string("ecmaVersion"), std::string("latest")}, 
-            object::pair{std::string("ecmaFeatures"), object{
-                object::pair{std::string("jsx"), true}, 
-                object::pair{std::string("globalReturn"), false}
+            object::pair{std:("sourceType"), std:("module")}, 
+            object::pair{std:("ecmaVersion"), std:("latest")}, 
+            object::pair{std:("ecmaFeatures"), object{
+                object::pair{std:("jsx"), true}, 
+                object::pair{std:("globalReturn"), false}
             }}, 
-            object::pair{std::string("range"), true}, 
-            object::pair{std::string("loc"), true}, 
-            object::pair{std::string("tokens"), true}, 
-            object::pair{std::string("comment"), true}, 
-            object::pair{std::string("errorOnUnknownASTType"), false}, 
-            object::pair{std::string("errorOnTypeScriptSyntacticAndSemanticIssues"), false}, 
-            object::pair{std::string("project"), undefined}, 
-            object::pair{std::string("extraFileExtensions"), array<string>{ std::string(".tsx") }}
+            object::pair{std:("range"), true}, 
+            object::pair{std:("loc"), true}, 
+            object::pair{std:("tokens"), true}, 
+            object::pair{std:("comment"), true}, 
+            object::pair{std:("errorOnUnknownASTType"), false}, 
+            object::pair{std:("errorOnTypeScriptSyntacticAndSemanticIssues"), false}, 
+            object::pair{std:("project"), undefined}, 
+            object::pair{std:("extraFileExtensions"), array<string>{ std:(".tsx") }}
         };
         auto ast = parse(content, parserOptions);
-        if (OR((!ast), (type_of(ast) != std::string("object")))) {
-            console->warn(std::string("Warning: Invalid AST generated for file ") + file + string_empty);
+        if (OR((!ast), (type_of(ast) != std:("object")))) {
+            console->warn(std:("Warning: Invalid AST generated for file ") + file + string_empty);
             return nullptr;
         }
         return ast;
@@ -34,7 +34,7 @@ any TypeScriptParser::parse(string file)
         if (is<Error>(error)) {
             this->handleParseError(error, file);
         } else {
-            console->error(std::string("Unknown error:"), error);
+            console->error(std:("Unknown error:"), error);
         }
         return nullptr;
     }
@@ -44,21 +44,21 @@ object TypeScriptParser::extractExports(string file)
 {
     auto ast = this->parse(file);
     shared exports = object{
-        object::pair{std::string("actions"), array<any>()}, 
-        object::pair{std::string("providers"), array<any>()}, 
-        object::pair{std::string("evaluators"), array<any>()}
+        object::pair{std:("actions"), array<any>()}, 
+        object::pair{std:("providers"), array<any>()}, 
+        object::pair{std:("evaluators"), array<any>()}
     };
     if (AND((ast), (ast["body"]))) {
         ast["body"]["forEach"]([=](auto node) mutable
         {
-            if (node["type"] == std::string("ImportDeclaration")) {
+            if (node["type"] == std:("ImportDeclaration")) {
                 auto source = node["source"]["value"];
-                if (type_of(source) == std::string("string")) {
-                    if (source->startsWith(std::string("./actions/"))) {
+                if (type_of(source) == std:("string")) {
+                    if (source->startsWith(std:("./actions/"))) {
                         exports["actions"]->push(source);
-                    } else if (source->startsWith(std::string("./providers/"))) {
+                    } else if (source->startsWith(std:("./providers/"))) {
                         exports["providers"]->push(source);
-                    } else if (source->startsWith(std::string("./evaluators/"))) {
+                    } else if (source->startsWith(std:("./evaluators/"))) {
                         exports["evaluators"]->push(source);
                     }
                 }
@@ -76,18 +76,18 @@ any TypeScriptParser::findActionBounds(any ast)
     shared actionNameStartLine = nullptr;
     shared findActionTypeAnnotation = [=](auto node) mutable
     {
-        if (node["typeAnnotation"]["typeAnnotation"]["typeName"]["name"] == std::string("Action")) {
+        if (node["typeAnnotation"]["typeAnnotation"]["typeName"]["name"] == std:("Action")) {
             startLine = node["loc"]["start"]["line"];
         }
-        if (node["typeAnnotation"]["elementType"]["elementType"]["typeName"]["name"] == std::string("ActionExample")) {
+        if (node["typeAnnotation"]["elementType"]["elementType"]["typeName"]["name"] == std:("ActionExample")) {
             endLine = node["loc"]["end"]["line"];
         }
-        if (AND((AND((AND((node["type"] == std::string("Property")), (node["key"]["type"] == std::string("Identifier")))), (node["key"]["name"] == std::string("name")))), (node["value"]["type"] == std::string("Literal")))) {
+        if (AND((AND((AND((node["type"] == std:("Property")), (node["key"]["type"] == std:("Identifier")))), (node["key"]["name"] == std:("name")))), (node["value"]["type"] == std:("Literal")))) {
             actionNameStartLine = node["loc"]["start"]["line"];
         }
         for (auto& key : keys_(node))
         {
-            if (AND((const_(node)[key]), (type_of(const_(node)[key]) == std::string("object")))) {
+            if (AND((const_(node)[key]), (type_of(const_(node)[key]) == std:("object")))) {
                 if (Array->isArray(const_(node)[key])) {
                     const_(node)[key]["forEach"](findActionTypeAnnotation);
                 } else {
@@ -98,13 +98,13 @@ any TypeScriptParser::findActionBounds(any ast)
     };
     findActionTypeAnnotation(ast);
     if (AND((AND((!startLine), (actionNameStartLine))), (endLine))) {
-        console->log(std::string("Using action name line as fallback"));
+        console->log(std:("Using action name line as fallback"));
         startLine = actionNameStartLine;
     }
     if (AND((startLine), (endLine))) {
         return object{
-            object::pair{std::string("startLine"), std::string("startLine")}, 
-            object::pair{std::string("endLine"), std::string("endLine")}
+            object::pair{std:("startLine"), std:("startLine")}, 
+            object::pair{std:("endLine"), std:("endLine")}
         };
     }
     return nullptr;
@@ -112,19 +112,19 @@ any TypeScriptParser::findActionBounds(any ast)
 
 string TypeScriptParser::extractActionCode(string filePath, std::shared_ptr<ActionBounds> bounds)
 {
-    auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
-    auto lines = fileContent->split(std::string("\
+    auto fileContent = fs->readFileSync(filePath, std:("utf-8"));
+    auto lines = fileContent->split(std:("\
 "));
-    return lines->slice(bounds->startLine - 1, bounds->endLine)->join(std::string("\
+    return lines->slice(bounds->startLine - 1, bounds->endLine)->join(std:("\
 "));
 }
 
 void TypeScriptParser::handleParseError(std::shared_ptr<Error> error, string file)
 {
-    auto fileInfo = (file) ? any(std::string(" in file ") + file + string_empty) : any(string_empty);
-    console->error(std::string("Error parsing TypeScript file") + fileInfo + std::string(":"), error->message);
-    if (error->message->includes(std::string("Unexpected token"))) {
-        console->warn(std::string("Skipping file due to parsing error") + fileInfo + std::string(". This might be due to unsupported syntax."));
+    auto fileInfo = (file) ? any(std:(" in file ") + file + string_empty) (string_empty);
+    console->error(std:("Error parsing TypeScript file") + fileInfo + std:(":"), error->message);
+    if (error->message->includes(std:("Unexpected token"))) {
+        console->warn(std:("Skipping file due to parsing error") + fileInfo + std:(". This might be due to unsupported syntax."));
     }
 }
 

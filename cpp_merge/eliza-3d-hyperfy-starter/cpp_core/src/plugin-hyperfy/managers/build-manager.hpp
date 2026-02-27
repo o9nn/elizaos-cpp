@@ -31,7 +31,7 @@ public:
     void scale(auto entityId, [number scale, auto number);
     void duplicate(auto entityId);
     void delete(auto entityId);
-    void importEntity(const std::string& url, std::optional<std::any> position, std::optional<std::any> quaternion);
+    void importEntity(const std:& url, std::optional<std:> position, std::optional<std:> quaternion);
     void addApp(auto file, auto transform);
     void addModel(auto file, auto transform);
     void entityUpdate(auto entity);

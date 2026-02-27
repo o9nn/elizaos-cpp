@@ -1,4 +1,5 @@
 #include "contracts.hpp"
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -19,17 +20,17 @@ using Chain = std::variant<"ethereum", "base", "bsc", "solana">;
 using ChainFamily = std::variant<"evm", "solana">;
 
 struct ChainConfig {
-    std::string; // String ID for database storage id;
-    std::string name;
-    std::string rpcUrl;
-    std::string explorerUrl;
+    std:; // String ID for database storage id;
+    std: name;
+    std: rpcUrl;
+    std: explorerUrl;
     { nativeCurrency;
-    std::string name;
-    std::string symbol;
+    std: name;
+    std: symbol;
     double decimals;
     { contracts;
-    std::optional<std::string> otc;
-    std::optional<std::string> usdc;
+    std::optional<std:> otc;
+    std::optional<std:> usdc;
     ChainFamily type;
     std::optional<ViemChain; // Reference to viem chain for wagmi (EVM only)> viemChain;
     std::optional<number; // Numeric chain ID (EVM only)> chainId;
@@ -43,22 +44,22 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
   ethereum: {
     id: localhost.id.toString(),
     name: "Anvil Local",
-    rpcUrl: process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545",
+    rpcUrl: std::getenv("NEXT_PUBLIC_RPC_URL") || "http://127.0.0.1:8545",
     explorerUrl: "http://localhost:8545",
     nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
     contracts: {
       otc:
-        deployments.evm?.contracts?.otc || process.env.NEXT_PUBLIC_OTC_ADDRESS,
+        deployments.(evm ? evm.contracts : nullptr)?.otc || std::getenv("NEXT_PUBLIC_OTC_ADDRESS"),
       usdc:
-        deployments.evm?.contracts?.usdc ||
-        process.env.NEXT_PUBLIC_USDC_ADDRESS,
+        deployments.(evm ? evm.contracts : nullptr)?.usdc ||
+        std::getenv("NEXT_PUBLIC_USDC_ADDRESS"),
     },
     type: "evm",
     viemChain: localhost,
     chainId: localhost.id,
   },
-  base: (() => {
-    const isMainnet = env === "mainnet";
+  base: [&](() {
+    const isMainnet = env == "mainnet";
     const chain = isMainnet ? base : baseSepolia;
     
     // Hardcoded mainnet/testnet OTC addresses from deployment configs
@@ -67,14 +68,14 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
     
     // Use deployments if available, else env vars, else hardcoded defaults
     const otc =
-      deployments.evm?.contracts?.otc ||
-      process.env.NEXT_PUBLIC_BASE_OTC_ADDRESS ||
+      deployments.(evm ? evm.contracts : nullptr)?.otc ||
+      std::getenv("NEXT_PUBLIC_BASE_OTC_ADDRESS") ||
       (isMainnet ? MAINNET_OTC : TESTNET_OTC);
 
     // For mainnet, use proxy route to keep Alchemy key server-side
     // For testnet, use public Sepolia RPC
     const rpcUrl =
-      process.env.NEXT_PUBLIC_BASE_RPC_URL ||
+      std::getenv("NEXT_PUBLIC_BASE_RPC_URL") ||
       (isMainnet ? "/api/rpc/base" : "https://sepolia.base.org");
 
     return {
@@ -96,18 +97,18 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
       chainId: chain.id,
     };
   })(),
-  bsc: (() => {
-    const isMainnet = env === "mainnet";
+  bsc: [&](() {
+    const isMainnet = env == "mainnet";
     const chain = isMainnet ? bsc : bscTestnet;
     const otc =
-      deployments.evm?.contracts?.otc ||
-      process.env.NEXT_PUBLIC_BSC_OTC_ADDRESS;
+      deployments.(evm ? evm.contracts : nullptr)?.otc ||
+      std::getenv("NEXT_PUBLIC_BSC_OTC_ADDRESS");
 
     return {
       id: chain.id.toString(),
       name: isMainnet ? "BSC" : "BSC Testnet",
       rpcUrl:
-        process.env.NEXT_PUBLIC_BSC_RPC_URL ||
+        std::getenv("NEXT_PUBLIC_BSC_RPC_URL") ||
         (isMainnet
           ? "https://bsc-dataseed1.binance.org"
           : "https://data-seed-prebsc-1-s1.binance.org:8545"),
@@ -124,16 +125,16 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
       chainId: chain.id,
     };
   })(),
-  solana: (() => {
-    const isMainnet = env === "mainnet";
-    const isLocal = env === "local";
+  solana: [&](() {
+    const isMainnet = env == "mainnet";
+    const isLocal = env == "local";
 
     const otc =
-      deployments.solana?.NEXT_PUBLIC_SOLANA_DESK ||
-      process.env.NEXT_PUBLIC_SOLANA_DESK;
+      deployments.(solana ? solana.NEXT_PUBLIC_SOLANA_DESK : nullptr) ||
+      std::getenv("NEXT_PUBLIC_SOLANA_DESK");
     const usdc =
-      deployments.solana?.NEXT_PUBLIC_SOLANA_USDC_MINT ||
-      process.env.NEXT_PUBLIC_SOLANA_USDC_MINT;
+      deployments.(solana ? solana.NEXT_PUBLIC_SOLANA_USDC_MINT : nullptr) ||
+      std::getenv("NEXT_PUBLIC_SOLANA_USDC_MINT");
 
     return {
       id: isMainnet
@@ -147,7 +148,7 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
           ? "Solana Localnet"
           : "Solana Devnet",
       rpcUrl:
-        process.env.NEXT_PUBLIC_SOLANA_RPC ||
+        std::getenv("NEXT_PUBLIC_SOLANA_RPC") ||
         (isMainnet
           ? "https://api.mainnet-beta.solana.com"
           : isLocal
@@ -182,9 +183,9 @@ bool isEVMChain(Chain chain);
 bool isSolanaChain(Chain chain);
 
 /**
- * Get chain identifier from std::string chain ID (database format)
+ * Get chain identifier from std: chain ID (database format)
  */
-Chain | null getChainFromId(const std::string& chainId);
+Chain | null getChainFromId(const std:& chainId);
 
 /**
  * Get chain identifier from numeric chain ID (wagmi/viem format)

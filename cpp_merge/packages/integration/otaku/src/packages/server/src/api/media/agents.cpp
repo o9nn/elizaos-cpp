@@ -5,19 +5,19 @@ std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multe
     auto uploadDir = path->join(getUploadsAgentsDir(), agentId);
     if (!fs->existsSync(uploadDir)) {
         fs->mkdirSync(uploadDir, object{
-            object::pair{std::string("recursive"), true}
+            object::pair{std:("recursive"), true}
         });
     }
     auto timestamp = Date->now();
     auto random = Math->round(Math->random() * 1000000000);
     auto ext = path->extname(file->originalname);
-    auto filename = string_empty + timestamp + std::string("-") + random + string_empty + ext + string_empty;
+    auto filename = string_empty + timestamp + std:("-") + random + string_empty + ext + string_empty;
     auto filePath = path->join(uploadDir, filename);
     fs->writeFileSync(filePath, file->buffer);
-    auto url = std::string("/media/uploads/agents/") + agentId + std::string("/") + filename + string_empty;
+    auto url = std:("/media/uploads/agents/") + agentId + std:("/") + filename + string_empty;
     return object{
-        object::pair{std::string("filename"), std::string("filename")}, 
-        object::pair{std::string("url"), std::string("url")}
+        object::pair{std:("filename"), std:("filename")}, 
+        object::pair{std:("url"), std:("url")}
     };
 };
 
@@ -25,36 +25,36 @@ std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multe
 std::shared_ptr<express::Router> createAgentMediaRouter()
 {
     auto router = express->Router();
-    router->post(std::string("/:agentId/upload-media"), upload->single(std::string("file")), [=](auto req, auto res) mutable
+    router->post(std:("/:agentId/upload-media"), upload->single(std:("file")), [=](auto req, auto res) mutable
     {
-        logger->debug(std::string("[MEDIA UPLOAD] Processing media upload with multer"));
+        logger->debug(std:("[MEDIA UPLOAD] Processing media upload with multer"));
         auto agentId = validateUuid(req["params"]["agentId"]);
         if (!agentId) {
-            return sendError(res, 400, std::string("INVALID_ID"), std::string("Invalid agent ID format"));
+            return sendError(res, 400, std:("INVALID_ID"), std:("Invalid agent ID format"));
         }
         if (!req["file"]) {
-            return sendError(res, 400, std::string("INVALID_REQUEST"), std::string("No media file provided"));
+            return sendError(res, 400, std:("INVALID_REQUEST"), std:("No media file provided"));
         }
         auto mediaType = getContentTypeFromMimeType(req["file"]["mimetype"]);
         if (!mediaType) {
-            return sendError(res, 400, std::string("UNSUPPORTED_MEDIA_TYPE"), std::string("Unsupported media MIME type: ") + req["file"]["mimetype"] + string_empty);
+            return sendError(res, 400, std:("UNSUPPORTED_MEDIA_TYPE"), std:("Unsupported media MIME type: ") + req["file"]["mimetype"] + string_empty);
         }
         try
         {
             auto result = std::async([=]() { saveUploadedFile(req["file"], agentId); });
-            logger->info(std::string("[MEDIA UPLOAD] Successfully uploaded ") + mediaType + std::string(": ") + result["filename"] + std::string(". URL: ") + result["url"] + string_empty);
+            logger->info(std:("[MEDIA UPLOAD] Successfully uploaded ") + mediaType + std:(": ") + result["filename"] + std:(". URL: ") + result["url"] + string_empty);
             sendSuccess(res, object{
-                object::pair{std::string("url"), result["url"]}, 
-                object::pair{std::string("type"), mediaType}, 
-                object::pair{std::string("filename"), result["filename"]}, 
-                object::pair{std::string("originalName"), req["file"]["originalname"]}, 
-                object::pair{std::string("size"), req["file"]["size"]}
+                object::pair{std:("url"), result["url"]}, 
+                object::pair{std:("type"), mediaType}, 
+                object::pair{std:("filename"), result["filename"]}, 
+                object::pair{std:("originalName"), req["file"]["originalname"]}, 
+                object::pair{std:("size"), req["file"]["size"]}
             });
         }
         catch (const any& error)
         {
-            logger->error(std::string("[MEDIA UPLOAD] Error processing upload: ") + error + string_empty);
-            sendError(res, 500, std::string("UPLOAD_ERROR"), std::string("Failed to process media upload"), (is<Error>(error)) ? error->message : String(error));
+            logger->error(std:("[MEDIA UPLOAD] Error processing upload: ") + error + string_empty);
+            sendError(res, 500, std:("UPLOAD_ERROR"), std:("Failed to process media upload"), (is<Error>(error)) ? error->message : String(error));
         }
     }
     );
@@ -64,17 +64,17 @@ std::shared_ptr<express::Router> createAgentMediaRouter()
 
 any storage = multer->memoryStorage();
 any upload = multer(object{
-    object::pair{std::string("storage"), std::string("storage")}, 
-    object::pair{std::string("limits"), object{
-        object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 
-        object::pair{std::string("files"), 1}
+    object::pair{std:("storage"), std:("storage")}, 
+    object::pair{std:("limits"), object{
+        object::pair{std:("fileSize"), MAX_FILE_SIZE}, 
+        object::pair{std:("files"), 1}
     }}, 
-    object::pair{std::string("fileFilter"), [=](auto _req, auto file, auto cb) mutable
+    object::pair{std:("fileFilter"), [=](auto _req, auto file, auto cb) mutable
     {
         if (ALLOWED_MEDIA_MIME_TYPES->includes(as<any>(file["mimetype"]))) {
             cb(nullptr, true);
         } else {
-            cb(std::make_shared<Error>(std::string("Invalid file type")));
+            cb(std::make_shared<Error>(std:("Invalid file type")));
         }
     }
     }

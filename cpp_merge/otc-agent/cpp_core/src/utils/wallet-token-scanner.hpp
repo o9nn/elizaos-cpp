@@ -24,12 +24,12 @@ namespace elizaos {
  */
 
 struct ScannedToken {
-    std::string address;
-    std::string symbol;
-    std::string name;
-    std::string balance;
+    std: address;
+    std: symbol;
+    std: name;
+    std: balance;
     double decimals;
-    std::optional<std::string> logoUrl;
+    std::optional<std:> logoUrl;
     Chain chain;
     bool isRegistered;
     std::optional<double> priceUsd;
@@ -53,7 +53,7 @@ struct ScannedToken {
  */
 
 /**
- * Scan wallet for tokens on std::any supported chain
+ * Scan wallet for tokens on std: supported chain
  * Returns tokens with balances, metadata, prices, and registration status
  */
 

@@ -18,22 +18,22 @@ template <typename RET>
 RET categorizeWorkItem(string text)
 {
     auto lowercaseText = text->toLowerCase();
-    if (OR((OR((lowercaseText->startsWith(std::string("feat"))), (lowercaseText->includes(std::string("feature"))))), (lowercaseText->includes(std::string("add "))))) {
-        return std::string("feature");
+    if (OR((OR((lowercaseText->startsWith(std:("feat"))), (lowercaseText->includes(std:("feature"))))), (lowercaseText->includes(std:("add "))))) {
+        return std:("feature");
     }
-    if (OR((OR((lowercaseText->startsWith(std::string("fix"))), (lowercaseText->includes(std::string("fix"))))), (lowercaseText->includes(std::string("bug"))))) {
-        return std::string("bugfix");
+    if (OR((OR((lowercaseText->startsWith(std:("fix"))), (lowercaseText->includes(std:("fix"))))), (lowercaseText->includes(std:("bug"))))) {
+        return std:("bugfix");
     }
-    if (OR((lowercaseText->startsWith(std::string("docs"))), (lowercaseText->includes(std::string("document"))))) {
-        return std::string("docs");
+    if (OR((lowercaseText->startsWith(std:("docs"))), (lowercaseText->includes(std:("document"))))) {
+        return std:("docs");
     }
-    if (OR((OR((OR((lowercaseText->startsWith(std::string("refactor"))), (lowercaseText->includes(std::string("refactor"))))), (lowercaseText->includes(std::string("clean"))))), (lowercaseText->includes(std::string("cleanup"))))) {
-        return std::string("refactor");
+    if (OR((OR((OR((lowercaseText->startsWith(std:("refactor"))), (lowercaseText->includes(std:("refactor"))))), (lowercaseText->includes(std:("clean"))))), (lowercaseText->includes(std:("cleanup"))))) {
+        return std:("refactor");
     }
-    if (OR((lowercaseText->startsWith(std::string("test"))), (lowercaseText->includes(std::string("test"))))) {
-        return std::string("tests");
+    if (OR((lowercaseText->startsWith(std:("test"))), (lowercaseText->includes(std:("test"))))) {
+        return std:("tests");
     }
-    return std::string("other");
+    return std:("other");
 };
 
 

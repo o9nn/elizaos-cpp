@@ -2,185 +2,185 @@
 
 void Main(void)
 {
-    describe(std::string("Chat Functionality"), [=]() mutable
+    describe(std:("Chat Functionality"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
-            cy->visit(std::string("/"));
-            cy->get(std::string("#root"), object{
-                object::pair{std::string("timeout"), 30000}
-            })->should(std::string("exist"));
-            cy->document()->its(std::string("readyState"))->should(std::string("equal"), std::string("complete"));
+            cy->visit(std:("/"));
+            cy->get(std:("#root"), object{
+                object::pair{std:("timeout"), 30000}
+            })->should(std:("exist"));
+            cy->document()->its(std:("readyState"))->should(std:("equal"), std:("complete"));
             cy->wait(1000);
         }
         );
-        it(std::string("can navigate to chat interface"), [=]() mutable
+        it(std:("can navigate to chat interface"), [=]() mutable
         {
-            cy->get(std::string("body"))->then([=](auto $body) mutable
+            cy->get(std:("body"))->then([=](auto $body) mutable
             {
-                if ($body["find"](std::string("[data-testid="agent-card"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="agent-card"]"))->first()->click();
-                    cy->url()->should(std::string("not.eq"), string_empty + Cypress->config(std::string("baseUrl")) + std::string("/"));
-                } else if ($body["find"](std::string("[data-testid="add-agent-button"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="add-agent-button"]"))->should(std::string("exist"));
+                if ($body["find"](std:("[data-testid="agent-card"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="agent-card"]"))->first()->click();
+                    cy->url()->should(std:("not.eq"), string_empty + Cypress->config(std:("baseUrl")) + std:("/"));
+                } else if ($body["find"](std:("[data-testid="add-agent-button"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="add-agent-button"]"))->should(std:("exist"));
                 } else {
-                    cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+                    cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
                 }
             }
             );
         }
         );
-        it(std::string("displays basic interface elements"), [=]() mutable
+        it(std:("displays basic interface elements"), [=]() mutable
         {
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
-            cy->get(std::string("body"))->then([=](auto $body) mutable
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
+            cy->get(std:("body"))->then([=](auto $body) mutable
             {
-                if ($body["find"](std::string("[data-testid="sidebar-toggle"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="sidebar-toggle"]"))->should(std::string("exist"));
+                if ($body["find"](std:("[data-testid="sidebar-toggle"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="sidebar-toggle"]"))->should(std:("exist"));
                 }
             }
             );
-            cy->get(std::string("body"))->should(std::string("satisfy"), [=](auto $body) mutable
+            cy->get(std:("body"))->should(std:("satisfy"), [=](auto $body) mutable
             {
-                return (OR(($body["find"](std::string("[data-testid="agent-card"]"))["length"] > 0), ($body["find"](std::string("[data-testid="add-agent-button"]"))["length"] > 0)));
+                return (OR(($body["find"](std:("[data-testid="agent-card"]"))["length"] > 0), ($body["find"](std:("[data-testid="add-agent-button"]"))["length"] > 0)));
             }
             );
         }
         );
-        it(std::string("can interact with sidebar"), [=]() mutable
+        it(std:("can interact with sidebar"), [=]() mutable
         {
-            cy->get(std::string("body"))->then([=](auto $body) mutable
+            cy->get(std:("body"))->then([=](auto $body) mutable
             {
-                if ($body["find"](std::string("[data-testid="sidebar-toggle"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="sidebar-toggle"]"))->should(std::string("exist"))->click();
+                if ($body["find"](std:("[data-testid="sidebar-toggle"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="sidebar-toggle"]"))->should(std:("exist"))->click();
                     cy->wait(300);
-                    cy->get(std::string("[data-testid="sidebar-toggle"]"))->click();
+                    cy->get(std:("[data-testid="sidebar-toggle"]"))->click();
                 } else {
-                    cy->get(std::string("[data-testid="mobile-menu-button"]"))->should(std::string("exist"))->click(object{
-                        object::pair{std::string("force"), true}
+                    cy->get(std:("[data-testid="mobile-menu-button"]"))->should(std:("exist"))->click(object{
+                        object::pair{std:("force"), true}
                     });
                     cy->wait(300);
                 }
             }
             );
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
         }
         );
-        it(std::string("handles API interactions"), [=]() mutable
+        it(std:("handles API interactions"), [=]() mutable
         {
-            cy->intercept(std::string("GET"), std::string("/api/agents"), object{
-                object::pair{std::string("body"), object{
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("agents"), array<object>{ object{
-                            object::pair{std::string("id"), std::string("12345678-1234-1234-1234-123456789012")}, 
-                            object::pair{std::string("name"), std::string("Test Agent")}, 
-                            object::pair{std::string("status"), std::string("active")}
+            cy->intercept(std:("GET"), std:("/api/agents"), object{
+                object::pair{std:("body"), object{
+                    object::pair{std:("data"), object{
+                        object::pair{std:("agents"), array<object>{ object{
+                            object::pair{std:("id"), std:("12345678-1234-1234-1234-123456789012")}, 
+                            object::pair{std:("name"), std:("Test Agent")}, 
+                            object::pair{std:("status"), std:("active")}
                         } }}
                     }}
                 }}
-            })->as(std::string("getAgents"));
+            })->as(std:("getAgents"));
             cy->reload();
-            cy->get(std::string("#root"), object{
-                object::pair{std::string("timeout"), 30000}
-            })->should(std::string("exist"));
-            cy->document()->its(std::string("readyState"))->should(std::string("equal"), std::string("complete"));
+            cy->get(std:("#root"), object{
+                object::pair{std:("timeout"), 30000}
+            })->should(std:("exist"));
+            cy->document()->its(std:("readyState"))->should(std:("equal"), std:("complete"));
             cy->wait(500);
-            cy->wait(std::string("@getAgents"));
-            cy->get(std::string("#root"))->should(std::string("exist"));
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+            cy->wait(std:("@getAgents"));
+            cy->get(std:("#root"))->should(std:("exist"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
         }
         );
-        it(std::string("handles error states gracefully"), [=]() mutable
+        it(std:("handles error states gracefully"), [=]() mutable
         {
-            cy->intercept(std::string("GET"), std::string("/api/agents"), object{
-                object::pair{std::string("statusCode"), 500}, 
-                object::pair{std::string("body"), object{
-                    object::pair{std::string("error"), std::string("Internal Server Error")}
+            cy->intercept(std:("GET"), std:("/api/agents"), object{
+                object::pair{std:("statusCode"), 500}, 
+                object::pair{std:("body"), object{
+                    object::pair{std:("error"), std:("Internal Server Error")}
                 }}
-            })->as(std::string("getAgentsError"));
+            })->as(std:("getAgentsError"));
             cy->reload();
-            cy->get(std::string("#root"), object{
-                object::pair{std::string("timeout"), 30000}
-            })->should(std::string("exist"));
-            cy->document()->its(std::string("readyState"))->should(std::string("equal"), std::string("complete"));
+            cy->get(std:("#root"), object{
+                object::pair{std:("timeout"), 30000}
+            })->should(std:("exist"));
+            cy->document()->its(std:("readyState"))->should(std:("equal"), std:("complete"));
             cy->wait(500);
-            cy->wait(std::string("@getAgentsError"));
-            cy->get(std::string("#root"))->should(std::string("exist"));
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+            cy->wait(std:("@getAgentsError"));
+            cy->get(std:("#root"))->should(std:("exist"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
         }
         );
-        it(std::string("supports mobile navigation"), [=]() mutable
+        it(std:("supports mobile navigation"), [=]() mutable
         {
-            cy->viewport(std::string("iphone-x"));
+            cy->viewport(std:("iphone-x"));
             cy->wait(1000);
-            cy->get(std::string("[data-testid="mobile-menu-button"]"))->should(std::string("be.visible"));
-            cy->get(std::string("[data-testid="mobile-menu-button"]"))->click(object{
-                object::pair{std::string("force"), true}
+            cy->get(std:("[data-testid="mobile-menu-button"]"))->should(std:("be.visible"));
+            cy->get(std:("[data-testid="mobile-menu-button"]"))->click(object{
+                object::pair{std:("force"), true}
             });
             cy->wait(500);
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
             cy->viewport(1280, 720);
             cy->wait(500);
         }
         );
-        it(std::string("loads without critical errors"), [=]() mutable
+        it(std:("loads without critical errors"), [=]() mutable
         {
-            cy->get(std::string("body"))->should(std::string("not.contain.text"), std::string("Uncaught"));
-            cy->get(std::string("body"))->should(std::string("not.contain.text"), std::string("TypeError"));
-            cy->get(std::string("body"))->should(std::string("not.contain.text"), std::string("ReferenceError"));
-            cy->get(std::string("#root"))->should(std::string("exist"));
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
+            cy->get(std:("body"))->should(std:("not.contain.text"), std:("Uncaught"));
+            cy->get(std:("body"))->should(std:("not.contain.text"), std:("TypeError"));
+            cy->get(std:("body"))->should(std:("not.contain.text"), std:("ReferenceError"));
+            cy->get(std:("#root"))->should(std:("exist"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
         }
         );
-        it(std::string("has working connection status"), [=]() mutable
+        it(std:("has working connection status"), [=]() mutable
         {
-            cy->get(std::string("[data-testid="connection-status"]"), object{
-                object::pair{std::string("timeout"), 10000}
-            })->should(std::string("exist"));
-            cy->get(std::string("[data-testid="connection-status"]"))->click();
-            cy->get(std::string("[data-testid="connection-status"]"))->should(std::string("exist"));
+            cy->get(std:("[data-testid="connection-status"]"), object{
+                object::pair{std:("timeout"), 10000}
+            })->should(std:("exist"));
+            cy->get(std:("[data-testid="connection-status"]"))->click();
+            cy->get(std:("[data-testid="connection-status"]"))->should(std:("exist"));
         }
         );
-        it(std::string("maintains state during navigation"), [=]() mutable
+        it(std:("maintains state during navigation"), [=]() mutable
         {
-            cy->get(std::string("body"))->then([=](auto $body) mutable
+            cy->get(std:("body"))->then([=](auto $body) mutable
             {
-                if ($body["find"](std::string("[data-testid="sidebar-toggle"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="sidebar-toggle"]"))->click();
+                if ($body["find"](std:("[data-testid="sidebar-toggle"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="sidebar-toggle"]"))->click();
                 }
             }
             );
-            cy->get(std::string("body"))->then([=](auto $body) mutable
+            cy->get(std:("body"))->then([=](auto $body) mutable
             {
-                if ($body["find"](std::string("[data-testid="agent-card"]"))["length"] > 0) {
-                    cy->get(std::string("[data-testid="agent-card"]"))->first()->click();
+                if ($body["find"](std:("[data-testid="agent-card"]"))["length"] > 0) {
+                    cy->get(std:("[data-testid="agent-card"]"))->first()->click();
                     cy->wait(1000);
                 }
             }
             );
-            cy->get(std::string("#root"))->should(std::string("exist"));
+            cy->get(std:("#root"))->should(std:("exist"));
         }
         );
-        it(std::string("handles concurrent requests"), [=]() mutable
+        it(std:("handles concurrent requests"), [=]() mutable
         {
-            cy->intercept(std::string("GET"), std::string("/api/agents"), object{
-                object::pair{std::string("delay"), 500}, 
-                object::pair{std::string("body"), object{
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("agents"), array<any>()}
+            cy->intercept(std:("GET"), std:("/api/agents"), object{
+                object::pair{std:("delay"), 500}, 
+                object::pair{std:("body"), object{
+                    object::pair{std:("data"), object{
+                        object::pair{std:("agents"), array<any>()}
                     }}
                 }}
-            })->as(std::string("getAgents"));
+            })->as(std:("getAgents"));
             cy->reload();
-            cy->get(std::string("#root"), object{
-                object::pair{std::string("timeout"), 30000}
-            })->should(std::string("exist"));
-            cy->document()->its(std::string("readyState"))->should(std::string("equal"), std::string("complete"));
+            cy->get(std:("#root"), object{
+                object::pair{std:("timeout"), 30000}
+            })->should(std:("exist"));
+            cy->document()->its(std:("readyState"))->should(std:("equal"), std:("complete"));
             cy->wait(500);
-            cy->wait(std::string("@getAgents"));
-            cy->get(std::string("[data-testid="app-sidebar"]"))->should(std::string("exist"));
-            cy->get(std::string("[data-testid="add-agent-button"]"))->should(std::string("exist"));
-            cy->get(std::string("[data-testid="mobile-menu-button"]"))->should(std::string("exist"));
+            cy->wait(std:("@getAgents"));
+            cy->get(std:("[data-testid="app-sidebar"]"))->should(std:("exist"));
+            cy->get(std:("[data-testid="add-agent-button"]"))->should(std:("exist"));
+            cy->get(std:("[data-testid="mobile-menu-button"]"))->should(std:("exist"));
         }
         );
     }

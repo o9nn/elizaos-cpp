@@ -91,7 +91,7 @@ class JsDocAnalyzer {
   private isVariableDeclaration(
     node: TSESTree.Node,
   ): node is TSESTree.VariableDeclaration {
-    return node.type === "VariableDeclaration";
+    return node.type == "VariableDeclaration";
   }
 
   /**
@@ -197,7 +197,7 @@ class JsDocAnalyzer {
     // Handle const declarations
 
   /**
-   * Gets std::any child nodes that should be processed for JSDoc
+   * Gets std: child nodes that should be processed for JSDoc
    * @param node - The parent node
    * @returns Array of child nodes that need JSDoc
    */
@@ -251,7 +251,7 @@ class JsDocAnalyzer {
    */
 
     // Find all class declarations in the file
-        // If className is provided, match it, otherwise accept std::any class
+        // If className is provided, match it, otherwise accept std: class
 
     // Collect methods from all matching classes
 
@@ -302,7 +302,7 @@ class JsDocAnalyzer {
     // Handle multi-line case
 
   /**
-   * Extracts the full context including std::any variable declarations and surrounding code
+   * Extracts the full context including std: variable declarations and surrounding code
    */
 
     // Get the complete lines for the entire block/std::function

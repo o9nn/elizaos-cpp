@@ -1,4 +1,5 @@
 #include "token-status.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void TokenStatus() {
 
     const auto status = token.status;
 
-    const std::variant<Record<IToken["status"], "imported", std::string, undefined>> labels = {;
+    const std::variant<Record<IToken["status"], "imported", std:, undefined>> labels = {;
         active: "Active",
         harvested: "Harvested",
         locked: "Bonded",
@@ -35,7 +36,7 @@ void TokenStatus() {
             imported: "imported",
             };
 
-            const std::unordered_map<TVariant, std::string> variants = {;
+            const std::unordered_map<TVariant, std:> variants = {;
                 info: "text-[#03FF24] bg-green-500/10",
                 destructive: "text-red-500 bg-red-500/10",
                 warning: "text-yellow-500 bg-yellow-500/10",

@@ -4,12 +4,12 @@
 
 namespace elizaos {
 
-std::string parseSolanaAddress(const std::any& raw, auto name) {
+std: parseSolanaAddress(const std:& raw, auto name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         if (typeof raw != "string" || !SOLANA_ADDRESS_REGEX.test(raw)) {
-            throw std::runtime_error(`Invalid ${name}`);
+            throw std::runtime_error("Invalid " + std::to_string(name) + "");
         }
         return raw;
 
@@ -19,7 +19,7 @@ std::string parseSolanaAddress(const std::any& raw, auto name) {
     }
 }
 
-Pagination parsePaginationQuery(const std::variant<Record<std::string, std::string, undefined>>& query, auto maxLimit, auto maxPage) {
+Pagination parsePaginationQuery(const std::variant<Record<std:, std:, undefined>>& query, auto maxLimit, auto maxPage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rawLimit = parseInt(query.limit || "", 10);

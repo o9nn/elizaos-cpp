@@ -16,7 +16,7 @@ namespace elizaos {
 // Use admin addresses from environment
 
 // Remove CSS styles
-// const styles = `
+// const styles = "
 //   .token-ellipsis:before {
 //     float: right;
 //     content: attr(data-tail);
@@ -27,10 +27,10 @@ namespace elizaos {
 //     text-overflow: ellipsis;
 //     overflow: hidden;
 //   }
-// `;
+// ";
 
 // Add a custom component for middle ellipsis
-void MiddleEllipsis(std::optional<{ text: std::string; suffix: std::string }> { text });
+void MiddleEllipsis(std::optional<{ text: std:; suffix: std: }> { text });
 
 // Helper to safely get tabs object from localStorage
 

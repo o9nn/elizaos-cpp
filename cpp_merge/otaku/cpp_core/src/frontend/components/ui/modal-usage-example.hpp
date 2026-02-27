@@ -28,50 +28,50 @@ namespace elizaos {
  * - Similar pattern to LoadingPanel
  */
 
-// ============================================
+// ====================
 // EXAMPLE 1: Simple Content Modal
-// ============================================
+// ====================
 void ExampleSimpleModal();
 
-// ============================================
+// ====================
 // EXAMPLE 2: Form Modal (like SendModal)
-// ============================================
+// ====================
 void ExampleFormModal();
 
-// ============================================
+// ====================
 // EXAMPLE 3: Confirmation Modal
-// ============================================
+// ====================
 void ExampleConfirmationModal();
 
-// ============================================
+// ====================
 // EXAMPLE 4: Custom Styling Modal
-// ============================================
+// ====================
 void ExampleCustomStyledModal();
 
-// ============================================
+// ====================
 // EXAMPLE 5: Converting existing SendModal
-// ============================================
+// ====================
 
 /**
  * HOW TO CONVERT YOUR EXISTING MODALS:
  * 
  * OLD WAY (with createPortal):
- * ```tsx
+ * """tsx
  * void SendModal(auto { isOpen, auto onClose, auto tokens, SendModalProps userId });
  * 
  * // Usage:
  * const [isModalOpen, setIsModalOpen] = useState(false);
  * <SendModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
- * ```
+ * """
  * 
  * NEW WAY (with useModal):
- * ```tsx
+ * """tsx
  * // 1. Create a component for the modal content (no isOpen/onClose props needed)
- * std::function SendModalContent({ tokens, userId, onSuccess }: { tokens: Token[], userId: std::string, onSuccess: () => void }) {
+ * std::function SendModalContent({ tokens, userId, onSuccess }: { tokens: Token[], userId: std:, onSuccess: () => void }) {
  *   const { hideModal } = useModal();
  *   const modalId = 'send-modal';
  *   
- *   const handleClose = () => {
+ *   const handleClose = [&]() {
  *     hideModal(modalId);
  *   };
  *   
@@ -85,7 +85,7 @@ void ExampleCustomStyledModal();
  * 
  * // 2. In your component where you want to open the modal:
  * void MyComponent();
- * ```
+ * """
  * 
  * BENEFITS:
  * - No need to manage isOpen state

@@ -37,7 +37,7 @@ void useCDPWallet() {
     const auto { currentUser } = useCurrentUser();
 
     // Check if CDP is properly configured
-    const auto cdpProjectId = import.meta.env.VITE_CDP_PROJECT_ID;
+    const auto cdpProjectId = "".VITE_CDP_PROJECT_ID;
     const auto isCdpConfigured = Boolean(cdpProjectId);
 
     // Normalize user info using shared helper (DRY) - memoized to prevent excessive re-renders

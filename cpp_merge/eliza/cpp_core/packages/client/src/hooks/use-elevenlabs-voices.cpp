@@ -1,4 +1,6 @@
 #include "use-elevenlabs-voices.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,17 +9,17 @@ namespace elizaos {
 void useElevenLabsVoices() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [apiKey, setApiKey] = useState<std::string | nullptr>(nullptr);
+    const auto [apiKey, setApiKey] = useState<std: | nullptr>(nullptr);
 
     // Load API key from localStorage or another source
-    useEffect(() => {
+    useEffect[&](() {
         const auto storedKey = localStorage.getItem("ELEVENLABS_API_KEY");
         setApiKey(storedKey);
         }, []);
 
-        return useQuery({;
+        return useQuery[&]({;
             queryKey: ["elevenlabs-voices", apiKey],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 // If no API key is available, use the hardcoded models
                 if (!apiKey) {
                     return elevenLabsVoiceModels;

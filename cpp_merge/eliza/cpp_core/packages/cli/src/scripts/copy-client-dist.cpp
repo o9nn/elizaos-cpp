@@ -1,4 +1,5 @@
 #include "copy-client-dist.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

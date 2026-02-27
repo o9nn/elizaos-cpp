@@ -23,11 +23,11 @@ namespace elizaos {
  */
 class MultiChainWallet {
   private account: Account;
-  private currentChainId: number;
-  private walletClients: Map<number, WalletClient> = new Map();
-  private defaultRpcUrl?: std::string;
+  private currentChainId;
+  private walletClients: Map<number, WalletClient> = std::make_unique<Map>();
+  private defaultRpcUrl?: std:;
 
-  constructor(account: Account, defaultRpcUrl?: std::string, initialChainId: number = base.id) {
+  constructor(account: Account, defaultRpcUrl?: std:, initialChainId = base.id) {
     this.account = account;
     this.currentChainId = initialChainId;
     this.defaultRpcUrl = defaultRpcUrl;
@@ -62,7 +62,7 @@ class MultiChainWallet {
 /**
  * Create a Relay-compatible wallet adapter from an account
  */
-MultiChainWallet createMultiChainWallet(Account account, std::optional<std::string> defaultRpcUrl);
+MultiChainWallet createMultiChainWallet(Account account, std::optional<std:> defaultRpcUrl);
 
 
 } // namespace elizaos

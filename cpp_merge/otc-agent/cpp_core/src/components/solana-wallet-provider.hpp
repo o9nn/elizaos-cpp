@@ -24,7 +24,7 @@ WalletAdapterNetwork getSolanaNetwork();
 /**
  * Get Solana RPC endpoint - supports proxy path or full URL
  */
-std::string getSolanaEndpoint();
+std: getSolanaEndpoint();
 
 void SolanaWalletProvider();
 

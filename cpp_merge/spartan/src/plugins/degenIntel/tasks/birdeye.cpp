@@ -4,21 +4,21 @@ string makeBulletpointList(array<string> array)
 {
     return array->map([=](auto a) mutable
     {
-        return std::string(" - ") + a + string_empty;
+        return std:(" - ") + a + string_empty;
     }
-    )->join(std::string("\
+    )->join(std:("\
 "));
 };
 
 
 Birdeye::Birdeye(std::shared_ptr<IAgentRuntime> runtime) {
-    auto apiKey = runtime->getSetting(std::string("BIRDEYE_API_KEY"));
+    auto apiKey = runtime->getSetting(std:("BIRDEYE_API_KEY"));
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("Failed to initialize Birdeye provider due to missing API key.")));
+        throw any(std::make_shared<Error>(std:("Failed to initialize Birdeye provider due to missing API key.")));
     }
     this->apiKey = apiKey;
-    this->sentimentRoomId = createUniqueUuid(runtime, std::string("sentiment-analysis"));
-    this->twitterFeedRoomId = createUniqueUuid(runtime, std::string("twitter-feed"));
+    this->sentimentRoomId = createUniqueUuid(runtime, std:("sentiment-analysis"));
+    this->twitterFeedRoomId = createUniqueUuid(runtime, std:("twitter-feed"));
     this->runtime = runtime;
 }
 
@@ -26,30 +26,30 @@ any Birdeye::syncWalletHistory()
 {
     try
     {
-        auto publicKey = OR((this->runtime->getSetting(std::string("SOLANA_PUBLIC_KEY"))), (std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
+        auto publicKey = OR((this->runtime->getSetting(std:("SOLANA_PUBLIC_KEY"))), (std:("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
         auto options = object{
-            object::pair{std::string("method"), std::string("GET")}, 
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("accept"), std::string("application/json")}, 
-                object::pair{std::string("x-chain"), std::string("solana")}, 
-                object::pair{std::string("X-API-KEY"), this->apiKey}
+            object::pair{std:("method"), std:("GET")}, 
+            object::pair{std:("headers"), object{
+                object::pair{std:("accept"), std:("application/json")}, 
+                object::pair{std:("x-chain"), std:("solana")}, 
+                object::pair{std:("X-API-KEY"), this->apiKey}
             }}
         };
-        auto res = std::async([=]() { fetch(std::string("https://public-api.birdeye.so/v1/wallet/tx_list?wallet=") + publicKey + std::string("&limit=100"), options); });
+        auto res = std::async([=]() { fetch(std:("https://public-api.birdeye.so/v1/wallet/tx_list?wallet=") + publicKey + std:("&limit=100"), options); });
         auto resp = std::async([=]() { res->json(); });
         auto birdeyeData = OR((resp["data"]["solana"]), (array<any>()));
         auto transactions = birdeyeData["map"]([=](auto tx) mutable
         {
             return (object{
-                object::pair{std::string("txHash"), tx["txHash"]}, 
-                object::pair{std::string("blockTime"), std::make_shared<Date>(tx["blockTime"])}, 
-                object::pair{std::string("data"), tx}
+                object::pair{std:("txHash"), tx["txHash"]}, 
+                object::pair{std:("blockTime"), std::make_shared<Date>(tx["blockTime"])}, 
+                object::pair{std:("data"), tx}
             });
         }
         );
         try
         {
-            auto cachedTxs = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history")); });
+            auto cachedTxs = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std:("transaction_history")); });
             if (AND((cachedTxs), (Array->isArray(cachedTxs)))) {
                 for (auto& cachedTx : cachedTxs)
                 {
@@ -65,11 +65,11 @@ any Birdeye::syncWalletHistory()
         }
         catch (const any& error)
         {
-            logger->debug(std::string("Failed to get cached transactions, continuing with Birdeye data only"));
+            logger->debug(std:("Failed to get cached transactions, continuing with Birdeye data only"));
         }
         for (auto& tx : transactions)
         {
-            if (type_of(tx->blockTime) == std::string("string")) {
+            if (type_of(tx->blockTime) == std:("string")) {
                 tx->blockTime = std::make_shared<Date>(tx->blockTime);
             }
         }
@@ -80,18 +80,18 @@ any Birdeye::syncWalletHistory()
         );
         try
         {
-            std::async([=]() { this->runtime->setCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history"), transactions); });
-            logger->debug(std::string("Updated transaction history with ") + transactions->get_length() + std::string(" transactions"));
+            std::async([=]() { this->runtime->setCache<array<std::shared_ptr<TransactionHistory>>>(std:("transaction_history"), transactions); });
+            logger->debug(std:("Updated transaction history with ") + transactions->get_length() + std:(" transactions"));
         }
         catch (const any& error)
         {
-            logger->debug(std::string("Failed to set transaction cache, continuing without caching"), error);
+            logger->debug(std:("Failed to set transaction cache, continuing without caching"), error);
         }
         return transactions;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Failed to sync wallet history from Birdeye"), error);
+        logger->error(std:("Failed to sync wallet history from Birdeye"), error);
         return array<any>();
     }
 }
@@ -99,20 +99,20 @@ any Birdeye::syncWalletHistory()
 void Birdeye::syncWalletPortfolio()
 {
     auto options = object{
-        object::pair{std::string("method"), std::string("GET")}, 
-        object::pair{std::string("headers"), object{
-            object::pair{std::string("accept"), std::string("application/json")}, 
-            object::pair{std::string("x-chain"), std::string("solana")}, 
-            object::pair{std::string("X-API-KEY"), this->apiKey}
+        object::pair{std:("method"), std:("GET")}, 
+        object::pair{std:("headers"), object{
+            object::pair{std:("accept"), std:("application/json")}, 
+            object::pair{std:("x-chain"), std:("solana")}, 
+            object::pair{std:("X-API-KEY"), this->apiKey}
         }}
     };
-    auto publicKey = OR((this->runtime->getSetting(std::string("SOLANA_PUBLIC_KEY"))), (std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
-    auto res = std::async([=]() { fetch(std::string("https://public-api.birdeye.so/v1/wallet/token_list?wallet=") + publicKey + string_empty, options); });
+    auto publicKey = OR((this->runtime->getSetting(std:("SOLANA_PUBLIC_KEY"))), (std:("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
+    auto res = std::async([=]() { fetch(std:("https://public-api.birdeye.so/v1/wallet/token_list?wallet=") + publicKey + string_empty, options); });
     auto resp = std::async([=]() { res->json(); });
     auto data = resp["data"];
-    std::async([=]() { this->runtime->setCache<std::shared_ptr<Portfolio>>(std::string("portfolio"), object{
-        object::pair{std::string("key"), std::string("PORTFOLIO")}, 
-        object::pair{std::string("data"), std::string("data")}
+    std::async([=]() { this->runtime->setCache<std::shared_ptr<Portfolio>>(std:("portfolio"), object{
+        object::pair{std:("key"), std:("PORTFOLIO")}, 
+        object::pair{std:("data"), std:("data")}
     }); });
 }
 
@@ -126,14 +126,14 @@ any Birdeye::syncWallet()
 void Birdeye::fillTimeframe()
 {
     auto memories = std::async([=]() { this->runtime->getMemories(object{
-        object::pair{std::string("tableName"), std::string("messages")}, 
-        object::pair{std::string("roomId"), this->sentimentRoomId}, 
-        object::pair{std::string("end"), Date->now()}, 
-        object::pair{std::string("count"), 1}
+        object::pair{std:("tableName"), std:("messages")}, 
+        object::pair{std:("roomId"), this->sentimentRoomId}, 
+        object::pair{std:("end"), Date->now()}, 
+        object::pair{std:("count"), 1}
     }); });
     auto lastMemory = as<any>(const_(memories)[0]);
     auto lookUpDate = lastMemory["content"]["metadata"]["timeslot"];
-    auto start = std::make_shared<Date>(OR((lookUpDate), (std::string("2025-01-01T00:00:00.000Z"))));
+    auto start = std::make_shared<Date>(OR((lookUpDate), (std:("2025-01-01T00:00:00.000Z"))));
     start->setUTCHours(0, 0, 0, 0);
     auto today = std::make_shared<Date>();
     today->setUTCHours(23, 59, 59, 999);
@@ -151,23 +151,23 @@ void Birdeye::fillTimeframe()
                 break;
             }
             std::async([=]() { this->runtime->createMemory(object{
-                object::pair{std::string("id"), createUniqueUuid(this->runtime, std::string("sentiment-") + timeslot->toISOString() + string_empty)}, 
-                object::pair{std::string("entityId"), this->runtime->agentId}, 
-                object::pair{std::string("agentId"), this->runtime->agentId}, 
-                object::pair{std::string("content"), object{
-                    object::pair{std::string("text"), string_empty}, 
-                    object::pair{std::string("source"), std::string("sentiment-analysis")}, 
-                    object::pair{std::string("metadata"), object{
-                        object::pair{std::string("timeslot"), timeslot->toISOString()}, 
-                        object::pair{std::string("processed"), false}
+                object::pair{std:("id"), createUniqueUuid(this->runtime, std:("sentiment-") + timeslot->toISOString() + string_empty)}, 
+                object::pair{std:("entityId"), this->runtime->agentId}, 
+                object::pair{std:("agentId"), this->runtime->agentId}, 
+                object::pair{std:("content"), object{
+                    object::pair{std:("text"), string_empty}, 
+                    object::pair{std:("source"), std:("sentiment-analysis")}, 
+                    object::pair{std:("metadata"), object{
+                        object::pair{std:("timeslot"), timeslot->toISOString()}, 
+                        object::pair{std:("processed"), false}
                     }}
                 }}, 
-                object::pair{std::string("roomId"), this->sentimentRoomId}, 
-                object::pair{std::string("createdAt"), timeslot->getTime()}
-            }, std::string("messages")); });
+                object::pair{std:("roomId"), this->sentimentRoomId}, 
+                object::pair{std:("createdAt"), timeslot->getTime()}
+            }, std:("messages")); });
         }
     }
-    logger->info(std::string("Filled timeframe slots for sentiment analysis"));
+    logger->info(std:("Filled timeframe slots for sentiment analysis"));
 }
 
 any Birdeye::parseTweets()
@@ -177,10 +177,10 @@ any Birdeye::parseTweets()
     auto oneHourAgo = std::make_shared<Date>(now->getTime() - 60 * 60 * 1000);
     auto twoDaysAgo = std::make_shared<Date>(now->getTime() - 2 * 24 * 60 * 60 * 1000);
     auto memories = std::async([=]() { this->runtime->getMemories(object{
-        object::pair{std::string("tableName"), std::string("messages")}, 
-        object::pair{std::string("roomId"), this->sentimentRoomId}, 
-        object::pair{std::string("start"), twoDaysAgo->getTime()}, 
-        object::pair{std::string("end"), oneHourAgo->getTime()}
+        object::pair{std:("tableName"), std:("messages")}, 
+        object::pair{std:("roomId"), this->sentimentRoomId}, 
+        object::pair{std:("start"), twoDaysAgo->getTime()}, 
+        object::pair{std:("end"), oneHourAgo->getTime()}
     }); });
     auto sentiment = (as<array<any>>(memories))->find([=](auto m) mutable
     {
@@ -188,75 +188,75 @@ any Birdeye::parseTweets()
     }
     );
     if (!sentiment) {
-        logger->debug(std::string("No unprocessed timeslots available."));
+        logger->debug(std:("No unprocessed timeslots available."));
         return true;
     }
-    logger->info(std::string("Trying to process ") + sentiment["content"]["metadata"]["timeslot"] + string_empty);
+    logger->info(std:("Trying to process ") + sentiment["content"]["metadata"]["timeslot"] + string_empty);
     auto timeslot = std::make_shared<Date>(sentiment["content"]["metadata"]["timeslot"]);
     auto fromDate = std::make_shared<Date>(timeslot->getTime() - 60 * 60 * 1000 + 1000);
     auto toDate = timeslot;
     auto tweets = std::async([=]() { this->runtime->getMemories(object{
-        object::pair{std::string("tableName"), std::string("messages")}, 
-        object::pair{std::string("roomId"), this->twitterFeedRoomId}, 
-        object::pair{std::string("start"), fromDate->getTime()}, 
-        object::pair{std::string("end"), toDate->getTime()}
+        object::pair{std:("tableName"), std:("messages")}, 
+        object::pair{std:("roomId"), this->twitterFeedRoomId}, 
+        object::pair{std:("start"), fromDate->getTime()}, 
+        object::pair{std:("end"), toDate->getTime()}
     }); });
     if (OR((!tweets), (tweets->length == 0))) {
-        logger->info(std::string("No tweets to process for timeslot ") + timeslot->toISOString() + string_empty);
+        logger->info(std:("No tweets to process for timeslot ") + timeslot->toISOString() + string_empty);
         std::async([=]() { this->runtime->createMemory(object{
-            object::pair{std::string("id"), sentiment["id"]}, 
-            object::pair{std::string("entityId"), sentiment["entityId"]}, 
-            object::pair{std::string("agentId"), sentiment["agentId"]}, 
-            object::pair{std::string("content"), utils::assign(object{
+            object::pair{std:("id"), sentiment["id"]}, 
+            object::pair{std:("entityId"), sentiment["entityId"]}, 
+            object::pair{std:("agentId"), sentiment["agentId"]}, 
+            object::pair{std:("content"), utils::assign(object{
                 , 
-                object::pair{std::string("metadata"), utils::assign(object{
+                object::pair{std:("metadata"), utils::assign(object{
                     , 
-                    object::pair{std::string("processed"), true}
+                    object::pair{std:("processed"), true}
                 }, sentiment["content"]["metadata"])}
             }, sentiment["content"])}, 
-            object::pair{std::string("roomId"), sentiment["roomId"]}, 
-            object::pair{std::string("createdAt"), sentiment["createdAt"]}
-        }, std::string("messages")); });
+            object::pair{std:("roomId"), sentiment["roomId"]}, 
+            object::pair{std:("createdAt"), sentiment["createdAt"]}
+        }, std:("messages")); });
         return true;
     }
     auto tweetArray = tweets->map([=](auto tweet) mutable
     {
         auto content = as<any>(tweet["content"]);
-        return std::string("username: ") + (OR((content["tweet"]["username"]), (std::string("unknown")))) + std::string(" tweeted: ") + content["text"] + string_empty + (content["tweet"]["likes"]) ? any(std::string(" with ") + content["tweet"]["likes"] + std::string(" likes")) : any(string_empty) + string_empty + (content["tweet"]["retweets"]) ? any(std::string(" and ") + content["tweet"]["retweets"] + std::string(" retweets")) : any(string_empty) + std::string(".");
+        return std:("username: ") + (OR((content["tweet"]["username"]), (std:("unknown")))) + std:(" tweeted: ") + content["text"] + string_empty + (content["tweet"]["likes"]) ? any(std:(" with ") + content["tweet"]["likes"] + std:(" likes")) (string_empty) + string_empty + (content["tweet"]["retweets"]) ? any(std:(" and ") + content["tweet"]["retweets"] + std:(" retweets")) (string_empty) + std:(".");
     }
     );
     auto bulletpointTweets = makeBulletpointList(tweetArray);
-    auto prompt = template->replace(std::string("{{tweets}}"), bulletpointTweets);
+    auto prompt = template->replace(std:("{{tweets}}"), bulletpointTweets);
     auto response = std::async([=]() { this->runtime->useModel(ModelType->TEXT_LARGE, object{
-        object::pair{std::string("prompt"), std::string("prompt")}, 
-        object::pair{std::string("system"), rolePrompt}, 
-        object::pair{std::string("temperature"), 0.2}, 
-        object::pair{std::string("maxTokens"), 4096}, 
-        object::pair{std::string("object"), true}
+        object::pair{std:("prompt"), std:("prompt")}, 
+        object::pair{std:("system"), rolePrompt}, 
+        object::pair{std:("temperature"), 0.2}, 
+        object::pair{std:("maxTokens"), 4096}, 
+        object::pair{std:("object"), true}
     }); });
-    auto json = JSON->parse(OR((response), (std::string("{}"))));
+    auto json = JSON->parse(OR((response), (std:("{}"))));
     std::async([=]() { this->runtime->createMemory(object{
-        object::pair{std::string("id"), sentiment["id"]}, 
-        object::pair{std::string("entityId"), sentiment["entityId"]}, 
-        object::pair{std::string("agentId"), sentiment["agentId"]}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), json["text"]}, 
-            object::pair{std::string("source"), std::string("sentiment-analysis")}, 
-            object::pair{std::string("metadata"), utils::assign(object{
+        object::pair{std:("id"), sentiment["id"]}, 
+        object::pair{std:("entityId"), sentiment["entityId"]}, 
+        object::pair{std:("agentId"), sentiment["agentId"]}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), json["text"]}, 
+            object::pair{std:("source"), std:("sentiment-analysis")}, 
+            object::pair{std:("metadata"), utils::assign(object{
                 , 
-                object::pair{std::string("occuringTokens"), json["occuringTokens"]}, 
-                object::pair{std::string("processed"), true}
+                object::pair{std:("occuringTokens"), json["occuringTokens"]}, 
+                object::pair{std:("processed"), true}
             }, sentiment["content"]["metadata"])}
         }}, 
-        object::pair{std::string("roomId"), sentiment["roomId"]}, 
-        object::pair{std::string("createdAt"), sentiment["createdAt"]}
-    }, std::string("messages")); });
-    logger->info(std::string("Successfully processed timeslot ") + sentiment["content"]["metadata"]["timeslot"] + string_empty);
+        object::pair{std:("roomId"), sentiment["roomId"]}, 
+        object::pair{std:("createdAt"), sentiment["createdAt"]}
+    }, std:("messages")); });
+    logger->info(std:("Successfully processed timeslot ") + sentiment["content"]["metadata"]["timeslot"] + string_empty);
     return true;
 }
 
-string rolePrompt = std::string("You are a sentiment analyzer for cryptocurrency and market data.");
-string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
+string rolePrompt = std:("You are a sentiment analyzer for cryptocurrency and market data.");
+string template = std:("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
 You will also be analyzing the tokens that occur in the tweet and tell us whether their sentiment is positive or negative.\
 \
 ## Analyze the followings tweets:\

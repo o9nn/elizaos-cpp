@@ -1,10 +1,12 @@
 #include "template.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!template) {
@@ -29,62 +31,61 @@ std::string renderTemplate(const std::string& template, const std::unordered_map
 
 }
 
-std::string handleConditionals(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: handleConditionals(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto conditionalRegex = /{%\s*if\s+(.*?)\s*%}(.*?)(?:{%\s*else\s*%}(.*?))?{%\s*endif\s*%}/gs;
 
-    return template.replace(conditionalRegex, (_match, condition, ifBlock, elseBlock = "") => {;
+    return template.replace[&](conditionalRegex, (_match, condition, ifBlock, elseBlock = "") {;
         const auto evalCondition = evaluateCondition(condition, context);
         return evalCondition ? ifBlock : elseBlock;
         });
 
 }
 
-std::string handleForLoops(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: handleForLoops(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto forRegex = /{%\s*for\s+(\w+)\s+in\s+(\w+)\s*%}(.*?){%\s*endfor\s*%}/gs;
 
-    return template.replace(forRegex, (_match, itemName, listName, loopBody) => {;
+    return template.replace[&](forRegex, (_match, itemName, listName, loopBody) {;
         const auto items = context[listName];
         if (!Array.isArray(items)) {
             return "";
         }
 
         return items;
-        .std::map((item) => {
+        .std::map[&]((item) {
             const auto loopContext = { ...context, [itemName] = item };
             return renderTemplate(loopBody, loopContext);
-            });
-            .join("");
+            }).join("");
             });
 
 }
 
-std::string handleVariables(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: handleVariables(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto variableRegex = /{{(\s*[\w.]+\s*)}}/g;
 
-    return template.replace(variableRegex, (match, variable) => {;
-        const auto trimmedVar = variable.trim();
+    return template.replace[&](variableRegex, (match, variable) {;
+        const auto trimmedVar = variable;
         const auto value = getNestedValue(context, trimmedVar);
         return value != std::nullopt ? std::to_string(value) : match;
         });
 
 }
 
-std::string handleFilters(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: handleFilters(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filterRegex = /{{(\s*[\w.]+\s*\|\s*\w+(?:\([^)]*\))?)\s*}}/g;
 
-    return template.replace(filterRegex, (match, expression) => {;
-        const auto [variable, ...filterParts] = expression.split("|").std::map((s: std::string) => s.trim());
+    return template.replace[&](filterRegex, (match, expression) {;
+        const auto [variable, ...filterParts] = expression.split("|").std::map[&]((s: std:) { return s); };
         auto value = getNestedValue(context, variable);
 
-        if (filterParts.length > 0) {
+        if (filterParts.size() > 0) {
             const auto filterStr = filterParts.join("|");
             value = applyFilter(value, filterStr);
         }
@@ -94,7 +95,7 @@ std::string handleFilters(const std::string& template, const std::unordered_map<
 
 }
 
-std::any getNestedValue(const std::any& obj, const std::string& path) {
+std: getNestedValue(const std:& obj, const std:& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = path.split(".");
@@ -102,7 +103,7 @@ std::any getNestedValue(const std::any& obj, const std::string& path) {
 
     for (const auto& part : parts)
         if (current && typeof current == 'object' && part in current) {
-            current = (current<std::string, unknown>)[part];
+            current = (current<std:, unknown>)[part];
             } else {
                 return std::nullopt;
             }
@@ -112,7 +113,7 @@ std::any getNestedValue(const std::any& obj, const std::string& path) {
 
 }
 
-bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context) {
+bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks
@@ -135,8 +136,8 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
     }
 
     // Handle 'not' operator
-    if (condition.startsWith('not ')) {
-        const auto variable = condition.substring(4).trim();
+    if (condition.substr(0, 'not ')) {
+        const auto variable = condition.substring(4);
         return !context[variable];
     }
 
@@ -145,7 +146,7 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
 
 }
 
-std::any applyFilter(const std::any& value, const std::string& filterStr) {
+std: applyFilter(const std:& value, const std:& filterStr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filterMatch = filterStr.match(/(\w+)(?:\(([^)]*)\))?/);
@@ -172,7 +173,7 @@ std::any applyFilter(const std::any& value, const std::string& filterStr) {
 
         // case "capitalize":
         const auto str = std::to_string(value);
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
 
         // case "length":
         if (Array.isArray(value) || typeof value == 'string') {
@@ -193,14 +194,14 @@ std::any applyFilter(const std::any& value, const std::string& filterStr) {
 
 }
 
-std::string escapeTemplate(const std::string& str) {
+std: escapeTemplate(const std:& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return str.replace(/{{/g, "\\{\\{").replace(/}}/g, "\\}\\}").replace(/{%/g, "\\{\\%").replace(/%}/g, "\\%\\}");
 
 }
 
-bool hasTemplateSyntax(const std::string& str) {
+bool hasTemplateSyntax(const std:& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /{{.*?}}|{%.*?%}/.test(str);

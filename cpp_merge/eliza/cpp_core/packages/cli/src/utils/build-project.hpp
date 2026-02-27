@@ -19,10 +19,10 @@ namespace elizaos {
 /**
  * Builds a project or plugin in the specified directory using the most appropriate available build method.
  *
- * Attempts to run the build script from `package.json` using `bun` or `npm`, or falls back to building with the TypeScript compiler if a `tsconfig.json` is present. Throws an error if no suitable build method is found or if all build attempts fail.
+ * Attempts to run the build script from "package.json" using "bun" or "npm", or falls back to building with the TypeScript compiler if a "tsconfig.json" is present. Throws an error if no suitable build method is found or if all build attempts fail.
  *
  * @param cwd - The directory containing the project or plugin to build.
- * @param isPlugin - Set to `true` if building a plugin; otherwise, builds a project.
+ * @param isPlugin - Set to "true" if building a plugin; otherwise, builds a project.
  *
  * @throws {Error} If no build method can be determined or if all build attempts fail.
  */
@@ -36,12 +36,12 @@ namespace elizaos {
     // Read package.json (we already validated it exists)
       // Package has a build script, use bun to run it
 
-        await runBunCommand(['run', 'build'], cwd);
+        runBunCommand(['run', 'build'], cwd);
 
     // If we get here, no build script was found
 
     // For TypeScript projects, try tsc with bunx
-        await execa('bunx', ['tsc', '--build'], { cwd, stdio: 'inherit' });
+        execa('bunx', ['tsc', '--build'], { cwd, stdio: 'inherit' });
 
     // If all else fails, throw an error
 

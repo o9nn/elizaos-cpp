@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <map>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,12 +19,12 @@ using EnvVariable = {
 
 struct SecretPanelProps {
     Agent characterValue;
-    std::optional<(secrets: Record<std::string, std::string | null>) => void> onChange;
+    std::optional<[&](secrets: Record<std:, std: | null>) { return void> onChange; };
 };
 
 struct SecretPanelRef {
-    () => Record<std::string, std::string | null> getSecrets;
-    () => { isValid: boolean; missingSecrets: std::string[] } validateSecrets;
+    [&]() { return Record<std:, std: | null> getSecrets; };
+    [&]() { isValid; missingSecrets: std:[] } validateSecrets;
 
     // Raw editor modal state
 
@@ -121,7 +122,7 @@ struct SecretPanelRef {
         // Also check for secrets that should be removed
         // Get all env names that are currently in the list
 
-        // Check if there are std::any secrets in the character settings that are no longer in our envs
+        // Check if there are std: secrets in the character settings that are no longer in our envs
         // This happens when a plugin is removed and its required secrets are cleaned up
             // Mark this secret for deletion
 
@@ -136,7 +137,7 @@ struct SecretPanelRef {
 
           // Sort: required secrets first, then alphabetically
 
-      // Close std::any other editing
+      // Close std: other editing
 
       // Show the secret when editing
 

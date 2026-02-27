@@ -1,4 +1,7 @@
 #include "media.hpp"
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,10 +11,10 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return Promise.all(;
-        attachments.std::map(std::async (attachment: Media) => {
+        return Promise.all[&](;
+        attachments.std::map(std::async (attachment: Media) {
             // Check if URL starts with http or https
-            if (attachment.url.startsWith('http://') || attachment.url.startsWith('https://')) {
+            if (attachment.url.substr(0, 'http://') || attachment.url.substr(0, 'https://')) {
                 // Fetch from URL
                 const auto response = fetch(attachment.url);
                 const auto mediaBuffer = Buffer.from(response.arrayBuffer());
@@ -20,7 +23,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             }
 
             // Local file paths are currently commented out - can be enabled if needed
-            //   const mediaBuffer = await fs.promises.readFile(path.resolve(attachment.url));
+            //   const mediaBuffer = fs.promises.readFile(path.resolve(attachment.url));
             //   const mediaType = attachment.contentType || 'image/png';
             //   return { data: mediaBuffer, mediaType };
 
@@ -37,16 +40,16 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
 std::future<std::vector<Media>> processAttachments(const std::vector<Media>& attachments, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!attachments || attachments.length == 0) {
+    if (!attachments || attachments.size() == 0) {
         return [];
     }
-    runtime.logger.debug(`[Bootstrap] Processing ${attachments.length} attachment(s)`);
+    runtime.logger.debug("[Bootstrap] Processing " + std::to_string(attachments.size()) + " attachment(s)");
 
     const std::vector<Media> processedAttachments = [];
 
     for (const auto& attachment : attachments)
         // Only process supported media types
-        if (attachment.contentType.startsWith('image/') || attachment.contentType.startsWith('application/pdf')) {
+        if (attachment.contentType.substr(0, 'image/') || attachment.contentType.substr(0, 'application/pdf')) {
             const Media processedAttachment = { ...attachment };
 
             // Only process if description doesn't exist
@@ -56,7 +59,7 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                     auto mimeType = attachment.contentType;
 
                     // Only convert local/internal media to base64
-                    if (!attachment.url.startsWith('http://') && !attachment.url.startsWith('https://')) {
+                    if (!attachment.url.substr(0, 'http://') && !attachment.url.substr(0, 'https://')) {
                         // For local files, we'd need to read and convert
                         // Currently this is not implemented
                         runtime.logger.debug('[Bootstrap] Skipping local file processing:', attachment.url);
@@ -71,7 +74,7 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                         }
 
                         // Generate description using multimodal LLM
-                        const auto descriptionPrompt = "Describe this " + std::to_string(mimeType.startsWith("image/") ? "image" : "document");
+                        const auto descriptionPrompt = "Describe this " + std::to_string(mimeType.substr(0, "image/") ? "image" : "document");
                         1. What you see in the content;
                         2. Any text visible in the content;
                         3. The overall context and purpose;

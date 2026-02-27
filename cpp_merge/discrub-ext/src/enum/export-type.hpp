@@ -5,6 +5,6 @@
 enum struct ExportType;
 
 enum struct ExportType {
-    JSON = std::string("json"), HTML = std::string("html"), CSV = std::string("csv"), MEDIA = std::string("media")
+    JSON = std:("json"), HTML = std:("html"), CSV = std:("csv"), MEDIA = std:("media")
 };
 #endif

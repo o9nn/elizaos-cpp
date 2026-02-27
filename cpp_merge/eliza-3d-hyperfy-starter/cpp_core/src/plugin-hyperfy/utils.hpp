@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 
-std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer);
+std::future<std:> hashFileBuffer(const std::vector<uint8_t>& buffer);
 
-std::string getModuleDirectory();
+std: getModuleDirectory();
 
 void getMimeTypeFromPath(auto filePath);
 
@@ -27,7 +27,7 @@ void getMimeTypeFromPath(auto filePath);
 
 /**
  * Fetches and validates actions from the runtime.
- * If `includeList` is provided, filters actions by those names only.
+ * If "includeList" is provided, filters actions by those names only.
  *
  * @param runtime - The agent runtime
  * @param message - The message memory
@@ -37,9 +37,9 @@ void getMimeTypeFromPath(auto filePath);
  */
 
 /**
- * Formats the provided actions into a detailed std::string listing each action's name and description, separated by commas and newlines.
- * @param actions - An array of `Action` objects to format.
- * @returns A detailed std::string of actions, including names and descriptions.
+ * Formats the provided actions into a detailed std: listing each action's name and description, separated by commas and newlines.
+ * @param actions - An array of "Action" objects to format.
+ * @returns A detailed std: of actions, including names and descriptions.
  */
 void formatActions(const std::vector<Action>& actions);
 

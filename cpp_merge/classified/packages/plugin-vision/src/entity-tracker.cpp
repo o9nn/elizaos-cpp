@@ -2,11 +2,11 @@
 
 EntityTracker::EntityTracker(string worldId) {
     this->worldState = object{
-        object::pair{std::string("worldId"), std::string("worldId")}, 
-        object::pair{std::string("entities"), std::make_shared<Map>()}, 
-        object::pair{std::string("lastUpdate"), Date->now()}, 
-        object::pair{std::string("activeEntities"), array<any>()}, 
-        object::pair{std::string("recentlyLeft"), array<any>()}
+        object::pair{std:("worldId"), std:("worldId")}, 
+        object::pair{std:("entities"), std::make_shared<Map>()}, 
+        object::pair{std:("lastUpdate"), Date->now()}, 
+        object::pair{std:("activeEntities"), array<any>()}, 
+        object::pair{std:("recentlyLeft"), array<any>()}
     };
 }
 
@@ -23,7 +23,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> EntityTracker::u
     }
     for (auto& obj : detectedObjects)
     {
-        if (AND((obj->type != std::string("person")), (obj->type != std::string("person-candidate")))) {
+        if (AND((obj->type != std:("person")), (obj->type != std:("person-candidate")))) {
             auto entity = std::async([=]() { this->trackObject(obj, currentTime); });
             frameEntities->push(entity);
             seenEntityIds->add(entity->id);
@@ -38,14 +38,14 @@ std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> EntityTracker::u
 
 std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackPerson(std::shared_ptr<PersonInfo> person, any faceProfileId, double timestamp)
 {
-    auto matchedEntity = this->findMatchingEntity(person->boundingBox, std::string("person"), faceProfileId);
+    auto matchedEntity = this->findMatchingEntity(person->boundingBox, std:("person"), faceProfileId);
     if (matchedEntity) {
         matchedEntity->lastSeen = timestamp;
         matchedEntity->lastPosition = person->boundingBox;
         matchedEntity->appearances->push(object{
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("boundingBox"), person->boundingBox}, 
-            object::pair{std::string("confidence"), person->confidence}
+            object::pair{std:("timestamp"), std:("timestamp")}, 
+            object::pair{std:("boundingBox"), person->boundingBox}, 
+            object::pair{std:("confidence"), person->confidence}
         });
         if (AND((faceProfileId), (!matchedEntity->attributes->faceId))) {
             matchedEntity->attributes->faceId = faceProfileId;
@@ -55,64 +55,64 @@ std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackPer
         }
         return matchedEntity;
     } else {
-        auto entityId = std::string("person-") + timestamp + std::string("-") + Math->random()->toString(36)->substr(2, 9) + string_empty;
+        auto entityId = std:("person-") + timestamp + std:("-") + Math->random()->toString(36)->substr(2, 9) + string_empty;
         auto newEntity = object{
-            object::pair{std::string("id"), entityId}, 
-            object::pair{std::string("entityType"), std::string("person")}, 
-            object::pair{std::string("firstSeen"), timestamp}, 
-            object::pair{std::string("lastSeen"), timestamp}, 
-            object::pair{std::string("lastPosition"), person->boundingBox}, 
-            object::pair{std::string("appearances"), array<object>{ object{
-                object::pair{std::string("timestamp"), std::string("timestamp")}, 
-                object::pair{std::string("boundingBox"), person->boundingBox}, 
-                object::pair{std::string("confidence"), person->confidence}
+            object::pair{std:("id"), entityId}, 
+            object::pair{std:("entityType"), std:("person")}, 
+            object::pair{std:("firstSeen"), timestamp}, 
+            object::pair{std:("lastSeen"), timestamp}, 
+            object::pair{std:("lastPosition"), person->boundingBox}, 
+            object::pair{std:("appearances"), array<object>{ object{
+                object::pair{std:("timestamp"), std:("timestamp")}, 
+                object::pair{std:("boundingBox"), person->boundingBox}, 
+                object::pair{std:("confidence"), person->confidence}
             } }}, 
-            object::pair{std::string("attributes"), object{
-                object::pair{std::string("faceId"), faceProfileId}
+            object::pair{std:("attributes"), object{
+                object::pair{std:("faceId"), faceProfileId}
             }}, 
-            object::pair{std::string("worldId"), this->worldState->worldId}
+            object::pair{std:("worldId"), this->worldState->worldId}
         };
         this->worldState->entities->set(entityId, newEntity);
-        logger->info(std::string("[EntityTracker] New person entity created: ") + entityId + string_empty);
+        logger->info(std:("[EntityTracker] New person entity created: ") + entityId + string_empty);
         return newEntity;
     }
 }
 
 std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackObject(std::shared_ptr<DetectedObject> obj, double timestamp)
 {
-    auto matchedEntity = this->findMatchingEntity(obj->boundingBox, std::string("object"));
+    auto matchedEntity = this->findMatchingEntity(obj->boundingBox, std:("object"));
     if (matchedEntity) {
         matchedEntity->lastSeen = timestamp;
         matchedEntity->lastPosition = obj->boundingBox;
         matchedEntity->appearances->push(object{
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("boundingBox"), obj->boundingBox}, 
-            object::pair{std::string("confidence"), obj->confidence}
+            object::pair{std:("timestamp"), std:("timestamp")}, 
+            object::pair{std:("boundingBox"), obj->boundingBox}, 
+            object::pair{std:("confidence"), obj->confidence}
         });
         if (matchedEntity->appearances->get_length() > 50) {
             matchedEntity->appearances = matchedEntity->appearances->slice(-50);
         }
         return matchedEntity;
     } else {
-        auto entityId = std::string("object-") + timestamp + std::string("-") + Math->random()->toString(36)->substr(2, 9) + string_empty;
+        auto entityId = std:("object-") + timestamp + std:("-") + Math->random()->toString(36)->substr(2, 9) + string_empty;
         auto newEntity = object{
-            object::pair{std::string("id"), entityId}, 
-            object::pair{std::string("entityType"), std::string("object")}, 
-            object::pair{std::string("firstSeen"), timestamp}, 
-            object::pair{std::string("lastSeen"), timestamp}, 
-            object::pair{std::string("lastPosition"), obj->boundingBox}, 
-            object::pair{std::string("appearances"), array<object>{ object{
-                object::pair{std::string("timestamp"), std::string("timestamp")}, 
-                object::pair{std::string("boundingBox"), obj->boundingBox}, 
-                object::pair{std::string("confidence"), obj->confidence}
+            object::pair{std:("id"), entityId}, 
+            object::pair{std:("entityType"), std:("object")}, 
+            object::pair{std:("firstSeen"), timestamp}, 
+            object::pair{std:("lastSeen"), timestamp}, 
+            object::pair{std:("lastPosition"), obj->boundingBox}, 
+            object::pair{std:("appearances"), array<object>{ object{
+                object::pair{std:("timestamp"), std:("timestamp")}, 
+                object::pair{std:("boundingBox"), obj->boundingBox}, 
+                object::pair{std:("confidence"), obj->confidence}
             } }}, 
-            object::pair{std::string("attributes"), object{
-                object::pair{std::string("objectType"), obj->type}
+            object::pair{std:("attributes"), object{
+                object::pair{std:("objectType"), obj->type}
             }}, 
-            object::pair{std::string("worldId"), this->worldState->worldId}
+            object::pair{std:("worldId"), this->worldState->worldId}
         };
         this->worldState->entities->set(entityId, newEntity);
-        logger->debug(std::string("[EntityTracker] New object entity created: ") + entityId + std::string(" (") + obj->type + std::string(")"));
+        logger->debug(std:("[EntityTracker] New object entity created: ") + entityId + std:(" (") + obj->type + std:(")"));
         return newEntity;
     }
 }
@@ -120,12 +120,12 @@ std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackObj
 double EntityTracker::calculateDistance(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2)
 {
     auto center1 = object{
-        object::pair{std::string("x"), box1->x + box1->width / 2}, 
-        object::pair{std::string("y"), box1->y + box1->height / 2}
+        object::pair{std:("x"), box1->x + box1->width / 2}, 
+        object::pair{std:("y"), box1->y + box1->height / 2}
     };
     auto center2 = object{
-        object::pair{std::string("x"), box2->x + box2->width / 2}, 
-        object::pair{std::string("y"), box2->y + box2->height / 2}
+        object::pair{std:("x"), box2->x + box2->width / 2}, 
+        object::pair{std:("y"), box2->y + box2->height / 2}
     };
     return Math->sqrt(Math->pow(center1["x"] - center2["x"], 2) + Math->pow(center1["y"] - center2["y"], 2));
 }
@@ -138,11 +138,11 @@ void EntityTracker::updateWorldState(std::shared_ptr<Set<string>> seenEntityIds,
     {
         if (AND((!seenEntityIds->has(entityId)), (this->worldState->activeEntities->includes(entityId)))) {
             this->worldState->recentlyLeft->push(object{
-                object::pair{std::string("entityId"), std::string("entityId")}, 
-                object::pair{std::string("leftAt"), timestamp}, 
-                object::pair{std::string("lastPosition"), entity["lastPosition"]}
+                object::pair{std:("entityId"), std:("entityId")}, 
+                object::pair{std:("leftAt"), timestamp}, 
+                object::pair{std:("lastPosition"), entity["lastPosition"]}
             });
-            logger->info(std::string("[EntityTracker] Entity left scene: ") + entityId + string_empty);
+            logger->info(std:("[EntityTracker] Entity left scene: ") + entityId + string_empty);
         }
     }
     this->worldState->recentlyLeft = this->worldState->recentlyLeft->filter([=](auto entry) mutable
@@ -154,7 +154,7 @@ void EntityTracker::updateWorldState(std::shared_ptr<Set<string>> seenEntityIds,
     {
         if (timestamp - entity["lastSeen"] > this->CLEANUP_THRESHOLD * 10) {
             this->worldState->entities->delete(entityId);
-            logger->debug(std::string("[EntityTracker] Cleaned up old entity: ") + entityId + string_empty);
+            logger->debug(std:("[EntityTracker] Cleaned up old entity: ") + entityId + string_empty);
         }
     }
 }
@@ -166,23 +166,23 @@ std::shared_ptr<Promise<void>> EntityTracker::syncWithRuntime(std::shared_ptr<IA
         for (auto& entity : frameEntities)
         {
             auto _elizaEntity = object{
-                object::pair{std::string("id"), as<std::shared_ptr<UUID>>(entity->id)}, 
-                object::pair{std::string("names"), array<string>{ OR((entity->attributes->name), (entity->id)) }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("type"), entity->entityType}, 
-                    object::pair{std::string("firstSeen"), entity->firstSeen}, 
-                    object::pair{std::string("lastSeen"), entity->lastSeen}, 
-                    object::pair{std::string("attributes"), entity->attributes}, 
-                    object::pair{std::string("worldId"), this->worldState->worldId}
+                object::pair{std:("id"), as<std::shared_ptr<UUID>>(entity->id)}, 
+                object::pair{std:("names"), array<string>{ OR((entity->attributes->name), (entity->id)) }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("type"), entity->entityType}, 
+                    object::pair{std:("firstSeen"), entity->firstSeen}, 
+                    object::pair{std:("lastSeen"), entity->lastSeen}, 
+                    object::pair{std:("attributes"), entity->attributes}, 
+                    object::pair{std:("worldId"), this->worldState->worldId}
                 }}, 
-                object::pair{std::string("agentId"), runtime->agentId}
+                object::pair{std:("agentId"), runtime->agentId}
             };
-            logger->debug(std::string("[EntityTracker] Would sync entity ") + entity->id + std::string(" with runtime"));
+            logger->debug(std:("[EntityTracker] Would sync entity ") + entity->id + std:(" with runtime"));
         }
     }
     catch (const any& error)
     {
-        logger->error(std::string("[EntityTracker] Failed to sync with runtime:"), error);
+        logger->error(std:("[EntityTracker] Failed to sync with runtime:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -211,8 +211,8 @@ array<object> EntityTracker::getRecentlyLeft()
     return as<array<object>>(this->worldState->recentlyLeft->map([=](auto entry) mutable
     {
         return (object{
-            object::pair{std::string("entity"), this->worldState->entities->get(entry["entityId"])}, 
-            object::pair{std::string("leftAt"), entry["leftAt"]}
+            object::pair{std:("entity"), this->worldState->entities->get(entry["entityId"])}, 
+            object::pair{std:("leftAt"), entry["leftAt"]}
         });
     }
     )->filter([=](auto entry) mutable
@@ -227,7 +227,7 @@ boolean EntityTracker::assignNameToEntity(string entityId, string name)
     auto entity = this->worldState->entities->get(entityId);
     if (entity) {
         entity->attributes->name = name;
-        logger->info(std::string("[EntityTracker] Assigned name "") + name + std::string("" to entity ") + entityId + string_empty);
+        logger->info(std:("[EntityTracker] Assigned name "") + name + std:("" to entity ") + entityId + string_empty);
         return true;
     }
     return false;
@@ -237,17 +237,17 @@ object EntityTracker::getStatistics()
 {
     auto entities = Array->from(this->worldState->entities->values());
     return object{
-        object::pair{std::string("totalEntities"), entities->get_length()}, 
-        object::pair{std::string("activeEntities"), this->worldState->activeEntities->get_length()}, 
-        object::pair{std::string("recentlyLeft"), this->worldState->recentlyLeft->get_length()}, 
-        object::pair{std::string("people"), entities->filter([=](auto e) mutable
+        object::pair{std:("totalEntities"), entities->get_length()}, 
+        object::pair{std:("activeEntities"), this->worldState->activeEntities->get_length()}, 
+        object::pair{std:("recentlyLeft"), this->worldState->recentlyLeft->get_length()}, 
+        object::pair{std:("people"), entities->filter([=](auto e) mutable
         {
-            return e->entityType == std::string("person");
+            return e->entityType == std:("person");
         }
         )->get_length()}, 
-        object::pair{std::string("objects"), entities->filter([=](auto e) mutable
+        object::pair{std:("objects"), entities->filter([=](auto e) mutable
         {
-            return e->entityType == std::string("object");
+            return e->entityType == std:("object");
         }
         )->get_length()}
     };

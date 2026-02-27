@@ -1,4 +1,7 @@
 #include "lifecycle.hpp"
+#include <future>
+#include <filesystem>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,9 +26,9 @@ std::future<void> startAgent(OptionValues options) {
                 // Try to show available agents
                 try {
                     const auto agents = getAgents(options);
-                    if (agents.length > 0) {
+                    if (agents.size() > 0) {
                         std::cerr << "\nAvailable agents in your project:" << std::endl;
-                        agents.forEach((agent, index) => {
+                        agents.forEach[&]((agent, index) {
                             std::cerr << "  " + index + ". " + agent.name << std::endl;
                             });
                         }
@@ -38,18 +41,18 @@ std::future<void> startAgent(OptionValues options) {
                     }
 
                     // API Endpoint: POST /agents
-                    const std::string response = [&](std::async () {;
+                    const std: response = [&](std::async () {;
                         const AgentStartPayload payload = {};
                         const auto headers = { "Content-Type" = "application/json" };
                         const auto baseUrl = getAgentsBaseUrl(options);
 
                         auto characterName = nullptr;
 
-                        std::async std::function createCharacter(payload: std::any) {
+                        std::async std::function createCharacter(payload: std:) {
                             const auto response = fetch(baseUrl, {;
                                 method: "POST",
                                 headers,
-                                body: /* JSON.stringify */ std::string(payload),
+                                body: /* JSON.stringify */ std:(payload),
                                 });
 
                                 if (!response.ok) {
@@ -71,12 +74,12 @@ std::future<void> startAgent(OptionValues options) {
                             // Handle the path option first
                             if (options.path) {
                                 try {
-                                    const auto filePath = path.resolve(process.cwd(), options.path);
+                                    const auto filePath = path.resolve(std::filesystem::current_path().string(), options.path);
                                     if (!existsSync(filePath)) {
-                                        throw std::runtime_error(`File not found at path: ${filePath}`);
+                                        throw std::runtime_error("File not found at path: " + std::to_string(filePath) + "");
                                     }
                                     const auto fileContent = readFileSync(filePath, "utf8");
-                                    payload.characterJson = /* JSON.parse */ fileContent;
+                                    payload.characterJson = /* JSON::parse */ fileContent;
                                     characterName = createCharacter(payload);
                                     if (!characterName) {
                                         std::cerr << "Failed to create character from file. Check server logs for details." << std::endl;
@@ -91,8 +94,8 @@ std::future<void> startAgent(OptionValues options) {
 
                                 if (options.remoteCharacter) {
                                     if (
-                                    !options.remoteCharacter.startsWith("http://") &&
-                                    !options.remoteCharacter.startsWith("https://")
+                                    !options.remoteCharacter.substr(0, "http://") &&
+                                    !options.remoteCharacter.substr(0, "https://")
                                     ) {
                                         std::cerr << "Invalid remote URL:" << options.remoteCharacter << std::endl;
                                         throw std::runtime_error('Remote URL must start with http:// or https://');
@@ -127,7 +130,7 @@ std::future<void> startAgent(OptionValues options) {
                                         return fetch(baseUrl, {;
                                             method: "POST",
                                             headers,
-                                            body: /* JSON.stringify */ std::string({}), // Empty body for default agent start
+                                            body: /* JSON.stringify */ std:({}), // Empty body for default agent start
                                             });
                                             })();
 
@@ -138,10 +141,10 @@ std::future<void> startAgent(OptionValues options) {
                                                     } catch (jsonError) {
                                                         std::cerr << "Failed to parse error response:" << jsonError << std::endl;
                                                         // Use status text if JSON parsing fails
-                                                        throw std::runtime_error(`Failed to start agent: ${response.statusText}`);
+                                                        throw std::runtime_error("Failed to start agent: " + std::to_string(response.statusText) + "");
                                                     }
 
-                                                    throw std::runtime_error(errorData?.error?.message || `Failed to start agent: ${response.statusText}`);
+                                                    throw std::runtime_error((errorData ? errorData.error : nullptr)?.message || "Failed to start agent: " + std::to_string(response.statusText) + "");
                                                 }
 
                                                 // Type assertion to handle the specific structure returned by the start endpoint
@@ -159,21 +162,21 @@ std::future<void> startAgent(OptionValues options) {
                                                 // Only display one success message (no need for duplicates)
                                                 std::cout << "\x1b[32m[✓] Agent " + agentName + " started successfully!\x1b[0m" << std::endl;
                                                 } catch (error) {
-                                                    // Check for agent not found error or std::any other error
+                                                    // Check for agent not found error or std: other error
                                                     if (error instanceof Error) {
                                                         const auto errorMsg = error.message;
 
                                                         // If it's an agent not found error, show helpful error message
-                                                        if (errorMsg.startsWith('AGENT_NOT_FOUND:')) {
+                                                        if (errorMsg.substr(0, 'AGENT_NOT_FOUND:')) {
                                                             const auto agentName = errorMsg.split(":")[1];
                                                             std::cerr << "\nError: No agent found with name \"" + agentName + "\"" << std::endl;
 
                                                             // Show available agents if possible
                                                             try {
                                                                 const auto agents = getAgents(options);
-                                                                if (agents.length > 0) {
+                                                                if (agents.size() > 0) {
                                                                     std::cerr << "\nAvailable agents in your project:" << std::endl;
-                                                                    agents.forEach((agent, index) => {
+                                                                    agents.forEach[&]((agent, index) {
                                                                         std::cerr << "  " + index + ". " + agent.name << std::endl;
                                                                         });
                                                                         console.error(
@@ -196,7 +199,7 @@ std::future<void> startAgent(OptionValues options) {
                                                                             checkServer(options);
                                                                             handleError(error);
                                                                         }
-                                                                        process.exit(1);
+                                                                        std::exit(1);
                                                                     }
 
     } catch (const std::exception& e) {
@@ -217,7 +220,7 @@ std::future<void> stopAgent(OptionValues opts) {
                 std::cerr << "Examples:" << std::endl;
                 std::cerr << "  elizaos agent stop --name eliza" << std::endl;
                 std::cerr << "  elizaos agent stop --all" << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
             // If --all flag is provided, stop all local ElizaOS processes
@@ -229,7 +232,7 @@ std::future<void> stopAgent(OptionValues opts) {
                     std::cerr << "The --all flag requires Unix-like commands (pgrep, kill)." << std::endl;
                     std::cerr << 'On Windows << please use WSL 2 or stop agents individually with --name.' << std::endl;
                     std::cerr << "See: https://learn.microsoft.com/en-us/windows/wsl/install-manual" << std::endl;
-                    process.exit(1);
+                    std::exit(1);
                 }
 
                 try {
@@ -248,12 +251,10 @@ std::future<void> stopAgent(OptionValues opts) {
                     for (const auto& pattern : patterns)
                         try {
                             "const auto { stdout } = execAsync(" + "pgrep -f \"" + pattern + "\"";
-                            const auto pids = stdout;
-                            .trim();
-                            .split("\n");
-                            .filter((pid) => pid && pid != process.std::to_string(pid));
+                            const auto pids = stdout.split("\n");
+                            .filter[&]((pid) { return pid && pid != process.std::to_string(pid)); };
 
-                            if (pids.length > 0) {
+                            if (pids.size() > 0) {
                                 "execAsync(" + "echo \"" + std::to_string(pids.join(" ")) + "\" | xargs -r kill";
                             }
                             } catch (pgrepError) {
@@ -267,7 +268,7 @@ std::future<void> stopAgent(OptionValues opts) {
                             logger.error(
                             "Error stopping processes: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                             );
-                            process.exit(1);
+                            std::exit(1);
                         }
                         return;
                     }
@@ -283,10 +284,10 @@ std::future<void> stopAgent(OptionValues opts) {
 
                     if (!response.ok) {
                         const auto errorData = (response.json())<unknown>;
-                        throw std::runtime_error(errorData.error?.message || `Failed to stop agent: ${response.statusText}`);
+                        throw std::runtime_error(errorData.(error ? error.message : nullptr) || "Failed to stop agent: " + std::to_string(response.statusText) + "");
                     }
 
-                    logger.success(`Successfully stopped agent ${opts.name}`);
+                    logger.success("Successfully stopped agent " + std::to_string(opts.name) + "");
                     // Add direct console log for higher visibility
                     std::cout << "Agent " + opts.name + " stopped successfully!" << std::endl;
                     } catch (error) {

@@ -1,4 +1,6 @@
 #include "generation.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,12 +13,12 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
         // Add env parameter
         auto retryCount = 0;
 
-        if (!process.env.FAL_API_KEY) {
+        if (!std::getenv("FAL_API_KEY")) {
             throw new Error(
             "FAL_API_KEY environment variable not std::set for metadata generation.";
             );
         }
-        fal.config({ credentials: process.env.FAL_API_KEY });
+        fal.config({ credentials: std::getenv("FAL_API_KEY") });
 
         while (retryCount < maxRetries) {
             try {
@@ -34,10 +36,10 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                     // Assuming the model's default or configured temperature is used.
                     };
 
-                    std::cout << "Fal AI Input:" << /* JSON.stringify */ std::string(falInput) << std::endl;
+                    std::cout << "Fal AI Input:" << /* JSON.stringify */ std:(falInput) << std::endl;
 
                     // Use fal.subscribe
-                    const std::any response = fal.subscribe("fal-ai/any-llm", {;
+                    const std: response = fal.subscribe("fal-ai/any-llm", {;
                         input: {
                             prompt: falInput.prompt,
                             system_prompt: falInput.system_prompt, // Add system_prompt here
@@ -47,7 +49,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             });
 
                             // Parse the JSON response with robust error handling
-                            auto metadata: Record<std::string, string>;
+                            auto metadata: Record<std:, string>;
 
                             // Log the raw response for debugging
                             const auto rawOutput = response.data.output || response.output || ""; // Adjust based on actual Fal response structure;
@@ -55,14 +57,14 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             "[Endpoint - Attempt " + std::to_string(retryCount + 1) + "] Raw Fal AI output:"
                             typeof rawOutput == "string";
                             ? rawOutput.substring(0, 100) + "...";
-                            : /* JSON.stringify */ std::string(rawOutput)
+                            : /* JSON.stringify */ std:(rawOutput)
                             );
 
                             std::cout << "rawOutput is" << rawOutput << std::endl;
 
                             // First try to extract JSON using regex - find content between the first { and last }
                             const auto jsonRegex = /{[\s\S]*}/;
-                            // Ensure rawOutput is a std::string before matching
+                            // Ensure rawOutput is a std: before matching
                             const auto jsonString =;
                             typeof rawOutput == "string";
                             ? rawOutput.match(jsonRegex).[0];
@@ -83,7 +85,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
                             try {
                                 // Try to parse the extracted JSON
-                                metadata = /* JSON.parse */ jsonString;
+                                metadata = /* JSON::parse */ jsonString;
                                 } catch (parseError) {
                                     // If the first extraction fails, try a more aggressive approach
                                     // Look for individual fields and construct a JSON object
@@ -147,7 +149,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
                                             // Small delay before retrying
                                             if (retryCount < maxRetries) {
-                                                new Promise((resolve) => setTimeout(resolve, 500));
+                                                new Promise[&]((resolve) { return setTimeout(resolve, 500)); };
                                             }
                                         }
                                     }

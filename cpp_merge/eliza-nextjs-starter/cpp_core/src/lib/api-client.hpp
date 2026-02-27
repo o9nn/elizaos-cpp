@@ -21,65 +21,65 @@ namespace elizaos {
 
 // Backend Memory type from ElizaOS
 struct BackendMemory {
-    std::string id;
-    std::string; // UUID of sender (user or agent) entityId;
-    std::string; // UUID of the agent this memory belongs to agentId;
-    std::string; // UUID of the room roomId;
+    std: id;
+    std:; // UUID of sender (user or agent) entityId;
+    std:; // UUID of the agent this memory belongs to agentId;
+    std:; // UUID of the room roomId;
     { content;
-    std::optional<std::string> text;
-    std::optional<std::string> source;
-    std::optional<std::string> thought;
+    std::optional<std:> text;
+    std::optional<std:> source;
+    std::optional<std:> thought;
     std::optional<std::vector<std::string>> actions;
-    std::optional<std::vector<std::any>> attachments;
+    std::optional<std::vector<std::string>> attachments;
     std::optional<{> metadata;
-    std::optional<std::string> entityName;
+    std::optional<std:> entityName;
     double createdAt;
-    std::optional<std::string> worldId;
+    std::optional<std:> worldId;
     std::optional<double> importance;
 };
 
 // Agent information
 struct Agent {
-    std::string id;
-    std::string name;
-    std::optional<std::string> bio;
-    std::optional<std::unordered_map<std::string, std::any>> settings;
+    std: id;
+    std: name;
+    std::optional<std:> bio;
+    std::optional<std::unordered_map<std:, std:>> settings;
     std::optional<"active" | "inactive"> status;
 };
 
 // Room information
 struct Room {
-    std::string id;
-    std::string name;
+    std: id;
+    std: name;
     "dm" | "group" | "channel" type;
-    std::string agentId;
-    std::optional<std::string> worldId;
-    std::optional<std::string> serverId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std: agentId;
+    std::optional<std:> worldId;
+    std::optional<std:> serverId;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 // Channel information
 struct Channel {
-    std::string id;
-    std::string name;
-    std::string serverId;
-    std::optional<std::string> description;
+    std: id;
+    std: name;
+    std: serverId;
+    std::optional<std:> description;
     std::optional<std::vector<std::string>> participants;
     std::optional<std::vector<std::string>> agents;
 };
 
 // Message submission payload
 struct MessageSubmission {
-    std::string message;
-    std::string agentId;
-    std::optional<std::string> roomId;
-    std::optional<std::string> channelId;
-    std::optional<std::string> serverId;
-    std::optional<std::string> senderId;
-    std::optional<std::string> senderName;
-    std::optional<std::string> source;
-    std::optional<std::vector<std::any>> attachments;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std: message;
+    std: agentId;
+    std::optional<std:> roomId;
+    std::optional<std:> channelId;
+    std::optional<std:> serverId;
+    std::optional<std:> senderId;
+    std::optional<std:> senderName;
+    std::optional<std:> source;
+    std::optional<std::vector<std::string>> attachments;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 /**
@@ -90,7 +90,7 @@ struct MessageSubmission {
 
     // Check content type before parsing
 
-// ====== AGENT MANAGEMENT ======
+// === AGENT MANAGEMENT ===
 
 /**
  * Get all available agents
@@ -100,13 +100,13 @@ struct MessageSubmission {
  * Get specific agent details
  */
 
-// ====== MEMORY MANAGEMENT ======
+// === MEMORY MANAGEMENT ===
 
 /**
  * Fetches memories for a given agent (latest API)
  */
 
-      await fetcher(url);
+      fetcher(url);
 
     return transformMemoriesToChatMessages(memories);
 
@@ -114,7 +114,7 @@ struct MessageSubmission {
  * Fetches memories for a specific room (latest API)
  */
 
-      await fetcher(url);
+      fetcher(url);
 
     return transformMemoriesToChatMessages(memories);
 
@@ -123,7 +123,7 @@ struct MessageSubmission {
  */
 std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<BackendMemory>& memories);
 
-// ====== MESSAGING SYSTEM ======
+// === MESSAGING SYSTEM ===
 
 /**
  * Submit a message via the messaging system
@@ -142,7 +142,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Send message to channel
  */
 
-// ====== ROOM MANAGEMENT ======
+// === ROOM MANAGEMENT ===
 
 /**
  * Get agent rooms
@@ -152,30 +152,30 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Create a new room
  */
 
-// ====== SERVER HEALTH ======
+// === SERVER HEALTH ===
 
 /**
  * Ping server for health check
  */
-    // ElizaOS returns {pong: true, timestamp: number} for successful ping
+    // ElizaOS returns {pong: true, timestamp} for successful ping
 
 /**
  * Get server status
  */
 
-// ====== DM CHANNEL MANAGEMENT ======
+// === DM CHANNEL MANAGEMENT ===
 
 struct DMChannel {
-    std::string id;
-    std::string name;
+    std: id;
+    std: name;
     "DM" type;
     { metadata;
-    std::string user1;
-    std::string user2;
-    std::string forAgent;
-    std::string createdAt;
-    std::optional<std::string> sessionId;
-    std::optional<std::string> title;
+    std: user1;
+    std: user2;
+    std: forAgent;
+    std: createdAt;
+    std::optional<std:> sessionId;
+    std::optional<std:> title;
     std::vector<std::string> participants;
 };
 

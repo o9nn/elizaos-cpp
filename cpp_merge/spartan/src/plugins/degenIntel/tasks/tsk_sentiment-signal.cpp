@@ -4,43 +4,43 @@ void setupSentimentGenerator(any runtime)
 {
     worldId = runtime["agentId"];
     auto tasks = std::async([=]() { runtime["getTasks"](object{
-        object::pair{std::string("tags"), array<string>{ std::string("queue"), std::string("repeat"), std::string("plugin_trader") }}
+        object::pair{std:("tags"), array<string>{ std:("queue"), std:("repeat"), std:("plugin_trader") }}
     }); });
     for (auto& task : tasks)
     {
         std::async([=]() { runtime["deleteTask"](task["id"]); });
     }
     runtime["registerTaskWorker"](object{
-        object::pair{std::string("name"), std::string("TRADER_SYNC_SENTIMENT")}, 
-        object::pair{std::string("validate"), [=](auto _runtime, auto _message, auto _state) mutable
+        object::pair{std:("name"), std:("TRADER_SYNC_SENTIMENT")}, 
+        object::pair{std:("validate"), [=](auto _runtime, auto _message, auto _state) mutable
         {
             return true;
         }
         }, 
-        object::pair{std::string("execute"), [=](auto runtime, auto _options, auto task) mutable
+        object::pair{std:("execute"), [=](auto runtime, auto _options, auto task) mutable
         {
             try
             {
-                console->log(std::string("PLUGIN_TRADER_SENTIMENT"));
-                runtime["emitEvent"](std::string("PLUGIN_TRADER_SENTIMENT"), object{});
+                console->log(std:("PLUGIN_TRADER_SENTIMENT"));
+                runtime["emitEvent"](std:("PLUGIN_TRADER_SENTIMENT"), object{});
             }
             catch (const any& error)
             {
-                logger->error(std::string("Failed to sync sentiment"), error);
+                logger->error(std:("Failed to sync sentiment"), error);
             }
         }
         }
     });
     runtime["createTask"](object{
-        object::pair{std::string("name"), std::string("TRADER_SYNC_SENTIMENT")}, 
-        object::pair{std::string("description"), std::string("calculate sentiment")}, 
-        object::pair{std::string("worldId"), std::string("worldId")}, 
-        object::pair{std::string("metadata"), object{
-            object::pair{std::string("createdAt"), Date->now()}, 
-            object::pair{std::string("updatedAt"), Date->now()}, 
-            object::pair{std::string("updateInterval"), 1000 * 60 * 5}
+        object::pair{std:("name"), std:("TRADER_SYNC_SENTIMENT")}, 
+        object::pair{std:("description"), std:("calculate sentiment")}, 
+        object::pair{std:("worldId"), std:("worldId")}, 
+        object::pair{std:("metadata"), object{
+            object::pair{std:("createdAt"), Date->now()}, 
+            object::pair{std:("updatedAt"), Date->now()}, 
+            object::pair{std:("updateInterval"), 1000 * 60 * 5}
         }}, 
-        object::pair{std::string("tags"), array<string>{ std::string("queue"), std::string("repeat"), std::string("plugin_trader"), std::string("immediate") }}
+        object::pair{std:("tags"), array<string>{ std:("queue"), std:("repeat"), std:("plugin_trader"), std:("immediate") }}
     });
 };
 

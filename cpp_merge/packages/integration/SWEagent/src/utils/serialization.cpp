@@ -2,7 +2,7 @@
 
 any convertToYamlLiteralString(any data)
 {
-    if (AND((type_of(data) == std::string("string")), (data->includes(std::string("\
+    if (AND((type_of(data) == std:("string")), (data->includes(std:("\
 "))))) {
         return data;
     }
@@ -13,7 +13,7 @@ any convertToYamlLiteralString(any data)
         }
         );
     }
-    if (AND((data), (type_of(data) == std::string("object")))) {
+    if (AND((data), (type_of(data) == std:("object")))) {
         auto result = object{};
         for (auto& [key, value] : Object->entries(data))
         {
@@ -29,12 +29,12 @@ string yamlSerializationWithLinebreaks(any data)
 {
     auto processed = convertToYamlLiteralString(data);
     return yaml->dump(processed, object{
-        object::pair{std::string("lineWidth"), -1}, 
-        object::pair{std::string("noRefs"), true}, 
-        object::pair{std::string("quotingType"), std::string(""")}, 
-        object::pair{std::string("forceQuotes"), false}, 
-        object::pair{std::string("styles"), object{
-            object::pair{std::string("!!str"), std::string("literal")}
+        object::pair{std:("lineWidth"), -1}, 
+        object::pair{std:("noRefs"), true}, 
+        object::pair{std:("quotingType"), std:(""")}, 
+        object::pair{std:("forceQuotes"), false}, 
+        object::pair{std:("styles"), object{
+            object::pair{std:("!!str"), std:("literal")}
         }}
     });
 };
@@ -48,7 +48,7 @@ any mergeNestedDicts(any d1, any d2)
     if (!d2) {
         return d1;
     }
-    if (OR((type_of(d1) != std::string("object")), (type_of(d2) != std::string("object")))) {
+    if (OR((type_of(d1) != std:("object")), (type_of(d2) != std:("object")))) {
         return d2;
     }
     if (OR((Array->isArray(d1)), (Array->isArray(d2)))) {

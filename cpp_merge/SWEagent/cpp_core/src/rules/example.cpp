@@ -1,4 +1,5 @@
 #include "example.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,15 +10,15 @@ std::future<void> validatePythonExample() {
 
     std::cout << "== Python Validation Example ==" << std::endl;
 
-    const auto pythonCode = `;
+    const auto pythonCode = ";
     def process_data(data):
     # This std::function needs type annotations;
     with open("data.txt"):
     content = f.read();
     return content;
-    `;
+    ";
 
-    const auto validator = new PythonValidator();
+    const auto validator = std::make_unique<PythonValidator>();
     const auto result = validator.validate(pythonCode, "example.py");
 
     std::cout << "Valid:" << result.valid << std::endl;
@@ -31,15 +32,15 @@ std::future<void> validateTypeScriptExample() {
 
     std::cout << "\n== TypeScript Validation Example ==" << std::endl;
 
-    const auto tsCode = `;
+    const auto tsCode = ";
     std::function processData(data: unknown) {
         const auto fs = require("fs");
         const auto content = fs.readFileSync("data.txt", "utf-8");
         return content;
     }
-    `;
+    ";
 
-    const auto validator = new TypeScriptValidator();
+    const auto validator = std::make_unique<TypeScriptValidator>();
     const auto result = validator.validate(tsCode, "example.ts");
 
     std::cout << "Valid:" << result.valid << std::endl;
@@ -59,12 +60,12 @@ void projectStructureExample() {
 
     // Access project structure directly
     std::cout << "\nMain entry points:" << std::endl;
-    PROJECT_STRUCTURE.mainEntryPoints.forEach((entry) => {
+    PROJECT_STRUCTURE.mainEntryPoints.forEach[&]((entry) {
         std::cout << "  - " + entry.path + ": " + entry.description << std::endl;
         });
 
         std::cout << "\nInspectors:" << std::endl;
-        PROJECT_STRUCTURE.inspectors.forEach((inspector) => {
+        PROJECT_STRUCTURE.inspectors.forEach[&]((inspector) {
             std::cout << "  - " + inspector.name + " (" + inspector.type + "): " + inspector.path << std::endl;
             });
 
@@ -77,13 +78,13 @@ void rulesExample() {
 
     std::cout << "Python rules:" << std::endl;
     const auto pythonRules = getApplicableRules("example.py");
-    pythonRules.forEach((rule) => {
+    pythonRules.forEach[&]((rule) {
         std::cout << "  - " + rule.id + ": " + rule.rule << std::endl;
         });
 
         std::cout << "\nTypeScript rules:" << std::endl;
         const auto tsRules = getApplicableRules("example.ts");
-        tsRules.forEach((rule) => {
+        tsRules.forEach[&]((rule) {
             std::cout << "  - " + rule.id + ": " + rule.rule << std::endl;
             });
 
@@ -97,7 +98,7 @@ void exportExample() {
     const auto cursorRules = exportAllRulesToCursor();
 
     std::cout << "Exported rules:" << std::endl;
-    Object.keys(cursorRules).forEach((filename) => {
+    Object.keys(cursorRules).forEach[&]((filename) {
         std::cout << "  - " + filename + " (" + std::to_string(cursorRules[filename].size()) + " bytes)" << std::endl;
         });
 

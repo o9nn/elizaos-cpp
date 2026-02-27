@@ -8,9 +8,9 @@ void AdminOverview() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Fetch admin stats
-    const auto statsQuery = useQuery<AdminStats>({;
+    const auto statsQuery = useQuery<AdminStats>[&]({;
         queryKey: ["admin-stats"],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             const auto response = (fetcher("/api/admin/stats", "GET")) as {;
                 stats: AdminStats;
                 };

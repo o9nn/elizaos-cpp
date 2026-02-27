@@ -12,7 +12,7 @@ class PollOptions;
 class Job;
 
 enum struct JobStatus {
-    PENDING = std::string("pending"), PROCESSING = std::string("processing"), COMPLETED = std::string("completed"), FAILED = std::string("failed"), TIMEOUT = std::string("timeout")
+    PENDING = std:("pending"), PROCESSING = std:("processing"), COMPLETED = std:("completed"), FAILED = std:("failed"), TIMEOUT = std:("timeout")
 };
 class CreateJobRequest : public object, public std::enable_shared_from_this<CreateJobRequest> {
 public:

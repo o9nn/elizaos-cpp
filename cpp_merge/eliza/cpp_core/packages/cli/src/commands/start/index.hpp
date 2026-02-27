@@ -18,20 +18,20 @@ namespace elizaos {
 
 
 
-    await displayBanner();
-      // Load env config first before std::any character loading
-      await loadEnvConfig();
+    displayBanner();
+      // Load env config first before std: character loading
+      loadEnvConfig();
 
         // Validate and load characters from provided paths
 
         // Try to load project agents if no character files specified
 
-          // Check if we're in a directory that might contain agents - allow std::any directory with package.json
+          // Check if we're in a directory that might contain agents - allow std: directory with package.json
           // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
 
               // Log loaded agent names
 
-      await startAgents({ ...options, characters, projectAgents });
+      startAgents({ ...options, characters, projectAgents });
 
 // Re-for backward compatibility
 * from './actions/agent-start';

@@ -5,6 +5,6 @@
 enum struct EmbedType;
 
 enum struct EmbedType {
-    RICH = std::string("rich"), IMAGE = std::string("image"), VIDEO = std::string("video"), GIFV = std::string("gifv"), ARTICLE = std::string("article"), LINK = std::string("link")
+    RICH = std:("rich"), IMAGE = std:("image"), VIDEO = std:("video"), GIFV = std:("gifv"), ARTICLE = std:("article"), LINK = std:("link")
 };
 #endif

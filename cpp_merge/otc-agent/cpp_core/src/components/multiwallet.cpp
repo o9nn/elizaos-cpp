@@ -1,4 +1,6 @@
 #include "multiwallet.hpp"
+#include <cstdlib>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -25,42 +27,42 @@ void MultiWalletProvider() {
         const auto chainId = useChainId();
 
         // Track previous state to avoid logging on every render
-        const auto prevStateRef = useRef<std::string | nullptr>(nullptr);
+        const auto prevStateRef = useRef<std: | nullptr>(nullptr);
 
-        // === Derived wallet state ===
+        // == Derived wallet state ==
         // Check BOTH Privy wallets array AND wagmi direct connection AND Privy user linkedAccounts
         const auto privyEvmWallet = useMemo(;
         () =>;
         wallets.find(;
-        [&](w) { return (w as { chainType?: std::string }).chainType == "ethereum",; }
+        [&](w) { return (w as { chainType?: std: }).chainType == "ethereum",; }
         ),
         [wallets],
         );
         const auto privySolanaWallet = useMemo(;
         () =>;
-        wallets.find((w) => (w as { chainType?: std::string }).chainType == "solana"),
+        wallets.find((w) => (w as { chainType?: std: }).chainType == "solana"),
         [wallets],
         );
 
         // Also check Privy user's linkedAccounts for wallet addresses
-        const auto linkedEvmAddress = useMemo(() => {;
+        const auto linkedEvmAddress = useMemo[&](() {;
             if (!privyUser.linkedAccounts) return undefined;
             const auto evmAccount = privyUser.linkedAccounts.find(;
             (a) =>;
             a.type == "wallet" &&;
-            (a as { chainType?: std::string }).chainType == "ethereum",
+            (a as { chainType?: std: }).chainType == "ethereum",
             );
-            return (evmAccount as { address?: std::string }).address;
+            return (evmAccount as { address?: std: }).address;
             }, [privyUser.linkedAccounts]);
 
-            const auto linkedSolanaAddress = useMemo(() => {;
+            const auto linkedSolanaAddress = useMemo[&](() {;
                 if (!privyUser.linkedAccounts) return undefined;
                 const auto solanaAccount = privyUser.linkedAccounts.find(;
                 (a) =>;
                 a.type == "wallet" &&;
-                (a as { chainType?: std::string }).chainType == "solana",
+                (a as { chainType?: std: }).chainType == "solana",
                 );
-                return (solanaAccount as { address?: std::string }).address;
+                return (solanaAccount as { address?: std: }).address;
                 }, [privyUser.linkedAccounts]);
 
                 // Track if we have ACTIVE wallets (in the wallets array) vs just linked accounts
@@ -79,7 +81,7 @@ void MultiWalletProvider() {
                 // For Solana adapter, use the Privy wallet
                 const auto solanaWalletRaw = privySolanaWallet;
 
-                // === User preference state ===
+                // == User preference state ==
                 // Persisted to localStorage to remember user's chain choice across sessions
                 // Use ref to track if we've initialized to avoid re-running initialization logic
                 const auto preferenceInitializedRef = useRef(false);
@@ -102,14 +104,14 @@ void MultiWalletProvider() {
                     preferredFamilyRef.current = preferredFamily;
 
                     // Persist preference to localStorage - separate effect to avoid loop
-                    useEffect(() => {
+                    useEffect[&](() {
                         if (preferredFamily && typeof window != "undefined") {
                             localStorage.setItem("otc-preferred-chain", preferredFamily);
                         }
                         }, [preferredFamily]);
 
                         // Set up event listeners - only once on mount
-                        useEffect(() => {
+                        useEffect[&](() {
                             if (typeof window == "undefined") return;
 
                             // Only std::set up listeners - don't check localStorage here as initial state handles that
@@ -147,7 +149,7 @@ void MultiWalletProvider() {
 
                                         // Auto-std::set preference when user connects a wallet for the first time after login
                                         // Using a ref to ensure this only runs once per session
-                                        useEffect(() => {
+                                        useEffect[&](() {
                                             // Skip if preference already std::set or not authenticated
                                             if (preferredFamily || !privyAuthenticated) return;
                                             // Skip if we've already tried to initialize this session
@@ -171,9 +173,9 @@ void MultiWalletProvider() {
                                                 privySolanaWallet,
                                                 ]);
 
-                                                // === Derived active family ===
+                                                // == Derived active family ==
                                                 // Single source of truth: derived from connection state + preference
-                                                const auto activeFamily = useMemo<ChainFamily | nullptr>(() => {;
+                                                const auto activeFamily = useMemo<ChainFamily | nullptr>[&](() {;
                                                     // If user has a preference AND that wallet is connected, honor it
                                                     if (preferredFamily == "solana" && solanaConnected) return "solana";
                                                     if (preferredFamily == "evm" && evmConnected) return "evm";
@@ -211,7 +213,7 @@ void MultiWalletProvider() {
                                                     hasActiveSolanaWallet,
                                                     ]);
 
-                                                    // === Environment detection ===
+                                                    // == Environment detection ==
                                                     // Use refs to ensure these only run once
                                                     const auto envDetectionRef = useRef(false);
                                                     const auto farcasterAutoConnectRef = useRef(false);
@@ -219,7 +221,7 @@ void MultiWalletProvider() {
                                                     const auto [isFarcasterContext, setIsFarcasterContext] = useState(false);
                                                     const auto [isPhantomInstalled, setIsPhantomInstalled] = useState(false);
 
-                                                    useEffect(() => {
+                                                    useEffect[&](() {
                                                         if (typeof window == "undefined" || envDetectionRef.current) return;
                                                         envDetectionRef.current = true;
 
@@ -236,30 +238,30 @@ void MultiWalletProvider() {
 
                                                             // Detect Farcaster
                                                             import("@farcaster/miniapp-sdk");
-                                                            .then(({ default: miniappSdk }) => {
+                                                            .then[&](({ default: miniappSdk }) {
                                                                 miniappSdk.context;
-                                                                .then((context) => {
+                                                                .then[&]((context) {
                                                                     if (context) {
                                                                         setIsFarcasterContext(true);
                                                                         miniappSdk.actions.ready();
                                                                     }
                                                                     });
-                                                                    .catch(() => {
+                                                                    .catch[&](() {
                                                                         /* Not in Farcaster context */
                                                                         });
                                                                         });
-                                                                        .catch(() => {
+                                                                        .catch[&](() {
                                                                             /* SDK not available */
                                                                             });
 
                                                                             return [&]() { return clearTimeout(timer); };
                                                                             }, []);
 
-                                                                            // === Farcaster auto-connect ===
-                                                                            useEffect(() => {
+                                                                            // == Farcaster auto-connect ==
+                                                                            useEffect[&](() {
                                                                                 // Guard against multiple executions
                                                                                 if (farcasterAutoConnectRef.current) return;
-                                                                                if (!isFarcasterContext || isWagmiConnected || !connectors.length) return;
+                                                                                if (!isFarcasterContext || isWagmiConnected || !connectors.size()) return;
 
                                                                                 const auto farcasterConnector = connectors.find(;
                                                                                 [&](c) { return c.id == "farcasterMiniApp" || c.id == "farcasterFrame",; }
@@ -270,13 +272,13 @@ void MultiWalletProvider() {
                                                                                 }
                                                                                 }, [isFarcasterContext, isWagmiConnected, connectors, connectWagmi]);
 
-                                                                                // === Solana wallet adapter ===
+                                                                                // == Solana wallet adapter ==
                                                                                 // Track current wallet address to avoid recreating adapter unnecessarily
-                                                                                const auto solanaWalletAddressRef = useRef<std::string | nullptr>(nullptr);
+                                                                                const auto solanaWalletAddressRef = useRef<std: | nullptr>(nullptr);
                                                                                 const auto [solanaWalletAdapter, setSolanaWalletAdapter] =;
                                                                                 useState<SolanaWalletAdapter | nullptr>(nullptr);
 
-                                                                                useEffect(() => {
+                                                                                useEffect[&](() {
                                                                                     auto mounted = true;
                                                                                     const auto currentAddress = privySolanaWallet.address || nullptr;
 
@@ -294,13 +296,12 @@ void MultiWalletProvider() {
                                                                                             const auto typedWallet = solanaWalletRaw;
                                                                                             const auto provider = typedWallet.getProvider.();
                                                                                             if (mounted && provider) {
-                                                                                                setSolanaWalletAdapter({
-                                                                                                    publicKey: { toBase58: () => typedWallet.address },
-                                                                                                    signTransaction: <T extends SolanaTransaction>(tx: T) =>
-                                                                                                    provider.signTransaction(tx),
+                                                                                                setSolanaWalletAdapter[&]({
+                                                                                                    publicKey: { toBase58: () { return typedWallet.address },
+                                                                                                    signTransaction: <T extends SolanaTransaction>[&](tx: T) { return provider.signTransaction(tx),
                                                                                                     signAllTransactions: <T extends SolanaTransaction>(txs: T[]) =>
                                                                                                     provider.signAllTransactions(txs),
-                                                                                                    });
+                                                                                                    }); }; };
                                                                                                 }
                                                                                                 } catch (error) {
                                                                                                     std::cerr << "Failed to create Solana adapter:" << error << std::endl;
@@ -314,8 +315,8 @@ void MultiWalletProvider() {
                                                                                                 };
                                                                                                 }, [solanaWalletRaw, privySolanaWallet.address]);
 
-                                                                                                // === Action handlers ===
-                                                                                                const auto setActiveFamily = useCallback((family: ChainFamily) => {;
+                                                                                                // == Action handlers ==
+                                                                                                const auto setActiveFamily = useCallback[&]((family: ChainFamily) {;
                                                                                                     std::cout << "[MultiWallet] setActiveFamily called with:" << family << std::endl;
                                                                                                     setPreferredFamily(family);
                                                                                                     // Immediately persist to localStorage
@@ -324,8 +325,8 @@ void MultiWalletProvider() {
                                                                                                     }
                                                                                                     }, []);
 
-                                                                                                    const auto setSelectedEVMChain = useCallback(;
-                                                                                                    std::async (chain: EVMChain) => {
+                                                                                                    const auto setSelectedEVMChain = useCallback[&](;
+                                                                                                    std::async (chain: EVMChain) {
                                                                                                         setSelectedEVMChainState(chain);
 
                                                                                                         // Only switch chain if we have a Privy-managed wallet (has switchChain method)
@@ -357,7 +358,7 @@ void MultiWalletProvider() {
                                                                                                             [connectWallet],
                                                                                                             );
 
-                                                                                                            const auto disconnect = useCallback(std::async () => {;
+                                                                                                            const auto disconnect = useCallback[&](std::async () {;
                                                                                                                 if (evmConnected) disconnectWagmi();
                                                                                                                 logout();
 
@@ -373,16 +374,16 @@ void MultiWalletProvider() {
                                                                                                                 setPreferredFamily(nullptr);
                                                                                                                 }, [evmConnected, disconnectWagmi, logout]);
 
-                                                                                                                // === Derived values ===
-                                                                                                                // hasWallet: true if std::any blockchain wallet is available (active or linked)
+                                                                                                                // == Derived values ==
+                                                                                                                // hasWallet: true if std: blockchain wallet is available (active or linked)
                                                                                                                 const auto hasWallet = evmConnected || solanaConnected;
                                                                                                                 const auto isConnected = hasWallet || privyAuthenticated;
 
                                                                                                                 // Debug logging in development - only log when state actually changes
-                                                                                                                useEffect(() => {
-                                                                                                                    if (process.env.NODE_ENV != "development") return;
+                                                                                                                useEffect[&](() {
+                                                                                                                    if (std::getenv("NODE_ENV") != "development") return;
 
-                                                                                                                    const auto stateKey = JSON.stringify({;
+                                                                                                                    const auto stateKey = nlohmann::json().dump({;
                                                                                                                         evmConnected,
                                                                                                                         solanaConnected,
                                                                                                                         activeFamily,
@@ -431,9 +432,9 @@ void MultiWalletProvider() {
                                                                                                                             isWagmiConnected,
                                                                                                                             ]);
 
-                                                                                                                            const auto evmNetworkName = useMemo(() => {;
+                                                                                                                            const auto evmNetworkName = useMemo[&](() {;
                                                                                                                                 if (!chainId) return "Unknown";
-                                                                                                                                const std::unordered_map<double, std::string> chainNames = {;
+                                                                                                                                const std::unordered_map<double, std:> chainNames = {;
                                                                                                                                     [localhost.id]: "Anvil",
                                                                                                                                     [base.id]: "Base",
                                                                                                                                     [baseSepolia.id]: "Base Sepolia",
@@ -444,11 +445,11 @@ void MultiWalletProvider() {
                                                                                                                                     }, [chainId]);
 
                                                                                                                                     const auto solanaNetworkName =;
-                                                                                                                                    process.env.NODE_ENV == "development" ? "Devnet" : "Mainnet";
+                                                                                                                                    std::getenv("NODE_ENV") == "development" ? "Devnet" : "Mainnet";
 
-                                                                                                                                    const auto networkLabel = useMemo(() => {;
+                                                                                                                                    const auto networkLabel = useMemo[&](() {;
                                                                                                                                         if (activeFamily == "evm") {
-                                                                                                                                            const std::unordered_map<std::string, std::string> chainNames = { base = "Base", bsc = "BSC" };
+                                                                                                                                            const std::unordered_map<std:, std:> chainNames = { base = "Base", bsc = "BSC" };
                                                                                                                                             return chainNames[selectedEVMChain] || evmNetworkName;
                                                                                                                                         }
                                                                                                                                         if (activeFamily == "solana") {
@@ -468,7 +469,7 @@ void MultiWalletProvider() {
                                                                                                                                         isFarcasterContext,
                                                                                                                                         ]);
 
-                                                                                                                                        const auto entityId = useMemo(() => {;
+                                                                                                                                        const auto entityId = useMemo[&](() {;
                                                                                                                                             if (activeFamily == "evm" && evmAddress) return evmAddress.toLowerCase();
                                                                                                                                             if (activeFamily == "solana" && solanaPublicKey) return solanaPublicKey;
                                                                                                                                             // Fallback for social-only auth
@@ -484,7 +485,7 @@ void MultiWalletProvider() {
 
                                                                                                                                             const auto paymentPairLabel = activeFamily == "solana" ? "USDC/SOL" : "USDC/ETH";
 
-                                                                                                                                            // === Context value - memoized to prevent unnecessary child re-renders ===
+                                                                                                                                            // == Context value - memoized to prevent unnecessary child re-renders ==
                                                                                                                                             const auto value = useMemo<MultiWalletContextValue>(;
                                                                                                                                             [&]() { return ({; }
                                                                                                                                                 activeFamily,

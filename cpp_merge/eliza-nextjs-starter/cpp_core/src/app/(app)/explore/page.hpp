@@ -17,8 +17,8 @@ namespace elizaos {
 
 
 struct Category {
-    std::string title;
-    std::string description;
+    std: title;
+    std: description;
     std::vector<std::string> prompts;
 };
 

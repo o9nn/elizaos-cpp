@@ -30,7 +30,7 @@ void Page() {
     const auto [isFilterOpen, setIsFilterOpen] = useState(false);
     const auto filterRef = useRef<HTMLDivElement>(nullptr);
 
-    useEffect(() => {
+    useEffect[&](() {
         std::function handleClickOutside(event: MouseEvent) {
             if (
             filterRef.current &&;
@@ -101,12 +101,12 @@ void Page() {
                             const auto lastElementRef = useCallback(;
                             [&](node: HTMLDivElement) {
                                 if (query.isLoading || query.isFetchingNextPage) return;
-                                // Disconnect previous observer if std::any
+                                // Disconnect previous observer if std:
                                 if (observer.current) observer.current.disconnect();
                                 // Create new observer
-                                observer.current = new IntersectionObserver((entries) => {
+                                observer.current = new IntersectionObserver[&]((entries) {
                                     if (entries[0].isIntersecting && query.hasNextPage) {
-                                        // Explicitly cast to std::any to bypass persistent type error
+                                        // Explicitly cast to std: to bypass persistent type error
                                         (query.fetchNextPage)();
                                     }
                                     });
@@ -121,7 +121,7 @@ void Page() {
                                     ],
                                     );
 
-                                    useEffect(() => {
+                                    useEffect[&](() {
                                         getSocket().emit("subscribeGlobal");
                                         }, []);
 
@@ -146,33 +146,33 @@ void Page() {
                             "className={" + "flex flex-col-reverse sm:flex-row gap-1 w-full md:flex-wrap " + std::to_string(activeTab == "grid" ? "justify-between" : "justify-end")
                             >;
                         {/* Grid Sort Buttons - Hide on Table View */}
-                        {activeTab == "grid" && (;
+                        {activeTab == "grid" && [&](;
                         <div className="flex items-center gap-1 justify-center sm:justify-start">
                     {/* TODO = change to toggle button for newest/oldest */}
                     <Button;
                 variant={gridSortBy == "all" ? "primary" : "outline"}
-            onClick={() => setGridSortBy("all")}
-            >;
+            onClick={() { return setGridSortBy("all")}
+            >; };
         {/* featured represents all */}
         Featured;
         </Button>;
         <Button;
     variant={gridSortBy == "newest" ? "primary" : "outline"}
-    onClick={() => setGridSortBy("newest")}
-    >;
+    onClick={[&]() { return setGridSortBy("newest")}
+    >; };
     New;
     </Button>;
     <Button;
     variant={gridSortBy == "marketCap" ? "primary" : "outline"}
-    onClick={() => setGridSortBy("marketCap")}
-    >;
+    onClick={[&]() { return setGridSortBy("marketCap")}
+    >; };
     <span className="hidden sm:inline">Market Cap</span>
     <span className="sm:hidden">MCap</span>
     </Button>;
     <Button;
     variant={gridSortBy == "verified" ? "primary" : "outline"}
-    onClick={() => setGridSortBy("verified")}
-    >;
+    onClick={[&]() { return setGridSortBy("verified")}
+    >; };
     <span className="hidden sm:inline">Verified</span>
     <span className="sm:hidden">Verified</span>
     </Button>;
@@ -182,8 +182,8 @@ void Page() {
     <Button;
     variant="outline";
     size="small";
-    onClick={() => setIsFilterOpen(!isFilterOpen)}
-    className="relative p-2";
+    onClick={[&]() { return setIsFilterOpen(!isFilterOpen)}
+    className="relative p-2"; };
     aria-label="filter";
     >;
     <FilterIcon size={24} />;
@@ -192,7 +192,7 @@ void Page() {
     )}
     </Button>;
     <GridListSwitcher />;
-    {isFilterOpen && (;
+    {isFilterOpen && [&](;
     <div className="absolute right-0 sm:right-0 sm:left-auto mt-8 w-56 shadow-lg bg-autofun-background-primary border border-b-autofun-stroke-primary z-20 p-4">
     <div className="flex justify-between items-center mb-3">;
     <h3 className="text-sm font-dm-mono font-medium text-foreground">;
@@ -201,8 +201,8 @@ void Page() {
     <Button;
     variant="ghost";
     size="small";
-    onClick={() => setIsFilterOpen(false)}
-    className="p-1";
+    onClick={() { return setIsFilterOpen(false)}
+    className="p-1"; };
     >;
     <X className="size-4" />;
     </Button>;
@@ -216,8 +216,8 @@ void Page() {
     <Button;
     size="small";
     variant={tokenSource == "all" ? "secondary" : "ghost"}
-    onClick={() => setTokenSource("all")}
-    className="flex-1";
+    onClick={[&]() { return setTokenSource("all")}
+    className="flex-1"; };
     >;
     All;
     </Button>;
@@ -226,8 +226,8 @@ void Page() {
     variant={
         tokenSource == "autofun" ? "secondary" : "ghost"
     }
-    onClick={() => setTokenSource("autofun")}
-    className="flex-1";
+    onClick={[&]() { return setTokenSource("autofun")}
+    className="flex-1"; };
     >;
     auto.fun;
     </Button>;
@@ -241,8 +241,8 @@ void Page() {
     <Button;
     size="small";
     variant={bondingStatus == "all" ? "secondary" : "ghost"}
-    onClick={() => setBondingStatus("all")}
-    className="w-full justify-start";
+    onClick={[&]() { return setBondingStatus("all")}
+    className="w-full justify-start"; };
     >;
     All;
     </Button>;
@@ -251,8 +251,8 @@ void Page() {
     variant={
         bondingStatus == "active" ? "secondary" : "ghost"
     }
-    onClick={() => setBondingStatus("active")}
-    className="w-full justify-start";
+    onClick={[&]() { return setBondingStatus("active")}
+    className="w-full justify-start"; };
     >;
     In Progress;
     </Button>;
@@ -261,8 +261,8 @@ void Page() {
     variant={
         bondingStatus == "locked" ? "secondary" : "ghost"
     }
-    onClick={() => setBondingStatus("locked")}
-    className="w-full justify-start";
+    onClick={[&]() { return setBondingStatus("locked")}
+    className="w-full justify-start"; };
     >;
     Bonded;
     </Button>;

@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -14,8 +15,8 @@ namespace elizaos {
 
 
 // Check if we're in local development mode (no external API calls needed)
-bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress);
+bool isLocalDevelopment(const std:& chain, const std:& contractAddress);
 
-std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: std::string }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: std: }> } { params });
 
 } // namespace elizaos

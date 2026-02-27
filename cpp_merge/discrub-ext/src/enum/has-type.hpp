@@ -5,6 +5,6 @@
 enum struct HasType;
 
 enum struct HasType {
-    EMBED = std::string("embed"), FILE = std::string("file"), IMAGE = std::string("image"), LINK = std::string("link"), SOUND = std::string("sound"), STICKER = std::string("sticker"), VIDEO = std::string("video")
+    EMBED = std:("embed"), FILE = std:("file"), IMAGE = std:("image"), LINK = std:("link"), SOUND = std:("sound"), STICKER = std:("sticker"), VIDEO = std:("video")
 };
 #endif

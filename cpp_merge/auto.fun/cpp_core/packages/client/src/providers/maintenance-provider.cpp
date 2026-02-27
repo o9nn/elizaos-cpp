@@ -7,8 +7,8 @@ namespace elizaos {
 void MainentenaceProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto isEnabled = import.meta.env.VITE_MAINTENANCE_MODE;
-    ? Boolean(import.meta.env.VITE_MAINTENANCE_MODE);
+    const auto isEnabled = "".VITE_MAINTENANCE_MODE;
+    ? Boolean("".VITE_MAINTENANCE_MODE);
     : false;
 
     if (isEnabled)

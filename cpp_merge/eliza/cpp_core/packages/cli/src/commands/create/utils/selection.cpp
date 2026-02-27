@@ -1,4 +1,8 @@
 #include "selection.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -68,7 +72,7 @@ std::vector<DatabaseOption> getAvailableDatabases() {
 
 }
 
-std::future<std::string> selectDatabase() {
+std::future<std:> selectDatabase() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableDatabases = getAvailableDatabases();
@@ -85,14 +89,14 @@ std::future<std::string> selectDatabase() {
 
             if (clack.isCancel(database)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
 
             return database;
 
 }
 
-std::future<std::string> selectAIModel() {
+std::future<std:> selectAIModel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableModels = getAvailableAIModels();
@@ -109,7 +113,7 @@ std::future<std::string> selectAIModel() {
 
             if (clack.isCancel(aiModel)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
 
             return aiModel;
@@ -144,7 +148,7 @@ std::vector<AIModelOption> getAvailableEmbeddingModels() {
 
 }
 
-std::future<std::string> selectEmbeddingModel() {
+std::future<std:> selectEmbeddingModel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableModels = getAvailableEmbeddingModels();
@@ -161,7 +165,7 @@ std::future<std::string> selectEmbeddingModel() {
 
             if (clack.isCancel(embeddingModel)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
 
             return embeddingModel;

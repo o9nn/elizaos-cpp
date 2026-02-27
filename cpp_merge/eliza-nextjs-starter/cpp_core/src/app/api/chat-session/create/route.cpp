@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -41,7 +42,7 @@ std::future<void> POST(NextRequest request) {
                     headers: {
                         "Content-Type": "application/json",
                         },
-                        body: JSON.stringify({
+                        body: nlohmann::json().dump({
                             userId: userId,
                             agentId: AGENT_ID,
                             sessionId: sessionId, // This ensures it only finds channels with this exact sessionId
@@ -53,7 +54,7 @@ std::future<void> POST(NextRequest request) {
                             if (!dmChannelResponse.ok) {
                                 const auto errorText = dmChannelResponse.text();
                                 std::cerr << "[API] Failed to create DM channel:" << errorText << std::endl;
-                                throw std::runtime_error(`Failed to create DM channel: ${errorText}`);
+                                throw std::runtime_error("Failed to create DM channel: " + std::to_string(errorText) + "");
                             }
 
                             const auto dmChannelData = dmChannelResponse.json();
@@ -75,7 +76,7 @@ std::future<void> POST(NextRequest request) {
                                     userId,
                                     agentId: AGENT_ID,
                                     initialMessage,
-                                    createdAt: new Date().toISOString(),
+                                    createdAt: std::make_unique<Date>().toISOString(),
                                     },
                                     });
                                     } catch (error) {

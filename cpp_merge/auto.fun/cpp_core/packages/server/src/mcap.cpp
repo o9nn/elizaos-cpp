@@ -1,4 +1,6 @@
 #include "mcap.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +9,7 @@ namespace elizaos {
 std::future<double> getSOLPrice() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto cacheService = new CacheService();
+    const auto cacheService = std::make_unique<CacheService>();
     const auto cachedPrice = cacheService.getSolPrice();
     std::cout << "cachedPrice" << cachedPrice << std::endl;
     if (
@@ -21,14 +23,14 @@ std::future<double> getSOLPrice() {
     // Try Pyth Network first (most accurate source)
     // try {
     //   console.log("fetching sol price from pyth");
-    //   const price = await fetchSOLPriceFromPyth();
+    //   const price = fetchSOLPriceFromPyth();
 
     //   console.log("price", price);
 
     //   // Cache the result if env is provided
     //   if (env && price > 0) {
-    //     const cacheService = new CacheService();
-    //     await cacheService.setSolPrice(price);
+    //     const cacheService = std::make_unique<CacheService>();
+    //     cacheService.setSolPrice(price);
     //   }
 
     //   if (price > 0) {
@@ -49,7 +51,7 @@ std::future<double> getSOLPrice() {
             const auto price = data.solana.usd;
 
             // If env is provided, cache the price
-            const auto cacheService = new CacheService();
+            const auto cacheService = std::make_unique<CacheService>();
             cacheService.setSolPrice(price);
 
             return price;
@@ -69,7 +71,7 @@ std::future<double> getSOLPrice() {
                 const auto price = parseFloat(data.price);
 
                 // If env is provided, cache the price
-                const auto cacheService = new CacheService();
+                const auto cacheService = std::make_unique<CacheService>();
                 cacheService.setSolPrice(price);
 
                 return price;
@@ -109,7 +111,7 @@ std::future<double> fetchSOLPriceFromPyth() {
 
 }
 
-std::future<std::any> calculateTokenMarketData(const std::any& token, double solPrice) {
+std::future<std:> calculateTokenMarketData(const std:& token, double solPrice) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Copy the token to avoid modifying the original
@@ -145,14 +147,14 @@ std::future<std::any> calculateTokenMarketData(const std::any& token, double sol
 
 }
 
-std::future<void> calculateRaydiumTokenMarketData(const std::any& token) {
+std::future<void> calculateRaydiumTokenMarketData(const std:& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
-            const auto TOKEN_DECIMALS = Number(process.env.DECIMALS || 6);
+            const auto TOKEN_DECIMALS = Number(std::getenv("DECIMALS") || 6);
             const auto solPrice = getSOLPrice();
-            const auto raydium = initSdk({ loadToken: true });
+            const auto raydium = initSdk(Config{loadToken = true});
 
             auto poolInfo;
             auto retries = 5;
@@ -164,7 +166,7 @@ std::future<void> calculateRaydiumTokenMarketData(const std::any& token) {
                         poolInfo = data.poolInfo;
                         } else {
                             const auto data = raydium.api.fetchPoolById({ ids: token.marketId });
-                            if (!data || data.length == 0) {
+                            if (!data || data.size() == 0) {
                                 std::cerr << "Mcap: Pool info not found" << std::endl;
                                 throw std::runtime_error("Mcap: Pool info not found");
                             }
@@ -214,7 +216,7 @@ std::future<void> calculateRaydiumTokenMarketData(const std::any& token) {
                     const auto tokenPriceUSD = currentPrice > 0 ? currentPrice * solPrice : 0;
 
                     // Calculate market cap
-                    const auto marketCapUSD = (Number(process.env.TOKEN_SUPPLY) / Math.pow(10, TOKEN_DECIMALS)) *;
+                    const auto marketCapUSD = (Number(std::getenv("TOKEN_SUPPLY")) / Math.pow(10, TOKEN_DECIMALS)) *;
                     tokenPriceUSD;
 
                     if (marketCapUSD < 0) {

@@ -6,23 +6,23 @@ std::shared_ptr<VersionInfo> getVersionInfo()
     try
     {
         return object{
-            object::pair{std::string("version"), packageJson->version}, 
-            object::pair{std::string("source"), std::string("server")}, 
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("environment"), OR((process->env->NODE_ENV), (std::string("development")))}, 
-            object::pair{std::string("uptime"), process->uptime()}
+            object::pair{std:("version"), packageJson->version}, 
+            object::pair{std:("source"), std:("server")}, 
+            object::pair{std:("timestamp"), std:("timestamp")}, 
+            object::pair{std:("environment"), OR((process->env->NODE_ENV), (std:("development")))}, 
+            object::pair{std:("uptime"), process->uptime()}
         };
     }
     catch (const any& error)
     {
-        console->error(std::string("Error getting version info:"), error);
+        console->error(std:("Error getting version info:"), error);
         return object{
-            object::pair{std::string("version"), std::string("unknown")}, 
-            object::pair{std::string("source"), std::string("server")}, 
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("environment"), OR((process->env->NODE_ENV), (std::string("development")))}, 
-            object::pair{std::string("uptime"), process->uptime()}, 
-            object::pair{std::string("error"), std::string("Failed to retrieve version information")}
+            object::pair{std:("version"), std:("unknown")}, 
+            object::pair{std:("source"), std:("server")}, 
+            object::pair{std:("timestamp"), std:("timestamp")}, 
+            object::pair{std:("environment"), OR((process->env->NODE_ENV), (std:("development")))}, 
+            object::pair{std:("uptime"), process->uptime()}, 
+            object::pair{std:("error"), std:("Failed to retrieve version information")}
         };
     }
 };
@@ -31,7 +31,7 @@ std::shared_ptr<VersionInfo> getVersionInfo()
 std::shared_ptr<express::Router> createVersionRouter()
 {
     auto router = express->Router();
-    router->get(std::string("/"), [=](auto _, auto res) mutable
+    router->get(std:("/"), [=](auto _, auto res) mutable
     {
         auto versionInfo = getVersionInfo();
         auto statusCode = (versionInfo->error) ? 500 : 200;

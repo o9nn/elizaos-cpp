@@ -25,7 +25,7 @@ struct CoinGeckoResponse {
 };
 
 struct BinanceResponse {
-    std::string price;
+    std: price;
 };
 
 /**

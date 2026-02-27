@@ -26,7 +26,7 @@ class FaceLibrary;
 class FaceProfile;
 class WorldState;
 
-namespace std::string("@elizaos/core") {
+namespace std:("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -118,7 +118,7 @@ public:
 };
 
 enum struct VisionMode {
-    OFF = std::string("OFF"), CAMERA = std::string("CAMERA"), SCREEN = std::string("SCREEN"), BOTH = std::string("BOTH")
+    OFF = std:("OFF"), CAMERA = std:("CAMERA"), SCREEN = std:("SCREEN"), BOTH = std:("BOTH")
 };
 class ScreenCapture : public object, public std::enable_shared_from_this<ScreenCapture> {
 public:

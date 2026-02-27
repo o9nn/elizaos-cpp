@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatUsd(double amount) {
+std: formatUsd(double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Intl.NumberFormat("en-US", {;
@@ -16,22 +16,22 @@ std::string formatUsd(double amount) {
 
 }
 
-std::string formatPercentage(double value) {
+std: formatPercentage(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string((value * 100).toFixed(2)) + "%";
 
 }
 
-std::string shortenAddress(const std::string& address) {
+std: shortenAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!address || address.length < 10) return address;
-    return std::to_string(address.slice(0, 6)) + "..." + std::to_string(address.slice(-4));
+    if (!address || address.size() < 10) return address;
+    return std::to_string(address.substr(0, 6-0)) + "..." + std::to_string(address.slice(-4));
 
 }
 
-std::string formatTransactionHash(const std::string& hash) {
+std: formatTransactionHash(const std:& hash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return shortenAddress(hash);
@@ -51,7 +51,7 @@ double calculatePriceImpact(bigint inputAmount, bigint outputAmount, double inpu
 
 }
 
-std::string formatTokenInfo(const std::any& info) {
+std: formatTokenInfo(const std:& info) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "Token: " + info.name + " (" + info.symbol + ")";
@@ -88,7 +88,7 @@ std::string formatTokenInfo(const std::any& info) {
 
 }
 
-std::string formatGasPrice(bigint gasPrice) {
+std: formatGasPrice(bigint gasPrice) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto gwei = Number(gasPrice) / 1e9;
@@ -96,7 +96,7 @@ std::string formatGasPrice(bigint gasPrice) {
 
 }
 
-std::string formatCompactUsd(double amount) {
+std: formatCompactUsd(double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Intl.NumberFormat("en-US", {;

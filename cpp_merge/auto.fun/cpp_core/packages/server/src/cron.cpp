@@ -1,4 +1,9 @@
 #include "cron.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +15,7 @@ std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token
     const auto clone = { ...token };
 
     // Helper to get byte size
-    const auto getSize = [&](obj: std::any) { return Buffer.byteLength(/* JSON.stringify */ std::string(obj), "utf8"); };
+    const auto getSize = [&](obj: std:) { return Buffer.byteLength(/* JSON.stringify */ std:(obj), "utf8"); };
 
     if (getSize(clone) <= maxBytes) return clone;
 
@@ -57,22 +62,22 @@ std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token
 std::optional<TokenDBData> convertTokenDataToDBData(const std::optional<TokenData>& tokenData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto now = new Date();
+    const auto now = std::make_unique<Date>();
     return {
         ...tokenData,
         lastUpdated: now,
         migration:
         tokenData.migration && typeof tokenData.migration != "string";
-        ? /* JSON.stringify */ std::string(tokenData.migration);
+        ? /* JSON.stringify */ std:(tokenData.migration);
         : tokenData.migration,
         withdrawnAmounts:
         tokenData.withdrawnAmounts &&;
         typeof tokenData.withdrawnAmounts != "string";
-        ? /* JSON.stringify */ std::string(tokenData.withdrawnAmounts);
+        ? /* JSON.stringify */ std:(tokenData.withdrawnAmounts);
         : tokenData.withdrawnAmounts,
         poolInfo:
         tokenData.poolInfo && typeof tokenData.poolInfo != "string";
-        ? /* JSON.stringify */ std::string(tokenData.poolInfo);
+        ? /* JSON.stringify */ std:(tokenData.poolInfo);
         : tokenData.poolInfo,
         };
 
@@ -83,23 +88,23 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
     try {
 
         const auto db = getDB();
-        const auto now = new Date().toISOString();
+        const auto now = std::make_unique<Date>().toISOString();
 
         // Create a new object that conforms to TokenDBData
         const std::optional<TokenDBData> updateData = convertTokenDataToDBData(tokenData);
 
         // Convert nested objects to JSON strings if they're present and not already strings
         if (updateData.migration && typeof updateData.migration != "string") {
-            updateData.migration = /* JSON.stringify */ std::string(updateData.migration);
+            updateData.migration = /* JSON.stringify */ std:(updateData.migration);
         }
         if (
         updateData.withdrawnAmounts &&;
         typeof updateData.withdrawnAmounts != "string";
         ) {
-            updateData.withdrawnAmounts = /* JSON.stringify */ std::string(updateData.withdrawnAmounts);
+            updateData.withdrawnAmounts = /* JSON.stringify */ std:(updateData.withdrawnAmounts);
         }
         if (updateData.poolInfo && typeof updateData.poolInfo != "string") {
-            updateData.poolInfo = /* JSON.stringify */ std::string(updateData.poolInfo);
+            updateData.poolInfo = /* JSON.stringify */ std:(updateData.poolInfo);
         }
 
         // Ensure mint is defined
@@ -107,30 +112,22 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
             throw std::runtime_error("mint field is required for update");
         }
         // Check if token already exists
-        const auto existingTokens = db;
-        .select();
-        .from(tokens);
-        .where(eq(tokens.mint, updateData.mint));
+        const auto existingTokens = db.select().from(tokens).where(eq(tokens.mint, updateData.mint));
 
         auto updatedTokens: Token[];
 
-        if (existingTokens.length > 0) {
+        if (existingTokens.size() > 0) {
             std::cout << "found existing token in DB" << std::endl;
-            updatedTokens = db;
-            .update(tokens);
-            .std::set(updateData);
-            .where(eq(tokens.mint, updateData.mint!));
-            .returning();
+            updatedTokens = db.update(tokens);
+            .std::set(updateData).where(eq(tokens.mint, updateData.mint!)).returning();
             std::cout << "Updated token " + updateData.mint + " in database" << std::endl;
             } else {
                 std::cout << "not found existing token in DB" << std::endl;
-                std::cout << /* JSON.stringify */ std::string(updateData, nullptr, 2) << std::endl;
-                updatedTokens = db;
-                .insert(tokens);
-                .values([;
+                std::cout << /* JSON.stringify */ std:(updateData, nullptr, 2) << std::endl;
+                updatedTokens = db.insert(tokens).values([;
                 {
                     mint: updateData.mint,
-                    "name: updateData.name || " + "Token " + std::to_string(updateData.mint.slice(0, 8))
+                    "name: updateData.name || " + "Token " + std::to_string(updateData.mint.substr(0, 8-0))
                     ticker: updateData.ticker || "TOKEN",
                     url: updateData.url || "",
                     image: updateData.image || "",
@@ -140,8 +137,8 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
                     reserveAmount: updateData.reserveAmount || 0,
                     reserveLamport: updateData.reserveLamport || 0,
                     currentPrice: updateData.currentPrice || 0,
-                    // createdAt: sql`CURRENT_TIMESTAMP`,
-                    // lastUpdated: sql`CURRENT_TIMESTAMP`,
+                    // createdAt: sql"CURRENT_TIMESTAMP",
+                    // lastUpdated: sql"CURRENT_TIMESTAMP",
                     txId: updateData.txId || "",
                     migration: updateData.migration || "",
                     withdrawnAmounts: updateData.withdrawnAmounts || "",
@@ -150,8 +147,7 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
                     nftMinted: updateData.nftMinted || "",
                     marketId: updateData.marketId || "",
                     },
-                    ]);
-                    .returning();
+                    ]).returning();
                     std::cout << "Added new token " + updateData.mint + " to database" << std::endl;
                 }
 
@@ -163,7 +159,7 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
     }
 }
 
-std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std::string& signature, std::optional<WebSocketClient> wsClient) {
+std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std:& signature, std::optional<WebSocketClient> wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!wsClient) {
@@ -186,39 +182,39 @@ std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>
                     std::cout << "Error in CurveComplete handler: " + err << std::endl;
                 }
 
-                return { found: false }
+                return Config{found = false}
 
 }
 
-std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
+std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto newTokenLog = logs.find((log) => (std::find(log.begin(), log.end(), "NewToken:") != log.end()));
+        const auto newTokenLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "NewToken:") != log.end())); };
         if (!newTokenLog) return null;
-        const auto curveLog = logs.find((log) => (std::find(log.begin(), log.end(), "curve_limit:") != log.end()));
-        const auto reserveLog = logs.find((log) => (std::find(log.begin(), log.end(), "reserve_lamport:") != log.end()));
+        const auto curveLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "curve_limit:") != log.end())); };
+        const auto reserveLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "reserve_lamport:") != log.end())); };
         try {
             const auto parts = newTokenLog.split(" ");
-            if (parts.length < 2)
-            throw std::runtime_error(`Invalid NewToken log: ${newTokenLog}`);
+            if (parts.size() < 2)
+            throw std::runtime_error("Invalid NewToken log: " + std::to_string(newTokenLog) + "");
 
             const auto rawTokenAddress = parts[parts.size() - 2].replace(/[",)]/g, "");
             const auto rawCreatorAddress = parts[parts.size() - 1].replace(/[",)]/g, "");
             if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(rawTokenAddress)) {
-                throw std::runtime_error(`Malformed token address: ${rawTokenAddress}`);
+                throw std::runtime_error("Malformed token address: " + std::to_string(rawTokenAddress) + "");
             }
 
             std::optional<double> curveLimit = nullptr;
             std::optional<double> reserveLamport = nullptr;
             if (curveLog) {
-                const auto curveValue = curveLog.split("curve_limit:")[1].trim();
+                const auto curveValue = curveLog.split("curve_limit:")[1];
                 curveLimit = parseInt(curveValue);
                 std::cout << "Parsed curve_limit:" << curveLimit << std::endl;
             }
 
             if (reserveLog) {
-                const auto reserveValue = reserveLog.split("reserve_lamport:")[1].trim();
+                const auto reserveValue = reserveLog.split("reserve_lamport:")[1];
                 reserveLamport = parseInt(reserveValue);
                 std::cout << "Parsed reserve_lamport:" << reserveLamport << std::endl;
             }
@@ -256,10 +252,7 @@ std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, 
                 std::cerr << "Failed to create new token data for " + rawTokenAddress << std::endl;
                 return nullptr;
             }
-            getDB();
-            .insert(tokens);
-            .values([newToken]);
-            .onConflictDoNothing();
+            getDB().insert(tokens).values([newToken]).onConflictDoNothing();
             wsClient.emit(;
             "global",
             "newToken",
@@ -279,14 +272,14 @@ std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, 
     }
 }
 
-std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
+std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto mintLog = logs.find((log) => (std::find(log.begin(), log.end(), "Mint:") != log.end()));
-    const auto swapLog = logs.find((log) => (std::find(log.begin(), log.end(), "Swap:") != log.end()));
-    const auto reservesLog = logs.find((log) => (std::find(log.begin(), log.end(), "Reserves:") != log.end()));
-    const auto feeLog = logs.find((log) => (std::find(log.begin(), log.end(), "Fee:") != log.end()));
-    const auto swapeventLog = logs.find((log) => (std::find(log.begin(), log.end(), "SwapEvent:") != log.end()));
+    const auto mintLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Mint:") != log.end())); };
+    const auto swapLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Swap:") != log.end())); };
+    const auto reservesLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Reserves:") != log.end())); };
+    const auto feeLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Fee:") != log.end())); };
+    const auto swapeventLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "SwapEvent:") != log.end())); };
 
     if (mintLog && swapLog && reservesLog && swapeventLog) {
         try {
@@ -374,7 +367,7 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
                     price: price,
                     priceUsd: priceUsd,
                     txId: signature,
-                    timestamp: new Date(),
+                    timestamp: std::make_unique<Date>(),
                     };
 
                     const auto db = getDB();
@@ -396,8 +389,7 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
                         (Number(reserveLamport) / 1e9) * solPrice +;
                         (Number(reserveToken) / 10 ** TOKEN_DECIMALS) * tokenPriceUSD;
 
-                        const auto updatedTokens = db;
-                        .update(tokens);
+                        const auto updatedTokens = db.update(tokens);
                         .std::set({
                             reserveAmount: Number(reserveToken),
                             reserveLamport: Number(reserveLamport),
@@ -407,20 +399,18 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
                             tokenPriceUSD,
                             solPriceUSD: solPrice,
                             curveProgress:
-                            ((Number(reserveLamport) - Number(process.env.VIRTUAL_RESERVES)) /;
-                            (Number(process.env.CURVE_LIMIT) -;
-                            Number(process.env.VIRTUAL_RESERVES))) *;
+                            ((Number(reserveLamport) - Number(std::getenv("VIRTUAL_RESERVES"))) /;
+                            (Number(std::getenv("CURVE_LIMIT")) -;
+                            Number(std::getenv("VIRTUAL_RESERVES")))) *;
                             100,
                             txId: signature,
-                            lastUpdated: new Date(),
+                            lastUpdated: std::make_unique<Date>(),
                             "volume24h: sql" + "COALESCE(" + tokens.volume24h + ", 0) + " + std::to_string()
                                 direction == "1";
                                 ? (Number(amount) / 10 ** TOKEN_DECIMALS) * tokenPriceUSD;
                                 : (Number(amountOut) / 10 ** TOKEN_DECIMALS) * tokenPriceUSD
                                 "}"
-                                });
-                                .where(eq(tokens.mint, mintAddress));
-                                .returning();
+                                }).where(eq(tokens.mint, mintAddress)).returning();
                                 std::cout << "updating the holder cache" << mintAddress << std::endl;
                                 updateHoldersCache(mintAddress, false);
 
@@ -471,8 +461,7 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
                                                             };
 
                                                             wsClient;
-                                                            ".to(" + "token-" + mintAddress;
-                                                            .emit("updateToken", sanitizeTokenForWebSocket(enrichedToken));
+                                                            ".to(" + "token-" + mintAddress.emit("updateToken", sanitizeTokenForWebSocket(enrichedToken));
                                                             std::cout << "updated the token in DB" << mintAddress << std::endl;
                                                             return {
                                                                 found: true,
@@ -490,18 +479,18 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
 
 }
 
-std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
+std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto completeLog = logs.find((log) => (std::find(log.begin(), log.end(), "curve is completed") != log.end()));
-        const auto mintLog = logs.find((log) => (std::find(log.begin(), log.end(), "Mint:") != log.end()));
+        const auto completeLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "curve is completed") != log.end())); };
+        const auto mintLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Mint:") != log.end())); };
         if (!completeLog || !mintLog) return null;
 
         try {
-            const auto mintAddress = mintLog.split("Mint:")[1].trim().replace(/[",)]/g, "");
+            const auto mintAddress = mintLog.split("Mint:")[1].replace(/[",)]/g, "");
             if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(mintAddress)) {
-                throw std::runtime_error(`Invalid mint on curve completion: ${mintAddress}`);
+                throw std::runtime_error("Invalid mint on curve completion: " + std::to_string(mintAddress) + "");
             }
             if (logs.some((l) => /Failed.*custom program error/i.test(l))) {
                 logger.warn(
@@ -518,7 +507,7 @@ std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& l
             const std::optional<TokenData> tokenData = {;
                 mint: mintAddress,
                 status: "migrating",
-                lastUpdated: new Date().toISOString(),
+                lastUpdated: std::make_unique<Date>().toISOString(),
                 };
 
                 updateTokenInDB({

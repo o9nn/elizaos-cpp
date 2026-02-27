@@ -1,4 +1,5 @@
 #include "consignment-row.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,17 +13,17 @@ void ConsignmentRow() {
         const auto [isLoadingToken, setIsLoadingToken] = useState(true);
         const auto [dealCount, setDealCount] = useState<number>(0);
         const auto [isWithdrawing, setIsWithdrawing] = useState(false);
-        const auto [withdrawTxHash, setWithdrawTxHash] = useState<std::string | nullptr>(nullptr);
-        const auto [withdrawError, setWithdrawError] = useState<std::string | nullptr>(nullptr);
+        const auto [withdrawTxHash, setWithdrawTxHash] = useState<std: | nullptr>(nullptr);
+        const auto [withdrawError, setWithdrawError] = useState<std: | nullptr>(nullptr);
         const auto [isWithdrawn, setIsWithdrawn] = useState(;
         consignment.status == "withdrawn",
         );
-        const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
+        const auto fetchedTokenId = useRef<std: | nullptr>(nullptr);
         const auto { withdrawConsignment } = useOTC();
         const auto { address } = useAccount();
         const auto publicClient = usePublicClient();
 
-        useEffect(() => {
+        useEffect[&](() {
             if (fetchedTokenId.current == consignment.tokenId) return;
 
             std::async std::function loadData() {
@@ -37,11 +38,11 @@ void ConsignmentRow() {
                         setToken(tokenData.token);
                         } else if (publicClient) {
                             const auto tokenIdParts = consignment.tokenId.split("-") || [];
-                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + std::string;
+                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + std:;
 
-                            if (tokenAddress.startsWith("0x")) {
+                            if (tokenAddress.substr(0, "0x")) {
                                 try {
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std:
                                     const auto readContract = publicClient.readContract.bind(;
                                     publicClient,
                                     );
@@ -118,10 +119,10 @@ void ConsignmentRow() {
                                         const auto tokenSymbol = token.symbol || "TOKEN";
                                         const auto tokenDecimals = token.decimals || 18;
 
-                                        const auto formatAmount = [&](amount: std::string) {;
+                                        const auto formatAmount = [&](amount: std:) {;
                                             const auto num = Number(amount) / Math.pow(10, tokenDecimals);
-                                            if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
-                                            if (num >= 1000) return `${(num / 1000).toFixed(2)}K`;
+                                            if (num >= 1000000) return "" + std::to_string((num / 1000000).toFixed(2)) + "M";
+                                            if (num >= 1000) return "" + std::to_string((num / 1000).toFixed(2)) + "K";
                                             return num.toFixed(2);
                                             };
 
@@ -129,7 +130,7 @@ void ConsignmentRow() {
                                             (Number(consignment.remainingAmount) / Number(consignment.totalAmount)) *;
                                             100;
 
-                                            const auto handleWithdraw = std::async () => {;
+                                            const auto handleWithdraw = std::async [&]() {;
                                                 setWithdrawError(nullptr);
                                                 setWithdrawTxHash(nullptr);
 
@@ -184,7 +185,7 @@ void ConsignmentRow() {
                                                             }
 
                                                             // Refresh parent to sync state (with small delay to ensure DB is updated)
-                                                            setTimeout(() => {
+                                                            setTimeout[&](() {
                                                                 if (onUpdate) onUpdate();
                                                                 }, 500);
                                                                 } catch (error: unknown) {
@@ -206,7 +207,7 @@ void ConsignmentRow() {
 
                                                                         // Show skeleton while loading token data
                                                                         if (isLoadingToken) {
-                                                                            return (;
+                                                                            return [&](;
                                                                             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 animate-pulse">
                                                                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                                                                             <div className="flex items-center gap-3 min-w-0 flex-1">;
@@ -222,7 +223,7 @@ void ConsignmentRow() {
                                                                             </div>;
                                                                             </div>;
                                                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                                                                            {[1, 2, 3, 4].std::map((i) => (;
+                                                                            {[1, 2, 3, 4].std::map((i) { return (; };
                                                                             <div key={i}>;
                                                                             <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-16 mb-1" />
                                                                             <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-20" />
@@ -250,7 +251,7 @@ void ConsignmentRow() {
                                                 />;
                                                 ) : (
                                                 <div className="w-10 h-10 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-sm font-bold flex-shrink-0">
-                                            {tokenSymbol.slice(0, 2)}
+                                            {tokenSymbol.substr(0, 2-0)}
                                             </div>;
                                         )}
                                         <div className="min-w-0">;

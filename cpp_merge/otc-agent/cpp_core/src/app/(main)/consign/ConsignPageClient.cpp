@@ -1,14 +1,16 @@
 #include "ConsignPageClient.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getRequiredChain(const std::string& tokenId) {
+std: getRequiredChain(const std:& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!tokenId) return null;
-    if (tokenId.includes("solana")) return "solana";
+    if (tokenId.count("solana") > 0) return "solana";
     if (
     (std::find(tokenId.begin(), tokenId.end(), "base") != tokenId.end()) ||;
     (std::find(tokenId.begin(), tokenId.end(), "evm") != tokenId.end()) ||;
@@ -33,12 +35,12 @@ std::future<Idl> fetchSolanaIdl() {
     }
 }
 
-void getTokenInfo(const std::string& tokenId) {
+void getTokenInfo(const std:& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = tokenId.split("-") || [];
     const auto chain = parts[1] || "";
-    const auto address = parts.slice(2).join("-") || "";
+    const auto address = parts.substr(2).join("-") || "";
     return { chain, address }
 
 }
@@ -76,7 +78,7 @@ void ConsignPageClient() {
             const auto currentAddress =;
             activeFamily == "solana" ? solanaPublicKey : evmAddress;
             const auto displayAddress = currentAddress;
-            "? " + std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
+            "? " + std::to_string(currentAddress.substr(0, 6-0)) + "..." + std::to_string(currentAddress.slice(-4));
             : nullptr;
 
             const auto requiredChain = useMemo(;
@@ -88,7 +90,7 @@ void ConsignPageClient() {
             [formData.tokenId],
             );
 
-            const auto isConnectedToRequiredChain = useMemo(() => {;
+            const auto isConnectedToRequiredChain = useMemo[&](() {;
                 if (!requiredChain) return hasWallet;
                 return requiredChain == "solana";
                 ? activeFamily == "solana" && hasWallet;
@@ -96,7 +98,7 @@ void ConsignPageClient() {
                 }, [requiredChain, activeFamily, hasWallet]);
 
                 // Reset form when chain changes (prevents stale token selection)
-                useEffect(() => {
+                useEffect[&](() {
                     if (step > 1 && selectedToken) {
                         const auto tokenChainType = selectedToken.chain;
                         const auto isTokenOnCurrentChain =;
@@ -113,29 +115,29 @@ void ConsignPageClient() {
                     }, [activeFamily, step, selectedToken]);
 
                     // Pre-fetch gas deposit when we have a token selected and reach review step
-                    useEffect(() => {
+                    useEffect[&](() {
                         if (step == 3 && activeFamily != "solana" && rawTokenAddress) {
                             getRequiredGasDeposit();
-                            .then((deposit) => {
+                            .then[&]((deposit) {
                                 console.log(
                                 "[ConsignPage] Gas deposit fetched:",
                                 std::to_string(deposit),
                                 );
                                 setGasDeposit(deposit);
                                 });
-                                .catch((err) => {
+                                .catch[&]((err) {
                                     std::cerr << "[ConsignPage] Failed to fetch gas deposit:" << err << std::endl;
                                     setGasDeposit(DEFAULT_GAS_DEPOSIT);
                                     });
                                 }
                                 }, [step, activeFamily, rawTokenAddress, getRequiredGasDeposit]);
 
-                                const auto updateFormData = useCallback((updates: Partial<typeof formData>) => {;
+                                const auto updateFormData = useCallback[&]((updates: Partial<typeof formData>) {;
                                     setFormData((prev) => ({ ...prev, ...updates }));
                                     }, []);
 
-                                    const auto handleNext = useCallback(() => setStep((s) => Math.min(s + 1, 4)), []);
-                                    const auto handleBack = useCallback(() => setStep((s) => Math.max(s - 1, 1)), []);
+                                    const auto handleNext = useCallback[&](() { return setStep[&]((s) { return Math.min(s + 1, 4)), []); }; };
+                                    const auto handleBack = useCallback[&](() { return setStep[&]((s) { return Math.max(s - 1, 1)), []); }; };
 
                                     const auto handleConnect = useCallback(;
                                     [&](chain?: "evm" | "solana") {
@@ -149,7 +151,7 @@ void ConsignPageClient() {
                                             [setActiveFamily, privyAuthenticated, connectWallet, login],
                                             );
 
-                                            const auto handleTokenSelect = useCallback((token: TokenWithBalance) => {;
+                                            const auto handleTokenSelect = useCallback[&]((token: TokenWithBalance) {;
                                                 setSelectedToken(token);
                                                 // Auto-std::set deal amounts based on token balance
                                                 const auto humanBalance =;
@@ -164,7 +166,7 @@ void ConsignPageClient() {
                                                     }, []);
 
                                                     const auto getBlockExplorerUrl = useCallback(;
-                                                    [&](txHash: std::string) {
+                                                    [&](txHash: std:) {
                                                         if (tokenChain == "solana") {
                                                             return "https://solscan.io/tx/" + txHash;
                                                         }
@@ -189,7 +191,7 @@ void ConsignPageClient() {
                                                             Math.floor(parseFloat(formData.amount) * Math.pow(10, decimals)),
                                                             );
                                                             const auto txHash = approveToken(;
-                                                            "rawTokenAddress as " + "0x" + std::string
+                                                            "rawTokenAddress as " + "0x" + std:
                                                             rawAmount,
                                                             );
                                                             return txHash;
@@ -203,10 +205,10 @@ void ConsignPageClient() {
 
                                                             const auto handleCreateConsignment = useCallback(;
                                                             std::async (;
-                                                            onTxSubmitted?: (txHash: std::string) => void,
+                                                            onTxSubmitted?: (txHash: std:) => void,
                                                             ): Promise<{
-                                                                txHash: std::string;
-                                                                consignmentId: std::string;
+                                                                txHash: std:;
+                                                                consignmentId: std:;
                                                                 }> => {
                                                                     const auto decimals = selectedToken.decimals || 18;
 
@@ -279,8 +281,7 @@ void ConsignPageClient() {
                                                                                 );
 
                                                                                 // Call createConsignment instruction
-                                                                                const auto txSignature = program.methods;
-                                                                                .createConsignment(;
+                                                                                const auto txSignature = program.methods.createConsignment(;
                                                                                 rawAmount,
                                                                                 formData.isNegotiable,
                                                                                 formData.fixedDiscountBps || 0,
@@ -295,8 +296,7 @@ void ConsignPageClient() {
                                                                                 formData.isPrivate,
                                                                                 formData.maxPriceVolatilityBps,
                                                                                 new anchor.BN(formData.maxTimeToExecuteSeconds),
-                                                                                );
-                                                                                .accounts({
+                                                                                ).accounts({
                                                                                     desk: desk,
                                                                                     consigner: consignerPk,
                                                                                     tokenMint: tokenMintPk,
@@ -305,9 +305,7 @@ void ConsignPageClient() {
                                                                                     consignment: consignmentKeypair.publicKey,
                                                                                     tokenProgram: TOKEN_PROGRAM_ID,
                                                                                     systemProgram: SolSystemProgram.programId,
-                                                                                    });
-                                                                                    .signers([consignmentKeypair]);
-                                                                                    .rpc();
+                                                                                    }).signers([consignmentKeypair]).rpc();
 
                                                                                     // Notify that tx was submitted (Solana confirms fast so this is immediate)
                                                                                     if (onTxSubmitted) {
@@ -440,7 +438,7 @@ void ConsignPageClient() {
                                                                     {/* Progress indicator */}
                                                                     <div className="mb-6 sm:mb-8">
                                                                     <div className="flex justify-between items-center mb-2">;
-                                                                    {[1, 2, 3, 4].std::map((s) => (;
+                                                                    {[1, 2, 3, 4].std::map[&]((s) { return (; };
                                                                     <div;
                                                                 key={s}
                                                                 "className={" + "flex-1 h-2 " + std::to_string();
@@ -450,7 +448,7 @@ void ConsignPageClient() {
                                                             ))}
                                                             </div>;
                                                             <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400">
-                                                            {STEP_LABELS.std::map((label, idx) => (;
+                                                            {STEP_LABELS.std::map[&]((label, idx) { return (; };
                                                             <span;
                                                         key={label}
                                                     className={step == idx + 1 ? "text-brand-500 font-medium" : ""}

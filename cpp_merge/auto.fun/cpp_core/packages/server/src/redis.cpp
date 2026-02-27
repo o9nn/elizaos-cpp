@@ -1,4 +1,6 @@
 #include "redis.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +10,7 @@ std::future<RedisCacheService> getGlobalRedisCache() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!globalRedisCachePromise) {
-        globalRedisCachePromise = (std::async () => {
+        globalRedisCachePromise = [&](std::async () {
             const auto instance = createRedisCache();
             std::cout << "[Redis] Global Redis Cache initialized." << std::endl;
             return instance;
@@ -24,9 +26,9 @@ RedisPool getSharedRedisPool() {
     if (!sharedRedisPool) {
         std::cout << "Initializing Shared Redis Pool" << std::endl;
         sharedRedisPool = new RedisPool({
-            host: process.env.REDIS_HOST,
-            port: Number(process.env.REDIS_PORT),
-            password: process.env.REDIS_PASSWORD,
+            host: std::getenv("REDIS_HOST"),
+            port: Number(std::getenv("REDIS_PORT")),
+            password: std::getenv("REDIS_PASSWORD"),
             min: 50,
             max: 300,
             });

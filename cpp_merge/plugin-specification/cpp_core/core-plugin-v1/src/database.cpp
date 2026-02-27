@@ -1,4 +1,5 @@
 #include "database.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -47,7 +48,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
         getAccountById: std::async (userId: UUID): Promise<Account | nullptr> => {
             try {
                 const auto entities = adapterV2.getEntityByIds([userId]);
-                if (entities && entities.length > 0) {
+                if (entities && entities.size() > 0) {
                     return fromV2Entity(entities[0]);
                 }
                 return nullptr;
@@ -68,7 +69,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                         },
 
                         // Memory methods - std::map V1 params to V2 structure
-                        getMemories: std::async (params) => {
+                        getMemories: std::async [&](params) {
                             return adapterV2.getMemories({;
                                 entityId: params.agentId, // V2 uses entityId instead of agentId
                                 agentId: params.agentId,
@@ -83,7 +84,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
 
                                 getMemoryById: (id: UUID) => adapterV2.getMemoryById(id),
 
-                                getMemoriesByIds: (ids: UUID[], tableName?: std::string) =>
+                                getMemoriesByIds: (ids: UUID[], tableName?: std:) =>
                                 adapterV2.getMemoriesByIds(ids, tableName),
 
                                 getMemoriesByRoomIds: (params) =>
@@ -92,7 +93,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                 getCachedEmbeddings: (params) =>
                                 adapterV2.getCachedEmbeddings(params),
 
-                                log: std::async (params) => {
+                                log: std::async [&](params) {
                                     // V2 uses entityId, V1 uses userId
                                     return adapterV2.log({;
                                         body: params.body,
@@ -122,7 +123,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                     }
                                                     },
 
-                                                    searchMemories: (params) => {
+                                                    searchMemories: [&](params) {
                                                         return adapterV2.searchMemories({;
                                                             embedding: params.embedding,
                                                             match_threshold: params.match_threshold,
@@ -139,7 +140,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                 std::cout << "updateGoalStatus not implemented in V2 adapter" << std::endl;
                                                                 },
 
-                                                                searchMemoriesByEmbedding: (embedding: number[], params) => {
+                                                                searchMemoriesByEmbedding: [&](embedding[], params) {
                                                                     return adapterV2.searchMemories({;
                                                                         embedding,
                                                                         match_threshold: params.match_threshold,
@@ -151,20 +152,20 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                         });
                                                                         },
 
-                                                                        createMemory: std::async (memory: Memory, tableName: std::string, unique?: boolean) => {
+                                                                        createMemory: std::async [&](memory: Memory, tableName: std:, unique?) {
                                                                             adapterV2.createMemory(memory, tableName, unique);
                                                                             },
 
-                                                                            removeMemory: (memoryId: UUID, tableName: std::string) => {
+                                                                            removeMemory: [&](memoryId: UUID, tableName: std:) {
                                                                                 // V2 uses deleteMemory instead of removeMemory
                                                                                 return adapterV2.deleteMemory(memoryId);
                                                                                 },
 
-                                                                                removeAllMemories: (roomId: UUID, tableName: std::string) => {
+                                                                                removeAllMemories: [&](roomId: UUID, tableName: std:) {
                                                                                     return adapterV2.deleteAllMemories(roomId, tableName);
                                                                                     },
 
-                                                                                    countMemories: (roomId: UUID, unique?: boolean, tableName?: std::string) =>
+                                                                                    countMemories: (roomId: UUID, unique?, tableName?: std:) =>
                                                                                     adapterV2.countMemories(roomId, unique, tableName),
 
                                                                                     // Goal methods - not implemented in V2, return empty/stub implementations
@@ -190,7 +191,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                         },
 
                                                                                                         // Room methods
-                                                                                                        getRoom: std::async (roomId: UUID) => {
+                                                                                                        getRoom: std::async [&](roomId: UUID) {
                                                                                                             const auto rooms = adapterV2.getRoomsByIds([roomId]);
                                                                                                             return rooms && rooms.size() > 0 ? roomId : nullptr;
                                                                                                             },
@@ -261,7 +262,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                                                 userB: relationship.targetEntityId,
                                                                                                                                                 userId: relationship.sourceEntityId, // Use source user
                                                                                                                                                 roomId: relationship.id, // V1 expects roomId, use relationship ID
-                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status std::string
+                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status std:
                                                                                                                                                 createdAt: relationship.createdAt,
                                                                                                                                                 };
                                                                                                                                                 },
@@ -301,7 +302,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                                                                             std::cout << "removeKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                             },
 
-                                                                                                                                                                            clearKnowledge: std::async (agentId: UUID, shared?: boolean): Promise<void> => {
+                                                                                                                                                                            clearKnowledge: std::async (agentId: UUID, shared?): Promise<void> => {
                                                                                                                                                                                 std::cout << "clearKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                                 },
                                                                                                                                                                                 };

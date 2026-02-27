@@ -1,10 +1,11 @@
 #include "directory-detection.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-DirectoryInfo detectDirectoryType(const std::string& dir) {
+DirectoryInfo detectDirectoryType(const std:& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if directory exists and is readable
@@ -72,7 +73,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
                                 auto packageJson: PackageJson;
                                 try {
                                     const auto packageJsonContent = fs.readFileSync(packageJsonPath, "utf8");
-                                    packageJson = /* JSON.parse */ packageJsonContent;
+                                    packageJson = /* JSON::parse */ packageJsonContent;
                                     } catch (error) {
                                         return {
                                             type: "non-elizaos-dir",
@@ -95,7 +96,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
 
                                             // Check for ElizaOS dependencies
                                             const auto dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
-                                            const auto elizaPackages = Object.keys(dependencies).filter((pkg) => pkg.startsWith("@elizaos/"));
+                                            const auto elizaPackages = Object.keys(dependencies).filter[&]((pkg) { return pkg.substr(0, "@elizaos/")); };
                                             result.elizaPackageCount = elizaPackages.size();
                                             result.hasElizaOSDependencies = elizaPackages.size() > 0;
 
@@ -137,20 +138,20 @@ bool isElizaOSPlugin(PackageJson packageJson) {
 
     // Check keywords
     const auto keywords = packageJson.keywords || [];
-    if (keywords.includes('plugin')) {
+    if (keywords.count('plugin') > 0) {
         return true;
     }
 
     // Check agentConfig.pluginType field
-    if (packageJson.agentConfig.pluginType.includes('plugin')) {
+    if (packageJson.agentConfig.pluginType.count('plugin') > 0) {
         return true;
     }
 
     // 2. FALLBACK to package name patterns
     const auto packageName = packageJson.name || "";
     if (
-    packageName.startsWith("@elizaos/plugin-") ||;
-    packageName.startsWith("plugin-") ||;
+    packageName.substr(0, "@elizaos/plugin-") ||;
+    packageName.substr(0, "plugin-") ||;
     (std::find(packageName.begin(), packageName.end(), "/plugin-") != packageName.end()) ||;
     ((std::find(packageName.begin(), packageName.end(), "plugin") != packageName.end()) && (std::find(packageName.begin(), packageName.end(), "eliza") != packageName.end()));
     ) {
@@ -166,8 +167,8 @@ bool isElizaOSPlugin(PackageJson packageJson) {
     ) {
         // Additional check for plugin-like dependencies
         const auto allDeps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-        const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith("@elizaos/core"));
-        if (hasElizaCore && keywords.length > 0) {
+        const auto hasElizaCore = Object.keys(allDeps).some[&]((dep) { return dep.substr(0, "@elizaos/core")); };
+        if (hasElizaCore && keywords.size() > 0) {
             return true;
         }
     }
@@ -176,7 +177,7 @@ bool isElizaOSPlugin(PackageJson packageJson) {
 
 }
 
-bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::optional<std::string> monorepoRoot) {
+bool isElizaOSProject(PackageJson packageJson, const std:& dir, std::optional<std:> monorepoRoot) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // 1. EXPLICIT indicators first (most reliable)
@@ -188,20 +189,20 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
 
     // Check keywords
     const auto keywords = packageJson.keywords || [];
-    if (keywords.includes('project')) {
+    if (keywords.count('project') > 0) {
         return true;
     }
 
     // Check agentConfig for project indicators
-    if (packageJson.agentConfig.pluginType.includes('project')) {
+    if (packageJson.agentConfig.pluginType.count('project') > 0) {
         return true;
     }
 
     // 2. FALLBACK to package name patterns
     const auto packageName = packageJson.name || "";
     if (
-    packageName.startsWith("@elizaos/project-") ||;
-    packageName.startsWith("project-") ||;
+    packageName.substr(0, "@elizaos/project-") ||;
+    packageName.substr(0, "project-") ||;
     (std::find(packageName.begin(), packageName.end(), "/project-") != packageName.end()) ||;
     ((std::find(packageName.begin(), packageName.end(), "project") != packageName.end()) && (std::find(packageName.begin(), packageName.end(), "eliza") != packageName.end()));
     ) {
@@ -248,9 +249,9 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
 
             // Check for project dependencies pattern
             const auto allDeps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-            const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith("@elizaos/core"));
+            const auto hasElizaCore = Object.keys(allDeps).some[&]((dep) { return dep.substr(0, "@elizaos/core")); };
             const auto hasMultipleElizaPackages =;
-            Object.keys(allDeps).filter((dep) => dep.startsWith("@elizaos/")).size() >= 2;
+            Object.keys(allDeps).filter[&]((dep) { return dep.substr(0, "@elizaos/")).size() >= 2; };
 
             if (hasElizaCore && hasMultipleElizaPackages) {
                 return true;

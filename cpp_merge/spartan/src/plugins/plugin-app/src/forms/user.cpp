@@ -2,7 +2,7 @@
 
 void userreg_create_addfields(any form, any values)
 {
-    form["addField"](std::string("email"), std::string("email"), values["email"], std::string("Email Address used for registration"));
+    form["addField"](std:("email"), std:("email"), values["email"], std:("Email Address used for registration"));
 };
 
 

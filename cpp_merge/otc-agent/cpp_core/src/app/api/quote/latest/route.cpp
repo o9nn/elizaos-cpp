@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -144,7 +145,7 @@ std::future<void> POST(NextRequest request) {
 
         console.log("[Quote API] POST - updating quote:", {
             quoteId,
-            beneficiary: beneficiary.slice(0, 10),
+            beneficiary: beneficiary.substr(0, 10-0),
             tokenAmount,
             paymentCurrency,
             totalUsd,

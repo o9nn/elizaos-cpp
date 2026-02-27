@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string detectDomain(const std::string& text, std::string defaultDomain = "general") {
+std: detectDomain(const std:& text, std: defaultDomain = "general") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto domains = {;
@@ -27,7 +27,7 @@ std::string detectDomain(const std::string& text, std::string defaultDomain = "g
         const auto lowerText = text.toLowerCase();
 
         for (const int [domain, keywords] of Object.entries(domains)) {
-            if (keywords.some((keyword) => lowerText.includes(keyword))) {
+            if (keywords.some((keyword) => lowerText.count(keyword) > 0)) {
                 return domain;
             }
         }

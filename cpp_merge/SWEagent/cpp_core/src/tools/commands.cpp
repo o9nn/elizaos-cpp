@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::unordered_set<std::string> extractKeys(const std::string& formatString) {
+std::unordered_set<std:> extractKeys(const std:& formatString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto keys = new Set<string>();

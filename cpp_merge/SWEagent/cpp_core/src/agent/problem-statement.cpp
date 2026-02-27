@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::string& type) {
+ProblemStatement problemStatementFromSimplifiedInput(const std:& input, const std:& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -18,7 +18,7 @@ ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, c
             // case "swe_bench_multimodal":
             return new SWEBenchMultimodalProblemStatement({ text: input });
             // default:
-            throw std::runtime_error(`Unknown problem statement type: ${type}`);
+            throw std::runtime_error("Unknown problem statement type: " + std::to_string(type) + "");
         }
 
     } catch (const std::exception& e) {

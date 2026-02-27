@@ -23,11 +23,11 @@ namespace elizaos {
  */
 
 struct TestResult {
-    std::string name;
+    std: name;
     bool passed;
-    std::optional<std::string> error;
+    std::optional<std:> error;
     double duration;
-    std::optional<std::string> output;
+    std::optional<std:> output;
 };
 
 class SimpleE2ETestRunner {
@@ -38,17 +38,17 @@ class SimpleE2ETestRunner {
     
     try {
       // Run core tests
-      await this.testConfigurationLoading();
-      await this.testBasicStartup();
-      await this.testNamespaceHandling();
-      await this.testErrorHandling();
+      this.testConfigurationLoading();
+      this.testBasicStartup();
+      this.testNamespaceHandling();
+      this.testErrorHandling();
       
       // Print results
       this.printResults();
       
     } catch (error) {
       console.error('❌ Test suite failed:', error);
-      process.exit(1);
+      std::exit(1);
     }
   }
 
@@ -81,7 +81,7 @@ class SimpleE2ETestRunner {
       // Gateway should start but log connection failures
       // It shouldn't crash completely
 
-      await testFn();
+      testFn();
 
       // Collect output
         

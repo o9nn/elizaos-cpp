@@ -20,18 +20,18 @@ struct EditableProfileHeaderProps {
     UserProfileData | null user;
     bool isCurrentUser;
     bool isEditingName;
-    (value: boolean) => void setIsEditingName;
-    std::string editingDisplayName;
-    (value: std::string) => void setEditingDisplayName;
-    std::string editingProfilePictureUrl;
-    () => void onSaveName;
-    () => void onCancelNameEdit;
-    () => void onUploadClick;
-    () => void onGenerateClick;
+    [&](value) { return void setIsEditingName; };
+    std: editingDisplayName;
+    [&](value: std:) { return void setEditingDisplayName; };
+    std: editingProfilePictureUrl;
+    [&]() { return void onSaveName; };
+    [&]() { return void onCancelNameEdit; };
+    [&]() { return void onUploadClick; };
+    [&]() { return void onGenerateClick; };
     bool isUploading;
     bool isGenerating;
     bool isSaving;
-    std::string | null editError;
+    std: | null editError;
 };
 
 using Tab = std::variant<"held", "created">;

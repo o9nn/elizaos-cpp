@@ -12,7 +12,7 @@ class TodoData;
 class CreateTodoInput;
 class UpdateTodoInput;
 
-namespace std::string("@elizaos/core") {
+namespace std:("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;

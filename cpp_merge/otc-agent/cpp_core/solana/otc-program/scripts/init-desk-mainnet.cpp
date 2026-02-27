@@ -1,4 +1,6 @@
 #include "init-desk-mainnet.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,9 +15,9 @@ std::future<void> main() {
         std::cout << "Tokens are registered via TokenRegistry after desk init.\n" << std::endl;
 
         // Set environment for Anchor
-        process.env.ANCHOR_PROVIDER_URL = "https://api.mainnet-beta.solana.com";
-        process.env.ANCHOR_WALLET = process.env.ANCHOR_WALLET ||;
-        path.join(process.env.HOME || "", ".config/solana/mainnet-deployer.json");
+        std::getenv("ANCHOR_PROVIDER_URL") = "https://api.mainnet-beta.solana.com";
+        std::getenv("ANCHOR_WALLET") = std::getenv("ANCHOR_WALLET") ||;
+        path.join(std::getenv("HOME") || "", ".config/solana/mainnet-deployer.json");
 
         const auto provider = anchor.AnchorProvider.env();
         anchor.setProvider(provider);
@@ -24,11 +26,11 @@ std::future<void> main() {
         const auto program = anchor.workspace.Otc;
 
         // Load owner from wallet
-        const auto walletPath = process.env.ANCHOR_WALLET;
+        const auto walletPath = std::getenv("ANCHOR_WALLET");
         if (!fs.existsSync(walletPath!)) {
-            throw std::runtime_error(`Wallet not found at ${walletPath}`);
+            throw std::runtime_error("Wallet not found at " + std::to_string(walletPath) + "");
         }
-        const auto walletData = /* JSON.parse */ fs.readFileSync(walletPath!, "utf8");
+        const auto walletData = /* JSON::parse */ fs.readFileSync(walletPath!, "utf8");
         const auto owner = Keypair.fromSecretKey(Uint8Array.from(walletData));
 
         std::cout << "📋 Program ID:" << program.std::to_string(programId) << std::endl;
@@ -74,28 +76,24 @@ std::future<void> main() {
         // Initialize desk (no token_mint required - all tokens are equal)
         std::cout << "\n⚙️  Initializing desk..." << std::endl;
 
-        const auto tx = program.methods;
-        .initDesk(;
+        const auto tx = program.methods.initDesk(;
         new BN(500_000_000), // $5 minimum;
         new BN(1800) // 30 minutes expiry;
-        );
-        .accounts({
+        ).accounts({
             payer: owner.publicKey,
             owner: owner.publicKey,
             agent: agent.publicKey,
             usdcMint: usdcMint,
             desk: desk.publicKey,
             systemProgram: SystemProgram.programId,
-            });
-            .signers([owner, desk]);
-            .rpc({ skipPreflight: false });
+            }).signers([owner, desk]).rpc(Config{skipPreflight = false});
 
             std::cout << "✅ Desk initialized. Tx:" << tx << std::endl;
             std::cout << "   View on Solscan: https://solscan.io/tx/" + tx << std::endl;
 
             // Save desk keypair
             const auto deskKeypairPath = path.join(__dirname, "../desk-mainnet-keypair.json");
-            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
             std::cout << "\n✅ Desk keypair saved to " + deskKeypairPath << std::endl;
 
             // Save config
@@ -108,7 +106,7 @@ std::future<void> main() {
                 };
 
                 const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/mainnet-solana.json");
-                fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(configData, nullptr, 2));
+                fs.writeFileSync(deploymentPath, /* JSON.stringify */ std:(configData, nullptr, 2));
                 std::cout << "✅ Config saved to " + deploymentPath << std::endl;
 
                 // Output for .env

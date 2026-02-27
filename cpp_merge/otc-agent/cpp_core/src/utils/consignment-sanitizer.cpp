@@ -1,4 +1,5 @@
 #include "consignment-sanitizer.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::any> sanitized = { ...consignment };
+    const std::unordered_map<std:, std:> sanitized = { ...consignment };
 
     // Remove sensitive fields
     for (const auto& field : SENSITIVE_CONSIGNMENT_FIELDS)
@@ -21,7 +22,7 @@ SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment) {
 
 }
 
-bool isConsignmentOwner(OTCConsignment consignment, const std::string& callerAddress) {
+bool isConsignmentOwner(OTCConsignment consignment, const std:& callerAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!callerAddress) return false;

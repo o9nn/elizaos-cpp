@@ -20,7 +20,7 @@ namespace elizaos {
  * Converted from tools/search/bin/find_file
  */
 
-void findFile(const std::string& fileName, std::string dir = "./");
+void findFile(const std:& fileName, std: dir = "./");
 
 // CLI if run directly
 // CLI setup

@@ -1,16 +1,19 @@
 #include "contentQuality.hpp"
+#include <string>
+#include <vector>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double calculateEntropy(const std::string& text) {
+double calculateEntropy(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto len = text.size();
     if (len == 0) return 0;
 
-    const std::unordered_map<std::string, double> freq = {};
+    const std::unordered_map<std:, double> freq = {};
     for (const auto& char : text.toLowerCase()
         freq[char] = (freq[char] || 0) + 1;
     }
@@ -25,40 +28,40 @@ double calculateEntropy(const std::string& text) {
 
 }
 
-void checkRepeatedChars(const std::string& text) {
+void checkRepeatedChars(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; ratio: number
+    valid; ratio
 }
 
-void checkRepeatedWords(const std::string& text) {
+void checkRepeatedWords(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; uniqueRatio: number
+    valid; uniqueRatio
 }
 
-void checkKeyboardMash(const std::string& text) {
+void checkKeyboardMash(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; matchRatio: number
+    valid; matchRatio
 }
 
-void checkEmojiSpam(const std::string& text) {
+void checkEmojiSpam(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; ratio: number
+    valid; ratio
 }
 
-void checkUrlSpam(const std::string& text) {
+void checkUrlSpam(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; ratio: number
+    valid; ratio
 }
 
-void checkSpecialCharSpam(const std::string& text) {
+void checkSpecialCharSpam(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; ratio: number
+    valid; ratio
 }
 
-bool checkSpamPhrases(const std::string& text) {
+bool checkSpamPhrases(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto trimmed = text.trim();
+    const auto trimmed = text;
     for (const auto& pattern : SPAM_PHRASES)
         if (pattern.test(trimmed)) {
             return false; // Is spam;
@@ -68,17 +71,17 @@ bool checkSpamPhrases(const std::string& text) {
 
 }
 
-ContentQualityResult checkContentQuality(const std::string& text) {
+ContentQualityResult checkContentQuality(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text || typeof text != 'string') {
         return { isValid: false, reason: 'Empty or invalid content', score: 0 }
     }
 
-    const auto trimmedText = text.trim();
+    const auto trimmedText = text;
 
     // Skip very short messages (handled by MIN_CHAT_LENGTH in caller)
-    if (trimmedText.length < 10) {
+    if (trimmedText.size() < 10) {
         return { isValid: false, reason: 'Too short', score: 0 }
     }
 
@@ -167,18 +170,18 @@ ContentQualityResult checkContentQuality(const std::string& text) {
 
 }
 
-bool quickSpamCheck(const std::string& text) {
+bool quickSpamCheck(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text || typeof text != 'string') return false;
 
-    const auto trimmed = text.trim();
+    const auto trimmed = text;
 
     // Check consecutive repeats (e.g., "aaaaaaa")
     if (CONSECUTIVE_CHAR_REGEX.test(trimmed)) return false;
 
     // Check keyboard mash (quick version)
-    for (const auto& pattern : KEYBOARD_MASH_PATTERNS.slice(0, 5)
+    for (const auto& pattern : KEYBOARD_MASH_PATTERNS.substr(0, 5-0)
         if (pattern.test(trimmed)) return false;
     }
 

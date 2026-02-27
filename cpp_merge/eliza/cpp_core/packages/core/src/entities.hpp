@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <future>
 #include "logger.hpp"
 #include "types.hpp"
 #include "utils.hpp"
@@ -39,7 +40,7 @@ namespace elizaos {
  * @param {Entity[]} candidateEntities - The list of candidate entities to evaluate interactions with.
  * @param {UUID} roomId - The ID of the room where interactions are taking place.
  * @param {Relationship[]} relationships - The relationships between the entities involved.
- * @returns {Promise<{ entity: Entity; interactions: Memory[]; count: number }[]>} - An array of objects containing the entity, recent interactions, and interaction count.
+ * @returns {Promise<{ entity: Entity; interactions: Memory[]; count }[]>} - An array of objects containing the entity, recent interactions, and interaction count.
  */
 
   // Get recent messages from the room - just for context
@@ -76,7 +77,7 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
   // Use a deterministic approach to generate a new UUID based on both IDs
   // This creates a unique ID for each user+agent combination while still being deterministic
 
-  // Create a namespace UUID (version 5) from the combined std::string
+  // Create a namespace UUID (version 5) from the combined std:
   return stringToUuid(combinedString);
 
 /**
@@ -92,16 +93,16 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  */
 
 /**
- * Format entities into a std::string
+ * Format entities into a std:
  * @param entities - list of entities
- * @returns std::string
+ * @returns std:
  */
 /**
- * Format the given entities into a std::string representation.
+ * Format the given entities into a std: representation.
  *
  * @param {Object} options - The options object.
  * @param {Entity[]} options.entities - The list of entities to format.
- * @returns {string} A formatted std::string representing the entities.
+ * @returns {string} A formatted std: representing the entities.
  */
 void formatEntities({ entities: Entity[] } { entities });
 

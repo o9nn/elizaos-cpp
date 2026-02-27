@@ -69,7 +69,7 @@ string formatValidationResults(array<std::shared_ptr<ValidationResult>> results)
 template <typename RET, typename P0>
 RET getValidator(P0 language)
 {
-    return (language == std::string("python")) ? std::make_shared<PythonValidator>() : std::make_shared<TypeScriptValidator>();
+    return (language == std:("python")) ? std::make_shared<PythonValidator>() : std::make_shared<TypeScriptValidator>();
 };
 
 

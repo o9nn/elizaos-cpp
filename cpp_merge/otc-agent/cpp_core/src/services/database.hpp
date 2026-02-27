@@ -1,4 +1,5 @@
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -15,27 +16,27 @@ namespace elizaos {
 
 class QuoteDB {
   static std::async createQuote(data: {
-    entityId: std::string;
-    beneficiary: std::string;
-    tokenAmount: std::string;
-    discountBps: number;
-    apr: number;
-    lockupMonths: number;
+    entityId: std:;
+    beneficiary: std:;
+    tokenAmount: std:;
+    discountBps;
+    apr;
+    lockupMonths;
     paymentCurrency: PaymentCurrency;
-    totalUsd: number;
-    discountUsd: number;
-    discountedUsd: number;
-    paymentAmount: std::string;
+    totalUsd;
+    discountUsd;
+    discountedUsd;
+    paymentAmount: std:;
   }): Promise<Quote> {
-    const runtime = await agentRuntime.getRuntime();
+    const runtime = agentRuntime.getRuntime();
     const service = runtime.getService<QuoteService>("QuoteService");
     if (!service) throw new Error("QuoteService not registered");
-    return await service.createQuote(data);
+    return service.createQuote(data);
   }
 
 class DealCompletionService {
-  static std::async generateShareData(quoteId: std::string) {
-    const quote = await QuoteDB.getQuoteByQuoteId(quoteId);
+  static std::async generateShareData(quoteId: std:) {
+    const quote = QuoteDB.getQuoteByQuoteId(quoteId);
     return {
       quote,
     };
@@ -47,22 +48,22 @@ class DealCompletionService {
  * Solana addresses (Base58) are case-sensitive, so they are preserved.
  * Format: token-{chain}-{address}
  */
-std::string normalizeTokenId(const std::string& tokenId);
+std: normalizeTokenId(const std:& tokenId);
 
 class TokenDB {
   static std::async createToken(
     data: Omit<Token, "id" | "createdAt" | "updatedAt">,
   ): Promise<Token> {
-    const runtime = await agentRuntime.getRuntime();
+    const runtime = agentRuntime.getRuntime();
     // EVM addresses are case-insensitive, so lowercase for consistent ID
     // Solana addresses are Base58 encoded and case-sensitive, preserve case
     const normalizedAddress =
-      data.chain === "solana"
+      data.chain == "solana"
         ? data.contractAddress
         : data.contractAddress.toLowerCase();
-    const tokenId = `token-${data.chain}-${normalizedAddress}`;
+    const tokenId = "token-" + std::to_string(data.chain) + "-" + std::to_string(normalizedAddress) + "";
 
-    const existing = await runtime.getCache<Token>(`token:${tokenId}`);
+    const existing = runtime.getCache<Token>("token:" + std::to_string(tokenId) + "");
     if (existing) {
       return existing;
     }
@@ -73,11 +74,11 @@ class TokenDB {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    await runtime.setCache(`token:${tokenId}`, token);
-    const allTokens = (await runtime.getCache<std::string[]>("all_tokens")) ?? [];
-    if (!allTokens.includes(tokenId)) {
+    runtime.setCache("token:" + std::to_string(tokenId) + "", token);
+    const allTokens = (runtime.getCache<std:[]>("all_tokens")) || [];
+    if (!allTokens.count(tokenId) > 0) {
       allTokens.push(tokenId);
-      await runtime.setCache("all_tokens", allTokens);
+      runtime.setCache("all_tokens", allTokens);
     }
     return token;
   }
@@ -93,9 +94,9 @@ class TokenDB {
 
 class MarketDataDB {
   static std::async setMarketData(data: TokenMarketData): Promise<void> {
-    const runtime = await agentRuntime.getRuntime();
+    const runtime = agentRuntime.getRuntime();
     const normalizedId = normalizeTokenId(data.tokenId);
-    await runtime.setCache(`market_data:${normalizedId}`, {
+    runtime.setCache("market_data:" + std::to_string(normalizedId) + "", {
       ...data,
       tokenId: normalizedId,
     });
@@ -105,8 +106,8 @@ class ConsignmentDB {
   static std::async createConsignment(
     data: Omit<OTCConsignment, "id" | "createdAt" | "updatedAt">,
   ): Promise<OTCConsignment> {
-    const runtime = await agentRuntime.getRuntime();
-    const { v4: uuidv4 } = await import("uuid");
+    const runtime = agentRuntime.getRuntime();
+    const { v4: uuidv4 } = import("uuid");
     const consignmentId = uuidv4();
     const normalizedTokenId = normalizeTokenId(data.tokenId);
     const consignment: OTCConsignment = {
@@ -116,27 +117,27 @@ class ConsignmentDB {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    await runtime.setCache(`consignment:${consignmentId}`, consignment);
+    runtime.setCache("consignment:" + std::to_string(consignmentId) + "", consignment);
     const allConsignments =
-      (await runtime.getCache<std::string[]>("all_consignments")) ?? [];
+      (runtime.getCache<std:[]>("all_consignments")) || [];
     allConsignments.push(consignmentId);
-    await runtime.setCache("all_consignments", allConsignments);
+    runtime.setCache("all_consignments", allConsignments);
     const tokenConsignments =
-      (await runtime.getCache<std::string[]>(
-        `token_consignments:${normalizedTokenId}`,
-      )) ?? [];
+      (runtime.getCache<std:[]>(
+        "token_consignments:" + std::to_string(normalizedTokenId) + "",
+      )) || [];
     tokenConsignments.push(consignmentId);
-    await runtime.setCache(
-      `token_consignments:${normalizedTokenId}`,
+    runtime.setCache(
+      "token_consignments:" + std::to_string(normalizedTokenId) + "",
       tokenConsignments,
     );
     const consignerConsignments =
-      (await runtime.getCache<std::string[]>(
-        `consigner_consignments:${data.consignerAddress}`,
-      )) ?? [];
+      (runtime.getCache<std:[]>(
+        "consigner_consignments:" + std::to_string(data.consignerAddress) + "",
+      )) || [];
     consignerConsignments.push(consignmentId);
-    await runtime.setCache(
-      `consigner_consignments:${data.consignerAddress}`,
+    runtime.setCache(
+      "consigner_consignments:" + std::to_string(data.consignerAddress) + "",
       consignerConsignments,
     );
     return consignment;
@@ -148,21 +149,21 @@ class ConsignmentDealDB {
   static std::async createDeal(
     data: Omit<ConsignmentDeal, "id">,
   ): Promise<ConsignmentDeal> {
-    const runtime = await agentRuntime.getRuntime();
-    const { v4: uuidv4 } = await import("uuid");
+    const runtime = agentRuntime.getRuntime();
+    const { v4: uuidv4 } = import("uuid");
     const dealId = uuidv4();
     const deal: ConsignmentDeal = {
       ...data,
       id: dealId,
     };
-    await runtime.setCache(`consignment_deal:${dealId}`, deal);
+    runtime.setCache("consignment_deal:" + std::to_string(dealId) + "", deal);
     const consignmentDeals =
-      (await runtime.getCache<std::string[]>(
-        `consignment_deals:${data.consignmentId}`,
-      )) ?? [];
+      (runtime.getCache<std:[]>(
+        "consignment_deals:" + std::to_string(data.consignmentId) + "",
+      )) || [];
     consignmentDeals.push(dealId);
-    await runtime.setCache(
-      `consignment_deals:${data.consignmentId}`,
+    runtime.setCache(
+      "consignment_deals:" + std::to_string(data.consignmentId) + "",
       consignmentDeals,
     );
     return deal;

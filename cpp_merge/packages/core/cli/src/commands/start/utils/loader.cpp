@@ -34,7 +34,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(strin
 {
     auto loadedCharacters = std::async([=]() { serverLoadCharacters(charactersArg); });
     if (loadedCharacters->length == 0) {
-        logger->info(std::string("No characters found, using default character"));
+        logger->info(std:("No characters found, using default character"));
         return array<any>{ defaultCharacter };
     }
     return loadedCharacters;

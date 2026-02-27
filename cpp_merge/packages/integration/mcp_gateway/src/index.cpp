@@ -5,55 +5,55 @@ std::shared_ptr<Promise<void>> main()
     auto args = process->argv->slice(2);
     auto configFile = args->find([=](auto arg) mutable
     {
-        return arg->startsWith(std::string("--config="));
+        return arg->startsWith(std:("--config="));
     }
-    )->replace(std::string("--config="), string_empty);
+    )->replace(std:("--config="), string_empty);
     auto modeArg = as<any>(args->find([=](auto arg) mutable
     {
-        return arg->startsWith(std::string("--mode="));
+        return arg->startsWith(std:("--mode="));
     }
-    )->replace(std::string("--mode="), string_empty));
+    )->replace(std:("--mode="), string_empty));
     auto portArg = args->find([=](auto arg) mutable
     {
-        return arg->startsWith(std::string("--port="));
+        return arg->startsWith(std:("--port="));
     }
-    )->replace(std::string("--port="), string_empty);
-    auto mode = OR((modeArg), (std::string("sse")));
-    auto port = (portArg) ? any(parseInt(portArg, 10)) : any(8000);
-    auto logLevel = OR((process->env->MCP_LOG_LEVEL), (std::string("info")));
+    )->replace(std:("--port="), string_empty);
+    auto mode = OR((modeArg), (std:("sse")));
+    auto port = (portArg) ? any(parseInt(portArg, 10)) (8000);
+    auto logLevel = OR((process->env->MCP_LOG_LEVEL), (std:("info")));
     auto logger = createLogger(logLevel);
     try
     {
-        if (mode == std::string("sse")) {
+        if (mode == std:("sse")) {
             if (!configFile) {
-                logger->error(std::string("SSE mode requires --config flag"));
-                logger->info(std::string("Usage: bun run src/index.ts --config=path/to/config.yaml --mode=sse --port=8000"));
+                logger->error(std:("SSE mode requires --config flag"));
+                logger->info(std:("Usage: bun run src/index.ts --config=path/to/config.yaml --mode=sse --port=8000"));
                 process->exit(1);
             }
-            logger->info(std::string("Starting MCP Gateway in SSE mode on port ") + port + string_empty);
+            logger->info(std:("Starting MCP Gateway in SSE mode on port ") + port + string_empty);
             auto wrapper = std::make_shared<HTTPGatewayWrapper>(configFile, port, logger);
             wrapper->start();
             return std::shared_ptr<Promise<void>>();
         }
-        logger->info(std::string("Starting MCP Gateway in STDIO mode"));
+        logger->info(std:("Starting MCP Gateway in STDIO mode"));
         any config;
         if (configFile) {
-            logger->info(std::string("Loading configuration from file: ") + configFile + string_empty);
+            logger->info(std:("Loading configuration from file: ") + configFile + string_empty);
             config = configManager->loadFromFile(configFile);
         } else {
-            logger->info(std::string("Loading configuration from environment variables"));
+            logger->info(std:("Loading configuration from environment variables"));
             config = configManager->loadFromEnv();
         }
-        shared configLogger = createLogger(OR((config["settings"]["logLevel"]), (std::string("info"))));
+        shared configLogger = createLogger(OR((config["settings"]["logLevel"]), (std:("info"))));
         shared gateway = std::make_shared<GatewayServer>(config, configLogger);
         std::async([=]() { gateway->start(); });
         auto transport = std::make_shared<StdioServerTransport>();
         std::async([=]() { gateway->connect(transport); });
-        configLogger->info(std::string("MCP Gateway is now serving on stdio"));
-        configLogger->info(std::string("Listening on stdio"));
+        configLogger->info(std:("MCP Gateway is now serving on stdio"));
+        configLogger->info(std:("Listening on stdio"));
         shared shutdown = [=](auto signal) mutable
         {
-            configLogger->info(std::string("Received ") + signal + std::string(", shutting down gracefully..."));
+            configLogger->info(std:("Received ") + signal + std:(", shutting down gracefully..."));
             try
             {
                 std::async([=]() { gateway->stop(); });
@@ -61,36 +61,36 @@ std::shared_ptr<Promise<void>> main()
             }
             catch (const any& error)
             {
-                configLogger->error(std::string("Error during shutdown: ") + error + string_empty);
+                configLogger->error(std:("Error during shutdown: ") + error + string_empty);
                 process->exit(1);
             }
         };
-        process->on(std::string("SIGINT"), [=]() mutable
+        process->on(std:("SIGINT"), [=]() mutable
         {
-            return shutdown(std::string("SIGINT"));
+            return shutdown(std:("SIGINT"));
         }
         );
-        process->on(std::string("SIGTERM"), [=]() mutable
+        process->on(std:("SIGTERM"), [=]() mutable
         {
-            return shutdown(std::string("SIGTERM"));
+            return shutdown(std:("SIGTERM"));
         }
         );
-        process->on(std::string("uncaughtException"), [=](auto error) mutable
+        process->on(std:("uncaughtException"), [=](auto error) mutable
         {
-            configLogger->error(std::string("Uncaught exception: ") + error + string_empty);
-            shutdown(std::string("uncaughtException"));
+            configLogger->error(std:("Uncaught exception: ") + error + string_empty);
+            shutdown(std:("uncaughtException"));
         }
         );
-        process->on(std::string("unhandledRejection"), [=](auto reason) mutable
+        process->on(std:("unhandledRejection"), [=](auto reason) mutable
         {
-            configLogger->error(std::string("Unhandled rejection: ") + reason + string_empty);
-            shutdown(std::string("unhandledRejection"));
+            configLogger->error(std:("Unhandled rejection: ") + reason + string_empty);
+            shutdown(std:("unhandledRejection"));
         }
         );
     }
     catch (const any& error)
     {
-        logger->error(std::string("Failed to start MCP Gateway: ") + error + string_empty);
+        logger->error(std:("Failed to start MCP Gateway: ") + error + string_empty);
         process->exit(1);
     }
 };
@@ -98,68 +98,68 @@ std::shared_ptr<Promise<void>> main()
 
 std::shared_ptr<Console> createLogger(string logLevel)
 {
-    auto levels = array<string>{ std::string("error"), std::string("warn"), std::string("info"), std::string("debug") };
+    auto levels = array<string>{ std:("error"), std:("warn"), std:("info"), std:("debug") };
     shared levelIndex = levels->indexOf(logLevel->toLowerCase());
     return as<std::shared_ptr<Console>>(object{
-        object::pair{std::string("error"), [=](Args... args_) mutable
+        object::pair{std:("error"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 0) console->error(std::string("[ERROR]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 0) console->error(std:("[ERROR]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("warn"), [=](Args... args_) mutable
+        object::pair{std:("warn"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 1) console->warn(std::string("[WARN]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 1) console->warn(std:("[WARN]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("info"), [=](Args... args_) mutable
+        object::pair{std:("info"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 2) console->info(std::string("[INFO]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 2) console->info(std:("[INFO]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("log"), [=](Args... args_) mutable
+        object::pair{std:("log"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 2) console->log(std::string("[INFO]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 2) console->log(std:("[INFO]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("debug"), [=](Args... args_) mutable
+        object::pair{std:("debug"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 3) console->debug(std::string("[DEBUG]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 3) console->debug(std:("[DEBUG]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("trace"), [=](Args... args_) mutable
+        object::pair{std:("trace"), [=](Args... args_) mutable
         {
             array<any> args = array<any>{args_...};
-            if (levelIndex >= 3) console->trace(std::string("[TRACE]"), const_(args)[0], const_(args)[1]);
+            if (levelIndex >= 3) console->trace(std:("[TRACE]"), const_(args)[0], const_(args)[1]);
         }
         }, 
-        object::pair{std::string("assert"), console->assert}, 
-        object::pair{std::string("clear"), console->clear}, 
-        object::pair{std::string("count"), console->count}, 
-        object::pair{std::string("countReset"), console->countReset}, 
-        object::pair{std::string("dir"), console->dir}, 
-        object::pair{std::string("dirxml"), console->dirxml}, 
-        object::pair{std::string("group"), console->group}, 
-        object::pair{std::string("groupCollapsed"), console->groupCollapsed}, 
-        object::pair{std::string("groupEnd"), console->groupEnd}, 
-        object::pair{std::string("table"), console->table}, 
-        object::pair{std::string("time"), console->time}, 
-        object::pair{std::string("timeEnd"), console->timeEnd}, 
-        object::pair{std::string("timeLog"), console->timeLog}, 
-        object::pair{std::string("timeStamp"), console->timeStamp}, 
-        object::pair{std::string("profile"), console->profile}, 
-        object::pair{std::string("profileEnd"), console->profileEnd}
+        object::pair{std:("assert"), console->assert}, 
+        object::pair{std:("clear"), console->clear}, 
+        object::pair{std:("count"), console->count}, 
+        object::pair{std:("countReset"), console->countReset}, 
+        object::pair{std:("dir"), console->dir}, 
+        object::pair{std:("dirxml"), console->dirxml}, 
+        object::pair{std:("group"), console->group}, 
+        object::pair{std:("groupCollapsed"), console->groupCollapsed}, 
+        object::pair{std:("groupEnd"), console->groupEnd}, 
+        object::pair{std:("table"), console->table}, 
+        object::pair{std:("time"), console->time}, 
+        object::pair{std:("timeEnd"), console->timeEnd}, 
+        object::pair{std:("timeLog"), console->timeLog}, 
+        object::pair{std:("timeStamp"), console->timeStamp}, 
+        object::pair{std:("profile"), console->profile}, 
+        object::pair{std:("profileEnd"), console->profileEnd}
     });
 };
 
 
 void showHelp()
 {
-    console->log(std::string("\
+    console->log(std:("\
 MCP Gateway Server\
 \
 USAGE:\
@@ -209,13 +209,13 @@ For more information, visit: https://github.com/studio/mcp-gateway\
 
 void Main(void)
 {
-    if (OR((process->argv->includes(std::string("--help"))), (process->argv->includes(std::string("-h"))))) {
+    if (OR((process->argv->includes(std:("--help"))), (process->argv->includes(std:("-h"))))) {
         showHelp();
         process->exit(0);
     }
     main()->_catch([=](auto error) mutable
     {
-        console->error(std::string("Fatal error:"), error);
+        console->error(std:("Fatal error:"), error);
         process->exit(1);
     }
     );

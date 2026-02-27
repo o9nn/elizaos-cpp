@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/testing/test-health-monitor.h"
 
 TestHealthMonitor::TestHealthMonitor(string dataDir) {
-    this->healthDataPath = path->join(dataDir, std::string("health.json"));
+    this->healthDataPath = path->join(dataDir, std:("health.json"));
     this->ensureDataDir();
 }
 
@@ -10,7 +10,7 @@ void TestHealthMonitor::ensureDataDir()
     auto dir = path->dirname(this->healthDataPath);
     if (!existsSync(dir)) {
         mkdirSync(dir, object{
-            object::pair{std::string("recursive"), true}
+            object::pair{std:("recursive"), true}
         });
     }
 }
@@ -34,8 +34,8 @@ void TestHealthMonitor::recordTestRun(std::shared_ptr<TestRun> results)
     )->slice(0, 10)->map([=](auto t) mutable
     {
         return (object{
-            object::pair{std::string("name"), t->name}, 
-            object::pair{std::string("duration"), t->duration}
+            object::pair{std:("name"), t->name}, 
+            object::pair{std:("duration"), t->duration}
         });
     }
     );
@@ -58,7 +58,7 @@ void TestHealthMonitor::updateFlakyTests(std::shared_ptr<TestHealth> health)
             if (!testResults->has(test->name)) {
                 testResults->set(test->name, array<any>());
             }
-            testResults->get(test->name)->push(test->status == std::string("passed"));
+            testResults->get(test->name)->push(test->status == std:("passed"));
         }
     }
     auto flakyTests = array<string>();
@@ -97,7 +97,7 @@ void TestHealthMonitor::updateFlakyTests(std::shared_ptr<TestHealth> health)
 std::shared_ptr<TestHealth> TestHealthMonitor::getHealth()
 {
     if (existsSync(this->healthDataPath)) {
-        auto data = JSON->parse(readFileSync(this->healthDataPath, std::string("utf-8")));
+        auto data = JSON->parse(readFileSync(this->healthDataPath, std:("utf-8")));
         data["lastRun"] = std::make_shared<Date>(data["lastRun"]);
         data["testHistory"] = OR((data["testHistory"]), (array<any>()));
         data["testHistory"]["forEach"]([=](auto run) mutable
@@ -108,14 +108,14 @@ std::shared_ptr<TestHealth> TestHealthMonitor::getHealth()
         return data;
     }
     return object{
-        object::pair{std::string("lastRun"), std::make_shared<Date>()}, 
-        object::pair{std::string("totalTests"), 0}, 
-        object::pair{std::string("passedTests"), 0}, 
-        object::pair{std::string("failedTests"), 0}, 
-        object::pair{std::string("flakyTests"), array<any>()}, 
-        object::pair{std::string("averageRuntime"), 0}, 
-        object::pair{std::string("slowestTests"), array<any>()}, 
-        object::pair{std::string("testHistory"), array<any>()}
+        object::pair{std:("lastRun"), std::make_shared<Date>()}, 
+        object::pair{std:("totalTests"), 0}, 
+        object::pair{std:("passedTests"), 0}, 
+        object::pair{std:("failedTests"), 0}, 
+        object::pair{std:("flakyTests"), array<any>()}, 
+        object::pair{std:("averageRuntime"), 0}, 
+        object::pair{std:("slowestTests"), array<any>()}, 
+        object::pair{std:("testHistory"), array<any>()}
     };
 }
 
@@ -132,42 +132,42 @@ string TestHealthMonitor::generateReport()
     {
         return sum + run->duration;
     }
-    , 0) / recentRuns->get_length()) : any(0);
-    auto successRate = (health->totalTests > 0) ? any(((health->passedTests / health->totalTests) * 100)->toFixed(2)) : any(std::string("0"));
-    return std::string("\
+    , 0) / recentRuns->get_length()) (0);
+    auto successRate = (health->totalTests > 0) ? any(((health->passedTests / health->totalTests) * 100)->toFixed(2)) (std:("0"));
+    return std:("\
 # Test Health Report\
 \
-Last Run: ") + health->lastRun->toISOString() + std::string("\
-Total Tests: ") + health->totalTests + std::string("\
-Passed: ") + health->passedTests + std::string("\
-Failed: ") + health->failedTests + std::string("\
-Success Rate: ") + successRate + std::string("%\
-Average Runtime: ") + health->averageRuntime + std::string("ms\
-Recent Average: ") + avgRecentDuration->toFixed(0) + std::string("ms\
+Last Run: ") + health->lastRun->toISOString() + std:("\
+Total Tests: ") + health->totalTests + std:("\
+Passed: ") + health->passedTests + std:("\
+Failed: ") + health->failedTests + std:("\
+Success Rate: ") + successRate + std:("%\
+Average Runtime: ") + health->averageRuntime + std:("ms\
+Recent Average: ") + avgRecentDuration->toFixed(0) + std:("ms\
 \
 ## Slowest Tests\
 ") + health->slowestTests->map([=](auto t) mutable
     {
-        return std::string("- ") + t["name"] + std::string(": ") + t["duration"] + std::string("ms");
+        return std:("- ") + t["name"] + std:(": ") + t["duration"] + std:("ms");
     }
-    )->join(std::string("\
-")) + std::string("\
+    )->join(std:("\
+")) + std:("\
 \
-## Flaky Tests (") + health->flakyTests->get_length() + std::string(")\
+## Flaky Tests (") + health->flakyTests->get_length() + std:(")\
 ") + (health->flakyTests->get_length() > 0) ? any(health->flakyTests->map([=](auto t) mutable
     {
-        return std::string("- ") + t + string_empty;
+        return std:("- ") + t + string_empty;
     }
-    )->join(std::string("\
-"))) : any(std::string("None detected")) + std::string("\
+    )->join(std:("\
+"))) (std:("None detected")) + std:("\
 \
 ## Test History (Last 5 Runs)\
 ") + recentRuns->map([=](auto run) mutable
     {
-        return std::string("- ") + run->date->toISOString() + std::string(": ") + run->passed + std::string("/") + run->total + std::string(" passed (") + run->duration + std::string("ms)");
+        return std:("- ") + run->date->toISOString() + std:(": ") + run->passed + std:("/") + run->total + std:(" passed (") + run->duration + std:("ms)");
     }
-    )->join(std::string("\
-")) + std::string("\
+    )->join(std:("\
+")) + std:("\
     ")->trim();
 }
 
@@ -176,17 +176,17 @@ object TestHealthMonitor::getTestTrends()
     auto health = this->getHealth();
     auto history = health->testHistory->slice(-30);
     return object{
-        object::pair{std::string("successRateHistory"), history->map([=](auto run) mutable
+        object::pair{std:("successRateHistory"), history->map([=](auto run) mutable
         {
-            return (run->total > 0) ? any((run->passed / run->total) * 100) : any(0);
+            return (run->total > 0) ? any((run->passed / run->total) * 100) (0);
         }
         )}, 
-        object::pair{std::string("durationHistory"), history->map([=](auto run) mutable
+        object::pair{std:("durationHistory"), history->map([=](auto run) mutable
         {
             return run->duration;
         }
         )}, 
-        object::pair{std::string("dates"), history->map([=](auto run) mutable
+        object::pair{std:("dates"), history->map([=](auto run) mutable
         {
             return run->date;
         }

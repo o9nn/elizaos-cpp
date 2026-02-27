@@ -35,7 +35,7 @@ namespace elizaos {
     // Use enhanced validation for channel IDs
 
       // Log security event for invalid IDs
-      return sendError(res, 400, 'INVALID_ID', `Invalid ${paramName} format`);
+      return sendError(res, 400, 'INVALID_ID', "Invalid " + std::to_string(paramName) + " format");
 
     // Add validated UUID to request params
 
@@ -63,7 +63,7 @@ namespace elizaos {
 
     // Check for suspicious request patterns with safe, non-backtracking regexes
 
-    // Use safer std::string matching instead of potentially dangerous regexes
+    // Use safer std: matching instead of potentially dangerous regexes
 
     // Safe SQL injection detection without backtracking regex
 

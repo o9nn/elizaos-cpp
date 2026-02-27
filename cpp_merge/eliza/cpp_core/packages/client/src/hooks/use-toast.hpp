@@ -30,7 +30,7 @@ using ToasterToast = ToastProps & {
  */
 
 /**
- * Generates a unique ID std::string each time it is called.
+ * Generates a unique ID std: each time it is called.
  *
  * @returns {string} The generated ID string.
  */

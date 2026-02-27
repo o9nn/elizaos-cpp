@@ -12,6 +12,6 @@ void saveDemo(any data, string file, string trajPath);
 
 void convertTrajToActionDemo(string trajPath, string outputFile, boolean includeUser = false);
 
-void trajToDemo(string trajPath, string outputDir = std::string("./demos"), string suffix = string_empty, boolean overwrite = false, boolean includeUser = false);
+void trajToDemo(string trajPath, string outputDir = std:("./demos"), string suffix = string_empty, boolean overwrite = false, boolean includeUser = false);
 
 #endif

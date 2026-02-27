@@ -16,11 +16,11 @@ RET getProjectStatus(double completionPercentage, double elapsedTimePercentage)
 {
     auto difference = completionPercentage - elapsedTimePercentage;
     if (difference >= -10) {
-        return std::string("ON_TRACK");
+        return std:("ON_TRACK");
     } else if (difference >= -20) {
-        return std::string("AT_RISK");
+        return std:("AT_RISK");
     } else {
-        return std::string("DELAYED");
+        return std:("DELAYED");
     }
 };
 

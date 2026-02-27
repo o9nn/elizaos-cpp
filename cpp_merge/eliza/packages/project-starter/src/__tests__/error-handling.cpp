@@ -2,20 +2,20 @@
 
 void Main(void)
 {
-    mock->module(std::string("@elizaos/core"), [=]() mutable
+    mock->module(std:("@elizaos/core"), [=]() mutable
     {
-        auto actual = require(std::string("@elizaos/core"));
+        auto actual = require(std:("@elizaos/core"));
         return utils::assign(object{
             , 
-            object::pair{std::string("logger"), object{
-                object::pair{std::string("info"), mock()}, 
-                object::pair{std::string("error"), mock()}, 
-                object::pair{std::string("warn"), mock()}
+            object::pair{std:("logger"), object{
+                object::pair{std:("info"), mock()}, 
+                object::pair{std:("error"), mock()}, 
+                object::pair{std:("warn"), mock()}
             }}
         }, actual);
     }
     );
-    describe(std::string("Error Handling"), [=]() mutable
+    describe(std:("Error Handling"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -26,37 +26,37 @@ void Main(void)
         {
         }
         );
-        describe(std::string("HELLO_WORLD Action Error Handling"), [=]() mutable
+        describe(std:("HELLO_WORLD Action Error Handling"), [=]() mutable
         {
-            it(std::string("should log errors in action handlers"), [=]() mutable
+            it(std:("should log errors in action handlers"), [=]() mutable
             {
                 auto action = plugin->actions->find([=](auto a) mutable
                 {
-                    return a["name"] == std::string("HELLO_WORLD");
+                    return a["name"] == std:("HELLO_WORLD");
                 }
                 );
                 if (AND((action), (action->handler))) {
-                    auto mockError = std::make_shared<Error>(std::string("Test error in action"));
-                    spyOn(console, std::string("error"))->mockImplementation([=]() mutable
+                    auto mockError = std::make_shared<Error>(std:("Test error in action"));
+                    spyOn(console, std:("error"))->mockImplementation([=]() mutable
                     {
                     }
                     );
                     auto mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{}));
                     auto mockMessage = as<std::shared_ptr<Memory>>(object{
-                        object::pair{std::string("entityId"), uuidv4()}, 
-                        object::pair{std::string("roomId"), uuidv4()}, 
-                        object::pair{std::string("content"), object{
-                            object::pair{std::string("text"), std::string("Hello!")}, 
-                            object::pair{std::string("source"), std::string("test")}
+                        object::pair{std:("entityId"), uuidv4()}, 
+                        object::pair{std:("roomId"), uuidv4()}, 
+                        object::pair{std:("content"), object{
+                            object::pair{std:("text"), std:("Hello!")}, 
+                            object::pair{std:("source"), std:("test")}
                         }}
                     });
                     auto mockState = as<std::shared_ptr<State>>(object{
-                        object::pair{std::string("values"), object{}}, 
-                        object::pair{std::string("data"), object{}}, 
-                        object::pair{std::string("text"), string_empty}
+                        object::pair{std:("values"), object{}}, 
+                        object::pair{std:("data"), object{}}, 
+                        object::pair{std:("text"), string_empty}
                     });
                     auto mockCallback = mock();
-                    spyOn(logger, std::string("error"));
+                    spyOn(logger, std:("error"));
                     try
                     {
                         std::async([=]() { action->handler(mockRuntime, mockMessage, mockState, object{}, mockCallback, array<any>()); });
@@ -71,12 +71,12 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Service Error Handling"), [=]() mutable
+        describe(std:("Service Error Handling"), [=]() mutable
         {
-            it(std::string("should throw an error when stopping non-existent service"), [=]() mutable
+            it(std:("should throw an error when stopping non-existent service"), [=]() mutable
             {
                 auto mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-                    object::pair{std::string("getService"), mock()->mockReturnValue(nullptr)}
+                    object::pair{std:("getService"), mock()->mockReturnValue(nullptr)}
                 }));
                 auto caughtError = nullptr;
                 try
@@ -86,23 +86,23 @@ void Main(void)
                 catch (const any& error)
                 {
                     caughtError = error;
-                    expect(error["message"])->toBe(std::string("Starter service not found"));
+                    expect(error["message"])->toBe(std:("Starter service not found"));
                 }
                 expect(caughtError)->not->toBeNull();
-                expect(mockRuntime->getService)->toHaveBeenCalledWith(std::string("starter"));
+                expect(mockRuntime->getService)->toHaveBeenCalledWith(std:("starter"));
             }
             );
-            it(std::string("should handle service stop errors gracefully"), [=]() mutable
+            it(std:("should handle service stop errors gracefully"), [=]() mutable
             {
                 auto mockServiceWithError = object{
-                    object::pair{std::string("stop"), mock()->mockImplementation([=]() mutable
+                    object::pair{std:("stop"), mock()->mockImplementation([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Error stopping service")));
+                        throw any(std::make_shared<Error>(std:("Error stopping service")));
                     }
                     )}
                 };
                 auto mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-                    object::pair{std::string("getService"), mock()->mockReturnValue(mockServiceWithError)}
+                    object::pair{std:("getService"), mock()->mockReturnValue(mockServiceWithError)}
                 }));
                 auto caughtError = nullptr;
                 try
@@ -112,32 +112,32 @@ void Main(void)
                 catch (const any& error)
                 {
                     caughtError = error;
-                    expect(error["message"])->toBe(std::string("Error stopping service"));
+                    expect(error["message"])->toBe(std:("Error stopping service"));
                 }
                 expect(caughtError)->not->toBeNull();
-                expect(mockRuntime->getService)->toHaveBeenCalledWith(std::string("starter"));
+                expect(mockRuntime->getService)->toHaveBeenCalledWith(std:("starter"));
                 expect(mockServiceWithError["stop"])->toHaveBeenCalled();
             }
             );
         }
         );
-        describe(std::string("Plugin Events Error Handling"), [=]() mutable
+        describe(std:("Plugin Events Error Handling"), [=]() mutable
         {
-            it(std::string("should handle errors in event handlers gracefully"), [=]() mutable
+            it(std:("should handle errors in event handlers gracefully"), [=]() mutable
             {
                 if (AND((plugin->events), (plugin->events->MESSAGE_RECEIVED))) {
                     auto messageHandler = const_(plugin->events->MESSAGE_RECEIVED)[0];
                     auto mockParams = object{
-                        object::pair{std::string("message"), object{
-                            object::pair{std::string("id"), std::string("test-id")}, 
-                            object::pair{std::string("content"), object{
-                                object::pair{std::string("text"), std::string("Hello!")}
+                        object::pair{std:("message"), object{
+                            object::pair{std:("id"), std:("test-id")}, 
+                            object::pair{std:("content"), object{
+                                object::pair{std:("text"), std:("Hello!")}
                             }}
                         }}, 
-                        object::pair{std::string("source"), std::string("test")}, 
-                        object::pair{std::string("runtime"), object{}}
+                        object::pair{std:("source"), std:("test")}, 
+                        object::pair{std:("runtime"), object{}}
                     };
-                    spyOn(logger, std::string("error"));
+                    spyOn(logger, std:("error"));
                     try
                     {
                         std::async([=]() { messageHandler(as<any>(mockParams)); });
@@ -152,13 +152,13 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Provider Error Handling"), [=]() mutable
+        describe(std:("Provider Error Handling"), [=]() mutable
         {
-            it(std::string("should handle errors in provider.get method"), [=]() mutable
+            it(std:("should handle errors in provider.get method"), [=]() mutable
             {
                 auto provider = plugin->providers->find([=](auto p) mutable
                 {
-                    return p["name"] == std::string("HELLO_WORLD_PROVIDER");
+                    return p["name"] == std:("HELLO_WORLD_PROVIDER");
                 }
                 );
                 if (provider) {

@@ -1,4 +1,5 @@
 #include "lifecycle.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +13,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
         const auto db = serverInstance.database;
 
         // Start an existing agent
-        router.post("/:agentId/start", std::async (req, res) => {
+        router.post[&]("/:agentId/start", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -32,7 +33,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
                 const auto isActive = !!agents.get(agentId);
 
                 if (isActive) {
-                    logger.debug(`[AGENT START] Agent ${agentId} is already running`);
+                    logger.debug("[AGENT START] Agent " + std::to_string(agentId) + " is already running");
                     return sendSuccess(res, {;
                         id: agentId,
                         name: agent.name,
@@ -47,7 +48,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
                         throw std::runtime_error('Failed to start agent');
                     }
 
-                    logger.debug(`[AGENT START] Successfully started agent: ${agent.name}`);
+                    logger.debug("[AGENT START] Successfully started agent: " + std::to_string(agent.name) + "");
                     sendSuccess(res, {
                         id: agentId,
                         name: agent.name,
@@ -66,7 +67,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
                         });
 
                         // Stop an existing agent
-                        router.post("/:agentId/stop", std::async (req, res) => {
+                        router.post[&]("/:agentId/stop", std::async (req, res) {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 logger.debug('[AGENT STOP] Invalid agent ID format');
@@ -80,7 +81,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
 
                             serverInstance.unregisterAgent(agentId);
 
-                            logger.debug(`[AGENT STOP] Successfully stopped agent: ${runtime.character.name} (${agentId})`);
+                            logger.debug("[AGENT STOP] Successfully stopped agent: " + std::to_string(runtime.character.name) + " (" + std::to_string(agentId) + ")");
 
                             sendSuccess(res, {
                                 message: "Agent stopped",

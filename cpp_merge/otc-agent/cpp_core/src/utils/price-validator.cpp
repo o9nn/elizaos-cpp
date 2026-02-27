@@ -1,19 +1,20 @@
 #include "price-validator.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PriceValidationResult> checkPriceDivergence(const std::string& tokenAddress, Chain chain, double poolPriceUsd) {
+std::future<PriceValidationResult> checkPriceDivergence(const std:& tokenAddress, Chain chain, double poolPriceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!poolPriceUsd || poolPriceUsd <= 0) {
-        return { valid: true }; // Cannot validate if pool price is invalid
+        return Config{valid = true}; // Cannot validate if pool price is invalid
     }
 
     const auto platformId = COINGECKO_CHAIN_MAP[chain];
     if (!platformId) {
-        return { valid: true }; // Unsupported chain for validation
+        return Config{valid = true}; // Unsupported chain for validation
     }
 
     try {
@@ -34,7 +35,7 @@ std::future<PriceValidationResult> checkPriceDivergence(const std::string& token
             const auto tokenData = data[tokenAddress.toLowerCase()];
 
             if (!tokenData || !tokenData.usd) {
-                return { valid: true }; // No price found off-chain
+                return Config{valid = true}; // No price found off-chain
             }
 
             const auto aggregatedPrice = tokenData.usd;
@@ -62,7 +63,7 @@ std::future<PriceValidationResult> checkPriceDivergence(const std::string& token
                     };
                     } catch (error) {
                         std::cout << "Price validation failed:" << error << std::endl;
-                        return { valid: true }; // Fail open
+                        return Config{valid = true}; // Fail open
                     }
 
 }

@@ -1,10 +1,13 @@
 #include "generation.hpp"
+#include <string>
+#include <vector>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool canGenerateEnvVar(const std::string& varName, const std::string& type, std::optional<std::string> description) {
+bool canGenerateEnvVar(const std:& varName, const std:& type, std::optional<std:> description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();
@@ -26,7 +29,7 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
     (std::find(lowerName.begin(), lowerName.end(), "key") != lowerName.end());
     ) {
         // Don't generate API keys - those need to come from external services
-        if (lowerName.includes("api_key") || lowerDesc.includes("api key")) {
+        if (lowerName.count("api_key") > 0 || lowerDesc.count("api key") > 0) {
             return false;
         }
         return true;
@@ -34,13 +37,13 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
 
     // Check for config values
     if (type == "config") {
-        if (lowerName.includes("port") || lowerName.includes("database_name")) {
+        if (lowerName.count("port") > 0 || lowerName.count("database_name") > 0) {
             return true;
         }
     }
 
     // Check for UUIDs
-    if (lowerName.includes("uuid") || lowerName.includes("id")) {
+    if (lowerName.count("uuid") > 0 || lowerName.count("id") > 0) {
         return true;
     }
 
@@ -48,18 +51,18 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
 
 }
 
-std::optional<GenerationScript> generateScript(const std::string& varName, const std::string& type, const std::string& pluginName, std::optional<std::string> description) {
+std::optional<GenerationScript> generateScript(const std:& varName, const std:& type, const std:& pluginName, std::optional<std:> description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();
     const auto lowerDesc = description.toLowerCase() || "";
 
-    std::string script = nullptr;
+    std: script = nullptr;
     std::vector<std::string> dependencies = [];
 
     // Determine script type based on variable characteristics
-    if (type == "private_key" || lowerName.includes("private_key")) {
-        if (lowerDesc.includes("ed25519") || lowerName.includes("ed25519")) {
+    if (type == "private_key" || lowerName.count("private_key") > 0) {
+        if (lowerDesc.count("ed25519") > 0 || lowerName.count("ed25519") > 0) {
             script = generationTemplates.private_key.ed25519;
             } else {
                 script = generationTemplates.private_key.rsa; // Default to RSA;
@@ -72,7 +75,7 @@ std::optional<GenerationScript> generateScript(const std::string& varName, const
                     script = generationTemplates.secret.jwt_secret;
                     dependencies = generationDependencies.secret.jwt_secret;
                     } else if (type == "secret" || (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end())) {
-                        if (lowerDesc.includes("base64") || lowerName.includes("base64")) {
+                        if (lowerDesc.count("base64") > 0 || lowerName.count("base64") > 0) {
                             script = generationTemplates.secret.base64_32;
                             } else {
                                 script = generationTemplates.secret.hex_32; // Default to hex;
@@ -96,7 +99,7 @@ std::optional<GenerationScript> generateScript(const std::string& varName, const
                                 return {
                                     variableName: varName,
                                     pluginName,
-                                    script: script.trim(),
+                                    script: script,
                                     dependencies,
                                     attempts: 0,
                                     status: "pending",
@@ -105,13 +108,13 @@ std::optional<GenerationScript> generateScript(const std::string& varName, const
 
 }
 
-std::string getGenerationDescription(const std::string& varName, const std::string& type) {
+std: getGenerationDescription(const std:& varName, const std:& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();
 
-    if (type == "private_key" || lowerName.includes("private_key")) {
-        if (lowerName.includes("ed25519")) {
+    if (type == "private_key" || lowerName.count("private_key") > 0) {
+        if (lowerName.count("ed25519") > 0) {
             return "Generate a new Ed25519 private key for cryptographic operations";
             } else {
                 return "Generate a new RSA private key for cryptographic operations";

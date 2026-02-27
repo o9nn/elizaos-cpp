@@ -11,7 +11,7 @@ void AgentRoute() {
     const auto { agentId, channelId } = useParams<{ agentId: UUID; channelId?: UUID }>();
     const auto navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect[&](() {
         clientLogger.info("[AgentRoute] Component mounted/updated", { agentId, channelId });
         return [&]() {;
             clientLogger.info("[AgentRoute] Component unmounted", { agentId, channelId });
@@ -78,12 +78,12 @@ void AgentRoute() {
                         clientLogger.info("[AgentRoute] Agent is not active, rendering inactive state UI", {
                             agentName: agentFromHook.name,
                             });
-                            return (;
+                            return [&](;
                             <div className="flex flex-col items-center justify-center h-full w-full p-8 text-center">;
                             <h2 className="text-2xl font-semibold mb-4">{agentFromHook.name} is not active.</h2>;
                             <p className="text-muted-foreground mb-6">Press the button below to start this agent.</p>;
                             <div className="flex gap-3">;
-                            "<Button onClick={() => navigate(" + "/settings/" + agentId;
+                            "<Button onClick={() { return navigate(" + "/settings/" + agentId; };
                             <Settings className="h-5 w-5" />;
                             </Button>;
                             <Button onClick={handleStartAgent} disabled={isStarting} size="lg">;

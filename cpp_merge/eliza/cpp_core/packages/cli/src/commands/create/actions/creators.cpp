@@ -1,10 +1,12 @@
 #include "creators.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> createPlugin(const std::string& pluginName, const std::string& targetDir, auto isNonInteractive) {
+std::future<void> createPlugin(const std:& pluginName, const std:& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -16,7 +18,7 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
 
         const auto processedName = nameResult.processedName!;
         // Add prefix to ensure plugin directory name follows convention
-        const auto pluginDirName = processedName.startsWith("plugin-");
+        const auto pluginDirName = processedName.substr(0, "plugin-");
         ? processedName;
         ": " + "plugin-" + processedName
         const auto pluginTargetDir = join(targetDir, pluginDirName);
@@ -34,7 +36,7 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
                     clack.cancel("Plugin creation cancelled.");
-                    process.exit(0);
+                    std::exit(0);
                 }
             }
 
@@ -56,7 +58,7 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
     }
 }
 
-std::future<void> createAgent(const std::string& agentName, const std::string& targetDir, auto isNonInteractive) {
+std::future<void> createAgent(const std:& agentName, const std:& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -65,8 +67,8 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
         // Check if agent file already exists
         try {
             fs.access(agentFilePath);
-            throw std::runtime_error(`Agent file ${agentFilePath} already exists`);
-            } catch (error: std::any) {
+            throw std::runtime_error("Agent file " + std::to_string(agentFilePath) + " already exists");
+            } catch (error: std:) {
                 if (error.code != 'ENOENT') {
                     throw;
                 }
@@ -80,7 +82,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
 
                     if (clack.isCancel(confirmCreate) || !confirmCreate) {
                         clack.cancel("Agent creation cancelled.");
-                        process.exit(0);
+                        std::exit(0);
                     }
                 }
 
@@ -94,7 +96,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
                     ],
                     };
 
-                    fs.writeFile(agentFilePath, /* JSON.stringify */ std::string(agentCharacter, nullptr, 2));
+                    fs.writeFile(agentFilePath, /* JSON.stringify */ std:(agentCharacter, nullptr, 2));
 
                     if (!isNonInteractive) {
                         std::cout << "\n" + std::to_string(colors.green("✓")) + " Agent \"" + agentName + "\" created successfully!" << std::endl;
@@ -109,7 +111,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
     }
 }
 
-std::future<void> createTEEProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
+std::future<void> createTEEProject(const std:& projectName, const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -128,7 +130,7 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
                     clack.cancel("TEE project creation cancelled.");
-                    process.exit(0);
+                    std::exit(0);
                 }
             }
 
@@ -155,7 +157,7 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
     }
 }
 
-std::future<void> createProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
+std::future<void> createProject(const std:& projectName, const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -175,7 +177,7 @@ std::future<void> createProject(const std::string& projectName, const std::strin
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
                     clack.cancel("Project creation cancelled.");
-                    process.exit(0);
+                    std::exit(0);
                 }
             }
 

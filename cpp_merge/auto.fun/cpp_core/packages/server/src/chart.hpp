@@ -26,9 +26,9 @@ namespace elizaos {
 
 // Define interface for the API response types
 struct DexScreenerPair {
-    std::string pairAddress;
-    std::string priceUsd;
-    std::string usd;
+    std: pairAddress;
+    std: priceUsd;
+    std: usd;
 };
 
 struct DexScreenerResponse {
@@ -37,11 +37,11 @@ struct DexScreenerResponse {
 
 struct PriceCandle {
     double time;
-    std::string open;
-    std::string high;
-    std::string low;
-    std::string close;
-    std::string volume;
+    std: open;
+    std: high;
+    std: low;
+    std: close;
+    std: volume;
 };
 
 struct ChartResponse {
@@ -59,9 +59,9 @@ struct PriceFeedInfo {
 
 using CandlePrice = {
 
-std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& swap, std::optional<std::any> tokenInfo);
+std::future<void> getLatestCandle(const std:& tokenMint, const std:& swap, std::optional<std:> tokenInfo);
 
-std::future<void> fetchPriceChartData(double start, double end, double range, const std::string& tokenMint);
+std::future<void> fetchPriceChartData(double start, double end, double range, const std:& tokenMint);
 
       // default candle period
 

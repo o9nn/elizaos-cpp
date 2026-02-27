@@ -47,7 +47,7 @@ namespace elizaos {
       // Validate config using the schema
       // Store validated config for service use (runtime.pluginConfigs is usually the way)
         // Decide if this is a fatal error
-        // throw new Error(`Invalid Hyperfy plugin configuration...`);
+        // throw new Error("Invalid Hyperfy plugin configuration...");
         // throw error;
       // Allow initialization to continue even if config fails, service might get config later
 

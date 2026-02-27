@@ -19,11 +19,11 @@ std::shared_ptr<Promise<string>> JsDocGenerator::generateClassComment(std::share
 
 string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
 {
-    return std::string("Generate JSDoc comment for the following code:\
+    return std:("Generate JSDoc comment for the following code:\
 \
 \
         """typescript\
-        ") + queueItem->code + std::string("\
+        ") + queueItem->code + std:("\
         """\
 \
         Only return the JSDoc comment, not the code itself.\
@@ -32,9 +32,9 @@ string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
 
 string JsDocGenerator::buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem)
 {
-    return std::string("Generate JSDoc comment for the following Class:\
+    return std:("Generate JSDoc comment for the following Class:\
 \
-        Class name: ") + const_(queueItem->code->match((new RegExp(std::string("class (\w+")))))[1] + std::string("\
+        Class name: ") + const_(queueItem->code->match((new RegExp(std:("class (\w+")))))[1] + std:("\
 \
         Only return the JSDoc for the Class itself, not the methods or anything in the class.\
 \

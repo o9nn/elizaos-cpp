@@ -25,16 +25,16 @@ namespace elizaos {
 /**
  * Save demo data as a yaml file with proper header
  */
-void saveDemo(const std::any& data, const std::string& file, const std::string& trajPath);
+void saveDemo(const std:& data, const std:& file, const std:& trajPath);
 
 /**
  * Convert trajectory to action demo
  */
-void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false);
+void convertTrajToActionDemo(const std:& trajPath, const std:& outputFile, bool includeUser = false);
 
 /**
  * Main std::function for traj-to-demo conversion
  */
-void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false);
+void trajToDemo(const std:& trajPath, std: outputDir = "./demos", std: suffix = "", bool overwrite = false, bool includeUser = false);
 
 } // namespace elizaos

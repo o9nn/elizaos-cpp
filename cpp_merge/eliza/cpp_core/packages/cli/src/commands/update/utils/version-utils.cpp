@@ -1,10 +1,11 @@
 #include "version-utils.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> getVersion() {
+std::future<std:> getVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -17,14 +18,14 @@ std::future<std::string> getVersion() {
 
 }
 
-VersionCheckResult checkVersionNeedsUpdate(const std::string& currentVersion, const std::string& targetVersion) {
+VersionCheckResult checkVersionNeedsUpdate(const std:& currentVersion, const std:& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto cleanCurrent = std::to_string(currentVersion).replace(/^[\^~]/, "");
 
         if (isSpecialVersionTag(cleanCurrent)) {
-            return { needsUpdate: true }
+            return Config{needsUpdate = true}
         }
 
         if (!semver.valid(cleanCurrent) && !semver.validRange(cleanCurrent)) {
@@ -42,7 +43,7 @@ VersionCheckResult checkVersionNeedsUpdate(const std::string& currentVersion, co
 
 }
 
-bool isMajorUpdate(const std::string& currentVersion, const std::string& targetVersion) {
+bool isMajorUpdate(const std:& currentVersion, const std:& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -61,7 +62,7 @@ bool isMajorUpdate(const std::string& currentVersion, const std::string& targetV
 
 }
 
-std::future<std::string> fetchLatestVersion(const std::string& packageName) {
+std::future<std:> fetchLatestVersion(const std:& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -69,8 +70,8 @@ std::future<std::string> fetchLatestVersion(const std::string& packageName) {
         const auto { stdout } = execa("npm", ["view", packageName, "version"], {;
             env: { NODE_ENV: "production" },
             });
-            const auto version = stdout.trim();
-            logger.debug(`Latest version of ${packageName} from npm: ${version}`);
+            const auto version = stdout;
+            logger.debug("Latest version of " + std::to_string(packageName) + " from npm: " + std::to_string(version) + "");
             return version;
             } catch (error) {
                 logger.error(

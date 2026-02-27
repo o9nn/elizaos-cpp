@@ -25,7 +25,7 @@ namespace elizaos {
  * Any class that implements this interface can be used as a problem statement
  */
 struct ProblemStatement {
-    std::string id;
+    std: id;
 };
 
 /**
@@ -36,7 +36,7 @@ struct ProblemStatement {
  * Empty problem statement
  */
 class EmptyProblemStatement extends BuiltinProblemStatementBase {
-  id: std::string;
+  id: std:;
   type: 'empty' = 'empty';
 
   constructor() {
@@ -48,12 +48,12 @@ class EmptyProblemStatement extends BuiltinProblemStatementBase {
  * Text-based problem statement
  */
 class TextProblemStatement extends BuiltinProblemStatementBase {
-  id: std::string;
-  text: std::string;
+  id: std:;
+  text: std:;
   extraFields: ExtraFields;
   type: 'text' = 'text';
 
-  constructor(config: { text: std::string; extraFields?: ExtraFields; id?: std::string }) {
+  constructor(config: { text: std:; extraFields?: ExtraFields; id?: std: }) {
     super();
     this.text = config.text;
     this.extraFields = config.extraFields || {};
@@ -70,12 +70,12 @@ class TextProblemStatement extends BuiltinProblemStatementBase {
  * File-based problem statement
  */
 class FileProblemStatement extends BuiltinProblemStatementBase {
-  id: std::string;
-  filepath: std::string;
+  id: std:;
+  filepath: std:;
   extraFields: ExtraFields;
   type: 'text_file' = 'text_file';
 
-  constructor(config: { path: std::string; extraFields?: ExtraFields; id?: std::string }) {
+  constructor(config: { path: std:; extraFields?: ExtraFields; id?: std: }) {
     super();
     this.filepath = config.path;
     this.extraFields = config.extraFields || {};
@@ -83,7 +83,7 @@ class FileProblemStatement extends BuiltinProblemStatementBase {
     if (config.id) {
       this.id = config.id;
     } else {
-      logger.info(`Setting problem statement id to hash of file contents (path: ${this.filepath})`);
+      logger.info("Setting problem statement id to hash of file contents (path: " + std::to_string(this.filepath) + ")");
       const content = this.getProblemStatement();
       this.id = crypto.createHash('sha256').update(content).digest('hex').substring(0, 6);
     }
@@ -93,12 +93,12 @@ class FileProblemStatement extends BuiltinProblemStatementBase {
  * GitHub issue problem statement
  */
 class GithubIssue extends BuiltinProblemStatementBase {
-  id: std::string;
-  githubUrl: std::string;
+  id: std:;
+  githubUrl: std:;
   extraFields: ExtraFields;
   type: 'github' = 'github';
 
-  constructor(config: { githubUrl: std::string; extraFields?: ExtraFields; id?: std::string }) {
+  constructor(config: { githubUrl: std:; extraFields?: ExtraFields; id?: std: }) {
     super();
     this.githubUrl = config.githubUrl;
     this.extraFields = config.extraFields || {};
@@ -108,7 +108,7 @@ class GithubIssue extends BuiltinProblemStatementBase {
     } else {
       logger.info('Setting problem statement based on github issue url');
       const { owner, repo, issueNumber } = this.parseGithubUrl(this.githubUrl);
-      this.id = `${owner}__${repo}-i${issueNumber}`;
+      this.id = "" + std::to_string(owner) + "__" + std::to_string(repo) + "-i" + std::to_string(issueNumber) + "";
     }
   }
 
@@ -124,20 +124,20 @@ class GithubIssue extends BuiltinProblemStatementBase {
  * SWE-Bench multimodal problem statement with image support
  */
 class SWEBenchMultimodalProblemStatement extends BuiltinProblemStatementBase {
-  id: std::string;
-  text: std::string;
-  issueImages: std::string[];
-  disableImageProcessing: boolean;
+  id: std:;
+  text: std:;
+  issueImages: std:[];
+  disableImageProcessing;
   extraFields: ExtraFields;
   type: 'swe_bench_multimodal' = 'swe_bench_multimodal';
-  private cachedProblemStatement: std::string | null = null;
+  private cachedProblemStatement: std: | null = null;
 
   constructor(config: {
-    text: std::string;
-    issueImages?: std::string[];
-    disableImageProcessing?: boolean;
-    extraFields?: Record<std::string, any>;
-    id?: std::string;
+    text: std:;
+    issueImages?: std:[];
+    disableImageProcessing?;
+    extraFields?: Record<std:, any>;
+    id?: std:;
   }) {
     super();
     this.text = config.text;
@@ -173,7 +173,7 @@ class SWEBenchMultimodalProblemStatement extends BuiltinProblemStatementBase {
 /**
  * Factory std::function to create problem statement from simplified input
  */
-ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, 'text' | 'text_file' | 'github_issue' | 'swe_bench_multimodal' type);
+ProblemStatement problemStatementFromSimplifiedInput(const std:& input, 'text' | 'text_file' | 'github_issue' | 'swe_bench_multimodal' type);
 
 /**
  * Type for problem statement configurations

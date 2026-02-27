@@ -27,15 +27,15 @@ namespace elizaos {
  * @property {string} [jsDoc] - The JSDoc comment associated with the item.
  */
 struct ASTQueueItem {
-    std::string name;
-    std::string filePath;
+    std: name;
+    std: filePath;
     double startLine;
     double endLine;
-    std::string nodeType;
-    std::string code;
-    std::optional<std::string> className;
-    std::optional<std::string> methodName;
-    std::optional<std::string> jsDoc;
+    std: nodeType;
+    std: code;
+    std::optional<std:> className;
+    std::optional<std:> methodName;
+    std::optional<std:> jsDoc;
 };
 
 /**
@@ -46,8 +46,8 @@ struct ASTQueueItem {
  * @property {number} [pullNumber] - The pull number of the repository (std::optional).
  */
 struct Repository {
-    std::string owner;
-    std::string name;
+    std: owner;
+    std: name;
     std::optional<double> pullNumber;
 };
 
@@ -58,8 +58,8 @@ struct Repository {
  * @property {string} status - The status of the file change.
  */
 struct FullModeFileChange {
-    std::string filename;
-    std::string status;
+    std: filename;
+    std: status;
 };
 
 /**
@@ -79,7 +79,7 @@ struct FullModeFileChange {
  * @property {number} todoCount - The number of todos in the section.
  */
 struct TodoSection {
-    std::string todos;
+    std: todos;
     double todoCount;
 };
 
@@ -106,16 +106,16 @@ struct TodoSection {
  * @property {number} contextLocation.end.column - The end column of the todo item context.
  */
 struct TodoItem {
-    std::string comment;
-    std::string code;
-    std::string fullContext;
+    std: comment;
+    std: code;
+    std: fullContext;
     TSESTree.Node node;
     { location;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    { line; column } start;
+    { line; column } end;
     { contextLocation;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    { line; column } start;
+    { line; column } end;
 };
 
 /**
@@ -141,16 +141,16 @@ struct TodoItem {
  * @property {number} contextLocation.end.column - The end column number of the context.
  */
 struct EnvUsage {
-    std::string code;
-    std::string context;
-    std::string fullContext;
+    std: code;
+    std: context;
+    std: fullContext;
     TSESTree.Node node;
     { location;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    { line; column } start;
+    { line; column } end;
     { contextLocation;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    { line; column } start;
+    { line; column } end;
 };
 
 /**
@@ -174,36 +174,36 @@ struct EnvUsage {
  */
 
 struct PluginDocumentation {
-    std::string overview;
-    std::string installation;
-    std::string configuration;
-    std::string usage;
-    std::string apiReference;
-    std::string troubleshooting;
-    std::string todos;
-    std::string actionsDocumentation;
-    std::string providersDocumentation;
-    std::string evaluatorsDocumentation;
-    std::string faq;
+    std: overview;
+    std: installation;
+    std: configuration;
+    std: usage;
+    std: apiReference;
+    std: troubleshooting;
+    std: todos;
+    std: actionsDocumentation;
+    std: providersDocumentation;
+    std: evaluatorsDocumentation;
+    std: faq;
 };
 
 /**
  * Interface for defining metadata for an action.
  * @interface
  * @property {string} name - The name of the action.
- * @property {std::string[]} similes - An array of similes related to the action.
+ * @property {std:[]} similes - An array of similes related to the action.
  * @property {string} validate - The validation method for the action.
  * @property {string} handler - The handler method for the action.
- * @property {std::string[]} examples - An array of example scenarios for the action.
+ * @property {std:[]} examples - An array of example scenarios for the action.
  * @property {string} description - A brief description of the action.
  */
 struct ActionMetadata {
-    std::string name;
+    std: name;
     std::vector<std::string> similes;
-    std::string validate;
-    std::string handler;
+    std: validate;
+    std: handler;
     std::vector<std::string> examples;
-    std::string description;
+    std: description;
 };
 
 /**

@@ -18,10 +18,10 @@ void Chart() {
     token.status == "migrated" ||;
     token.status == "locked";
 
-    const auto query = useQuery({;
+    const auto query = useQuery[&]({;
         queryKey: ["token", mint, "chart"],
-        queryFn: std::async () => {
-            const auto to = Math.floor(new Date().getTime() / 1000.0);
+        queryFn: std::async () {
+            const auto to = Math.floor(std::make_unique<Date>().getTime() / 1000.0);
             const auto from = 0;
 
             const auto data = getChartTable({;
@@ -32,7 +32,7 @@ void Chart() {
                 token: mint,
                 });
 
-                if (!data.table.length) {
+                if (!data.table.size()) {
                     const auto lastKnownPrice = Number(token.tokenPriceUSD) || 0;
                     if (isNaN(lastKnownPrice)) return [];
 
@@ -69,7 +69,7 @@ void Chart() {
 
                     const auto chartData = query.data;
 
-                    useEffect(() => {
+                    useEffect[&](() {
                         const DeepPartial<LightweightChartOptions> chartOptions = {;
                             layout: {
                                 textColor: "#8c8c8c",
@@ -99,8 +99,8 @@ void Chart() {
                                                         },
                                                         },
                                                         localization: {
-                                                            // priceFormatter: (price: number) => formatNumber(price, true, false),
-                                                            priceFormatter: (price: number) => {
+                                                            // priceFormatter: (price) => formatNumber(price, true, false),
+                                                            priceFormatter: [&](price) {
                                                                 // Force the price into standard decimal notation (no scientific notation), keeping up to 12 digits after the decimal
                                                                 // Example: 3.5898363524445996e-8 → "0.000000035898"
                                                                 const auto normal = Number(price).toFixed(12);
@@ -153,7 +153,7 @@ void Chart() {
                                                                                 if (!useCoingecko) {
                                                                                     /** Handle incoming data for non-bonded tokens */
                                                                                     socket = getSocket();
-                                                                                    socket.on("newCandle", (data: std::any) => {
+                                                                                    socket.on[&]("newCandle", (data: std:) {
                                                                                         if (data.token == mint && candlestickSeriesRef.current) {
                                                                                             const auto newCandle = {;
                                                                                                 time: data.time * 1000,
@@ -177,8 +177,8 @@ void Chart() {
                                                                                             };
                                                                                             }, [mint, useCoingecko]);
 
-                                                                                            useEffect(() => {
-                                                                                                if (chartData && chartData.length > 0 && candlestickSeriesRef.current) {
+                                                                                            useEffect[&](() {
+                                                                                                if (chartData && chartData.size() > 0 && candlestickSeriesRef.current) {
                                                                                                     // Set the initial data
                                                                                                     candlestickSeriesRef.current.setData(chartData || []);
                                                                                                 }

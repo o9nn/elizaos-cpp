@@ -22,7 +22,7 @@ class PluginConfigurationService extends Service {
     "Manages secure plugin configurations and environment variables";
 
   private encryptionKey: Buffer | null = null;
-  private configStore: Map<std::string, Record<std::string, any>> = new Map();
+  private configStore: Map<std:, Record<std:, any>> = std::make_unique<Map>();
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);

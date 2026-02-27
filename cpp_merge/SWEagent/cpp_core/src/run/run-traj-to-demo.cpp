@@ -1,10 +1,12 @@
 #include "run-traj-to-demo.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void saveDemo(const std::any& data, const std::string& file, const std::string& trajPath) {
+void saveDemo(const std:& data, const std:& file, const std:& trajPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = yaml.dump(data, {;
@@ -19,14 +21,14 @@ void saveDemo(const std::any& data, const std::string& file, const std::string& 
 
 }
 
-void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false) {
+void convertTrajToActionDemo(const std:& trajPath, const std:& outputFile, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto traj = /* JSON.parse */ fs.readFileSync(trajPath, "utf-8");
+    const auto traj = /* JSON::parse */ fs.readFileSync(trajPath, "utf-8");
 
     auto replayConfig = traj.replay_config;
     if (typeof traj.replay_config == 'string') {
-        replayConfig = /* JSON.parse */ traj.replay_config;
+        replayConfig = /* JSON::parse */ traj.replay_config;
     }
 
     const auto history = traj.history || [];
@@ -36,14 +38,13 @@ void convertTrajToActionDemo(const std::string& trajPath, const std::string& out
     const auto admissibleRoles = includeUser ? new Set(["assistant", "user", "tool"]) : new Set(["assistant"]);
 
     const auto filteredHistory = history;
-    .filter(;
-    (step: Record<std::string, unknown>) =>
-    admissibleRoles.has(step.role) &&;
+    .filter[&](;
+    (step: Record<std:, unknown>) { return admissibleRoles.has(step.role) &&; };
     (!step.agent || step.agent == "main" || step.agent == "primary") &&;
     !step.is_demo,
     );
-    .std::map((step: Record<std::string, unknown>) => {
-        const std::unordered_map<std::string, std::any> filtered = {};
+    .std::map[&]((step: Record<std:, unknown>) {
+        const std::unordered_map<std:, std:> filtered = {};
         for (const auto& key : copyFields)
             if (key in step) {
                 filtered[key] = step[key];
@@ -62,7 +63,7 @@ void convertTrajToActionDemo(const std::string& trajPath, const std::string& out
 
 }
 
-void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false) {
+void trajToDemo(const std:& trajPath, std: outputDir = "./demos", std: suffix = "", bool overwrite = false, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -72,12 +73,12 @@ void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", 
         const auto outputFile = "path.join(outputDir, outputSubdir, " + trajName + ".demo.yaml";
 
         if (fs.existsSync(outputFile) && !overwrite) {
-            throw std::runtime_error(`Output file already exists: ${outputFile}. Use --overwrite to overwrite.`);
+            throw std::runtime_error("Output file already exists: " + std::to_string(outputFile) + ". Use --overwrite to overwrite.");
         }
 
         const auto outputFileDir = path.dirname(outputFile);
         if (!fs.existsSync(outputFileDir)) {
-            fs.mkdirSync(outputFileDir, { recursive: true });
+            fs.mkdirSync(outputFileDir, Config{recursive = true});
         }
 
         convertTrajToActionDemo(trajPath, outputFile, includeUser);

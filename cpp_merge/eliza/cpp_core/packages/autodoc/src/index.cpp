@@ -1,4 +1,8 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +13,7 @@ std::future<void> main() {
     try {
 
         try {
-            const auto configuration = new Configuration();
+            const auto configuration = std::make_unique<Configuration>();
 
             const auto gitManager = new GitManager({;
                 owner: configuration.repository.owner,
@@ -24,7 +28,7 @@ std::future<void> main() {
                     std::cout << "Pull Request Number: " << configuration.repository.pullNumber << std::endl;
                     try {
                         const auto files = gitManager.getFilesInPullRequest(configuration.repository.pullNumber);
-                        prFiles = files.std::map((file) => file.filename);
+                        prFiles = files.std::map[&]((file) { return file.filename); };
                         } catch (prError) {
                             console.error('Error fetching PR files:', {
                                 error: prError,
@@ -37,7 +41,7 @@ std::future<void> main() {
 
                         try {
                             const auto directoryTraversal = new DirectoryTraversal(configuration, prFiles);
-                            const auto typeScriptParser = new TypeScriptParser();
+                            const auto typeScriptParser = std::make_unique<TypeScriptParser>();
                             const auto jsDocAnalyzer = new JsDocAnalyzer(typeScriptParser);
                             const auto aiService = new AIService(configuration);
                             const auto jsDocGenerator = new JsDocGenerator(aiService);
@@ -100,9 +104,9 @@ std::future<void> main() {
                                         console.error('Error during documentation generation:', {
                                             message: true /* instanceof check */ ? error.message : std::to_string(error),
                                             stack: true /* instanceof check */ ? error.stack : std::nullopt,
-                                            timestamp: new Date().toISOString(),
+                                            timestamp: std::make_unique<Date>().toISOString(),
                                             });
-                                            process.exit(1);
+                                            std::exit(1);
                                         }
                                         } catch (error) {
                                             console.error('Critical error during documentation generation:', {
@@ -114,11 +118,11 @@ std::future<void> main() {
                                                     stack: error.stack,
                                                 }
                                                 : error,
-                                                timestamp: new Date().toISOString(),
+                                                timestamp: std::make_unique<Date>().toISOString(),
                                                 nodeVersion: process.version,
                                                 platform: process.platform,
                                                 });
-                                                process.exit(1);
+                                                std::exit(1);
                                             }
 
     } catch (const std::exception& e) {

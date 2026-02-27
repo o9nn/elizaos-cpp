@@ -11,7 +11,7 @@ void ChatForm(auto onInputChange, auto onSubmit, auto isLoading, auto ref) {
         if (e.key == "Enter" && !e.shiftKey) {
             e.preventDefault();
             // Prevent submit while loading/disabled to avoid race conditions
-            if (!isLoading && input.trim().length > 0) {
+            if (!isLoading && input.size() > 0) {
                 onSubmit(e);
             }
         }

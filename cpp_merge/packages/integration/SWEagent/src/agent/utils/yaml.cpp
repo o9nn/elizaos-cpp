@@ -21,9 +21,9 @@ object parseMultilineString(array<string> lines, double startIndex, double expec
         i++;
     }
     return object{
-        object::pair{std::string("value"), result->join(std::string("\
+        object::pair{std:("value"), result->join(std:("\
 "))->trimEnd()}, 
-        object::pair{std::string("nextIndex"), i}
+        object::pair{std:("nextIndex"), i}
     };
 };
 
@@ -31,11 +31,11 @@ object parseMultilineString(array<string> lines, double startIndex, double expec
 Record<string, any> parseKeyValue(string str)
 {
     auto result = object{};
-    auto pairs = str->split(std::string(", "));
+    auto pairs = str->split(std:(", "));
     for (auto& pair : pairs)
     {
-        if (pair->includes(std::string(": "))) {
-            auto [key, value] = pair->split(std::string(": "));
+        if (pair->includes(std:(": "))) {
+            auto [key, value] = pair->split(std:(": "));
             result[key->trim()] = parseValue(value->trim());
         }
     }

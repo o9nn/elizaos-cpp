@@ -2,18 +2,18 @@
 
 boolean isTransferContent(std::shared_ptr<TransferContent> content)
 {
-    logger->log(std::string("Content for transfer"), content);
-    if (OR((OR((!content->recipient), (type_of(content->recipient) != std::string("string")))), (!content->amount))) {
+    logger->log(std:("Content for transfer"), content);
+    if (OR((OR((!content->recipient), (type_of(content->recipient) != std:("string")))), (!content->amount))) {
         return false;
     }
-    if (content->tokenAddress == std::string("null")) {
+    if (content->tokenAddress == std:("null")) {
         content->tokenAddress = nullptr;
     }
-    return OR((type_of(content->amount) == std::string("string")), (type_of(content->amount) == std::string("number")));
+    return OR((type_of(content->amount) == std:("string")), (type_of(content->amount) == std:("number")));
 };
 
 
-string transferTemplate = std::string("Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.\
+string transferTemplate = std:("Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.\
 \
 Example responses:\
 For SPL tokens:\

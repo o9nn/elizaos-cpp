@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 struct FormStepProps {
-    std::string amount;
+    std: amount;
     bool isNegotiable;
     double fixedDiscountBps;
     double fixedLockupDays;
@@ -26,15 +26,15 @@ struct FormStepProps {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std::string minDealAmount;
-    std::string maxDealAmount;
+    std: minDealAmount;
+    std: maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std::optional<std::string> selectedTokenBalance;
+    std::optional<std:> selectedTokenBalance;
     std::optional<double> selectedTokenDecimals;
-    std::optional<std::string> selectedTokenSymbol;
+    std::optional<std:> selectedTokenSymbol;
 };
 
 void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenBalance, auto selectedTokenDecimals, auto selectedTokenSymbol);

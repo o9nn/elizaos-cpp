@@ -1,4 +1,6 @@
 #include ".db.hpp"
+#include <cstdlib>
+#include <map>
 #include ".env.hpp"
 #include ".redis.hpp"
 #include "migrations.hpp"
@@ -34,7 +36,7 @@ namespace elizaos {
 // 
 // 
 // 
-// void asBN(BN | std::string x);
+// void asBN(BN | std: x);
 // class TokenMigrator {
 //   constructor(
 //     public connection: Connection,
@@ -45,36 +47,36 @@ namespace elizaos {
 //     public redisCache: RedisCacheService
 //   ) { }
 //   LOCK_TTL_MS = 2 * 60_000;
-//   std::async resetMigration(mint: std::string): Promise<void> {
-//     const stepNames = this.getMigrationSteps().std::map((s) => s.name);
+//   std::async resetMigration(mint: std:): Promise<void> {
+//     const stepNames = this.getMigrationSteps().std::map[&]((s) { return s.name); };
 
 //     const keys = [
-//       `migration:${mint}:currentStep`,
-//       `migration:${mint}:lock`,
-//       ...stepNames.std::map((step) => `migration:${mint}:step:${step}:result`),
-//     ];
+//       "migration:" + std::to_string(mint) + ":currentStep",
+//       "migration:" + std::to_string(mint) + ":lock",
+//       ...stepNames.std::map[&]((step) { return "migration:" + std::to_string(mint) + ":step:" + std::to_string(step) + ":result"),
+//     ]; };
 
 //     for (const key of keys) {
-//       await this.redisCache.del(key);
+//       this.redisCache.del(key);
 //     }
 
-//     logger.log(`[Migrate] Reset Redis state for token ${mint}`);
+//     logger.log("[Migrate] Reset Redis state for token " + std::to_string(mint) + "");
 //   }
-//   std::async getMigrationState(mint: std::string): Promise<any> {
-//     const stepNames = this.getMigrationSteps().std::map((s) => s.name);
+//   std::async getMigrationState(mint: std:): Promise<any> {
+//     const stepNames = this.getMigrationSteps().std::map[&]((s) { return s.name); };
 
-//     const currentStep = await this.redisCache.get(
-//       `migration:${mint}:currentStep`
+//     const currentStep = this.redisCache.get(
+//       "migration:" + std::to_string(mint) + ":currentStep"
 //     );
-//     const lock = await this.redisCache.get(`migration:${mint}:lock`);
-//     const finishedSteps: Record<std::string, any> = {};
+//     const lock = this.redisCache.get("migration:" + std::to_string(mint) + ":lock");
+//     const finishedSteps: Record<std:, any> = {};
 
 //     for (const step of stepNames) {
-//       const res = await this.redisCache.get(
-//         `migration:${mint}:step:${step}:result`
+//       const res = this.redisCache.get(
+//         "migration:" + std::to_string(mint) + ":step:" + std::to_string(step) + ":result"
 //       );
 //       if (res) {
-//         finishedSteps[step] = JSON.parse(res);
+//         finishedSteps[step] = nlohmann::json::parse(res);
 //       }
 //     }
 
@@ -87,35 +89,35 @@ namespace elizaos {
 //   }
 
 //   public std::async resumeOneStep(
-//     mint: std::string,
+//     mint: std:,
 //     forced = false
 //   ): Promise<{
-//     ranStep: std::string | null;
-//     nextStep: std::string | null;
+//     ranStep: std: | null;
+//     nextStep: std: | null;
 //   }> {
 //     const allSteps = this.getMigrationSteps();
-//     const stepNames = allSteps.std::map((s) => s.name);
-//     const stepKey = `migration:${mint}:currentStep`;
+//     const stepNames = allSteps.std::map[&]((s) { return s.name); };
+//     const stepKey = "migration:" + std::to_string(mint) + ":currentStep";
 //     console.log("stepKey", stepKey);
-//     const lockKey = `migration:${mint}:lock`;
+//     const lockKey = "migration:" + std::to_string(mint) + ":lock";
 
-//     let rawCurrent: std::string | null = null;
-//     let rawLock: std::string | null = null;
+//     let rawCurrent: std: | null = null;
+//     let rawLock: std: | null = null;
 //     try {
-//       [rawCurrent, rawLock] = await Promise.all([
+//       [rawCurrent, rawLock] = Promise.all([
 //         this.redisCache.get(stepKey),
 //         this.redisCache.get(lockKey),
 //       ]);
 //     } catch (err) {
-//       logger.error(`[Migrate] Error getting Redis keys:`, err);
+//       logger.error("[Migrate] Error getting Redis keys:", err);
 //       throw err;
 //     }
 //     console.log("rawCurrent", rawCurrent);
 //     console.log("rawLock", rawLock);
 //     const current =
-//       rawCurrent && stepNames.includes(rawCurrent) ? rawCurrent : stepNames[0];
+//       rawCurrent && stepNames.count(rawCurrent) > 0 ? rawCurrent : stepNames[0];
 //     const lockValue = uuidv4(); // unique owner id for safe release
-//     const gotLock = await this.redisCache.acquireLock(
+//     const gotLock = this.redisCache.acquireLock(
 //       lockKey,
 //       lockValue,
 //       this.LOCK_TTL_MS
@@ -126,172 +128,172 @@ namespace elizaos {
 //       return { ranStep: null, nextStep: null };
 //     }
 
-//     await this.redisCache.std::set(lockKey, "true");
+//     this.redisCache.std::set(lockKey, "true");
 
 //     try {
-//       const token = await getToken(mint);
-//       if (!token) throw new Error(`Token ${mint} not found`);
+//       const token = getToken(mint);
+//       if (!token) throw new Error("Token " + std::to_string(mint) + " not found");
 
 //       const idx = stepNames.indexOf(current);
 //       const step = allSteps[idx];
 //       console.log("step", step);
 //       if (!step) {
-//         await this.redisCache.std::set(lockKey, "false");
-//         logger.log(`[Migrate] No step found for token ${mint}.`);
+//         this.redisCache.std::set(lockKey, "false");
+//         logger.log("[Migrate] No step found for token " + std::to_string(mint) + ".");
 //         return { ranStep: null, nextStep: null };
 //       }
 //       for (const stepName of stepNames) {
-//         const raw = await this.redisCache.get(
-//           `migration:${mint}:step:${stepName}:result`
+//         const raw = this.redisCache.get(
+//           "migration:" + std::to_string(mint) + ":step:" + std::to_string(stepName) + ":result"
 //         );
 //         if (!raw) continue;
-//         const { extraData } = JSON.parse(raw);
+//         const { extraData } = nlohmann::json::parse(raw);
 //         if (extraData) Object.assign(token, extraData);
 //       }
 
-//       const resultKey = `migration:${mint}:step:${step.name}:result`;
-//       if (await this.redisCache.get(resultKey)) {
+//       const resultKey = "migration:" + std::to_string(mint) + ":step:" + std::to_string(step.name) + ":result";
+//       if (this.redisCache.get(resultKey)) {
 //         logger.log(
-//           `[Migrate] Step result already exists for token ${mint}, skipping.`
+//           "[Migrate] Step result already exists for token " + std::to_string(mint) + ", skipping."
 //         );
 //       } else {
-//         logger.log(`[Migrate] Running step "${step.name}" for token ${mint}`);
-//         const { txId, extraData } = await retryOperation(
-//           () => step.fn(token),
+//         logger.log("[Migrate] Running step "" + std::to_string(step.name) + "" for token " + std::to_string(mint) + "");
+//         const { txId, extraData } = retryOperation[&](
+//           () { return step.fn(token),
 //           3,
 //           5000
-//         );
+//         ); };
 //         for (const stepName of stepNames) {
-//           const raw = await this.redisCache.get(
-//             `migration:${mint}:step:${stepName}:result`
+//           const raw = this.redisCache.get(
+//             "migration:" + std::to_string(mint) + ":step:" + std::to_string(stepName) + ":result"
 //           );
 //           if (!raw) continue;
-//           const { extraData } = JSON.parse(raw);
+//           const { extraData } = nlohmann::json::parse(raw);
 //           if (extraData) Object.assign(token, extraData);
 //         }
-//         await safeUpdateTokenInDB({
+//         safeUpdateTokenInDB({
 //           ...token,
-//           lastUpdated: new Date().toISOString(),
+//           lastUpdated: std::make_unique<Date>().toISOString(),
 //         });
-//         await this.redisCache.std::set(
+//         this.redisCache.std::set(
 //           resultKey,
-//           JSON.stringify({ txId, extraData })
+//           nlohmann::json().dump({ txId, extraData })
 //         );
 //       }
 
 //       const next = allSteps[idx + 1]?.name || null;
 //       if (next) {
-//         await this.redisCache.std::set(stepKey, next);
+//         this.redisCache.std::set(stepKey, next);
 //       }
 
-//       await this.redisCache.std::set(lockKey, "false");
+//       this.redisCache.std::set(lockKey, "false");
 //       if (gotLock) {
-//         await this.redisCache.releaseLock(lockKey, lockValue);
+//         this.redisCache.releaseLock(lockKey, lockValue);
 //       }
 //       return { ranStep: step.name, nextStep: next };
 //     } catch (err) {
-//       await this.redisCache.std::set(lockKey, "false");
+//       this.redisCache.std::set(lockKey, "false");
 //       throw err;
 //     }
 //   }
 
-//   std::async resumeMigrationForToken(mint: std::string, forced = false): Promise<void> {
-//     const token = await getToken(mint);
+//   std::async resumeMigrationForToken(mint: std:, forced = false): Promise<void> {
+//     const token = getToken(mint);
 //     if (!token) {
-//       throw new Error(`Token ${mint} not found in DB`);
+//       throw new Error("Token " + std::to_string(mint) + " not found in DB");
 //     }
 
-//     const lockKey = `migration:${mint}:lock`;
-//     const lock = await this.redisCache.get(lockKey);
-//     if (lock === "true" && !forced) {
-//       logger.log(`[Migrate] Token ${token.mint} is locked. Skipping.`);
+//     const lockKey = "migration:" + std::to_string(mint) + ":lock";
+//     const lock = this.redisCache.get(lockKey);
+//     if (lock == "true" && !forced) {
+//       logger.log("[Migrate] Token " + std::to_string(token.mint) + " is locked. Skipping.");
 //       return;
 //     }
 
 //     // Lock the token
-//     await this.redisCache.std::set(lockKey, "true");
+//     this.redisCache.std::set(lockKey, "true");
 
 //     try {
-//       await this.migrateToken(token);
+//       this.migrateToken(token);
 //     } catch (err) {
-//       logger.error(`[Migrate] Error migrating token ${token.mint}:`, err);
-//       await this.redisCache.std::set(lockKey, "false");
+//       logger.error("[Migrate] Error migrating token " + std::to_string(token.mint) + ":", err);
+//       this.redisCache.std::set(lockKey, "false");
 //       throw err;
 //     }
 //   }
 
-//   std::async forceResumeAtStep(mint: std::string, step: std::string): Promise<void> {
-//     const validSteps = this.getMigrationSteps().std::map((s) => s.name);
-//     if (!validSteps.includes(step)) {
+//   std::async forceResumeAtStep(mint: std:, step: std:): Promise<void> {
+//     const validSteps = this.getMigrationSteps().std::map[&]((s) { return s.name); };
+//     if (!validSteps.count(step) > 0) {
 //       throw new Error(
-//         `Invalid step "${step}". Valid steps: ${validSteps.join(", ")}`
+//         "Invalid step "" + std::to_string(step) + "". Valid steps: " + std::to_string(validSteps.join(", ")) + ""
 //       );
 //     }
 
-//     await this.redisCache.std::set(`migration:${mint}:currentStep`, step);
-//     logger.log(`[Migrate] Forced resume of token ${mint} at step "${step}"`);
+//     this.redisCache.std::set("migration:" + std::to_string(mint) + ":currentStep", step);
+//     logger.log("[Migrate] Forced resume of token " + std::to_string(mint) + " at step "" + std::to_string(step) + """);
 //   }
 
 //   std::async resumeMigrationsOnStart(): Promise<void> {
 //     logger.log("[Migrate] Scanning for ongoing migrations on startup...");
 
 //     // find all keys like "migration:<mint>:lock"
-//     const lockKeys: std::string[] = await this.redisCache.keys("migration:*:lock");
-//     if (lockKeys.length === 0) {
+//     const lockKeys: std:[] = this.redisCache.keys("migration:*:lock");
+//     if (lockKeys.size() == 0) {
 //       logger.log("[Migrate] No in-flight migrations found.");
 //       return;
 //     }
 
 //     for (const lockKey of lockKeys) {
 //       console.log("🔑  raw lockKey:", lockKey);
-//       const isLocked = await this.redisCache.get(lockKey);
+//       const isLocked = this.redisCache.get(lockKey);
 //       const parts = lockKey.split(":");
-//       if (parts.length < 4) {
+//       if (parts.size() < 4) {
 //         console.warn("⚠️  Unexpected key format, skipping:", lockKey);
 //         continue;
 //       }
 //       // folows this schema ["mainnet","migration", ...<mintParts>..., "lock"]
-//       const mint = parts.slice(2, parts.length - 1).join(":");
-//       if (isLocked !== "true") {
-//         console.log(`🔒  ${lockKey} is not std::set to "true", skipping.`);
-//         await this.redisCache.std::set(`migration:${mint}:lock`, "true");
+//       const mint = parts.slice(2, parts.size() - 1).join(":");
+//       if (isLocked != "true") {
+//         console.log("🔒  " + std::to_string(lockKey) + " is not std::set to "true", skipping.");
+//         this.redisCache.std::set("migration:" + std::to_string(mint) + ":lock", "true");
 //         // continue;
 //       }
 
-//       console.log(`[Migrate] Found locked token: ${mint}`);
-//       logger.log(`[Migrate] Resuming migration for token ${mint}`);
+//       console.log("[Migrate] Found locked token: " + std::to_string(mint) + "");
+//       logger.log("[Migrate] Resuming migration for token " + std::to_string(mint) + "");
 
-//       const token = await getToken(mint);
+//       const token = getToken(mint);
 //       if (!token) {
-//         logger.error(`[Migrate] Token ${mint} not found in DB. Skipping.`);
+//         logger.error("[Migrate] Token " + std::to_string(mint) + " not found in DB. Skipping.");
 //         continue;
 //       }
 
 //       try {
 //         // clear the 'lock'
-//         await this.redisCache.std::set(lockKey, "false");
-//         await this.migrateToken(token);
+//         this.redisCache.std::set(lockKey, "false");
+//         this.migrateToken(token);
 //       } catch (err) {
-//         logger.error(`[Migrate] Error resuming migration for ${mint}:`, err);
+//         logger.error("[Migrate] Error resuming migration for " + std::to_string(mint) + ":", err);
 
-//         await this.redisCache.std::set(lockKey, "false");
+//         this.redisCache.std::set(lockKey, "false");
 //       }
 //     }
 
 //     logger.log("[Migrate] Resume complete.");
 //   }
-//   std::async printMigrationState(mint: std::string): Promise<void> {
-//     const state = await this.getMigrationState(mint);
-//     console.log(JSON.stringify(state, null, 2));
+//   std::async printMigrationState(mint: std:): Promise<void> {
+//     const state = this.getMigrationState(mint);
+//     console.log(nlohmann::json().dump(state, null, 2));
 //   }
 
 //   std::async callResumeWorker(token: TokenData) {
 //     try {
-//       await releaseMigrationLock(token);
-//       await this.migrateToken(token);
+//       releaseMigrationLock(token);
+//       this.migrateToken(token);
 //     } catch (error) {
 //       logger.error(
-//         `[Migrate] Error releasing lock for token ${token.mint}: ${error}`
+//         "[Migrate] Error releasing lock for token " + std::to_string(token.mint) + ": " + std::to_string(error) + ""
 //       );
 //     }
 //   }
@@ -316,7 +318,7 @@ namespace elizaos {
 //       {
 //         name: "lockPrimaryLP",
 //         eventName: "lpPrimaryLocked",
-//         fn: (token: std::any) =>
+//         fn: (token: std:) =>
 //           this.lockPrimaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -326,7 +328,7 @@ namespace elizaos {
 //       {
 //         name: "lockSecondaryLP",
 //         eventName: "lpSecondaryLocked",
-//         fn: (token: std::any) =>
+//         fn: (token: std:) =>
 //           this.lockSecondaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -336,7 +338,7 @@ namespace elizaos {
 //       {
 //         name: "finalizeLockLP",
 //         eventName: "lpLocked",
-//         fn: (token: std::any) =>
+//         fn: (token: std:) =>
 //           this.finalizeLockLP(
 //             token,
 //             token.primary,
@@ -346,21 +348,21 @@ namespace elizaos {
 //       },
 //       {
 //         name: "sendNft",
-//         fn: (token: std::any) =>
+//         fn: (token: std:) =>
 //           this.sendNftToManagerMultisig(
 //             token,
-//             token.nftMinted?.split(",")[1] ?? "",
+//             token.(nftMinted ? nftMinted.split : nullptr)(",")[1] || "",
 //             this.wallet.payer as Keypair,
-//             new PublicKey(process.env.MANAGER_MULTISIG_ADDRESS!)
+//             new PublicKey(std::getenv("MANAGER_MULTISIG_ADDRESS")!)
 //           ).then((result) => result),
 //       },
 //       {
 //         name: "depositNft",
 //         eventName: "nftDeposited",
-//         fn: (token: std::any) =>
+//         fn: (token: std:) =>
 //           this.depositNftToRaydiumVault(
 //             token,
-//             (token.nftMinted ?? "").split(",")[0],
+//             (token.nftMinted || "").split(",")[0],
 //             new PublicKey(token.creator)
 //           ).then((result) => result),
 //       },
@@ -371,12 +373,12 @@ namespace elizaos {
 //       {
 //         name: "collectFees",
 //         eventName: "feesCollected",
-//         fn: (token: std::any) => this.collectFee(token).then((result) => result),
+//         fn: (token: std:) => this.collectFee(token).then((result) => result),
 //       },
 //       {
 //         name: "done",
 //         eventName: "migrationDone",
-//         fn: (token: std::any) => {
+//         fn: [&](token: std:) {
 //           console.log("token.migration", token.migration);
 //           return Promise.resolve({ txId: "", extraData: {} });
 //         },
@@ -387,106 +389,105 @@ namespace elizaos {
 //   std::async migrateToken(token: TokenData): Promise<void> {
 //     const mint = token.mint;
 //     try {
-//       const lockKey = `migration:${mint}:lock`;
-//       const lock = await this.redisCache.get(lockKey);
-//       if (lock === "true") {
-//         logger.log(`[Migrate] Token ${token.mint} is locked. Skipping.`);
+//       const lockKey = "migration:" + std::to_string(mint) + ":lock";
+//       const lock = this.redisCache.get(lockKey);
+//       if (lock == "true") {
+//         logger.log("[Migrate] Token " + std::to_string(token.mint) + " is locked. Skipping.");
 //         return;
 //       }
 
 //       // Lock the token
-//       await this.redisCache.std::set(lockKey, "true");
+//       this.redisCache.std::set(lockKey, "true");
 
 //       const allSteps: MigrationStep[] = this.getMigrationSteps();
-//       const stepNames = allSteps.std::map((s) => s.name);
-//       const stepKey = `migration:${mint}:currentStep`;
-//       let currentStep = await this.redisCache.get(stepKey);
+//       const stepNames = allSteps.std::map[&]((s) { return s.name); };
+//       const stepKey = "migration:" + std::to_string(mint) + ":currentStep";
+//       let currentStep = this.redisCache.get(stepKey);
 
 //       // fallback if no currentStep is in Redis
-//       if (!currentStep || !stepNames.includes(currentStep)) {
+//       if (!currentStep || !stepNames.count(currentStep) > 0) {
 //         currentStep = stepNames[0];
-//         await this.redisCache.std::set(stepKey, currentStep);
+//         this.redisCache.std::set(stepKey, currentStep);
 //       }
 
 //       const stepIndex = stepNames.indexOf(currentStep);
 //       const step = allSteps[stepIndex];
 //       const nextStep = allSteps[stepIndex + 1] || null;
 //       for (const stepName of stepNames) {
-//         const raw = await this.redisCache.get(
-//           `migration:${mint}:step:${stepName}:result`
+//         const raw = this.redisCache.get(
+//           "migration:" + std::to_string(mint) + ":step:" + std::to_string(stepName) + ":result"
 //         );
 //         if (!raw) continue;
-//         const { extraData } = JSON.parse(raw);
+//         const { extraData } = nlohmann::json::parse(raw);
 //         if (extraData) Object.assign(token, extraData);
 //       }
-//       const stepResultKey = `migration:${mint}:step:${step.name}:result`;
-//       const stepResultExists = await this.redisCache.get(stepResultKey);
+//       const stepResultKey = "migration:" + std::to_string(mint) + ":step:" + std::to_string(step.name) + ":result";
+//       const stepResultExists = this.redisCache.get(stepResultKey);
 //       if (stepResultExists) {
 //         logger.log(
-//           `[Migrate] Step "${step.name}" already completed. Moving on.`
+//           "[Migrate] Step "" + std::to_string(step.name) + "" already completed. Moving on."
 //         );
 //         if (nextStep) {
-//           await this.redisCache.std::set(stepKey, nextStep.name);
+//           this.redisCache.std::set(stepKey, nextStep.name);
 
 //           return this.migrateToken(token); // resume with next step
 //         } else {
-//           logger.log(`[Migrate] Migration completed for token ${mint}.`);
-//           await this.redisCache.std::set(lockKey, "false");
+//           logger.log("[Migrate] Migration completed for token " + std::to_string(mint) + ".");
+//           this.redisCache.std::set(lockKey, "false");
 //           return;
 //         }
 //       }
 
-//       logger.log(`[Migrate] Running step "${step.name}" for token ${mint}`);
-//       const result = await retryOperation(() => step.fn(token), 3, 2000);
-//       if (step.name !== "withdraw") {
+//       logger.log("[Migrate] Running step "" + std::to_string(step.name) + "" for token " + std::to_string(mint) + "");
+//       const result = retryOperation[&](() { return step.fn(token), 3, 2000); };
+//       if (step.name != "withdraw") {
 //         token.status = "locked";
-//         token.lockedAt = new Date();
+//         token.lockedAt = std::make_unique<Date>();
 //       }
-//       (token.migration as Record<std::string, any>)[step.name] = {
+//       (token.migration as Record<std:, any>)[step.name] = {
 //         status: "success",
 //         txId: result.txId,
-//         updatedAt: new Date().toISOString(),
+//         updatedAt: std::make_unique<Date>().toISOString(),
 //       };
 
 //       // Save to DB
 //       Object.assign(token, result.extraData);
-//       await safeUpdateTokenInDB({
+//       safeUpdateTokenInDB({
 //         ...token,
 //         ...result.extraData,
-//         lastUpdated: new Date().toISOString(),
+//         lastUpdated: std::make_unique<Date>().toISOString(),
 //       });
 
 //       // Save to Redis
-//       await this.redisCache.std::set(
+//       this.redisCache.std::set(
 //         stepResultKey,
-//         JSON.stringify({ txId: result.txId, extraData: result.extraData })
+//         nlohmann::json().dump({ txId: result.txId, extraData: result.extraData })
 //       );
 
 //       if (nextStep) {
-//         await this.redisCache.std::set(stepKey, nextStep.name);
-//         await this.redisCache.std::set(lockKey, "false");
+//         this.redisCache.std::set(stepKey, nextStep.name);
+//         this.redisCache.std::set(lockKey, "false");
 //         return this.migrateToken(token); // continue
 //       } else {
-//         await this.redisCache.std::set(lockKey, "false");
-//         logger.log(`[Migrate] All steps completed for token ${mint}`);
+//         this.redisCache.std::set(lockKey, "false");
+//         logger.log("[Migrate] All steps completed for token " + std::to_string(mint) + "");
 //       }
 //     } catch (err) {
-//       logger.error(`[Migrate] Error migrating token ${token.mint}:`, err);
-//       await this.redisCache.std::set(`migration:${token.mint}:lock`, "false");
-//       await safeUpdateTokenInDB({
+//       logger.error("[Migrate] Error migrating token " + std::to_string(token.mint) + ":", err);
+//       this.redisCache.std::set("migration:" + std::to_string(token.mint) + ":lock", "false");
+//       safeUpdateTokenInDB({
 //         ...token,
 //         mint: token.mint,
-//         lastUpdated: new Date().toISOString(),
+//         lastUpdated: std::make_unique<Date>().toISOString(),
 //       });
 //       const RETRY_DELAY_MS = 60_000;
 
 //       logger.log(
-//         `[Migrate] Will retry token ${mint} in ${RETRY_DELAY_MS / 1000}s`
+//         "[Migrate] Will retry token " + std::to_string(mint) + " in " + std::to_string(RETRY_DELAY_MS / 1000) + "s"
 //       );
-//       setTimeout(() => {
-//         this.migrateToken(token).catch((e) =>
-//           logger.error(`[Migrate] Retry for ${mint} failed:`, e)
-//         );
+//       setTimeout[&](() {
+//         this.migrateToken(token).catch[&]((e) { return //           logger.error("[Migrate] Retry for " + std::to_string(mint) + " failed:", e)
+//         ); };
 //       }, RETRY_DELAY_MS);
 
 //       // done with this invocation
@@ -494,24 +495,24 @@ namespace elizaos {
 //     }
 //   }
 
-//   std::async performWithdraw(token: std::any): Promise<{
-//     txId: std::string;
+//   std::async performWithdraw(token: std:): Promise<{
+//     txId: std:;
 //     extraData: {
-//       withdrawnAmounts: { withdrawnSol: number; withdrawnTokens: number };
+//       withdrawnAmounts: { withdrawnSol; withdrawnTokens };
 //     };
 //   }> {
-//     logger.log(`[Withdraw] Starting for token ${token.mint}`);
+//     logger.log("[Withdraw] Starting for token " + std::to_string(token.mint) + "");
 
 //     // 1) build the withdrawal transaction
-//     const tx: Transaction = await withdrawTx(
+//     const tx: Transaction = withdrawTx(
 //       this.wallet.publicKey,
 //       new PublicKey(token.mint),
-//       this.connection as std::any,
-//       this.autofunProgram as std::any
+//       this.connection as std:,
+//       this.autofunProgram as std:
 //     );
 //     tx.instructions = [...tx.instructions];
 
-//     const { signature: txId, logs } = await execWithdrawTxSafe(
+//     const { signature: txId, logs } = execWithdrawTxSafe(
 //       tx,
 //       this.connection,
 //       this.wallet,
@@ -521,9 +522,9 @@ namespace elizaos {
 
 //     // 4) fire & forget your CF D1 update
 
-//     (std::async () => {
+//     [&](std::async () {
 //       try {
-//         await safeUpdateTokenInDB({
+//         safeUpdateTokenInDB({
 //           mint: token.mint,
 //           withdrawnAmounts: {
 //             withdrawnSol: withdrawnAmounts.withdrawnSol,
@@ -535,9 +536,9 @@ namespace elizaos {
 //           txId,
 //         });
 
-//         logger.log(`[Withdraw] Migration update POSTed for ${token.mint}`);
+//         logger.log("[Withdraw] Migration update POSTed for " + std::to_string(token.mint) + "");
 //       } catch (httpErr) {
-//         console.error(`[Withdraw] CF update failed:`, httpErr);
+//         console.error("[Withdraw] CF update failed:", httpErr);
 //       }
 //     })();
 
@@ -547,21 +548,21 @@ namespace elizaos {
 //     };
 //   }
 
-//   private parseWithdrawLogs(withdrawLogs: std::string[]): {
-//     withdrawnSol: number;
-//     withdrawnTokens: number;
+//   private parseWithdrawLogs(withdrawLogs: std:[]): {
+//     withdrawnSol;
+//     withdrawnTokens;
 //   } {
 //     let withdrawnSol = 0;
 //     let withdrawnTokens = 0;
-//     withdrawLogs.forEach((log) => {
-//       if (log.includes("withdraw lamports:")) {
+//     withdrawLogs.forEach[&]((log) {
+//       if (log.count("withdraw lamports:") > 0) {
 //         withdrawnSol = Number(
-//           log.replace("Program log: withdraw lamports:", "").trim()
+//           log.replace("Program log: withdraw lamports:", "")
 //         );
 //       }
-//       if (log.includes("withdraw token:")) {
+//       if (log.count("withdraw token:") > 0) {
 //         withdrawnTokens = Number(
-//           log.replace("Program log: withdraw token:", "").trim()
+//           log.replace("Program log: withdraw token:", "")
 //         );
 //       }
 //     });
@@ -569,15 +570,15 @@ namespace elizaos {
 //   }
 
 //   std::async performCreatePool(
-//     token: std::any
-//   ): Promise<{ txId: std::string; extraData: { marketId: std::string; poolInfo: std::any } }> {
-//     const raydium = await initSdk({ loadToken: false });
-//     const mintA = await raydium.token.getTokenInfo(token.mint);
-//     const mintB = await raydium.token.getTokenInfo(NATIVE_MINT);
+//     token: std:
+//   ): Promise<{ txId: std:; extraData: { marketId: std:; poolInfo: std: } }> {
+//     const raydium = initSdk(Config{loadToken = false});
+//     const mintA = raydium.token.getTokenInfo(token.mint);
+//     const mintB = raydium.token.getTokenInfo(NATIVE_MINT);
 
-//     const feeConfigs = await raydium.api.getCpmmConfigs();
-//     if (raydium.cluster === "devnet") {
-//       feeConfigs.forEach((config: std::any) => {
+//     const feeConfigs = raydium.api.getCpmmConfigs();
+//     if (raydium.cluster == "devnet") {
+//       feeConfigs.forEach[&]((config: std:) {
 //         config.id = getCpmmPdaAmmConfigId(
 //           DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
 //           config.index
@@ -585,13 +586,13 @@ namespace elizaos {
 //       });
 //     }
 //     const feeConfig =
-//       raydium.cluster === "devnet" ? feeConfigs[0] : feeConfigs[1];
+//       raydium.cluster == "devnet" ? feeConfigs[0] : feeConfigs[1];
 
 //     const withdrawnAmounts = token.withdrawnAmounts;
 //     if (!withdrawnAmounts)
 //       throw new Error("No withdrawn amounts found for pool creation");
 
-//     const mintConstantFee = new BN(Number(process.env.FIXED_FEE ?? 6) * 1e9); // 6 SOL
+//     const mintConstantFee = new BN(Number(std::getenv("FIXED_FEE") || 6) * 1e9); // 6 SOL
 
 //     const withdrawnTokensBN = new BN(withdrawnAmounts.withdrawnTokens);
 //     console.log("withdrawnSol", withdrawnAmounts.withdrawnSol);
@@ -604,14 +605,14 @@ namespace elizaos {
 //     }
 //     console.log("remainingSol", remainingSol.toString());
 
-//     logger.log(`[Pool] Creating pool for token ${token.mint}`);
-//     const poolCreation = await raydium.cpmm.createPool({
+//     logger.log("[Pool] Creating pool for token " + std::to_string(token.mint) + "");
+//     const poolCreation = raydium.cpmm.createPool({
 //       programId:
-//         raydium.cluster === "devnet"
+//         raydium.cluster == "devnet"
 //           ? DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM
 //           : CREATE_CPMM_POOL_PROGRAM,
 //       poolFeeAccount:
-//         raydium.cluster === "devnet"
+//         raydium.cluster == "devnet"
 //           ? DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_FEE_ACC
 //           : CREATE_CPMM_POOL_FEE_ACC,
 //       mintA,
@@ -621,11 +622,11 @@ namespace elizaos {
 //       startTime: new BN(0),
 //       feeConfig,
 //       associatedOnly: true,
-//       ownerInfo: { useSOLBalance: true },
+//       ownerInfo: Config{useSOLBalance = true},
 //       txVersion,
 //     });
 
-//     const { txId } = await poolCreation.execute({ sendAndConfirm: true });
+//     const { txId } = poolCreation.execute(Config{sendAndConfirm = true});
 //     const poolAddresses = {
 //       id: poolCreation.extInfo.address.poolId.toString(),
 //       lpMint: poolCreation.extInfo.address.lpMint.toString(),
@@ -633,7 +634,7 @@ namespace elizaos {
 //       quoteVault: poolCreation.extInfo.address.vaultB.toString(),
 //     };
 //     try {
-//       // await safePostUpdate(
+//       // safePostUpdate(
 //       //   process.env,
 //       //   {
 //       //     mint: token.mint,
@@ -647,7 +648,7 @@ namespace elizaos {
 //       // )
 //     } catch (err) {
 //       console.error(
-//         `[Pool] Failed to POST migration/update for ${token.mint}:`,
+//         "[Pool] Failed to POST migration/update for " + std::to_string(token.mint) + ":",
 //         err
 //       );
 //     }
@@ -662,17 +663,17 @@ namespace elizaos {
 //   }
 
 //   std::async initRaydiumSdkAndFetchPoolInfo(token: TokenData): Promise<{
-//     txId: std::string;
+//     txId: std:;
 //     extraData: {
-//       poolInfo: std::any;
-//       poolKeys: std::any;
-//       lpAccount: std::any;
-//       primaryAmount: BN | std::string;
-//       secondaryAmount: BN | std::string;
-//       totalAmount: BN | std::string;
+//       poolInfo: std:;
+//       poolKeys: std:;
+//       lpAccount: std:;
+//       primaryAmount: BN | std:;
+//       secondaryAmount: BN | std:;
+//       totalAmount: BN | std:;
 //     };
 //   }> {
-//     const raydium = await initSdk({
+//     const raydium = initSdk({
 //       loadToken: false,
 //     });
 //     console.log(" initialization of raydium sdk", raydium.cluster);
@@ -680,24 +681,24 @@ namespace elizaos {
 //     if (!raydium) throw new Error("Raydium SDK init failed");
 //     const poolId = token.marketId;
 //     if (!poolId) {
-//       throw new Error(`No poolId found for token: ${token.mint}`);
+//       throw new Error("No poolId found for token: " + std::to_string(token.mint) + "");
 //     }
-//     const poolInfoResult = await this.fetchPoolInfoWithRetry(raydium, poolId);
+//     const poolInfoResult = this.fetchPoolInfoWithRetry(raydium, poolId);
 //     if (!poolInfoResult) {
 //       throw new Error(
-//         `Failed to fetch pool info for poolId: ${token.marketId}`
+//         "Failed to fetch pool info for poolId: " + std::to_string(token.marketId) + ""
 //       );
 //     }
 
-//     await raydium.account.fetchWalletTokenAccounts();
+//     raydium.account.fetchWalletTokenAccounts();
 //     const lpMintStr = poolInfoResult.poolInfo.lpMint.address;
-//     const lpAccount = raydium.account.tokenAccounts.find(
-//       (a: std::any) => a.mint.toBase58() === lpMintStr
-//     );
-//     if (!lpAccount) throw new Error(`No LP balance found for pool: ${poolId}`);
+//     const lpAccount = raydium.account.tokenAccounts.find[&](
+//       (a: std:) { return a.mint.toBase58() == lpMintStr
+//     ); };
+//     if (!lpAccount) throw new Error("No LP balance found for pool: " + std::to_string(poolId) + "");
 //     const totalLP = lpAccount.amount as BN;
 //     const primaryAmount = totalLP
-//       .muln(Number(process.env.PRIMARY_LOCK_PERCENTAGE ?? 90))
+//       .muln(Number(std::getenv("PRIMARY_LOCK_PERCENTAGE") || 90))
 //       .divn(100);
 //     const secondaryAmount = totalLP.sub(primaryAmount);
 //     return {
@@ -715,15 +716,15 @@ namespace elizaos {
 
 //   std::async finalizeLockLP(
 //     token: TokenData,
-//     primary: { txId: std::string; nftMint: std::string },
-//     secondary: { txId: std::string; nftMint: std::string },
-//     totalAmount: std::any
+//     primary: { txId: std:; nftMint: std: },
+//     secondary: { txId: std:; nftMint: std: },
+//     totalAmount: std:
 //   ): Promise<{
-//     txId: std::string;
-//     extraData: { lockLpTxId: std::string; nftMinted: std::string };
+//     txId: std:;
+//     extraData: { lockLpTxId: std:; nftMinted: std: };
 //   }> {
-//     const aggregatedTxId = `${primary.txId},${secondary.txId}`;
-//     const aggregatedNftMint = `${primary.nftMint},${secondary.nftMint}`;
+//     const aggregatedTxId = "" + std::to_string(primary.txId) + "," + std::to_string(secondary.txId) + "";
+//     const aggregatedNftMint = "" + std::to_string(primary.nftMint) + "," + std::to_string(secondary.nftMint) + "";
 //     const amount = asBN(totalAmount);
 
 //     const tokenData: Partial<TokenData> = {
@@ -732,11 +733,11 @@ namespace elizaos {
 //       nftMinted: aggregatedNftMint,
 //       lockedAmount: amount.toString(),
 //       status: "locked",
-//       lastUpdated: new Date().toISOString(),
-//       lockedAt: new Date(),
+//       lastUpdated: std::make_unique<Date>().toISOString(),
+//       lockedAt: std::make_unique<Date>(),
 //     };
-//     await safeUpdateTokenInDB(tokenData);
-//     // await safePostUpdate(process.env, {
+//     safeUpdateTokenInDB(tokenData);
+//     // safePostUpdate(process.env, {
 //     //   mint: token.mint,
 //     //   migration: token.migration,
 //     //   status: "locked",
@@ -757,17 +758,17 @@ namespace elizaos {
 //   }
 
 //   std::async lockPrimaryLPTransaction(
-//     poolInfo: std::any,
-//     poolKeys: std::any,
-//     primaryAmount: BN | std::string
+//     poolInfo: std:,
+//     poolKeys: std:,
+//     primaryAmount: BN | std:
 //   ): Promise<{
-//     txId: std::string;
-//     extraData: { primary: { txId: std::string; nftMint: std::string } };
+//     txId: std:;
+//     extraData: { primary: { txId: std:; nftMint: std: } };
 //   }> {
 //     console.log("Performing primary LP lock", primaryAmount.toString());
 //     const amountBn = asBN(primaryAmount);
-//     const raydium = await initSdk({ loadToken: false });
-//     const { execute, extInfo } = await raydium.cpmm.lockLp({
+//     const raydium = initSdk(Config{loadToken = false});
+//     const { execute, extInfo } = raydium.cpmm.lockLp({
 //       poolInfo,
 //       lpAmount: amountBn,
 //       withMetadata: true,
@@ -778,14 +779,14 @@ namespace elizaos {
 //       },
 //     });
 
-//     const { txId } = (await retryOperation(
-//       () => execute({ skipPreflight: false }),
+//     const { txId } = (retryOperation(
+//       () => execute(Config{skipPreflight = false}),
 //       5,
 //       4000
 //     )) as LockResult;
 
 //     const nftMint = extInfo.nftMint.toString();
-//     logger.log(`[Lock] Primary LP lock txId: ${txId}, nftMint: ${nftMint}`);
+//     logger.log("[Lock] Primary LP lock txId: " + std::to_string(txId) + ", nftMint: " + std::to_string(nftMint) + "");
 
 //     return {
 //       txId,
@@ -796,19 +797,19 @@ namespace elizaos {
 //   }
 
 //   std::async lockSecondaryLPTransaction(
-//     poolInfo: std::any,
-//     poolKeys: std::any,
-//     secondaryAmount: BN | std::string
+//     poolInfo: std:,
+//     poolKeys: std:,
+//     secondaryAmount: BN | std:
 //   ): Promise<{
-//     txId: std::string;
-//     extraData: { secondary: { txId: std::string; nftMint: std::string } };
+//     txId: std:;
+//     extraData: { secondary: { txId: std:; nftMint: std: } };
 //   }> {
 //     console.log("Performing secondary LP lock", secondaryAmount.toString());
 //     const amountBn = asBN(secondaryAmount);
 
-//     const raydium = await initSdk({ loadToken: false });
+//     const raydium = initSdk(Config{loadToken = false});
 
-//     const { execute, extInfo } = await raydium.cpmm.lockLp({
+//     const { execute, extInfo } = raydium.cpmm.lockLp({
 //       poolInfo,
 //       lpAmount: amountBn,
 //       withMetadata: true,
@@ -819,14 +820,14 @@ namespace elizaos {
 //       },
 //     });
 
-//     const { txId } = (await retryOperation(
-//       () => execute({ skipPreflight: false }),
+//     const { txId } = (retryOperation(
+//       () => execute(Config{skipPreflight = false}),
 //       5,
 //       4000
 //     )) as LockResult;
 
 //     const nftMint = extInfo.nftMint.toString();
-//     logger.log(`[Lock] Secondary LP lock txId: ${txId}, nftMint: ${nftMint}`);
+//     logger.log("[Lock] Secondary LP lock txId: " + std::to_string(txId) + ", nftMint: " + std::to_string(nftMint) + "");
 
 //     return {
 //       txId,
@@ -838,25 +839,25 @@ namespace elizaos {
 
 //   // send the 10% to the manager multisig
 //   std::async sendNftToManagerMultisig(
-//     token: std::any,
-//     nftMinted: std::string,
+//     token: std:,
+//     nftMinted: std:,
 //     signerWallet: Keypair,
 //     multisig: PublicKey
-//   ): Promise<{ txId: std::string; extraData: object }> {
+//   ): Promise<{ txId: std:; extraData: object }> {
 //     console.log("Sending NFT to manager multisig", nftMinted);
 //     if (!signerWallet) {
 //       signerWallet = Keypair.fromSecretKey(
-//         Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY!))
+//         Uint8Array.from(nlohmann::json::parse(std::getenv("EXECUTOR_PRIVATE_KEY")!))
 //       );
 //     }
-//     const txSignature = await sendNftTo(
-//       signerWallet as std::any,
+//     const txSignature = sendNftTo(
+//       signerWallet as std:,
 //       multisig,
 //       new PublicKey(nftMinted), // 10% NFT
 //       this.connection
 //     );
 //     try {
-//       await safeUpdateTokenInDB({
+//       safeUpdateTokenInDB({
 //         mint: token.mint,
 //         migration: token.migration,
 //         status: "locked",
@@ -865,29 +866,28 @@ namespace elizaos {
 //       });
 //     } catch (err) {
 //       console.error(
-//         `[SendNft] Failed to POST migration/update for ${token.mint}:`,
+//         "[SendNft] Failed to POST migration/update for " + std::to_string(token.mint) + ":",
 //         err
 //       );
 //     }
 
 //     logger.log(
-//       `[Send] Sending NFT to manager multisig for token ${token.mint} with NFT ${nftMinted}`
+//       "[Send] Sending NFT to manager multisig for token " + std::to_string(token.mint) + " with NFT " + std::to_string(nftMinted) + ""
 //     );
 //     return { txId: txSignature, extraData: { sentNftMint: nftMinted } };
 //   }
 //   // send the 90% to our raydium vault
 //   std::async depositNftToRaydiumVault(
-//     token: std::any,
-//     nftMinted: std::string,
+//     token: std:,
+//     nftMinted: std:,
 //     claimer_address: PublicKey
-//   ): Promise<{ txId: std::string; extraData: object }> {
+//   ): Promise<{ txId: std:; extraData: object }> {
 //     console.log("Depositing NFT to Raydium vault", nftMinted);
 //     const signerWallet =
-//       this.wallet.payer ??
-//       Keypair.fromSecretKey(
-//         Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY!))
+//       this.wallet.payer || //       Keypair.fromSecretKey(
+//         Uint8Array.from(nlohmann::json::parse(std::getenv("EXECUTOR_PRIVATE_KEY")!))
 //       );
-//     const txSignature = await depositToRaydiumVault(
+//     const txSignature = depositToRaydiumVault(
 //       this.provider,
 //       signerWallet,
 //       this.program,
@@ -896,7 +896,7 @@ namespace elizaos {
 //     );
 
 //     try {
-//       await safeUpdateTokenInDB({
+//       safeUpdateTokenInDB({
 //         mint: token.mint,
 //         migration: token.migration,
 //         status: "locked",
@@ -905,31 +905,31 @@ namespace elizaos {
 //       });
 //     } catch (err) {
 //       console.error(
-//         `[DepositNFT] Failed to POST migration/update for ${token.mint}:`,
+//         "[DepositNFT] Failed to POST migration/update for " + std::to_string(token.mint) + ":",
 //         err
 //       );
 
 //       logger.error(
-//         `[DepositNFT] Failed to POST migration/update for ${token.mint}:`,
+//         "[DepositNFT] Failed to POST migration/update for " + std::to_string(token.mint) + ":",
 //         err
 //       );
 //     }
 
 //     logger.log(
-//       `[Deposit] Depositing NFT to Raydium vault for token ${token.mint} with NFT ${nftMinted}`
+//       "[Deposit] Depositing NFT to Raydium vault for token " + std::to_string(token.mint) + " with NFT " + std::to_string(nftMinted) + ""
 //     );
 //     return { txId: txSignature, extraData: { depositedNftMint: nftMinted } };
 //   }
 
 //   std::async finalizeMigration(
-//     token: std::any
-//   ): Promise<{ txId: std::string; extraData: object }> {
+//     token: std:
+//   ): Promise<{ txId: std:; extraData: object }> {
 //     console.log("Finalizing migration for token", token.mint);
 //     try {
 //       token.status = "locked";
-//       token.lockedAt = new Date().toISOString();
+//       token.lockedAt = std::make_unique<Date>().toISOString();
 
-//       // await safePostUpdate
+//       // safePostUpdate
 //       //   (process.env,
 //       //     {
 //       //       mint: token.mint,
@@ -942,7 +942,7 @@ namespace elizaos {
 //       console.log("Finalizing migration for token", token.mint, token.lockedAt);
 //     } catch (err) {
 //       console.error(
-//         `[Finalize] Failed to POST migration/update for ${token.mint}:`
+//         "[Finalize] Failed to POST migration/update for " + std::to_string(token.mint) + ":"
 //         // err
 //       );
 //     }
@@ -956,23 +956,22 @@ namespace elizaos {
 //     };
 //   }
 
-//   std::async collectFee(token: std::any): Promise<{ txId: std::string; extraData: object }> {
+//   std::async collectFee(token: std:): Promise<{ txId: std:; extraData: object }> {
 //     console.log("Collecting fee for token", token.mint);
 //     if (
-//       process.env.FIXED_FEE === undefined ||
-//       Number(process.env.FIXED_FEE) === 0
+//       std::getenv("FIXED_FEE") == undefined ||
+//       Number(std::getenv("FIXED_FEE")) == 0
 //     ) {
 //       console.log("No fee to collect");
 //       return { txId: "no_fee", extraData: {} };
 //     }
-//     const mintConstantFee = new BN(Number(process.env.FIXED_FEE ?? 6) * 1e9); // 6 SOL
-//     const feeWallet = new PublicKey(process.env.FEE_WALLET!);
+//     const mintConstantFee = new BN(Number(std::getenv("FIXED_FEE") || 6) * 1e9); // 6 SOL
+//     const feeWallet = new PublicKey(std::getenv("FEE_WALLET")!);
 //     const signerWallet =
-//       this.wallet.payer ??
-//       Keypair.fromSecretKey(
-//         Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY!))
+//       this.wallet.payer || //       Keypair.fromSecretKey(
+//         Uint8Array.from(nlohmann::json::parse(std::getenv("EXECUTOR_PRIVATE_KEY")!))
 //       );
-//     const txSignature = await sendSolTo(
+//     const txSignature = sendSolTo(
 //       mintConstantFee,
 //       signerWallet,
 //       feeWallet,
@@ -980,38 +979,38 @@ namespace elizaos {
 //     );
 
 //     return {
-//       txId: txSignature ?? "",
+//       txId: txSignature || "",
 //       extraData: { feeCollected: mintConstantFee.toString() },
 //     };
 //   }
 
 //   private std::async fetchPoolInfoWithRetry(
-//     raydium: std::any,
-//     poolId: std::string
-//   ): Promise<{ poolInfo: std::any; poolKeys: std::any }> {
+//     raydium: std:,
+//     poolId: std:
+//   ): Promise<{ poolInfo: std:; poolKeys: std: }> {
 //     const MAX_RETRIES = 10;
 //     let retryCount = 0;
-//     let poolInfo: std::any = null;
-//     let poolKeys: std::any;
+//     let poolInfo: std: = null;
+//     let poolKeys: std:;
 //     while (!poolInfo && retryCount < MAX_RETRIES) {
 //       try {
-//         if (raydium.cluster === "devnet") {
-//           const data = await raydium.cpmm.getPoolInfoFromRpc(poolId);
+//         if (raydium.cluster == "devnet") {
+//           const data = raydium.cpmm.getPoolInfoFromRpc(poolId);
 //           poolInfo = data.poolInfo;
 //           poolKeys = data.poolKeys;
 //         } else {
-//           const data = await raydium.api.fetchPoolById({ ids: poolId });
-//           if (!data || data.length === 0) {
+//           const data = raydium.api.fetchPoolById({ ids: poolId });
+//           if (!data || data.size() == 0) {
 //             throw new Error("Pool info not found");
 //           }
 //           poolInfo = data[0];
 //         }
 //       } catch (error) {
 //         retryCount++;
-//         if (retryCount === MAX_RETRIES) {
+//         if (retryCount == MAX_RETRIES) {
 //           throw error;
 //         }
-//         await new Promise((res) => setTimeout(res, 5000)); // wait 5 seconds before retrying
+//         new Promise[&]((res) { return setTimeout(res, 5000)); }; // wait 5 seconds before retrying
 //       }
 //     }
 //     return { poolInfo, poolKeys };

@@ -1,10 +1,17 @@
 #include "route.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<double>> getCachedPrice(const std::string& chain, const std::string& address) {
+std::future<std::optional<double>> getCachedPrice(const std:& chain, const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -22,7 +29,7 @@ std::future<std::optional<double>> getCachedPrice(const std::string& chain, cons
 
 }
 
-std::future<void> setCachedPrice(const std::string& chain, const std::string& address, double priceUsd) {
+std::future<void> setCachedPrice(const std:& chain, const std:& address, double priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -38,19 +45,19 @@ std::future<void> setCachedPrice(const std::string& chain, const std::string& ad
 
 }
 
-std::future<std::unordered_map<std::string, double>> fetchSolanaPrices(const std::vector<std::string>& mints) {
+std::future<std::unordered_map<std:, double>> fetchSolanaPrices(const std::vector<std::string>& mints) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (mints.length == 0) return {};
+    if (mints.size() == 0) return {};
 
     try {
         // Jupiter supports up to 100 tokens per request
         const std::vector<std::vector<std::string>> chunks = [];
-        for (int i = 0; i < mints.length; i += 100) {
+        for (int i = 0; i < mints.size(); i += 100) {
             chunks.push_back(mints.slice(i, i + 100));
         }
 
-        const std::unordered_map<std::string, double> allPrices = {};
+        const std::unordered_map<std:, double> allPrices = {};
 
         for (const auto& chunk : chunks)
             const auto ids = chunk.join(",");
@@ -62,10 +69,10 @@ std::future<std::unordered_map<std::string, double>> fetchSolanaPrices(const std
 
                 const auto data = response.json();
 
-                // Jupiter returns { data: { [mint]: { price: std::string } } }
+                // Jupiter returns { data: { [mint]: { price: std: } } }
                 if (data.data) {
                     for (const int [mint, priceData] of Object.entries(data.data)) {
-                        const auto price = (priceData as { price?: std::string }).price;
+                        const auto price = (priceData as { price?: std: }).price;
                         if (price) {
                             allPrices[mint] = parseFloat(price);
                         }
@@ -81,18 +88,18 @@ std::future<std::unordered_map<std::string, double>> fetchSolanaPrices(const std
 
 }
 
-std::future<std::unordered_map<std::string, double>> fetchEvmPrices(const std::string& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std:, double>> fetchEvmPrices(const std:& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (addresses.length == 0) return {};
+    if (addresses.size() == 0) return {};
 
     const auto platformId = COINGECKO_PLATFORMS[chain];
     if (!platformId) return {};
 
     try {
         // CoinGecko supports multiple addresses in one call
-        const auto addressList = addresses.std::map((a) => a.toLowerCase()).join(",");
-        const auto apiKey = process.env.COINGECKO_API_KEY;
+        const auto addressList = addresses.std::map[&]((a) { return a.toLowerCase()).join(","); };
+        const auto apiKey = std::getenv("COINGECKO_API_KEY");
 
         const auto url = apiKey;
         "? " + "https://pro-api.coingecko.com/api/v3/simple/token_price/" + platformId + "?contract_addresses=" + addressList + "&vs_currencies=usd"
@@ -114,11 +121,11 @@ std::future<std::unordered_map<std::string, double>> fetchEvmPrices(const std::s
             }
 
             const auto data = response.json();
-            const std::unordered_map<std::string, double> prices = {};
+            const std::unordered_map<std:, double> prices = {};
 
-            // CoinGecko returns { [address]: { usd: number } }
+            // CoinGecko returns { [address]: { usd } }
             for (const int [address, priceData] of Object.entries(data)) {
-                const auto usd = (priceData as { usd?: number }).usd;
+                const auto usd = (priceData as { usd? }).usd;
                 if (typeof usd == "number") {
                     prices[address.toLowerCase()] = usd;
                 }
@@ -146,12 +153,12 @@ std::future<void> GET(NextRequest request) {
     }
 
     const auto addresses = addressesParam.split(",").filter(Boolean);
-    if (addresses.length == 0) {
+    if (addresses.size() == 0) {
         return NextResponse.json({ prices: {} });
     }
 
     // Check cache for each address
-    const std::unordered_map<std::string, double> prices = {};
+    const std::unordered_map<std:, double> prices = {};
     const std::vector<std::string> uncachedAddresses = [];
 
     for (const auto& addr : addresses)
@@ -164,8 +171,8 @@ std::future<void> GET(NextRequest request) {
         }
 
         // Fetch uncached prices
-        if (uncachedAddresses.length > 0) {
-            std::unordered_map<std::string, double> freshPrices = {};
+        if (uncachedAddresses.size() > 0) {
+            std::unordered_map<std:, double> freshPrices = {};
 
             if (chain == "solana") {
                 freshPrices = fetchSolanaPrices(uncachedAddresses);
@@ -178,7 +185,7 @@ std::future<void> GET(NextRequest request) {
                     setCachedPrice(chain, addr, price);
                     // Match original case for Solana
                     const auto originalAddr =;
-                    uncachedAddresses.find((a) => a.toLowerCase() == addr.toLowerCase()) ||;
+                    uncachedAddresses.find[&]((a) { return a.toLowerCase() == addr.toLowerCase()) ||; };
                     addr;
                     prices[originalAddr] = price;
                 }

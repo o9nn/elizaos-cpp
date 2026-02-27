@@ -12,7 +12,7 @@ void NotFound() {
 
     // Determine if this is likely an API endpoint that doesn't exist
     const auto isLikelyApiEndpoint =;
-    path.startsWith("/api/") ||;
+    path.substr(0, "/api/") ||;
     (std::find(path.begin(), path.end(), "/agents/") != path.end()) ||;
     (std::find(path.begin(), path.end(), "/memory/") != path.end()) ||;
     (std::find(path.begin(), path.end(), "/speech/") != path.end());
@@ -63,7 +63,7 @@ void NotFound() {
     </Button>;
 
     <Button asChild variant="outline">;
-    <a onClick={() => window.history.back()}>;
+    <a onClick={[&]() { return window.history.back()}>; };
     <ArrowLeft className="h-4 w-4 mr-2" />;
     Go Back;
     </a>;

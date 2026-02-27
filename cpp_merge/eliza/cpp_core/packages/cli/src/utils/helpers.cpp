@@ -1,4 +1,8 @@
 #include "helpers.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -29,45 +33,43 @@ void displayAgent(const std::optional<Agent>& data, auto title) {
     displaySection("Post Examples", data.postExamples);
 
     // Display message examples
-    if (data.messageExamples && data.messageExamples.length > 0) {
+    if (data.messageExamples && data.messageExamples.size() > 0) {
         std::cout << "\n" + std::to_string(colors.cyan("Message Examples:")) << std::endl;
-        console.log(
+        console.log[&](
         data.messageExamples;
-        .std::map((conversation, i) => {
+        .std::map((conversation, i) {
             const auto messages = formatConversation(conversation);
             return "\nConversation " + std::to_string(i + 1) + ":\n" + messages;
-            });
-            .join("\n");
+            }).join("\n");
             );
         }
 
 }
 
-std::string formatConversation(const std::vector<MessageExample>& conversation) {
+std: formatConversation(const std::vector<MessageExample>& conversation) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return conversation;
-    .std::map((msg) => {
+    .std::map[&]((msg) {
         const auto user = msg.name == "{{name1}}" ? "Anon" : msg.name;
         return user + ": " + msg.content.text;
-        });
-        .join("\n");
+        }).join("\n");
 
 }
 
-void displaySection(const std::string& title, const std::vector<std::string>& items) {
+void displaySection(const std:& title, const std::vector<std::string>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!items || items.length == 0) return;
+    if (!items || items.size() == 0) return;
 
-    std::cout << "\n" + std::to_string(colors.cyan(`${title}:`)) << std::endl;
+    std::cout << "\n" + std::to_string(colors.cyan("" + std::to_string(title) + ":")) << std::endl;
     for (const auto& item : items)
         std::cout << "  " + item << std::endl;
     }
 
 }
 
-void logHeader(const std::string& title) {
+void logHeader(const std:& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto padding = 2; // number of spaces on each side;

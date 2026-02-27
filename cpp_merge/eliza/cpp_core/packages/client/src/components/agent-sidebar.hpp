@@ -23,8 +23,8 @@ namespace elizaos {
 
 using AgentSidebarProps = {
 
-using FixedTabValue = std::string;
-using TabValue = std::variant<FixedTabValue, std::string>;
+using FixedTabValue = std:;
+using TabValue = std::variant<FixedTabValue, std:>;
 
 void AgentSidebar(auto agentName);
 

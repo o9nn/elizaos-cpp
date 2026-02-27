@@ -8,17 +8,17 @@ void DealCompletion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [shareImageUrl, setShareImageUrl] = useState<std::string | nullptr>(nullptr);
+        const auto [shareImageUrl, setShareImageUrl] = useState<std: | nullptr>(nullptr);
         const auto hasPostedRef = useRef(false);
 
         // Memoized derived values
-        const auto { discountPercent, roi, maturityDate } = useMemo(() => {;
+        const auto { discountPercent, roi, maturityDate } = useMemo[&](() {;
             const auto dp = quote.discountBps / 100;
             const auto r =;
             quote.discountedUsd > 0;
             ? (quote.discountUsd / quote.discountedUsd) * 100;
             : 0;
-            const auto md = new Date();
+            const auto md = std::make_unique<Date>();
             md.setMonth(md.getMonth() + quote.lockupMonths);
             return { discountPercent: dp, roi: r, maturityDate: md }
             }, [;
@@ -31,8 +31,8 @@ void DealCompletion() {
             const auto projectedYield = 0; // No yield; discount-only instrument;
 
             // Initialize: record completion and generate image (once per mount)
-            useEffect(() => {
-                const auto init = std::async () => {;
+            useEffect[&](() {
+                const auto init = std::async [&]() {;
                     // Record deal completion - only once, using ref guard
                     if (!hasPostedRef.current) {
                         hasPostedRef.current = true;
@@ -47,7 +47,7 @@ void DealCompletion() {
                                 fetch("/api/deal-completion", {
                                     method: "POST",
                                     headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
+                                    body: nlohmann::json().dump({
                                         action: "complete",
                                         quoteId: quote.quoteId,
                                         tokenAmount: quote.tokenAmount,
@@ -81,7 +81,7 @@ void DealCompletion() {
                                         init();
                                         }, [quote]);
 
-                                        const auto shareToTwitter = std::async () => {;
+                                        const auto shareToTwitter = std::async [&]() {;
                                             // Generate fresh share image
                                             const auto { file } = createDealShareImage({;
                                                 tokenAmount: parseFloat(quote.tokenAmount),
@@ -118,7 +118,7 @@ void DealCompletion() {
                                                 const auto response = fetch("/api/deal-completion", {;
                                                     method: "POST",
                                                     headers: { "Content-Type": "application/json" },
-                                                    body: JSON.stringify({
+                                                    body: nlohmann::json().dump({
                                                         action: "share",
                                                         quoteId: quote.quoteId,
                                                         platform: "twitter",
@@ -130,7 +130,7 @@ void DealCompletion() {
                                                         }
                                                         };
 
-                                                        const auto downloadImage = std::async () => {;
+                                                        const auto downloadImage = std::async [&]() {;
                                                             const auto { dataUrl } = createDealShareImage({;
                                                                 tokenAmount: parseFloat(quote.tokenAmount),
                                                                 discountBps: quote.discountBps,

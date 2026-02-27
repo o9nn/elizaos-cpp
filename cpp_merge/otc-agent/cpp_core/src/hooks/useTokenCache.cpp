@@ -1,19 +1,21 @@
 #include "useTokenCache.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId) {
+std::future<std::optional<Token>> fetchTokenFromChain(const std:& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = tokenId.split("-");
-    if (parts.length < 3) return null;
+    if (parts.size() < 3) return null;
 
     const auto chain = parts[1];
-    const auto address = "parts[2] as " + "0x" + std::string;
+    const auto address = "parts[2] as " + "0x" + std:;
 
-    if (!address.startsWith("0x")) return null;
+    if (!address.substr(0, "0x")) return null;
 
     // For now, only support base chain for on-chain fallback
     if (chain != "base") return null;
@@ -24,7 +26,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
             transport: http("/api/rpc/base"),
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-std:
             const auto readContract = publicClient.readContract.bind(publicClient);
             const auto [symbol, name, decimals] = Promise.all([;
             readContract({
@@ -64,15 +66,15 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
 
 }
 
-void useTokenCache(const std::string& tokenId) {
+void useTokenCache(const std:& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [token, setToken] = useState<Token | nullptr>(nullptr);
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);
     const auto [isLoading, setIsLoading] = useState(true);
-    const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
+    const auto fetchedTokenId = useRef<std: | nullptr>(nullptr);
 
-    useEffect(() => {
+    useEffect[&](() {
         if (!tokenId) {
             setToken(nullptr);
             setMarketData(nullptr);
@@ -94,7 +96,7 @@ void useTokenCache(const std::string& tokenId) {
                 return;
             }
 
-            std::async std::function loadToken(id: std::string) {
+            std::async std::function loadToken(id: std:) {
                 // Check cache first (synchronously)
                 const auto cached = globalTokenCache.get(id);
                 const auto now = Date.now();
@@ -111,7 +113,7 @@ void useTokenCache(const std::string& tokenId) {
 
                 if (!fetchPromise) {
                     // Start new fetch - only ONE component will enter this block
-                    fetchPromise = (std::async () => {
+                    fetchPromise = [&](std::async () {
                         const auto response = "fetch(" + "/api/tokens/" + id;
                         const auto data = response.json();
 
@@ -144,7 +146,7 @@ void useTokenCache(const std::string& tokenId) {
                                 pendingFetches.std::set(id, fetchPromise);
 
                                 // Clean up pending fetch after it completes
-                                fetchPromise.finally(() => {
+                                fetchPromise.finally[&](() {
                                     pendingFetches.delete(id);
                                     });
                                 }
@@ -189,19 +191,18 @@ std::future<void> refreshMarketData() {
         }
 
         // Notify all subscribers
-        marketDataSubscribers;
-        .get(tokenId);
-        .forEach((cb) => cb(data.marketData));
+        marketDataSubscribers.get(tokenId);
+        .forEach[&]((cb) { return cb(data.marketData)); };
     }
 
 }
 
-void useMarketDataRefresh(const std::string& tokenId, const std::optional<Token>& token) {
+void useMarketDataRefresh(const std:& tokenId, const std::optional<Token>& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);
 
-    useEffect(() => {
+    useEffect[&](() {
         if (!token || !tokenId) return;
 
         return subscribeToMarketData(tokenId, setMarketData);

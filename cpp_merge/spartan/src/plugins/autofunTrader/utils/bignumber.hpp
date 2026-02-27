@@ -18,7 +18,7 @@ std::shared_ptr<BigNumber> toBN(P0 value)
     }
     catch (const any& error)
     {
-        throw any(std::make_shared<Error>(std::string("Failed to convert value to BigNumber: ") + value + string_empty));
+        throw any(std::make_shared<Error>(std:("Failed to convert value to BigNumber: ") + value + string_empty));
     }
 };
 

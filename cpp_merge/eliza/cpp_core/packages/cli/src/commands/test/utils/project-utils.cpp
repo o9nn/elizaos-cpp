@@ -1,18 +1,21 @@
 #include "project-utils.hpp"
+#include <future>
+#include <filesystem>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-DirectoryInfo getProjectType(std::optional<std::string> testPath) {
+DirectoryInfo getProjectType(std::optional<std:> testPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto targetPath = testPath ? path.resolve(process.cwd(), testPath) : process.cwd();
+    const auto targetPath = testPath ? path.resolve(std::filesystem::current_path().string(), testPath) : std::filesystem::current_path().string();
     return detectDirectoryType(targetPath);
 
 }
 
-std::string processFilterName(std::optional<std::string> name) {
+std: processFilterName(std::optional<std:> name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!name) return undefined;
@@ -21,13 +24,13 @@ std::string processFilterName(std::optional<std::string> name) {
     auto baseName = name.toLowerCase();
 
     if (
-    baseName.endsWith(".test.ts") ||;
-    baseName.endsWith(".test.js") ||;
-    baseName.endsWith(".spec.ts") ||;
-    baseName.endsWith(".spec.js");
+    baseName.rfind(".test.ts") ||;
+    baseName.rfind(".test.js") ||;
+    baseName.rfind(".spec.ts") ||;
+    baseName.rfind(".spec.js");
     ) {
         baseName = baseName.slice(0, -8); // Remove ".test.ts" / ".test.js" / ".spec.ts" / ".spec.js";
-        } else if (baseName.endsWith(".test") || baseName.endsWith(".spec")) {
+        } else if (baseName.rfind(".test") || baseName.rfind(".spec")) {
             baseName = baseName.slice(0, -5); // Remove ".test" / ".spec";
         }
 
@@ -42,15 +45,15 @@ std::future<void> installPluginDependencies(DirectoryInfo projectInfo) {
         return;
     }
 
-    const auto project = loadProject(process.cwd());
+    const auto project = loadProject(std::filesystem::current_path().string());
     if (
     project.isPlugin &&;
     project.pluginModule.dependencies &&;
     project.pluginModule.dependencies.size() > 0;
     ) {
-        const auto pluginsDir = path.join(process.cwd(), ".eliza", "plugins");
+        const auto pluginsDir = path.join(std::filesystem::current_path().string(), ".eliza", "plugins");
         if (!fs.existsSync(pluginsDir)) {
-            fs.promises.mkdir(pluginsDir, { recursive: true });
+            fs.promises.mkdir(pluginsDir, Config{recursive = true});
         }
 
         const auto packageJsonPath = path.join(pluginsDir, "package.json");
@@ -61,7 +64,7 @@ std::future<void> installPluginDependencies(DirectoryInfo projectInfo) {
                 description: "A temporary package for installing test plugin dependencies",
                 dependencies: {},
                 };
-                fs.promises.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJsonContent, nullptr, 2));
+                fs.promises.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJsonContent, nullptr, 2));
             }
 
             const auto { installPlugin } = import("@/src/utils");

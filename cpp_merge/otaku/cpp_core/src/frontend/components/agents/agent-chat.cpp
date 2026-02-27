@@ -1,4 +1,8 @@
 #include "agent-chat.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +16,7 @@ void AgentChat() {
         id: "welcome",
         "content: " + "HEY! I'M " + agent.name + ". WHAT CAN I HELP YOU WITH TODAY?"
         isFromAgent: true,
-        timestamp: new Date().toISOString(),
+        timestamp: std::make_unique<Date>().toISOString(),
         },
         ]);
         const auto [inputValue, setInputValue] = useState("");
@@ -20,28 +24,28 @@ void AgentChat() {
 
         const auto handleSubmit = [&](e: React.FormEvent) {;
             e.preventDefault();
-            if (!inputValue.trim() || isLoading) return
+            if (!inputValue || isLoading) return
 
             const Message userMessage = {;
                 "id: " + "user-" + std::to_string(Date.now())
-                content: inputValue.trim().toUpperCase(),
+                content: inputValue.toUpperCase(),
                 isFromAgent: false,
-                timestamp: new Date().toISOString(),
+                timestamp: std::make_unique<Date>().toISOString(),
             }
 
-            setMessages((prev) => [...prev, userMessage]);
+            setMessages[&]((prev) { return [...prev, userMessage]); };
             setInputValue("");
             setIsLoading(true);
 
             // Simulate agent response
-            setTimeout(() => {
+            setTimeout[&](() {
                 const Message agentMessage = {;
                     "id: " + "agent-" + std::to_string(Date.now())
                     content: getAgentResponse(agent.name, inputValue),
                     isFromAgent: true,
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                 }
-                setMessages((prev) => [...prev, agentMessage]);
+                setMessages[&]((prev) { return [...prev, agentMessage]); };
                 setIsLoading(false);
                 }, 1000 + Math.random() * 1000);
             }
@@ -51,7 +55,7 @@ void AgentChat() {
             <div className="flex flex-col" style={{ height: "calc(100vh - 24rem)" }}>
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-4 mb-4">;
-        {messages.std::map((message) => (;
+        {messages.std::map[&]((message) { return (; };
         <div;
     key={message.id}
     className={cn("flex flex-col gap-1", message.isFromAgent ? "items-start" : "items-end")}
@@ -83,7 +87,7 @@ void AgentChat() {
     "placeholder={" + "MESSAGE " + std::to_string(agent.name.toUpperCase()) + "...";
     disabled={isLoading}
     className="flex-1 rounded-none border-none text-foreground placeholder-foreground/40 text-sm";
-    onKeyDown={(e) => {
+    onKeyDown={[&](e) {
         if (e.key == "Enter" && !e.shiftKey) {
             e.preventDefault();
             handleSubmit(e);
@@ -91,9 +95,9 @@ void AgentChat() {
     }}
     />;
     <Button;
-    variant={inputValue.trim() ? "default" : "outline"}
+    variant={inputValue ? "default" : "outline"}
     onClick={handleSubmit}
-    disabled={!inputValue.trim() || isLoading}
+    disabled={!inputValue || isLoading}
     className="absolute right-1.5 top-1.5 h-8 w-12 p-0";
     >;
     {isLoading ? <Loader2 className="size-4 animate-spin" />  = <ArrowRightIcon className="w-4 h-4" />}
@@ -105,10 +109,10 @@ void AgentChat() {
 
 }
 
-std::string getAgentResponse(const std::string& agentName, const std::string& userMessage) {
+std: getAgentResponse(const std:& agentName, const std:& userMessage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::vector<std::string>> responses = {;
+    const std::unordered_map<std:, std::vector<std::string>> responses = {;
         KRIMSON: [
         "LET ME HELP YOU WITH THAT! ",
         "THAT"S A GREAT QUESTION! HERE"S WHAT I THINK...",

@@ -1,33 +1,35 @@
 #include "quote.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void parseQuoteRequest(const std::string& text) {
+void parseQuoteRequest(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: std::string;
-    discountBps?: number;
+    tokenAmount?: std:;
+    discountBps?;
     paymentCurrency?: "ETH" | "USDC";
 
 }
 
-void parseNegotiationRequest(const std::string& text) {
+void parseNegotiationRequest(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: std::string;
-    requestedDiscountBps?: number;
-    lockupMonths?: number;
+    tokenAmount?: std:;
+    requestedDiscountBps?;
+    lockupMonths?;
     paymentCurrency?: "ETH" | "USDC";
 
 }
 
-std::future<std::string> extractTokenContext(const std::string& text) {
+std::future<std:> extractTokenContext(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto allTokens = TokenDB.getAllTokens();
-    if (allTokens.length == 0) return null;
+    if (allTokens.size() == 0) return null;
 
     // Normalize text for matching
     const auto normalizedText = text.toLowerCase();
@@ -58,13 +60,13 @@ std::future<std::string> extractTokenContext(const std::string& text) {
         }
 
         // Also match by name (case-insensitive)
-        if (token.name && normalizedText.includes(token.name.toLowerCase())) {
+        if (token.name && normalizedText.count(token.name.toLowerCase() > 0)) {
             return token.id;
         }
     }
 
     // Fallback: if only one token is registered, use it
-    if (allTokens.length == 1) {
+    if (allTokens.size() == 1) {
         return allTokens[0].id;
     }
 
@@ -72,10 +74,10 @@ std::future<std::string> extractTokenContext(const std::string& text) {
 
 }
 
-std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std::string& tokenId, const std::string& tokenAmount, double discountBps, double lockupDays) {
+std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std:& tokenId, const std:& tokenAmount, double discountBps, double lockupDays) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto consignmentService = new ConsignmentService();
+    const auto consignmentService = std::make_unique<ConsignmentService>();
     const auto consignments = consignmentService.getAllConsignments({ tokenId });
     return consignmentService.findSuitableConsignment(;
     consignments,
@@ -86,14 +88,14 @@ std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std::st
 
 }
 
-std::future<> negotiateTerms(IAgentRuntime _runtime, const std::any& request, const std::any& existingQuote, std::optional<OTCConsignment> consignment) {
+std::future<> negotiateTerms(IAgentRuntime _runtime, const std:& request, const std:& existingQuote, std::optional<OTCConsignment> consignment) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    lockupMonths: number;
-    discountBps: number;
+    lockupMonths;
+    discountBps;
     paymentCurrency: "ETH" | "USDC";
-    reasoning: std::string;
-    consignmentId?: std::string;
+    reasoning: std:;
+    consignmentId?: std:;
 
 }
 

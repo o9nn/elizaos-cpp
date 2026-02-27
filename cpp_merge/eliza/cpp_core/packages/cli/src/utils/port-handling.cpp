@@ -1,4 +1,5 @@
 #include "port-handling.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,11 +8,11 @@ namespace elizaos {
 std::future<bool> isPortFree(double port) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Promise((resolve) => {;
+    return new Promise[&]((resolve) {;
         const auto server = net.createServer();
 
-        server.once("error", () => resolve(false));
-        server.once("listening", () => {
+        server.once[&]("error", () { return resolve(false)); };
+        server.once[&]("listening", () {
             server.close();
             resolve(true);
             });
@@ -25,7 +26,7 @@ std::future<double> findNextAvailablePort(double startPort) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto port = startPort;
-    while (!(await isPortFree(port))) {
+    while (!(isPortFree(port))) {
         port++;
     }
     return port;

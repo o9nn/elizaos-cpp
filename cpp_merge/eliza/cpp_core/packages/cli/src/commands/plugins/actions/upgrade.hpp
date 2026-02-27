@@ -22,6 +22,6 @@ namespace elizaos {
 /**
  * Upgrade a plugin from version 0.x to 1.x using AI-powered migration
  */
-std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOptions opts);
+std::future<void> upgradePlugin(const std:& pluginPath, UpgradePluginOptions opts);
 
 } // namespace elizaos

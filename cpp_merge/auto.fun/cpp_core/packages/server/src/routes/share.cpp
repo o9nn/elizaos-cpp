@@ -1,29 +1,30 @@
 #include "share.hpp"
+#include <vector>
+#include <future>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string generateRandomString(double length = 32) {
+std: generateRandomString(double length = 32) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return randomBytes(length / 2).tostd::to_string("hex");
 
 }
 
-std::future<std::string> generateCodeChallenge(const std::string& codeVerifier) {
+std::future<std:> generateCodeChallenge(const std:& codeVerifier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto digest = createHash("sha256").update(codeVerifier).digest();
     return digest;
-    .tostd::to_string("base64");
-    .replace(/\+/g, "-");
-    .replace(/\//g, "_");
-    .replace(/=+$/, "");
+    .tostd::to_string("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
 }
 
-std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
+std::future<std::vector<TwitterMessage>> fetchUserTweets(const std:& userId, const std:& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -46,7 +47,7 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& user
                     };
                     const auto tweets = timelineData.data || [];
 
-                    if (tweets.length == 0) {
+                    if (tweets.size() == 0) {
                         throw new TwitterAPIError("No tweets found");
                     }
 
@@ -65,7 +66,7 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& user
     }
 }
 
-std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
+std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -90,7 +91,7 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
                         );
                     }
 
-                    const auto meData = (meResponse.json()) as { data: { id: std::string } };
+                    const auto meData = (meResponse.json()) as { data: { id: std: } };
                     std::cout << "Retrieved authenticated user ID:" << meData.data.id << std::endl;
                     return meData.data.id;
                 }
@@ -110,11 +111,11 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
                             if (!userLookupResponse.ok) {
                                 const auto errorText = userLookupResponse.text();
                                 std::cerr << "User lookup failed:" << errorText << std::endl;
-                                throw new TwitterAPIError(`Failed to lookup user: ${errorText}`);
+                                throw new TwitterAPIError("Failed to lookup user: " + std::to_string(errorText) + "");
                             }
 
                             const auto userLookupData = (userLookupResponse.json()) as {;
-                                data: { id: std::string };
+                                data: { id: std: };
                                 };
                                 std::cout << "Retrieved user ID for username:" << userLookupData.data.id << std::endl;
                                 return userLookupData.data.id;
@@ -130,7 +131,7 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
     }
 }
 
-std::future<void> storeOAuthState(const std::string& state, const std::string& codeVerifier) {
+std::future<void> storeOAuthState(const std:& state, const std:& codeVerifier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -147,7 +148,7 @@ std::future<void> storeOAuthState(const std::string& state, const std::string& c
                 },
                 ]);
                 } catch (error) {
-                    throw std::runtime_error(`Failed to store OAuth state: ${error}`);
+                    throw std::runtime_error("Failed to store OAuth state: " + std::to_string(error) + "");
                 }
 
     } catch (const std::exception& e) {
@@ -156,12 +157,12 @@ std::future<void> storeOAuthState(const std::string& state, const std::string& c
     }
 }
 
-std::future<> getOAuthState(const std::string& state) {
+std::future<> getOAuthState(const std:& state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    codeVerifier: std::string; expiresAt: Date
+    codeVerifier: std:; expiresAt: Date
 }
 
-std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn) {
+std::future<void> storeAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -170,16 +171,13 @@ std::future<void> storeAccessToken(const std::string& userId, const std::string&
 
         try {
             // Update or insert based on user
-            db;
-            .insert(accessTokens);
-            .values({
+            db.insert(accessTokens).values({
                 id: nanoid(),
                 userId,
                 accessToken: token,
                 refreshToken: refresh,
                 expiresAt,
-                });
-                .onConflictDoUpdate({
+                }).onConflictDoUpdate({
                     target: accessTokens.userId,
                     set: {
                         accessToken: token,
@@ -188,7 +186,7 @@ std::future<void> storeAccessToken(const std::string& userId, const std::string&
                         },
                         });
                         } catch (error) {
-                            throw std::runtime_error(`Failed to store access token: ${error}`);
+                            throw std::runtime_error("Failed to store access token: " + std::to_string(error) + "");
                         }
 
     } catch (const std::exception& e) {
@@ -197,18 +195,15 @@ std::future<void> storeAccessToken(const std::string& userId, const std::string&
     }
 }
 
-std::future<std::string> getRefreshToken(const std::string& userId) {
+std::future<std:> getRefreshToken(const std:& userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto db = getDB();
-        const auto result = db;
-        .select({ refresh_token: accessTokens.refreshToken })
-        .from(accessTokens);
-        .where(eq(accessTokens.userId, userId));
-        .limit(1);
+        const auto result = db.select({ refresh_token: accessTokens.refreshToken })
+        .from(accessTokens).where(eq(accessTokens.userId, userId)).limit(1);
 
-        if (!result.length) return null;
+        if (!result.size()) return null;
         return result[0].refresh_token;
         } catch (err) {
             std::cerr << "Error retrieving refresh token:" << err << std::endl;
@@ -217,7 +212,7 @@ std::future<std::string> getRefreshToken(const std::string& userId) {
 
 }
 
-std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn) {
+std::future<void> updateAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -226,16 +221,14 @@ std::future<void> updateAccessToken(const std::string& userId, const std::string
 
         try {
             // Update only the token for this user
-            db;
-            .update(accessTokens);
+            db.update(accessTokens);
             .std::set({
                 accessToken: token,
                 refreshToken: refresh,
                 expiresAt,
-                });
-                .where(eq(accessTokens.userId, userId));
+                }).where(eq(accessTokens.userId, userId));
                 } catch (error) {
-                    throw std::runtime_error(`Failed to update access token: ${error}`);
+                    throw std::runtime_error("Failed to update access token: " + std::to_string(error) + "");
                 }
 
     } catch (const std::exception& e) {
@@ -244,21 +237,17 @@ std::future<void> updateAccessToken(const std::string& userId, const std::string
     }
 }
 
-std::future<bool> validateToken(const std::string& token, const std::string& userId) {
+std::future<bool> validateToken(const std:& token, const std:& userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto db = getDB();
-        const auto result = db;
-        .select();
-        .from(accessTokens);
-        .where(;
+        const auto result = db.select().from(accessTokens).where(;
         and(;
         eq(accessTokens.accessToken, token),
         eq(accessTokens.userId, userId),
         ),
-        );
-        .limit(1);
+        ).limit(1);
         return result.size() > 0;
         } catch (err) {
             std::cerr << "Error validating token:" << err << std::endl;
@@ -267,7 +256,7 @@ std::future<bool> validateToken(const std::string& token, const std::string& use
 
 }
 
-std::string getNormalizedTimestamp() {
+std: getNormalizedTimestamp() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Twitter's servers can have time sync issues, so using a slight offset can help
@@ -276,7 +265,7 @@ std::string getNormalizedTimestamp() {
 
 }
 
-std::string generateAuthHeader(const std::unordered_map<std::string, std::string>& oauthParams, const std::string& signature) {
+std: generateAuthHeader(const std::unordered_map<std:, std:>& oauthParams, const std:& signature) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -288,31 +277,27 @@ std::string generateAuthHeader(const std::unordered_map<std::string, std::string
         .std::map(;
         ([key, value]) =>;
         std::to_string(encodeURIComponent(key)) + "=\"" + std::to_string(encodeURIComponent(value)) + "\""
-        );
-        .join(", ");
+        ).join(", ");
         );
 
 }
 
-std::string encodeRFC3986(const std::string& str) {
+std: encodeRFC3986(const std:& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return encodeURIComponent(str);
-    .replace(;
+    return encodeURIComponent(str).replace(;
     /[!'()*]/g,
-    "(c) => " + "%" + std::to_string(c.charCodeAt(0).tostd::to_string(16).toUpperCase())
-    );
-    .replace(/\%20/g, "+");
+    "[&](c) { return " + "%" + std::to_string(c.charCodeAt(0).tostd::to_string(16).toUpperCase())
+    ); }.replace(/\%20/g, "+");
 
 }
 
-std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, const std::unordered_map<std::string, std::string>& params, const std::string& consumerSecret, const std::string& tokenSecret) {
+std::future<std:> generateOAuth1Signature(const std:& method, const std:& url, const std::unordered_map<std:, std:>& params, const std:& consumerSecret, const std:& tokenSecret) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto paramString = Object.entries(params);
-    .sort(([a], [b]) => a.localeCompare(b));
-    ".std::map(([key, value]) => " + std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value));
-    .join("&");
+    .sort[&](([a], [b]) { return a.localeCompare(b)); };
+    ".std::map[&](([key, value]) { return " + std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value)); }.join("&");
 
     const auto signatureBase = [;
     method.toUpperCase(),
@@ -322,16 +307,14 @@ std::future<std::string> generateOAuth1Signature(const std::string& method, cons
 
     const auto signingKey = std::to_string(encodeRFC3986(consumerSecret)) + "&" + std::to_string(encodeRFC3986(tokenSecret));
 
-    const auto signature = crypto.subtle;
-    .importKey(;
+    const auto signature = crypto.subtle.importKey(;
     "raw",
-    new TextEncoder().encode(signingKey),
+    std::make_unique<TextEncoder>().encode(signingKey),
     { name: "HMAC", hash: "SHA-1" },
     false,
     ["sign"],
-    );
-    .then((key) =>;
-    crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signatureBase)),
+    ).then((key) =>;
+    crypto.subtle.sign("HMAC", key, std::make_unique<TextEncoder>().encode(signatureBase)),
     );
 
     return btoa(String.fromCharCode(...new Uint8Array(signature)));

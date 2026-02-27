@@ -31,10 +31,10 @@ namespace elizaos {
 // Singleton S3 Client instance
 
 // Helper std::function to upload to R2/MinIO
-std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std::string options, std::string } key);
+std::future<std:> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std: options, std: } key);
 
 // Define context variables for Hono
-using Variables = std::optional<std::any>;
+using Variables = std::optional<std:>;
 
 // Extend Context type for variables
   struct ContextVariableMap {

@@ -18,9 +18,9 @@ public:
     using std::enable_shared_from_this<ILpService>::shared_from_this;
     static any override;
 
-    string serviceType = std::string("lp");
+    string serviceType = std:("lp");
 
-    string capabilityDescription = std::string("Provides standardized access to DEX liquidity pools.");
+    string capabilityDescription = std:("Provides standardized access to DEX liquidity pools.");
 
     virtual string getDexName() = 0;
     virtual std::shared_ptr<Promise<array<PoolInfo>>> getPools(string tokenAMint = undefined, string tokenBMint = undefined) = 0;

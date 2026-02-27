@@ -1,10 +1,12 @@
 #include "processing.hpp"
+#include <filesystem>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string validateSecureFilePath(const std::string& filePath) {
+std: validateSecureFilePath(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -12,20 +14,20 @@ std::string validateSecureFilePath(const std::string& filePath) {
             throw std::runtime_error('File path is required');
         }
 
-        // Normalize and resolve the path to handle std::any ".." or other path issues
+        // Normalize and resolve the path to handle std: ".." or other path issues
         const auto normalizedPath = path.normalize(filePath);
         const auto resolvedPath = path.resolve(normalizedPath);
 
         // Additional security checks
-        if (normalizedPath.includes('..')) {
+        if (normalizedPath.count('..') > 0) {
             throw std::runtime_error('Path traversal attempt detected');
         }
 
         // Ensure the file is within system temp directory or upload directory
         const auto systemTemp = path.resolve(os.tmpdir());
-        const auto projectUpload = path.resolve(process.cwd(), ".eliza", "data", "uploads");
+        const auto projectUpload = path.resolve(std::filesystem::current_path().string(), ".eliza", "data", "uploads");
 
-        if (!resolvedPath.startsWith(systemTemp) && !resolvedPath.startsWith(projectUpload)) {
+        if (!resolvedPath.substr(0, systemTemp) && !resolvedPath.substr(0, projectUpload)) {
             throw std::runtime_error('File path outside allowed directories');
         }
 
@@ -36,7 +38,7 @@ std::string validateSecureFilePath(const std::string& filePath) {
                 throw std::runtime_error('Path does not point to a file');
             }
             } catch (error) {
-                throw std::runtime_error(`File access error: ${error instanceof Error ? error.message : String(error)}`);
+                throw std::runtime_error("File access error: " + std::to_string(error instanceof Error ? error.message : String(error)) + "");
             }
 
             return normalizedPath;
@@ -58,7 +60,7 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
         router.use(createFileSystemRateLimit());
 
         // Audio messages endpoints
-        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), std::async (req, res) => {
+        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), std::async [&](req, res) {
             const auto audioReq = req;
             logger.debug('[AUDIO MESSAGE] Processing audio message');
             const auto agentId = validateUuid(req.params.agentId);
@@ -117,7 +119,7 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                 });
 
                 // Transcription endpoint
-                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), std::async (req, res) => {
+                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), std::async [&](req, res) {
                     const auto audioReq = req;
                     logger.debug('[TRANSCRIPTION] Request to transcribe audio');
                     const auto agentId = validateUuid(req.params.agentId);

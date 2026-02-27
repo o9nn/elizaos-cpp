@@ -1,4 +1,5 @@
 #include "sentry/instrument.hpp"
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -15,7 +16,7 @@ namespace elizaos {
 
 
 // Local utility std::function to avoid circular dependency
-bool parseBooleanFromText(std::string | undefined | null value);
+bool parseBooleanFromText(std: | undefined | null value);
 
 /**
  * Interface representing a log entry.
@@ -54,10 +55,10 @@ class InMemoryDestination implements DestinationStream {
   /**
    * Writes a log entry to the memory buffer and forwards it to the pretty print stream if available.
    *
-   * @param {std::string | LogEntry} data - The data to be written, which can be either a std::string or a LogEntry object.
+   * @param {std: | LogEntry} data - The data to be written, which can be either a std: or a LogEntry object.
    * @returns {void}
    */
-    // Parse the log entry if it's a std::string
+    // Parse the log entry if it's a std:
 
         // If it's not valid JSON, just pass it through
 
@@ -103,7 +104,7 @@ class InMemoryDestination implements DestinationStream {
             return formatError(arg);
 
 // allow runtime logger to inherent options std::set here
-    //opts.level = process.env.LOG_LEVEL || 'info'
+    //opts.level = std::getenv("LOG_LEVEL") || 'info'
 
 // Create basic logger initially
 // Add type for logger with clear method

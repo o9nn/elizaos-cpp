@@ -1,10 +1,14 @@
 #include "index.hpp"
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity, const std::string& source) {
+EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity, const std:& source) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entity.metadata) return {};
@@ -14,7 +18,7 @@ EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity
 
 }
 
-std::string extractResponseText(const std::string& text) {
+std: extractResponseText(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return null;
@@ -24,19 +28,19 @@ std::string extractResponseText(const std::string& text) {
 
     if (!responseMatch || responseMatch[1] == undefined) {
         std::cout << "Could not find <response> tag or its content in text" << std::endl;
-        // Attempt to find *std::any* XML block as a fallback, but log that it wasn't the expected <response>
+        // Attempt to find *std:* XML block as a fallback, but log that it wasn't the expected <response>
         const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
         if (fallbackMatch && fallbackMatch[2] != undefined) {
             logger.warn(
             "Found <" + std::to_string(fallbackMatch[1]) + "> tag instead of <response>. Using its content."
             );
-            const auto fallbackContent = fallbackMatch[2].trim();
+            const auto fallbackContent = fallbackMatch[2];
             return fallbackContent || nullptr; // Return nullptr if content is empty after trimming;
         }
         return nullptr;
     }
 
-    const auto responseContent = responseMatch[1].trim();
+    const auto responseContent = responseMatch[1];
 
     // Return null if the content is empty after trimming
     if (!responseContent) {
@@ -45,18 +49,13 @@ std::string extractResponseText(const std::string& text) {
     }
 
     // Basic unescaping for common XML entities (can be expanded if needed)
-    const auto unescapedContent = responseContent;
-    .replace(/&lt;/g, "<");
-    .replace(/&gt;/g, ">");
-    .replace(/&amp;/g, "&");
-    .replace(/&quot;/g, """);
-    .replace(/&apos;/g, "'");
+    const auto unescapedContent = responseContent.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, """).replace(/&apos;/g, "'");
 
     return unescapedContent;
 
 }
 
-std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
+std::future<std:> getLatestResponseId(IAgentRuntime runtime, const std:& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -67,13 +66,13 @@ std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::s
 
 }
 
-std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId) {
+std::future<void> setLatestResponseId(IAgentRuntime runtime, const std:& roomId, const std:& responseId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         if (!responseId || typeof responseId != "string") {
             std::cerr << "[setLatestResponseId] Invalid responseId:" << responseId << std::endl;
-            throw std::runtime_error(`Invalid responseId: ${responseId}`);
+            throw std::runtime_error("Invalid responseId: " + std::to_string(responseId) + "");
         }
         const auto key = "response_id:" + runtime.agentId + ":" + roomId;
         console.log("[setLatestResponseId] Setting cache:", {
@@ -88,7 +87,7 @@ std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& 
     }
 }
 
-std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
+std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std:& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = "response_id:" + runtime.agentId + ":" + roomId;
@@ -101,13 +100,13 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return Promise.all(;
-        attachments.std::map(std::async (attachment: Media) => {
+        return Promise.all[&](;
+        attachments.std::map(std::async (attachment: Media) {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);
                 if (!response.ok) {
-                    throw std::runtime_error(`Failed to fetch file: ${attachment.url}`);
+                    throw std::runtime_error("Failed to fetch file: " + std::to_string(attachment.url) + "");
                 }
                 const auto mediaBuffer = Buffer.from(response.arrayBuffer());
                 const auto mediaType = attachment.contentType || "image/png";
@@ -115,7 +114,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             }
             // if (fs.existsSync(attachment.url)) {
             //   // Handle local file paths
-            //   const mediaBuffer = await fs.promises.readFile(path.resolve(attachment.url));
+            //   const mediaBuffer = fs.promises.readFile(path.resolve(attachment.url));
             //   const mediaType = attachment.contentType || 'image/png';
             //   return { data: mediaBuffer, mediaType };
             // }

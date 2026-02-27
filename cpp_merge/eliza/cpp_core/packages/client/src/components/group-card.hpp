@@ -22,7 +22,7 @@ struct GroupCardProps {
 
   // Assuming participant count might come from metadata or a separate query in the parent component
 
-  // const handleEditClick = (e: React.MouseEvent) => {
+  // const handleEditClick = [&](e: React.MouseEvent) {
   //   e.stopPropagation();
   //   if (onEdit) onEdit(group);
   // };

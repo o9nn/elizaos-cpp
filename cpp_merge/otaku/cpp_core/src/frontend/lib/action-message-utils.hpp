@@ -20,12 +20,12 @@ namespace elizaos {
  * Convert an agent action message to ToolPart format for display
  * This handles messages with type/sourceType 'agent_action' and parses their rawMessage
  */
-ToolPart convertActionMessageToToolPart(const std::any& message);
+ToolPart convertActionMessageToToolPart(const std:& message);
 
 /**
  * Check if a message is an agent action message
  */
-bool isActionMessage(const std::any& message);
+bool isActionMessage(const std:& message);
 
 
 } // namespace elizaos

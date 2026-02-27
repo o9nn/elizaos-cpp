@@ -10,15 +10,15 @@ std::shared_ptr<Promise<void>> StagehandWebSocketClient::connect()
         try
         {
             this->ws = std::make_shared<(as<any>(WebSocket))>(this->serverUrl);
-            this->ws["on"](std::string("open"), [=]() mutable
+            this->ws["on"](std:("open"), [=]() mutable
             {
                 this->connected = true;
                 this->reconnectAttempts = 0;
-                logger->info(std::string("[Stagehand] Connected to server at ") + this->serverUrl + string_empty);
+                logger->info(std:("[Stagehand] Connected to server at ") + this->serverUrl + string_empty);
                 resolve();
             }
             );
-            this->ws["on"](std::string("message"), [=](auto data) mutable
+            this->ws["on"](std:("message"), [=](auto data) mutable
             {
                 try
                 {
@@ -28,28 +28,28 @@ std::shared_ptr<Promise<void>> StagehandWebSocketClient::connect()
                         this->messageHandlers->delete(message->requestId);
                         handler(message);
                     }
-                    if (message->type == std::string("connected")) {
-                        logger->info(std::string("[Stagehand] Server connected: ") + JSON->stringify(message) + string_empty);
+                    if (message->type == std:("connected")) {
+                        logger->info(std:("[Stagehand] Server connected: ") + JSON->stringify(message) + string_empty);
                     }
                 }
                 catch (const any& error)
                 {
-                    logger->error(std::string("[Stagehand] Error parsing message:"), error);
+                    logger->error(std:("[Stagehand] Error parsing message:"), error);
                 }
             }
             );
-            this->ws["on"](std::string("error"), [=](auto error) mutable
+            this->ws["on"](std:("error"), [=](auto error) mutable
             {
-                logger->error(std::string("[Stagehand] WebSocket error:"), error);
+                logger->error(std:("[Stagehand] WebSocket error:"), error);
                 if (!this->connected) {
                     reject(error);
                 }
             }
             );
-            this->ws["on"](std::string("close"), [=]() mutable
+            this->ws["on"](std:("close"), [=]() mutable
             {
                 this->connected = false;
-                logger->info(std::string("[Stagehand] Disconnected from server"));
+                logger->info(std:("[Stagehand] Disconnected from server"));
                 if (AND((this->ws), (this->reconnectAttempts < this->maxReconnectAttempts))) {
                     this->attemptReconnect();
                 }
@@ -67,7 +67,7 @@ std::shared_ptr<Promise<void>> StagehandWebSocketClient::connect()
 std::shared_ptr<Promise<void>> StagehandWebSocketClient::attemptReconnect()
 {
     this->reconnectAttempts++;
-    logger->info(std::string("[Stagehand] Attempting reconnection ") + this->reconnectAttempts + std::string("/") + this->maxReconnectAttempts + std::string("..."));
+    logger->info(std:("[Stagehand] Attempting reconnection ") + this->reconnectAttempts + std:("/") + this->maxReconnectAttempts + std:("..."));
     std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
     {
         return setTimeout(resolve, this->reconnectDelay * this->reconnectAttempts);
@@ -79,7 +79,7 @@ std::shared_ptr<Promise<void>> StagehandWebSocketClient::attemptReconnect()
     }
     catch (const any& error)
     {
-        logger->error(std::string("[Stagehand] Reconnection failed:"), error);
+        logger->error(std:("[Stagehand] Reconnection failed:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -87,33 +87,33 @@ std::shared_ptr<Promise<void>> StagehandWebSocketClient::attemptReconnect()
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::sendMessage(string type, any data)
 {
     if (OR((!this->ws), (!this->connected))) {
-        throw any(std::make_shared<Error>(std::string("Not connected to Stagehand server")));
+        throw any(std::make_shared<Error>(std:("Not connected to Stagehand server")));
     }
-    shared requestId = std::string("req-") + Date->now() + std::string("-") + Math->random()->toString(36)->substring(7) + string_empty;
+    shared requestId = std:("req-") + Date->now() + std:("-") + Math->random()->toString(36)->substring(7) + string_empty;
     shared message = utils::assign(object{
-        object::pair{std::string("type"), std::string("type")}, 
-        object::pair{std::string("requestId"), std::string("requestId")}
+        object::pair{std:("type"), std:("type")}, 
+        object::pair{std:("requestId"), std:("requestId")}
     }, data);
     return std::make_shared<Promise>([=](auto resolve, auto reject) mutable
     {
         shared timeout = setTimeout([=]() mutable
         {
             this->messageHandlers->delete(requestId);
-            reject(std::make_shared<Error>(std::string("Request timeout for ") + type + string_empty));
+            reject(std::make_shared<Error>(std:("Request timeout for ") + type + string_empty));
         }
         , 30000);
         this->messageHandlers->set(requestId, [=](auto response) mutable
         {
             clearTimeout(timeout);
-            if (response->type == std::string("error")) {
-                reject(std::make_shared<Error>(OR((response->error), (std::string("Unknown error")))));
+            if (response->type == std:("error")) {
+                reject(std::make_shared<Error>(OR((response->error), (std:("Unknown error")))));
             } else {
                 resolve(response);
             }
         }
         );
         this->ws["send"](JSON->stringify(message));
-        logger->debug(std::string("[Stagehand] Sent message: ") + type + std::string(" (") + requestId + std::string(")"));
+        logger->debug(std:("[Stagehand] Sent message: ") + type + std:(" (") + requestId + std:(")"));
     }
     );
 }
@@ -126,7 +126,7 @@ void StagehandWebSocketClient::disconnect()
         this->ws = nullptr;
     }
     this->connected = false;
-    logger->info(std::string("[Stagehand] Client disconnected"));
+    logger->info(std:("[Stagehand] Client disconnected"));
 }
 
 boolean StagehandWebSocketClient::isConnected()
@@ -136,117 +136,117 @@ boolean StagehandWebSocketClient::isConnected()
 
 std::shared_ptr<Promise<object>> StagehandWebSocketClient::navigate(string sessionId, string url)
 {
-    auto response = std::async([=]() { this->sendMessage(std::string("navigate"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("url"), std::string("url")}
+    auto response = std::async([=]() { this->sendMessage(std:("navigate"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("data"), object{
+            object::pair{std:("url"), std:("url")}
         }}
     }); });
     return OR((response->data), (object{
-        object::pair{std::string("url"), std::string("url")}, 
-        object::pair{std::string("title"), string_empty}
+        object::pair{std:("url"), std:("url")}, 
+        object::pair{std:("title"), string_empty}
     }));
 }
 
 std::shared_ptr<Promise<object>> StagehandWebSocketClient::getState(string sessionId)
 {
-    auto response = std::async([=]() { this->sendMessage(std::string("getState"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    auto response = std::async([=]() { this->sendMessage(std:("getState"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
     return (OR((response->data), (object{
-        object::pair{std::string("url"), string_empty}, 
-        object::pair{std::string("title"), string_empty}, 
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("createdAt"), std::make_shared<Date>()}
+        object::pair{std:("url"), string_empty}, 
+        object::pair{std:("title"), string_empty}, 
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("createdAt"), std::make_shared<Date>()}
     })));
 }
 
 std::shared_ptr<Promise<object>> StagehandWebSocketClient::goBack(string sessionId)
 {
-    auto response = std::async([=]() { this->sendMessage(std::string("goBack"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    auto response = std::async([=]() { this->sendMessage(std:("goBack"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
     return OR((response->data), (object{
-        object::pair{std::string("url"), string_empty}, 
-        object::pair{std::string("title"), string_empty}
+        object::pair{std:("url"), string_empty}, 
+        object::pair{std:("title"), string_empty}
     }));
 }
 
 std::shared_ptr<Promise<object>> StagehandWebSocketClient::goForward(string sessionId)
 {
-    auto response = std::async([=]() { this->sendMessage(std::string("goForward"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    auto response = std::async([=]() { this->sendMessage(std:("goForward"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
     return OR((response->data), (object{
-        object::pair{std::string("url"), string_empty}, 
-        object::pair{std::string("title"), string_empty}
+        object::pair{std:("url"), string_empty}, 
+        object::pair{std:("title"), string_empty}
     }));
 }
 
 std::shared_ptr<Promise<object>> StagehandWebSocketClient::refresh(string sessionId)
 {
-    auto response = std::async([=]() { this->sendMessage(std::string("refresh"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    auto response = std::async([=]() { this->sendMessage(std:("refresh"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
     return OR((response->data), (object{
-        object::pair{std::string("url"), string_empty}, 
-        object::pair{std::string("title"), string_empty}
+        object::pair{std:("url"), string_empty}, 
+        object::pair{std:("title"), string_empty}
     }));
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::click(string sessionId, string description)
 {
-    return std::async([=]() { this->sendMessage(std::string("click"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("description"), std::string("description")}
+    return std::async([=]() { this->sendMessage(std:("click"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("data"), object{
+            object::pair{std:("description"), std:("description")}
         }}
     }); });
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::type(string sessionId, string text, string field)
 {
-    return std::async([=]() { this->sendMessage(std::string("type"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("text"), std::string("text")}, 
-            object::pair{std::string("field"), std::string("field")}
+    return std::async([=]() { this->sendMessage(std:("type"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("data"), object{
+            object::pair{std:("text"), std:("text")}, 
+            object::pair{std:("field"), std:("field")}
         }}
     }); });
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::select(string sessionId, string option, string dropdown)
 {
-    return std::async([=]() { this->sendMessage(std::string("select"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("option"), std::string("option")}, 
-            object::pair{std::string("dropdown"), std::string("dropdown")}
+    return std::async([=]() { this->sendMessage(std:("select"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("data"), object{
+            object::pair{std:("option"), std:("option")}, 
+            object::pair{std:("dropdown"), std:("dropdown")}
         }}
     }); });
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::extract(string sessionId, string instruction)
 {
-    return std::async([=]() { this->sendMessage(std::string("extract"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("instruction"), std::string("instruction")}
+    return std::async([=]() { this->sendMessage(std:("extract"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}, 
+        object::pair{std:("data"), object{
+            object::pair{std:("instruction"), std:("instruction")}
         }}
     }); });
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::screenshot(string sessionId)
 {
-    return std::async([=]() { this->sendMessage(std::string("screenshot"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    return std::async([=]() { this->sendMessage(std:("screenshot"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
 }
 
 std::shared_ptr<Promise<std::shared_ptr<StagehandMessage>>> StagehandWebSocketClient::solveCaptcha(string sessionId)
 {
-    return std::async([=]() { this->sendMessage(std::string("solveCaptcha"), object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}
+    return std::async([=]() { this->sendMessage(std:("solveCaptcha"), object{
+        object::pair{std:("sessionId"), std:("sessionId")}
     }); });
 }
 
@@ -254,12 +254,12 @@ std::shared_ptr<Promise<boolean>> StagehandWebSocketClient::health()
 {
     try
     {
-        auto response = std::async([=]() { this->sendMessage(std::string("health"), object{}); });
-        return AND((response->type == std::string("health")), (response->data["status"] == std::string("ok")));
+        auto response = std::async([=]() { this->sendMessage(std:("health"), object{}); });
+        return AND((response->type == std:("health")), (response->data["status"] == std:("ok")));
     }
     catch (const any& error)
     {
-        logger->error(std::string("[Stagehand] Health check failed:"), error);
+        logger->error(std:("[Stagehand] Health check failed:"), error);
         return false;
     }
 }
@@ -268,10 +268,10 @@ any WebSocket;
 
 void Main(void)
 {
-    if (AND((type_of(window) != std::string("undefined")), (type_of(window->WebSocket) != std::string("undefined")))) {
+    if (AND((type_of(window) != std:("undefined")), (type_of(window->WebSocket) != std:("undefined")))) {
         WebSocket = as<any>(window->WebSocket);
     } else {
-        WebSocket = require(std::string("ws"));
+        WebSocket = require(std:("ws"));
     }
 }
 

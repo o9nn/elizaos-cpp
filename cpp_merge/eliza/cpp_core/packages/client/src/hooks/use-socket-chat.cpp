@@ -8,19 +8,19 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto socketIOManager = SocketIOManager.getInstance();
-    const auto animatedMessageIdRef = useRef<std::string | nullptr>(nullptr);
-    const auto joinedChannelRef = useRef<std::string | nullptr>(nullptr); // Ref to track joined channel;
+    const auto animatedMessageIdRef = useRef<std: | nullptr>(nullptr);
+    const auto joinedChannelRef = useRef<std: | nullptr>(nullptr); // Ref to track joined channel;
 
-    const auto sendMessage = useCallback(;
+    const auto sendMessage = useCallback[&](;
     std::async (;
-    text: std::string,
+    text: std:,
     serverId: UUID,
-    source: std::string,
-    attachments?: std::any[],
-    tempMessageId?: std::string,
-    metadata?: Record<std::string, any>,
+    source: std:,
+    attachments?: std:[],
+    tempMessageId?: std:,
+    metadata?: Record<std:, any>,
     overrideChannelId?: UUID
-    ) => {
+    ) {
         const auto channelIdToUse = overrideChannelId || channelId;
         if (!channelIdToUse) {
             clientLogger.error("[useSocketChat] Cannot send message: no channel ID available");
@@ -50,7 +50,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                 [channelId, socketIOManager, chatType, contextId];
                 );
 
-                useEffect(() => {
+                useEffect[&](() {
                     if (!channelId || !currentUserId) {
                         // If channelId becomes undefined (e.g., navigating away), ensure we reset the ref
                         if (joinedChannelRef.current) {
@@ -81,7 +81,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                         const auto handleMessageBroadcasting = [&](data: MessageBroadcastData) {;
                             clientLogger.info(;
                             "[useSocketChat] Received raw messageBroadcast data:",
-                            /* JSON.stringify */ std::string(data);
+                            /* JSON.stringify */ std:(data);
                             );
                             const auto msgChannelId = data.channelId || data.roomId;
                             if (msgChannelId != channelId) return;
@@ -91,7 +91,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                             const auto isTargetAgent =;
                             chatType == ChannelType.DM;
                             ? data.senderId == contextId;
-                            : allAgents.some((agent) => agent.id == data.senderId);
+                            : allAgents.some[&]((agent) { return agent.id == data.senderId); };
 
                             if (!isCurrentUser && isTargetAgent) onInputDisabledChange(false);
 
@@ -128,9 +128,9 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                                             };
 
                                             // Check if message already exists
-                                            const auto messageExists = messages.some((m) => m.id == data.id);
+                                            const auto messageExists = messages.some[&]((m) { return m.id == data.id); };
                                             if (!messageExists) {
-                                                clientLogger.info("[useSocketChat] Adding new UiMessage:", /* JSON.stringify */ std::string(newUiMsg));
+                                                clientLogger.info("[useSocketChat] Adding new UiMessage:", /* JSON.stringify */ std:(newUiMsg));
                                                 onAddMessage(newUiMsg);
 
                                                 if (isTargetAgent && newUiMsg.id) {
@@ -219,7 +219,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                                                                     };
 
                                                                     std::function detachSubscriptions(subscriptions: Array<{ detach: () => void } | std::nullopt>) {
-                                                                        subscriptions.forEach((sub) => sub.detach());
+                                                                        subscriptions.forEach[&]((sub) { return sub.detach()); };
                                                                     }
                                                                     }, [channelId, currentUserId, socketIOManager]);
 

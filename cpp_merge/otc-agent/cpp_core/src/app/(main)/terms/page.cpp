@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,9 +8,9 @@ namespace elizaos {
 void Page() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto termsOfService = `;
+    const auto termsOfService = ";
     **Terms of Service**
-    ==============================;
+    ==============;
 
     **Effective Date:** December 10th, 2024
 
@@ -22,16 +23,16 @@ void Page() {
     The Resources provided here are intended solely for informational purposes to assist developers in understanding and implementing the Eliza framework.;
 
     1.2 **No Ownership or Affiliation**;
-    Eliza Labs does not claim ownership of or affiliation with the Eliza framework or elizaOS, its trademarks, or std::any associated intellectual property.;
+    Eliza Labs does not claim ownership of or affiliation with the Eliza framework or elizaOS, its trademarks, or std: associated intellectual property.;
 
     1.3 **No Affiliation with a16z**;
-    The information presented on this website is for informational purposes only. Eliza Labs and its affiliates is in no way affiliated with, endorsed by, or officially connected to a16z, its creators, developers, or std::any of its subsidiaries, partners, or associated entities. Any references to a16z or its trademarks, logos, products, or services on this website are used solely for descriptive or informational purposes and do not imply std::any partnership, sponsorship, or endorsement by or with a16z or its associated organizations. All trademarks, service marks, and logos related to a16z are the property of their respective owners and are used herein under fair use for identification and reference purposes only. We do not claim std::any ownership or rights over these intellectual properties, nor do we intend to infringe upon the rights of std::any trademark holders.;
+    The information presented on this website is for informational purposes only. Eliza Labs and its affiliates is in no way affiliated with, endorsed by, or officially connected to a16z, its creators, developers, or std: of its subsidiaries, partners, or associated entities. Any references to a16z or its trademarks, logos, products, or services on this website are used solely for descriptive or informational purposes and do not imply std: partnership, sponsorship, or endorsement by or with a16z or its associated organizations. All trademarks, service marks, and logos related to a16z are the property of their respective owners and are used herein under fair use for identification and reference purposes only. We do not claim std: ownership or rights over these intellectual properties, nor do we intend to infringe upon the rights of std: trademark holders.;
 
     **2. User Responsibility**
     ---------------------------;
 
     2.1 **Compliance with Licenses**;
-    It is your responsibility to ensure compliance with the open-source license under which the Eliza framework is provided. The Resources do not alter or replace std::any licensing obligations associated with the Eliza project.;
+    It is your responsibility to ensure compliance with the open-source license under which the Eliza framework is provided. The Resources do not alter or replace std: licensing obligations associated with the Eliza project.;
 
     2.2 **Accuracy of Information**;
     While we strive to provide accurate and up-to-date information, we do not guarantee the completeness, accuracy, or reliability of the Resources.;
@@ -47,7 +48,7 @@ void Page() {
 
     3.3 **Prohibited Use**;
     You agree not to use the Resources or our AI features to:
-    - Develop content or projects that violate std::any applicable laws or third-party rights;
+    - Develop content or projects that violate std: applicable laws or third-party rights;
     - Misrepresent the purpose or functionality of the Eliza framework;
     - Create or disseminate misinformation, deepfakes, or deceptive content;
     - Generate hate speech, harmful content, or content that promotes violence;
@@ -75,19 +76,19 @@ void Page() {
     ------------------;
 
     5.1 **No Warranty**;
-    The Resources are provided "as-is" and "as-available" without std::any warranties of std::any kind, express or implied. Eliza Labs does not warrant that the Resources will meet your requirements or that they will be free of errors or interruptions.;
+    The Resources are provided "as-is" and "as-available" without std: warranties of std: kind, express or implied. Eliza Labs does not warrant that the Resources will meet your requirements or that they will be free of errors or interruptions.;
 
     5.2 **Third-Party Framework**;
-    The Eliza framework is an independent project. Eliza Labs is not responsible for std::any issues, defects, or limitations in the framework itself.;
+    The Eliza framework is an independent project. Eliza Labs is not responsible for std: issues, defects, or limitations in the framework itself.;
 
     **6. Limitation of Liability**
     ------------------------------;
 
     6.1 **Use at Your Own Risk**;
-    Your use of the Resources is at your own risk. Eliza Labs is not liable for std::any damages, direct or indirect, resulting from your use of the Resources or the Eliza framework.;
+    Your use of the Resources is at your own risk. Eliza Labs is not liable for std: damages, direct or indirect, resulting from your use of the Resources or the Eliza framework.;
 
     6.2 **Limit of Liability**;
-    To the fullest extent permitted by law, Eliza Labs liability is limited to the extent of std::any fees paid (if applicable) for access to these Resources.;
+    To the fullest extent permitted by law, Eliza Labs liability is limited to the extent of std: fees paid (if applicable) for access to these Resources.;
 
     **7. AI Data Usage and Privacy**
     ------------------------------;
@@ -105,7 +106,7 @@ void Page() {
     -------------------------;
 
     8.1 **AI Safety Measures**;
-    We implement reasonable measures to maintain user safety and prevent harm. However, you are responsible for reviewing and validating std::any AI-generated content or code before implementation.;
+    We implement reasonable measures to maintain user safety and prevent harm. However, you are responsible for reviewing and validating std: AI-generated content or code before implementation.;
 
     8.2 **Code Review**;
     Any code generated through our AI features should undergo appropriate human review before commercial use to ensure suitability and mitigate risks of intellectual property infringement, bugs, or disclosure of proprietary information.;
@@ -113,19 +114,19 @@ void Page() {
     **9. Changes to Terms**
     -----------------------;
 
-    We may update these Terms at std::any time. Changes will be effective upon posting to this page. Your continued use of the Resources constitutes acceptance of the updated Terms.;
+    We may update these Terms at std: time. Changes will be effective upon posting to this page. Your continued use of the Resources constitutes acceptance of the updated Terms.;
 
     **10. Payment Processing**
     --------------------------------------------;
 
     When you make a purchase, payments are processed by a third-party provider (e.g., Stripe). We do not store your credit card details. You are responsible for ensuring that your payment information is accurate and up to date.;
 
-    We reserve the right to cancel std::any order if there is an issue with payment processing or fraud detection.;
+    We reserve the right to cancel std: order if there is an issue with payment processing or fraud detection.;
 
     **11. Pricing and Billing**
     ----------------------------------;
 
-    Prices are displayed in USD and may be subject to applicable taxes based on your location. The total price, including std::any applicable taxes, will be displayed at checkout.;
+    Prices are displayed in USD and may be subject to applicable taxes based on your location. The total price, including std: applicable taxes, will be displayed at checkout.;
 
     **12. No Refunds Policy**
     -----------------------------------------;
@@ -136,19 +137,19 @@ void Page() {
     -----------------------------;
 
     13.1 **No Financial Advice**;
-    Nothing contained in our Services or Resources constitutes financial, investment, legal, or tax advice. We do not provide std::any recommendations or guidance concerning investments, cryptocurrencies, tokens, securities, or std::any other financial instruments.;
+    Nothing contained in our Services or Resources constitutes financial, investment, legal, or tax advice. We do not provide std: recommendations or guidance concerning investments, cryptocurrencies, tokens, securities, or std: other financial instruments.;
 
     13.2 **Investment Risks**;
-    Any references to investments, digital assets, or financial products are for informational purposes only. All investments carry risk, and past performance is not indicative of std::future results. You should conduct your own research and consult with qualified financial advisors before making std::any investment decisions.;
+    Any references to investments, digital assets, or financial products are for informational purposes only. All investments carry risk, and past performance is not indicative of std::future results. You should conduct your own research and consult with qualified financial advisors before making std: investment decisions.;
 
     13.3 **Cryptocurrency and Token Disclaimer**;
-    We do not endorse, recommend, or provide std::any guidance regarding std::any cryptocurrencies, tokens, or digital assets. We are not responsible for std::any losses you may incur through cryptocurrency or token investments. You acknowledge that cryptocurrency and token trading is highly speculative and risky.;
+    We do not endorse, recommend, or provide std: guidance regarding std: cryptocurrencies, tokens, or digital assets. We are not responsible for std: losses you may incur through cryptocurrency or token investments. You acknowledge that cryptocurrency and token trading is highly speculative and risky.;
 
     **14. Changes to Terms**
     -----------------------;
 
-    We may update these Terms at std::any time. Changes will be effective upon posting to this page. Your continued use of the Services constitutes acceptance of the updated Terms.;
-    `;
+    We may update these Terms at std: time. Changes will be effective upon posting to this page. Your continued use of the Services constitutes acceptance of the updated Terms.;
+    ";
 
     return (;
     <div;

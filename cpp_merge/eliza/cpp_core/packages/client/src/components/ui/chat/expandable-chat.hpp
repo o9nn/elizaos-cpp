@@ -16,8 +16,8 @@ namespace elizaos {
 
 
 
-using ChatPosition = std::string;
-using ChatSize = std::string;
+using ChatPosition = std:;
+using ChatSize = std:;
 
 
 } // namespace elizaos

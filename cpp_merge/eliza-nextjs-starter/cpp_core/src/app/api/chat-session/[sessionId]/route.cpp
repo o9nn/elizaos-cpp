@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <string>
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -49,7 +52,7 @@ std::future<void> GET(NextRequest request) {
                 const auto channels = channelsData.data.channels || channelsData.channels || [];
 
                 // Find the channel with matching sessionId ONLY
-                const auto sessionChannel = channels.find((channel: std::any) => {;
+                const auto sessionChannel = channels.find[&]((channel: std:) {;
                     const auto metadata = channel.metadata || {};
                     return channel.id == sessionId || metadata.sessionId == sessionId;
                     });
@@ -59,7 +62,7 @@ std::future<void> GET(NextRequest request) {
                     }
 
                     // Fetch messages for this session using the correct API endpoint
-                    std::vector<std::any> messages = [];
+                    std::vector<std::string> messages = [];
                     auto messageCount = 0;
 
                     try {
@@ -84,15 +87,13 @@ std::future<void> GET(NextRequest request) {
                             }
 
                             // Find the first user message to use as session title
-                            const auto firstUserMessage = messages;
-                            .sort(;
+                            const auto firstUserMessage = messages.sort(;
                             (a, b) =>;
                             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
                             );
-                            .find(;
-                            (msg: std::any) =>
-                            msg.authorId == userId || msg.rawMessage.senderId == userId,
-                            );
+                            .find[&](;
+                            (msg: std:) { return msg.authorId == userId || msg.rawMessage.senderId == userId,
+                            ); };
 
                             const auto lastMessage = messages[messages.size() - 1];
 

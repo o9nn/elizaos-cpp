@@ -1,4 +1,5 @@
 #include "loading-panel.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -38,7 +39,7 @@ void LoadingPanel(auto messages, auto type) {
     )}
 
     {/* Messages */}
-    {messageArray.std::map((message, index) => (;
+    {messageArray.std::map[&]((message, index) { return (; };
     <p key={index} className="text-sm text-muted-foreground text-center">;
     {message}
     </p>;

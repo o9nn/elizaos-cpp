@@ -1,10 +1,14 @@
 #include "quick-stats.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> quickStats(std::string directory = ".") {
+std::future<std:> quickStats(std: directory = ".") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dir = path.resolve(directory);
@@ -12,18 +16,18 @@ std::future<std::string> quickStats(std::string directory = ".") {
     // Find all .traj files
     const auto trajFiles = findTrajFiles(dir);
 
-    if (trajFiles.length == 0) {
+    if (trajFiles.size() == 0) {
         std::cout << "No .traj files found in " + dir << std::endl;
         return "No .traj files found.";
     }
 
     // Extract api_calls from each file
     const std::vector<double> apiCalls = [];
-    const auto filesByExitStatus = new Map<std::string, std::string[]>();
+    const auto filesByExitStatus = new Map<std:, std:[]>();
 
     for (const auto& filePath : trajFiles)
         try {
-            const auto data = /* JSON.parse */ fs.readFileSync(filePath, "utf-8");
+            const auto data = /* JSON::parse */ fs.readFileSync(filePath, "utf-8");
 
             // Extract the api_calls value
             if (data.info.model_stats.api_calls != undefined) {
@@ -43,10 +47,10 @@ std::future<std::string> quickStats(std::string directory = ".") {
         }
 
         // Sort exit statuses by count (highest to lowest)
-        const auto sortedStatuses = Array.from(filesByExitStatus.entries()).sort((a, b) => b[1].size() - a[1].size());
+        const auto sortedStatuses = Array.from(filesByExitStatus.entries()).sort[&]((a, b) { return b[1].size() - a[1].size()); };
 
         // If we have no exit statuses and no api_calls, return error
-        if (sortedStatuses.length == 0 && apiCalls.length == 0) {
+        if (sortedStatuses.size() == 0 && apiCalls.size() == 0) {
             std::cout << "No valid api_calls data found in the .traj files" << std::endl;
             return "No valid api_calls data found in the .traj files.";
         }
@@ -57,8 +61,8 @@ std::future<std::string> quickStats(std::string directory = ".") {
             std::cout << status + ": " + files.size() << std::endl;
         }
 
-        if (apiCalls.length > 0) {
-            const auto averageApiCalls = apiCalls.reduce((a, b) => a + b, 0) / apiCalls.size();
+        if (apiCalls.size() > 0) {
+            const auto averageApiCalls = apiCalls.reduce[&]((a, b) { return a + b, 0) / apiCalls.size(); };
             std::cout << "Avg api calls: " + averageApiCalls << std::endl;
         }
 
@@ -67,7 +71,7 @@ std::future<std::string> quickStats(std::string directory = ".") {
         for (const int [status, files] of sortedStatuses) {
             "result.push_back(" + "\n## \" + "${status}\" + " - " + files.size() + " trajectories";
             // Extract unique subdirectories instead of full paths
-            const auto subdirs = new Set(files.std::map((file) => path.dirname(file)));
+            const auto subdirs = new Set[&](files.std::map((file) { return path.dirname(file))); };
             result.push_back(Array.from(subdirs).join(" "));
         }
 
@@ -75,12 +79,12 @@ std::future<std::string> quickStats(std::string directory = ".") {
 
 }
 
-std::vector<std::string> findTrajFiles(const std::string& directory) {
+std::vector<std::string> findTrajFiles(const std:& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> results = [];
 
-    std::function walk(dir: std::string) {
+    std::function walk(dir: std:) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)
@@ -89,7 +93,7 @@ std::vector<std::string> findTrajFiles(const std::string& directory) {
 
             if (stat.isDirectory()) {
                 walk(filePath);
-                } else if (file.endsWith(".traj")) {
+                } else if (file.rfind(".traj")) {
                     results.push_back(filePath);
                 }
             }

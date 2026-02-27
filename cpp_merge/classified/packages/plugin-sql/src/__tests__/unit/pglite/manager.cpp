@@ -2,35 +2,35 @@
 
 void Main(void)
 {
-    describe(std::string("PGliteClientManager"), [=]() mutable
+    describe(std:("PGliteClientManager"), [=]() mutable
     {
-        describe(std::string("constructor"), [=]() mutable
+        describe(std:("constructor"), [=]() mutable
         {
-            it(std::string("should create a PGLite client with the provided options"), [=]() mutable
+            it(std:("should create a PGLite client with the provided options"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 expect(manager)->toBeDefined();
                 expect(manager->getConnection())->toBeDefined();
             }
             );
-            it(std::string("should initialize shuttingDown to false"), [=]() mutable
+            it(std:("should initialize shuttingDown to false"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 expect(manager->isShuttingDown())->toBe(false);
             }
             );
         }
         );
-        describe(std::string("getConnection"), [=]() mutable
+        describe(std:("getConnection"), [=]() mutable
         {
-            it(std::string("should return the PGLite client"), [=]() mutable
+            it(std:("should return the PGLite client"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 auto client = manager->getConnection();
                 expect(client)->toBeDefined();
@@ -40,20 +40,20 @@ void Main(void)
             );
         }
         );
-        describe(std::string("isShuttingDown"), [=]() mutable
+        describe(std:("isShuttingDown"), [=]() mutable
         {
-            it(std::string("should return false initially"), [=]() mutable
+            it(std:("should return false initially"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 expect(manager->isShuttingDown())->toBe(false);
             }
             );
-            it(std::string("should return true after close is called"), [=]() mutable
+            it(std:("should return true after close is called"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 std::async([=]() { manager->close(); });
                 expect(manager->isShuttingDown())->toBe(true);
@@ -61,31 +61,31 @@ void Main(void)
             );
         }
         );
-        describe(std::string("close"), [=]() mutable
+        describe(std:("close"), [=]() mutable
         {
-            it(std::string("should set shuttingDown to true immediately"), [=]() mutable
+            it(std:("should set shuttingDown to true immediately"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 expect(manager->isShuttingDown())->toBe(false);
                 std::async([=]() { manager->close(); });
                 expect(manager->isShuttingDown())->toBe(true);
             }
             );
-            it(std::string("should return a promise"), [=]() mutable
+            it(std:("should return a promise"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 auto result = manager->close();
                 expect(result)->toBeInstanceOf(Promise);
             }
             );
-            it(std::string("should handle multiple close calls"), [=]() mutable
+            it(std:("should handle multiple close calls"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 std::async([=]() { manager->close(); });
                 std::async([=]() { manager->close(); });
@@ -95,21 +95,21 @@ void Main(void)
             );
         }
         );
-        describe(std::string("edge cases"), [=]() mutable
+        describe(std:("edge cases"), [=]() mutable
         {
-            it(std::string("should handle empty data directory"), [=]() mutable
+            it(std:("should handle empty data directory"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), string_empty}
+                    object::pair{std:("dataDir"), string_empty}
                 });
                 expect(manager)->toBeDefined();
                 expect(manager->getConnection())->toBeDefined();
             }
             );
-            it(std::string("should maintain state consistency during concurrent close calls"), [=]() mutable
+            it(std:("should maintain state consistency during concurrent close calls"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
-                    object::pair{std::string("dataDir"), std::string("memory://")}
+                    object::pair{std:("dataDir"), std:("memory://")}
                 });
                 auto close1 = manager->close();
                 auto close2 = manager->close();

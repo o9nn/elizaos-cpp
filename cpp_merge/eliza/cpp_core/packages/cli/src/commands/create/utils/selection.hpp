@@ -34,12 +34,12 @@ std::vector<DatabaseOption> getAvailableDatabases();
 /**
  * Prompts user to select a database type with interactive UI.
  */
-std::future<std::string> selectDatabase();
+std::future<std:> selectDatabase();
 
 /**
  * Prompts user to select an AI model with interactive UI.
  */
-std::future<std::string> selectAIModel();
+std::future<std:> selectAIModel();
 
 /**
  * Gets available embedding models for selection when primary AI model doesn't support embeddings.
@@ -49,6 +49,6 @@ std::vector<AIModelOption> getAvailableEmbeddingModels();
 /**
  * Prompts user to select an embedding model when the primary AI model doesn't support embeddings.
  */
-std::future<std::string> selectEmbeddingModel();
+std::future<std:> selectEmbeddingModel();
 
 } // namespace elizaos

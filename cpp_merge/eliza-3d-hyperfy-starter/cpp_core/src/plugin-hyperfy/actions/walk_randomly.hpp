@@ -24,15 +24,15 @@ namespace elizaos {
 
       // Keep validation simple: Check if controls exist
 
-        await callback({ text: "Error: Cannot wander. Hyperfy connection/controls unavailable." });
+        callback({ text: "Error: Cannot wander. Hyperfy connection/controls unavailable." });
 
       // Check for specific methods from the reverted AgentControls
-           await callback({ text: "Error: Wander functionality not available in controls." });
+           callback({ text: "Error: Wander functionality not available in controls." });
 
       // Use provided interval (in seconds) or default (in ms)
 
-              //  await callback({ text: "Stopped wandering.", actions: ['HYPERFY_WALK_RANDOMLY'], source: 'hyperfy', metadata: { status: 'stopped' } });
-              //  await callback({ text: "Was not wandering.", source: 'hyperfy' });
+              //  callback({ text: "Stopped wandering.", actions: ['HYPERFY_WALK_RANDOMLY'], source: 'hyperfy', metadata: { status: 'stopped' } });
+              //  callback({ text: "Was not wandering.", source: 'hyperfy' });
           // Call startRandomWalk with calculated interval and distance
 
 } // namespace elizaos

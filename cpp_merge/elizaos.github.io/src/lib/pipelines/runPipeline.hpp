@@ -9,26 +9,26 @@ any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, 
 template <typename TInput, typename TOutput, typename TContext>
 any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context)
 {
-    context->logger->info(std::string("Running pipeline"));
+    context->logger->info(std:("Running pipeline"));
     shared startTime = Date->now();
     return Promise->resolve(pipeline(input, context))->then([=](auto result) mutable
     {
         auto duration = Date->now() - startTime;
-        context->logger->info(std::string("Pipeline completed"), object{
-            object::pair{std::string("durationMs"), duration}
+        context->logger->info(std:("Pipeline completed"), object{
+            object::pair{std:("durationMs"), duration}
         });
         return result;
     }
     )->_catch([=](auto error) mutable
     {
         if (is<Error>(error)) {
-            context->logger->error(std::string("Pipeline failed"), object{
-                object::pair{std::string("error"), error->message}, 
-                object::pair{std::string("stack"), error->stack}
+            context->logger->error(std:("Pipeline failed"), object{
+                object::pair{std:("error"), error->message}, 
+                object::pair{std:("stack"), error->stack}
             });
         } else {
-            context->logger->error(std::string("Pipeline failed with unknown error"), object{
-                object::pair{std::string("error"), std::string("error")}
+            context->logger->error(std:("Pipeline failed with unknown error"), object{
+                object::pair{std:("error"), std:("error")}
             });
         }
         throw any(error);

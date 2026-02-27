@@ -1,4 +1,7 @@
 #include "edit.hpp"
+#include <future>
+#include <filesystem>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +15,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
     if (!localEnvPath || !existsSync(localEnvPath)) {
         // No local .env file exists, check if we can create one from .env.example
-        const auto exampleEnvPath = path.join(process.cwd(), ".env.example");
+        const auto exampleEnvPath = path.join(std::filesystem::current_path().string(), ".env.example");
         const auto hasExample = existsSync(exampleEnvPath);
 
         if (hasExample) {
@@ -29,7 +32,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
         const auto envVars = parseEnvFile(localEnvPath);
 
         // Handle empty .env file
-        if (Object.keys(envVars).length == 0) {
+        if (Object.keys(envVars).size() == 0) {
             std::cout << "Local .env file is empty." << std::endl;
 
             // Offer to add a new variable if not in auto-confirm mode
@@ -42,7 +45,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
                 if (clack.isCancel(addNew)) {
                     clack.cancel("Operation cancelled.");
-                    process.exit(0);
+                    std::exit(0);
                 }
 
                 if (addNew) {
@@ -87,7 +90,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
                         if (clack.isCancel(selection)) {
                             clack.cancel("Operation cancelled.");
-                            process.exit(0);
+                            std::exit(0);
                         }
 
                         if (!selection) {
@@ -118,7 +121,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
                             if (clack.isCancel(action)) {
                                 clack.cancel("Operation cancelled.");
-                                process.exit(0);
+                                std::exit(0);
                             }
 
                             if (!action || action == 'back') {
@@ -133,7 +136,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
                                     if (clack.isCancel(value)) {
                                         clack.cancel("Operation cancelled.");
-                                        process.exit(0);
+                                        std::exit(0);
                                     }
 
                                     if (value != undefined) {
@@ -151,7 +154,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
                                                 if (clack.isCancel(resp)) {
                                                     clack.cancel("Operation cancelled.");
-                                                    process.exit(0);
+                                                    std::exit(0);
                                                 }
 
                                                 confirm = resp;
@@ -168,7 +171,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
 }
 
-std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes) {
+std::future<void> addNewVariable(const std:& envPath, EnvVars envVars, auto yes) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (yes) {
@@ -178,14 +181,14 @@ std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, au
         return;
     }
 
-    const auto key = clack.text({;
+    const auto key = clack.text[&]({;
         message: "Enter the variable name:",
-        validate: (value) => (value.trim() != "" ? std::nullopt : "Variable name cannot be empty"),
-        });
+        validate: (value) { return (value != "" ? std::nullopt : "Variable name cannot be empty"),
+        }); };
 
         if (clack.isCancel(key)) {
             clack.cancel("Operation cancelled.");
-            process.exit(0);
+            std::exit(0);
         }
 
         if (!key) return;
@@ -197,7 +200,7 @@ std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, au
 
             if (clack.isCancel(value)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
 
             if (value != undefined) {

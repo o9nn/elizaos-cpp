@@ -1,4 +1,6 @@
 #include "action-helpers.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +12,7 @@ double parsePositiveInteger(const std::optional<double>& value) {
     if (typeof value == "number" && Number.isInteger(value) && value > 0) {
         return value;
     }
-    if (typeof value == "string" && value.trim()) {
+    if (typeof value == "string" && value) {
         const auto parsed = Number(value);
         if (Number.isInteger(parsed) && parsed > 0) {
             return parsed;
@@ -20,7 +22,7 @@ double parsePositiveInteger(const std::optional<double>& value) {
 
 }
 
-std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<std::variant<Record<std::string, std::string, double, null>>> details) {
+std::future<ActionResult> respondWithError(HandlerCallback callback, const std:& messageText, const std:& errorCode, std::optional<std::variant<Record<std:, std:, double, null>>> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (callback) {
@@ -39,13 +41,13 @@ std::future<ActionResult> respondWithError(HandlerCallback callback, const std::
 
 }
 
-std::string sanitizeChainName(const std::string& value) {
+std: sanitizeChainName(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
         return std::nullopt;
     }
-    const auto trimmed = value.trim();
+    const auto trimmed = value;
     if (!trimmed) {
         return std::nullopt;
     }
@@ -53,13 +55,13 @@ std::string sanitizeChainName(const std::string& value) {
 
 }
 
-std::string sanitizeFilterSegment(const std::string& value) {
+std: sanitizeFilterSegment(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
         return std::nullopt;
     }
-    const auto trimmed = value.trim().toLowerCase();
+    const auto trimmed = value.toLowerCase();
     if (!trimmed) {
         return std::nullopt;
     }

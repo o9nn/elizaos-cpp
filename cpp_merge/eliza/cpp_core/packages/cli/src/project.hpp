@@ -32,14 +32,14 @@ struct ProjectModule {
  */
 struct Project {
     std::vector<ProjectAgent> agents;
-    std::string dir;
+    std: dir;
     std::optional<bool> isPlugin;
     std::optional<Plugin> pluginModule;
 };
 
 struct LoadedProject {
     std::vector<AgentRuntime> runtimes;
-    std::string path;
+    std: path;
     std::vector<ProjectAgent> agents;
 };
 
@@ -48,20 +48,20 @@ struct LoadedProject {
  * @param module The loaded module to check
  * @returns true if this appears to be a plugin
  */
-bool isPlugin(const std::any& module);
+bool isPlugin(const std:& module);
 
 /**
  * Extract a Plugin object from a module
  * @param module The module to extract from
  * @returns The plugin object
  */
-Plugin extractPlugin(const std::any& module);
+Plugin extractPlugin(const std:& module);
 
 /**
  * Loads a project from the specified directory.
  * @param {string} dir - The directory to load the project from.
  * @returns {Promise<Project>} A std::promise that resolves to the loaded project.
  */
-std::future<Project> loadProject(const std::string& dir);
+std::future<Project> loadProject(const std:& dir);
 
 } // namespace elizaos

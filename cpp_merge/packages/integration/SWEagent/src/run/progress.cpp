@@ -25,15 +25,15 @@ void RunBatchProgressManager::updateExitStatusTable()
         return std::get<1>(b)->length - std::get<1>(a)->length;
     }
     );
-    console->log(std::string("\
+    console->log(std:("\
 == Exit Status Summary =="));
     auto& __array1782_1987 = sorted;
     for (auto __indx1782_1987 = 0_N; __indx1782_1987 < __array1782_1987->get_length(); __indx1782_1987++)
     {
         auto& [status, instances] = const_(__array1782_1987)[__indx1782_1987];
         {
-            auto instancesStr = this->shortenStr(instances->reverse()->join(std::string(", ")), 55);
-            console->log(string_empty + status + std::string(": ") + instances->get_length() + std::string(" - ") + instancesStr + string_empty);
+            auto instancesStr = this->shortenStr(instances->reverse()->join(std:(", ")), 55);
+            console->log(string_empty + status + std:(": ") + instances->get_length() + std:(" - ") + instancesStr + string_empty);
         }
     }
 }
@@ -42,11 +42,11 @@ string RunBatchProgressManager::shortenStr(string s, double maxLen, boolean shor
 {
     if (!shortenLeft) {
         if (s->get_length() > maxLen) {
-            return s->substring(0, maxLen - 3) + std::string("...");
+            return s->substring(0, maxLen - 3) + std:("...");
         }
     } else {
         if (s->get_length() > maxLen) {
-            return std::string("...") + s->substring(s->get_length() - maxLen + 3);
+            return std:("...") + s->substring(s->get_length() - maxLen + 3);
         }
     }
     return s->padEnd(maxLen);
@@ -54,14 +54,14 @@ string RunBatchProgressManager::shortenStr(string s, double maxLen, boolean shor
 
 void RunBatchProgressManager::updateInstanceStatus(string instanceId, string message)
 {
-    console->log(std::string("[") + instanceId + std::string("] ") + message + string_empty);
+    console->log(std:("[") + instanceId + std:("] ") + message + string_empty);
 }
 
 void RunBatchProgressManager::onInstanceStart(string instanceId)
 {
     this->spinnerTasks->set(instanceId, object{
-        object::pair{std::string("status"), std::string("Task initialized")}, 
-        object::pair{std::string("startTime"), Date->now()}
+        object::pair{std:("status"), std:("Task initialized")}, 
+        object::pair{std:("startTime"), Date->now()}
     });
 }
 
@@ -80,22 +80,22 @@ void RunBatchProgressManager::onInstanceEnd(string instanceId, any exitStatus)
 
 void RunBatchProgressManager::onUncaughtException(string instanceId, std::shared_ptr<Error> exception)
 {
-    this->onInstanceEnd(instanceId, std::string("Uncaught ") + exception->constructor->name + string_empty);
+    this->onInstanceEnd(instanceId, std:("Uncaught ") + exception->constructor->name + string_empty);
 }
 
 void RunBatchProgressManager::printReport()
 {
-    console->log(std::string("\
+    console->log(std:("\
 == Final Report =="));
     auto& __array3391_3616 = this->instancesByExitStatus->entries();
     for (auto __indx3391_3616 = 0_N; __indx3391_3616 < __array3391_3616->get_length(); __indx3391_3616++)
     {
         auto& [status, instances] = const_(__array3391_3616)[__indx3391_3616];
         {
-            console->log(string_empty + status + std::string(": ") + instances["length"] + string_empty);
+            console->log(string_empty + status + std:(": ") + instances["length"] + string_empty);
             for (auto& instance : instances)
             {
-                console->log(std::string("  ") + instance + string_empty);
+                console->log(std:("  ") + instance + string_empty);
             }
         }
     }
@@ -106,11 +106,11 @@ Record<string, any> RunBatchProgressManager::getOverviewData()
     auto instancesByStatus = object{};
     for (auto& [status, instances] : this->instancesByExitStatus->entries())
     {
-        instancesByStatus[OR((status), (std::string("unknown")))] = instances;
+        instancesByStatus[OR((status), (std:("unknown")))] = instances;
     }
     return object{
-        object::pair{std::string("instances_by_exit_status"), instancesByStatus}, 
-        object::pair{std::string("total_cost"), 0}
+        object::pair{std:("instances_by_exit_status"), instancesByStatus}, 
+        object::pair{std:("total_cost"), 0}
     };
 }
 
@@ -118,7 +118,7 @@ void RunBatchProgressManager::saveOverviewDataYaml(string filePath)
 {
     auto data = this->getOverviewData();
     fs::writeFileSync(filePath, yaml->dump(data, object{
-        object::pair{std::string("indent"), 4}
+        object::pair{std:("indent"), 4}
     }));
 }
 

@@ -4,7 +4,7 @@ std::function<any(any, any)> getRuntime = [=](auto elizaOS, auto agentId) mutabl
 {
     auto runtime = elizaOS->getAgent(agentId);
     if (!runtime) {
-        throw any(std::make_shared<Error>(std::string("Agent not found: ") + agentId + string_empty));
+        throw any(std::make_shared<Error>(std:("Agent not found: ") + agentId + string_empty));
     }
     return runtime;
 };
@@ -21,11 +21,11 @@ std::function<any(string, string)> validateChannelId = [=](auto channelId, auto 
     auto validatedUuid = validateUuid(channelId);
     if (!validatedUuid) {
         if (clientIp) {
-            logger->warn(std::string("[SECURITY] Invalid channel ID attempted from ") + clientIp + std::string(": ") + channelId + string_empty);
+            logger->warn(std:("[SECURITY] Invalid channel ID attempted from ") + clientIp + std:(": ") + channelId + string_empty);
         }
         return nullptr;
     }
-    auto suspiciousPatterns = array<string>{ std::string(".."), std::string("<"), std::string(">"), std::string("""), std::string("'"), std::string("\"), std::string("/") };
+    auto suspiciousPatterns = array<string>{ std:(".."), std:("<"), std:(">"), std:("""), std:("'"), std:("\"), std:("/") };
     auto hasSuspiciousPattern = suspiciousPatterns->some([=](auto pattern) mutable
     {
         return channelId->includes(pattern);
@@ -33,7 +33,7 @@ std::function<any(string, string)> validateChannelId = [=](auto channelId, auto 
     );
     if (hasSuspiciousPattern) {
         if (clientIp) {
-            logger->warn(std::string("[SECURITY] Suspicious channel ID pattern from ") + clientIp + std::string(": ") + channelId + string_empty);
+            logger->warn(std:("[SECURITY] Suspicious channel ID pattern from ") + clientIp + std:(": ") + channelId + string_empty);
         }
         return nullptr;
     }

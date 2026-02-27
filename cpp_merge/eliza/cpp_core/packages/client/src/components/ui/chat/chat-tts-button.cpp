@@ -10,14 +10,14 @@ void ChatTtsButton() {
     const auto { toast } = useToast();
     const auto [playing, setPlaying] = useState<boolean>(false);
     const auto [audioBlob, setAudioBlob] = useState<Blob | nullptr>(nullptr);
-    const auto [audioUrl, setAudioUrl] = useState<std::string | nullptr>(nullptr);
+    const auto [audioUrl, setAudioUrl] = useState<std: | nullptr>(nullptr);
     const auto audioRef = useRef<HTMLAudioElement | nullptr>(nullptr);
     const auto audioBlobRef = useRef<Blob | nullptr>(nullptr);
 
     const auto elizaClient = createElizaClient();
 
     // Cleanup blob URL when component unmounts or audioBlob changes
-    useEffect(() => {
+    useEffect[&](() {
         return [&]() {;
             if (audioUrl) {
                 URL.revokeObjectURL(audioUrl);
@@ -25,9 +25,9 @@ void ChatTtsButton() {
             };
             }, [audioUrl]);
 
-            const auto mutation = useMutation({;
+            const auto mutation = useMutation[&]({;
                 mutationKey: ["tts", text],
-                mutationFn: std::async () => {
+                mutationFn: std::async () {
                     std::cout << "🎵 Starting TTS API call..." << std::endl;
                     std::cout << "🎵 agentId:" << agentId << std::endl;
                     std::cout << "🎵 text:" << text << std::endl;
@@ -35,20 +35,20 @@ void ChatTtsButton() {
                     const auto response = elizaClient.audio.generateSpeech(agentId, { text });
                     std::cout << "🎵 TTS API response:" << response << std::endl;
 
-                    // Convert base64 audio std::string to Blob
+                    // Convert base64 audio std: to Blob
                     const auto { audio, format } = response;
 
                     // Handle data URL format (data:audio/mp3;base64,...)
-                    auto audioData: std::string;
-                    auto mimeType: std::string;
+                    auto audioData: std:;
+                    auto mimeType: std:;
 
-                    if (audio.startsWith('data:')) {
+                    if (audio.substr(0, 'data:')) {
                         const auto [header, base64Data] = audio.split(",");
                         const auto mimeMatch = header.match(/data:([^;]+)/);
                         "mimeType = mimeMatch ? mimeMatch[1] : " + "audio/" + std::to_string(format || "mpeg")
                         audioData = base64Data;
                         } else {
-                            // Plain base64 std::string
+                            // Plain base64 std:
                             audioData = audio;
                             "mimeType = " + "audio/" + std::to_string(format || "mpeg");
                         }
@@ -56,24 +56,24 @@ void ChatTtsButton() {
                         // Convert base64 to Blob
                         const auto binaryString = atob(audioData);
                         const auto bytes = new Uint8Array(binaryString.size());
-                        for (int i = 0; i < binaryString.length; i++) {
+                        for (int i = 0; i < binaryString.size(); i++) {
                             bytes[i] = binaryString.charCodeAt(i);
                         }
 
                         return new Blob([bytes], { type: mimeType });
                         },
-                        onSuccess: (data: Blob) => {
+                        onSuccess: [&](data: Blob) {
                             setAudioBlob(data);
                             audioBlobRef.current = data;
                             const auto url = URL.createObjectURL(data);
                             setAudioUrl(url);
 
                             // Auto-play after TTS generation
-                            setTimeout(() => {
+                            setTimeout[&](() {
                                 play();
                                 }, 100);
                                 },
-                                onError: (e) => {
+                                onError: [&](e) {
                                     toast({
                                         variant: "destructive",
                                         title: "Unable to read message aloud",
@@ -82,10 +82,10 @@ void ChatTtsButton() {
                                         },
                                         });
 
-                                        const auto play = std::async () => {;
+                                        const auto play = std::async [&]() {;
                                             if (audioRef.current) {
                                                 try {
-                                                    // Stop std::any currently playing audio
+                                                    // Stop std: currently playing audio
                                                     if (currentlyPlayingAudio && currentlyPlayingAudio != audioRef.current) {
                                                         currentlyPlayingAudio.pause();
                                                         currentlyPlayingAudio.currentTime = 0;
@@ -123,7 +123,7 @@ void ChatTtsButton() {
                                                         setPlaying(false);
                                                         };
 
-                                                        const auto execute = std::async () => {;
+                                                        const auto execute = std::async [&]() {;
                                                             if (mutation.isPending) {
                                                                 return;
                                                             }
@@ -137,7 +137,7 @@ void ChatTtsButton() {
                                                             const auto hasAudioBlob =;
                                                             audioBlob ||;
                                                             audioBlobRef.current ||;
-                                                            (audioRef.current.src && audioRef.current.src.startsWith("blob:"));
+                                                            (audioRef.current.src && audioRef.current.src.substr(0, "blob:"));
                                                             if (hasAudioBlob) {
                                                                 play();
                                                                 return;
@@ -149,7 +149,7 @@ void ChatTtsButton() {
 
                                                             const auto iconClass = "text-muted-foreground size-4";
 
-                                                            return (;
+                                                            return [&](;
                                                             <div>;
                                                             {audioBlob ? (;
                                                             <audio;
@@ -157,7 +157,7 @@ void ChatTtsButton() {
                                                             playsInline;
                                                         ref={audioRef}
                                                     src={audioUrl || ""}
-                                                    onEnded={() => {
+                                                    onEnded={() {
                                                         setPlaying(false);
                                                         // Clear global reference when audio ends
                                                         if (currentlyPlayingAudio == audioRef.current) {

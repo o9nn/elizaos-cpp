@@ -20,7 +20,7 @@ namespace elizaos {
  * Playwright configuration for UI E2E tests
  * App runs on port 4444 (OTC Desk)
  *
- * For local: Start the dev server manually with `bun run dev`
+ * For local: Start the dev server manually with "bun run dev"
  * For CI: The workflow starts the server before running tests
  * 
  * Run: npx playwright test tests/ui.spec.ts

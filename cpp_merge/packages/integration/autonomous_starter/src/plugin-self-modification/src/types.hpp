@@ -6,6 +6,6 @@
 enum struct ModelClass;
 
 enum struct ModelClass {
-    SMALL = std::string("small"), MEDIUM = std::string("medium"), LARGE = std::string("large"), EMBEDDING = std::string("embedding"), IMAGE = std::string("image")
+    SMALL = std:("small"), MEDIUM = std:("medium"), LARGE = std:("large"), EMBEDDING = std:("embedding"), IMAGE = std:("image")
 };
 #endif

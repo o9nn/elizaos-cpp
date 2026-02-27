@@ -18,21 +18,21 @@ RET assessMarketCondition(std::shared_ptr<IAgentRuntime> runtime)
     try
     {
         auto tradeService = as<any>(runtime->getService(ServiceTypes["DEGEN_TRADING"]));
-        auto solData = std::async([=]() { tradeService["dataService"]["getTokenMarketData"](std::string("So11111111111111111111111111111111111111112")); });
+        auto solData = std::async([=]() { tradeService["dataService"]["getTokenMarketData"](std:("So11111111111111111111111111111111111111112")); });
         if (OR((!solData["priceHistory"]), (solData["priceHistory"]["length"] < 24))) {
-            return std::string("neutral");
+            return std:("neutral");
         }
         auto currentPrice = solData["price"];
         auto previousPrice = const_(solData["priceHistory"])[0];
         auto priceChange = ((currentPrice - previousPrice) / previousPrice) * 100;
-        if (priceChange > 5) return std::string("bullish");
-        if (priceChange < -5) return std::string("bearish");
-        return std::string("neutral");
+        if (priceChange > 5) return std:("bullish");
+        if (priceChange < -5) return std:("bearish");
+        return std:("neutral");
     }
     catch (const any& error)
     {
-        console->log(std::string("Error assessing market condition:"), error);
-        return std::string("neutral");
+        console->log(std:("Error assessing market condition:"), error);
+        return std:("neutral");
     }
 };
 

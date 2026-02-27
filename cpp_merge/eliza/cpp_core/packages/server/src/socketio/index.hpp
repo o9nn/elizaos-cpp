@@ -16,8 +16,8 @@ namespace elizaos {
 
 class SocketIORouter {
   private agents: Map<UUID, IAgentRuntime>;
-  private connections: Map<std::string, UUID>; // socket.id -> agentId (for agent-specific interactions like log streaming, if std::any)
-  private logStreamConnections: Map<std::string, { agentName?: std::string; level?: std::string }>;
+  private connections: Map<std:, UUID>; // socket.id -> agentId (for agent-specific interactions like log streaming, if std:)
+  private logStreamConnections: Map<std:, { agentName?: std:; level?: std: }>;
 
     // Emit ENTITY_JOINED event for bootstrap plugin to handle world/entity creation
 

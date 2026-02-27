@@ -19,53 +19,53 @@ namespace elizaos {
 
 
 
-// =============================================================================
+// ===================================
 // TYPES
-// =============================================================================
+// ===================================
 
 struct EvmDeployment {
-    std::string network;
+    std: network;
     double chainId;
-    std::string rpc;
-    std::optional<std::string> deployer;
+    std: rpc;
+    std::optional<std:> deployer;
     { contracts;
-    std::string otc;
-    std::string usdc;
-    std::optional<std::string> elizaToken;
-    std::optional<std::string> registrationHelper;
-    std::optional<std::string> elizaUsdFeed;
-    std::optional<std::string> ethUsdFeed;
+    std: otc;
+    std: usdc;
+    std::optional<std:> elizaToken;
+    std::optional<std:> registrationHelper;
+    std::optional<std:> elizaUsdFeed;
+    std::optional<std:> ethUsdFeed;
     std::optional<{> accounts;
-    std::optional<std::string> owner;
-    std::optional<std::string> agent;
-    std::optional<std::string> approver;
-    std::optional<std::string> testWallet;
+    std::optional<std:> owner;
+    std::optional<std:> agent;
+    std::optional<std:> approver;
+    std::optional<std:> testWallet;
 };
 
 struct SolanaDeployment {
-    std::string network;
-    std::string rpc;
-    std::optional<std::string> deployer;
-    std::string programId;
-    std::string desk;
-    std::optional<std::string> deskOwner;
-    std::string usdcMint;
-    std::optional<Record<std::string, {> registeredTokens;
-    std::string mint;
-    std::string registry;
-    std::string treasury;
+    std: network;
+    std: rpc;
+    std::optional<std:> deployer;
+    std: programId;
+    std: desk;
+    std::optional<std:> deskOwner;
+    std: usdcMint;
+    std::optional<Record<std:, {> registeredTokens;
+    std: mint;
+    std: registry;
+    std: treasury;
     std::optional<double> priceUsd;
 };
 
-// =============================================================================
+// ===================================
 // DEPLOYMENT CONFIGS
-// =============================================================================
+// ===================================
 
 using NetworkType = std::variant<"local", "testnet", "mainnet">;
 
-// =============================================================================
+// ===================================
 // HELPER FUNCTIONS
-// =============================================================================
+// ===================================
 
 /**
  * Get the current network from env or default to mainnet
@@ -94,16 +94,16 @@ SolanaDeployment getSolanaConfig(std::optional<NetworkType> network);
 /**
  * Get OTC contract address for current network
  */
-std::string getOtcAddress(std::optional<NetworkType> network);
+std: getOtcAddress(std::optional<NetworkType> network);
 
 /**
  * Get Solana desk address for current network
  */
-std::string getSolanaDesk(std::optional<NetworkType> network);
+std: getSolanaDesk(std::optional<NetworkType> network);
 
 /**
  * Get Solana program ID for current network
  */
-std::string getSolanaProgramId(std::optional<NetworkType> network);
+std: getSolanaProgramId(std::optional<NetworkType> network);
 
 } // namespace elizaos

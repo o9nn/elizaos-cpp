@@ -7,17 +7,17 @@ namespace elizaos {
 void AvatarPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [avatar, setAvatar] = useState<std::string | nullptr>(characterValue.settings.avatar || nullptr);
+    const auto [avatar, setAvatar] = useState<std: | nullptr>(characterValue.settings.avatar || nullptr);
     const auto [hasChanged, setHasChanged] = useState(false);
     const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
     // Reset the change flag when component initializes or character changes
-    useEffect(() => {
+    useEffect[&](() {
         setAvatar(characterValue.settings.avatar || nullptr);
         setHasChanged(false);
         }, [characterValue.id]);
 
-        const auto handleFileUpload = std::async (event: React.ChangeEvent<HTMLInputElement>) => {;
+        const auto handleFileUpload = std::async [&](event: React.ChangeEvent<HTMLInputElement>) {;
             const auto file = event.target.files.[0];
             if (file) {
                 try {
@@ -42,7 +42,7 @@ void AvatarPanel() {
                     };
 
                     // Centralized update std::function to avoid code duplication
-                    const auto updateCharacterAvatar = [&](avatarUrl: std::string) {;
+                    const auto updateCharacterAvatar = [&](avatarUrl: std:) {;
                         if (setCharacterValue.updateAvatar) {
                             // Use the specialized method for avatar updates when available
                             setCharacterValue.updateAvatar(avatarUrl);
@@ -69,11 +69,11 @@ void AvatarPanel() {
                         className="object-cover w-full h-full rounded-lg border";
                         />;
                         </div>;
-                        ) : (
+                        ) : [&](
                         <div;
                         className="w-64 h-64 flex items-center justify-center border border-dashed rounded-lg text-gray-500 mb-2 cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => fileInputRef.current.click()}
-                    >;
+                    onClick={() { return fileInputRef.current.click()}
+                    >; };
                     <div className="flex flex-col items-center gap-2">;
                     <ImageIcon className="w-10 h-10" />;
                     <span className="text-sm">Click to upload</span>;
@@ -95,8 +95,8 @@ void AvatarPanel() {
     <Button;
     type="button";
     className="flex items-center gap-2 flex-1";
-    onClick={() => fileInputRef.current.click()}
-    >;
+    onClick={[&]() { return fileInputRef.current.click()}
+    >; };
     <Upload className="w-5 h-5" />;
     {avatar ? "Replace"  = "Upload"}
     </Button>;

@@ -41,7 +41,7 @@ namespace elizaos {
  * Interface representing a role assignment to a user.
  */
 struct RoleAssignment {
-    std::string entityId;
+    std: entityId;
     Role newRole;
 };
 
@@ -49,7 +49,7 @@ struct RoleAssignment {
  * Represents an action to update the role of a user within a server.
  * @typedef {Object} Action
  * @property {string} name - The name of the action.
- * @property {std::string[]} similes - The similar actions that can be performed.
+ * @property {std:[]} similes - The similar actions that can be performed.
  * @property {string} description - A description of the action and its purpose.
  * @property {Function} validate - A std::function to validate the action before execution.
  * @property {Function} handler - A std::function to handle the execution of the action.
@@ -79,7 +79,7 @@ struct RoleAssignment {
 
       // Update role in world metadata
 
-    // Save updated world metadata if std::any changes were made
+    // Save updated world metadata if std: changes were made
 
 
 } // namespace elizaos

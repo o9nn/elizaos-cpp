@@ -3,52 +3,52 @@
 void createWeatherPlugin(std::shared_ptr<Agent> agent)
 {
     auto weatherPluginSpec = object{
-        object::pair{std::string("name"), std::string("@elizaos/plugin-weather")}, 
-        object::pair{std::string("description"), std::string("Weather information and forecasting plugin")}, 
-        object::pair{std::string("version"), std::string("1.0.0")}, 
-        object::pair{std::string("actions"), array<object>{ object{
-            object::pair{std::string("name"), std::string("getCurrentWeather")}, 
-            object::pair{std::string("description"), std::string("Get current weather for a location")}, 
-            object::pair{std::string("parameters"), object{
-                object::pair{std::string("location"), std::string("string")}, 
-                object::pair{std::string("units"), std::string("celsius | fahrenheit")}
+        object::pair{std:("name"), std:("@elizaos/plugin-weather")}, 
+        object::pair{std:("description"), std:("Weather information and forecasting plugin")}, 
+        object::pair{std:("version"), std:("1.0.0")}, 
+        object::pair{std:("actions"), array<object>{ object{
+            object::pair{std:("name"), std:("getCurrentWeather")}, 
+            object::pair{std:("description"), std:("Get current weather for a location")}, 
+            object::pair{std:("parameters"), object{
+                object::pair{std:("location"), std:("string")}, 
+                object::pair{std:("units"), std:("celsius | fahrenheit")}
             }}
         }, object{
-            object::pair{std::string("name"), std::string("getWeatherForecast")}, 
-            object::pair{std::string("description"), std::string("Get weather forecast for the next 5 days")}, 
-            object::pair{std::string("parameters"), object{
-                object::pair{std::string("location"), std::string("string")}, 
-                object::pair{std::string("days"), std::string("number")}
+            object::pair{std:("name"), std:("getWeatherForecast")}, 
+            object::pair{std:("description"), std:("Get weather forecast for the next 5 days")}, 
+            object::pair{std:("parameters"), object{
+                object::pair{std:("location"), std:("string")}, 
+                object::pair{std:("days"), std:("number")}
             }}
         } }}, 
-        object::pair{std::string("providers"), array<object>{ object{
-            object::pair{std::string("name"), std::string("weatherData")}, 
-            object::pair{std::string("description"), std::string("Provides current weather data in context")}, 
-            object::pair{std::string("dataStructure"), object{
-                object::pair{std::string("currentLocation"), std::string("string")}, 
-                object::pair{std::string("temperature"), std::string("number")}, 
-                object::pair{std::string("conditions"), std::string("string")}, 
-                object::pair{std::string("lastUpdated"), std::string("timestamp")}
+        object::pair{std:("providers"), array<object>{ object{
+            object::pair{std:("name"), std:("weatherData")}, 
+            object::pair{std:("description"), std:("Provides current weather data in context")}, 
+            object::pair{std:("dataStructure"), object{
+                object::pair{std:("currentLocation"), std:("string")}, 
+                object::pair{std:("temperature"), std:("number")}, 
+                object::pair{std:("conditions"), std:("string")}, 
+                object::pair{std:("lastUpdated"), std:("timestamp")}
             }}
         } }}, 
-        object::pair{std::string("dependencies"), object{
-            object::pair{std::string("axios"), std::string("^1.6.0")}
+        object::pair{std:("dependencies"), object{
+            object::pair{std:("axios"), std:("^1.6.0")}
         }}, 
-        object::pair{std::string("environmentVariables"), array<object>{ object{
-            object::pair{std::string("name"), std::string("WEATHER_API_KEY")}, 
-            object::pair{std::string("description"), std::string("API key for weather service")}, 
-            object::pair{std::string("required"), true}, 
-            object::pair{std::string("sensitive"), true}
+        object::pair{std:("environmentVariables"), array<object>{ object{
+            object::pair{std:("name"), std:("WEATHER_API_KEY")}, 
+            object::pair{std:("description"), std:("API key for weather service")}, 
+            object::pair{std:("required"), true}, 
+            object::pair{std:("sensitive"), true}
         } }}
     };
-    console->log(std::string("User: Create a weather plugin with the following spec:"));
+    console->log(std:("User: Create a weather plugin with the following spec:"));
     console->log(JSON->stringify(weatherPluginSpec, nullptr, 2));
 };
 
 
 void createTodoPlugin(std::shared_ptr<Agent> agent)
 {
-    auto description = std::string("\
+    auto description = std:("\
         I need a plugin that helps manage todo lists. It should have:\
         - An action to add new todos with title and optional due date\
         - An action to mark todos as complete\
@@ -56,14 +56,14 @@ void createTodoPlugin(std::shared_ptr<Agent> agent)
         - A provider that shows pending todo count\
         - Store todos in memory with persistence\
     ");
-    console->log(std::string("User:"), description);
+    console->log(std:("User:"), description);
 };
 
 
 void monitorPluginCreation(std::shared_ptr<Agent> agent)
 {
-    console->log(std::string("User: What's the status of my plugin creation?"));
-    console->log(std::string("Agent: Plugin Creation Status: running\
+    console->log(std:("User: What's the status of my plugin creation?"));
+    console->log(std:("Agent: Plugin Creation Status: running\
 Current Phase: testing\
 Progress: 80%\
 \
@@ -79,45 +79,45 @@ Recent logs:\
 any getDatabasePluginSpec()
 {
     return object{
-        object::pair{std::string("name"), std::string("@elizaos/plugin-postgres")}, 
-        object::pair{std::string("description"), std::string("PostgreSQL database integration")}, 
-        object::pair{std::string("version"), std::string("1.0.0")}, 
-        object::pair{std::string("services"), array<object>{ object{
-            object::pair{std::string("name"), std::string("PostgresService")}, 
-            object::pair{std::string("description"), std::string("Manages PostgreSQL connections and queries")}, 
-            object::pair{std::string("methods"), array<string>{ std::string("connect"), std::string("disconnect"), std::string("query"), std::string("transaction") }}
+        object::pair{std:("name"), std:("@elizaos/plugin-postgres")}, 
+        object::pair{std:("description"), std:("PostgreSQL database integration")}, 
+        object::pair{std:("version"), std:("1.0.0")}, 
+        object::pair{std:("services"), array<object>{ object{
+            object::pair{std:("name"), std:("PostgresService")}, 
+            object::pair{std:("description"), std:("Manages PostgreSQL connections and queries")}, 
+            object::pair{std:("methods"), array<string>{ std:("connect"), std:("disconnect"), std:("query"), std:("transaction") }}
         } }}, 
-        object::pair{std::string("actions"), array<object>{ object{
-            object::pair{std::string("name"), std::string("executeQuery")}, 
-            object::pair{std::string("description"), std::string("Execute a SQL query")}, 
-            object::pair{std::string("parameters"), object{
-                object::pair{std::string("query"), std::string("string")}, 
-                object::pair{std::string("params"), std::string("array")}
+        object::pair{std:("actions"), array<object>{ object{
+            object::pair{std:("name"), std:("executeQuery")}, 
+            object::pair{std:("description"), std:("Execute a SQL query")}, 
+            object::pair{std:("parameters"), object{
+                object::pair{std:("query"), std:("string")}, 
+                object::pair{std:("params"), std:("array")}
             }}
         }, object{
-            object::pair{std::string("name"), std::string("getDatabaseStats")}, 
-            object::pair{std::string("description"), std::string("Get database statistics and health")}, 
-            object::pair{std::string("parameters"), object{}}
+            object::pair{std:("name"), std:("getDatabaseStats")}, 
+            object::pair{std:("description"), std:("Get database statistics and health")}, 
+            object::pair{std:("parameters"), object{}}
         } }}, 
-        object::pair{std::string("evaluators"), array<object>{ object{
-            object::pair{std::string("name"), std::string("databaseHealth")}, 
-            object::pair{std::string("description"), std::string("Monitors database connection health")}, 
-            object::pair{std::string("triggers"), array<string>{ std::string("*/5 * * * *") }}
+        object::pair{std:("evaluators"), array<object>{ object{
+            object::pair{std:("name"), std:("databaseHealth")}, 
+            object::pair{std:("description"), std:("Monitors database connection health")}, 
+            object::pair{std:("triggers"), array<string>{ std:("*/5 * * * *") }}
         } }}, 
-        object::pair{std::string("dependencies"), object{
-            object::pair{std::string("pg"), std::string("^8.11.0")}, 
-            object::pair{std::string("pg-pool"), std::string("^3.6.0")}
+        object::pair{std:("dependencies"), object{
+            object::pair{std:("pg"), std:("^8.11.0")}, 
+            object::pair{std:("pg-pool"), std:("^3.6.0")}
         }}, 
-        object::pair{std::string("environmentVariables"), array<object>{ object{
-            object::pair{std::string("name"), std::string("DATABASE_URL")}, 
-            object::pair{std::string("description"), std::string("PostgreSQL connection string")}, 
-            object::pair{std::string("required"), true}, 
-            object::pair{std::string("sensitive"), true}
+        object::pair{std:("environmentVariables"), array<object>{ object{
+            object::pair{std:("name"), std:("DATABASE_URL")}, 
+            object::pair{std:("description"), std:("PostgreSQL connection string")}, 
+            object::pair{std:("required"), true}, 
+            object::pair{std:("sensitive"), true}
         }, object{
-            object::pair{std::string("name"), std::string("DATABASE_POOL_SIZE")}, 
-            object::pair{std::string("description"), std::string("Maximum connection pool size")}, 
-            object::pair{std::string("required"), false}, 
-            object::pair{std::string("sensitive"), false}
+            object::pair{std:("name"), std:("DATABASE_POOL_SIZE")}, 
+            object::pair{std:("description"), std:("Maximum connection pool size")}, 
+            object::pair{std:("required"), false}, 
+            object::pair{std:("sensitive"), false}
         } }}
     };
 };
@@ -126,32 +126,32 @@ any getDatabasePluginSpec()
 any getSocialMediaPluginSpec()
 {
     return object{
-        object::pair{std::string("name"), std::string("@elizaos/plugin-social")}, 
-        object::pair{std::string("description"), std::string("Social media integration plugin")}, 
-        object::pair{std::string("version"), std::string("1.0.0")}, 
-        object::pair{std::string("actions"), array<object>{ object{
-            object::pair{std::string("name"), std::string("postToTwitter")}, 
-            object::pair{std::string("description"), std::string("Post a message to Twitter/X")}, 
-            object::pair{std::string("parameters"), object{
-                object::pair{std::string("message"), std::string("string")}, 
-                object::pair{std::string("mediaUrls"), std::string("string[]")}
+        object::pair{std:("name"), std:("@elizaos/plugin-social")}, 
+        object::pair{std:("description"), std:("Social media integration plugin")}, 
+        object::pair{std:("version"), std:("1.0.0")}, 
+        object::pair{std:("actions"), array<object>{ object{
+            object::pair{std:("name"), std:("postToTwitter")}, 
+            object::pair{std:("description"), std:("Post a message to Twitter/X")}, 
+            object::pair{std:("parameters"), object{
+                object::pair{std:("message"), std:("string")}, 
+                object::pair{std:("mediaUrls"), std:("string[]")}
             }}
         }, object{
-            object::pair{std::string("name"), std::string("schedulePost")}, 
-            object::pair{std::string("description"), std::string("Schedule a social media post")}, 
-            object::pair{std::string("parameters"), object{
-                object::pair{std::string("platform"), std::string("twitter | instagram | linkedin")}, 
-                object::pair{std::string("message"), std::string("string")}, 
-                object::pair{std::string("scheduledTime"), std::string("timestamp")}
+            object::pair{std:("name"), std:("schedulePost")}, 
+            object::pair{std:("description"), std:("Schedule a social media post")}, 
+            object::pair{std:("parameters"), object{
+                object::pair{std:("platform"), std:("twitter | instagram | linkedin")}, 
+                object::pair{std:("message"), std:("string")}, 
+                object::pair{std:("scheduledTime"), std:("timestamp")}
             }}
         } }}, 
-        object::pair{std::string("providers"), array<object>{ object{
-            object::pair{std::string("name"), std::string("socialStats")}, 
-            object::pair{std::string("description"), std::string("Provides social media statistics")}, 
-            object::pair{std::string("dataStructure"), object{
-                object::pair{std::string("followers"), std::string("number")}, 
-                object::pair{std::string("engagement"), std::string("number")}, 
-                object::pair{std::string("recentPosts"), std::string("array")}
+        object::pair{std:("providers"), array<object>{ object{
+            object::pair{std:("name"), std:("socialStats")}, 
+            object::pair{std:("description"), std:("Provides social media statistics")}, 
+            object::pair{std:("dataStructure"), object{
+                object::pair{std:("followers"), std:("number")}, 
+                object::pair{std:("engagement"), std:("number")}, 
+                object::pair{std:("recentPosts"), std:("array")}
             }}
         } }}
     };
@@ -161,18 +161,18 @@ any getSocialMediaPluginSpec()
 void main()
 {
     auto agent = std::make_shared<Agent>(object{
-        object::pair{std::string("name"), std::string("PluginCreator")}, 
-        object::pair{std::string("plugins"), array<any>{ pluginDynamic }}
+        object::pair{std:("name"), std:("PluginCreator")}, 
+        object::pair{std:("plugins"), array<any>{ pluginDynamic }}
     });
-    console->log(std::string("== Weather Plugin Example =="));
+    console->log(std:("== Weather Plugin Example =="));
     std::async([=]() { createWeatherPlugin(agent); });
-    console->log(std::string("\
+    console->log(std:("\
 == Todo Plugin from Description =="));
     std::async([=]() { createTodoPlugin(agent); });
-    console->log(std::string("\
+    console->log(std:("\
 == Database Plugin Specification =="));
     console->log(JSON->stringify(getDatabasePluginSpec(), nullptr, 2));
-    console->log(std::string("\
+    console->log(std:("\
 == Social Media Plugin Specification =="));
     console->log(JSON->stringify(getSocialMediaPluginSpec(), nullptr, 2));
 };

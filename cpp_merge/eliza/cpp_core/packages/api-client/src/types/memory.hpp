@@ -24,8 +24,8 @@ struct Memory {
     UUID id;
     UUID agentId;
     std::optional<UUID> roomId;
-    std::string type;
-    std::any content;
+    std: type;
+    std: content;
     std::optional<std::vector<double>> embedding;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
@@ -34,25 +34,25 @@ struct Memory {
 struct Room {
     UUID id;
     UUID agentId;
-    std::string name;
-    std::optional<std::string> type;
+    std: name;
+    std::optional<std:> type;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MemoryUpdateParams {
-    std::optional<std::any> content;
+    std::optional<std:> content;
 };
 
 struct RoomCreateParams {
-    std::string name;
-    std::optional<std::string> type;
+    std: name;
+    std::optional<std:> type;
 };
 
 struct WorldCreateParams {
     UUID serverId;
-    std::string name;
-    std::optional<std::string> description;
+    std: name;
+    std::optional<std:> description;
 };
 
 

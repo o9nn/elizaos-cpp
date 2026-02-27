@@ -3,435 +3,435 @@
 std::shared_ptr<IAgentRuntime> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides)
 {
     auto defaultRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-        object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("test-agent"))}, 
-        object::pair{std::string("db"), nullptr}, 
-        object::pair{std::string("character"), object{
-            object::pair{std::string("name"), std::string("TestAgent")}, 
-            object::pair{std::string("description"), std::string("A test agent")}, 
-            object::pair{std::string("instructions"), std::string("Test instructions")}, 
-            object::pair{std::string("personality"), std::string("Test personality")}, 
-            object::pair{std::string("modelProvider"), std::string("openai")}, 
-            object::pair{std::string("settings"), object{}}
+        object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("test-agent"))}, 
+        object::pair{std:("db"), nullptr}, 
+        object::pair{std:("character"), object{
+            object::pair{std:("name"), std:("TestAgent")}, 
+            object::pair{std:("description"), std:("A test agent")}, 
+            object::pair{std:("instructions"), std:("Test instructions")}, 
+            object::pair{std:("personality"), std:("Test personality")}, 
+            object::pair{std:("modelProvider"), std:("openai")}, 
+            object::pair{std:("settings"), object{}}
         }}, 
-        object::pair{std::string("actions"), as<array<std::shared_ptr<Action>>>(array<std::shared_ptr<Action>>())}, 
-        object::pair{std::string("providers"), as<array<std::shared_ptr<Provider>>>(array<std::shared_ptr<Provider>>())}, 
-        object::pair{std::string("services"), std::make_shared<Map<string, std::shared_ptr<Service>>>()}, 
-        object::pair{std::string("plugins"), as<array<std::shared_ptr<Plugin>>>(array<std::shared_ptr<Plugin>>())}, 
-        object::pair{std::string("evaluators"), array<any>()}, 
-        object::pair{std::string("events"), std::make_shared<Map>()}, 
-        object::pair{std::string("routes"), array<any>()}, 
-        object::pair{std::string("logger"), console}, 
-        object::pair{std::string("fetch"), nullptr}, 
-        object::pair{std::string("initialize"), mock([=]() mutable
+        object::pair{std:("actions"), as<array<std::shared_ptr<Action>>>(array<std::shared_ptr<Action>>())}, 
+        object::pair{std:("providers"), as<array<std::shared_ptr<Provider>>>(array<std::shared_ptr<Provider>>())}, 
+        object::pair{std:("services"), std::make_shared<Map<string, std::shared_ptr<Service>>>()}, 
+        object::pair{std:("plugins"), as<array<std::shared_ptr<Plugin>>>(array<std::shared_ptr<Plugin>>())}, 
+        object::pair{std:("evaluators"), array<any>()}, 
+        object::pair{std:("events"), std::make_shared<Map>()}, 
+        object::pair{std:("routes"), array<any>()}, 
+        object::pair{std:("logger"), console}, 
+        object::pair{std:("fetch"), nullptr}, 
+        object::pair{std:("initialize"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("stop"), mock([=]() mutable
+        object::pair{std:("stop"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getService"), mock([=]() mutable
+        object::pair{std:("getService"), mock([=]() mutable
         {
             return nullptr;
         }
         )}, 
-        object::pair{std::string("getServicesByType"), mock([=]() mutable
+        object::pair{std:("getServicesByType"), mock([=]() mutable
         {
             return array<any>();
         }
         )}, 
-        object::pair{std::string("getAllServices"), mock([=]() mutable
+        object::pair{std:("getAllServices"), mock([=]() mutable
         {
             return std::make_shared<Map>();
         }
         )}, 
-        object::pair{std::string("registerService"), mock([=]() mutable
+        object::pair{std:("registerService"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getRegisteredServiceTypes"), mock([=]() mutable
+        object::pair{std:("getRegisteredServiceTypes"), mock([=]() mutable
         {
             return array<any>();
         }
         )}, 
-        object::pair{std::string("hasService"), mock([=]() mutable
+        object::pair{std:("hasService"), mock([=]() mutable
         {
             return false;
         }
         )}, 
-        object::pair{std::string("getSetting"), mock([=](auto key) mutable
+        object::pair{std:("getSetting"), mock([=](auto key) mutable
         {
             return nullptr;
         }
         )}, 
-        object::pair{std::string("setSetting"), mock()}, 
-        object::pair{std::string("useModel"), mock([=]() mutable
+        object::pair{std:("setSetting"), mock()}, 
+        object::pair{std:("useModel"), mock([=]() mutable
         {
-            return Promise->resolve(std::string("Mock response"));
+            return Promise->resolve(std:("Mock response"));
         }
         )}, 
-        object::pair{std::string("composeState"), mock([=]() mutable
+        object::pair{std:("composeState"), mock([=]() mutable
         {
             return Promise->resolve(object{
-                object::pair{std::string("values"), object{}}, 
-                object::pair{std::string("text"), string_empty}, 
-                object::pair{std::string("data"), object{}}
+                object::pair{std:("values"), object{}}, 
+                object::pair{std:("text"), string_empty}, 
+                object::pair{std:("data"), object{}}
             });
         }
         )}, 
-        object::pair{std::string("processActions"), mock([=]() mutable
+        object::pair{std:("processActions"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("evaluate"), mock([=]() mutable
+        object::pair{std:("evaluate"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("ensureParticipantInRoom"), mock([=]() mutable
+        object::pair{std:("ensureParticipantInRoom"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getRoom"), mock([=]() mutable
+        object::pair{std:("getRoom"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("ensureConnection"), mock([=]() mutable
+        object::pair{std:("ensureConnection"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("ensureConnections"), mock([=]() mutable
+        object::pair{std:("ensureConnections"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("ensureWorldExists"), mock([=]() mutable
+        object::pair{std:("ensureWorldExists"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("ensureRoomExists"), mock([=]() mutable
+        object::pair{std:("ensureRoomExists"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("registerDatabaseAdapter"), mock()}, 
-        object::pair{std::string("emitEvent"), mock([=]() mutable
+        object::pair{std:("registerDatabaseAdapter"), mock()}, 
+        object::pair{std:("emitEvent"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("registerPlugin"), mock([=]() mutable
+        object::pair{std:("registerPlugin"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("registerProvider"), mock()}, 
-        object::pair{std::string("registerAction"), mock()}, 
-        object::pair{std::string("registerEvaluator"), mock()}, 
-        object::pair{std::string("registerModel"), mock()}, 
-        object::pair{std::string("getModel"), mock([=]() mutable
+        object::pair{std:("registerProvider"), mock()}, 
+        object::pair{std:("registerAction"), mock()}, 
+        object::pair{std:("registerEvaluator"), mock()}, 
+        object::pair{std:("registerModel"), mock()}, 
+        object::pair{std:("getModel"), mock([=]() mutable
         {
             return undefined;
         }
         )}, 
-        object::pair{std::string("registerEvent"), mock()}, 
-        object::pair{std::string("getEvent"), mock([=]() mutable
+        object::pair{std:("registerEvent"), mock()}, 
+        object::pair{std:("getEvent"), mock([=]() mutable
         {
             return undefined;
         }
         )}, 
-        object::pair{std::string("registerTaskWorker"), mock()}, 
-        object::pair{std::string("getTaskWorker"), mock([=]() mutable
+        object::pair{std:("registerTaskWorker"), mock()}, 
+        object::pair{std:("getTaskWorker"), mock([=]() mutable
         {
             return undefined;
         }
         )}, 
-        object::pair{std::string("addEmbeddingToMemory"), mock([=]() mutable
+        object::pair{std:("addEmbeddingToMemory"), mock([=]() mutable
         {
             return Promise->resolve(as<std::shared_ptr<Memory>>(object{}));
         }
         )}, 
-        object::pair{std::string("getAllMemories"), mock([=]() mutable
+        object::pair{std:("getAllMemories"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("clearAllAgentMemories"), mock([=]() mutable
+        object::pair{std:("clearAllAgentMemories"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("createRunId"), mock([=]() mutable
+        object::pair{std:("createRunId"), mock([=]() mutable
         {
-            return as<std::shared_ptr<UUID>>(std::string("test-run-id"));
+            return as<std::shared_ptr<UUID>>(std:("test-run-id"));
         }
         )}, 
-        object::pair{std::string("startRun"), mock([=]() mutable
+        object::pair{std:("startRun"), mock([=]() mutable
         {
-            return as<std::shared_ptr<UUID>>(std::string("test-run-id"));
+            return as<std::shared_ptr<UUID>>(std:("test-run-id"));
         }
         )}, 
-        object::pair{std::string("endRun"), mock()}, 
-        object::pair{std::string("getCurrentRunId"), mock([=]() mutable
+        object::pair{std:("endRun"), mock()}, 
+        object::pair{std:("getCurrentRunId"), mock([=]() mutable
         {
-            return as<std::shared_ptr<UUID>>(std::string("test-run-id"));
+            return as<std::shared_ptr<UUID>>(std:("test-run-id"));
         }
         )}, 
-        object::pair{std::string("getEntityById"), mock([=]() mutable
+        object::pair{std:("getEntityById"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("createEntity"), mock([=]() mutable
+        object::pair{std:("createEntity"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("createRoom"), mock([=]() mutable
+        object::pair{std:("createRoom"), mock([=]() mutable
         {
-            return Promise->resolve(as<std::shared_ptr<UUID>>(std::string("test-room-id")));
+            return Promise->resolve(as<std::shared_ptr<UUID>>(std:("test-room-id")));
         }
         )}, 
-        object::pair{std::string("addParticipant"), mock([=]() mutable
+        object::pair{std:("addParticipant"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("getRooms"), mock([=]() mutable
+        object::pair{std:("getRooms"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("registerSendHandler"), mock()}, 
-        object::pair{std::string("sendMessageToTarget"), mock([=]() mutable
+        object::pair{std:("registerSendHandler"), mock()}, 
+        object::pair{std:("sendMessageToTarget"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getConversationLength"), mock([=]() mutable
+        object::pair{std:("getConversationLength"), mock([=]() mutable
         {
             return 0;
         }
         )}, 
-        object::pair{std::string("init"), mock([=]() mutable
+        object::pair{std:("init"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("runMigrations"), mock([=]() mutable
+        object::pair{std:("runMigrations"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("isReady"), mock([=]() mutable
+        object::pair{std:("isReady"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("close"), mock([=]() mutable
+        object::pair{std:("close"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getConnection"), mock([=]() mutable
+        object::pair{std:("getConnection"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("getAgent"), mock([=]() mutable
+        object::pair{std:("getAgent"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("getAgents"), mock([=]() mutable
+        object::pair{std:("getAgents"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("createAgent"), mock([=]() mutable
+        object::pair{std:("createAgent"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("updateAgent"), mock([=]() mutable
+        object::pair{std:("updateAgent"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("deleteAgent"), mock([=]() mutable
+        object::pair{std:("deleteAgent"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("ensureEmbeddingDimension"), mock([=]() mutable
+        object::pair{std:("ensureEmbeddingDimension"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getEntitiesByIds"), mock([=]() mutable
+        object::pair{std:("getEntitiesByIds"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getEntitiesForRoom"), mock([=]() mutable
+        object::pair{std:("getEntitiesForRoom"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("createEntities"), mock([=]() mutable
+        object::pair{std:("createEntities"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("updateEntity"), mock([=]() mutable
+        object::pair{std:("updateEntity"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getComponent"), mock([=]() mutable
+        object::pair{std:("getComponent"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("getComponents"), mock([=]() mutable
+        object::pair{std:("getComponents"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("createComponent"), mock([=]() mutable
+        object::pair{std:("createComponent"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("updateComponent"), mock([=]() mutable
+        object::pair{std:("updateComponent"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("deleteComponent"), mock([=]() mutable
+        object::pair{std:("deleteComponent"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("createMemory"), mock([=]() mutable
+        object::pair{std:("createMemory"), mock([=]() mutable
         {
-            return Promise->resolve(as<std::shared_ptr<UUID>>(std::string("test-memory-id")));
+            return Promise->resolve(as<std::shared_ptr<UUID>>(std:("test-memory-id")));
         }
         )}, 
-        object::pair{std::string("searchMemories"), mock([=]() mutable
-        {
-            return Promise->resolve(array<any>());
-        }
-        )}, 
-        object::pair{std::string("searchMemoriesByEmbedding"), mock([=]() mutable
+        object::pair{std:("searchMemories"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getMemoriesWithActions"), mock([=]() mutable
+        object::pair{std:("searchMemoriesByEmbedding"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getMemoryActions"), mock([=]() mutable
+        object::pair{std:("getMemoriesWithActions"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getMemory"), mock([=]() mutable
+        object::pair{std:("getMemoryActions"), mock([=]() mutable
+        {
+            return Promise->resolve(array<any>());
+        }
+        )}, 
+        object::pair{std:("getMemory"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("getMemories"), mock([=]() mutable
+        object::pair{std:("getMemories"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getCachedEmbeddings"), mock([=]() mutable
+        object::pair{std:("getCachedEmbeddings"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getWorldsByParticipant"), mock([=]() mutable
+        object::pair{std:("getWorldsByParticipant"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getRelationship"), mock([=]() mutable
+        object::pair{std:("getRelationship"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("createRelationship"), mock([=]() mutable
+        object::pair{std:("createRelationship"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("updateRelationship"), mock([=]() mutable
+        object::pair{std:("updateRelationship"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("getRelationships"), mock([=]() mutable
+        object::pair{std:("getRelationships"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getCache"), mock([=]() mutable
+        object::pair{std:("getCache"), mock([=]() mutable
         {
             return Promise->resolve(undefined);
         }
         )}, 
-        object::pair{std::string("setCache"), mock([=]() mutable
+        object::pair{std:("setCache"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("deleteCache"), mock([=]() mutable
+        object::pair{std:("deleteCache"), mock([=]() mutable
         {
             return Promise->resolve(true);
         }
         )}, 
-        object::pair{std::string("createTask"), mock([=]() mutable
+        object::pair{std:("createTask"), mock([=]() mutable
         {
-            return Promise->resolve(as<std::shared_ptr<UUID>>(std::string("test-task-id")));
+            return Promise->resolve(as<std::shared_ptr<UUID>>(std:("test-task-id")));
         }
         )}, 
-        object::pair{std::string("getTasks"), mock([=]() mutable
+        object::pair{std:("getTasks"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("getTask"), mock([=]() mutable
+        object::pair{std:("getTask"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("getTasksByName"), mock([=]() mutable
+        object::pair{std:("getTasksByName"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
         )}, 
-        object::pair{std::string("updateTask"), mock([=]() mutable
+        object::pair{std:("updateTask"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("deleteTask"), mock([=]() mutable
+        object::pair{std:("deleteTask"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("getMemoriesByWorldId"), mock([=]() mutable
+        object::pair{std:("getMemoriesByWorldId"), mock([=]() mutable
         {
             return Promise->resolve(array<any>());
         }
@@ -439,7 +439,7 @@ std::shared_ptr<IAgentRuntime> createMockRuntime(Partial<std::shared_ptr<IAgentR
     }));
     return utils::assign(object{
         , 
-        object::pair{std::string("character"), utils::assign(object{
+        object::pair{std:("character"), utils::assign(object{
         }, defaultRuntime->character, (OR((overrides->character), (object{}))))}
     }, defaultRuntime, overrides);
 };

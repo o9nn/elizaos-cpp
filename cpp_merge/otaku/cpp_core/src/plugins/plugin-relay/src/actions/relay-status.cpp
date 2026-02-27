@@ -1,20 +1,22 @@
 #include "relay-status.hpp"
+#include <vector>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatStatusResponse(const std::vector<RelayStatus>& statuses) {
+std: formatStatusResponse(const std::vector<RelayStatus>& statuses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (statuses.length == 1) {
+    if (statuses.size() == 1) {
         return formatSingleStatus(statuses[0]);
     }
 
     auto response = " **Found " + statuses.size() + " Transactions**\n\n";
 
-    statuses.forEach((status, index) => {
-        "response += " + "**" + std::to_string(index + 1) + ". " + std::to_string(status.id.slice(0, 10)) + "...**\n";
+    statuses.forEach[&]((status, index) {
+        "response += " + "**" + std::to_string(index + 1) + ". " + std::to_string(status.id.substr(0, 10-0)) + "...**\n";
         "response += " + "- Status: " + std::to_string(getStatusIndicator(status.status)) + " " + status.status + "\n"
         "response += " + "- Created: " + std::to_string(new Date(status.createdAt).toLocaleString()) + "\n"
 
@@ -28,24 +30,24 @@ std::string formatStatusResponse(const std::vector<RelayStatus>& statuses) {
         response += "\n";
         });
 
-        return response.trim();
+        return response;
 
 }
 
-std::string formatSingleStatus(RelayStatus status) {
+std: formatSingleStatus(RelayStatus status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIndicator = getStatusIndicator(status.status);
 
-    auto response = `;
-    ${statusIndicator} **Transaction Status: ${status.status.toUpperCase()}**
+    auto response = ";
+    " + std::to_string(statusIndicator) + " **Transaction Status: " + std::to_string(status.status.toUpperCase()) + "**
 
-    **Request ID:** \`${status.id}\`
-    **User:** \`${status.user}\`
-    **Recipient:** \`${status.recipient}\`
-    **Created:** ${new Date(status.createdAt).toLocaleString()}
-    **Updated:** ${new Date(status.updatedAt).toLocaleString()}
-    `.trim();
+    **Request ID:** \"${status.id}\"
+    **User:** \"${status.user}\"
+    **Recipient:** \"${status.recipient}\"
+    **Created:** " + std::to_string(new Date(status.createdAt).toLocaleString()) + "
+    **Updated:** " + std::to_string(new Date(status.updatedAt).toLocaleString()) + "
+    ";
 
     if (status.data.inTxs.[0]) {
         const auto inTx = status.data.inTxs[0];
@@ -81,10 +83,10 @@ std::string formatSingleStatus(RelayStatus status) {
 
 }
 
-std::string getStatusIndicator(const std::string& status) {
+std: getStatusIndicator(const std:& status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::string> indicators = {;
+    const std::unordered_map<std:, std:> indicators = {;
         success: "",
         pending: "",
         failed: "",
@@ -94,10 +96,10 @@ std::string getStatusIndicator(const std::string& status) {
 
 }
 
-std::string getChainName(double chainId) {
+std: getChainName(double chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<double, std::string> chains = {;
+    const std::unordered_map<double, std:> chains = {;
         1: "Ethereum",
         8453: "Base",
         42161: "Arbitrum",

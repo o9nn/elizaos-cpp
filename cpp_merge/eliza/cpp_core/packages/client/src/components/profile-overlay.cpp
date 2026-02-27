@@ -1,4 +1,5 @@
 #include "profile-overlay.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -53,11 +54,11 @@ void ProfileOverlay(auto onClose) {
                     exportCharacterAsJson(agent, toast);
                     };
 
-                    return (;
+                    return [&](;
                     <div;
                     className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm";
                 onClick={onClose}
-                onKeyUp={(e) => {
+                onKeyUp={(e) {
                     if (e.key == 'Enter' || e.key == ' ') {
                         onClose();
                     }
@@ -65,8 +66,8 @@ void ProfileOverlay(auto onClose) {
                 >;
                 <Card;
                 className="flex flex-col w-full max-w-md md:max-w-xl overflow-hidden relative"
-            onClick={(e) => e.stopPropagation()}
-            >;
+            onClick={[&](e) { return e.stopPropagation()}
+            >; };
             <CardHeader className="p-0 space-y-0">;
             <div className="absolute top-4 right-4 z-10">;
             <Button variant="ghost" size="icon" onClick={onClose}>;
@@ -102,13 +103,13 @@ void ProfileOverlay(auto onClose) {
     <TooltipTrigger asChild>;
     <span;
     className="cursor-pointer hover:underline"
-    onClick={(e) => {
+    onClick={[&](e) {
         e.stopPropagation();
         if (agent.id) {
             navigator.clipboard.writeText(agent.id);
         }
     }}
-    onKeyUp={(e) => {
+    onKeyUp={[&](e) {
         if (e.key == 'Enter' || e.key == ' ') {
             e.stopPropagation();
             if (agent.id) {
@@ -166,12 +167,10 @@ void ProfileOverlay(auto onClose) {
     <div>;
     <p className="font-medium text-sm mb-2">Plugins</p>;
     <div className="flex flex-wrap gap-2">;
-    {agent.plugins && agent.plugins.size() > 0 ? (;
-    agent.plugins.std::map((plugin, index) => {
+    {agent.plugins && agent.plugins.size() > 0 ? [&](;
+    agent.plugins.std::map((plugin, index) {
         // Extract plugin name by removing the prefix
-        const auto pluginName = plugin;
-        .replace("@elizaos/plugin-", "");
-        .replace("@elizaos-plugins/plugin-", "");
+        const auto pluginName = plugin.replace("@elizaos/plugin-", "").replace("@elizaos-plugins/plugin-", "");
         return (;
         <span;
     key={index}
@@ -227,7 +226,7 @@ void ProfileOverlay(auto onClose) {
     <TooltipTrigger asChild>;
     <Button;
     variant="outline";
-    "onClick={() => navigate(" + "/settings/" + agentId;
+    "onClick={[&]() { return navigate(" + "/settings/" + agentId; };
     disabled={!agent}
     className="h-9";
     size="sm";
@@ -242,8 +241,8 @@ void ProfileOverlay(auto onClose) {
     </Tooltip>;
     </div>;
 
-    {isActive && (;
-    "<Button variant=\"default\" className=\"h-9\" onClick={() => navigate(" + "/chat/" + agent.id;
+    {isActive && [&](;
+    "<Button variant=\"default\" className=\"h-9\" onClick={() { return navigate(" + "/chat/" + agent.id; };
     Message;
     </Button>;
     )}

@@ -1,10 +1,14 @@
 #include "utils.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool shouldQuote(const std::any& value, Command command) {
+bool shouldQuote(const std:& value, Command command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
@@ -27,7 +31,7 @@ bool shouldQuote(const std::any& value, Command command) {
 
 }
 
-std::string getSignature(Command cmd) {
+std: getSignature(Command cmd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (cmd.signature) {
@@ -52,7 +56,7 @@ std::string getSignature(Command cmd) {
 
 }
 
-std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std::string, std::any>& _kwargs) {
+std: generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std:, std:>& _kwargs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> docs = [];
@@ -73,7 +77,7 @@ std::string generateCommandDocs(const std::vector<Command>& commands, const std:
             }
 
             // Add bash commands
-            if (bashCommands.length > 0) {
+            if (bashCommands.size() > 0) {
                 docs.push_back("# Bash Commands");
                 docs.push_back("Use bash commands to interact with the system.");
                 for (const auto& cmd : bashCommands)
@@ -83,7 +87,7 @@ std::string generateCommandDocs(const std::vector<Command>& commands, const std:
             }
 
             // Add subroutine commands
-            if (subroutineCommands.length > 0) {
+            if (subroutineCommands.size() > 0) {
                 docs.push_back("# Subroutine Commands");
                 for (const auto& cmd : subroutineCommands)
                     docs.push_back(formatCommand(cmd));
@@ -92,7 +96,7 @@ std::string generateCommandDocs(const std::vector<Command>& commands, const std:
             }
 
             // Add utility commands
-            if (utilityCommands.length > 0) {
+            if (utilityCommands.size() > 0) {
                 docs.push_back("# Utility Commands");
                 for (const auto& cmd : utilityCommands)
                     docs.push_back(formatCommand(cmd));
@@ -104,7 +108,7 @@ std::string generateCommandDocs(const std::vector<Command>& commands, const std:
 
 }
 
-std::string formatCommand(Command cmd) {
+std: formatCommand(Command cmd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -118,7 +122,7 @@ std::string formatCommand(Command cmd) {
     }
 
     // Add arguments
-    if (cmd.arguments.length > 0) {
+    if (cmd.arguments.size() > 0) {
         lines.push_back("Arguments:");
         for (const auto& arg : cmd.arguments)
             const auto required = arg.required ? " (required)" : " (std::optional)";

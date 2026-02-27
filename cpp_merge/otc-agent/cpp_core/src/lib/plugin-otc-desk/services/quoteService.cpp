@@ -1,4 +1,5 @@
 #include "quoteService.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 

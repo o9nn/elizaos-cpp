@@ -27,7 +27,7 @@ enum NavigationType {
 
       // Check if connected and if controls are available
 
-        await callback({ thought: 'Prerequisites failed.', error: "Cannot navigate. Hyperfy connection/controls unavailable." });
+        callback({ thought: 'Prerequisites failed.', error: "Cannot navigate. Hyperfy connection/controls unavailable." });
 
       // Example assumes an entity "Bob" exists with ID "entity123"
       // Example for failure (entity not found)

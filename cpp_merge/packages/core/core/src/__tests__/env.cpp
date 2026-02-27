@@ -2,15 +2,15 @@
 
 void Main(void)
 {
-    describe(std::string("Environment Setup"), [=]() mutable
+    describe(std:("Environment Setup"), [=]() mutable
     {
-        it(std::string("should verify .env.test file exists"), [=]() mutable
+        it(std:("should verify .env.test file exists"), [=]() mutable
         {
-            auto possiblePaths = array<any>{ path->join(process->cwd(), std::string(".env.test")), path->join(process->cwd(), std::string("packages/core/.env.test")), path->join(__dirname, std::string("../../.env.test")), path->join(__dirname, std::string("../.env.test")), path->join(__dirname, std::string(".env.test")) };
+            auto possiblePaths = array<any>{ path->join(process->cwd(), std:(".env.test")), path->join(process->cwd(), std:("packages/core/.env.test")), path->join(__dirname, std:("../../.env.test")), path->join(__dirname, std:("../.env.test")), path->join(__dirname, std:(".env.test")) };
             auto existingPaths = possiblePaths->filter([=](auto p) mutable
             {
                 auto exists = fs->existsSync(p);
-                console->log(std::string("Path ") + p + std::string(" exists: ") + exists + string_empty);
+                console->log(std:("Path ") + p + std:(" exists: ") + exists + string_empty);
                 return exists;
             }
             );

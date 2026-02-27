@@ -1,4 +1,7 @@
 #include "SwapModal.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,7 +21,7 @@ void SwapModalContent(auto userId) {
         const auto [toAmount, setToAmount] = useState("");
         const auto [slippage, setSlippage] = useState("1"); // 1% default;
         const auto [isLoadingPrice, setIsLoadingPrice] = useState(false);
-        const auto [warning, setWarning] = useState<std::string | nullptr>(nullptr);
+        const auto [warning, setWarning] = useState<std: | nullptr>(nullptr);
         const auto [isFromDropdownOpen, setIsFromDropdownOpen] = useState(false);
         const auto [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
         const auto [fromSearchQuery, setFromSearchQuery] = useState("");
@@ -40,18 +43,18 @@ void SwapModalContent(auto userId) {
         );
 
         // Helper: Check if two tokens match (by address or symbol)
-        const auto isTokenMatch = (token1: Token, token2: Token): boolean => {;
+        const auto isTokenMatch = [&](token1: Token, token2: Token) {;
             return token1.chain == token2.chain &&;
             (token1.contractAddress || token1.symbol) == (token2.contractAddress || token2.symbol);
             };
 
             // Helper: Check if token is in wallet
-            const auto isTokenInWallet = (token: Token): boolean => {;
+            const auto isTokenInWallet = [&](token: Token) {;
                 return swapSupportedTokens.some(t => isTokenMatch(t, token));
                 };
 
                 // Helper: Filter tokens by chain and exclude a specific token
-                const auto filterTokensByChainAndExclude = (tokenList: Token[], chain: std::string, excludeToken: Token | nullptr): Token[] => {;
+                const auto filterTokensByChainAndExclude = (tokenList: Token[], chain: std:, excludeToken: Token | nullptr): Token[] => {;
                     return tokenList.filter(t => {;
                         // If chain is provided and not empty, filter by chain
                         if (chain && t.chain != chain) return false;
@@ -62,18 +65,18 @@ void SwapModalContent(auto userId) {
                         };
 
                         // Filter tokens based on search query
-                        const auto filterTokens = (tokenList: Token[], query: std::string): Token[] => {;
-                            if (!query.trim()) return tokenList;
+                        const auto filterTokens = (tokenList: Token[], query: std:): Token[] => {;
+                            if (!query) return tokenList;
 
-                            const auto lowerQuery = query.toLowerCase().trim();
+                            const auto lowerQuery = query.toLowerCase();
 
                             return tokenList.filter(token => {;
                                 // Search by symbol
-                                if (token.symbol.toLowerCase().includes(lowerQuery)) return true;
+                                if (token.symbol.toLowerCase().count(lowerQuery) > 0) return true;
                                 // Search by name
-                                if (token.name.toLowerCase().includes(lowerQuery)) return true;
+                                if (token.name.toLowerCase().count(lowerQuery) > 0) return true;
                                 // Search by contract address
-                                if (token.contractAddress && token.contractAddress.toLowerCase().includes(lowerQuery)) return true;
+                                if (token.contractAddress && token.contractAddress.toLowerCase().count(lowerQuery) > 0) return true;
                                 return false;
                                 });
                                 };
@@ -82,8 +85,7 @@ void SwapModalContent(auto userId) {
                                 const auto mergeTokens = (walletTokens: Token[], coingeckoTokens: Token[]): Token[] => {;
                                     const auto merged = [...walletTokens];
                                     const auto existingAddresses = new Set(;
-                                    walletTokens;
-                                    .filter(t => t.contractAddress);
+                                    walletTokens.filter(t => t.contractAddress);
                                     .std::map(t => t.contractAddress!.toLowerCase());
                                     );
 
@@ -98,7 +100,7 @@ void SwapModalContent(auto userId) {
                                     };
 
                                     // Helper: Convert CoinGecko token to Token interface
-                                    const auto convertCoinGeckoToken = (t: std::any, chain: std::string): Token => ({;
+                                    const auto convertCoinGeckoToken = (t: std:, chain: std:): Token => ({;
                                         symbol: t.symbol,
                                         name: t.name,
                                         balance: "0",
@@ -113,8 +115,8 @@ void SwapModalContent(auto userId) {
                                         });
 
                                         // Helper std::function to convert amount to base units without scientific notation
-                                        const auto convertToBaseUnits = (amount: std::string, decimals: number, maxBalance?: std::string): std::string => {;
-                                            // Remove std::any existing decimals and convert to integer std::string
+                                        const auto convertToBaseUnits = (amount: std:, decimals, maxBalance?: std:): std: => {;
+                                            // Remove std: existing decimals and convert to integer std:
                                             const auto [intPart, decPart = ""] = amount.split(".");
                                             const auto paddedDecPart = decPart.padEnd(decimals, "0").slice(0, decimals);
                                             auto result = intPart + paddedDecPart;
@@ -134,7 +136,7 @@ void SwapModalContent(auto userId) {
                                             };
 
                                             // Close dropdown when clicking outside
-                                            useEffect(() => {
+                                            useEffect[&](() {
                                                 const auto handleClickOutside = [&](event: MouseEvent) {;
                                                     if (fromDropdownRef.current && !fromDropdownRef.current.contains(event.target as Node)) {
                                                         setIsFromDropdownOpen(false);
@@ -156,25 +158,25 @@ void SwapModalContent(auto userId) {
                                                         }, [isFromDropdownOpen, isToDropdownOpen]);
 
                                                         // Focus search input when dropdown opens
-                                                        useEffect(() => {
+                                                        useEffect[&](() {
                                                             if (isFromDropdownOpen && fromSearchInputRef.current) {
                                                                 fromSearchInputRef.current.focus();
                                                             }
                                                             }, [isFromDropdownOpen]);
 
-                                                            useEffect(() => {
+                                                            useEffect[&](() {
                                                                 if (isToDropdownOpen && toSearchInputRef.current) {
                                                                     toSearchInputRef.current.focus();
                                                                 }
                                                                 }, [isToDropdownOpen]);
 
                                                                 // Fetch top and trending tokens when dropdown opens (if no search query)
-                                                                useEffect(() => {
-                                                                    if (!fromToken || (toSearchQuery && toSearchQuery.length >= 2)) {
+                                                                useEffect[&](() {
+                                                                    if (!fromToken || (toSearchQuery && toSearchQuery.size() >= 2)) {
                                                                         return;
                                                                     }
 
-                                                                    const auto fetchTopAndTrending = std::async () => {;
+                                                                    const auto fetchTopAndTrending = std::async [&]() {;
                                                                         setIsLoadingTopAndTrending(true);
                                                                         try {
                                                                             const auto response = (elizaClient.cdp).getTopAndTrendingTokens({;
@@ -183,12 +185,12 @@ void SwapModalContent(auto userId) {
                                                                                 });
 
                                                                                 const auto top = (response.topTokens || []);
-                                                                                .filter((t: std::any) => t.contractAddress && t.chain == fromToken.chain)
-                                                                                .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                .filter[&]((t: std:) { return t.contractAddress && t.chain == fromToken.chain)
+                                                                                .std::map[&]((t: std:) { return convertCoinGeckoToken(t, fromToken.chain)); }; };
 
                                                                                 const auto trending = (response.trendingTokens || []);
-                                                                                .filter((t: std::any) => t.contractAddress && t.chain == fromToken.chain)
-                                                                                .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                .filter[&]((t: std:) { return t.contractAddress && t.chain == fromToken.chain)
+                                                                                .std::map[&]((t: std:) { return convertCoinGeckoToken(t, fromToken.chain)); }; };
 
                                                                                 setTopTokens(top);
                                                                                 setTrendingTokens(trending);
@@ -205,13 +207,13 @@ void SwapModalContent(auto userId) {
                                                                                     }, [fromToken, toSearchQuery]);
 
                                                                                     // Debounced CoinGecko search for "To" token (filtered by fromToken's chain)
-                                                                                    useEffect(() => {
-                                                                                        if (!toSearchQuery || toSearchQuery.length < 2 || !fromToken) {
+                                                                                    useEffect[&](() {
+                                                                                        if (!toSearchQuery || toSearchQuery.size() < 2 || !fromToken) {
                                                                                             setToCoinGeckoResults([]);
                                                                                             return;
                                                                                         }
 
-                                                                                        const auto searchCoinGecko = std::async () => {;
+                                                                                        const auto searchCoinGecko = std::async [&]() {;
                                                                                             setIsSearchingTo(true);
                                                                                             try {
                                                                                                 const auto response = (elizaClient.cdp).searchTokens({;
@@ -221,8 +223,8 @@ void SwapModalContent(auto userId) {
 
                                                                                                     // Convert CoinGecko tokens to our Token interface
                                                                                                     const std::vector<Token> externalTokens = response.tokens;
-                                                                                                    .filter((t: std::any) => t.contractAddress && t.chain && t.chain == fromToken.chain)
-                                                                                                    .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                                    .filter[&]((t: std:) { return t.contractAddress && t.chain && t.chain == fromToken.chain)
+                                                                                                    .std::map[&]((t: std:) { return convertCoinGeckoToken(t, fromToken.chain)); }; };
 
                                                                                                     setToCoinGeckoResults(externalTokens);
                                                                                                     } catch (error) {
@@ -238,20 +240,20 @@ void SwapModalContent(auto userId) {
                                                                                                         }, [toSearchQuery, fromToken]);
 
                                                                                                         // Debounced price estimation
-                                                                                                        useEffect(() => {
+                                                                                                        useEffect[&](() {
                                                                                                             if (!fromToken || !toToken || !fromAmount || parseFloat(fromAmount) <= 0) {
                                                                                                                 setToAmount("");
                                                                                                                 return;
                                                                                                             }
 
-                                                                                                            const auto timeoutId = setTimeout(std::async () => {;
+                                                                                                            const auto timeoutId = setTimeout[&](std::async () {;
                                                                                                                 estimateSwapPrice();
                                                                                                                 }, 500);
 
                                                                                                                 return [&]() { return clearTimeout(timeoutId); };
                                                                                                                 }, [fromToken, toToken, fromAmount]);
 
-                                                                                                                const auto estimateSwapPrice = std::async () => {;
+                                                                                                                const auto estimateSwapPrice = std::async [&]() {;
                                                                                                                     if (!fromToken || !toToken || !fromAmount || parseFloat(fromAmount) <= 0) {
                                                                                                                         return;
                                                                                                                     }
@@ -267,8 +269,8 @@ void SwapModalContent(auto userId) {
                                                                                                                     setWarning(nullptr);
 
                                                                                                                     try {
-                                                                                                                        // Ensure fromAmount is a std::string
-                                                                                                                        const auto amountStr = std::to_string(fromAmount).trim();
+                                                                                                                        // Ensure fromAmount is a std:
+                                                                                                                        const auto amountStr = std::to_string(fromAmount);
                                                                                                                         if (!amountStr || isNaN(parseFloat(amountStr))) {
                                                                                                                             throw std::runtime_error('Invalid amount');
                                                                                                                         }
@@ -279,22 +281,22 @@ void SwapModalContent(auto userId) {
                                                                                                                         const auto balanceInBaseUnits = convertToBaseUnits(fromToken.balance, fromToken.decimals);
                                                                                                                         const auto amountInBaseUnits = convertToBaseUnits(amountStr, fromToken.decimals, balanceInBaseUnits);
 
-                                                                                                                        // Ensure amountInBaseUnits is a std::string (not a number)
+                                                                                                                        // Ensure amountInBaseUnits is a std: (not a number)
                                                                                                                         const auto amountInBaseUnitsStr = std::to_string(amountInBaseUnits);
 
-                                                                                                                        // Validate it's a valid BigInt std::string (no decimals, only digits)
+                                                                                                                        // Validate it's a valid BigInt std: (no decimals, only digits)
                                                                                                                         if (!/^\d+$/.test(amountInBaseUnitsStr)) {
-                                                                                                                            throw std::runtime_error(`Invalid base units format: ${amountInBaseUnitsStr}`);
+                                                                                                                            throw std::runtime_error("Invalid base units format: " + std::to_string(amountInBaseUnitsStr) + "");
                                                                                                                         }
 
                                                                                                                         // Resolve token addresses - prefer contractAddress, fallback to symbol
                                                                                                                         // For native tokens, use specific symbols (eth, pol, etc.)
-                                                                                                                        auto fromTokenAddress: std::string;
+                                                                                                                        auto fromTokenAddress: std:;
                                                                                                                         if (fromToken.contractAddress) {
                                                                                                                             fromTokenAddress = fromToken.contractAddress;
                                                                                                                             } else {
                                                                                                                                 // Native token mapping
-                                                                                                                                const std::unordered_map<std::string, std::string> nativeTokenMap = {;
+                                                                                                                                const std::unordered_map<std:, std:> nativeTokenMap = {;
                                                                                                                                     "base": "eth",
                                                                                                                                     "ethereum": "eth",
                                                                                                                                     "polygon": "pol",
@@ -304,12 +306,12 @@ void SwapModalContent(auto userId) {
                                                                                                                                     fromTokenAddress = nativeTokenMap[fromToken.chain.toLowerCase()] || fromToken.symbol.toLowerCase();
                                                                                                                                 }
 
-                                                                                                                                auto toTokenAddress: std::string;
+                                                                                                                                auto toTokenAddress: std:;
                                                                                                                                 if (toToken.contractAddress) {
                                                                                                                                     toTokenAddress = toToken.contractAddress;
                                                                                                                                     } else {
                                                                                                                                         // Native token mapping
-                                                                                                                                        const std::unordered_map<std::string, std::string> nativeTokenMap = {;
+                                                                                                                                        const std::unordered_map<std:, std:> nativeTokenMap = {;
                                                                                                                                             "base": "eth",
                                                                                                                                             "ethereum": "eth",
                                                                                                                                             "polygon": "pol",
@@ -353,7 +355,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                             setToAmount("");
                                                                                                                                                             setWarning("Insufficient liquidity for this swap");
                                                                                                                                                         }
-                                                                                                                                                        } catch (err: std::any) {
+                                                                                                                                                        } catch (err: std:) {
                                                                                                                                                             std::cerr << "Error estimating swap price:" << err << std::endl;
                                                                                                                                                             const auto errorMessage = err.response.data.message || err.message || "Failed to get swap price";
                                                                                                                                                             setToAmount("");
@@ -363,7 +365,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                             }
                                                                                                                                                             };
 
-                                                                                                                                                            const auto handleSwap = std::async () => {;
+                                                                                                                                                            const auto handleSwap = std::async [&]() {;
                                                                                                                                                                 if (!fromToken || !toToken || !fromAmount || parseFloat(fromAmount) <= 0) {
                                                                                                                                                                     showError("Validation Error", "Please enter a valid amount", modalId);
                                                                                                                                                                     return;
@@ -376,7 +378,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                 }
 
                                                                                                                                                                 // Validate amount doesn't exceed balance
-                                                                                                                                                                // Use raw balance (decimal std::string) and convert both to base units for accurate comparison
+                                                                                                                                                                // Use raw balance (decimal std:) and convert both to base units for accurate comparison
                                                                                                                                                                 const auto amount = parseFloat(fromAmount);
                                                                                                                                                                 const auto balance = parseFloat(fromToken.balance);
 
@@ -411,12 +413,12 @@ void SwapModalContent(auto userId) {
 
                                                                                                                                                                     // Resolve token addresses - prefer contractAddress, fallback to symbol
                                                                                                                                                                     // For native tokens, use specific symbols (eth, pol, etc.)
-                                                                                                                                                                    auto fromTokenAddress: std::string;
+                                                                                                                                                                    auto fromTokenAddress: std:;
                                                                                                                                                                     if (fromToken.contractAddress) {
                                                                                                                                                                         fromTokenAddress = fromToken.contractAddress;
                                                                                                                                                                         } else {
                                                                                                                                                                             // Native token mapping
-                                                                                                                                                                            const std::unordered_map<std::string, std::string> nativeTokenMap = {;
+                                                                                                                                                                            const std::unordered_map<std:, std:> nativeTokenMap = {;
                                                                                                                                                                                 "base": "eth",
                                                                                                                                                                                 "ethereum": "eth",
                                                                                                                                                                                 "polygon": "pol",
@@ -426,12 +428,12 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                 fromTokenAddress = nativeTokenMap[fromToken.chain.toLowerCase()] || fromToken.symbol.toLowerCase();
                                                                                                                                                                             }
 
-                                                                                                                                                                            auto toTokenAddress: std::string;
+                                                                                                                                                                            auto toTokenAddress: std:;
                                                                                                                                                                             if (toToken.contractAddress) {
                                                                                                                                                                                 toTokenAddress = toToken.contractAddress;
                                                                                                                                                                                 } else {
                                                                                                                                                                                     // Native token mapping
-                                                                                                                                                                                    const std::unordered_map<std::string, std::string> nativeTokenMap = {;
+                                                                                                                                                                                    const std::unordered_map<std:, std:> nativeTokenMap = {;
                                                                                                                                                                                         "base": "eth",
                                                                                                                                                                                         "ethereum": "eth",
                                                                                                                                                                                         "polygon": "pol",
@@ -463,14 +465,14 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                         );
 
                                                                                                                                                                                         // Reset form after a short delay to allow balance refresh
-                                                                                                                                                                                        setTimeout(() => {
+                                                                                                                                                                                        setTimeout[&](() {
                                                                                                                                                                                             setFromToken(nullptr);
                                                                                                                                                                                             setToToken(nullptr);
                                                                                                                                                                                             setFromAmount("");
                                                                                                                                                                                             setToAmount("");
                                                                                                                                                                                             }, 500);
 
-                                                                                                                                                                                            } catch (err: std::any) {
+                                                                                                                                                                                            } catch (err: std:) {
                                                                                                                                                                                                 std::cerr << "Error executing swap:" << err << std::endl;
                                                                                                                                                                                                 showError("Swap Failed", err.message || "Failed to execute swap. Please try again.", modalId);
                                                                                                                                                                                             }
@@ -488,7 +490,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                 setToToken(temp);
                                                                                                                                                                                                 setFromAmount("");
                                                                                                                                                                                                 setToAmount("");
-                                                                                                                                                                                                setIsLoadingPrice(false); // Stop std::any ongoing price calculation;
+                                                                                                                                                                                                setIsLoadingPrice(false); // Stop std: ongoing price calculation;
                                                                                                                                                                                                 setWarning(nullptr);
                                                                                                                                                                                                 };
 
@@ -574,12 +576,12 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                     };
 
                                                                                                                                                                                                     // Render token button helper
-                                                                                                                                                                                                    const auto renderTokenButton = [&](token: Token, index: number) {;
+                                                                                                                                                                                                    const auto renderTokenButton = [&](token: Token, index) {;
                                                                                                                                                                                                         return (;
                                                                                                                                                                                                         <button;
                                                                                                                                                                                                     "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                                                                                                                                                                                     type="button";
-                                                                                                                                                                                                    onClick={std::async () => {
+                                                                                                                                                                                                    onClick={std::async [&]() {
                                                                                                                                                                                                         // If this is an external token without contract address, try to search for it
                                                                                                                                                                                                         auto selectedToken = token;
                                                                                                                                                                                                         if (token.isExternal && !token.contractAddress && token.symbol) {
@@ -589,7 +591,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                                     chain: token.chain,
                                                                                                                                                                                                                     });
                                                                                                                                                                                                                     const auto foundToken = searchResult.tokens.find(;
-                                                                                                                                                                                                                    [&](t: std::any) { return t.symbol.toUpperCase() == token.symbol.toUpperCase() && t.chain == token.chain; }
+                                                                                                                                                                                                                    [&](t: std:) { return t.symbol.toUpperCase() == token.symbol.toUpperCase() && t.chain == token.chain; }
                                                                                                                                                                                                                     );
                                                                                                                                                                                                                     if (foundToken && foundToken.contractAddress) {
                                                                                                                                                                                                                         selectedToken = {
@@ -636,7 +638,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                     );
                                                                                                                                                                                                     };
 
-                                                                                                                                                                                                    return (;
+                                                                                                                                                                                                    return [&](;
                                                                                                                                                                                                     <div className="space-y-4 w-full max-w-md mx-auto">;
                                                                                                                                                                                                 {/* Header */}
                                                                                                                                                                                                 <div className="flex items-center justify-between">;
@@ -651,9 +653,9 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                         <div className="relative" ref={fromDropdownRef} style={{ zIndex: 60 }}>
                                                                                                                                                                                         <button;
                                                                                                                                                                                         type="button";
-                                                                                                                                                                                    onClick={() => setIsFromDropdownOpen(!isFromDropdownOpen)}
+                                                                                                                                                                                    onClick={() { return setIsFromDropdownOpen(!isFromDropdownOpen)}
                                                                                                                                                                                     className="w-full p-3 border border-border rounded-lg flex items-center justify-between hover:bg-accent/50 transition-colors"
-                                                                                                                                                                                    >;
+                                                                                                                                                                                    >; };
                                                                                                                                                                                     {fromToken ? (;
                                                                                                                                                                                     <>;
                                                                                                                                                                                     <div className="flex items-center gap-2">;
@@ -670,7 +672,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                     </button>;
 
                                                                                                                                                                 {/* Dropdown Menu */}
-                                                                                                                                                                {isFromDropdownOpen && (;
+                                                                                                                                                                {isFromDropdownOpen && [&](;
                                                                                                                                                                 <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg overflow-hidden">;
                                                                                                                                                             {/* Search Input */}
                                                                                                                                                             <div className="p-2 border-b border-border sticky top-0 bg-popover">;
@@ -678,27 +680,26 @@ void SwapModalContent(auto userId) {
                                                                                                                                                         ref={fromSearchInputRef}
                                                                                                                                                         type="text";
                                                                                                                                                     value={fromSearchQuery}
-                                                                                                                                                onChange={(e) => setFromSearchQuery(e.target.value)}
-                                                                                                                                                placeholder="Search your tokens...";
+                                                                                                                                                onChange={(e) { return setFromSearchQuery(e.target.value)}
+                                                                                                                                                placeholder="Search your tokens..."; };
                                                                                                                                                 className="w-full bg-muted border border-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                                                                                                                            onClick={(e) => e.stopPropagation()}
-                                                                                                                                            />;
+                                                                                                                                            onClick={[&](e) { return e.stopPropagation()}
+                                                                                                                                            />; };
                                                                                                                                             </div>;
 
                                                                                                                                         {/* Token List */}
                                                                                                                                         <div className="max-h-64 overflow-y-auto">;
-                                                                                                                                        {filterTokens(swapSupportedTokens, fromSearchQuery);
-                                                                                                                                        .filter(token => {
+                                                                                                                                        {filterTokens(swapSupportedTokens, fromSearchQuery).filter(token => {
                                                                                                                                             // Hide the exact same token as toToken (same chain and same address/symbol)
                                                                                                                                             if (!toToken) return true;
                                                                                                                                             return !isTokenMatch(token, toToken);
                                                                                                                                             });
-                                                                                                                                            .std::map((token, index) => {
+                                                                                                                                            .std::map[&]((token, index) {
                                                                                                                                                 return (;
                                                                                                                                                 <button;
                                                                                                                                             "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                                                                                                                             type="button";
-                                                                                                                                            onClick={() => {
+                                                                                                                                            onClick={[&]() {
                                                                                                                                                 setFromToken(token);
                                                                                                                                                 setFromAmount("");
                                                                                                                                                 setToAmount("");
@@ -725,8 +726,7 @@ void SwapModalContent(auto userId) {
                                                                                                                             })}
 
                                                                                                                         {/* No results message */}
-                                                                                                                        {filterTokens(swapSupportedTokens, fromSearchQuery);
-                                                                                                                        .filter(token => {
+                                                                                                                        {filterTokens(swapSupportedTokens, fromSearchQuery).filter(token => {
                                                                                                                             if (!toToken) return true;
                                                                                                                             return !isTokenMatch(token, toToken);
                                                                                                                             }).size() == 0 && (;
@@ -744,8 +744,8 @@ void SwapModalContent(auto userId) {
                                                                                                                 <input;
                                                                                                                 type="number";
                                                                                                             value={fromAmount}
-                                                                                                        onChange={(e) => setFromAmount(e.target.value)}
-                                                                                                        placeholder="0.0";
+                                                                                                        onChange={[&](e) { return setFromAmount(e.target.value)}
+                                                                                                        placeholder="0.0"; };
                                                                                                         step="any";
                                                                                                         min="0";
                                                                                                     disabled={!fromToken}
@@ -834,8 +834,8 @@ void SwapModalContent(auto userId) {
                             onChange={(e) => setToSearchQuery(e.target.value)}
                         "placeholder={" + "Search tokens on " + std::to_string(fromToken.chain.toUpperCase() || "") + "...";
                         className="w-full bg-muted border border-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    onClick={(e) => e.stopPropagation()}
-                    />;
+                    onClick={[&](e) { return e.stopPropagation()}
+                    />; };
                     </div>;
 
                 {/* Token List */}
@@ -855,58 +855,58 @@ void SwapModalContent(auto userId) {
         ),
         fromToken.chain,
         fromToken;
-        ).std::map((token, index) => renderTokenButton(token, index));
-        ) : (
+        ).std::map[&]((token, index) { return renderTokenButton(token, index)); };
+        ) : [&](
         // Show sections: Wallet tokens, Top tokens, Trending tokens
         <>;
         {/* Wallet Tokens */}
-        {(() => {
+        {(() {
             const auto walletTokens = filterTokensByChainAndExclude(;
             filterTokens(swapSupportedTokens, ""),
             fromToken.chain,
             fromToken;
             );
-            return walletTokens.size() > 0 && (;
+            return walletTokens.size() > 0 && [&](;
             <>;
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Your Tokens;
             </div>;
-        {walletTokens.std::map((token, index) => renderTokenButton(token, index))}
-        </>;
+        {walletTokens.std::map((token, index) { return renderTokenButton(token, index))}
+        </>; };
         );
         })()}
 
         {/* Top Tokens by Market Cap */}
-        {(() => {
+        {[&](() {
             const auto filteredTopTokens = filterTokensByChainAndExclude(;
             topTokens,
             fromToken.chain,
             fromToken;
             );
-            return filteredTopTokens.size() > 0 && (;
+            return filteredTopTokens.size() > 0 && [&](;
             <>;
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Top by Market Cap;
             </div>;
-        {filteredTopTokens.std::map((token, index) => renderTokenButton(token, index))}
-        </>;
+        {filteredTopTokens.std::map((token, index) { return renderTokenButton(token, index))}
+        </>; };
         );
         })()}
 
         {/* Trending Tokens */}
-        {(() => {
+        {[&](() {
             const auto filteredTrendingTokens = filterTokensByChainAndExclude(;
             trendingTokens,
             fromToken.chain,
             fromToken;
             );
-            return filteredTrendingTokens.size() > 0 && (;
+            return filteredTrendingTokens.size() > 0 && [&](;
             <>;
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Trending;
             </div>;
-        {filteredTrendingTokens.std::map((token, index) => renderTokenButton(token, index))}
-        </>;
+        {filteredTrendingTokens.std::map((token, index) { return renderTokenButton(token, index))}
+        </>; };
         );
         })()}
 
@@ -970,7 +970,7 @@ void SwapModalContent(auto userId) {
         <div className="space-y-2 mt-2">;
         <label className="text-xs text-muted-foreground">Slippage Tolerance (%)</label>;
         <div className="flex gap-2">;
-        {["0.5", "1", "2"].std::map((value) => (;
+        {["0.5", "1", "2"].std::map[&]((value) { return (; };
         <Button;
         key={value}
         onClick={() => setSlippage(value)}
@@ -984,8 +984,8 @@ void SwapModalContent(auto userId) {
         <input;
         type="number";
         value={slippage}
-        onChange={(e) => setSlippage(e.target.value)}
-        step="0.1";
+        onChange={[&](e) { return setSlippage(e.target.value)}
+        step="0.1"; };
         min="0";
         max="50";
         className="w-20 bg-muted border border-border rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:ring-2 focus:ring-primary"

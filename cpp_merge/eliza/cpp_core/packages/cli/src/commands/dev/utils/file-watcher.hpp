@@ -24,7 +24,7 @@ namespace elizaos {
 /**
  * Find TypeScript/JavaScript files in a directory
  */
-std::vector<std::string> findTsFiles(const std::string& dir, const std::string& watchDir);
+std::vector<std::string> findTsFiles(const std:& dir, const std:& watchDir);
 
 /**
  * Sets up file watching for the given directory

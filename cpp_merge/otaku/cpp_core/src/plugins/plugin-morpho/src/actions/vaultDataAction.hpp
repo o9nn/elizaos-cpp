@@ -21,8 +21,8 @@ namespace elizaos {
 
 
 struct VaultInfoParams {
-    std::optional<std::string> vault;
-    std::optional<std::string> chain;
+    std::optional<std:> vault;
+    std::optional<std:> chain;
 };
 
 using VaultInfoInput = {

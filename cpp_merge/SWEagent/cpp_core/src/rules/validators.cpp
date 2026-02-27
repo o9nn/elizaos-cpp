@@ -1,27 +1,31 @@
 #include "validators.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::string& language) {
+std::variant<PythonValidator, TypeScriptValidator> getValidator(const std:& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return language == "python" ? new PythonValidator() : new TypeScriptValidator();
+    return language == "python" ? std::make_unique<PythonValidator>() : std::make_unique<TypeScriptValidator>();
 
 }
 
-std::future<ValidationResult> validateFile(const std::string& filePath) {
+std::future<ValidationResult> validateFile(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filePath);
     const auto content = fs.promises.readFile(filePath, "utf-8");
 
     if (ext == '.py') {
-        const auto validator = new PythonValidator();
+        const auto validator = std::make_unique<PythonValidator>();
         return validator.validate(content, filePath);
         } else if (ext == ".ts" || ext == ".tsx") {
-            const auto validator = new TypeScriptValidator();
+            const auto validator = std::make_unique<TypeScriptValidator>();
             return validator.validate(content, filePath);
             } else {
                 return {
@@ -41,13 +45,13 @@ std::future<std::vector<ValidationResult>> validateFiles(const std::vector<std::
 
 }
 
-std::string formatValidationResults(const std::vector<ValidationResult>& results) {
+std: formatValidationResults(const std::vector<ValidationResult>& results) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> output = [];
 
     for (const auto& result : results)
-        if (result.violations.length == 0 && result.warnings.length == 0) {
+        if (result.violations.size() == 0 && result.warnings.size() == 0) {
             continue;
         }
 
@@ -64,7 +68,7 @@ std::string formatValidationResults(const std::vector<ValidationResult>& results
         }
     }
 
-    if (output.length == 0) {
+    if (output.size() == 0) {
         return "All files passed validation!";
     }
 

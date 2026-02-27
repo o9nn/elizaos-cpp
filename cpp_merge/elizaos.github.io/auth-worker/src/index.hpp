@@ -28,8 +28,8 @@ template <typename RET>
 RET getCorsHeaders(std::shared_ptr<Env> env)
 {
     return object{
-        object::pair{std::string("Access-Control-Allow-Origin"), env->ALLOWED_ORIGIN}, 
-        object::pair{std::string("Access-Control-Allow-Credentials"), std::string("true")}
+        object::pair{std:("Access-Control-Allow-Origin"), env->ALLOWED_ORIGIN}, 
+        object::pair{std:("Access-Control-Allow-Credentials"), std:("true")}
     };
 };
 

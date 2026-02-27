@@ -20,7 +20,7 @@ namespace elizaos {
 
 
 struct EntityWalletResult {
-    std::string walletAddress;
+    std: walletAddress;
 };
 
 struct EntityWalletError {
@@ -33,6 +33,6 @@ using EntityWalletResponse = std::variant<EntityWalletResult, EntityWalletError>
  * Retrieves entity wallet information from runtime and validates it exists.
  * Returns either the wallet address on success, or a complete ActionResult on failure.
  */
-std::future<EntityWalletResponse> getEntityWallet(IAgentRuntime runtime, Memory message, const std::string& actionName, std::optional<HandlerCallback> callback);
+std::future<EntityWalletResponse> getEntityWallet(IAgentRuntime runtime, Memory message, const std:& actionName, std::optional<HandlerCallback> callback);
 
 } // namespace elizaos

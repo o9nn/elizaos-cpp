@@ -6,14 +6,14 @@ array<string> findTsFiles(string dir, string watchDir)
     try
     {
         auto entries = readdirSync(dir, object{
-            object::pair{std::string("withFileTypes"), true}
+            object::pair{std:("withFileTypes"), true}
         });
         for (auto& entry : entries)
         {
             auto fullPath = path->join(dir, entry->name);
-            if (AND((AND((AND((entry->isDirectory()), (!entry->name->startsWith(std::string("."))))), (entry->name != std::string("node_modules")))), (entry->name != std::string("dist")))) {
+            if (AND((AND((AND((entry->isDirectory()), (!entry->name->startsWith(std:("."))))), (entry->name != std:("node_modules")))), (entry->name != std:("dist")))) {
                 results = results->concat(findTsFiles(fullPath, watchDir));
-            } else if (AND((entry->isFile()), ((OR((OR((OR((entry->name->endsWith(std::string(".ts"))), (entry->name->endsWith(std::string(".js"))))), (entry->name->endsWith(std::string(".tsx"))))), (entry->name->endsWith(std::string(".jsx")))))))) {
+            } else if (AND((entry->isFile()), ((OR((OR((OR((entry->name->endsWith(std:(".ts"))), (entry->name->endsWith(std:(".js"))))), (entry->name->endsWith(std:(".tsx"))))), (entry->name->endsWith(std:(".jsx")))))))) {
                 results->push(path->relative(watchDir, fullPath));
             }
         }
@@ -30,34 +30,34 @@ std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> 
     try
     {
         auto absoluteDir = path->resolve(dir);
-        auto srcDir = path->join(absoluteDir, std::string("src"));
+        auto srcDir = path->join(absoluteDir, std:("src"));
         shared dirToWatch = (existsSync(srcDir)) ? srcDir : absoluteDir;
         auto watchOptions = utils::assign(object{
         }, DEFAULT_WATCHER_CONFIG, config);
         shared watcher = chokidar->watch(dirToWatch, watchOptions);
         auto tsFiles = findTsFiles(dirToWatch, dirToWatch);
-        console->info(std::string("Found ") + tsFiles->get_length() + std::string(" TypeScript/JavaScript files in the watched directory"));
+        console->info(std:("Found ") + tsFiles->get_length() + std:(" TypeScript/JavaScript files in the watched directory"));
         if (tsFiles->get_length() > 0) {
-            console->info(std::string("Sample files: ") + tsFiles->slice(0, 3)->join(std::string(", ")) + string_empty + (tsFiles->get_length() > 3) ? std::string("...") : string_empty + string_empty);
+            console->info(std:("Sample files: ") + tsFiles->slice(0, 3)->join(std:(", ")) + string_empty + (tsFiles->get_length() > 3) ? std:("...") : string_empty + string_empty);
         }
         shared debounceTimer = nullptr;
-        watcher->on(std::string("ready"), [=]() mutable
+        watcher->on(std:("ready"), [=]() mutable
         {
             auto watchedPaths = watcher->getWatched();
             auto pathsCount = Object->keys(watchedPaths)->get_length();
             if (pathsCount == 0) {
-                console->warn(std::string("No directories are being watched! File watching may not be working."));
-                watcher->add(string_empty + dirToWatch + std::string("/**/*.{ts,js,tsx,jsx}"));
+                console->warn(std:("No directories are being watched! File watching may not be working."));
+                watcher->add(string_empty + dirToWatch + std:("/**/*.{ts,js,tsx,jsx}"));
             }
-            console->log(std::string("✓ Watching for file changes in ") + path->relative(process->cwd(), dirToWatch) + string_empty);
+            console->log(std:("✓ Watching for file changes in ") + path->relative(process->cwd(), dirToWatch) + string_empty);
         }
         );
-        watcher->on(std::string("all"), [=](auto _event, auto filePath) mutable
+        watcher->on(std:("all"), [=](auto _event, auto filePath) mutable
         {
-            if (!(new RegExp(std::string("\.(ts|js|tsx|jsx)")))->test(filePath)) {
+            if (!(new RegExp(std:("\.(ts|js|tsx|jsx)")))->test(filePath)) {
                 return;
             }
-            console->info(std::string("File changed: ") + path->relative(dirToWatch, filePath) + string_empty);
+            console->info(std:("File changed: ") + path->relative(dirToWatch, filePath) + string_empty);
             if (debounceTimer) {
                 clearTimeout(debounceTimer);
             }
@@ -69,12 +69,12 @@ std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> 
             , 300);
         }
         );
-        watcher->on(std::string("error"), [=](auto error) mutable
+        watcher->on(std:("error"), [=](auto error) mutable
         {
-            console->error(std::string("Chokidar watcher error: ") + error + string_empty);
+            console->error(std:("Chokidar watcher error: ") + error + string_empty);
         }
         );
-        process->on(std::string("SIGINT"), [=]() mutable
+        process->on(std:("SIGINT"), [=]() mutable
         {
             watcher->close()->then([=]() mutable
             {
@@ -86,7 +86,7 @@ std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> 
     }
     catch (const any& error)
     {
-        console->error(std::string("Error setting up file watcher: ") + error["message"] + string_empty);
+        console->error(std:("Error setting up file watcher: ") + error["message"] + string_empty);
     }
     return std::shared_ptr<Promise<void>>();
 };
@@ -111,13 +111,13 @@ std::function<void()> createDebouncedHandler(std::function<void()> handler, doub
 
 
 std::shared_ptr<WatcherConfig> DEFAULT_WATCHER_CONFIG = object{
-    object::pair{std::string("ignored"), array<string>{ std::string("**/node_modules/**"), std::string("**/dist/**"), std::string("**/.git/**") }}, 
-    object::pair{std::string("ignoreInitial"), true}, 
-    object::pair{std::string("persistent"), true}, 
-    object::pair{std::string("followSymlinks"), false}, 
-    object::pair{std::string("depth"), 99}, 
-    object::pair{std::string("usePolling"), false}, 
-    object::pair{std::string("interval"), 1000}
+    object::pair{std:("ignored"), array<string>{ std:("**/node_modules/**"), std:("**/dist/**"), std:("**/.git/**") }}, 
+    object::pair{std:("ignoreInitial"), true}, 
+    object::pair{std:("persistent"), true}, 
+    object::pair{std:("followSymlinks"), false}, 
+    object::pair{std:("depth"), 99}, 
+    object::pair{std:("usePolling"), false}, 
+    object::pair{std:("interval"), 1000}
 };
 
 void Main(void)

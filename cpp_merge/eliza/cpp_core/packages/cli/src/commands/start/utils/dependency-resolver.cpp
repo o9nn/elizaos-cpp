@@ -1,17 +1,21 @@
 #include "dependency-resolver.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::string, Plugin>& availablePlugins, bool isTestMode = false) {
+std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std:, Plugin>& availablePlugins, bool isTestMode = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> resolutionOrder = [];
     const auto visited = new Set<string>();
     const auto visiting = new Set<string>();
 
-    std::function visit(pluginName: std::string) {
+    std::function visit(pluginName: std:) {
         if (!availablePlugins.has(pluginName)) {
             std::cout << "Plugin dependency \"" + pluginName + "\" not found and will be skipped." << std::endl;
             return;
@@ -45,10 +49,10 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
     }
 
     const auto finalPlugins = resolutionOrder;
-    .std::map((name) => availablePlugins.get(name));
-    .filter((p) => p)[];
+    .std::map[&]((name) { return availablePlugins.get(name)); };
+    .filter[&]((p) { return p)[]; };
 
-    std::cout << "Final plugins being loaded: " + std::to_string(finalPlugins.std::map((p) => p.name).join(", ")) << std::endl;
+    std::cout << "Final plugins being loaded: " + std::to_string[&](finalPlugins.std::map((p) { return p.name).join(", ")) << std::endl; };
 
     return finalPlugins;
 

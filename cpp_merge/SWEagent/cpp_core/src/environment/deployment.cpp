@@ -12,7 +12,7 @@ AbstractDeployment getDeployment(DeploymentConfig config) {
             // case "docker":
             return new DockerDeployment(config);
             // default:
-            throw std::runtime_error(`Unknown deployment type: ${config.type}`);
+            throw std::runtime_error("Unknown deployment type: " + std::to_string(config.type) + "");
         }
 
     } catch (const std::exception& e) {

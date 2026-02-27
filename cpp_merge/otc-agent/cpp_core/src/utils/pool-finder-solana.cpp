@@ -1,10 +1,13 @@
 #include "pool-finder-solana.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isRateLimitError(const std::any& error) {
+bool isRateLimitError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
@@ -22,11 +25,11 @@ bool isRateLimitError(const std::any& error) {
 std::future<void> delay(double ms) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    new Promise((resolve) => setTimeout(resolve, ms));
+    new Promise[&]((resolve) { return setTimeout(resolve, ms)); };
 
 }
 
-std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, std::string cluster = "mainnet", std::optional<Connection> rpcConnection) {
+std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std:& tokenMint, std: cluster = "mainnet", std::optional<Connection> rpcConnection) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -100,14 +103,14 @@ std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string&
 
                                 const auto allPools = [...pumpSwapPools, ...raydiumPools];
 
-                                if (allPools.length == 0) {
+                                if (allPools.size() == 0) {
                                     // Cache null result too
                                     setCache(cacheKey, nullptr, SOLANA_POOL_CACHE_TTL_MS);
                                     return nullptr;
                                 }
 
                                 // Sort by TVL descending
-                                allPools.sort((a, b) => b.tvlUsd - a.tvlUsd);
+                                allPools.sort[&]((a, b) { return b.tvlUsd - a.tvlUsd); };
 
                                 const auto bestPool = allPools[0];
                                 setCache(cacheKey, bestPool, SOLANA_POOL_CACHE_TTL_MS);
@@ -119,7 +122,7 @@ std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string&
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std:& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -179,7 +182,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
                             for (const auto& account : all)
                                 try {
                                     const auto data = account.account.data;
-                                    const auto readPubkey = (offset: number) =>;
+                                    const auto readPubkey = (offset) =>;
                                     new PublicKey(data.subarray(offset, offset + 32));
 
                                     // PumpSwap pool layout (from Python code):
@@ -193,7 +196,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
                                     const auto poolQuoteTokenAccount = readPubkey(171);
 
                                     // PumpSwap typically pairs with WSOL (SOL)
-                                    std::string baseToken = nullptr;
+                                    std: baseToken = nullptr;
                                     std::optional<PublicKey> otherMint = nullptr;
 
                                     if (quoteMint.equals(USDC_MINT) || baseMint.equals(USDC_MINT)) {
@@ -329,7 +332,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std:& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -390,13 +393,13 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
                         // Process results (same as before)
                         for (const auto& account : all)
                             const auto data = account.account.data;
-                            const auto readPubkey = (offset: number) =>;
+                            const auto readPubkey = (offset) =>;
                             new PublicKey(data.subarray(offset, offset + 32));
 
                             const auto coinMint = readPubkey(400);
                             const auto pcMint = readPubkey(432);
 
-                            std::string baseToken = nullptr;
+                            std: baseToken = nullptr;
                             std::optional<PublicKey> otherMint = nullptr;
 
                             if (coinMint.equals(USDC_MINT) || pcMint.equals(USDC_MINT)) {

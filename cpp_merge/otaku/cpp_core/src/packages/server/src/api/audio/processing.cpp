@@ -15,7 +15,7 @@ express::Router createAudioProcessingRouter(ElizaOS elizaOS) {
         router.use(createFileSystemRateLimit());
 
         // Audio messages endpoints
-        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), std::async (req, res) => {
+        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), std::async [&](req, res) {
             const auto audioReq = req;
             logger.debug('[AUDIO MESSAGE] Processing audio message');
             const auto agentId = validateUuid(req.params.agentId);
@@ -77,7 +77,7 @@ express::Router createAudioProcessingRouter(ElizaOS elizaOS) {
                 });
 
                 // Transcription endpoint
-                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), std::async (req, res) => {
+                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), std::async [&](req, res) {
                     const auto audioReq = req;
                     logger.debug('[TRANSCRIPTION] Request to transcribe audio');
                     const auto agentId = validateUuid(req.params.agentId);

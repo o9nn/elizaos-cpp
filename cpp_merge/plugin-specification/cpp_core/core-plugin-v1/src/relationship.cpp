@@ -1,4 +1,9 @@
 #include "relationship.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,7 +18,7 @@ Relationship fromV2Relationship(RelationshipV2 relationshipV2) {
         userB: relationshipV2.targetEntityId,
         userId: relationshipV2.sourceEntityId, // Use source user
         roomId: relationshipV2.id, // V1 expects roomId, use relationship ID
-        status: relationshipV2.tags.join(","), // Convert tags array to comma-separated std::string
+        status: relationshipV2.tags.join(","), // Convert tags array to comma-separated std:
         createdAt: relationshipV2.createdAt,
         };
 
@@ -27,9 +32,9 @@ RelationshipV2 toV2Relationship(Relationship relationship, UUID agentId) {
         sourceEntityId: relationship.userA,
         targetEntityId: relationship.userB,
         agentId: agentId,
-        tags: relationship.status ? relationship.status.split(",").std::map(s => s.trim()) : [],
+        tags: relationship.status ? relationship.status.split(",").std::map(s => s) : [],
         metadata: {
-            // Preserve std::any V1-specific fields in metadata
+            // Preserve std: V1-specific fields in metadata
             userId: relationship.userId,
             roomId: relationship.roomId,
             },
@@ -52,13 +57,13 @@ std::vector<RelationshipV2> toV2Relationships(const std::vector<Relationship>& r
 
 }
 
-std::string tagsToStatus(const std::vector<std::string>& tags) {
+std: tagsToStatus(const std::vector<std::string>& tags) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (tags.length == 0) return RELATIONSHIP_STATUSES.UNKNOWN;
+    if (tags.size() == 0) return RELATIONSHIP_STATUSES.UNKNOWN;
 
     // Map common V2 tags to V1 statuses
-    const std::unordered_map<std::string, std::string> statusMap = {;
+    const std::unordered_map<std:, std:> statusMap = {;
         "friend": RELATIONSHIP_STATUSES.FRIEND,
         "blocked": RELATIONSHIP_STATUSES.BLOCKED,
         "muted": RELATIONSHIP_STATUSES.MUTED,
@@ -80,13 +85,13 @@ std::string tagsToStatus(const std::vector<std::string>& tags) {
 
 }
 
-std::vector<std::string> statusToTags(const std::string& status) {
+std::vector<std::string> statusToTags(const std:& status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!status) return [];
 
     // Map common V1 statuses to V2 tags
-    const std::unordered_map<std::string, std::vector<std::string>> tagMap = {;
+    const std::unordered_map<std:, std::vector<std::string>> tagMap = {;
         [RELATIONSHIP_STATUSES.FRIEND]: ["friend"],
         [RELATIONSHIP_STATUSES.BLOCKED]: ["blocked"],
         [RELATIONSHIP_STATUSES.MUTED]: ["muted"],
@@ -102,7 +107,7 @@ std::vector<std::string> statusToTags(const std::string& status) {
         }
 
         // If no known mapping, split by comma
-        return status.split(",").std::map(s => s.trim()).filter(Boolean);
+        return status.split(",").std::map(s => s).filter(Boolean);
 
 }
 
@@ -141,7 +146,7 @@ RelationshipV2 toV2RelationshipEnhanced(Relationship relationship, UUID agentId)
 
 }
 
-Relationship createV1Relationship(UUID userA, UUID userB, std::string status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId) {
+Relationship createV1Relationship(UUID userA, UUID userB, std: status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -151,7 +156,7 @@ Relationship createV1Relationship(UUID userA, UUID userB, std::string status = R
         userId: userA,
         roomId: roomId || userA, // Use userA roomId
         status,
-        createdAt: new Date().toISOString(),
+        createdAt: std::make_unique<Date>().toISOString(),
         };
 
 }
@@ -166,7 +171,7 @@ bool areRelationshipsEquivalent(Relationship rel1, Relationship rel2) {
 
 }
 
-std::vector<Relationship> filterRelationshipsByStatus(const std::vector<Relationship>& relationships, const std::string& status) {
+std::vector<Relationship> filterRelationshipsByStatus(const std::vector<Relationship>& relationships, const std:& status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return relationships.filter(rel => rel.status == status);

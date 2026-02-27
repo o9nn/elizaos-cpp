@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 struct MediaContentProps {
-    std::string url;
-    std::optional<std::string> title;
-    std::optional<std::string> className;
+    std: url;
+    std::optional<std:> title;
+    std::optional<std:> className;
     std::optional<double> maxWidth;
     std::optional<double> maxHeight;
 };

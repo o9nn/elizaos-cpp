@@ -19,10 +19,10 @@ void createButtonState() {
 void bindRotations(auto quaternion, auto euler) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    euler._onChange(() => {
+    euler._onChange[&](() {
         quaternion.setFromEuler(euler, false);
         });
-        quaternion._onChange(() => {
+        quaternion._onChange[&](() {
             euler.setFromQuaternion(quaternion, std::nullopt, false);
             });
 

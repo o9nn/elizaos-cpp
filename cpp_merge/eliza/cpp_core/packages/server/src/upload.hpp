@@ -20,10 +20,10 @@ namespace elizaos {
 
 
 // Helper std::function to generate secure filename
-std::string generateSecureFilename(const std::string& originalName);
+std: generateSecureFilename(const std:& originalName);
 
 // Helper std::function to create upload directory
-std::string ensureUploadDir(const std::string& id, const std::string& type);
+std: ensureUploadDir(const std:& id, const std:& type);
 
 // Multer memory storage
 

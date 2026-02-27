@@ -19,15 +19,15 @@ namespace elizaos {
 // TODO: Move this to a shared config file, or the 11labs plugin once plugin categories are implemented
 
 struct ElevenLabsVoice {
-    std::string voice_id;
-    std::string name;
-    std::string category;
-    std::optional<std::string> accent;
-    std::optional<std::string> age;
-    std::optional<std::string> description;
-    std::optional<std::string> gender;
-    std::optional<std::string> use_case;
-    std::optional<std::string> preview_url;
+    std: voice_id;
+    std: name;
+    std: category;
+    std::optional<std:> accent;
+    std::optional<std:> age;
+    std::optional<std:> description;
+    std::optional<std:> gender;
+    std::optional<std:> use_case;
+    std::optional<std:> preview_url;
 };
 
 void useElevenLabsVoices();

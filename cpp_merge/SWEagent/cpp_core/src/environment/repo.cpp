@@ -1,10 +1,12 @@
 #include "repo.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::vector<std::string> getGitResetCommands(const std::string& baseCommit) {
+std::vector<std::string> getGitResetCommands(const std:& baseCommit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return [;
@@ -18,13 +20,13 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit) {
 
 }
 
-Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = "HEAD", std::string type = "auto") {
+Repo repoFromSimplifiedInput(const std:& input, std: baseCommit = "HEAD", std: type = "auto") {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         if (type == 'auto') {
             // Auto-detect type
-            if (input.includes('github.com')) {
+            if (input.count('github.com') > 0) {
                 type = "github";
                 } else if (fs.existsSync(input)) {
                     type = "local";
@@ -41,7 +43,7 @@ Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = 
                     // case "preexisting":
                     return new PreExistingRepo({ repoName: input, baseCommit, type: "preexisting", reset: true });
                     // default:
-                    throw std::runtime_error(`Unknown repo type: ${type}`);
+                    throw std::runtime_error("Unknown repo type: " + std::to_string(type) + "");
                 }
 
     } catch (const std::exception& e) {

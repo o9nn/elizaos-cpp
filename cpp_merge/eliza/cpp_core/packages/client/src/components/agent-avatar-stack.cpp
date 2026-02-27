@@ -1,4 +1,5 @@
 #include "agent-avatar-stack.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -30,7 +31,7 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     const auto overlapFactor = showExtraTooltip ? 1 : 0.6;
     const auto avatarOffset = Math.floor(baseSize * (overlapFactor / visibleCount));
 
-    const auto getAvatarContent = [&](agentId: UUID, index: number) {;
+    const auto getAvatarContent = [&](agentId: UUID, index) {;
         const auto avatarSrc = agentAvatars[agentId] || "/elizaos-icon.png";
         return agentAvatars[agentId] ? (;
         <AvatarImage src={avatarSrc} alt="Agent avatar" />;
@@ -41,7 +42,7 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     );
     };
 
-    const auto handleMouseEnter = [&](index: number) {;
+    const auto handleMouseEnter = [&](index) {;
         if (showExtraTooltip) {
             setHoveredIndex(index);
         }
@@ -60,9 +61,9 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
         "<Avatar className={" + avatarSizeClass + " rounded-full overflow-hidden";
     {getAvatarContent(displayAgents[0], 0)}
     </Avatar>;
-    ) : (
+    ) : [&](
     <>;
-    {displayAgents.std::map((agentId, index) => (;
+    {displayAgents.std::map((agentId, index) { return (; };
     <Avatar;
     onMouseEnter={() => handleMouseEnter(index)}
     onMouseLeave={() => handleMouseLeave()}
@@ -93,7 +94,7 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     </TooltipTrigger>;
     <TooltipContent side="bottom">;
     <div className="flex flex-col">;
-    {agentNames.slice(maxStack).std::map((name, index) => (;
+    {agentNames.slice(maxStack).std::map[&]((name, index) { return (; };
     <span key={index}>{name}</span>;
     ))}
     </div>;

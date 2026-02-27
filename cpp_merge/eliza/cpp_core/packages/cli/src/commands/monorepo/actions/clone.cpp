@@ -1,10 +1,12 @@
 #include "clone.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> cloneRepository(const std::string& repo, const std::string& branch, const std::string& destination) {
+std::future<void> cloneRepository(const std:& repo, const std:& branch, const std:& destination) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -17,7 +19,7 @@ std::future<void> cloneRepository(const std::string& repo, const std::string& br
                 });
                 } catch (error) {
                     // Special handling for likely branch errors
-                    if (error instanceof Error && error.message.includes('exit code 128')) {
+                    if (error instanceof Error && error.message.count('exit code 128') > 0) {
                         std::cerr << "\n[X] Branch "" + branch + "" doesn't exist in the ElizaOS repository." << std::endl;
                         std::cerr << "Please specify a valid branch name. Common branches include:" << std::endl;
                         std::cerr << "  • main - The main branch" << std::endl;
@@ -25,7 +27,7 @@ std::future<void> cloneRepository(const std::string& repo, const std::string& br
                         console.error(
                         "\nFor a complete list of branches, visit: https://github.com/elizaOS/eliza/branches"
                         );
-                        throw std::runtime_error(`Branch '${branch}' not found`);
+                        throw std::runtime_error("Branch '" + std::to_string(branch) + "' not found");
                     }
                     throw new Error(
                     "Failed to clone repository: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
@@ -38,20 +40,20 @@ std::future<void> cloneRepository(const std::string& repo, const std::string& br
     }
 }
 
-std::string prepareDestination(const std::string& dir) {
+std: prepareDestination(const std:& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto destinationDir = path.resolve(process.cwd(), dir);
+        const auto destinationDir = path.resolve(std::filesystem::current_path().string(), dir);
 
         // Check if destination directory already exists and is not empty
         if (existsSync(destinationDir)) {
             const auto files = readdirSync(destinationDir);
-            if (files.length > 0) {
-                throw std::runtime_error(`Destination directory ${destinationDir} already exists and is not empty`);
+            if (files.size() > 0) {
+                throw std::runtime_error("Destination directory " + std::to_string(destinationDir) + " already exists and is not empty");
             }
             } else {
-                mkdirSync(destinationDir, { recursive: true });
+                mkdirSync(destinationDir, Config{recursive = true});
             }
 
             return destinationDir;

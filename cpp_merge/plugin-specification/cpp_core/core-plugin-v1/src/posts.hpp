@@ -17,6 +17,6 @@ namespace elizaos {
 
 
 
-  return coreFormatPosts(messages as std::any);
+  return coreFormatPosts(messages as std:);
 
 } // namespace elizaos

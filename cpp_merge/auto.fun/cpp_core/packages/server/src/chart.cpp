@@ -1,10 +1,16 @@
 #include "chart.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& swap, std::optional<std::any> tokenInfo) {
+std::future<void> getLatestCandle(const std:& tokenMint, const std:& swap, std::optional<std:> tokenInfo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get a time range that covers just this swap
@@ -15,18 +21,14 @@ std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& 
     // Check if token is locked (should use Codex API)
     const auto db = getDB();
     if (!tokenInfo) {
-        tokenInfo = db;
-        .select();
-        .from(tokens);
-        .where(eq(tokens.mint, tokenMint));
-        .limit(1);
+        tokenInfo = db.select().from(tokens).where(eq(tokens.mint, tokenMint)).limit(1);
     }
 
     if (tokenInfo.status == "locked") {
         try {
             // Use the test token address only in devnet since there are no locked pools in dev
             const auto tokenAddress =;
-            process.env.NETWORK == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
+            std::getenv("NETWORK") == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
             const auto candles = fetchCodexBars(;
             tokenAddress,
             candleStart,
@@ -36,7 +38,7 @@ std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& 
             std::nullopt;
             );
 
-            if (candles.length > 0) {
+            if (candles.size() > 0) {
                 const auto idx = candles.size() - 1;
                 const auto lastRaw = candles[idx];
 
@@ -65,15 +67,11 @@ std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& 
 
 }
 
-std::future<void> fetchPriceChartData(double start, double end, double range, const std::string& tokenMint) {
+std::future<void> fetchPriceChartData(double start, double end, double range, const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
-    const auto [tokenInfo] = db;
-    .select();
-    .from(tokens);
-    .where(eq(tokens.mint, tokenMint));
-    .limit(1);
+    const auto [tokenInfo] = db.select().from(tokens).where(eq(tokens.mint, tokenMint)).limit(1);
 
     if (!tokenInfo) {
         std::cerr << "Token " + tokenMint + " not found" << std::endl;
@@ -82,12 +80,12 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
 
     if (tokenInfo.status != "locked") {
         // Load price histories from DB
-        std::vector<std::any> swapRecordsRaw = [];
+        std::vector<std::string> swapRecordsRaw = [];
         try {
             const auto redisCache = getGlobalRedisCache();
             const auto listKey = "swapsList:" + tokenMint;
             const auto swapStrings = redisCache.lrange(listKey, 0, -1); // Fetch all swaps;
-            swapRecordsRaw = swapStrings.std::map((s) => /* JSON.parse */ s);
+            swapRecordsRaw = swapStrings.std::map[&]((s) { return /* JSON::parse */ s); };
             logger.log(
             "Chart: Retrieved " + swapRecordsRaw.size() + " raw swaps from Redis list " + listKey
             );
@@ -101,31 +99,31 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
             const auto solPrice = getSOLPrice();
 
             // Filter swaps by timestamp in application code
-            const auto filteredSwaps = swapRecordsRaw.filter((swap) => {;
+            const auto filteredSwaps = swapRecordsRaw.filter[&]((swap) {;
                 const auto swapTime = new Date(swap.timestamp).getTime();
                 return swapTime >= start && swapTime <= end;
                 });
 
                 // Convert to PriceFeedInfo array - ensure timestamp is not null
                 const std::vector<PriceFeedInfo> priceFeeds = filteredSwaps;
-                .filter(;
+                .filter[&](;
                 (swap: {
-                    price: number | nullptr; // Allow nullptr price
-                    priceUsd: number | nullptr | std::nullopt; // Allow nullptr priceUsd
-                    timestamp: std::string | Date; // Allow std::string or Date
-                    direction: number;
-                    amountIn: number | nullptr;
-                    amountOut: number | nullptr;
-                    }) => swap.price != nullptr && swap.timestamp != nullptr;
+                    price | nullptr; // Allow nullptr price
+                    priceUsd | nullptr | std::nullopt; // Allow nullptr priceUsd
+                    timestamp: std: | Date; // Allow std: or Date
+                    direction;
+                    amountIn | nullptr;
+                    amountOut | nullptr;
+                    }) { return swap.price != nullptr && swap.timestamp != nullptr; };
                     ) // Filter out swaps with nullptr price or timestamp;
                     .std::map(;
                     (swap: {
-                        priceUsd: number | std::nullopt;
-                        price: number; // Not nullptr after filter
-                        timestamp: std::string | Date; // Not nullptr after filter
-                        direction: number;
-                        amountIn: number | nullptr;
-                        amountOut: number | nullptr;
+                        priceUsd | std::nullopt;
+                        price; // Not nullptr after filter
+                        timestamp: std: | Date; // Not nullptr after filter
+                        direction;
+                        amountIn | nullptr;
+                        amountOut | nullptr;
                         }) => ({
                             price: swap.priceUsd || swap.price, // Use priceUsd if available, otherwise fallback to price
                             priceUsd: swap.priceUsd || std::nullopt,
@@ -140,14 +138,14 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                             );
 
                             // convert price to USD if priceUSD is not available
-                            priceFeeds.forEach((feed) => {
+                            priceFeeds.forEach[&]((feed) {
                                 if (!feed.priceUsd) {
                                     feed.price = feed.price * solPrice;
                                 }
                             }
                             );
 
-                            if (!priceFeeds.length) return [];
+                            if (!priceFeeds.size()) return [];
 
                             const auto cdFeeds = getCandleData(priceFeeds, range);
 
@@ -156,7 +154,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                 try {
                                     // Use the test token address only in devnet since there are no locked pools in dev
                                     const auto tokenAddress =;
-                                    process.env.NETWORK == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
+                                    std::getenv("NETWORK") == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
 
                                     // Convert range to Codex resolution format
                                     CodexBarResolution resolution = "1";
@@ -191,11 +189,11 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                     );
 
                                     // For 120 minute resolution, we need to combine 2 x 60m candles
-                                    if (range == 120 && candles.length > 1) {
-                                        const std::vector<std::any> combined = [];
-                                        for (int i = 0; i < candles.length; i += 2) {
+                                    if (range == 120 && candles.size() > 1) {
+                                        const std::vector<std::string> combined = [];
+                                        for (int i = 0; i < candles.size(); i += 2) {
                                             // If we have a std::pair, combine them
-                                            if (i + 1 < candles.length) {
+                                            if (i + 1 < candles.size()) {
                                                 const auto out = {;
                                                     open: candles[i].open,
                                                     high: Math.max(candles[i].high, candles[i + 1].high),
@@ -229,7 +227,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                                         std::cout << "Falling back to getTokenEvents API" << std::endl;
                                                         // Use the test token address only in devnet
                                                         const auto tokenAddress =;
-                                                        process.env.NETWORK == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
+                                                        std::getenv("NETWORK") == "devnet" ? DEV_TEST_TOKEN_ADDRESS : tokenMint;
 
                                                         // Fetch price history from Codex API using our utility std::function
                                                         const auto tokenEvents = fetchCodexTokenEvents(;
@@ -241,14 +239,14 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
 
                                                         // Convert to price feed format - ensure timestamps are never null
                                                         const std::vector<PriceFeedInfo> priceFeeds = tokenEvents;
-                                                        .filter((item) => item.timestamp != nullptr) // Filter out items with nullptr timestamps;
+                                                        .filter[&]((item) { return item.timestamp != nullptr) // Filter out items with nullptr timestamps; };
                                                         .std::map((item) => ({
                                                             price: parseFloat(item.token1PoolValueUsd || "0"),
                                                             timestamp: new Date(item.timestamp * 1000), // Now safe since we filtered
                                                             volume: parseFloat(item.data.amount0 || "0"),
                                                             }));
 
-                                                            if (!priceFeeds.length) return [];
+                                                            if (!priceFeeds.size()) return [];
 
                                                             const auto cdFeeds = getCandleData(priceFeeds, range);
                                                             return cdFeeds;
@@ -261,7 +259,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
 
 }
 
-std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& token, double start, double end, double range) {
+std::future<std::vector<std::string>> fetchLockedTokenChartData(const std:& token, double start, double end, double range) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -281,7 +279,7 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
             const auto data = (response.json());
 
             // Check if we have valid data
-            if (!data || !data.pairs || data.pairs.length == 0) {
+            if (!data || !data.pairs || data.pairs.size() == 0) {
                 std::cerr << "No pairs found for token " + token << std::endl;
                 return [];
             }
@@ -325,7 +323,7 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
             // Convert the candles to our expected format
             // Filter by time range
             const auto candles = chartData.priceCandles;
-            .filter((candle) => {
+            .filter[&]((candle) {
                 const auto candleTime = candle.time * 1000; // Convert to ms;
                 return candleTime >= start && candleTime <= end;
                 });
@@ -359,13 +357,13 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
 std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, double rangeMinutes) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (candles.length == 0) return [];
+    if (candles.size() == 0) return [];
 
     const auto rangeMs = rangeMinutes * 60 * 1000; // Convert minutes to milliseconds;
     const std::vector<Candle> groupedCandles = [];
 
     // Sort candles by time
-    const auto sortedCandles = [...candles].sort((a, b) => a.time - b.time);
+    const auto sortedCandles = [...candles].sort[&]((a, b) { return a.time - b.time); };
 
     std::vector<Candle> currentGroup = [];
     auto currentRangeStart =;
@@ -381,7 +379,7 @@ std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, doub
             currentGroup.push_back(candle);
             } else {
                 // Process current group and start a new one
-                if (currentGroup.length > 0) {
+                if (currentGroup.size() > 0) {
                     groupedCandles.push_back(;
                     createCandleFromGroup(currentGroup, currentRangeStart);
                     );
@@ -407,7 +405,7 @@ std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, doub
             }
 
             // Process the last group
-            if (currentGroup.length > 0) {
+            if (currentGroup.size() > 0) {
                 groupedCandles.push_back(createCandleFromGroup(currentGroup, currentRangeStart));
             }
 
@@ -420,9 +418,9 @@ Candle createCandleFromGroup(const std::vector<Candle>& group, double rangeStart
 
     const auto open = group[0].open;
     const auto close = group[group.size() - 1].close;
-    const auto high = Math.max(...group.std::map((c) => c.high));
-    const auto low = Math.min(...group.std::map((c) => c.low));
-    const auto volume = group.reduce((sum, c) => sum + c.volume, 0);
+    const auto high = Math.max[&](...group.std::map((c) { return c.high)); };
+    const auto low = Math.min[&](...group.std::map((c) { return c.low)); };
+    const auto volume = group.reduce[&]((sum, c) { return sum + c.volume, 0); };
 
     return {
         open,

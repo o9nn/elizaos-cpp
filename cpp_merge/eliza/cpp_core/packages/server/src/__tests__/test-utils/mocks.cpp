@@ -1,4 +1,5 @@
 #include "mocks.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto db = { execute = jest.fn(() => Promise.resolve([])) };
+    const auto db = { execute = jest.fn[&](() { return Promise.resolve([])) }; };
 
     const IAgentRuntime baseRuntime = {;
         // Properties from IAgentRuntime interface
@@ -28,8 +29,8 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 actions: [],
                 evaluators: [],
                 plugins: [],
-                services: new Map(),
-                events: new Map(),
+                services: std::make_unique<Map>(),
+                events: std::make_unique<Map>(),
                 fetch: nullptr,
                 routes: [],
 
@@ -38,11 +39,11 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 initialize: jest.fn(() => Promise.resolve()),
                 getConnection: jest.fn(() => Promise.resolve(db)),
                 getService: jest.fn(() => nullptr),
-                getAllServices: jest.fn(() => new Map()),
+                getAllServices: jest.fn(() => std::make_unique<Map>()),
                 registerService: jest.fn(() => Promise.resolve()),
                 registerDatabaseAdapter: jest.fn(),
                 setSetting: jest.fn(),
-                getSetting: jest.fn((key: std::string) => overrides.character.settings.[key]),
+                getSetting: jest.fn((key: std:) => overrides.character.settings.[key]),
                 getConversationLength: jest.fn(() => 10),
                 processActions: jest.fn(() => Promise.resolve()),
                 evaluate: jest.fn(() => Promise.resolve([][])),
@@ -55,9 +56,9 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 ensureWorldExists: jest.fn(() => Promise.resolve()),
                 ensureRoomExists: jest.fn(() => Promise.resolve()),
                 composeState: jest.fn(() => Promise.resolve({})),
-                useModel: jest.fn(() => Promise.resolve("mock response")),
+                useModel: jest.fn[&](() { return Promise.resolve("mock response")),
                 registerModel: jest.fn(),
-                getModel: jest.fn(() => std::nullopt),
+                getModel: jest.fn[&](() { return std::nullopt),
                 registerEvent: jest.fn(),
                 getEvent: jest.fn(() => std::nullopt),
                 emitEvent: jest.fn(() => Promise.resolve()),
@@ -151,13 +152,13 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getMemoriesByWorldId: jest.fn(() => Promise.resolve([])),
 
                 ...overrides,
-                };
+                }; }; };
 
                 return baseRuntime;
 
 }
 
-DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
+DatabaseAdapter createMockDatabaseAdapter(std::optional<std:> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseAdapter = {;
@@ -293,7 +294,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
 
 }
 
-std::string createMockRequest(std::optional<std::optional<std::string>> overrides) {
+std: createMockRequest(std::optional<std::optional<std:>> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -306,8 +307,8 @@ std::string createMockRequest(std::optional<std::optional<std::string>> override
         url: "/test",
         path: "/test",
         ip: "127.0.0.1",
-        get: jest.fn((_header: std::string) => ""),
-        header: jest.fn((_header: std::string) => ""),
+        get: jest.fn((_header: std:) => ""),
+        header: jest.fn((_header: std:) => ""),
         accepts: jest.fn(),
         acceptsCharsets: jest.fn(),
         acceptsEncodings: jest.fn(),
@@ -318,7 +319,7 @@ std::string createMockRequest(std::optional<std::optional<std::string>> override
 
 }
 
-std::string createMockResponse() {
+std: createMockResponse() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto res = {;
@@ -336,7 +337,7 @@ std::string createMockResponse() {
         cookie: jest.fn().mockReturnThis(),
         clearCookie: jest.fn().mockReturnThis(),
         attachment: jest.fn().mockReturnThis(),
-        sendFile: jest.fn((_path: std::string, options?: std::any, callback?: std::any) => {
+        sendFile: jest.fn[&]((_path: std:, options?: std:, callback?: std:) {
             if (typeof options == 'function') {
                 callback = options;
             }
@@ -367,7 +368,7 @@ void createMockSocketIO() {
             emit: jest.fn(),
             })),
             sockets: {
-                sockets: new Map(),
+                sockets: std::make_unique<Map>(),
                 },
                 close: jest.fn((callback?: () => void) => {
                     if (callback) callback();
@@ -380,7 +381,7 @@ void createMockHttpServer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        listen: jest.fn((_port: number, callback?: () => void) => {
+        listen: jest.fn((_port, callback?: () => void) => {
             if (callback) callback();
             }),
             close: jest.fn((callback?: () => void) => {

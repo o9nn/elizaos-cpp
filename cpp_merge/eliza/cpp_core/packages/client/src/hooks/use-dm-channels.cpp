@@ -1,4 +1,5 @@
 #include "use-dm-channels.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,8 +12,8 @@ void useGetOrCreateDmChannel() {
     const auto { toast } = useToast();
     const auto currentUserId = getEntityId();
 
-    return useMutation({;
-        mutationFn: std::async (targetUserId: UUID) => {
+    return useMutation[&]({;
+        mutationFn: std::async (targetUserId: UUID) {
             clientLogger.info(;
             "[useGetOrCreateDmChannel] Getting or creating canonical DM channel with target:",
             targetUserId;
@@ -23,7 +24,7 @@ void useGetOrCreateDmChannel() {
                 });
                 return result;
                 },
-                onSuccess: (data) => {
+                onSuccess: [&](data) {
                     clientLogger.info("[useGetOrCreateDmChannel] Canonical DM channel created/found:", data);
                     queryClient.invalidateQueries({ queryKey: ["channels"] });
                     queryClient.invalidateQueries({ queryKey: ["dmChannels"] });
@@ -33,7 +34,7 @@ void useGetOrCreateDmChannel() {
                         queryClient.invalidateQueries({ queryKey: ["dmChannels", agentId, currentUserId] });
                     }
                     },
-                    onError: (error) => {
+                    onError: [&](error) {
                         clientLogger.error(;
                         "[useGetOrCreateDmChannel] Error creating/finding canonical DM channel:",
                         error;
@@ -53,9 +54,9 @@ void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-000
 
     const auto currentUserId = getEntityId();
 
-    return useQuery<MessageChannel[]>({;
+    return useQuery<MessageChannel[]>[&]({;
         queryKey: ["dmChannels", agentId, currentUserId], // This key will be invalidated by useCreateDmChannel
-        queryFn: std::async () => {
+        queryFn: std::async () {
             if (!agentId) return [];
             clientLogger.info(;
             "[useDmChannelsForAgent] Fetching distinct DM channels for agent:",
@@ -66,7 +67,7 @@ void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-000
             const auto result = elizaClient.messaging.getServerChannels(serverId);
             const auto allChannels = result.channels || [];
 
-            const auto dmChannels = allChannels.filter((channel) => {;
+            const auto dmChannels = allChannels.filter[&]((channel) {;
                 const auto metadata = channel.metadata || {};
                 const auto isCorrectType = channel.type == ChannelType.DM;
                 const auto isMarkedAsDm = metadata.isDm == true;
@@ -109,7 +110,7 @@ void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-000
                 dmChannels.std::map((c) => ({ id: c.id, name: c.name, metadata: c.metadata }))
                 );
 
-                return dmChannels.sort((a, b) => {;
+                return dmChannels.sort[&]((a, b) {;
                     const auto aTime = new Date(a.updatedAt || a.createdAt).getTime();
                     const auto bTime = new Date(b.updatedAt || b.createdAt).getTime();
                     return bTime - aTime;
@@ -131,21 +132,21 @@ void useCreateDmChannel() {
         const auto currentUserId = getEntityId();
         const auto navigate = useNavigate();
 
-        return useMutation({;
-            mutationFn: std::async ({ agentId, channelName }: { agentId: UUID; channelName: std::string }) => {
+        return useMutation[&]({;
+            mutationFn: std::async ({ agentId, channelName }: { agentId: UUID; channelName: std: }) {
                 clientLogger.info("[useCreateDmChannel] Creating new distinct DM channel with agent:", {
                     agentId,
                     channelName,
                     });
 
-                    if (!channelName || !channelName.trim()) {
+                    if (!channelName || !channelName) {
                         // This should ideally be caught before calling the mutation, but good to have a check.
                         throw std::runtime_error('Channel name cannot be empty for a new DM conversation.');
                     }
 
                     const auto elizaClient = createElizaClient();
                     const auto result = elizaClient.messaging.createGroupChannel({;
-                        name: channelName.trim(),
+                        name: channelName,
                         participantCentralUserIds: [currentUserId, agentId],
                         type: ChannelType.DM, // Set type to DM
                         server_id: "00000000-0000-0000-0000-000000000000", // Use the default server
@@ -154,13 +155,13 @@ void useCreateDmChannel() {
                             user1: currentUserId, // Explicitly store participants for filtering
                             user2: agentId,
                             forAgent: agentId, // Critical: associates this DM context with the specific agent
-                            createdAt: new Date().toISOString(), // Add a creation timestamp in metadata
+                            createdAt: std::make_unique<Date>().toISOString(), // Add a creation timestamp in metadata
                             },
                             });
 
                             return result; // Direct result from ElizaClient;
                             },
-                            onSuccess: (data, variables) => {
+                            onSuccess: [&](data, variables) {
                                 clientLogger.info("[useCreateDmChannel] Distinct DM channel created successfully:", data);
                                 toast({
                                     title: "New Chat Started",
@@ -173,9 +174,9 @@ void useCreateDmChannel() {
 
                                     // Navigate to the new DM chat
                                     // data.id is the channelId, variables.agentId is the agentId (target user for DM)
-                                    "navigate(" + "/chat/" + variables.agentId + "/" + data.id;
+                                    "navigate[&](" + "/chat/" + variables.agentId + "/" + data.id;
                                     },
-                                    onError: (error) => {
+                                    onError: (error) {
                                         clientLogger.error("[useCreateDmChannel] Error creating distinct DM channel:", error);
                                         toast({
                                             title: "Error Creating Chat",

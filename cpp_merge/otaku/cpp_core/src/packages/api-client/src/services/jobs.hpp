@@ -23,17 +23,17 @@ namespace elizaos {
  * with automatic response handling and polling capabilities.
  *
  * @example
- * ```typescript
+ * """typescript
  * const client = new ElizaClient({ baseUrl: 'http://localhost:3000' });
  *
  * // Create a job and poll for completion
- * const result = await client.jobs.createAndPoll({
+ * const result = client.jobs.createAndPoll({
  *   userId: 'user-uuid',
  *   content: 'What is the weather today?'
  * });
  *
- * console.log('Agent response:', result.job.result?.message.content);
- * ```
+ * console.log('Agent response:', result.job.(result ? result.message.content : nullptr));
+ * """
  */
 class JobsService extends BaseApiClient {
     /**
@@ -43,8 +43,8 @@ class JobsService extends BaseApiClient {
      * @returns Job creation response with jobId and initial status
      *
      * @example
-     * ```typescript
-     * const job = await client.jobs.create({
+     * """typescript
+     * const job = client.jobs.create({
      *   userId: 'user-uuid',
      *   content: 'What is Bitcoin price?',
      *   agentId: 'agent-uuid', // Optional - uses first available if not provided
@@ -53,7 +53,7 @@ class JobsService extends BaseApiClient {
      * });
      *
      * console.log('Job created:', job.jobId);
-     * ```
+     * """
      */
     std::async create(params: CreateJobRequest): Promise<CreateJobResponse> {
         return this.post<CreateJobResponse>('/api/messaging/jobs', params);
@@ -66,15 +66,15 @@ class JobsService extends BaseApiClient {
      * @returns Current job status and details
      *
      * @example
-     * ```typescript
-     * const job = await client.jobs.getJob('job-id-123');
+     * """typescript
+     * const job = client.jobs.getJob('job-id-123');
      *
-     * if (job.status === JobStatus.COMPLETED) {
-     *   console.log('Response:', job.result?.message.content);
-     * } else if (job.status === JobStatus.FAILED) {
+     * if (job.status == JobStatus.COMPLETED) {
+     *   console.log('Response:', job.(result ? result.message.content : nullptr));
+     * } else if (job.status == JobStatus.FAILED) {
      *   console.error('Error:', job.error);
      * }
-     * ```
+     * """
      */
 
     /**
@@ -84,16 +84,16 @@ class JobsService extends BaseApiClient {
      * @returns List of jobs matching the criteria
      *
      * @example
-     * ```typescript
+     * """typescript
      * // Get all completed jobs
-     * const completedJobs = await client.jobs.list({
+     * const completedJobs = client.jobs.list({
      *   status: JobStatus.COMPLETED,
      *   limit: 10
      * });
      *
      * // Get all jobs (default limit: 50)
-     * const allJobs = await client.jobs.list();
-     * ```
+     * const allJobs = client.jobs.list();
+     * """
      */
 
     /**
@@ -102,11 +102,11 @@ class JobsService extends BaseApiClient {
      * @returns Health status with metrics
      *
      * @example
-     * ```typescript
-     * const health = await client.jobs.health();
+     * """typescript
+     * const health = client.jobs.health();
      * console.log('Success rate:', health.metrics.successRate);
      * console.log('Active jobs:', health.statusCounts.processing);
-     * ```
+     * """
      */
 
     /**
@@ -120,21 +120,21 @@ class JobsService extends BaseApiClient {
      * @returns Poll result with final job status
      *
      * @example
-     * ```typescript
-     * const result = await client.jobs.poll('job-id-123', {
+     * """typescript
+     * const result = client.jobs.poll[&]('job-id-123', {
      *   interval: 1000, // Poll every second
      *   maxAttempts: 30, // Give up after 30 attempts
-     *   onProgress: (job, attempt) => {
-     *     console.log(`Attempt ${attempt}: ${job.status}`);
+     *   onProgress: (job, attempt) {
+     *     console.log("Attempt ${attempt}: ${job.status}");
      *   }
      * });
      *
      * if (result.success) {
-     *   console.log('Response:', result.job.result?.message.content);
+     *   console.log('Response:', result.job.(result ? result.message.content : nullptr));
      * } else {
      *   console.error('Failed:', result.job.error);
      * }
-     * ```
+     * """
      */
 
         // Calculate effective max attempts from timeout if provided
@@ -162,19 +162,19 @@ class JobsService extends BaseApiClient {
      * @returns Poll result with final job status
      *
      * @example
-     * ```typescript
+     * """typescript
      * // Simple usage
-     * const result = await client.jobs.createAndPoll({
+     * const result = client.jobs.createAndPoll({
      *   userId: 'user-uuid',
      *   content: 'What is the weather today?'
      * });
      *
      * if (result.success) {
-     *   console.log('Agent:', result.job.result?.message.content);
+     *   console.log('Agent:', result.job.(result ? result.message.content : nullptr));
      * }
      *
      * // With custom polling options
-     * const result = await client.jobs.createAndPoll(
+     * const result = client.jobs.createAndPoll[&](
      *   {
      *     userId: 'user-uuid',
      *     content: 'Complex analysis query',
@@ -183,12 +183,12 @@ class JobsService extends BaseApiClient {
      *   {
      *     interval: 2000,
      *     timeout: 120000,
-     *     onProgress: (job, attempt) => {
-     *       console.log(`Waiting... (${attempt})`);
+     *     onProgress: (job, attempt) {
+     *       console.log("Waiting... (${attempt})");
      *     }
      *   }
      * );
-     * ```
+     * """
      */
 
     /**
@@ -202,8 +202,8 @@ class JobsService extends BaseApiClient {
      * @returns Poll result with final job status
      *
      * @example
-     * ```typescript
-     * const result = await client.jobs.createAndPollWithBackoff({
+     * """typescript
+     * const result = client.jobs.createAndPollWithBackoff({
      *   userId: 'user-uuid',
      *   content: 'Analyze this complex data set'
      * }, {
@@ -212,7 +212,7 @@ class JobsService extends BaseApiClient {
      *   multiplier: 1.5,
      *   maxAttempts: 40
      * });
-     * ```
+     * """
      */
 
             // Check timeout if provided
@@ -242,9 +242,9 @@ class JobsService extends BaseApiClient {
      * @throws Error if the job fails or times out
      *
      * @example
-     * ```typescript
+     * """typescript
      * try {
-     *   const response = await client.jobs.ask(
+     *   const response = client.jobs.ask(
      *     'user-uuid',
      *     'What is the price of Bitcoin?'
      *   );
@@ -252,7 +252,7 @@ class JobsService extends BaseApiClient {
      * } catch (error) {
      *   console.error('Failed to get response:', error.message);
      * }
-     * ```
+     * """
      */
 
 

@@ -1,4 +1,9 @@
 #include "reflection.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,26 +21,26 @@ UUID resolveEntity(UUID entityId, const std::vector<Entity>& entities) {
         auto entity: Entity | std::nullopt;
 
         // Try to match the entityId exactly
-        entity = entities.find((a) => a.id == entityId);
+        entity = entities.find[&]((a) { return a.id == entityId); };
         if (entity.id) {
             return entity.id;
         }
 
         // Try partial UUID match with entityId
-        entity = entities.find((a) => a.(std::find(id.begin(), id.end(), entityId) != id.end()));
+        entity = entities.find[&]((a) { return a.(std::find(id.begin(), id.end(), entityId) != id.end())); };
         if (entity.id) {
             return entity.id;
         }
 
         // Try name match as last resort
         entity = entities.find((a) =>;
-        a.names.some((n) => n.toLowerCase().includes(entityId.toLowerCase()));
+        a.names.some[&]((n) { return n.toLowerCase().count(entityId.toLowerCase() > 0)); };
         );
         if (entity.id) {
             return entity.id;
         }
 
-        throw std::runtime_error(`Could not resolve entityId "${entityId}" to a valid UUID`);
+        throw std::runtime_error("Could not resolve entityId "" + std::to_string(entityId) + "" to a valid UUID");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -72,8 +77,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...(state.values || {}),
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
-                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std:(entities),
+                    existingRelationships: /* JSON.stringify */ std:(existingRelationships),
                     senderId: message.entityId,
                     },
                     template: runtime.character.templates.reflectionTemplate || reflectionTemplate,
@@ -111,7 +116,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
 
                             // Handle facts - parseKeyValueXml returns nested structures differently
                             // Facts might be a single object or an array depending on the count
-                            std::vector<std::any> factsArray = [];
+                            std::vector<std::string> factsArray = [];
                             if (reflection.facts.fact) {
                                 // Normalize to array
                                 factsArray = Array.isArray(reflection.facts.fact);
@@ -121,19 +126,18 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
 
                             // Store new facts
                             const auto newFacts =;
-                            factsArray.filter(;
-                            (fact: std::any) =>
-                            fact &&;
+                            factsArray.filter[&](;
+                            (fact: std:) { return fact &&; };
                             typeof fact == "object" &&;
                             fact.already_known == "false" &&;
                             fact.in_bio == "false" &&;
                             fact.claim &&;
                             typeof fact.claim == "string" &&;
-                            fact.claim.trim() != "";
+                            fact.claim != "";
                             ) || [];
 
-                            Promise.all(;
-                            newFacts.std::map(std::async (fact: std::any) => {
+                            Promise.all[&](;
+                            newFacts.std::map(std::async (fact: std:) {
                                 const auto factMemory = {;
                                     id: asUUID(v4()),
                                     entityId: agentId,
@@ -153,7 +157,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                     );
 
                                     // Handle relationships - similar structure normalization
-                                    std::vector<std::any> relationshipsArray = [];
+                                    std::vector<std::string> relationshipsArray = [];
                                     if (reflection.relationships.relationship) {
                                         relationshipsArray = Array.isArray(reflection.relationships.relationship);
                                         ? reflection.relationships.relationship;
@@ -174,16 +178,15 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                 continue; // Skip this relationship if we can't resolve the IDs;
                                             }
 
-                                            const auto existingRelationship = existingRelationships.find((r) => {;
+                                            const auto existingRelationship = existingRelationships.find[&]((r) {;
                                                 return r.sourceEntityId == sourceId && r.targetEntityId == targetId;
                                                 });
 
-                                                // Parse tags from comma-separated std::string
+                                                // Parse tags from comma-separated std:
                                                 const auto tags = relationship.tags;
-                                                ? relationship.tags;
-                                                .split(",");
-                                                .std::map((tag: std::string) => tag.trim())
-                                                .filter(Boolean);
+                                                ? relationship.tags.split(",");
+                                                .std::map[&]((tag: std:) { return tag)
+                                                .filter(Boolean); };
                                                 : [];
 
                                                 if (existingRelationship) {
@@ -227,10 +230,9 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
 void formatFacts(const std::vector<Memory>& facts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return facts;
-    .reverse();
-    .std::map((fact: Memory) => fact.content.text)
-    .join("\n");
+    return facts.reverse();
+    .std::map[&]((fact: Memory) { return fact.content.text)
+    .join("\n"); };
 
 }
 

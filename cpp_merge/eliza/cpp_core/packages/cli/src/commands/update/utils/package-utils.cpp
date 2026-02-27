@@ -1,16 +1,18 @@
 #include "package-utils.hpp"
+#include <future>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies) {
+std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std:, std:>& dependencies) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, PackageUpdate> updates = {};
+    const std::unordered_map<std:, PackageUpdate> updates = {};
     const auto elizaPackages = Object.entries(dependencies);
-    .filter(([pkg]) => pkg.startsWith(ELIZAOS_ORG));
-    .filter(([, version]) => !isWorkspaceVersion(version));
+    .filter[&](([pkg]) { return pkg.substr(0, ELIZAOS_ORG)); };
+    .filter[&](([, version]) { return !isWorkspaceVersion(version)); };
 
     for (const int [pkg, currentVersion] of elizaPackages) {
         const auto latestVersion = fetchLatestVersion(pkg);
@@ -20,19 +22,19 @@ std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::str
         if (needsUpdate) {
             updates[pkg] = { current: currentVersion, latest: latestVersion };
             } else if (error) {
-                logger.debug(`${pkg}: ${error}`);
+                logger.debug("" + std::to_string(pkg) + ": " + std::to_string(error) + "");
             }
         }
 
-        return { hasUpdates: Object.keys(updates).length > 0, updates }
+        return { hasUpdates: Object.keys(updates).size() > 0, updates }
 
 }
 
-void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates) {
+void displayUpdateSummary(const std::unordered_map<std:, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\nAvailable updates:" << std::endl;
-    Object.entries(updates).forEach(([pkg, { current, latest }]) => {
+    Object.entries(updates).forEach[&](([pkg, { current, latest }]) {
         const auto majorUpdate = isMajorUpdate(current, latest);
         const auto updateType = majorUpdate ? " (MAJOR)" : "";
         std::cout << "  " + pkg + ": " + current + " → " + latest + updateType << std::endl;
@@ -40,11 +42,11 @@ void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& 
 
 }
 
-std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates) {
+std::future<void> updatePackageJson(const std:& packageJsonPath, const std::unordered_map<std:, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = fs.readFile(packageJsonPath, "utf8");
-    const auto packageJson = /* JSON.parse */ content;
+    const auto packageJson = /* JSON::parse */ content;
 
     auto modified = false;
     for (const int [pkg, { latest }] of Object.entries(updates)) {
@@ -59,13 +61,13 @@ std::future<void> updatePackageJson(const std::string& packageJsonPath, const st
     }
 
     if (modified) {
-        fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2) + "\n");
+        fs.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJson, nullptr, 2) + "\n");
         std::cout << "Updated package.json with new versions" << std::endl;
     }
 
 }
 
-std::future<void> installDependencies(const std::string& cwd) {
+std::future<void> installDependencies(const std:& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -1,4 +1,5 @@
 #include "FundModal.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,30 +10,30 @@ void FundModalContent() {
 
     const auto { hideModal } = useModal();
     const auto modalId = "fund-modal";
-    const auto [copiedChain, setCopiedChain] = useState<std::string | nullptr>(nullptr);
+    const auto [copiedChain, setCopiedChain] = useState<std: | nullptr>(nullptr);
 
-    const auto handleCopyChainAddress = std::async (chain: std::string) => {;
+    const auto handleCopyChainAddress = std::async [&](chain: std:) {;
         if (!walletAddress) return;
 
         try {
             navigator.clipboard.writeText(walletAddress);
             setCopiedChain(chain);
-            setTimeout(() => setCopiedChain(nullptr), 2000);
+            setTimeout[&](() { return setCopiedChain(nullptr), 2000); };
             } catch (err) {
                 std::cerr << "Failed to copy address:" << err << std::endl;
             }
             };
 
-            return (;
+            return [&](;
             <div className="space-y-4 w-full max-w-md mx-auto">;
             <h3 className="text-lg font-semibold">Fund Your Wallet</h3>;
             <p className="text-sm text-muted-foreground">;
-            Transfer assets to your wallet on std::any supported network;
+            Transfer assets to your wallet on std: supported network;
             </p>;
 
         {/* Network Address List - Each chain in its own card */}
         <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">;
-        {SUPPORTED_CHAINS.std::map((chain) => {
+        {SUPPORTED_CHAINS.std::map((chain) {
             const auto config = CHAIN_UI_CONFIGS[chain];
             const auto chainWalletIcon = getChainWalletIcon(chain);
             return (;
@@ -61,11 +62,11 @@ void FundModalContent() {
     {/* Second Group = Address & Copy Button */}
     <div className="flex items-center gap-2 min-w-0">;
     <span className="text-[10px] text-muted-foreground font-mono">;
-    "{walletAddress ? " + std::to_string(walletAddress.slice(0, 6)) + "..." + std::to_string(walletAddress.slice(-4))
+    "{walletAddress ? " + std::to_string(walletAddress.substr(0, 6-0)) + "..." + std::to_string(walletAddress.slice(-4))
     </span>;
     <Button;
-    onClick={() => handleCopyChainAddress(chain)}
-    variant="ghost";
+    onClick={[&]() { return handleCopyChainAddress(chain)}
+    variant="ghost"; };
     size="sm";
     className="h-8 w-8 p-0 shrink-0 text-muted-foreground hover:text-foreground"
     title="Copy address";
@@ -84,8 +85,8 @@ void FundModalContent() {
 
     {/* Close button */}
     <Button;
-    onClick={() => hideModal(modalId)}
-    variant="default";
+    onClick={[&]() { return hideModal(modalId)}
+    variant="default"; };
     className="w-full";
     >;
     Close;

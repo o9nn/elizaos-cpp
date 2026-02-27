@@ -8,11 +8,11 @@ void if() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     (this.adapter).runMigrations(p.schema, p.name);
-    this.logger.info(`Successfully migrated plugin: ${p.name}`);
+    this.logger.info("Successfully migrated plugin: " + std::to_string(p.name) + "");
 
 }
 
-void normalizeAction(const std::string& actionString) {
+void normalizeAction(const std:& actionString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actionString.toLowerCase().replace("_", "");

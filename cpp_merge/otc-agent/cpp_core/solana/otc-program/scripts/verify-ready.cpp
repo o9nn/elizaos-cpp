@@ -1,4 +1,6 @@
 #include "verify-ready.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -24,7 +26,7 @@ std::future<void> verify() {
     const auto available = tokenBalance - reserved;
 
     std::cout << "📊 LOCALNET READINESS CHECK" << std::endl;
-    std::cout << "==================\n" << std::endl;
+    std::cout << "========\n" << std::endl;
 
     std::cout << "✅ Prices:" << std::endl;
     std::cout << "   Token: $" + std::to_string(tokenPrice.toFixed(2)) << std::endl;
@@ -39,17 +41,17 @@ std::future<void> verify() {
 
     std::cout << "✅ Approvers:" << std::endl;
     std::cout << "   Count: " + data.approvers.size() << std::endl;
-    std::cout << "   List: " + std::to_string(data.approvers.std::map((a: PublicKey) => std::to_string(a).slice(0, 8)).join(", ")) + "\n" << std::endl;
+    std::cout << "   List: " + std::to_string[&](data.approvers.std::map((a: PublicKey) { return std::to_string(a).substr(0, 8-0)).join(", ")) + "\n" << std::endl; };
 
     std::cout << "✅ Configuration:" << std::endl;
     std::cout << "   Paused: " + std::to_string(data.paused ? "YES ❌" : "NO ✅") << std::endl;
     std::cout << "   Next Offer ID: " + std::to_string(parseInt(data.std::to_string(nextOfferId), 16)) + "\n" << std::endl;
 
-    if (pricesAge < maxAge && available > 0 && !data.paused && data.approvers.length > 0) {
+    if (pricesAge < maxAge && available > 0 && !data.paused && data.approvers.size() > 0) {
         std::cout << "🎉 LOCALNET READY FOR TRADING" << std::endl;
         } else {
             std::cout << "⚠️  LOCALNET NOT READY - check items above" << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
 
 }

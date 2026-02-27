@@ -1,4 +1,5 @@
 #include "table-view.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -27,7 +28,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
                 );
                 };
 
-                return (;
+                return [&](;
                 <Table>;
                 <TableHeader>;
                 <TableRow className="bg-transparent">;
@@ -35,8 +36,8 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
                 <TableHead className="text-left">;
                 <button;
                 className="flex items-center gap-1 hover:text-foreground transition-colors uppercase"
-            onClick={() => handleSort("marketCapUSD")}
-            >;
+            onClick={() { return handleSort("marketCapUSD")}
+            >; };
             <span className="hidden md:inline">Market Cap</span>
             <span className="md:hidden">MCap</span>
             <SortIcon columnKey="marketCapUSD" />;
@@ -45,8 +46,8 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
             <TableHead className="text-left">;
             <button;
             className="flex items-center gap-1 hover:text-foreground transition-colors uppercase"
-        onClick={() => handleSort("volume24h")}
-        >;
+        onClick={[&]() { return handleSort("volume24h")}
+        >; };
         <span className="hidden md:inline">24H Volume</span>
         <span className="md:hidden">24H</span>
         <SortIcon columnKey="volume24h" />;
@@ -55,8 +56,8 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
         <TableHead className="text-left">;
         <button;
         className="flex items-center gap-1 hover:text-foreground transition-colors uppercase"
-    onClick={() => handleSort("holderCount")}
-    >;
+    onClick={[&]() { return handleSort("holderCount")}
+    >; };
     <span className="hidden md:inline">Holders</span>
     <span className="md:hidden">Hold</span>
     <SortIcon columnKey="holderCount" />;
@@ -65,8 +66,8 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     <TableHead className="text-left">;
     <button;
     className="flex items-center gap-1 hover:text-foreground transition-colors uppercase"
-    onClick={() => handleSort("curveProgress")}
-    >;
+    onClick={[&]() { return handleSort("curveProgress")}
+    >; };
     <span className="hidden md:inline">Bonding Curve</span>
     <span className="md:hidden">Bonding</span>
     <SortIcon columnKey="curveProgress" />;
@@ -75,8 +76,8 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     <TableHead className="text-right mr-2">;
     <button;
     className="flex items-center gap-1 hover:text-foreground transition-colors ml-auto uppercase"
-    onClick={() => handleSort("createdAt")}
-    >;
+    onClick={[&]() { return handleSort("createdAt")}
+    >; };
     Age;
     <SortIcon columnKey="createdAt" />;
     </button>;
@@ -84,12 +85,12 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     </TableRow>;
     </TableHeader>;
     <TableBody>;
-    {data.std::map((token: IToken) => {
-        return (;
+    {data.std::map[&]((token: IToken) {
+        return [&](;
         <TableRow;
     key={token.mint}
     className="cursor-pointer p-4";
-    "onClick={() => navigate(" + "/token/" + token.mint;
+    "onClick={() { return navigate(" + "/token/" + token.mint; };
     >;
     <TableCell>;
     <div className="flex items-center gap-2">;
@@ -111,7 +112,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     <div className="flex flex-col md:flex-row min-w-0 items-start">
     <div className="capitalize text-autofun-text-primary text-base font-medium font-satoshi truncate min-w-0">;
     {window.innerWidth <= 768;
-    ? sanitizeCheckmark(token.name).slice(0, 15) +;
+    ? sanitizeCheckmark(token.name).substr(0, 15-0) +;
     (sanitizeCheckmark(token.name).size() > 15;
     ? "...";
     : "")
@@ -126,7 +127,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     <div className="text-autofun-text-secondary text-xs font-normal font-dm-mono">;
     {shortenAddress(token.mint)}
     </div>;
-    <div onClick={(e) => e.stopPropagation()}>;
+    <div onClick={[&](e) { return e.stopPropagation()}>; };
     <CopyButton text={token.mint} />;
     </div>;
     </div>;

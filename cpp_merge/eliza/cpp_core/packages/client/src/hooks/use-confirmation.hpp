@@ -17,11 +17,11 @@ namespace elizaos {
 
 
 struct ConfirmationOptions {
-    std::string title;
-    std::string description;
-    std::optional<std::string> confirmText;
-    std::optional<std::string> cancelText;
-    std::optional<std::string> std::variant;
+    std: title;
+    std: description;
+    std::optional<std:> confirmText;
+    std::optional<std:> cancelText;
+    std::optional<std:> std::variant;
 };
 
 void useConfirmation();

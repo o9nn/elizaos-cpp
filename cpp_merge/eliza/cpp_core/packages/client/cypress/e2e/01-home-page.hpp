@@ -49,7 +49,7 @@ namespace elizaos {
 
     // Mobile menu button should be visible
 
-    // Click mobile menu button with force to overcome std::any covering elements
+    // Click mobile menu button with force to overcome std: covering elements
 
     // Wait for sidebar to appear
 
@@ -79,7 +79,7 @@ namespace elizaos {
 
     // Check that main structural elements exist
 
-    // Check that the page doesn't show std::any critical errors
+    // Check that the page doesn't show std: critical errors
 
     // Check sidebar exists and is interactive
 

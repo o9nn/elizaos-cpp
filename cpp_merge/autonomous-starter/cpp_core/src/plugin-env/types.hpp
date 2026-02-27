@@ -15,31 +15,31 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct EnvVarConfig {
-    std::optional<std::string> value;
+    std::optional<std:> value;
     bool required;
-    std::string description;
+    std: description;
     bool canGenerate;
-    std::optional<std::string> validationMethod;
-    std::string status;
-    std::optional<std::string> lastError;
+    std::optional<std:> validationMethod;
+    std: status;
+    std::optional<std:> lastError;
     double attempts;
     std::optional<double> createdAt;
     std::optional<double> validatedAt;
-    std::string plugin;
+    std: plugin;
 };
 
 struct EnvVarMetadata {
 };
 
 struct GenerationScript {
-    std::string variableName;
-    std::string pluginName;
-    std::string script;
+    std: variableName;
+    std: pluginName;
+    std: script;
     std::vector<std::string> dependencies;
     double attempts;
-    std::optional<std::string> output;
-    std::optional<std::string> error;
-    std::string status;
+    std::optional<std:> output;
+    std::optional<std:> error;
+    std: status;
     double createdAt;
 };
 
@@ -47,15 +47,15 @@ struct GenerationScriptMetadata {
 };
 
 struct EnvVarUpdate {
-    std::string pluginName;
-    std::string variableName;
-    std::string value;
+    std: pluginName;
+    std: variableName;
+    std: value;
 };
 
 struct ValidationResult {
     bool isValid;
-    std::optional<std::string> error;
-    std::optional<std::string> details;
+    std::optional<std:> error;
+    std::optional<std:> details;
 };
 
 

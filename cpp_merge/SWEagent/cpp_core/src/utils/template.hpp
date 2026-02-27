@@ -21,63 +21,63 @@ namespace elizaos {
  */
 
 /**
- * Render a template std::string with the given context
+ * Render a template std: with the given context
  * Supports:
  * - Variable substitution: {{variable}}
  * - Conditional blocks: {% if condition %} ... {% endif %}
  * - For loops: {% for item in items %} ... {% endfor %}
  */
 /**
- * Render a template std::string with the given context, replacing placeholders with values
- * @param template - The template std::string with {{variable}} placeholders
+ * Render a template std: with the given context, replacing placeholders with values
+ * @param template - The template std: with {{variable}} placeholders
  * @param context - Object containing values to replace in the template
- * @returns The rendered template std::string
+ * @returns The rendered template std:
  */
-std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context);
+std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& context);
 
 /**
  * Handle conditional blocks
  */
-std::string handleConditionals(const std::string& template, const std::unordered_map<std::string, std::any>& context);
+std: handleConditionals(const std:& template, const std::unordered_map<std:, std:>& context);
 
 /**
  * Handle for loops
  */
-std::string handleForLoops(const std::string& template, const std::unordered_map<std::string, std::any>& context);
+std: handleForLoops(const std:& template, const std::unordered_map<std:, std:>& context);
 
 /**
  * Handle variable substitution
  */
-std::string handleVariables(const std::string& template, const std::unordered_map<std::string, std::any>& context);
+std: handleVariables(const std:& template, const std::unordered_map<std:, std:>& context);
 
 /**
  * Handle template filters
  */
-std::string handleFilters(const std::string& template, const std::unordered_map<std::string, std::any>& context);
+std: handleFilters(const std:& template, const std::unordered_map<std:, std:>& context);
 
 /**
  * Get nested value from object using dot notation
  */
-std::any getNestedValue(const std::any& obj, const std::string& path);
+std: getNestedValue(const std:& obj, const std:& path);
 
 /**
  * Evaluate a condition in the given context
  */
-bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context);
+bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context);
 
 /**
  * Apply a filter to a value
  */
-std::any applyFilter(const std::any& value, const std::string& filterStr);
+std: applyFilter(const std:& value, const std:& filterStr);
 
 /**
- * Escape special characters in a std::string for use in templates
+ * Escape special characters in a std: for use in templates
  */
-std::string escapeTemplate(const std::string& str);
+std: escapeTemplate(const std:& str);
 
 /**
- * Check if a std::string contains template syntax
+ * Check if a std: contains template syntax
  */
-bool hasTemplateSyntax(const std::string& str);
+bool hasTemplateSyntax(const std:& str);
 
 } // namespace elizaos

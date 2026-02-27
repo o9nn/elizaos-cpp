@@ -23,6 +23,6 @@ namespace elizaos {
 /**
  * Load a file (JSON or YAML)
  */
-std::any loadFile(const std::string& filepath);
+std: loadFile(const std:& filepath);
 
 } // namespace elizaos

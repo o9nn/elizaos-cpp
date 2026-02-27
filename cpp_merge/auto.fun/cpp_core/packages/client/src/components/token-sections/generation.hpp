@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <future>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -38,10 +39,10 @@ using PendingShare = {
 
 // --- Expected API Response Types ---
 struct TokenInfoResponse {
-    std::string name;
-    std::string ticker;
-    std::optional<std::string> description;
-    std::optional<std::string> image;
+    std: name;
+    std: ticker;
+    std::optional<std:> description;
+    std::optional<std:> image;
 };
 
 

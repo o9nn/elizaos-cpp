@@ -20,7 +20,7 @@ struct EmbeddingQueueItem {
     double retryCount;
     double maxRetries;
     double addedAt;
-    std::optional<std::string> runId;
+    std::optional<std:> runId;
 };
 
 /**
@@ -42,7 +42,7 @@ class EmbeddingGenerationService extends Service {
   static std::async start(runtime: IAgentRuntime): Promise<Service> {
     logger.info('[EmbeddingService] Starting embedding generation service');
     const service = new EmbeddingGenerationService(runtime);
-    await service.initialize();
+    service.initialize();
     return service;
   }
 

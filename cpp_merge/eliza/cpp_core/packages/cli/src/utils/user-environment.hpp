@@ -19,47 +19,47 @@ namespace elizaos {
 
 // Types
 struct OSInfo {
-    std::string platform;
-    std::string release;
-    std::string arch;
-    std::string type;
-    std::string version;
-    std::string homedir;
+    std: platform;
+    std: release;
+    std: arch;
+    std: type;
+    std: version;
+    std: homedir;
 };
 
 struct CLIInfo {
-    std::string version;
-    std::string name;
-    std::string path;
+    std: version;
+    std: name;
+    std: path;
 };
 
 struct PackageManagerInfo {
     'bun' name;
-    std::string | null version;
+    std: | null version;
     bool global;
     bool isNpx;
     bool isBunx;
 };
 
 struct PathInfo {
-    std::string elizaDir;
-    std::string envFilePath;
-    std::string configPath;
-    std::string pluginsDir;
-    std::string | null monorepoRoot;
-    std::string packageJsonPath;
+    std: elizaDir;
+    std: envFilePath;
+    std: configPath;
+    std: pluginsDir;
+    std: | null monorepoRoot;
+    std: packageJsonPath;
 };
 
 struct EnvInfo {
-    std::optional<std::string> GITHUB_USERNAME;
-    std::optional<std::string> GITHUB_TOKEN;
+    std::optional<std:> GITHUB_USERNAME;
+    std::optional<std:> GITHUB_TOKEN;
 };
 
 struct UserEnvironmentInfo {
     OSInfo os;
     CLIInfo cli;
     PackageManagerInfo packageManager;
-    std::string timestamp;
+    std: timestamp;
     PathInfo paths;
     EnvInfo env;
 };
@@ -69,12 +69,12 @@ struct UserEnvironmentInfo {
  * Uses singleton pattern to cache results.
  */
 class UserEnvironment {
-  public static readonly getInstance = () => UserEnvironment.instance;
+  public static readonly getInstance = [&]() { return UserEnvironment.instance; };
 
-  public static readonly getInstanceInfo = () => UserEnvironment.instance.getInfo();
+  public static readonly getInstanceInfo = [&]() { return UserEnvironment.instance.getInfo(); };
 
-  private static readonly instance: UserEnvironment = new UserEnvironment();
-  private cachedInfo: { [key: std::string]: UserEnvironmentInfo } = {}; // Cache per directory
+  private static readonly instance: UserEnvironment = std::make_unique<UserEnvironment>();
+  private cachedInfo: { [key: std:]: UserEnvironmentInfo } = {}; // Cache per directory
 
   /**
    * Gets operating system information
@@ -121,7 +121,7 @@ class UserEnvironment {
 
     // Reached max levels
 
-    // Resolve .env from current working directory up to monorepo root (if std::any), or only cwd if not in monorepo
+    // Resolve .env from current working directory up to monorepo root (if std:), or only cwd if not in monorepo
 
     // Return a copy of process.env as EnvInfo
 

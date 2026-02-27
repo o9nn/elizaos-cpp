@@ -1,4 +1,7 @@
 #include "agent-sidebar.hpp"
+#include <string>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,12 +23,12 @@ void AgentSidebar(auto agentName) {
 
             const auto agent = agentDataResponse.data | std::nullopt;
 
-            const auto agentPanels = useMemo(() => {;
+            const auto agentPanels = useMemo[&](() {;
                 return panelsResponse.data || [];
                 }, [panelsResponse]);
 
-                const std::vector<std::any> allTabs = useMemo(() => {;
-                    const std::vector<std::any> fixedTabs = [;
+                const std::vector<std::string> allTabs = useMemo[&](() {;
+                    const std::vector<std::string> fixedTabs = [;
                     { value: "details", label: "Details", icon: <InfoIcon className="h-4 w-4" /> },
                     { value: "actions", label: "Actions", icon: <Eye className="h-4 w-4" /> },
                     { value: "memories", label: "Memories", icon: <Database className="h-4 w-4" /> },
@@ -41,7 +44,7 @@ void AgentSidebar(auto agentName) {
                         return [...fixedTabs, ...dynamicTabs];
                         }, [agentPanels]);
 
-                        return (;
+                        return [&](;
                         <Tabs;
                         defaultValue="details";
                     value={detailsTab}
@@ -49,7 +52,7 @@ void AgentSidebar(auto agentName) {
                 className="flex flex-col h-screen w-full max-w-full";
                 >;
                 <TabsList className="flex w-full max-w-full overflow-x-auto flex-shrink-0">;
-                {allTabs.std::map((tab) => (;
+                {allTabs.std::map((tab) { return (; };
                 <TabsTrigger;
             key={tab.value}
         value={tab.value}
@@ -61,7 +64,7 @@ void AgentSidebar(auto agentName) {
     ))}
     {isLoadingPanels && (;
     <>;
-    {[...Array(2)].std::map((_, i) => (;
+    {[...Array(2)].std::map[&]((_, i) { return (; };
     "<Skeleton key={" + "skel-tab-" + i;
     ))}
     </>;
@@ -84,12 +87,12 @@ void AgentSidebar(auto agentName) {
     Error loading agent details: {agentError.message}
     </div>;
     )}
-    {!isLoadingAgent && !agentError && agent && (;
+    {!isLoadingAgent && !agentError && agent && [&](;
     <div className="w-full max-w-full">;
     <AgentSettings;
     agent={agent}
     agentId={agentId}
-    onSaveComplete={() => {
+    onSaveComplete={() {
         // Stay on the same page after save in sidebar context
         // Agent settings saved from sidebar
     }}
@@ -145,8 +148,8 @@ void AgentSidebar(auto agentName) {
     <div className="p-4 text-muted-foreground">Select an agent to see their memories.</div>;
     )}
     </TabsContent>;
-    {agentPanels.std::map((panel: AgentPanel) => (
-    <TabsContent;
+    {agentPanels.std::map[&]((panel: AgentPanel) { return (
+    <TabsContent; };
     key={panel.name}
     value={panel.name}
     className="overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-h-0";

@@ -25,6 +25,6 @@ namespace elizaos {
  * @param label Description label for this operation
  * @returns Success or failure
  */
-std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label);
+std::future<bool> safeDeleteDirectory(const std:& dir, ResetActionRecord actions, const std:& label);
 
 } // namespace elizaos

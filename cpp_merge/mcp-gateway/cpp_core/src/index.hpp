@@ -20,7 +20,7 @@ namespace elizaos {
 
 
 
-using TransportMode = std::string;
+using TransportMode = std:;
 
 /**
  * Main entry point for the MCP Gateway Server
@@ -30,7 +30,7 @@ std::future<void> main();
 /**
  * Create a logger with the specified log level
  */
-Console createLogger(const std::string& logLevel);
+Console createLogger(const std:& logLevel);
 
 /**
  * Display help information

@@ -28,12 +28,12 @@ namespace elizaos {
 // --- Helper Functions ---
 
 // Simple fetch with timeout
-std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {});
+std::future<std:> fetchWithTimeout(const std:& resource, RequestInit options = {});
 
 // Format numbers nicely
-std::string formatCurrency(const std::optional<double>& value, double decimals = 2);
+std: formatCurrency(const std::optional<double>& value, double decimals = 2);
 
-std::string formatMarketCap(const std::optional<double>& value);
+std: formatMarketCap(const std::optional<double>& value);
 
 // --- Main Generation Function ---
 

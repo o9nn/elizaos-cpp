@@ -2,36 +2,36 @@
 
 void Main(void)
 {
-    mock->module(std::string("../service"), [=]() mutable
+    mock->module(std:("../service"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("StagehandService"), object{
-                object::pair{std::string("serviceType"), std::string("STAGEHAND")}, 
-                object::pair{std::string("start"), mock()}, 
-                object::pair{std::string("stop"), mock()}
+            object::pair{std:("StagehandService"), object{
+                object::pair{std:("serviceType"), std:("STAGEHAND")}, 
+                object::pair{std:("start"), mock()}, 
+                object::pair{std:("stop"), mock()}
             }}, 
-            object::pair{std::string("BrowserSession"), mock()->mockImplementation([=](auto id) mutable
+            object::pair{std:("BrowserSession"), mock()->mockImplementation([=](auto id) mutable
             {
                 return (object{
-                    object::pair{std::string("id"), std::string("id")}, 
-                    object::pair{std::string("createdAt"), std::make_shared<Date>()}
+                    object::pair{std:("id"), std:("id")}, 
+                    object::pair{std:("createdAt"), std::make_shared<Date>()}
                 });
             }
             )}
         });
     }
     );
-    mock->module(std::string("../websocket-client"), [=]() mutable
+    mock->module(std:("../websocket-client"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("StagehandWebSocketClient"), mock()->mockImplementation([=]() mutable
+            object::pair{std:("StagehandWebSocketClient"), mock()->mockImplementation([=]() mutable
             {
                 return (object{
-                    object::pair{std::string("getState"), mock()->mockResolvedValue(object{
-                        object::pair{std::string("url"), std::string("https://example.com")}, 
-                        object::pair{std::string("title"), std::string("Test Page Title")}, 
-                        object::pair{std::string("sessionId"), std::string("test-session-1")}, 
-                        object::pair{std::string("createdAt"), std::make_shared<Date>()}
+                    object::pair{std:("getState"), mock()->mockResolvedValue(object{
+                        object::pair{std:("url"), std:("https://example.com")}, 
+                        object::pair{std:("title"), std:("Test Page Title")}, 
+                        object::pair{std:("sessionId"), std:("test-session-1")}, 
+                        object::pair{std:("createdAt"), std::make_shared<Date>()}
                     })}
                 });
             }
@@ -39,7 +39,7 @@ void Main(void)
         });
     }
     );
-    describe(std::string("BROWSER_STATE provider"), [=]() mutable
+    describe(std:("BROWSER_STATE provider"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<any> mockService;
@@ -52,110 +52,110 @@ void Main(void)
         {
             mockMessage = createMockMemory();
             mockState = createMockState();
-            mockSession = std::make_shared<BrowserSession>(std::string("test-session-1"));
-            mockClient = std::make_shared<StagehandWebSocketClient>(std::string("ws://localhost:3456"));
+            mockSession = std::make_shared<BrowserSession>(std:("test-session-1"));
+            mockClient = std::make_shared<StagehandWebSocketClient>(std:("ws://localhost:3456"));
             mockService = object{
-                object::pair{std::string("getCurrentSession"), mock()->mockResolvedValue(mockSession)}, 
-                object::pair{std::string("getClient"), mock()->mockReturnValue(mockClient)}, 
-                object::pair{std::string("isInitialized"), true}
+                object::pair{std:("getCurrentSession"), mock()->mockResolvedValue(mockSession)}, 
+                object::pair{std:("getClient"), mock()->mockReturnValue(mockClient)}, 
+                object::pair{std:("isInitialized"), true}
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std::string("getService"), mock()->mockReturnValue(mockService)}
+                object::pair{std:("getService"), mock()->mockReturnValue(mockService)}
             });
-            spyOn(logger, std::string("error"))->mockImplementation([=]() mutable
+            spyOn(logger, std:("error"))->mockImplementation([=]() mutable
             {
             }
             );
             browserStateProvider = stagehandPlugin->providers->find([=](auto p) mutable
             {
-                return p["name"] == std::string("BROWSER_STATE");
+                return p["name"] == std:("BROWSER_STATE");
             }
             );
         }
         );
-        describe(std::string("get method"), [=]() mutable
+        describe(std:("get method"), [=]() mutable
         {
-            it(std::string("should return current session information when session exists"), [=]() mutable
+            it(std:("should return current session information when session exists"), [=]() mutable
             {
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
-                expect(result["text"])->toBe(std::string("Current browser page: "Test Page Title" at https://example.com"));
+                expect(result["text"])->toBe(std:("Current browser page: "Test Page Title" at https://example.com"));
                 expect(result["values"])->toEqual(object{
-                    object::pair{std::string("hasSession"), true}, 
-                    object::pair{std::string("url"), std::string("https://example.com")}, 
-                    object::pair{std::string("title"), std::string("Test Page Title")}
+                    object::pair{std:("hasSession"), true}, 
+                    object::pair{std:("url"), std:("https://example.com")}, 
+                    object::pair{std:("title"), std:("Test Page Title")}
                 });
-                expect(result["data"]["sessionId"])->toBe(std::string("test-session-1"));
+                expect(result["data"]["sessionId"])->toBe(std:("test-session-1"));
                 expect(result["data"]["createdAt"])->toBeInstanceOf(Date);
             }
             );
-            it(std::string("should return no session message when no session exists"), [=]() mutable
+            it(std:("should return no session message when no session exists"), [=]() mutable
             {
                 mockService["getCurrentSession"]["mockResolvedValue"](undefined);
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
-                expect(result["text"])->toBe(std::string("No active browser session"));
+                expect(result["text"])->toBe(std:("No active browser session"));
                 expect(result["values"])->toEqual(object{
-                    object::pair{std::string("hasSession"), false}
+                    object::pair{std:("hasSession"), false}
                 });
                 expect(result["data"])->toEqual(object{});
             }
             );
-            it(std::string("should handle errors gracefully when getting page info fails"), [=]() mutable
+            it(std:("should handle errors gracefully when getting page info fails"), [=]() mutable
             {
-                mockClient["getState"]["mockRejectedValue"](std::make_shared<Error>(std::string("Page error")));
+                mockClient["getState"]["mockRejectedValue"](std::make_shared<Error>(std:("Page error")));
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
-                expect(result["text"])->toBe(std::string("Error getting browser state"));
+                expect(result["text"])->toBe(std:("Error getting browser state"));
                 expect(result["values"])->toEqual(object{
-                    object::pair{std::string("hasSession"), true}, 
-                    object::pair{std::string("error"), true}
+                    object::pair{std:("hasSession"), true}, 
+                    object::pair{std:("error"), true}
                 });
-                expect(logger->error)->toHaveBeenCalledWith(std::string("Error getting browser state:"), expect->any(Error));
+                expect(logger->error)->toHaveBeenCalledWith(std:("Error getting browser state:"), expect->any(Error));
             }
             );
-            it(std::string("should work when service is not available"), [=]() mutable
+            it(std:("should work when service is not available"), [=]() mutable
             {
                 mockRuntime->getService = mock()->mockReturnValue(nullptr);
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
-                expect(result["text"])->toBe(std::string("No active browser session"));
+                expect(result["text"])->toBe(std:("No active browser session"));
                 expect(result["values"]["hasSession"])->toBe(false);
             }
             );
-            it(std::string("should provide session creation time"), [=]() mutable
+            it(std:("should provide session creation time"), [=]() mutable
             {
-                auto testDate = std::make_shared<Date>(std::string("2024-01-01T00:00:00Z"));
+                auto testDate = std::make_shared<Date>(std:("2024-01-01T00:00:00Z"));
                 mockSession["createdAt"] = testDate;
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
                 expect(result["data"]["createdAt"])->toEqual(testDate);
             }
             );
-            it(std::string("should handle URL without title"), [=]() mutable
+            it(std:("should handle URL without title"), [=]() mutable
             {
                 mockClient["getState"]["mockResolvedValue"](object{
-                    object::pair{std::string("url"), std::string("https://example.com")}, 
-                    object::pair{std::string("title"), string_empty}, 
-                    object::pair{std::string("sessionId"), std::string("test-session-1")}, 
-                    object::pair{std::string("createdAt"), std::make_shared<Date>()}
+                    object::pair{std:("url"), std:("https://example.com")}, 
+                    object::pair{std:("title"), string_empty}, 
+                    object::pair{std:("sessionId"), std:("test-session-1")}, 
+                    object::pair{std:("createdAt"), std::make_shared<Date>()}
                 });
                 auto result = std::async([=]() { browserStateProvider["get"](mockRuntime, mockMessage, mockState); });
-                expect(result["text"])->toBe(std::string("Current browser page: "" at https://example.com"));
+                expect(result["text"])->toBe(std:("Current browser page: "" at https://example.com"));
             }
             );
         }
         );
-        describe(std::string("provider structure"), [=]() mutable
+        describe(std:("provider structure"), [=]() mutable
         {
-            it(std::string("should have correct name"), [=]() mutable
+            it(std:("should have correct name"), [=]() mutable
             {
-                expect(browserStateProvider["name"])->toBe(std::string("BROWSER_STATE"));
+                expect(browserStateProvider["name"])->toBe(std:("BROWSER_STATE"));
             }
             );
-            it(std::string("should have a description"), [=]() mutable
+            it(std:("should have a description"), [=]() mutable
             {
-                expect(browserStateProvider["description"])->toContain(std::string("browser state information"));
+                expect(browserStateProvider["description"])->toContain(std:("browser state information"));
             }
             );
-            it(std::string("should have get method"), [=]() mutable
+            it(std:("should have get method"), [=]() mutable
             {
-                expect(type_of(browserStateProvider["get"]))->toBe(std::string("function"));
+                expect(type_of(browserStateProvider["get"]))->toBe(std:("function"));
             }
             );
         }

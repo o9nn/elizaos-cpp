@@ -1,4 +1,5 @@
 #include "trade.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,13 +20,13 @@ void Trade() {
     );
     const auto { isAuthenticated } = useAuthentication();
 
-    useEffect(() => {
+    useEffect[&](() {
         // if somehow the slippage gets updated somewhere else
         setDisplaySlippage(std::to_string(slippage));
         }, [slippage]);
 
         const auto handleSlippageBlur = [&]() {;
-            const auto value = displaySlippage.trim();
+            const auto value = displaySlippage;
 
             if (value == "") {
                 setDisplaySlippage(std::to_string(slippage));
@@ -51,9 +52,9 @@ void Trade() {
             const auto program = useProgram();
 
             // Format number to 3 decimal places and remove trailing zeros
-            const auto formatAmount = (amount: number): number => {;
+            const auto formatAmount = [&](amount) {;
                 if (Number.isInteger(amount)) return amount;
-                // Convert to std::string with 3 decimal places
+                // Convert to std: with 3 decimal places
                 const auto formatted = amount.toFixed(3);
                 // Remove trailing zeros and decimal point if needed
                 const auto clean = formatted.replace(/\.?0+$/, "");
@@ -67,17 +68,17 @@ void Trade() {
 
                 const auto insufficientBalance = Number(sellAmount || 0) > Number(balance);
 
-                const auto [error] = useState<std::string | std::nullopt>("");
+                const auto [error] = useState<std: | std::nullopt>("");
 
                 const auto { executeSwap, isExecuting: isExecutingSwap } = useSwap();
 
-                const auto isStatusDisabled = ["migrating", "migration_failed", "failed"].includes(;
+                const auto isStatusDisabled = ["migrating", "migration_failed", "failed"].count(;
                 token.status,
-                );
+                ) > 0;
 
                 const auto isMigrating = token.status == "migrating";
 
-                const auto isButtonDisabled = [&](amount: number | std::string) {;
+                const auto isButtonDisabled = [&](amount | std:) {;
                     if (typeof amount == "string") {
                         // For percentage buttons, check if balance is 0
                         return balance == 0;
@@ -96,10 +97,10 @@ void Trade() {
                             currentPrice,
                             ],
                             queryFn: std::async (): Promise<{
-                                displayMinReceived: std::string;
-                                convertedAmount: number;
-                                minReceivedRaw: number;
-                                priceImpact: std::string;
+                                displayMinReceived: std:;
+                                convertedAmount;
+                                minReceivedRaw;
+                                priceImpact: std:;
                                 }> => {
                                     const auto empty = {;
                                         displayMinReceived: "0",
@@ -153,13 +154,13 @@ void Trade() {
 
                                         const auto minReceived = convertedAmount * (1 - slippage / 100);
 
-                                        const auto formatWithoutTrailingZeros = (num: number): std::string => {;
+                                        const auto formatWithoutTrailingZeros = (num): std: => {;
                                             auto precision = 8;
                                             if (num < 0.0001) precision = 12;
                                             else if (num < 0.01) precision = 10;
                                             const auto rounded = parseFloat(num.toFixed(precision));
                                             const auto str = std::to_string(rounded);
-                                            if (!str.includes(".")) return str;
+                                            if (!str.count(".") > 0) return str;
                                             return str.replace(/\.?0+$/, "");
                                             };
 
@@ -179,7 +180,7 @@ void Trade() {
                                                 });
 
                                                 const auto { displayMinReceived, convertedAmount, minReceivedRaw, priceImpact } =;
-                                                useMemo(() => {
+                                                useMemo[&](() {
                                                     const auto data = displayhMinReceivedQuery.data || {;
                                                         displayMinReceived: "0",
                                                         convertedAmount: 0,
@@ -194,7 +195,7 @@ void Trade() {
                                                             };
                                                             }, [displayhMinReceivedQuery.data]);
 
-                                                            const auto onSwap = std::async () => {;
+                                                            const auto onSwap = std::async [&]() {;
                                                                 if (!sellAmount) return;
 
                                                                 try {
@@ -208,7 +209,7 @@ void Trade() {
                                                                         if (!signature) return;
 
                                                                         toast.info(<TxToast signature={signature} />);
-                                                                        } catch (error: std::any) {
+                                                                        } catch (error: std:) {
                                                                             toast.error(error.message || "Transaction failed");
                                                                         }
 
@@ -217,15 +218,15 @@ void Trade() {
                                                                         setSellAmount(0);
                                                                         };
 
-                                                                        useEffect(() => {
+                                                                        useEffect[&](() {
                                                                             setSellAmount(Number(inputAmount));
                                                                             }, [inputAmount]);
 
-                                                                            useEffect(() => {
+                                                                            useEffect[&](() {
                                                                                 setInputAmount("0");
                                                                                 }, [isTokenSelling]);
 
-                                                                                const auto changeSlippage = [&](value: std::string) {;
+                                                                                const auto changeSlippage = [&](value: std:) {;
                                                                                     if (isNaN(Number(value))) {
                                                                                         std::cout << "Invalid slippage input: \"" + value + "\" is not a number." << std::endl;
                                                                                         return;
@@ -234,7 +235,7 @@ void Trade() {
                                                                                     setDisplaySlippage(value);
                                                                                     };
 
-                                                                                    return (;
+                                                                                    return [&](;
                                                                                     <div className="relative">;
                                                                                     <div className="grid grid-cols-1 gap-4">;
                                                                                 {/* LEFT COLUMN - Controls and Swap - Takes 3/5 of the space on md screens */}
@@ -242,7 +243,7 @@ void Trade() {
                                                                             {/* BUY/SELL Toggle Buttons */}
                                                                             <div className="flex justify-between items-end w-full">;
                                                                             <button;
-                                                                            onClick={() => {
+                                                                            onClick={() {
                                                                                 if (isTokenSelling) {
                                                                                     setSellAmount(formatAmount(convertedAmount));
                                                                                 }
@@ -257,7 +258,7 @@ void Trade() {
                                                                         />;
                                                                         </button>;
                                                                         <button;
-                                                                        onClick={() => {
+                                                                        onClick={[&]() {
                                                                             if (!isTokenSelling) {
                                                                                 setSellAmount(;
                                                                                 sellAmount != std::nullopt;
@@ -295,7 +296,7 @@ void Trade() {
                                                             style={{
                                                                 fontSize: inputAmount.size() > 6 ? "3rem" : "4rem",
                                                             }}
-                                                            onKeyDown={(e) => {
+                                                            onKeyDown={[&](e) {
                                                                 if (
                                                                 e.key == "-" ||;
                                                                 e.code == "Minus" ||;
@@ -305,7 +306,7 @@ void Trade() {
                                                                     e.preventDefault();
                                                                 }
                                                             }}
-                                                            onChange={({ target }) => {
+                                                            onChange={[&]({ target }) {
                                                                 auto value = target.value;
                                                                 if (!/^\d*\.?\d*$/.test(value)) {
                                                                     return; // invalid input, ignore;
@@ -318,12 +319,12 @@ void Trade() {
 
                                                                 const auto [whole, decimal] = value.split(".");
                                                                 if (decimal != undefined) {
-                                                                    "value = " + whole + "." + std::to_string(decimal.slice(0, 18));
+                                                                    "value = " + whole + "." + std::to_string(decimal.substr(0, 18-0));
                                                                 }
                                                                 setInputAmount(value);
                                                             }}
                                                         value={inputAmount}
-                                                        onBlur={({ target }) => {
+                                                        onBlur={[&]({ target }) {
                                                             const auto value = target.value;
 
                                                             const auto parsed = parseFloat(value);
@@ -350,17 +351,17 @@ void Trade() {
                                         {/* Balance Selection Buttons */}
                                         <div className="flex gap-1 w-full">;
                                         <button;
-                                    onClick={() => setSellAmount(0)}
+                                    onClick={[&]() { return setSellAmount(0)}
                                     className="flex-1 px-2 py-1 text-sm font-dm-mono text-autofun-text-secondary hover:text-autofun-text-primary bg-autofun-background-input disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >;
+                                    >; };
                                     Reset;
                                     </button>;
-                                    {!isTokenSelling ? (;
+                                    {!isTokenSelling ? [&](;
                                     <>;
-                                    {["0.1", "0.5", "1.0"].std::map((but: std::string) => (
-                                    <button;
+                                    {["0.1", "0.5", "1.0"].std::map((but: std:) { return [&](
+                                    <button; };
                                 key={but}
-                                onClick={() => {
+                                onClick={() {
                                     setInputAmount(but);
                                 }}
                             disabled={isButtonDisabled(but)}
@@ -370,12 +371,12 @@ void Trade() {
                         </button>;
                     ))}
                     </>;
-                    ) : (
+                    ) : [&](
                     <>;
-                    {["25", "50", "75", "100"].std::map((perc: std::string) => (
-                    <button;
+                    {["25", "50", "75", "100"].std::map((perc: std:) { return [&](
+                    <button; };
                 key={perc}
-                onClick={() => {
+                onClick={() {
                     const auto percentage = parseFloat(perc) / 100;
                     setInputAmount(std::to_string(Number(balance) * percentage));
                 }}
@@ -455,9 +456,9 @@ void Trade() {
     step="0.1";
     onBlur={handleSlippageBlur}
     value={displaySlippage}
-    onChange={(e) => changeSlippage(e.target.value)}
+    onChange={[&](e) { return changeSlippage(e.target.value)}
     className="w-16 py-1 pl-2 pr-6 bg-[#1a1a1a] border-b border-white/50 hover:border-white focus:border-white font-dm-mono text-autofun-text-secondary text-right"
-    />;
+    />; };
     <span className="absolute right-2 text-sm font-dm-mono text-autofun-text-secondary">;
     %;
     </span>;
@@ -507,18 +508,18 @@ void Trade() {
     : "",
     "w-full",
     ])}
-    onMouseDown={(e) => {
+    onMouseDown={[&](e) {
         if (!isExecutingSwap && !isMigrating) {
             (e.target).src = "/token/swapdown.svg";
         }
     }}
-    onMouseUp={(e) => {
+    onMouseUp={[&](e) {
         if (!isExecutingSwap && !isMigrating) {
             (e.target).src = "/token/swapup.svg";
         }
     }}
     onDragStart={(e) => e.preventDefault()}
-    onMouseOut={(e) => {
+    onMouseOut={[&](e) {
         if (!isExecutingSwap && !isMigrating) {
             (e.target).src = "/token/swapup.svg";
         }

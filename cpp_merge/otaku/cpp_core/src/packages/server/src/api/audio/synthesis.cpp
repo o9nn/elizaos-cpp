@@ -11,7 +11,7 @@ express::Router createSynthesisRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Text-to-Speech endpoint
-        router.post("/:agentId/audio-messages/synthesize", std::async (req, res) => {
+        router.post[&]("/:agentId/audio-messages/synthesize", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -55,7 +55,7 @@ express::Router createSynthesisRouter(ElizaOS elizaOS) {
                     });
 
                     // Speech generation endpoint
-                    router.post("/:agentId/speech/generate", std::async (req, res) => {
+                    router.post[&]("/:agentId/speech/generate", std::async (req, res) {
                         logger.debug('[SPEECH GENERATE] Request to generate speech from text');
                         const auto agentId = validateUuid(req.params.agentId);
                         if (!agentId) {

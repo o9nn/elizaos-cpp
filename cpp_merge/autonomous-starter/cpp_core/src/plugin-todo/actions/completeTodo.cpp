@@ -1,4 +1,7 @@
 #include "completeTodo.hpp"
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,10 +13,9 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
     try {
         // Format available tasks for the prompt
         const auto tasksText = availableTasks;
-        .std::map((task) => {
+        .std::map[&]((task) {
             return "ID: " + task.id + "\nName: " + task.name + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
-            });
-            .join("\n---\n");
+            }).join("\n---\n");
 
             const auto messageHistory = formatMessages({;
                 messages: state.data.messages || [],
@@ -44,7 +46,7 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
                                 return { taskId: "", taskName: "", isFound: false }
                             }
 
-                            // Convert std::string 'true'/'false' to boolean and handle 'null' strings
+                            // Convert std: 'true'/'false' to boolean and handle 'null' strings
                             const TaskCompletion finalResult = {;
                                 taskId: parsedResult.taskId == "nullptr" ? "" : parsedResult.taskId || "",
                                 taskName:
@@ -62,17 +64,17 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
 
 std::future<> processDailyTaskCompletion(IAgentRuntime runtime, Task task, UUID entityId, UUID roomId, UUID worldId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    pointsAwarded: number; newStreak: number
+    pointsAwarded; newStreak
 }
 
 std::future<> processOneOffTaskCompletion(IAgentRuntime runtime, Task task, UUID entityId, UUID roomId, UUID worldId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    pointsAwarded: number; completedOnTime: boolean
+    pointsAwarded; completedOnTime
 }
 
 std::future<> processAspirationalTaskCompletion(IAgentRuntime runtime, Task task, UUID entityId, UUID roomId, UUID worldId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    pointsAwarded: number
+    pointsAwarded
 }
 
 } // namespace elizaos

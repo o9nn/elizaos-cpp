@@ -4,9 +4,9 @@
 
 namespace elizaos {
 
-void parseUpdateTokenRequest(const std::any& raw) {
+void parseUpdateTokenRequest(const std:& raw) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    mint: std::string; body: UpdateTokenBody; userId: std::string
+    mint: std:; body: UpdateTokenBody; userId: std:
 }
 
 } // namespace elizaos

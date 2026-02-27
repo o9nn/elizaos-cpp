@@ -8,9 +8,9 @@ std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character>
         try
         {
             static switch_type __switch420_737 = {
-                { any(std::string("add")), 1 },
-                { any(std::string("modify")), 2 },
-                { any(std::string("delete")), 3 }
+                { any(std:("add")), 1 },
+                { any(std:("modify")), 2 },
+                { any(std:("delete")), 3 }
             };
             switch (__switch420_737[op->type])
             {
@@ -27,7 +27,7 @@ std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character>
         }
         catch (const any& error)
         {
-            throw any(std::make_shared<Error>(std::string("Failed to apply operation ") + op->type + std::string(" at path ") + op->path + std::string(": ") + error["message"] + string_empty));
+            throw any(std::make_shared<Error>(std:("Failed to apply operation ") + op->type + std:(" at path ") + op->path + std:(": ") + error["message"] + string_empty));
         }
     }
     return updatedCharacter;
@@ -36,23 +36,23 @@ std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character>
 
 void addValue(any obj, string path, any value)
 {
-    auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
-    if (path->includes(std::string("[]"))) {
-        auto arrayPath = path->replace(std::string("[]"), string_empty);
-        auto normalizedArrayPath = (arrayPath->startsWith(std::string("$"))) ? arrayPath : std::string("$.") + arrayPath + string_empty;
+    auto normalizedPath = (path->startsWith(std:("$"))) ? path : std:("$.") + path + string_empty;
+    if (path->includes(std:("[]"))) {
+        auto arrayPath = path->replace(std:("[]"), string_empty);
+        auto normalizedArrayPath = (arrayPath->startsWith(std:("$"))) ? arrayPath : std:("$.") + arrayPath + string_empty;
         auto results = JSONPath(object{
-            object::pair{std::string("path"), normalizedArrayPath}, 
-            object::pair{std::string("json"), obj}
+            object::pair{std:("path"), normalizedArrayPath}, 
+            object::pair{std:("json"), obj}
         });
         if (AND((results->length > 0), (Array->isArray(const_(results)[0])))) {
             const_(results)[0]->push(value);
         } else {
-            if (arrayPath->includes(std::string("."))) {
-                auto parentPath = normalizedArrayPath->substring(0, normalizedArrayPath->lastIndexOf(std::string(".")));
-                auto propertyName = arrayPath->substring(arrayPath->lastIndexOf(std::string(".")) + 1);
+            if (arrayPath->includes(std:("."))) {
+                auto parentPath = normalizedArrayPath->substring(0, normalizedArrayPath->lastIndexOf(std:(".")));
+                auto propertyName = arrayPath->substring(arrayPath->lastIndexOf(std:(".")) + 1);
                 auto parentResults = JSONPath(object{
-                    object::pair{std::string("path"), parentPath}, 
-                    object::pair{std::string("json"), obj}
+                    object::pair{std:("path"), parentPath}, 
+                    object::pair{std:("json"), obj}
                 });
                 if (parentResults->length > 0) {
                     const_(parentResults)[0][propertyName] = array<any>{ value };
@@ -62,11 +62,11 @@ void addValue(any obj, string path, any value)
             }
         }
     } else {
-        auto parentPath = normalizedPath->substring(0, normalizedPath->lastIndexOf(std::string(".")));
-        auto propertyName = normalizedPath->substring(normalizedPath->lastIndexOf(std::string(".")) + 1);
+        auto parentPath = normalizedPath->substring(0, normalizedPath->lastIndexOf(std:(".")));
+        auto propertyName = normalizedPath->substring(normalizedPath->lastIndexOf(std:(".")) + 1);
         auto parent = const_(JSONPath(object{
-            object::pair{std::string("path"), parentPath}, 
-            object::pair{std::string("json"), obj}
+            object::pair{std:("path"), parentPath}, 
+            object::pair{std:("json"), obj}
         }))[0];
         if (parent) {
             parent[propertyName] = value;
@@ -77,12 +77,12 @@ void addValue(any obj, string path, any value)
 
 void modifyValue(any obj, string path, any value)
 {
-    auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
+    auto normalizedPath = (path->startsWith(std:("$"))) ? path : std:("$.") + path + string_empty;
     shared found = false;
     JSONPath(object{
-        object::pair{std::string("path"), normalizedPath}, 
-        object::pair{std::string("json"), obj}, 
-        object::pair{std::string("callback"), [=](any val, any type, any payload) mutable
+        object::pair{std:("path"), normalizedPath}, 
+        object::pair{std:("json"), obj}, 
+        object::pair{std:("callback"), [=](any val, any type, any payload) mutable
         {
             if (AND((AND((payload), (payload["parent"]))), (payload["parentProperty"] != undefined))) {
                 payload["parent"][payload["parentProperty"]] = value;
@@ -92,18 +92,18 @@ void modifyValue(any obj, string path, any value)
         }
     });
     if (!found) {
-        throw any(std::make_shared<Error>(std::string("Path ") + path + std::string(" does not exist")));
+        throw any(std::make_shared<Error>(std:("Path ") + path + std:(" does not exist")));
     }
 };
 
 
 void deleteValue(any obj, string path)
 {
-    auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
+    auto normalizedPath = (path->startsWith(std:("$"))) ? path : std:("$.") + path + string_empty;
     JSONPath(object{
-        object::pair{std::string("path"), normalizedPath}, 
-        object::pair{std::string("json"), obj}, 
-        object::pair{std::string("callback"), [=](any val, any type, any payload) mutable
+        object::pair{std:("path"), normalizedPath}, 
+        object::pair{std:("json"), obj}, 
+        object::pair{std:("callback"), [=](any val, any type, any payload) mutable
         {
             if (AND((payload), (payload["parent"]))) {
                 if (Array->isArray(payload["parent"])) {
@@ -123,24 +123,24 @@ void deleteValue(any obj, string path)
 
 boolean validateCharacterStructure(any character)
 {
-    if (OR((!character["name"]), (type_of(character["name"]) != std::string("string")))) {
+    if (OR((!character["name"]), (type_of(character["name"]) != std:("string")))) {
         return false;
     }
-    auto arrayFields = array<string>{ std::string("bio"), std::string("lore"), std::string("messageExamples"), std::string("postExamples"), std::string("topics"), std::string("adjectives") };
+    auto arrayFields = array<string>{ std:("bio"), std:("lore"), std:("messageExamples"), std:("postExamples"), std:("topics"), std:("adjectives") };
     for (auto& field : arrayFields)
     {
         if (AND((const_(character)[field]), (!Array->isArray(const_(character)[field])))) {
-            if (AND((field == std::string("bio")), (type_of(const_(character)[field]) == std::string("string")))) {
+            if (AND((field == std:("bio")), (type_of(const_(character)[field]) == std:("string")))) {
                 continue;
             }
             return false;
         }
     }
     if (character["style"]) {
-        if (type_of(character["style"]) != std::string("object")) {
+        if (type_of(character["style"]) != std:("object")) {
             return false;
         }
-        auto styleFields = array<string>{ std::string("all"), std::string("chat"), std::string("post") };
+        auto styleFields = array<string>{ std:("all"), std:("chat"), std:("post") };
         for (auto& field : styleFields)
         {
             if (AND((const_(character["style"])[field]), (!Array->isArray(const_(character["style"])[field])))) {

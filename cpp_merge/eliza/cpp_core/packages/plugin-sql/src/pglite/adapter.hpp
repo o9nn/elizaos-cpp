@@ -46,7 +46,7 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
   constructor(agentId: UUID, manager: PGliteClientManager) {
     super(agentId);
     this.manager = manager;
-    this.db = drizzle(this.manager.getConnection() as std::any);
+    this.db = drizzle(this.manager.getConnection() as std:);
   }
 
   /**

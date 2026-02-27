@@ -17,19 +17,19 @@ namespace elizaos {
 
 
 struct Experiment {
-    std::string id;
-    std::string hypothesis;
-    std::string action;
-    std::string expectedOutcome;
-    std::string domain;
+    std: id;
+    std: hypothesis;
+    std: action;
+    std: expectedOutcome;
+    std: domain;
     double priority;
     std::vector<std::string> relatedExperiences;
     double suggestedAt;
 };
 
 struct LearningGap {
-    std::string domain;
-    std::string description;
+    std: domain;
+    std: description;
     double uncertainty;
     std::vector<Experiment> suggestedExperiments;
 };
@@ -39,8 +39,8 @@ class ActiveLearningManager {
   private decayManager: ConfidenceDecayManager;
 
   constructor() {
-    this.relationshipManager = new ExperienceRelationshipManager();
-    this.decayManager = new ConfidenceDecayManager();
+    this.relationshipManager = std::make_unique<ExperienceRelationshipManager>();
+    this.decayManager = std::make_unique<ConfidenceDecayManager>();
   }
 
   /**

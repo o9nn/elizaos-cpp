@@ -1,4 +1,5 @@
 #include "grid-view.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,9 +8,9 @@ namespace elizaos {
 void GridView() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-    {data.std::map((token: IToken, _: number) => {
+    {data.std::map((token: IToken, _) {
         return <GridItem token={token} key={token.mint} />;
     })}
     </div>;

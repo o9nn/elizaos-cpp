@@ -1,4 +1,5 @@
 #include "api/index.js.hpp"
+#include <map>
 #include "api/system/environment.js.hpp"
 #include "authMiddleware.js.hpp"
 #include "bus.js.hpp"
@@ -22,14 +23,14 @@ namespace elizaos {
 
 
 /**
- * Expands a file path starting with `~` to the project directory.
+ * Expands a file path starting with "~" to the project directory.
  *
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-std::string expandTildePath(const std::string& filepath);
+std: expandTildePath(const std:& filepath);
 
-std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
+std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir);
 
 /**
  * Represents a std::function that acts as a server middleware.
@@ -38,7 +39,7 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
  * @param {express.NextFunction} next - The next std::function to be called in the middleware chain.
  * @returns {void}
  */
-using ServerMiddleware = (
+using ServerMiddleware = [&](
 
 /**
  * Interface for defining server configuration options.
@@ -49,8 +50,8 @@ using ServerMiddleware = (
  */
 struct ServerOptions {
     std::optional<std::vector<ServerMiddleware>> middlewares;
-    std::optional<std::string> dataDir;
-    std::optional<std::string> postgresUrl;
+    std::optional<std:> dataDir;
+    std::optional<std:> postgresUrl;
 };
 
 /**
@@ -63,14 +64,14 @@ class AgentServer {
   private agents: Map<UUID, IAgentRuntime>;
   public server!: http.Server;
   public socketIO!: SocketIOServer;
-  public isInitialized: boolean = false; // Flag to prevent double initialization
+  public isInitialized = false; // Flag to prevent double initialization
 
   public database!: DatabaseAdapter;
 
-  public startAgent!: (character: Character) => Promise<IAgentRuntime>;
-  public stopAgent!: (runtime: IAgentRuntime) => void;
-  public loadCharacterTryPath!: (characterPath: std::string) => Promise<Character>;
-  public jsonToCharacter!: (character: unknown) => Promise<Character>;
+  public startAgent!: (character: Character) { return Promise<IAgentRuntime>; };
+  public stopAgent!: [&](runtime: IAgentRuntime) { return void; };
+  public loadCharacterTryPath!: [&](characterPath: std:) { return Promise<Character>; };
+  public jsonToCharacter!: [&](character: unknown) { return Promise<Character>; };
 
   /**
    * Constructor for AgentServer class.
@@ -80,7 +81,7 @@ class AgentServer {
   constructor() {
     try {
       logger.debug('Initializing AgentServer (constructor)...');
-      this.agents = new Map();
+      this.agents = std::make_unique<Map>();
 
       // Initialize character loading functions
       this.loadCharacterTryPath = loadCharacterTryPath;
@@ -130,7 +131,7 @@ class AgentServer {
    */
       // Initialize middleware and database
 
-      // Security headers first - before std::any other middleware
+      // Security headers first - before std: other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // upgrade-insecure-requests is added by helmet automatically
@@ -191,7 +192,7 @@ class AgentServer {
       // Add a catch-all route for API 404s
         // Check if this is an API route that wasn't handled
           // worms are going to hitting it all the time, use a reverse proxy if you need this type of logging
-          //logger.warn(`API 404: ${req.method} ${req.path}`);
+          //logger.warn("API 404: " + std::to_string(req.method) + " " + std::to_string(req.path) + "");
           // Not an API route, continue to next middleware
 
       // Main fallback for the SPA - must be registered after all other routes
@@ -211,7 +212,7 @@ class AgentServer {
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
    * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are std::any errors during registration.
+   * or if there are std: errors during registration.
    */
 
       // Auto-register the MessageBusConnector plugin
@@ -279,9 +280,9 @@ class AgentServer {
   // Optional: Method to remove a participant
     // Since we don't have a direct method for this, we'll need to handle it at the channel level
 
-  // ===============================
+  // ==============
   // Server-Agent Association Methods
-  // ===============================
+  // ==============
 
   /**
    * Add an agent to a server

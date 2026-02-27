@@ -1,4 +1,5 @@
 #include "rooms.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +12,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Create a new room for an agent
-        router.post("/:agentId/rooms", requireAuthenticated(), std::async (req, res) => {
+        router.post("/:agentId/rooms", requireAuthenticated(), std::async [&](req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -92,7 +93,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                             });
 
                             // Get all rooms where an agent is a participant
-                            router.get("/:agentId/rooms", requireAuthenticated(), std::async (req, res) => {
+                            router.get("/:agentId/rooms", requireAuthenticated(), std::async [&](req, res) {
                                 const auto agentId = validateUuid(req.params.agentId);
                                 if (!agentId) {
                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -111,7 +112,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                     for (const auto& world : worlds)
                                         const auto worldRooms = runtime.getRooms(world.id);
                                         for (const auto& room : worldRooms)
-                                            if (participantRoomIds.includes(room.id)) {
+                                            if (participantRoomIds.count(room.id) > 0) {
                                                 agentRooms.push_back({
                                                     ...room,
                                                     });
@@ -136,7 +137,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                         });
 
                                         // Get room details
-                                        router.get("/:agentId/rooms/:roomId", requireAuthenticated(), std::async (req: CustomRequest, res: express.Response) => {
+                                        router.get("/:agentId/rooms/:roomId", requireAuthenticated(), std::async [&](req: CustomRequest, res: express.Response) {
                                             const auto agentId = validateUuid(req.params.agentId);
                                             const auto roomId = validateUuid(req.params.roomId);
 
@@ -157,7 +158,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                                 }
 
                                                 // Enrich room data with world name
-                                                auto worldName: std::string | std::nullopt;
+                                                auto worldName: std: | std::nullopt;
                                                 if (room.worldId) {
                                                     const auto world = runtime.getWorld(room.worldId);
                                                     worldName = world.name;

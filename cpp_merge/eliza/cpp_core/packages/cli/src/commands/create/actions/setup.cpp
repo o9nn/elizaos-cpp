@@ -1,17 +1,20 @@
 #include "setup.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> createProjectDirectories(const std::string& targetDir) {
+std::future<void> createProjectDirectories(const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir(targetDir);
 
 }
 
-std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive) {
+std::future<void> setupAIModelConfig(const std:& aiModel, const std:& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -29,7 +32,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                         content = fs.readFile(envFilePath, "utf8");
                     }
 
-                    if (content && !content.endsWith('\n')) {
+                    if (content && !content.rfind('\n')) {
                         content += "\n";
                     }
 
@@ -55,7 +58,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                             content = fs.readFile(envFilePath, "utf8");
                         }
 
-                        if (content && !content.endsWith('\n')) {
+                        if (content && !content.rfind('\n')) {
                             content += "\n";
                         }
 
@@ -81,7 +84,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                                 content = fs.readFile(envFilePath, "utf8");
                             }
 
-                            if (content && !content.endsWith('\n')) {
+                            if (content && !content.rfind('\n')) {
                                 content += "\n";
                             }
 
@@ -107,7 +110,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                                     content = fs.readFile(envFilePath, "utf8");
                                 }
 
-                                if (content && !content.endsWith('\n')) {
+                                if (content && !content.rfind('\n')) {
                                     content += "\n";
                                 }
 
@@ -135,7 +138,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                                         content = fs.readFile(envFilePath, "utf8");
                                     }
 
-                                    if (content && !content.endsWith('\n')) {
+                                    if (content && !content.rfind('\n')) {
                                         content += "\n";
                                     }
 
@@ -164,14 +167,14 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
 
 }
 
-bool hasValidApiKey(const std::string& content, const std::string& keyName) {
+bool hasValidApiKey(const std:& content, const std:& keyName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto regex = "new RegExp(" + "^" + keyName + "=(.+)$";
     const auto match = content.match(regex);
     if (!match) return false;
 
-    const auto value = match[1].trim();
+    const auto value = match[1];
     // Check if it's not empty and not a placeholder
     return (;
     value != "" &&;
@@ -183,7 +186,7 @@ bool hasValidApiKey(const std::string& content, const std::string& keyName) {
 
 }
 
-std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive) {
+std::future<void> setupEmbeddingModelConfig(const std:& embeddingModel, const std:& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -192,7 +195,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
             content = fs.readFile(envFilePath, "utf8");
         }
 
-        if (content && !content.endsWith('\n')) {
+        if (content && !content.rfind('\n')) {
             content += "\n";
         }
 
@@ -210,7 +213,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                 if (!hasValidApiKey(content, 'OPENAI_API_KEY')) {
                     if (isNonInteractive) {
                         // In non-interactive mode, add/update placeholder
-                        if (!content.includes('OPENAI_API_KEY=')) {
+                        if (!content.count('OPENAI_API_KEY=') > 0) {
                             content += "\n# Embedding Model Configuration (Fallback)\n";
                             content += "# OpenAI Embeddings Configuration\n";
                             content += "OPENAI_API_KEY=your_openai_api_key_here\n";
@@ -234,7 +237,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                         if (!hasValidApiKey(content, 'OLLAMA_API_ENDPOINT')) {
                             if (isNonInteractive) {
                                 // In non-interactive mode, add/update placeholder
-                                if (!content.includes('OLLAMA_API_ENDPOINT=')) {
+                                if (!content.count('OLLAMA_API_ENDPOINT=') > 0) {
                                     content += "\n# Embedding Model Configuration (Fallback)\n";
                                     content += "# Ollama Embeddings Configuration\n";
                                     content += "OLLAMA_API_ENDPOINT=http://localhost:11434\n";
@@ -253,10 +256,10 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                                     // Ollama endpoint exists, but we need to prompt for embedding model specifically
                                     if (isNonInteractive) {
                                         // In non-interactive mode, just add embedding model if not present
-                                        if (!content.includes('OLLAMA_EMBEDDING_MODEL')) {
+                                        if (!content.count('OLLAMA_EMBEDDING_MODEL') > 0) {
                                             content += "OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n";
                                         }
-                                        if (!content.includes('USE_OLLAMA_EMBEDDINGS')) {
+                                        if (!content.count('USE_OLLAMA_EMBEDDINGS') > 0) {
                                             content += "USE_OLLAMA_EMBEDDINGS=true\n";
                                         }
                                         fs.writeFile(envFilePath, content, "utf8");
@@ -275,7 +278,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                                     if (!hasValidApiKey(content, 'GOOGLE_GENERATIVE_AI_API_KEY')) {
                                         if (isNonInteractive) {
                                             // In non-interactive mode, add/update placeholder
-                                            if (!content.includes('GOOGLE_GENERATIVE_AI_API_KEY=')) {
+                                            if (!content.count('GOOGLE_GENERATIVE_AI_API_KEY=') > 0) {
                                                 content += "\n# Embedding Model Configuration (Fallback)\n";
                                                 content += "# Google Generative AI Embeddings Configuration\n";
                                                 content += "GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here\n";
@@ -305,11 +308,11 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
 
 }
 
-std::future<void> installDependencies(const std::string& targetDir) {
+std::future<void> installDependencies(const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip dependency installation in CI/test environments to save memory and time
-    if (process.env.CI == 'true' || process.env.ELIZA_TEST_MODE == 'true') {
+    if (std::getenv("CI") == 'true' || std::getenv("ELIZA_TEST_MODE") == 'true') {
         std::cout << "Skipping dependency installation in CI/test environment..." << std::endl;
         return;
     }
@@ -319,7 +322,7 @@ std::future<void> installDependencies(const std::string& targetDir) {
 
 }
 
-std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
+std::future<void> setupProjectEnvironment(const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create project directories first

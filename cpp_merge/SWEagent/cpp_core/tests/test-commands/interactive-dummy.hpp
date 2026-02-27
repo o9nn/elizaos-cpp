@@ -23,7 +23,7 @@ class InteractiveDummyCommand {
 public:
     InteractiveDummyCommand();
     void start();
-    void send(const std::string& input);
+    void send(const std:& input);
     void stop();
     void run();
 

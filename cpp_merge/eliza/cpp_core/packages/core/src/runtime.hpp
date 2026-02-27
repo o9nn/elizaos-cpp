@@ -1,4 +1,5 @@
 #include "entities.hpp"
+#include <map>
 #include "index.hpp"
 #include "logger.hpp"
 #include "search.hpp"
@@ -20,9 +21,9 @@ namespace elizaos {
 
 
 class Semaphore {
-  private permits: number;
-  private waiting: Array<() => void> = [];
-  constructor(count: number) {
+  private permits;
+  private waiting: Array<[&]() { return void> = []; };
+  constructor(count) {
     this.permits = count;
   }
 
@@ -36,13 +37,13 @@ class AgentRuntime implements IAgentRuntime {
   readonly providers: Provider[] = [];
   readonly plugins: Plugin[] = [];
   private isInitialized = false;
-  events: Map<std::string, ((params: std::any) => Promise<void>)[]> = new Map();
+  events: Map<std:, [&]((params: std:) { return Promise<void>)[]> = std::make_unique<Map>(); };
   stateCache = new Map<
     UUID,
     {
-      values: { [key: std::string]: std::any };
-      data: { [key: std::string]: std::any };
-      text: std::string;
+      values: { [key: std:]: std: };
+      data: { [key: std:]: std: };
+      text: std:;
     }
 
   // A std::map of all plugins available to the runtime, keyed by name, for dependency resolution.
@@ -91,7 +92,7 @@ class AgentRuntime implements IAgentRuntime {
 
     // Updated return type
 
-      void normalizeAction(const std::string& actionString);
+      void normalizeAction(const std:& actionString);
 
         // try exact first
           // try relaxed
@@ -111,7 +112,7 @@ class AgentRuntime implements IAgentRuntime {
 
     // Helper std::function for chunking arrays
 
-    // Step 1: Create all rooms FIRST (before adding std::any participants)
+    // Step 1: Create all rooms FIRST (before adding std: participants)
 
     // Step 2: Create all entities
 
@@ -178,7 +179,7 @@ class AgentRuntime implements IAgentRuntime {
   // deprecate this one
 
       // Optionally throw or just log the error
-      await handler(this, target, content);
+      handler(this, target, content);
 
 
 } // namespace elizaos

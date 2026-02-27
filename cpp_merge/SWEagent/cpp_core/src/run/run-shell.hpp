@@ -28,7 +28,7 @@ class RunShell {
   private env: SWEEnv;
   private agent: AbstractAgent;
   private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: std::string;
+  private outputDir: std:;
   private hooks: AbstractAgentHook[];
   private logger: AgentLogger;
   private rl: readline.Interface;
@@ -37,7 +37,7 @@ class RunShell {
     env: SWEEnv;
     agent: AbstractAgent;
     problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: std::string;
+    outputDir?: std:;
     hooks?: AbstractAgentHook[];
   }) {
     this.env = config.env;
@@ -50,7 +50,7 @@ class RunShell {
     // Setup readline interface
     this.rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout,
+      output: std::cout,
       prompt: '> ',
     });
 

@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-using TVariant = std::string;
+using TVariant = std:;
 
 
 } // namespace elizaos

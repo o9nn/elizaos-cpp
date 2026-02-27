@@ -2,12 +2,12 @@
 
 std::shared_ptr<Promise<std::shared_ptr<TestEnvironment>>> createTestEnvironment(boolean withTestKeys)
 {
-    auto tempDir = std::async([=]() { mkdtemp(join(tmpdir(), std::string("eliza-auth-cli-test-"))); });
-    auto envFile = join(tempDir, std::string(".env"));
+    auto tempDir = std::async([=]() { mkdtemp(join(tmpdir(), std:("eliza-auth-cli-test-"))); });
+    auto envFile = join(tempDir, std:(".env"));
     auto originalEnv = utils::assign(object{
     }, process->env);
     if (withTestKeys) {
-        auto envContent = std::string("\
+        auto envContent = std:("\
 OPENAI_API_KEY="sk-test-elizaos-openai-key-for-development-only"\
 GROQ_API_KEY="gsk_test-elizaos-groq-key-for-development-only"\
 ANTHROPIC_API_KEY="sk-ant-test-elizaos-anthropic-key-for-development-only"\
@@ -17,9 +17,9 @@ LOG_LEVEL="error"\
         std::async([=]() { writeFile(envFile, envContent); });
     }
     return object{
-        object::pair{std::string("tempDir"), std::string("tempDir")}, 
-        object::pair{std::string("envFile"), std::string("envFile")}, 
-        object::pair{std::string("originalEnv"), std::string("originalEnv")}
+        object::pair{std:("tempDir"), std:("tempDir")}, 
+        object::pair{std:("envFile"), std:("envFile")}, 
+        object::pair{std:("originalEnv"), std:("originalEnv")}
     };
 };
 
@@ -36,7 +36,7 @@ std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestEnviro
     }
     catch (const any& error)
     {
-        logger->warn(std::string("Error during test environment cleanup:"), error);
+        logger->warn(std:("Error during test environment cleanup:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 };
@@ -46,18 +46,18 @@ string execCLICommand(string command, std::shared_ptr<TestEnvironment> env)
 {
     try
     {
-        auto cliPath = join(__dirname, std::string("../../../cli/dist/index.js"));
-        auto fullCommand = std::string("bun "") + cliPath + std::string("" ") + command + string_empty;
+        auto cliPath = join(__dirname, std:("../../../cli/dist/index.js"));
+        auto fullCommand = std:("bun "") + cliPath + std:("" ") + command + string_empty;
         return execSync(fullCommand, object{
-            object::pair{std::string("encoding"), std::string("utf8")}, 
-            object::pair{std::string("cwd"), env->tempDir}, 
-            object::pair{std::string("env"), utils::assign(object{
+            object::pair{std:("encoding"), std:("utf8")}, 
+            object::pair{std:("cwd"), env->tempDir}, 
+            object::pair{std:("env"), utils::assign(object{
                 , 
-                object::pair{std::string("NODE_ENV"), std::string("test")}, 
-                object::pair{std::string("LOG_LEVEL"), std::string("error")}
+                object::pair{std:("NODE_ENV"), std:("test")}, 
+                object::pair{std:("LOG_LEVEL"), std:("error")}
             }, env->originalEnv)}, 
-            object::pair{std::string("timeout"), 30000}, 
-            object::pair{std::string("stdio"), std::string("pipe")}
+            object::pair{std:("timeout"), 30000}, 
+            object::pair{std:("stdio"), std:("pipe")}
         });
     }
     catch (const any& error)
@@ -70,7 +70,7 @@ string execCLICommand(string command, std::shared_ptr<TestEnvironment> env)
 
 void Main(void)
 {
-    describe(std::string("CLI Authentication Integration"), [=]() mutable
+    describe(std:("CLI Authentication Integration"), [=]() mutable
     {
         shared<std::shared_ptr<TestEnvironment>> testEnv;
         afterEach([=]() mutable
@@ -80,173 +80,173 @@ void Main(void)
             }
         }
         );
-        describe(std::string("auth providers status"), [=]() mutable
+        describe(std:("auth providers status"), [=]() mutable
         {
-            it(std::string("should show provider status with test keys"), [=]() mutable
+            it(std:("should show provider status with test keys"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("AI Providers Authentication Status"));
-                expect(output)->toContain(std::string("OPENAI"));
-                expect(output)->toContain(std::string("GROQ"));
-                expect(output)->toContain(std::string("ANTHROPIC"));
-                expect(output)->toContain(std::string("TEST"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("AI Providers Authentication Status"));
+                expect(output)->toContain(std:("OPENAI"));
+                expect(output)->toContain(std:("GROQ"));
+                expect(output)->toContain(std:("ANTHROPIC"));
+                expect(output)->toContain(std:("TEST"));
             }
             );
-            it(std::string("should show failed status without API keys"), [=]() mutable
+            it(std:("should show failed status without API keys"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("AI Providers Authentication Status"));
-                expect(output->toUpperCase())->toContain(std::string("FAILED"));
-                expect(output)->toContain(std::string("not configured"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("AI Providers Authentication Status"));
+                expect(output->toUpperCase())->toContain(std:("FAILED"));
+                expect(output)->toContain(std:("not configured"));
             }
             );
-            it(std::string("should provide helpful recommendations"), [=]() mutable
+            it(std:("should provide helpful recommendations"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("setup"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("setup"));
             }
             );
         }
         );
-        describe(std::string("auth providers test"), [=]() mutable
+        describe(std:("auth providers test"), [=]() mutable
         {
-            it(std::string("should test all providers with test keys"), [=]() mutable
+            it(std:("should test all providers with test keys"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers test"), testEnv);
-                expect(output)->toContain(std::string("AI Provider Functionality Test"));
-                expect(output)->toContain(std::string("openai"));
-                expect(output)->toContain(std::string("groq"));
-                expect(output->toUpperCase())->toContain(std::string("SUCCESS"));
+                auto output = execCLICommand(std:("auth providers test"), testEnv);
+                expect(output)->toContain(std:("AI Provider Functionality Test"));
+                expect(output)->toContain(std:("openai"));
+                expect(output)->toContain(std:("groq"));
+                expect(output->toUpperCase())->toContain(std:("SUCCESS"));
             }
             );
-            it(std::string("should test specific provider"), [=]() mutable
+            it(std:("should test specific provider"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers test --provider openai"), testEnv);
-                expect(output)->toContain(std::string("openai"));
-                expect(output)->not->toContain(std::string("groq"));
+                auto output = execCLICommand(std:("auth providers test --provider openai"), testEnv);
+                expect(output)->toContain(std:("openai"));
+                expect(output)->not->toContain(std:("groq"));
             }
             );
-            it(std::string("should handle invalid provider gracefully"), [=]() mutable
+            it(std:("should handle invalid provider gracefully"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers test --provider invalid"), testEnv);
-                expect(output->toLowerCase())->toContain(std::string("invalid"));
+                auto output = execCLICommand(std:("auth providers test --provider invalid"), testEnv);
+                expect(output->toLowerCase())->toContain(std:("invalid"));
             }
             );
-            it(std::string("should fail tests without API keys"), [=]() mutable
+            it(std:("should fail tests without API keys"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers test"), testEnv);
-                expect(output->toLowerCase())->toContain(std::string("not configured"));
+                auto output = execCLICommand(std:("auth providers test"), testEnv);
+                expect(output->toLowerCase())->toContain(std:("not configured"));
             }
             );
         }
         );
-        describe(std::string("auth providers keys"), [=]() mutable
+        describe(std:("auth providers keys"), [=]() mutable
         {
-            it(std::string("should display test keys information"), [=]() mutable
+            it(std:("should display test keys information"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers keys"), testEnv);
-                expect(output)->toContain(std::string("Development Test Keys"));
-                expect(output)->toContain(std::string("sk-test-elizaos-openai-key-for-development-only"));
-                expect(output)->toContain(std::string("gsk_test-elizaos-groq-key-for-development-only"));
-                expect(output)->toContain(std::string("sk-ant-test-elizaos-anthropic-key-for-development-only"));
-                expect(output)->toContain(std::string("OPENAI_API_KEY"));
+                auto output = execCLICommand(std:("auth providers keys"), testEnv);
+                expect(output)->toContain(std:("Development Test Keys"));
+                expect(output)->toContain(std:("sk-test-elizaos-openai-key-for-development-only"));
+                expect(output)->toContain(std:("gsk_test-elizaos-groq-key-for-development-only"));
+                expect(output)->toContain(std:("sk-ant-test-elizaos-anthropic-key-for-development-only"));
+                expect(output)->toContain(std:("OPENAI_API_KEY"));
             }
             );
-            it(std::string("should provide usage instructions"), [=]() mutable
+            it(std:("should provide usage instructions"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers keys"), testEnv);
-                expect(output)->toContain(std::string("export"));
-                expect(output)->toContain(std::string("simulated responses"));
-                expect(output)->toContain(std::string("development"));
+                auto output = execCLICommand(std:("auth providers keys"), testEnv);
+                expect(output)->toContain(std:("export"));
+                expect(output)->toContain(std:("simulated responses"));
+                expect(output)->toContain(std:("development"));
             }
             );
         }
         );
-        describe(std::string("auth providers setup"), [=]() mutable
+        describe(std:("auth providers setup"), [=]() mutable
         {
-            it(std::string("should show setup information"), [=]() mutable
+            it(std:("should show setup information"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers setup"), testEnv);
-                expect(output)->toContain(std::string("setup"));
+                auto output = execCLICommand(std:("auth providers setup"), testEnv);
+                expect(output)->toContain(std:("setup"));
             }
             );
-            it(std::string("should display provider information"), [=]() mutable
+            it(std:("should display provider information"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers setup"), testEnv);
-                expect(output)->toContain(std::string("OpenAI"));
-                expect(output)->toContain(std::string("Groq"));
-                expect(output)->toContain(std::string("Anthropic"));
+                auto output = execCLICommand(std:("auth providers setup"), testEnv);
+                expect(output)->toContain(std:("OpenAI"));
+                expect(output)->toContain(std:("Groq"));
+                expect(output)->toContain(std:("Anthropic"));
             }
             );
         }
         );
-        describe(std::string("Integration with main auth command"), [=]() mutable
+        describe(std:("Integration with main auth command"), [=]() mutable
         {
-            it(std::string("should work as subcommand of auth"), [=]() mutable
+            it(std:("should work as subcommand of auth"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("Authentication Status"));
-                expect(output)->not->toContain(std::string("Command not found"));
-                expect(output)->not->toContain(std::string("Unknown command"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("Authentication Status"));
+                expect(output)->not->toContain(std:("Command not found"));
+                expect(output)->not->toContain(std:("Unknown command"));
             }
             );
-            it(std::string("should show help for providers subcommand"), [=]() mutable
+            it(std:("should show help for providers subcommand"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers --help"), testEnv);
-                expect(output)->toContain(std::string("providers"));
-                expect(output)->toContain(std::string("status"));
-                expect(output)->toContain(std::string("setup"));
-                expect(output)->toContain(std::string("test"));
-                expect(output)->toContain(std::string("keys"));
+                auto output = execCLICommand(std:("auth providers --help"), testEnv);
+                expect(output)->toContain(std:("providers"));
+                expect(output)->toContain(std:("status"));
+                expect(output)->toContain(std:("setup"));
+                expect(output)->toContain(std:("test"));
+                expect(output)->toContain(std:("keys"));
             }
             );
-            it(std::string("should maintain consistency with main auth command"), [=]() mutable
+            it(std:("should maintain consistency with main auth command"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto authOutput = execCLICommand(std::string("auth status"), testEnv);
-                auto providersOutput = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(authOutput)->not->toContain(std::string("error"));
-                expect(providersOutput)->not->toContain(std::string("error"));
+                auto authOutput = execCLICommand(std:("auth status"), testEnv);
+                auto providersOutput = execCLICommand(std:("auth providers status"), testEnv);
+                expect(authOutput)->not->toContain(std:("error"));
+                expect(providersOutput)->not->toContain(std:("error"));
                 expect(authOutput)->not->toBe(providersOutput);
             }
             );
         }
         );
-        describe(std::string("Error Handling"), [=]() mutable
+        describe(std:("Error Handling"), [=]() mutable
         {
-            it(std::string("should handle CLI errors gracefully"), [=]() mutable
+            it(std:("should handle CLI errors gracefully"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers invalid-command"), testEnv);
-                expect(output->toLowerCase())->toMatch((new RegExp(std::string("error|invalid|unknow"))));
+                auto output = execCLICommand(std:("auth providers invalid-command"), testEnv);
+                expect(output->toLowerCase())->toMatch((new RegExp(std:("error|invalid|unknow"))));
             }
             );
-            it(std::string("should provide helpful error messages"), [=]() mutable
+            it(std:("should provide helpful error messages"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output->toLowerCase())->toMatch((new RegExp(std::string("no valid api keys|not configure"))));
-                expect(output)->toContain(std::string("setup"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output->toLowerCase())->toMatch((new RegExp(std:("no valid api keys|not configure"))));
+                expect(output)->toContain(std:("setup"));
             }
             );
-            it(std::string("should handle timeout gracefully"), [=]() mutable
+            it(std:("should handle timeout gracefully"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
                 auto startTime = Date->now();
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
                 auto duration = Date->now() - startTime;
                 expect(duration)->toBeLessThan(25000);
                 expect(output)->toBeDefined();
@@ -254,55 +254,55 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Environment File Integration"), [=]() mutable
+        describe(std:("Environment File Integration"), [=]() mutable
         {
-            it(std::string("should read API keys from .env file"), [=]() mutable
+            it(std:("should read API keys from .env file"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("TEST"));
-                expect(output)->not->toContain(std::string("not configured"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("TEST"));
+                expect(output)->not->toContain(std:("not configured"));
             }
             );
-            it(std::string("should handle missing .env file"), [=]() mutable
+            it(std:("should handle missing .env file"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output)->toContain(std::string("AI Providers Authentication Status"));
-                expect(output->toLowerCase())->toContain(std::string("not configured"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output)->toContain(std:("AI Providers Authentication Status"));
+                expect(output->toLowerCase())->toContain(std:("not configured"));
             }
             );
-            it(std::string("should work with partial .env configuration"), [=]() mutable
+            it(std:("should work with partial .env configuration"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(false); });
-                auto partialEnv = std::string("OPENAI_API_KEY="sk-test-elizaos-openai-key-for-development-only"");
+                auto partialEnv = std:("OPENAI_API_KEY="sk-test-elizaos-openai-key-for-development-only"");
                 std::async([=]() { writeFile(testEnv->envFile, partialEnv); });
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
-                expect(output->toUpperCase())->toContain(std::string("DEGRADED"));
-                expect(output)->toContain(std::string("OPENAI"));
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
+                expect(output->toUpperCase())->toContain(std:("DEGRADED"));
+                expect(output)->toContain(std:("OPENAI"));
             }
             );
         }
         );
-        describe(std::string("Performance"), [=]() mutable
+        describe(std:("Performance"), [=]() mutable
         {
-            it(std::string("should execute status check within reasonable time"), [=]() mutable
+            it(std:("should execute status check within reasonable time"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
                 auto startTime = Date->now();
-                auto output = execCLICommand(std::string("auth providers status"), testEnv);
+                auto output = execCLICommand(std:("auth providers status"), testEnv);
                 auto duration = Date->now() - startTime;
                 expect(duration)->toBeLessThan(10000);
-                expect(output)->toContain(std::string("Status"));
+                expect(output)->toContain(std:("Status"));
             }
             );
-            it(std::string("should handle concurrent commands"), [=]() mutable
+            it(std:("should handle concurrent commands"), [=]() mutable
             {
                 testEnv = std::async([=]() { createTestEnvironment(true); });
-                auto output1 = execCLICommand(std::string("auth providers status"), testEnv);
-                auto output2 = execCLICommand(std::string("auth providers keys"), testEnv);
-                expect(output1)->toContain(std::string("Status"));
-                expect(output2)->toContain(std::string("Test Keys"));
+                auto output1 = execCLICommand(std:("auth providers status"), testEnv);
+                auto output2 = execCLICommand(std:("auth providers keys"), testEnv);
+                expect(output1)->toContain(std:("Status"));
+                expect(output2)->toContain(std:("Test Keys"));
             }
             );
         }

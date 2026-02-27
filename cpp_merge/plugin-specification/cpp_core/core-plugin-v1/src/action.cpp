@@ -1,4 +1,8 @@
 #include "action.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,14 +12,14 @@ Handler fromV2Handler(HandlerV2 handlerV2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return std::async (runtime, message, state, options, callback) => {;
+        return std::async [&](runtime, message, state, options, callback) {;
             // Convert v1 state to v2 state if provided
             const auto stateV2 = state ? toV2State(state) : std::nullopt;
 
             try {
                 // Call v2 handler with transformed parameters
                 // V2 handlers have additional responses parameter, pass empty array
-                const std::vector<std::any> responses = [];
+                const std::vector<std::string> responses = [];
                 return handlerV2(runtime, message, stateV2, options, callback, responses);
                 } catch (error) {
                     std::cerr << "Error in v2 handler:" << error << std::endl;
@@ -33,7 +37,7 @@ HandlerV2 toV2Handler(Handler handler) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return std::async (runtime, message, state, options, callback, responses) => {;
+        return std::async [&](runtime, message, state, options, callback, responses) {;
             // Convert v2 state to v1 state if provided
             const auto stateV1 = state ? fromV2State(state) : std::nullopt;
 
@@ -55,7 +59,7 @@ HandlerV2 toV2Handler(Handler handler) {
 Validator fromV2Validator(ValidatorV2 validatorV2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::async (runtime, message, state) => {;
+    return std::async [&](runtime, message, state) {;
         const auto stateV2 = state ? toV2State(state) : std::nullopt;
         return validatorV2(runtime, message, stateV2);
         };
@@ -65,7 +69,7 @@ Validator fromV2Validator(ValidatorV2 validatorV2) {
 ValidatorV2 toV2Validator(Validator validator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::async (runtime, message, state) => {;
+    return std::async [&](runtime, message, state) {;
         const auto stateV1 = state ? fromV2State(state) : std::nullopt;
         return validator(runtime, message, stateV1);
         };

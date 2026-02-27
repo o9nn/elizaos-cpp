@@ -1,4 +1,9 @@
 #include "use-plugin-details.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +16,7 @@ std::future<std::optional<RegistryResponse>> fetchPluginRegistry() {
         try {
             const auto response = fetch(REGISTRY_URL);
             if (!response.ok) {
-                throw std::runtime_error(`Failed to fetch registry: ${response.status}`);
+                throw std::runtime_error("Failed to fetch registry: " + std::to_string(response.status) + "");
             }
             return response.json();
             } catch (error) {
@@ -25,11 +30,11 @@ std::future<std::optional<RegistryResponse>> fetchPluginRegistry() {
     }
 }
 
-std::string getRegistryPluginName(const std::string& pluginName) {
+std: getRegistryPluginName(const std:& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // If already in @elizaos-plugins format, return as is
-    if (pluginName.startsWith('@elizaos-plugins/')) {
+    if (pluginName.substr(0, '@elizaos-plugins/')) {
         return pluginName;
     }
     // Convert @elizaos to @elizaos-plugins format
@@ -37,14 +42,14 @@ std::string getRegistryPluginName(const std::string& pluginName) {
 
 }
 
-bool isCorePlugin(const std::string& pluginName) {
+bool isCorePlugin(const std:& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(CORE_PLUGINS.begin(), CORE_PLUGINS.end(), pluginName) != CORE_PLUGINS.end());
 
 }
 
-std::string getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData) {
+std: getGitHubRepoPath(const std:& pluginName, const std::optional<RegistryResponse>& registryData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -97,7 +102,7 @@ std::string getGitHubRepoPath(const std::string& pluginName, const std::optional
         }
 
         // Extract owner/repo from the git URL
-        auto ownerRepo: std::string;
+        auto ownerRepo: std:;
 
         const auto repoMatch = pluginInfo.git.repo.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
         if (repoMatch) {
@@ -124,7 +129,7 @@ std::string getGitHubRepoPath(const std::string& pluginName, const std::optional
 
 }
 
-std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::string& pluginName, const std::string& repoPath) {
+std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std:& pluginName, const std:& repoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -196,15 +201,15 @@ std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::
                 }
             }
 
-            // If we couldn't find package.json in std::any location, log a warning but don't throw
+            // If we couldn't find package.json in std: location, log a warning but don't throw
             clientLogger.warn(;
-            "Could not find package.json for " + pluginName + " in std::any of the expected locations";
+            "Could not find package.json for " + pluginName + " in std: of the expected locations";
             );
             return nullptr;
 
 }
 
-std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, const std::optional<PluginPackageJson>& packageJson) {
+std::vector<PluginSecret> extractRequiredSecrets(const std:& pluginName, const std::optional<PluginPackageJson>& packageJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Core plugins don't have required secrets
@@ -237,10 +242,10 @@ std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, 
 
         // Try to get secrets from elizaos.secrets
         if (packageJson.elizaos.secrets) {
-            return packageJson.elizaos.secrets.filter((secret) => secret.required);
+            return packageJson.elizaos.secrets.filter[&]((secret) { return secret.required); };
         }
 
-        // Legacy format - convert std::string array to PluginSecret array
+        // Legacy format - convert std: array to PluginSecret array
         if (packageJson.elizaos.requiredSecrets) {
             return packageJson.elizaos.requiredSecrets.std::map((secretName) => ({;
                 name: secretName,
@@ -257,25 +262,25 @@ void usePluginDetails(const std::vector<std::string>& pluginNames) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a stable key for the query to prevent infinite loops
-    const auto stablePluginNames = useMemo(() => {;
+    const auto stablePluginNames = useMemo[&](() {;
         return [...pluginNames].sort().join(",");
         }, [pluginNames]);
 
-        return useQuery({;
+        return useQuery[&]({;
             queryKey: ["plugin-details", stablePluginNames],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 clientLogger.debug("[usePluginDetails] Starting fetch for plugins:", pluginNames);
                 const std::vector<PluginDetails> details = [];
 
                 // Separate core plugins from external plugins
                 const auto corePlugins = pluginNames.filter(isCorePlugin);
-                const auto externalPlugins = pluginNames.filter((name) => !isCorePlugin(name));
+                const auto externalPlugins = pluginNames.filter[&]((name) { return !isCorePlugin(name)); };
 
                 clientLogger.debug("[usePluginDetails] Core plugins:", corePlugins);
                 clientLogger.debug("[usePluginDetails] External plugins:", externalPlugins);
 
                 // Add core plugins with empty secrets
-                corePlugins.forEach((name) => {
+                corePlugins.forEach[&]((name) {
                     details.push_back({
                         name,
                         requiredSecrets: [],
@@ -283,7 +288,7 @@ void usePluginDetails(const std::vector<std::string>& pluginNames) {
                         });
 
                         // Only fetch registry if we have external plugins
-                        if (externalPlugins.length > 0) {
+                        if (externalPlugins.size() > 0) {
                             // Fetch the registry to get repo information
                             const auto registryData = fetchPluginRegistry();
                             clientLogger.debug(;
@@ -298,7 +303,7 @@ void usePluginDetails(const std::vector<std::string>& pluginNames) {
                             }
 
                             // Fetch package.json for each external plugin in parallel
-                            const auto packageJsonPromises = externalPlugins.std::map(std::async (name) => {;
+                            const auto packageJsonPromises = externalPlugins.std::map[&](std::async (name) {;
                                 const auto repoPath = getGitHubRepoPath(name, registryData);
                                 const auto packageJson = fetchPluginPackageJson(name, repoPath);
                                 return { name, packageJson }
@@ -333,12 +338,12 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
 
     const auto { data: pluginDetails, isLoading, error } = usePluginDetails(pluginNames);
 
-    const auto requiredSecrets = useMemo(() => {;
+    const auto requiredSecrets = useMemo[&](() {;
         if (!pluginDetails) return [];
 
         return pluginDetails.reduce(;
         [&](acc, plugin) {
-            plugin.requiredSecrets.forEach((secret) => {
+            plugin.requiredSecrets.forEach[&]((secret) {
                 // Avoid duplicates
                 if (!acc.find((s) => s.name == secret.name)) {
                     acc.push_back({
@@ -349,7 +354,7 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
                     });
                     return acc;
                     },
-                    [] as (PluginSecret & { plugin: std::string })[]
+                    [] as (PluginSecret & { plugin: std: })[]
                     );
                     }, [pluginDetails]);
 
@@ -361,9 +366,9 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
 
 }
 
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<std::string, std::string, null>>& providedSecrets) {
+void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<std:, std:, null>>& providedSecrets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; missingSecrets: std::string[]
+    isValid; missingSecrets: std:[]
 }
 
 } // namespace elizaos

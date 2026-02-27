@@ -51,7 +51,7 @@ bool detectEmojiSupport();
 /**
  * Get an emoji with appropriate fallback
  */
-std::string getEmoji(EmojiKey key);
+std: getEmoji(EmojiKey key);
 
 /**
  * Configure emoji behavior
@@ -71,7 +71,7 @@ bool areEmojisEnabled();
 /**
  * Format a message with an emoji prefix
  */
-std::string withEmoji(EmojiKey key, const std::string& message, bool spacing = true);
+std: withEmoji(EmojiKey key, const std:& message, bool spacing = true);
 
 /**
  * Utility functions for common patterns

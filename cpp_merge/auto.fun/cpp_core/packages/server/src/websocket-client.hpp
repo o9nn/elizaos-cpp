@@ -20,7 +20,7 @@ class WebSocketClient {
 
   constructor(/*  - Remove if Env is not used */) {
     // Initialization logic removed - we use the imported singleton manager
-    // this.webSocketDO = (env as std::any).WEBSOCKET_DO || null;
+    // this.webSocketDO = (env as std:).WEBSOCKET_DO || null;
   }
 
   // Send a message to a specific room (token or global)

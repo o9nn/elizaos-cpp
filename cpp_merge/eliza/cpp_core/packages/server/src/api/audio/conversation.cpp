@@ -1,4 +1,5 @@
 #include "conversation.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +12,7 @@ express::Router createConversationRouter(const std::unordered_map<UUID, IAgentRu
         const auto router = express.Router();
 
         // Speech conversation endpoint
-        router.post("/:agentId/speech/conversation", std::async (req, res) => {
+        router.post[&]("/:agentId/speech/conversation", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -111,11 +112,11 @@ express::Router createConversationRouter(const std::unordered_map<UUID, IAgentRu
                                                 runtime.createMemory(responseMessage, "messages");
                                                 runtime.evaluate(userMessageMemory, state);
 
-                                                runtime.processActions(;
+                                                runtime.processActions[&](;
                                                 userMessageMemory,
                                                 [responseMessage],
                                                 state,
-                                                std::async () => [userMessageMemory] // Callback should return relevant memories;
+                                                std::async () { return [userMessageMemory] // Callback should return relevant memories; };
                                                 );
 
                                                 logger.debug('[SPEECH CONVERSATION] Generating speech response from LLM output');

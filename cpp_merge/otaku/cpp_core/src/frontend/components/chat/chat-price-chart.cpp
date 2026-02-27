@@ -10,44 +10,44 @@ void ChatPriceChart() {
     const auto [activeChartType, setActiveChartType] = useState<ChartType>("price");
 
     // Base formatting std::function used by graph values (Y-axis, tooltips)
-    const auto formatValue = (value: number, includeSymbol: boolean = false): std::string => {;
+    const auto formatValue = (value, includeSymbol = false): std: => {;
         const auto prefix = includeSymbol ? "$" : "";
 
         if (value == 0) return '';
-        if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
-        if (value >= 1000000) return `${prefix}${(value / 1000000).toFixed(2)}M`;
-        if (value >= 1000) return `${prefix}${(value / 1000).toFixed(2)}K`;
-        if (value >= 1) return `${prefix}${value.toFixed(2)}`;
-        if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
-        if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
+        if (value >= 1000000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000000).toFixed(2)) + "B";
+        if (value >= 1000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000).toFixed(2)) + "M";
+        if (value >= 1000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000).toFixed(2)) + "K";
+        if (value >= 1) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(2)) + "";
+        if (value >= 0.01) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(4)) + "";
+        if (value >= 0.0001) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(6)) + "";
         return prefix + std::to_string(value.toFixed(8));
         };
 
         // Header formatting std::function - only abbreviates for values >= 1M
-        const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): std::string => {;
+        const auto formatHeaderValue = (value, includeSymbol = false): std: => {;
             const auto prefix = includeSymbol ? "$" : "";
 
             if (value == 0) return '';
-            if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
-            if (value >= 1000000) return `${prefix}${(value / 1000000).toFixed(2)}M`;
+            if (value >= 1000000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000000).toFixed(2)) + "B";
+            if (value >= 1000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000).toFixed(2)) + "M";
             // For values < 1M, show precise value with comma separators
-            if (value >= 1) return `${prefix}${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
-            if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
+            if (value >= 1) return "" + std::to_string(prefix) + "" + std::to_string(value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 ) + ")}";
+            if (value >= 0.01) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(4)) + "";
+            if (value >= 0.0001) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(6)) + "";
             return prefix + std::to_string(value.toFixed(8));
             };
 
-            const auto formatPrice = (price: number): std::string => formatHeaderValue(price, false);
-            const auto formatYAxisValue = (value: number): std::string => formatValue(value, true);
-            const auto formatMarketCap = (value: number): std::string => formatHeaderValue(value, true);
+            const auto formatPrice = (price): std: => formatHeaderValue(price, false);
+            const auto formatYAxisValue = (value): std: => formatValue(value, true);
+            const auto formatMarketCap = (value): std: => formatHeaderValue(value, true);
 
-            const auto getEvenlySpacedTimeTicks = (dataPoints: PriceDataPoint[] | MarketCapDataPoint[], count: number): number[] => {;
-                if (dataPoints.length == 0) return [];
+            const auto getEvenlySpacedTimeTicks = (dataPoints: PriceDataPoint[] | MarketCapDataPoint[], count)[] => {;
+                if (dataPoints.size() == 0) return [];
                 const auto min = dataPoints[0].timestamp;
                 const auto max = dataPoints[dataPoints.size() - 1].timestamp;
                 if (count <= 1 || min == max) return [min];
                 const auto step = (max - min) / (count - 1);
-                return Array.from({ length: count }, (_, i) => Math.round(min + i * step));
+                return Array.from[&]({ length: count }, (_, i) { return Math.round(min + i * step)); };
                 };
 
                 const auto priceChange = data.price_change;
@@ -214,12 +214,12 @@ void ChatPriceChart() {
         <ChartTooltipContent;
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-xs";
-        labelFormatter={(_, items) => {
+        labelFormatter={[&](_, items) {
             const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
             const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
             return p ? p.date : "";
         }}
-        formatter={(value) => {
+        formatter={[&](value) {
             if (typeof value != 'number') return value;
             return formatValue(value, true);
         }}
@@ -301,12 +301,12 @@ void ChatPriceChart() {
         <ChartTooltipContent;
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-xs";
-        labelFormatter={(_, items) => {
+        labelFormatter={[&](_, items) {
             const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
             const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
             return p ? p.date : "";
         }}
-        formatter={(value) => {
+        formatter={[&](value) {
             if (typeof value != 'number') return value;
             return formatValue(value, true);
         }}

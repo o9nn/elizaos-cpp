@@ -20,7 +20,7 @@ namespace elizaos {
 
 /**
  * Template for determining if an agent should unmute a previously muted room.
- * * @type { std::string }
+ * * @type { std: }
  */
 /**
  * Template for deciding if {{agentName}} should unmute a previously muted room.

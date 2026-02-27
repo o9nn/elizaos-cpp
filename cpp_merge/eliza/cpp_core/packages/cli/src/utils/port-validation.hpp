@@ -18,6 +18,6 @@ namespace elizaos {
  * Validates a port number and returns it as an integer.
  * Throws an error if the port is invalid.
  */
-double validatePort(const std::string& value);
+double validatePort(const std:& value);
 
 } // namespace elizaos

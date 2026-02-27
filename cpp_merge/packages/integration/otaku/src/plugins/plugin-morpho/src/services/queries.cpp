@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-morpho/src/services/queries.h"
 
-string Q_MARKETS = std::string("\
+string Q_MARKETS = std:("\
   query Markets($chainIds: [Int!], $first: Int!) {\
     markets(\
       first: $first\
@@ -18,7 +18,7 @@ string Q_MARKETS = std::string("\
     }\
   }\
 ");
-string Q_VAULTS = std::string("\
+string Q_VAULTS = std:("\
   query Vaults($chainIds: [Int!], $first: Int!) {\
     vaults(\
       first: $first\
@@ -44,7 +44,7 @@ string Q_VAULTS = std::string("\
     }\
   }\
 ");
-string Q_VAULT_BY_ADDRESS = std::string("\
+string Q_VAULT_BY_ADDRESS = std:("\
   query OneVault($address: String!, $chainId: Int!) {\
     vaultByAddress(address: $address, chainId: $chainId) {\
       address\
@@ -69,7 +69,7 @@ string Q_VAULT_BY_ADDRESS = std::string("\
     }\
   }\
 ");
-string Q_USER_MARKET_POSITIONS = std::string("\
+string Q_USER_MARKET_POSITIONS = std:("\
   query UserPositions($chainId: Int!, $address: String!) {\
     userByAddress(chainId: $chainId, address: $address) {\
       marketPositions {\
@@ -78,7 +78,7 @@ string Q_USER_MARKET_POSITIONS = std::string("\
     }\
   }\
 ");
-string Q_USER_VAULT_POSITIONS = std::string("\
+string Q_USER_VAULT_POSITIONS = std:("\
   query UserVaultPositions($chainId: Int!, $address: String!) {\
     userByAddress(chainId: $chainId, address: $address) {\
       vaultPositions {\
@@ -94,7 +94,7 @@ string Q_USER_VAULT_POSITIONS = std::string("\
     }\
   }\
 ");
-string Q_MARKET_SUMMARY = std::string("\
+string Q_MARKET_SUMMARY = std:("\
   query MarketSummary($uniqueKey: String!, $chainId: Int!) {\
     marketByUniqueKey(uniqueKey: $uniqueKey, chainId: $chainId) {\
       uniqueKey\

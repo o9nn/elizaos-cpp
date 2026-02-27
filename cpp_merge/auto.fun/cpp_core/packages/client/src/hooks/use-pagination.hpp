@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-  // Add std::any additional parameters to the query std::string
+  // Add std: additional parameters to the query std:
 
   // Validate each item in the response with the provided schema if it exists
 

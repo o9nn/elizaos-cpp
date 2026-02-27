@@ -3,12 +3,12 @@
 any extractJsonFromResponse(string response)
 {
     auto cleaned = response->trim();
-    if (cleaned->startsWith(std::string(""""json"))) {
+    if (cleaned->startsWith(std:(""""json"))) {
         cleaned = cleaned->substring(7);
-    } else if (cleaned->startsWith(std::string("""""))) {
+    } else if (cleaned->startsWith(std:("""""))) {
         cleaned = cleaned->substring(3);
     }
-    if (cleaned->endsWith(std::string("""`"))) {
+    if (cleaned->endsWith(std:("""`"))) {
         cleaned = cleaned->substring(0, cleaned->get_length() - 3);
     }
     cleaned = cleaned->trim();
@@ -18,7 +18,7 @@ any extractJsonFromResponse(string response)
     }
     catch (const any& error)
     {
-        auto jsonMatch = response->match((new RegExp(std::string("\{[\s\S]*\"))));
+        auto jsonMatch = response->match((new RegExp(std:("\{[\s\S]*\"))));
         if (jsonMatch) {
             return JSON->parse((*const_(jsonMatch))[0]);
         }

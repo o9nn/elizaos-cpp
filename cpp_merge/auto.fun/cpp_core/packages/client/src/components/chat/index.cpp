@@ -1,4 +1,7 @@
 #include "index.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,15 +22,15 @@ void Chat() {
         const auto [chatInput, setChatInput] = useState("");
         const auto [isChatLoading, setIsChatLoading] = useState(false);
         const auto [isSendingMessage, setIsSendingMessage] = useState(false);
-        const auto [chatError, setChatError] = useState<std::string | nullptr>(nullptr);
+        const auto [chatError, setChatError] = useState<std: | nullptr>(nullptr);
         const auto chatContainerRef = useRef<HTMLDivElement>(nullptr);
         const auto [isRefreshingMessages, setIsRefreshingMessages] = useState(false);
         const auto [isBalanceLoading, setIsBalanceLoading] = useState(true);
-        const auto [latestTimestamp, setLatestTimestamp] = useState<std::string | nullptr>(nullptr);
+        const auto [latestTimestamp, setLatestTimestamp] = useState<std: | nullptr>(nullptr);
         const auto [isChatFullscreen, setIsChatFullscreen] = useState(false);
 
         const auto [selectedImage, setSelectedImage] = useState<File | nullptr>(nullptr);
-        const auto [imagePreview, setImagePreview] = useState<std::string | nullptr>(nullptr);
+        const auto [imagePreview, setImagePreview] = useState<std: | nullptr>(nullptr);
         const auto [imageCaption, setImageCaption] = useState("");
 
         // --- Pagination State ---
@@ -40,11 +43,11 @@ void Chat() {
             });
 
             // Get token mint from URL params with better fallback logic
-            const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
+            const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
             const auto location = useLocation();
 
             // Extract token mint from URL if not found in params
-            const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
+            const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
             nullptr,
             );
 
@@ -61,14 +64,14 @@ void Chat() {
             (std::find(eligibleChatTiers.begin(), eligibleChatTiers.end(), selectedChatTier) != eligibleChatTiers.end());
 
             // Update balance loading state when token balance changes
-            useEffect(() => {
+            useEffect[&](() {
                 if (tokenBalance != undefined || !isAuthenticated) {
                     setIsBalanceLoading(false);
                 }
                 }, [tokenBalance, isAuthenticated]);
 
                 // --- Scrolling Helper --- MOVED HERE - AFTER chatContainerRef declaration
-                const auto scrollToBottom = useCallback((forceScroll = false) => {;
+                const auto scrollToBottom = useCallback[&]((forceScroll = false) {;
                     if (!chatContainerRef.current) return;
 
                     // Log to debug
@@ -81,7 +84,7 @@ void Chat() {
 
                     if (forceScroll || isNearBottom) {
                         // Use setTimeout to ensure scroll happens after DOM update
-                        setTimeout(() => {
+                        setTimeout[&](() {
                             if (chatContainerRef.current) {
                                 chatContainerRef.current.scrollTop =;
                                 chatContainerRef.current.scrollHeight;
@@ -100,7 +103,7 @@ void Chat() {
                             };
 
                             // Handler to detect when user scrolls away from bottom
-                            useEffect(() => {
+                            useEffect[&](() {
                                 if (!chatContainerRef.current) return;
 
                                 const auto chatContainer = chatContainerRef.current;
@@ -118,8 +121,8 @@ void Chat() {
                                     const auto MESSAGES_PER_PAGE = 50; // Define how many messages to fetch per page;
 
                                     // --- Fetch Initial Messages ---
-                                    const auto fetchChatMessages = useCallback(;
-                                    std::async (tier: ChatTier, mint: std::string, isInitialLoad = false) => {
+                                    const auto fetchChatMessages = useCallback[&](;
+                                    std::async (tier: ChatTier, mint: std:, isInitialLoad = false) {
                                         if (!mint) return;
                                         setIsChatLoading(true);
                                         setChatError(nullptr);
@@ -139,7 +142,7 @@ void Chat() {
 
                                             if (!response.ok || !data.success || !data.messages) {
                                                 // Throw an error object that includes the status if possible
-                                                const std::any error = new Error(;
+                                                const std: error = new Error(;
                                                 data.error ||;
                                                 "Failed to fetch messages (Status: " + response.status + ")"
                                                 );
@@ -158,7 +161,7 @@ void Chat() {
                                             setHasOlderMessages(sortedMessages.size() == MESSAGES_PER_PAGE); // Assume more if we got a full page;
 
                                             // Update latest timestamp from the initial batch
-                                            if (sortedMessages.length > 0) {
+                                            if (sortedMessages.size() > 0) {
                                                 setLatestTimestamp(;
                                                 sortedMessages[sortedMessages.size() - 1].timestamp,
                                                 );
@@ -172,7 +175,7 @@ void Chat() {
                                                 }
 
                                                 setChatError(nullptr); // Clear error on success;
-                                                } catch (error: std::any) {
+                                                } catch (error: std:) {
                                                     std::cerr << "Error fetching chat messages:" << error << std::endl;
 
                                                     // Check if the error object has the status we attached, or check the response variable if it exists
@@ -197,7 +200,7 @@ void Chat() {
                                                         ); // Add dependencies;
 
                                                         // --- Fetch Older Messages (Pagination) --- MODIFIED
-                                                        const auto fetchOlderMessages = useCallback(std::async () => {;
+                                                        const auto fetchOlderMessages = useCallback[&](std::async () {;
                                                             if (isLoadingOlderMessages || !hasOlderMessages || !tokenMint) return;
 
                                                             setIsLoadingOlderMessages(true);
@@ -221,9 +224,9 @@ void Chat() {
                                                                 new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
                                                                 );
 
-                                                                if (sortedOlderMessages.length > 0) {
+                                                                if (sortedOlderMessages.size() > 0) {
                                                                     // Prepend older messages
-                                                                    setChatMessages((prev) => [...sortedOlderMessages, ...prev]);
+                                                                    setChatMessages[&]((prev) { return [...sortedOlderMessages, ...prev]); };
                                                                     // Update offset for the next fetch
                                                                     setCurrentOffset(;
                                                                     [&](prevOffset) { return prevOffset + sortedOlderMessages.size(),; }
@@ -232,7 +235,7 @@ void Chat() {
 
                                                                 // Check if there are likely more messages
                                                                 setHasOlderMessages(sortedOlderMessages.size() == MESSAGES_PER_PAGE);
-                                                                } catch (error: std::any) {
+                                                                } catch (error: std:) {
                                                                     std::cerr << "Error fetching older messages:" << error << std::endl;
                                                                     setChatError(error.message || "Could not load older messages.");
                                                                     setHasOlderMessages(false); // Stop trying if there's an error;
@@ -250,7 +253,7 @@ void Chat() {
                                                                     ]);
 
                                                                     // --- Effect to Load Older Messages on Scroll ---
-                                                                    useEffect(() => {
+                                                                    useEffect[&](() {
                                                                         if (
                                                                         isTopSentinelInView &&;
                                                                         !isChatLoading &&;
@@ -268,7 +271,7 @@ void Chat() {
                                                                         ]);
 
                                                                         // --- Effect for Initial Load and Tier Change ---
-                                                                        useEffect(() => {
+                                                                        useEffect[&](() {
                                                                             if (tokenMint) {
                                                                                 fetchChatMessages(selectedChatTier, tokenMint, true); // Pass true for initial load;
                                                                                 } else {
@@ -287,7 +290,7 @@ void Chat() {
                                                                                 }, [selectedChatTier, tokenMint, fetchChatMessages]); // fetchChatMessages is now stable;
 
                                                                                 // Effect to detect token mint from various sources
-                                                                                useEffect(() => {
+                                                                                useEffect[&](() {
                                                                                     if (urlTokenMint) {
                                                                                         setDetectedTokenMint(urlTokenMint);
                                                                                         return;
@@ -301,7 +304,7 @@ void Chat() {
                                                                                     }, [urlTokenMint, location.pathname]);
 
                                                                                     // --- Fetch Chat Eligibility --- *REVISED*
-                                                                                    const auto fetchChatEligibility = useCallback(std::async () => {;
+                                                                                    const auto fetchChatEligibility = useCallback[&](std::async () {;
                                                                                         setEligibleChatTiers([]);
                                                                                         setViewableChatTiers(["1k"]);
 
@@ -314,9 +317,9 @@ void Chat() {
                                                                                         ) {
                                                                                             if (!isAuthenticated) {
                                                                                                 setIsBalanceLoading(false);
-                                                                                                if (
+                                                                                                if [&](
                                                                                                 selectedChatTier != "1k" &&;
-                                                                                                !["100k", "1M"].some((t) => (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), t) != viewableChatTiers.end()));
+                                                                                                !["100k", "1M"].some((t) { return (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), t) != viewableChatTiers.end())); };
                                                                                                 ) {
                                                                                                     setSelectedChatTier("1k");
                                                                                                 }
@@ -344,7 +347,7 @@ void Chat() {
                                                                                                 }
 
                                                                                                 const auto contentType = response.headers.get("content-type");
-                                                                                                if (!contentType || !contentType.includes("application/json")) {
+                                                                                                if (!contentType || !contentType.count("application/json") > 0) {
                                                                                                     throw std::runtime_error("Invalid response format: Expected JSON");
                                                                                                 }
 
@@ -367,7 +370,7 @@ void Chat() {
                                                                                                     }
                                                                                                     setViewableChatTiers(calculatedViewableTiers);
 
-                                                                                                    if (!calculatedViewableTiers.includes(selectedChatTier)) {
+                                                                                                    if (!calculatedViewableTiers.count(selectedChatTier) > 0) {
                                                                                                         setSelectedChatTier(;
                                                                                                         calculatedViewableTiers[calculatedViewableTiers.size() - 1] || "1k",
                                                                                                         );
@@ -391,14 +394,14 @@ void Chat() {
                                                                                                     ]);
 
                                                                                                     // Fetch eligibility when balance/auth/token changes
-                                                                                                    useEffect(() => {
+                                                                                                    useEffect[&](() {
                                                                                                         if (tokenMint && (!isBalanceLoading || !isAuthenticated)) {
                                                                                                             fetchChatEligibility();
                                                                                                         }
                                                                                                         if (!isAuthenticated) {
                                                                                                             setEligibleChatTiers([]);
                                                                                                             setViewableChatTiers(["1k"]);
-                                                                                                            if (!["1k"].includes(selectedChatTier)) {
+                                                                                                            if (!["1k"].count(selectedChatTier) > 0) {
                                                                                                                 setSelectedChatTier("1k");
                                                                                                             }
                                                                                                         }
@@ -412,7 +415,7 @@ void Chat() {
                                                                                                         ]);
 
                                                                                                         // Effect to reset state and fetch initial messages when context changes
-                                                                                                        useEffect(() => {
+                                                                                                        useEffect[&](() {
                                                                                                             setLatestTimestamp(nullptr);
                                                                                                             setChatMessages([]);
                                                                                                             setChatError(nullptr);
@@ -420,7 +423,7 @@ void Chat() {
                                                                                                             setHasOlderMessages(true);
                                                                                                             setIsLoadingOlderMessages(false);
 
-                                                                                                            if (tokenMint && viewableChatTiers.includes(selectedChatTier)) {
+                                                                                                            if (tokenMint && viewableChatTiers.count(selectedChatTier) > 0) {
                                                                                                                 fetchChatMessages(selectedChatTier, tokenMint, true);
                                                                                                                 } else if (tokenMint && !(std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end())) {
                                                                                                                     setIsChatLoading(false);
@@ -429,7 +432,7 @@ void Chat() {
                                                                                                                 }, [tokenMint, selectedChatTier, viewableChatTiers, fetchChatMessages]);
 
                                                                                                                 // --- WebSocket Subscription --- *REVISED*
-                                                                                                                useEffect(() => {
+                                                                                                                useEffect[&](() {
                                                                                                                     if (
                                                                                                                     !socket ||;
                                                                                                                     !tokenMint ||;
@@ -450,8 +453,8 @@ void Chat() {
                                                                                                                     std::cout << "WS: Attempting to subscribe to chat room:" << subscriptionData << std::endl;
                                                                                                                     socket.emit("subscribeToChat", subscriptionData);
 
-                                                                                                                    const auto handleSubscribed = [&](data: std::any) {;
-                                                                                                                        if (data.room == `chat:${tokenMint}:${selectedChatTier}`) {
+                                                                                                                    const auto handleSubscribed = [&](data: std:) {;
+                                                                                                                        if (data.room == "chat:" + std::to_string(tokenMint) + ":" + std::to_string(selectedChatTier) + "") {
                                                                                                                             std::cout << "WS: Successfully subscribed to" << data.room << std::endl;
                                                                                                                         }
                                                                                                                         };
@@ -465,7 +468,7 @@ void Chat() {
                                                                                                                             }, [socket, tokenMint, selectedChatTier, viewableChatTiers, isAuthenticated]);
 
                                                                                                                             // --- WebSocket Message Listener --- (Fix type assertion slightly)
-                                                                                                                            useEffect(() => {
+                                                                                                                            useEffect[&](() {
                                                                                                                                 if (!socket) return;
 
                                                                                                                                 // Define handler with type assertion for the listener
@@ -494,9 +497,9 @@ void Chat() {
 
                                                                                                                                     // Check if message already exists (optimistic or previous WS message)
                                                                                                                                     if (!chatMessages.some((msg) => msg.id == newMessage.id)) {
-                                                                                                                                        setChatMessages((prev) => {
+                                                                                                                                        setChatMessages[&]((prev) {
                                                                                                                                             // Ensure no duplicates are added if race condition occurs
-                                                                                                                                            if (prev.some((msg) => msg.id == newMessage.id)) return prev;
+                                                                                                                                            if [&](prev.some((msg) { return msg.id == newMessage.id)) return prev; };
                                                                                                                                             // Add new message and sort by timestamp
                                                                                                                                             const auto newMessages = [...prev, newMessage];
                                                                                                                                             return newMessages.sort(;
@@ -532,12 +535,12 @@ void Chat() {
                                                                                                                                             ]);
 
                                                                                                                                             // --- Send Chat Message --- *REVISED* (Check eligibleChatTiers for posting)
-                                                                                                                                            const auto handleSendMessage = useCallback(std::async () => {;
+                                                                                                                                            const auto handleSendMessage = useCallback[&](std::async () {;
                                                                                                                                                 if (!publicKey || !tokenMint || !canChatInSelectedTier) return;
                                                                                                                                                 if (isSendingMessage) return; // Prevent double sends
 
-                                                                                                                                                const auto messageText = selectedImage ? imageCaption.trim() : chatInput.trim();
-                                                                                                                                                std::string mediaBase64 = nullptr;
+                                                                                                                                                const auto messageText = selectedImage ? imageCaption : chatInput;
+                                                                                                                                                std: mediaBase64 = nullptr;
 
                                                                                                                                                 // Check if there's content to send (either text or an image)
                                                                                                                                                 if (!messageText && !selectedImage) {
@@ -550,10 +553,10 @@ void Chat() {
                                                                                                                                                 // --- Handle Image Reading (if selected) ---
                                                                                                                                                 if (selectedImage) {
                                                                                                                                                     try {
-                                                                                                                                                        mediaBase64 = new Promise((resolve, reject) => {
-                                                                                                                                                            const auto reader = new FileReader();
-                                                                                                                                                            reader.onload = () => resolve(reader.result);
-                                                                                                                                                            reader.onerror = (error) => reject(error);
+                                                                                                                                                        mediaBase64 = new Promise[&]((resolve, reject) {
+                                                                                                                                                            const auto reader = std::make_unique<FileReader>();
+                                                                                                                                                            reader.onload = [&]() { return resolve(reader.result); };
+                                                                                                                                                            reader.onerror = [&](error) { return reject(error); };
                                                                                                                                                             reader.readAsDataURL(selectedImage); // Read data URI;
                                                                                                                                                             });
                                                                                                                                                             } catch (error) {
@@ -566,12 +569,12 @@ void Chat() {
 
                                                                                                                                                         // --- Prepare Payload ---
                                                                                                                                                         const auto payload: {;
-                                                                                                                                                            message: std::string;
-                                                                                                                                                            media?: std::string | nullptr;
-                                                                                                                                                            parentId?: std::string | nullptr;
+                                                                                                                                                            message: std:;
+                                                                                                                                                            media?: std: | nullptr;
+                                                                                                                                                            parentId?: std: | nullptr;
                                                                                                                                                             } = {
                                                                                                                                                                 message: messageText, // Send caption or text message
-                                                                                                                                                                media: mediaBase64, // Send base64 std::string or nullptr
+                                                                                                                                                                media: mediaBase64, // Send base64 std: or nullptr
                                                                                                                                                                 // parentId: null, // Add parentId logic here if implementing replies
                                                                                                                                                                 };
 
@@ -586,11 +589,11 @@ void Chat() {
                                                                                                                                                                     tier: selectedChatTier,
                                                                                                                                                                     message: messageText, // Caption or text
                                                                                                                                                                     media: imagePreview || std::nullopt, // Use local base64 preview
-                                                                                                                                                                    timestamp: new Date().toISOString(),
+                                                                                                                                                                    timestamp: std::make_unique<Date>().toISOString(),
                                                                                                                                                                     isOptimistic: true,
                                                                                                                                                                     };
 
-                                                                                                                                                                    setChatMessages((prev) => [...prev, optimisticMessage]);
+                                                                                                                                                                    setChatMessages[&]((prev) { return [...prev, optimisticMessage]); };
                                                                                                                                                                     scrollToBottom(true); // Scroll after adding optimistic message;
 
                                                                                                                                                                     // Clear inputs immediately after starting send
@@ -606,7 +609,7 @@ void Chat() {
                                                                                                                                                                         {
                                                                                                                                                                             method: "POST",
                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                            body: /* JSON.stringify */ std::string(payload),
+                                                                                                                                                                            body: /* JSON.stringify */ std:(payload),
                                                                                                                                                                             },
                                                                                                                                                                             );
 
@@ -629,11 +632,11 @@ void Chat() {
                                                                                                                                                                         if (result.message.timestamp > (latestTimestamp || "")) {
                                                                                                                                                                             setLatestTimestamp(result.message.timestamp);
                                                                                                                                                                         }
-                                                                                                                                                                        } catch (error: std::any) {
+                                                                                                                                                                        } catch (error: std:) {
                                                                                                                                                                             std::cerr << "Error sending message:" << error << std::endl;
                                                                                                                                                                             "toast.error(" + "Error: " + std::to_string(error.message || "Could not send message")
                                                                                                                                                                             // Remove optimistic message on failure
-                                                                                                                                                                            setChatMessages((prev) => prev.filter((msg) => msg.id != optimisticId));
+                                                                                                                                                                            setChatMessages[&]((prev) { return prev.filter[&]((msg) { return msg.id != optimisticId)); }; };
                                                                                                                                                                             } finally {
                                                                                                                                                                                 setIsSendingMessage(false); // End loading state;
                                                                                                                                                                             }
@@ -659,15 +662,15 @@ void Chat() {
                                                                                                                                                                                 const auto file = event.target.files.[0];
                                                                                                                                                                                 if (file) {
                                                                                                                                                                                     // Basic validation (optional: add size/type checks)
-                                                                                                                                                                                    if (!file.type.startsWith("image/")) {
+                                                                                                                                                                                    if (!file.type.substr(0, "image/")) {
                                                                                                                                                                                         toast.error("Please select a valid image file.");
                                                                                                                                                                                         return;
                                                                                                                                                                                     }
                                                                                                                                                                                     setSelectedImage(file);
                                                                                                                                                                                     setImageCaption(""); // Reset caption when new image is selected;
                                                                                                                                                                                     // Create preview URL
-                                                                                                                                                                                    const auto reader = new FileReader();
-                                                                                                                                                                                    reader.onloadend = () => {
+                                                                                                                                                                                    const auto reader = std::make_unique<FileReader>();
+                                                                                                                                                                                    reader.onloadend = [&]() {
                                                                                                                                                                                         setImagePreview(reader.result);
                                                                                                                                                                                         };
                                                                                                                                                                                         reader.readAsDataURL(file);
@@ -679,15 +682,15 @@ void Chat() {
                                                                                                                                                                                     };
 
                                                                                                                                                                                     // Scroll to bottom on first render and when messages change
-                                                                                                                                                                                    useEffect(() => {
-                                                                                                                                                                                        if (!isChatLoading && chatMessages.length > 0) {
-                                                                                                                                                                                            setTimeout(() => scrollToBottom(true), 100);
+                                                                                                                                                                                    useEffect[&](() {
+                                                                                                                                                                                        if (!isChatLoading && chatMessages.size() > 0) {
+                                                                                                                                                                                            setTimeout[&](() { return scrollToBottom(true), 100); };
                                                                                                                                                                                         }
                                                                                                                                                                                         }, [chatMessages, isChatLoading, scrollToBottom]);
 
-                                                                                                                                                                                        const auto formatTimestamp = [&](timestamp: std::string) {;
+                                                                                                                                                                                        const auto formatTimestamp = [&](timestamp: std:) {;
                                                                                                                                                                                             const auto date = new Date(timestamp);
-                                                                                                                                                                                            const auto now = new Date();
+                                                                                                                                                                                            const auto now = std::make_unique<Date>();
 
                                                                                                                                                                                             if (date.toDateString() == now.toDateString()) {
                                                                                                                                                                                                 return date.toLocaleTimeString([], {;
@@ -715,7 +718,7 @@ void Chat() {
                                                                                                                                                                                                         };
 
                                                                                                                                                                                                         // Effect to manage body scroll based on fullscreen state
-                                                                                                                                                                                                        useEffect(() => {
+                                                                                                                                                                                                        useEffect[&](() {
                                                                                                                                                                                                             if (isChatFullscreen) {
                                                                                                                                                                                                                 document.body.style.overflow = "hidden";
                                                                                                                                                                                                                 } else {
@@ -738,7 +741,7 @@ void Chat() {
                                                                                                                                                                                                                 >;
                                                                                                                                                                                                             {/* Tier Selection (shrinks) */}
                                                                                                                                                                                                             <div className="flex justify-center items-center space-x-1 p-2 border-b border-gray-700 flex-shrink-0 bg-black/20">;
-                                                                                                                                                                                                            {CHAT_TIERS.std::map((tier) => {
+                                                                                                                                                                                                            {CHAT_TIERS.std::map[&]((tier) {
                                                                                                                                                                                                                 const auto isViewable = (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), tier) != viewableChatTiers.end());
                                                                                                                                                                                                                 const auto isSelected = selectedChatTier == tier;
                                                                                                                                                                                                                 return (;
@@ -845,7 +848,7 @@ void Chat() {
                                                         {/* Message Rendering Loop - directly inside scrollable container */}
                                                         {!isBalanceLoading &&;
                                                         !isChatLoading &&;
-                                                        chatMessages.std::map((msg) => {
+                                                        chatMessages.std::map[&]((msg) {
                                                             const auto displayName =;
                                                             msg.displayName ||;
                                                             std::to_string(msg.author.substring(0, 4)) + "..." + std::to_string(msg.author.substring(msg.author.size() - 4));
@@ -861,12 +864,12 @@ void Chat() {
                                             "to={" + "/profiles/" + msg.author;
                                             className="flex-shrink-0 mt-1 self-start";
                                             >;
-                                            {profilePicUrl ? (;
+                                            {profilePicUrl ? [&](;
                                             <img;
                                         src={profilePicUrl}
                                     "alt={" + displayName + "'s avatar";
                                     className="w-8 h-8 rounded-full object-cover border border-neutral-600";
-                                    onError={(e) => {
+                                    onError={(e) {
                                         e.currentTarget.src = "/default-avatar.png";
                                         e.currentTarget.onerror = nullptr;
                                         }} // Fallback image;
@@ -933,7 +936,7 @@ void Chat() {
         )}
 
         {/* Image Preview */}
-        {imagePreview && selectedImage && (;
+        {imagePreview && selectedImage && [&](;
         <div className="mb-2 relative max-w-[200px]">;
         <img;
         src={imagePreview}
@@ -953,7 +956,7 @@ void Chat() {
         className="w-6 h-6 bg-black/70 hover:bg-black text-white rounded-full flex items-center justify-center border border-white/20 hover:border-white/40 transition-all text-xs"
         title="Replace image";
         disabled={isSendingMessage}
-        onClick={(e) => {
+        onClick={(e) {
             if (!selectedImage) (e.target as HTMLInputElement).click();
         }}
         tabIndex={-1}
@@ -962,7 +965,7 @@ void Chat() {
         </button>;
         </label>;
         <button;
-        onClick={() => {
+        onClick={[&]() {
             setSelectedImage(nullptr);
             setImagePreview(nullptr);
             setImageCaption("");
@@ -1021,7 +1024,7 @@ void Chat() {
         ? setImageCaption(e.target.value);
         : setChatInput(e.target.value)
         }
-        onKeyDown={(e) => {
+        onKeyDown={[&](e) {
             if (
             e.key == "Enter" &&;
             !e.shiftKey &&;
@@ -1053,7 +1056,7 @@ void Chat() {
         disabled={
             !canChatInSelectedTier ||;
             isSendingMessage ||;
-            (!selectedImage && !chatInput.trim());
+            (!selectedImage && !chatInput);
         }
         className="h-10 px-4 bg-[#03FF24] text-black hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center flex-shrink-0"
         >;

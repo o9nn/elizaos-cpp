@@ -17,13 +17,13 @@ std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> PriceProtectionServi
     auto deviationBps = Math->floor((deviation / priceAtQuote) * 10000);
     auto isValid = deviationBps <= maxDeviationBps;
     return object{
-        object::pair{std::string("isValid"), std::string("isValid")}, 
-        object::pair{std::string("currentPrice"), std::string("currentPrice")}, 
-        object::pair{std::string("priceAtQuote"), std::string("priceAtQuote")}, 
-        object::pair{std::string("deviation"), std::string("deviation")}, 
-        object::pair{std::string("deviationBps"), std::string("deviationBps")}, 
-        object::pair{std::string("maxAllowedDeviationBps"), maxDeviationBps}, 
-        object::pair{std::string("reason"), (isValid) ? any(undefined) : any(std::string("Price moved ") + (deviationBps / 100) + std::string("%, exceeding maximum allowed ") + (maxDeviationBps / 100) + std::string("%"))}
+        object::pair{std:("isValid"), std:("isValid")}, 
+        object::pair{std:("currentPrice"), std:("currentPrice")}, 
+        object::pair{std:("priceAtQuote"), std:("priceAtQuote")}, 
+        object::pair{std:("deviation"), std:("deviation")}, 
+        object::pair{std:("deviationBps"), std:("deviationBps")}, 
+        object::pair{std:("maxAllowedDeviationBps"), maxDeviationBps}, 
+        object::pair{std:("reason"), (isValid) ? any(undefined) (std:("Price moved ") + (deviationBps / 100) + std:("%, exceeding maximum allowed ") + (maxDeviationBps / 100) + std:("%"))}
     };
 }
 

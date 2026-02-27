@@ -1,4 +1,5 @@
 #include "notifications.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +12,7 @@ std::future<bool> sendWelcomeNotification(double fid) {
         const auto response = fetch("/api/notifications/send", {;
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: nlohmann::json().dump({
                 fid,
                 title: "Welcome to Eliza OTC Desk",
                 body: "Start trading with AI-powered negotiation on Base, BSC, and Solana",

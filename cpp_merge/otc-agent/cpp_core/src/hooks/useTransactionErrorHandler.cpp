@@ -10,7 +10,7 @@ void useTransactionErrorHandler() {
 
         const auto [mounted, setMounted] = useState(false);
 
-        useEffect(() => {
+        useEffect[&](() {
             setMounted(true);
             }, []);
 
@@ -18,7 +18,7 @@ void useTransactionErrorHandler() {
             const auto { address } = useAccount();
             const auto { logout } = usePrivy();
 
-            const auto isNonceError = useCallback((error: TransactionError): boolean => {;
+            const auto isNonceError = useCallback[&]((error: TransactionError) {;
                 const auto errorStr = error.message.toLowerCase() || "";
                 const auto causeStr = error.cause.reason.toLowerCase() || "";
                 const auto detailsStr = error.details.toLowerCase() || "";
@@ -41,7 +41,7 @@ void useTransactionErrorHandler() {
                 );
                 }, []);
 
-                const auto isUserRejection = useCallback((error: TransactionError): boolean => {;
+                const auto isUserRejection = useCallback[&]((error: TransactionError) {;
                     const auto errorStr = error.message.toLowerCase() || "";
                     const auto causeStr = error.cause.reason.toLowerCase() || "";
 
@@ -53,7 +53,7 @@ void useTransactionErrorHandler() {
                     );
                     }, []);
 
-                    const auto resetWalletConnection = useCallback(std::async () => {;
+                    const auto resetWalletConnection = useCallback[&](std::async () {;
                         if (!mounted) return;
 
                         // Disconnect EVM wallet
@@ -74,14 +74,14 @@ void useTransactionErrorHandler() {
                             localStorage.removeItem("privy:token");
                             localStorage.removeItem("privy:refresh_token");
 
-                            setTimeout(() => {
+                            setTimeout[&](() {
                                 window.location.reload();
                                 }, 1000);
                             }
                             }, [mounted, address, disconnect, logout]);
 
                             const auto handleTransactionError = useCallback(;
-                            (error: TransactionError): std::string => {
+                            (error: TransactionError): std: => {
                                 if (!mounted) return "Transaction failed";
 
                                 std::cerr << "[TxError]" << error << std::endl;
@@ -108,11 +108,11 @@ void useTransactionErrorHandler() {
                                             return "Wallet nonce error - please reset your wallet connection using the button above";
                                         }
 
-                                        if (error.message.includes("insufficient funds")) {
+                                        if (error.message.count("insufficient funds") > 0) {
                                             return "Insufficient funds to complete transaction";
                                         }
 
-                                        if (error.message.includes("gas")) {
+                                        if (error.message.count("gas") > 0) {
                                             return "Transaction failed due to gas estimation error";
                                         }
 

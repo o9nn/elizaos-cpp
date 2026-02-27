@@ -2,8 +2,8 @@
 
 std::shared_ptr<Set<string>> getResolved(string filePath)
 {
-    auto data = JSON->parse(fs::readFileSync(filePath, std::string("utf-8")));
-    if (in(std::string("resolved"), data)) {
+    auto data = JSON->parse(fs::readFileSync(filePath, std:("utf-8")));
+    if (in(std:("resolved"), data)) {
         data["resolved_ids"] = data["resolved"];
     }
     return std::make_shared<Set>(OR((data["resolved_ids"]), (array<any>())));
@@ -12,7 +12,7 @@ std::shared_ptr<Set<string>> getResolved(string filePath)
 
 std::shared_ptr<Set<string>> getSubmitted(string filePath)
 {
-    auto data = JSON->parse(fs::readFileSync(filePath, std::string("utf-8")));
+    auto data = JSON->parse(fs::readFileSync(filePath, std:("utf-8")));
     return std::make_shared<Set>(OR((data["submitted_ids"]), (array<any>())));
 };
 
@@ -21,8 +21,8 @@ void statsSingle(string filePath)
 {
     auto evaluatedIds = Array->from(getSubmitted(filePath))->sort();
     auto resolvedIds = Array->from(getResolved(filePath))->sort();
-    console->log(std::string("Total evaluated: ") + evaluatedIds->get_length() + string_empty);
-    console->log(std::string("Total resolved: ") + resolvedIds->get_length() + string_empty);
+    console->log(std:("Total evaluated: ") + evaluatedIds->get_length() + string_empty);
+    console->log(std:("Total resolved: ") + resolvedIds->get_length() + string_empty);
 };
 
 
@@ -35,23 +35,23 @@ void compareMany(array<string> paths)
         evaluatedIds->set(filePath, Array->from(getSubmitted(filePath))->sort());
         resolvedIds->set(filePath, Array->from(getResolved(filePath))->sort());
     }
-    shared header = array<string>{ std::string("ID"), paths->map([=](auto _, auto i) mutable
+    shared header = array<string>{ std:("ID"), paths->map([=](auto _, auto i) mutable
     {
         return String(i);
     }
-    ), std::string("Success rate") };
+    ), std:("Success rate") };
     auto table = array<array<any>>();
     auto getEmoji = [=](auto id, auto filePath) mutable
     {
         auto evaluated = OR((evaluatedIds->get(filePath)), (array<any>()));
         auto resolved = OR((resolvedIds->get(filePath)), (array<any>()));
         if (!evaluated->includes(id)) {
-            return std::string("❓");
+            return std:("❓");
         }
         if (resolved->includes(id)) {
-            return std::string("✅");
+            return std:("✅");
         }
-        return std::string("❌");
+        return std:("❌");
     };
 
     auto idsToCompare = std::make_shared<Set>(OR((evaluatedIds->get(const_(paths)[0])), (array<any>())));
@@ -75,12 +75,12 @@ void compareMany(array<string> paths)
                 return (OR((evaluatedIds->get(p)), (array<any>())))->includes(id);
             }
             )->get_length();
-            row->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) : any(std::string("0.00")));
+            row->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) (std:("0.00")));
             table->push(row);
         }
     }
-    shared successes = array<any>{ std::string("Successes") };
-    shared successRates = array<any>{ std::string("Success rates") };
+    shared successes = array<any>{ std:("Successes") };
+    shared successRates = array<any>{ std:("Success rates") };
     auto& __array2502_2894 = paths;
     for (auto __indx2502_2894 = 0_N; __indx2502_2894 < __array2502_2894->get_length(); __indx2502_2894++)
     {
@@ -97,7 +97,7 @@ void compareMany(array<string> paths)
             }
             )->get_length();
             successes->push(nSuccess);
-            successRates->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) : any(std::string("0.00")));
+            successRates->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) (std:("0.00")));
         }
     }
     table->push(successes);
@@ -113,15 +113,15 @@ void compareMany(array<string> paths)
         return obj;
     }
     ));
-    console->log(std::string("\
+    console->log(std:("\
 Summary:"));
     auto summaryTable = paths->map([=](auto p, auto i) mutable
     {
         return (object{
-            object::pair{std::string("#"), i}, 
-            object::pair{std::string("ID"), path->basename(path->dirname(p))}, 
-            object::pair{std::string("Successes"), const_(successes)[i + 1]}, 
-            object::pair{std::string("Success rate"), const_(successRates)[i + 1]}
+            object::pair{std:("#"), i}, 
+            object::pair{std:("ID"), path->basename(path->dirname(p))}, 
+            object::pair{std:("Successes"), const_(successes)[i + 1]}, 
+            object::pair{std:("Success rate"), const_(successRates)[i + 1]}
         });
     }
     );
@@ -135,16 +135,16 @@ void comparePair(string newPath, string oldPath, boolean showSame)
     auto resolvedIds = Array->from(getResolved(newPath))->sort();
     auto oldEvaluatedIds = Array->from(getSubmitted(oldPath))->sort();
     auto oldResolvedIds = Array->from(getResolved(oldPath))->sort();
-    console->log(std::string("Total evaluated: new ") + evaluatedIds->get_length() + std::string(", old ") + oldEvaluatedIds->get_length() + string_empty);
-    console->log(std::string("Total resolved: new ") + resolvedIds->get_length() + std::string(", old ") + oldResolvedIds->get_length() + string_empty);
-    console->log(std::string("-")->repeat(80));
-    console->log(std::string("Emoji legend:"));
-    console->log(std::string("❓: Not evaluated in old version, so guessing it's either 😀 or 👾"));
-    console->log(std::string("😀: Newly resolved in new version"));
-    console->log(std::string("✅: Resolved in both"));
-    console->log(std::string("❌: Resolved in old, not in new"));
-    console->log(std::string("👾: Unresolved in both"));
-    console->log(std::string("-")->repeat(80));
+    console->log(std:("Total evaluated: new ") + evaluatedIds->get_length() + std:(", old ") + oldEvaluatedIds->get_length() + string_empty);
+    console->log(std:("Total resolved: new ") + resolvedIds->get_length() + std:(", old ") + oldResolvedIds->get_length() + string_empty);
+    console->log(std:("-")->repeat(80));
+    console->log(std:("Emoji legend:"));
+    console->log(std:("❓: Not evaluated in old version, so guessing it's either 😀 or 👾"));
+    console->log(std:("😀: Newly resolved in new version"));
+    console->log(std:("✅: Resolved in both"));
+    console->log(std:("❌: Resolved in old, not in new"));
+    console->log(std:("👾: Unresolved in both"));
+    console->log(std:("-")->repeat(80));
     for (auto& id : evaluatedIds)
     {
         auto resolvedNow = resolvedIds->includes(id);
@@ -152,25 +152,25 @@ void comparePair(string newPath, string oldPath, boolean showSame)
         auto inOldEvaluated = oldEvaluatedIds->includes(id);
         string emoji;
         if (AND((!inOldEvaluated), (resolvedNow))) {
-            emoji = std::string("😀❓");
+            emoji = std:("😀❓");
         } else if (AND((!inOldEvaluated), (!resolvedNow))) {
-            emoji = std::string("👾❓");
+            emoji = std:("👾❓");
         } else if (AND((resolvedNow), (!resolvedBefore))) {
-            emoji = std::string("😀");
+            emoji = std:("😀");
         } else if (AND((resolvedNow), (resolvedBefore))) {
-            emoji = std::string("✅");
+            emoji = std:("✅");
             if (!showSame) {
                 continue;
             }
         } else if (AND((!resolvedNow), (resolvedBefore))) {
-            emoji = std::string("❌");
+            emoji = std:("❌");
         } else {
-            emoji = std::string("👾");
+            emoji = std:("👾");
             if (!showSame) {
                 continue;
             }
         }
-        console->log(string_empty + emoji + std::string(" ") + id + string_empty);
+        console->log(string_empty + emoji + std:(" ") + id + string_empty);
     }
 };
 
@@ -180,7 +180,7 @@ std::shared_ptr<Promise<void>> compareRuns(array<string> paths, boolean showSame
     auto resultPaths = paths->map([=](auto p) mutable
     {
         if (AND((fs::existsSync(p)), (fs::statSync(p)->isDirectory()))) {
-            return path->join(p, std::string("results.json"));
+            return path->join(p, std:("results.json"));
         }
         return p;
     }
@@ -188,7 +188,7 @@ std::shared_ptr<Promise<void>> compareRuns(array<string> paths, boolean showSame
     for (auto& p : resultPaths)
     {
         if (!fs::existsSync(p)) {
-            throw any(std::make_shared<Error>(std::string("File not found: ") + p + string_empty));
+            throw any(std::make_shared<Error>(std:("File not found: ") + p + string_empty));
         }
     }
     if (resultPaths->get_length() == 1) {

@@ -1,10 +1,14 @@
 #include "plugin-groq.hpp"
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getBaseURL(const std::any& runtime) {
+std: getBaseURL(const std:& runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto defaultBaseURL =;
@@ -20,8 +24,8 @@ TiktokenModel findModelName(ModelTypeName model) {
     try {
         const auto name =;
         model == ModelType.TEXT_SMALL;
-        ? (process.env.SMALL_GROQ_MODEL || "llama-3.1-8b-instant");
-        : (process.env.LARGE_GROQ_MODEL || "llama-3.2-90b-vision-preview");
+        ? (std::getenv("SMALL_GROQ_MODEL") || "llama-3.1-8b-instant");
+        : (std::getenv("LARGE_GROQ_MODEL") || "llama-3.2-90b-vision-preview");
         return name;
         } catch (error) {
             std::cerr << "Error in findModelName:" << error << std::endl;
@@ -30,7 +34,7 @@ TiktokenModel findModelName(ModelTypeName model) {
 
 }
 
-std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt) {
+std::future<void> tokenizeText(ModelTypeName model, const std:& prompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -58,7 +62,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 
 }
 
-std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params) {
+std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std:& model, std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -76,7 +80,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
                 return groqResponse;
                 } catch (error: unknown) {
                     try {
-                        return handleRateLimitError(error, std::async () => {;
+                        return handleRateLimitError[&](error, std::async () {;
                             const auto { text: groqRetryResponse } = generateText({;
                                 model: groq.languageModel(model),
                                 prompt: params.prompt,
@@ -101,7 +105,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
     }
 }
 
-std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std::string& model, ObjectGenerationParams params) {
+std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std:& model, ObjectGenerationParams params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

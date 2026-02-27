@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Utility helpers for resolving standard Eliza directories.
  *
- * All CLI-generated data should live under the hidden `.eliza` folder
+ * All CLI-generated data should live under the hidden ".eliza" folder
  * that sits in the project root (i.e. <project>/.eliza/…).  By
  * centralising the path logic here we avoid the hard-coded scattered
  * variants that previously lived throughout the codebase.

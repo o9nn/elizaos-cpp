@@ -1,10 +1,12 @@
 #include "install.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> installPluginFromGitHub(const std::string& plugin, const std::string& cwd, AddPluginOptions opts) {
+std::future<void> installPluginFromGitHub(const std:& plugin, const std:& cwd, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -16,7 +18,7 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
         }
 
         const auto [, owner, repo, ref] = githubMatch;
-        const auto githubSpecifier = "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "");
+        const auto githubSpecifier = "github:" + owner + "/" + repo + std::to_string(ref ? "#" + std::to_string(ref) + "" : "");
         const auto pluginNameForPostInstall = repo;
 
         const auto success = installPlugin(githubSpecifier, cwd, std::nullopt, opts.skipVerification);
@@ -27,7 +29,7 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
             // Prompt for environment variables if not skipped
             if (!opts.skipEnvPrompt) {
                 // Brief pause to ensure installation logs are complete
-                new Promise((resolve) => setTimeout(resolve, 50));
+                new Promise[&]((resolve) { return setTimeout(resolve, 50)); };
                 const auto packageName = extractPackageName(plugin);
                 std::cout << "\n🔧 Checking environment variables for " + packageName + "..." << std::endl;
                 try {
@@ -42,10 +44,10 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
                         std::cout << "\n⏭️  Skipping environment variable prompts due to --skip-env-prompt flag" << std::endl;
                     }
 
-                    process.exit(0);
+                    std::exit(0);
                     } else {
                         std::cerr << "Failed to install plugin from " + githubSpecifier + "." << std::endl;
-                        process.exit(1);
+                        std::exit(1);
                     }
 
     } catch (const std::exception& e) {
@@ -54,17 +56,17 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
     }
 }
 
-std::future<void> installPluginFromRegistry(const std::string& plugin, const std::string& cwd, AddPluginOptions opts) {
+std::future<void> installPluginFromRegistry(const std:& plugin, const std:& cwd, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto cachedRegistry = fetchPluginRegistry();
     if (!cachedRegistry || !cachedRegistry.registry) {
         std::cerr << "Plugin registry cache not found. Please run "elizaos plugins update" first." << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     const auto possibleNames = normalizePluginName(plugin);
-    const auto pluginKey = possibleNames.find((name) => cachedRegistry.registry[name]);
+    const auto pluginKey = possibleNames.find[&]((name) { return cachedRegistry.registry[name]); };
 
     const auto targetName = pluginKey || plugin;
 
@@ -81,7 +83,7 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
         // Prompt for environment variables if not skipped
         if (!opts.skipEnvPrompt) {
             // Brief pause to ensure installation logs are complete
-            new Promise((resolve) => setTimeout(resolve, 50));
+            new Promise[&]((resolve) { return setTimeout(resolve, 50)); };
             // Refresh dependencies after installation to find the actual installed package name
             const auto updatedDependencies = getDependenciesFromDirectory(cwd);
             const auto actualPackageName =;
@@ -100,40 +102,40 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
                     std::cout << "\n⏭️  Skipping environment variable prompts due to --skip-env-prompt flag" << std::endl;
                 }
 
-                process.exit(0);
+                std::exit(0);
             }
 
             std::cerr << "Failed to install " + targetName + " from registry." << std::endl;
-            process.exit(1);
+            std::exit(1);
 
 }
 
-std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts) {
+std::future<void> addPlugin(const std:& pluginArg, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Validate plugin name is not empty or whitespace
-    if (!pluginArg || !pluginArg.trim()) {
+    if (!pluginArg || !pluginArg) {
         std::cerr << "Plugin name cannot be empty or whitespace-only." << std::endl;
         logger.info(
         "Please provide a valid plugin name (e.g., "openai", "plugin-anthropic", "@elizaos/plugin-sql")";
         );
-        process.exit(1);
+        std::exit(1);
     }
 
-    const auto cwd = process.cwd();
+    const auto cwd = std::filesystem::current_path().string();
     const auto directoryInfo = detectDirectoryType(cwd);
 
     if (!directoryInfo || !directoryInfo.hasPackageJson) {
         logger.error(
         "Command must be run inside an ElizaOS project directory. This directory is: " + std::to_string(directoryInfo.type || "invalid or inaccessible")
         );
-        process.exit(1);
+        std::exit(1);
     }
 
     const auto allDependencies = getDependenciesFromDirectory(cwd);
     if (!allDependencies) {
         std::cerr << "Could not read dependencies from package.json" << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     auto plugin = pluginArg;
@@ -146,13 +148,13 @@ std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts)
 
     if (httpsMatch) {
         const auto [, owner, repo, ref] = httpsMatch;
-        "plugin = " + "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "")
+        "plugin = " + "github:" + owner + "/" + repo + std::to_string(ref ? "#" + std::to_string(ref) + "" : "")
     }
 
     const auto installedPluginName = findPluginPackageName(plugin, allDependencies);
     if (installedPluginName) {
         std::cout << "Plugin \"" + installedPluginName + "\" is already added to this project." << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
     // Check if it's a GitHub plugin

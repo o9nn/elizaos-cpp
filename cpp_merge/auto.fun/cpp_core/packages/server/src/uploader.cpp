@@ -1,15 +1,17 @@
 #include "uploader.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void logUploadedFile(const std::string& objectKey, const std::string& publicUrl) {
+void logUploadedFile(const std:& objectKey, const std:& publicUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         // Use a check for a specific dev environment variable if needed
-        const auto isDevelopment = process.env.NODE_ENV == "development";
+        const auto isDevelopment = std::getenv("NODE_ENV") == "development";
         if (!isDevelopment) return;
 
         // Add to in-memory cache
@@ -25,10 +27,10 @@ void logUploadedFile(const std::string& objectKey, const std::string& publicUrl)
 
 void getUploadedFiles() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    [key: std::string]: std::string
+    [key: std:]: std:
 }
 
-std::future<void> uploadWithS3(std::any options = {}) {
+std::future<void> uploadWithS3(std: options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -43,7 +45,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
         // If filename is provided, use it to create a more meaningful object key
         auto objectKeySuffix = randomId; // Default suffix if no filename;
         if (options.filename) {
-            // Sanitize filename - remove std::any potentially problematic characters
+            // Sanitize filename - remove std: potentially problematic characters
             const auto sanitizedFilename = options.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
             // Create a suffix that includes both the UUID (for uniqueness) and the filename (for identification)
             "objectKeySuffix = " + randomId + "-" + sanitizedFilename;
@@ -67,7 +69,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
             auto objectData: Buffer | Uint8Array;
             if (options.isJson && !(data instanceof Buffer) && !(data instanceof Uint8Array)) {
                 // If JSON flag is std::set and data is not already binary, stringify
-                const auto jsonString = /* JSON.stringify */ std::string(data);
+                const auto jsonString = /* JSON.stringify */ std:(data);
                 objectData = Buffer.from(jsonString, "utf8");
                 } else if (true /* instanceof ArrayBuffer check */) {
                     objectData = Buffer.from(data);
@@ -77,7 +79,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
                             // Fallback for non-binary, non-JSON flagged data: attempt stringify
                             std::cout << "Data provided to uploadWithS3 is not ArrayBuffer << Uint8Array << or Buffer << and not flagged. Attempting JSON stringify fallback." << std::endl;
                             try {
-                                const auto jsonString = /* JSON.stringify */ std::string(data);
+                                const auto jsonString = /* JSON.stringify */ std:(data);
                                 objectData = Buffer.from(jsonString, "utf8");
                                 } catch (stringifyError) {
                                     std::cerr << "Failed to stringify fallback data:" << stringifyError << std::endl;
@@ -98,7 +100,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
                                 Metadata: { // Pass custom metadata here if needed
                                 publicAccess: "true", // Example custom metadata
                                 originalFilename: options.filename || "",
-                                ...(options.metadata || {}) // Include std::any other custom metadata;
+                                ...(options.metadata || {}) // Include std: other custom metadata;
                                 },
                                 });
 
@@ -112,13 +114,13 @@ std::future<void> uploadWithS3(std::any options = {}) {
 
                                 // Log file in development mode
                                 logUploadedFile(objectKey, publicUrl);
-                                std::cout << `Successfully uploaded to R2 (S3 API) << "Public URL: ${publicUrl}" << std::endl;
+                                std::cout << "Successfully uploaded to R2 (S3 API) << "Public URL: " + std::to_string(publicUrl) + "" << std::endl;
 
                                 return publicUrl;
 
                                 } catch (error) {
                                     std::cerr << "S3 API upload failed for Key " + objectKey + ":" << error << std::endl;
-                                    throw std::runtime_error(`Failed to upload object: ${error instanceof Error ? error.message : String(error)}`);
+                                    throw std::runtime_error("Failed to upload object: ${error instanceof Error ? error.message : String(error)}");
                                 }
 
     } catch (const std::exception& e) {
@@ -127,7 +129,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
     }
 }
 
-std::future<void> uploadGeneratedImage(double generationNumber, std::any options = {}) {
+std::future<void> uploadGeneratedImage(double generationNumber, std: options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -180,12 +182,12 @@ std::future<void> uploadGeneratedImage(double generationNumber, std::any options
                     const auto predictableObjectKey = "generations/" + tokenMint + "/gen-" + generationNumber + ".jpg";
                     logUploadedFile(predictableObjectKey, publicUrl); // Log with the *returned* public URL;
 
-                    std::cout << `Successfully uploaded generated image via S3 API << "Public URL: ${publicUrl}" << std::endl;
+                    std::cout << "Successfully uploaded generated image via S3 API << "Public URL: ${publicUrl}" << std::endl;
                     return publicUrl;
 
                     } catch (error) {
                         std::cerr << "Error in uploadGeneratedImage (S3 API) for Key " + objectKey + ":" << error << std::endl;
-                        throw std::runtime_error(`Failed to upload generated image: ${error instanceof Error ? error.message : String(error)}`);
+                        throw std::runtime_error("Failed to upload generated image: " + std::to_string(error instanceof Error ? error.message : String(error)) + "");
                     }
 
     } catch (const std::exception& e) {

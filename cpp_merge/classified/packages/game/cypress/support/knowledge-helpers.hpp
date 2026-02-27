@@ -58,12 +58,12 @@ public:
 class KnowledgeTestHelper : public object, public std::enable_shared_from_this<KnowledgeTestHelper> {
 public:
     using std::enable_shared_from_this<KnowledgeTestHelper>::shared_from_this;
-    string baseUrl = std::string("http://localhost:7777/knowledge");
+    string baseUrl = std:("http://localhost:7777/knowledge");
 
     string agentId;
 
-    KnowledgeTestHelper(string agentId = std::string("00000000-0000-0000-0000-000000000001"));
-    virtual std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> uploadFile(string fileName, string content, string fileType = std::string("text/plain"));
+    KnowledgeTestHelper(string agentId = std:("00000000-0000-0000-0000-000000000001"));
+    virtual std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> uploadFile(string fileName, string content, string fileType = std:("text/plain"));
     virtual std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> uploadFromUrl(string url);
     virtual std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeDocument>>>> getDocuments();
     virtual std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> getDocumentChunks(string documentId);

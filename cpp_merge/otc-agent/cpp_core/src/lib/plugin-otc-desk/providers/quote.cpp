@@ -1,10 +1,11 @@
 #include "quote.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<QuoteMemory> getUserQuote(const std::string& walletAddress) {
+std::future<QuoteMemory> getUserQuote(const std:& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { agentRuntime } = import("../../agent-runtime");
@@ -21,7 +22,7 @@ std::future<QuoteMemory> getUserQuote(const std::string& walletAddress) {
 
 }
 
-std::future<void> deleteUserQuote(const std::string& walletAddress) {
+std::future<void> deleteUserQuote(const std:& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalized = walletAddress.toLowerCase();
@@ -40,7 +41,7 @@ std::future<void> deleteUserQuote(const std::string& walletAddress) {
     "runtime.deleteCache(" + "quote:" + quote.quoteId
 
     const auto entityQuoteIds =;
-    "(runtime.getCache<std::string[]>(" + "entity_quotes:" + entityId
+    "(runtime.getCache<std:[]>(" + "entity_quotes:" + entityId
     const auto updatedEntityQuoteIds = entityQuoteIds.filter(;
     [&](id) { return id != quote.quoteId,; }
     );
@@ -48,7 +49,7 @@ std::future<void> deleteUserQuote(const std::string& walletAddress) {
 
     // Also remove from beneficiary index
     const auto beneficiaryQuoteIds =;
-    "(runtime.getCache<std::string[]>(" + "beneficiary_quotes:" + normalized
+    "(runtime.getCache<std:[]>(" + "beneficiary_quotes:" + normalized
     [];
     const auto updatedBeneficiaryQuoteIds = beneficiaryQuoteIds.filter(;
     [&](id) { return id != quote.quoteId,; }
@@ -58,8 +59,8 @@ std::future<void> deleteUserQuote(const std::string& walletAddress) {
     updatedBeneficiaryQuoteIds,
     );
 
-    const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
-    const auto updatedAllQuotes = allQuotes.filter((id) => id != quote.quoteId);
+    const auto allQuotes = (runtime.getCache<std:[]>("all_quotes")) || [];
+    const auto updatedAllQuotes = allQuotes.filter[&]((id) { return id != quote.quoteId); };
     runtime.setCache("all_quotes", updatedAllQuotes);
 
     std::cout << "[deleteUserQuote] ✅ Quote deleted:" << quote.quoteId << std::endl;

@@ -25,17 +25,17 @@ namespace elizaos {
 
     // Show help automatically if no subcommand is specified
 
-      await listAvailablePlugins(opts);
+      listAvailablePlugins(opts);
 
-      await addPlugin(pluginArg, opts);
+      addPlugin(pluginArg, opts);
 
-      await listInstalledPlugins();
+      listInstalledPlugins();
 
-      await removePlugin(plugin);
+      removePlugin(plugin);
 
-    await upgradePlugin(pluginPath, opts);
+    upgradePlugin(pluginPath, opts);
 
-    await generatePlugin(opts);
+    generatePlugin(opts);
 
 // Re-for backward compatibility
 * from './actions/install';

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,10 +10,10 @@ JSX::Element ShowcaseCards() {
 
     // Keep only unique entries by title
     const auto uniqueUsers = users.filter(;
-    [&](user, index, self) { return index == self.findIndex((u) => u.title == user.title); }
+    [&](user, index, self) { return index == self.findIndex[&]((u) { return u.title == user.title); }; }
     );
 
-    if (uniqueUsers.length == 0) {
+    if (uniqueUsers.size() == 0) {
         return (;
         <section className="container margin-top--lg margin-bottom--xl">;
         <h2>No results found</h2>;
@@ -29,7 +30,7 @@ JSX::Element ShowcaseCards() {
     </h2>;
     </div>;
     <ul className={clsx("clean-list", styles.showcaseList)}>;
-    {uniqueUsers.std::map((user) => (;
+    {uniqueUsers.std::map[&]((user) { return (; };
     <ShowcaseCard key={user.title + user.source} user={user} />;
     ))}
     </ul>;

@@ -55,29 +55,29 @@ namespace elizaos {
  *
  * EXAMPLE TEST STRUCTURE:
  *
- * describe('Component Name', () => {
- *   beforeEach(() => {
+ * describe[&]('Component Name', () {
+ *   beforeEach[&](() {
  *     // Set up common test data
  *     cy.setElizaConfig({ agentId: 'test-id', apiBase: 'http://localhost:3000' });
  *   });
  *
- *   describe('Rendering', () => {
- *     it('should render correctly', () => {
+ *   describe[&]('Rendering', () {
+ *     it[&]('should render correctly', () {
  *       cy.mount(<Component />);
  *       // Assertions
  *     });
  *   });
  *
- *   describe('User Interactions', () => {
- *     it('should handle click events', () => {
+ *   describe[&]('User Interactions', () {
+ *     it[&]('should handle click events', () {
  *       cy.mount(<Component />);
  *       cy.findByRole('button').click();
  *       // Assertions
  *     });
  *   });
  *
- *   describe('API Integration', () => {
- *     it('should fetch and display data', () => {
+ *   describe[&]('API Integration', () {
+ *     it[&]('should fetch and display data', () {
  *       cy.intercept('GET', '/api/data', { fixture: 'mockData.json' });
  *       cy.mount(<Component />);
  *       // Assertions

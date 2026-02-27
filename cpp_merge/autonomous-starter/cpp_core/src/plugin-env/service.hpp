@@ -29,7 +29,7 @@ class EnvManagerService extends Service {
    */
   static std::async start(runtime: IAgentRuntime): Promise<EnvManagerService> {
     const service = new EnvManagerService(runtime);
-    await service.initialize();
+    service.initialize();
     return service;
   }
 

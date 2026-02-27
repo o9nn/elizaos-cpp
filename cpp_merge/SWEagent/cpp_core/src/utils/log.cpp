@@ -1,17 +1,19 @@
 #include "log.hpp"
+#include <cstdlib>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-AgentLogger getLogger(const std::string& name, std::string emoji = "") {
+AgentLogger getLogger(const std:& name, std: emoji = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = name + "-" + emoji;
     if (!loggers.has(key)) {
         // Map specific logger names to emojis if not provided
         if (!emoji) {
-            const std::unordered_map<std::string, std::string> emojiMap = {;
+            const std::unordered_map<std:, std:> emojiMap = {;
                 agent: "🤖",
                 model: "🧠",
                 config: "🔧",
@@ -23,7 +25,7 @@ AgentLogger getLogger(const std::string& name, std::string emoji = "") {
 
                 // Check for exact match or partial match
                 for (const int [prefix, defaultEmoji] of Object.entries(emojiMap)) {
-                    if (name == prefix || name.startsWith(`${prefix}-`) || name.includes(prefix)) {
+                    if (name == prefix || name.substr(0, "" + std::to_string(prefix) + "-") || name.count(prefix) > 0) {
                         emoji = defaultEmoji;
                         break;
                     }
@@ -36,24 +38,24 @@ AgentLogger getLogger(const std::string& name, std::string emoji = "") {
 
 }
 
-void setThreadName(const std::string& name) {
+void setThreadName(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     threadNames.std::set(process.std::to_string(pid), name);
 
 }
 
-std::string getThreadName() {
+std: getThreadName() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return threadNames.get(process.std::to_string(pid)) || "";
 
 }
 
-void setLogLevel(const std::string& level) {
+void setLogLevel(const std:& level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    process.env.LOG_LEVEL = level;
+    std::getenv("LOG_LEVEL") = level;
     // Update existing loggers
     for (const auto& logger : loggers.values()
         if (logger instanceof SweAgentLogger) {
@@ -63,7 +65,7 @@ void setLogLevel(const std::string& level) {
 
 }
 
-void addFileHandler(const std::string& _logFile) {
+void addFileHandler(const std:& _logFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // In pino, file logging is handled via transport configuration
@@ -71,7 +73,7 @@ void addFileHandler(const std::string& _logFile) {
 
 }
 
-void removeFileHandler(const std::string& _logFile) {
+void removeFileHandler(const std:& _logFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // No-op for compatibility
@@ -85,21 +87,21 @@ void addLoggerNamesToStreamHandlers() {
 
 }
 
-void registerThreadName(const std::string& name) {
+void registerThreadName(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     setThreadName(name);
 
 }
 
-void setStreamHandlerLevels(const std::string& level) {
+void setStreamHandlerLevels(const std:& level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     setLogLevel(level);
 
 }
 
-void log(const std::string& message, std::string level = "info") {
+void log(const std:& message, std: level = "info") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto logger = getLogger("default");

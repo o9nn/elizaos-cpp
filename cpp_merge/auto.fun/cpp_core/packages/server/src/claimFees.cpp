@@ -1,16 +1,18 @@
 #include "claimFees.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token) {
+std::future<std:> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
             const auto wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY!);
+            Uint8Array.from(/* JSON::parse */ std::getenv("EXECUTOR_PRIVATE_KEY")!);
             );
 
             // Build an Anchor provider.

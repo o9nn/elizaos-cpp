@@ -1,10 +1,11 @@
 #include "token-deploy.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::any safeStringify(const std::any& obj) {
+std: safeStringify(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (obj == null || obj == undefined) {
@@ -20,7 +21,7 @@ std::any safeStringify(const std::any& obj) {
     }
 
     if (typeof obj == "object") {
-        const std::any result = {};
+        const std: result = {};
         for (const int [key, value] of Object.entries(obj)) {
             result[key] = safeStringify(value);
         }

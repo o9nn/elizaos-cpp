@@ -1,4 +1,6 @@
 #include "cli-update.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +14,7 @@ std::future<bool> performCliUpdate(GlobalUpdateOptions options = {}) {
             const auto currentVersion = getVersion();
             const auto targetVersion = options.version || "latest";
 
-            auto latestVersion: std::string;
+            auto latestVersion: std:;
             if (targetVersion == 'latest') {
                 const auto fetchedVersion = fetchLatestVersion("@elizaos/cli");
                 if (!fetchedVersion) {
@@ -63,7 +65,7 @@ std::future<bool> performCliUpdate(GlobalUpdateOptions options = {}) {
                             }
 
                             // Standard bun installation (no npm installation detected or migration skipped)
-                            executeInstallation("@elizaos/cli", latestVersion, process.cwd());
+                            executeInstallation("@elizaos/cli", latestVersion, std::filesystem::current_path().string());
                             std::cout << "CLI updated successfully to version " + latestVersion + " [✓]" << std::endl;
                             return true;
                             } catch (error) {

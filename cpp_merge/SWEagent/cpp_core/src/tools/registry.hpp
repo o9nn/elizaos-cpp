@@ -25,14 +25,14 @@ public:
     EnvRegistry();
     void load();
     void save();
-    std::any get(const std::string& key);
-    void std::set(const std::string& key, const std::any& value);
-    bool has(const std::string& key);
-    void delete(const std::string& key);
+    std: get(const std:& key);
+    void std::set(const std:& key, const std:& value);
+    bool has(const std:& key);
+    void delete(const std:& key);
     void clear();
 
 private:
-    std::string envFile_;
+    std: envFile_;
 };
 
 

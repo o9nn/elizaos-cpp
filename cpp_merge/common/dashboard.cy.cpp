@@ -2,109 +2,109 @@
 
 void Main(void)
 {
-    describe(std::string("Dashboard E2E Tests"), [=]() mutable
+    describe(std:("Dashboard E2E Tests"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
-            cy->visit(std::string("/"));
+            cy->visit(std:("/"));
         }
         );
-        describe(std::string("Dashboard Loading"), [=]() mutable
+        describe(std:("Dashboard Loading"), [=]() mutable
         {
-            it(std::string("should load the dashboard successfully"), [=]() mutable
+            it(std:("should load the dashboard successfully"), [=]() mutable
             {
-                cy->url()->should(std::string("include"), std::string("localhost:3000"));
-                cy->get(std::string("body"))->should(std::string("be.visible"));
-                cy->get(std::string("[data-testid="loading"]"), object{
-                    object::pair{std::string("timeout"), 5000}
-                })->should(std::string("not.exist"));
+                cy->url()->should(std:("include"), std:("localhost:3000"));
+                cy->get(std:("body"))->should(std:("be.visible"));
+                cy->get(std:("[data-testid="loading"]"), object{
+                    object::pair{std:("timeout"), 5000}
+                })->should(std:("not.exist"));
             }
             );
-            it(std::string("should display the application title or logo"), [=]() mutable
+            it(std:("should display the application title or logo"), [=]() mutable
             {
-                cy->contains((new RegExp(std::string("eliza|agent"))))->should(std::string("be.visible"));
+                cy->contains((new RegExp(std:("eliza|agent"))))->should(std:("be.visible"));
             }
             );
-            it(std::string("should have proper meta tags"), [=]() mutable
+            it(std:("should have proper meta tags"), [=]() mutable
             {
-                cy->get(std::string("meta[name="viewport"]"))->should(std::string("exist"))->should(std::string("have.attr"), std::string("content"))->and(std::string("include"), std::string("width=device-width"));
+                cy->get(std:("meta[name="viewport"]"))->should(std:("exist"))->should(std:("have.attr"), std:("content"))->and(std:("include"), std:("width=device-width"));
             }
             );
         }
         );
-        describe(std::string("Navigation"), [=]() mutable
+        describe(std:("Navigation"), [=]() mutable
         {
-            it(std::string("should navigate to different sections"), [=]() mutable
+            it(std:("should navigate to different sections"), [=]() mutable
             {
-                cy->get(std::string("nav, [role="navigation"], .navigation"))->should(std::string("exist"));
-                auto navItems = array<string>{ std::string("agents"), std::string("chat"), std::string("settings"), std::string("docs") };
+                cy->get(std:("nav, [role="navigation"], .navigation"))->should(std:("exist"));
+                auto navItems = array<string>{ std:("agents"), std:("chat"), std:("settings"), std:("docs") };
                 navItems->forEach([=](auto item) mutable
                 {
-                    cy->get(std::string("a[href*="") + item + std::string(""], button:contains("") + item + std::string("")"), object{
-                        object::pair{std::string("timeout"), 2000}
-                    })->should(std::string("exist"));
+                    cy->get(std:("a[href*="") + item + std:(""], button:contains("") + item + std:("")"), object{
+                        object::pair{std:("timeout"), 2000}
+                    })->should(std:("exist"));
                 }
                 );
             }
             );
-            it(std::string("should handle navigation clicks"), [=]() mutable
+            it(std:("should handle navigation clicks"), [=]() mutable
             {
-                cy->get(std::string("a[href*="agents"], button:contains("agents")"), object{
-                    object::pair{std::string("timeout"), 2000}
+                cy->get(std:("a[href*="agents"], button:contains("agents")"), object{
+                    object::pair{std:("timeout"), 2000}
                 })->first()->click(object{
-                    object::pair{std::string("force"), true}
+                    object::pair{std:("force"), true}
                 });
-                cy->url()->should(std::string("match"), (new RegExp(std::string("agents|agent"))));
+                cy->url()->should(std:("match"), (new RegExp(std:("agents|agent"))));
             }
             );
         }
         );
-        describe(std::string("Responsive Design"), [=]() mutable
+        describe(std:("Responsive Design"), [=]() mutable
         {
-            it(std::string("should be responsive on mobile"), [=]() mutable
+            it(std:("should be responsive on mobile"), [=]() mutable
             {
                 cy->viewport(375, 667);
                 cy->wait(500);
-                cy->get(std::string("body"))->should(std::string("be.visible"));
-                cy->get(std::string("nav, [role="navigation"]"))->then([=](auto $nav) mutable
+                cy->get(std:("body"))->should(std:("be.visible"));
+                cy->get(std:("nav, [role="navigation"]"))->then([=](auto $nav) mutable
                 {
-                    if ($nav["is"](std::string(":visible"))) {
+                    if ($nav["is"](std:(":visible"))) {
                         expect($nav)->to->be->visible;
                     } else {
-                        cy->get(std::string("[aria-label*="menu"], button[class*="menu"]"))->should(std::string("be.visible"));
+                        cy->get(std:("[aria-label*="menu"], button[class*="menu"]"))->should(std:("be.visible"));
                     }
                 }
                 );
             }
             );
-            it(std::string("should be responsive on tablet"), [=]() mutable
+            it(std:("should be responsive on tablet"), [=]() mutable
             {
                 cy->viewport(768, 1024);
                 cy->wait(500);
-                cy->get(std::string("body"))->should(std::string("be.visible"));
+                cy->get(std:("body"))->should(std:("be.visible"));
             }
             );
         }
         );
-        describe(std::string("Error Handling"), [=]() mutable
+        describe(std:("Error Handling"), [=]() mutable
         {
-            it(std::string("should handle 404 pages gracefully"), [=]() mutable
+            it(std:("should handle 404 pages gracefully"), [=]() mutable
             {
-                cy->visit(std::string("/non-existent-page"), object{
-                    object::pair{std::string("failOnStatusCode"), false}
+                cy->visit(std:("/non-existent-page"), object{
+                    object::pair{std:("failOnStatusCode"), false}
                 });
-                cy->contains((new RegExp(std::string("404|not found|error"))), object{
-                    object::pair{std::string("timeout"), 5000}
-                })->should(std::string("be.visible"));
+                cy->contains((new RegExp(std:("404|not found|error"))), object{
+                    object::pair{std:("timeout"), 5000}
+                })->should(std:("be.visible"));
             }
             );
-            it(std::string("should handle network errors"), [=]() mutable
+            it(std:("should handle network errors"), [=]() mutable
             {
-                cy->intercept(std::string("GET"), std::string("/api/**"), object{
-                    object::pair{std::string("forceNetworkError"), true}
-                })->as(std::string("networkError"));
-                cy->visit(std::string("/"));
-                cy->get(std::string("body"))->should(std::string("be.visible"));
+                cy->intercept(std:("GET"), std:("/api/**"), object{
+                    object::pair{std:("forceNetworkError"), true}
+                })->as(std:("networkError"));
+                cy->visit(std:("/"));
+                cy->get(std:("body"))->should(std:("be.visible"));
             }
             );
         }

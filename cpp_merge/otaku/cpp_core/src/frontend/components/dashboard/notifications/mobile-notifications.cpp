@@ -1,4 +1,5 @@
 #include "mobile-notifications.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -44,16 +45,16 @@ void MobileNotifications() {
     const auto [notifications, setNotifications] =;
     useState<Notification[]>(initialNotifications);
 
-    const auto unreadCount = notifications.filter((n) => !n.read).size();
+    const auto unreadCount = notifications.filter[&]((n) { return !n.read).size(); };
 
-    const auto markAsRead = [&](id: std::string) {;
+    const auto markAsRead = [&](id: std:) {;
         setNotifications((prev) =>;
         prev.std::map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
         );
         };
 
-        const auto deleteNotification = [&](id: std::string) {;
-            setNotifications((prev) => prev.filter((notif) => notif.id != id));
+        const auto deleteNotification = [&](id: std:) {;
+            setNotifications[&]((prev) { return prev.filter[&]((notif) { return notif.id != id)); }; };
             };
 
             return (;
@@ -86,9 +87,9 @@ void MobileNotifications() {
     <div className="flex items-center justify-center h-32">;
     <p className="text-sm text-muted-foreground">No notifications</p>;
     </div>;
-    ) : (
+    ) : [&](
     <AnimatePresence mode={"popLayout"}>;
-    {notifications.std::map((notification) => (;
+    {notifications.std::map((notification) { return (; };
     <motion.div;
     key={notification.id}
     layout;
@@ -103,8 +104,8 @@ void MobileNotifications() {
     }}
     >;
     <SwipeableWrapper;
-    onDelete={() => deleteNotification(notification.id)}
-    >;
+    onDelete={[&]() { return deleteNotification(notification.id)}
+    >; };
     <NotificationItem;
     notification={notification}
     onMarkAsRead={markAsRead}

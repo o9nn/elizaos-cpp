@@ -1,21 +1,23 @@
 #include "remove.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> removePlugin(const std::string& plugin) {
+std::future<void> removePlugin(const std:& plugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto cwd = process.cwd();
+        const auto cwd = std::filesystem::current_path().string();
         const auto directoryInfo = detectDirectoryType(cwd);
 
         if (!directoryInfo || !directoryInfo.hasPackageJson) {
             console.error(
             "Could not read or parse package.json. This directory is: " + std::to_string(directoryInfo.type || "invalid or inaccessible")
             );
-            process.exit(1);
+            std::exit(1);
         }
 
         const auto allDependencies = getDependenciesFromDirectory(cwd);
@@ -23,7 +25,7 @@ std::future<void> removePlugin(const std::string& plugin) {
             console.error(
             "Could not read dependencies from package.json. Cannot determine which package to remove.";
             );
-            process.exit(1);
+            std::exit(1);
         }
 
         const auto packageNameToRemove = findPluginPackageName(plugin, allDependencies);
@@ -31,7 +33,7 @@ std::future<void> removePlugin(const std::string& plugin) {
         if (!packageNameToRemove) {
             std::cout << "Plugin matching \"" + plugin + "\" not found in project dependencies." << std::endl;
             std::cout << "\nCheck installed plugins using: elizaos plugins installed-plugins" << std::endl;
-            process.exit(0);
+            std::exit(0);
         }
 
         std::cout << "Removing " + packageNameToRemove + "..." << std::endl;
@@ -56,13 +58,13 @@ std::future<void> removePlugin(const std::string& plugin) {
                         );
                         } else {
                             handleError(execError);
-                            process.exit(1);
+                            std::exit(1);
                         }
                     }
 
                     // Remove plugin directory if it exists
                     auto baseName = packageNameToRemove;
-                    if (packageNameToRemove.includes('/')) {
+                    if (packageNameToRemove.count('/') > 0) {
                         const auto parts = packageNameToRemove.split("/");
                         baseName = parts[parts.size() - 1];
                     }

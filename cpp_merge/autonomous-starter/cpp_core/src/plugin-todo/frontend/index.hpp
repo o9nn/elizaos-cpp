@@ -29,42 +29,42 @@ namespace elizaos {
 // Define Task type based on backend structure
 // NOTE: Adjust this type based on the actual structure returned by IAgentRuntime and modified by API routes
 struct TaskMetadata {
-    std::optional<std::string> dueDate;
+    std::optional<std:> dueDate;
     std::optional<double> streak;
     std::optional<bool> completedToday;
-    std::optional<std::string> lastReminderSent;
+    std::optional<std:> lastReminderSent;
     std::optional<double> pointsAwarded;
-    std::optional<std::string> completedAt;
+    std::optional<std:> completedAt;
 };
 
 struct Task {
-    std::string id;
-    std::string name;
-    std::optional<std::string> description;
+    std: id;
+    std: name;
+    std::optional<std:> description;
     std::optional<std::vector<std::string>> tags;
     std::optional<TaskMetadata> metadata;
-    std::string roomId;
+    std: roomId;
 };
 
 struct RoomWithTasks {
-    std::string roomId;
-    std::string roomName;
+    std: roomId;
+    std: roomName;
     std::vector<Task> tasks;
 };
 
 struct WorldWithRooms {
-    std::string worldId;
-    std::string worldName;
+    std: worldId;
+    std: worldName;
     std::vector<RoomWithTasks> rooms;
 };
 
 // --- NEW: Interface for Task Identifiers ---
 struct TaskIdentifier {
-    std::string id;
-    std::string name;
-    std::optional<std::string> entityId;
-    std::optional<std::string> roomId;
-    std::optional<std::string> worldId;
+    std: id;
+    std: name;
+    std::optional<std:> entityId;
+    std::optional<std:> roomId;
+    std::optional<std:> worldId;
 };
 
 // Helper to extract context from URL

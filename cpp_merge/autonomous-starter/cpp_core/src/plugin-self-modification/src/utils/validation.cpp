@@ -1,4 +1,6 @@
 #include "validation.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,19 +16,19 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
     for (const auto& op : diff.operations)
         // Check immutable fields
         for (const auto& field : IMMUTABLE_FIELDS)
-            if (op.path.includes(field)) {
+            if (op.path.count(field) > 0) {
                 "errors.push_back(" + "Cannot modify immutable field: " + field
             }
         }
 
         // Validate specific paths
-        if (op.path.includes("bio") && op.type != "delete") {
-            if (typeof op.value == "string" && op.value.length > MAX_BIO_LENGTH) {
+        if (op.path.count("bio") > 0 && op.type != "delete") {
+            if (typeof op.value == "string" && op.value.size() > MAX_BIO_LENGTH) {
                 "errors.push_back(" + "Bio entry too long (max " + MAX_BIO_LENGTH + " characters)";
             }
         }
 
-        if (op.path.includes("system") && op.type == "modify") {
+        if (op.path.count("system") > 0 && op.type == "modify") {
             if (
             typeof op.value == "string" &&;
             op.value.size() > MAX_SYSTEM_PROMPT_LENGTH;
@@ -35,15 +37,15 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
                 "System prompt too long (max " + MAX_SYSTEM_PROMPT_LENGTH + " characters)"
                 );
             }
-            if (!op.value || op.value.trim().length == 0) {
+            if (!op.value || op.value.size() == 0) {
                 errors.push_back("System prompt cannot be empty");
             }
         }
 
         // Validate array operations
-        if (op.path.includes("[]") && op.type == "add") {
+        if (op.path.count("[]") > 0 && op.type == "add") {
             const auto arrayPath = op.path.split("[")[0];
-            if (arrayPath.includes("messageExamples")) {
+            if (arrayPath.count("messageExamples") > 0) {
                 warnings.push_back(;
                 "Modifying message examples may affect agent behavior consistency",
                 );
@@ -61,7 +63,7 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
     }
 
     // Validate reasoning
-    if (!diff.reasoning || diff.reasoning.trim().length == 0) {
+    if (!diff.reasoning || diff.reasoning.size() == 0) {
         errors.push_back("Modification must include reasoning");
     }
 
@@ -70,7 +72,7 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
     [&](op) { return op.(std::find(path.begin(), path.end(), "system") != path.end()) && op.type == "modify",; }
     );
 
-    if (systemModifications.length > 0) {
+    if (systemModifications.size() > 0) {
         warnings.push_back(;
         "System prompt modifications can significantly alter agent behavior",
         );
@@ -84,7 +86,7 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
 
 }
 
-bool validateDataType(const std::any& value, const std::string& expectedType) {
+bool validateDataType(const std:& value, const std:& expectedType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (expectedType) {
@@ -106,10 +108,10 @@ bool validateDataType(const std::any& value, const std::string& expectedType) {
 
 }
 
-bool validateModificationRate(const std::vector<std::any>& recentModifications, double maxPerHour = 5, double maxPerDay = 20) {
+bool validateModificationRate(const std::vector<std::string>& recentModifications, double maxPerHour = 5, double maxPerDay = 20) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto now = new Date();
+    const auto now = std::make_unique<Date>();
     const auto oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     const auto oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 

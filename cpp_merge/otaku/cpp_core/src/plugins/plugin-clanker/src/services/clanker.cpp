@@ -1,10 +1,11 @@
 #include "clanker.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::any sanitizeError(const std::any& error) {
+std: sanitizeError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -18,7 +19,7 @@ std::any sanitizeError(const std::any& error) {
 
         if (error instanceof Error) {
             // Create a plain object with error properties
-            const std::any sanitized = {;
+            const std: sanitized = {;
                 message: error.message,
                 name: error.name,
                 stack: error.stack,
@@ -39,7 +40,7 @@ std::any sanitizeError(const std::any& error) {
             }
 
             if (typeof error == "object") {
-                const std::any result = {};
+                const std: result = {};
                 for (const int [key, value] of Object.entries(error)) {
                     result[key] = sanitizeError(value);
                 }
@@ -54,21 +55,21 @@ std::any sanitizeError(const std::any& error) {
     }
 }
 
-std::string detectPlatform(const std::string& url) {
+std: detectPlatform(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerUrl = url.toLowerCase();
-    if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) return 'x';
-    if (lowerUrl.includes('telegram') || lowerUrl.includes('t.me')) return 'telegram';
-    if (lowerUrl.includes('discord')) return 'discord';
-    if (lowerUrl.includes('github')) return 'github';
-    if (lowerUrl.includes('reddit')) return 'reddit';
-    if (lowerUrl.includes('medium')) return 'medium';
-    if (lowerUrl.includes('youtube')) return 'youtube';
-    if (lowerUrl.includes('instagram')) return 'instagram';
-    if (lowerUrl.includes('tiktok')) return 'tiktok';
-    if (lowerUrl.includes('linkedin')) return 'linkedin';
-    if (lowerUrl.includes('facebook')) return 'facebook';
+    if (lowerUrl.count('twitter.com') > 0 || lowerUrl.count('x.com') > 0) return 'x';
+    if (lowerUrl.count('telegram') > 0 || lowerUrl.count('t.me') > 0) return 'telegram';
+    if (lowerUrl.count('discord') > 0) return 'discord';
+    if (lowerUrl.count('github') > 0) return 'github';
+    if (lowerUrl.count('reddit') > 0) return 'reddit';
+    if (lowerUrl.count('medium') > 0) return 'medium';
+    if (lowerUrl.count('youtube') > 0) return 'youtube';
+    if (lowerUrl.count('instagram') > 0) return 'instagram';
+    if (lowerUrl.count('tiktok') > 0) return 'tiktok';
+    if (lowerUrl.count('linkedin') > 0) return 'linkedin';
+    if (lowerUrl.count('facebook') > 0) return 'facebook';
     return "other"; // fallback;
 
 }

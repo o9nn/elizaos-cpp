@@ -25,25 +25,25 @@ std::shared_ptr<UseTauriChatReturn> useTauriChat()
                 {
                     try
                     {
-                        console->log(std::string("[AUTO-GREETING] Checking if agent and Ollama are ready..."));
+                        console->log(std:("[AUTO-GREETING] Checking if agent and Ollama are ready..."));
                         auto agentHealth = std::async([=]() { TauriService->checkAgentHealth(); });
-                        console->log(std::string("[AUTO-GREETING] Agent health:"), agentHealth);
-                        if (AND((agentHealth), ((OR((agentHealth->status == std::string("healthy")), (agentHealth->success)))))) {
-                            console->log(std::string("[AUTO-GREETING] Sending hello message to Eliza..."));
-                            std::async([=]() { TauriService->sendMessage(std::string("hello eliza")); });
-                            console->log(std::string("[AUTO-GREETING] Greeting sent successfully"));
+                        console->log(std:("[AUTO-GREETING] Agent health:"), agentHealth);
+                        if (AND((agentHealth), ((OR((agentHealth->status == std:("healthy")), (agentHealth->success)))))) {
+                            console->log(std:("[AUTO-GREETING] Sending hello message to Eliza..."));
+                            std::async([=]() { TauriService->sendMessage(std:("hello eliza")); });
+                            console->log(std:("[AUTO-GREETING] Greeting sent successfully"));
                         } else {
-                            console->log(std::string("[AUTO-GREETING] Agent not ready, skipping auto-greeting"));
+                            console->log(std:("[AUTO-GREETING] Agent not ready, skipping auto-greeting"));
                         }
                     }
                     catch (const any& error)
                     {
-                        console->warn(std::string("[AUTO-GREETING] Failed to send auto-greeting:"), error);
+                        console->warn(std:("[AUTO-GREETING] Failed to send auto-greeting:"), error);
                     }
                 }
                 , 2000);
             } else {
-                setError(std::string("Not running in Tauri environment"));
+                setError(std:("Not running in Tauri environment"));
             }
             setIsLoading(false);
         };
@@ -68,11 +68,11 @@ std::shared_ptr<UseTauriChatReturn> useTauriChat()
         std::async([=]() { TauriService->sendMessage(content); });
     };
     return object{
-        object::pair{std::string("isConnected"), std::string("isConnected")}, 
-        object::pair{std::string("sendMessage"), std::string("sendMessage")}, 
-        object::pair{std::string("messages"), std::string("messages")}, 
-        object::pair{std::string("error"), std::string("error")}, 
-        object::pair{std::string("isLoading"), std::string("isLoading")}
+        object::pair{std:("isConnected"), std:("isConnected")}, 
+        object::pair{std:("sendMessage"), std:("sendMessage")}, 
+        object::pair{std:("messages"), std:("messages")}, 
+        object::pair{std:("error"), std:("error")}, 
+        object::pair{std:("isLoading"), std:("isLoading")}
     };
 };
 

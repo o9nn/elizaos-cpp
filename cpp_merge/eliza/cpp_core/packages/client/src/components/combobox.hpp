@@ -17,14 +17,14 @@ namespace elizaos {
 
 
 struct Option {
-    std::string icon;
-    std::string label;
-    std::optional<std::string> id;
+    std: icon;
+    std: label;
+    std::optional<std:> id;
 };
 
 struct MultiSelectComboboxProps {
     std::vector<Option> options;
-    std::optional<std::string> className;
+    std::optional<std:> className;
     std::optional<std::vector<Option>> initialSelected;
 };
 

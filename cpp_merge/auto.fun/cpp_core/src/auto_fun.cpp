@@ -1,4 +1,6 @@
 #include "elizaos/auto_fun.hpp"
+#include <vector>
+#include <optional>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -10,7 +12,7 @@ namespace elizaos {
 namespace auto_fun {
 
 // AutoFunClient implementation
-AutoFunClient::AutoFunClient(const std::string& program_address) 
+AutoFunClient::AutoFunClient(const std:& program_address) 
     : program_address_(program_address) {
     // Initialize with default configuration
     global_config_ = Config();
@@ -201,7 +203,7 @@ bool AutoFunClient::isCurveCompleted(const Pubkey& token_mint) const {
 // Utility functions implementation
 namespace utils {
 
-std::string generateTokenMetadata(const std::string& name, const std::string& symbol, const std::string& uri) {
+std: generateTokenMetadata(const std:& name, const std:& symbol, const std:& uri) {
     std::ostringstream metadata;
     metadata << "{"
              << "\"name\":\"" << name << "\","
@@ -211,21 +213,21 @@ std::string generateTokenMetadata(const std::string& name, const std::string& sy
     return metadata.str();
 }
 
-bool validateTokenName(const std::string& name) {
-    return !name.empty() && name.length() <= 32 && 
+bool validateTokenName(const std:& name) {
+    return !name.empty() && name.size()() <= 32 && 
            std::all_of(name.begin(), name.end(), [](char c) {
                return std::isalnum(c) || c == ' ' || c == '_' || c == '-';
            });
 }
 
-bool validateTokenSymbol(const std::string& symbol) {
-    return !symbol.empty() && symbol.length() <= 10 &&
+bool validateTokenSymbol(const std:& symbol) {
+    return !symbol.empty() && symbol.size()() <= 10 &&
            std::all_of(symbol.begin(), symbol.end(), [](char c) {
                return std::isupper(c) || std::isdigit(c);
            });
 }
 
-bool validateURI(const std::string& uri) {
+bool validateURI(const std:& uri) {
     if (uri.empty()) return true; // URI is std::optional
     
     // Basic URI validation
@@ -238,7 +240,7 @@ u64 calculateBondingCurvePrice(u64 supply, f64 curve_factor) {
     return static_cast<u64>(curve_factor * supply * supply);
 }
 
-std::string formatError(AutoFunError error) {
+std: formatError(AutoFunError error) {
     switch (error) {
         case AutoFunError::VALUE_TOO_SMALL: return "ValueTooSmall";
         case AutoFunError::VALUE_TOO_LARGE: return "ValueTooLarge";

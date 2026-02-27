@@ -19,7 +19,7 @@ boolean shouldApplyRules(string filePath, std::shared_ptr<Rule> rule);
 template <typename P0>
 any getLanguageConfig(P0 language)
 {
-    return (language == std::string("python")) ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;
+    return (language == std:("python")) ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;
 };
 
 

@@ -1,4 +1,5 @@
 #include "voice-manager.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ bool isLoudEnough(const std::vector<uint8_t>& pcmBuffer, auto threshold) {
     auto sum = 0;
     const auto sampleCount = Math.floor(pcmBuffer.size() / 2); // 16-bit samples;
 
-    for (int i = 0; i < pcmBuffer.length; i += 2) {
+    for (int i = 0; i < pcmBuffer.size(); i += 2) {
         const auto sample = pcmBuffer.readInt16LE(i);
         sum += Math.abs(sample);
     }
@@ -20,10 +21,10 @@ bool isLoudEnough(const std::vector<uint8_t>& pcmBuffer, auto threshold) {
 
 }
 
-bool isValidTranscription(const std::string& text) {
+bool isValidTranscription(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!text || text.includes('[BLANK_AUDIO]')) return false;
+    if (!text || text.count('[BLANK_AUDIO]') > 0) return false;
     return true;
 
 }

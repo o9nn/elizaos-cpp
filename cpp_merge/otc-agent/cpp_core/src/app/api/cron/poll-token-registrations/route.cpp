@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +10,7 @@ namespace elizaos {
 std::optional<bigint> getLastBaseBlock() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto envBlock = process.env.LAST_PROCESSED_BASE_BLOCK;
+    const auto envBlock = std::getenv("LAST_PROCESSED_BASE_BLOCK");
     if (envBlock) {
         return BigInt(envBlock);
     }
@@ -19,7 +22,7 @@ std::future<void> pollBaseRegistrations() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto registrationHelperAddress =;
-    process.env.NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS;
+    std::getenv("NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS");
     if (!registrationHelperAddress) {
         std::cerr << "[Cron] REGISTRATION_HELPER_ADDRESS not configured" << std::endl;
         return {
@@ -29,7 +32,7 @@ std::future<void> pollBaseRegistrations() {
         }
 
         const auto rpcUrl =;
-        process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
+        std::getenv("NEXT_PUBLIC_BASE_RPC_URL") || "https://mainnet.base.org";
         const auto client = createPublicClient({;
             chain: base,
             transport: http(rpcUrl),
@@ -53,7 +56,7 @@ std::future<void> pollBaseRegistrations() {
                 );
 
                 const auto logs = client.getLogs({;
-                    "address: registrationHelperAddress as " + "0x" + std::string
+                    "address: registrationHelperAddress as " + "0x" + std:
                     event: {
                         type: "event",
                         name: "TokenRegistered",
@@ -74,10 +77,10 @@ std::future<void> pollBaseRegistrations() {
                         auto processed = 0;
                         for (const auto& log : logs)
                             const auto { tokenAddress, registeredBy } = log.args as {;
-                                tokenId: std::string;
-                                tokenAddress: std::string;
-                                pool: std::string;
-                                registeredBy: std::string;
+                                tokenId: std:;
+                                tokenAddress: std:;
+                                pool: std:;
+                                registeredBy: std:;
                                 };
 
                                 console.log(
@@ -86,29 +89,29 @@ std::future<void> pollBaseRegistrations() {
 
                                 // Fetch token metadata
                                 // Use type assertion to bypass viem's strict authorizationList requirement
-                                const auto readContract = client.readContract as (;
+                                const auto readContract = client.readContract as [&](;
                                 params: unknown,
-                                ) => Promise<unknown>;
+                                ) { return Promise<unknown>; };
                                 const auto [symbol, name, decimals] = Promise.all([;
                                 readContract({
-                                    "address: tokenAddress as " + "0x" + std::string
+                                    "address: tokenAddress as " + "0x" + std:
                                     abi: ERC20_ABI,
                                     functionName: "symbol",
                                     }),
                                     readContract({
-                                        "address: tokenAddress as " + "0x" + std::string
+                                        "address: tokenAddress as " + "0x" + std:
                                         abi: ERC20_ABI,
                                         functionName: "name",
                                         }),
                                         readContract({
-                                            "address: tokenAddress as " + "0x" + std::string
+                                            "address: tokenAddress as " + "0x" + std:
                                             abi: ERC20_ABI,
                                             functionName: "decimals",
                                             }),
                                             ]);
 
                                             // Register to database
-                                            const auto tokenService = new TokenRegistryService();
+                                            const auto tokenService = std::make_unique<TokenRegistryService>();
                                             tokenService.registerToken({
                                                 symbol: symbol,
                                                 name: name,
@@ -140,14 +143,14 @@ std::future<void> pollBaseRegistrations() {
 std::future<void> pollSolanaRegistrations() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto programId = process.env.NEXT_PUBLIC_SOLANA_PROGRAM_ID;
+    const auto programId = std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID");
     if (!programId) {
         std::cerr << "[Cron] SOLANA_PROGRAM_ID not configured" << std::endl;
         return { processed: 0, error: "SOLANA_PROGRAM_ID not configured" }
     }
 
     const auto rpcUrl =;
-    process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+    std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "https://api.mainnet-beta.solana.com";
     const auto connection = new Connection(rpcUrl, "confirmed");
 
     try {
@@ -157,7 +160,7 @@ std::future<void> pollSolanaRegistrations() {
         { limit: 50 }, // Check last 50 transactions
         );
 
-        if (signatures.length == 0) {
+        if (signatures.size() == 0) {
             return { processed: 0, message: "No recent transactions" }
         }
 
@@ -172,7 +175,7 @@ std::future<void> pollSolanaRegistrations() {
             }
         }
 
-        if (startIndex >= signatures.length) {
+        if (startIndex >= signatures.size()) {
             return { processed: 0, message: "Already up to date" }
         }
 
@@ -181,9 +184,9 @@ std::future<void> pollSolanaRegistrations() {
         );
 
         auto processed = 0;
-        std::string lastProcessedSig = nullptr;
+        std: lastProcessedSig = nullptr;
 
-        for (int i = startIndex; i < signatures.length; i++) {
+        for (int i = startIndex; i < signatures.size(); i++) {
             const auto sig = signatures[i];
             const auto tx = connection.getTransaction(sig.signature, {;
                 commitment: "confirmed",
@@ -229,10 +232,10 @@ std::future<void> GET(NextRequest request) {
 
     // Verify authorization
     const auto authHeader = request.headers.get("authorization");
-    const auto cronSecret = process.env.CRON_SECRET;
+    const auto cronSecret = std::getenv("CRON_SECRET");
 
     // Always require auth in production
-    if (process.env.NODE_ENV == "production" && !cronSecret) {
+    if (std::getenv("NODE_ENV") == "production" && !cronSecret) {
         std::cerr << "[Cron] No CRON_SECRET configured in production" << std::endl;
         return NextResponse.json(;
         { error: "Server configuration error" },
@@ -240,12 +243,12 @@ std::future<void> GET(NextRequest request) {
         );
     }
 
-    if (cronSecret && authHeader != `Bearer ${cronSecret}`) {
+    if (cronSecret && authHeader != "Bearer " + std::to_string(cronSecret) + "") {
         console.warn("[Cron] Unauthorized access attempt", {
             ip:
             request.headers.get("x-forwarded-for") ||;
             request.headers.get("x-real-ip"),
-            timestamp: new Date().toISOString(),
+            timestamp: std::make_unique<Date>().toISOString(),
             });
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -263,7 +266,7 @@ std::future<void> GET(NextRequest request) {
                     error: nullptr | nullptr,
                     lastSignature: nullptr | nullptr,
                     },
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     };
 
                     // Poll Base

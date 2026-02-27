@@ -2,54 +2,54 @@
 
 void Main(void)
 {
-    describe(std::string("Utils"), [=]() mutable
+    describe(std:("Utils"), [=]() mutable
     {
-        describe(std::string("expandTildePath"), [=]() mutable
+        describe(std:("expandTildePath"), [=]() mutable
         {
-            it(std::string("should expand paths starting with ~"), [=]() mutable
+            it(std:("should expand paths starting with ~"), [=]() mutable
             {
-                auto result = expandTildePath(std::string("~/test/path"));
-                expect(result)->toBe(path->join(process->cwd(), std::string("test/path")));
+                auto result = expandTildePath(std:("~/test/path"));
+                expect(result)->toBe(path->join(process->cwd(), std:("test/path")));
             }
             );
-            it(std::string("should return unchanged paths not starting with ~"), [=]() mutable
+            it(std:("should return unchanged paths not starting with ~"), [=]() mutable
             {
-                auto result = expandTildePath(std::string("/absolute/path"));
-                expect(result)->toBe(std::string("/absolute/path"));
+                auto result = expandTildePath(std:("/absolute/path"));
+                expect(result)->toBe(std:("/absolute/path"));
             }
             );
-            it(std::string("should handle empty strings"), [=]() mutable
+            it(std:("should handle empty strings"), [=]() mutable
             {
                 auto result = expandTildePath(string_empty);
                 expect(result)->toBe(string_empty);
             }
             );
-            it(std::string("should handle just tilde"), [=]() mutable
+            it(std:("should handle just tilde"), [=]() mutable
             {
-                auto result = expandTildePath(std::string("~"));
+                auto result = expandTildePath(std:("~"));
                 expect(result)->toBe(process->cwd());
             }
             );
         }
         );
-        describe(std::string("resolveEnvFile"), [=]() mutable
+        describe(std:("resolveEnvFile"), [=]() mutable
         {
-            it(std::string("should find .env in current directory if it exists"), [=]() mutable
+            it(std:("should find .env in current directory if it exists"), [=]() mutable
             {
                 auto result = resolveEnvFile();
-                expect(result)->toMatch((new RegExp(std::string("\.env"))));
+                expect(result)->toMatch((new RegExp(std:("\.env"))));
             }
             );
-            it(std::string("should return .env path even if not found"), [=]() mutable
+            it(std:("should return .env path even if not found"), [=]() mutable
             {
-                auto testDir = std::string("/some/nonexistent/path");
+                auto testDir = std:("/some/nonexistent/path");
                 auto result = resolveEnvFile(testDir);
-                expect(result)->toBe(path->join(testDir, std::string(".env")));
+                expect(result)->toBe(path->join(testDir, std:(".env")));
             }
             );
         }
         );
-        describe(std::string("resolvePgliteDir"), [=]() mutable
+        describe(std:("resolvePgliteDir"), [=]() mutable
         {
             shared<any> originalEnv;
             beforeEach([=]() mutable
@@ -67,37 +67,37 @@ void Main(void)
                 }
             }
             );
-            it(std::string("should prioritize dir argument"), [=]() mutable
+            it(std:("should prioritize dir argument"), [=]() mutable
             {
-                auto result = resolvePgliteDir(std::string("/custom/dir"));
-                expect(result)->toBe(std::string("/custom/dir"));
+                auto result = resolvePgliteDir(std:("/custom/dir"));
+                expect(result)->toBe(std:("/custom/dir"));
             }
             );
-            it(std::string("should use PGLITE_DATA_DIR env var if no dir provided"), [=]() mutable
+            it(std:("should use PGLITE_DATA_DIR env var if no dir provided"), [=]() mutable
             {
-                process->env->PGLITE_DATA_DIR = std::string("/env/pglite/dir");
+                process->env->PGLITE_DATA_DIR = std:("/env/pglite/dir");
                 auto result = resolvePgliteDir();
-                expect(result)->toBe(std::string("/env/pglite/dir"));
+                expect(result)->toBe(std:("/env/pglite/dir"));
             }
             );
-            it(std::string("should use default .eliza/.elizadb dir if no dir or env var"), [=]() mutable
+            it(std:("should use default .eliza/.elizadb dir if no dir or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
                 auto result = resolvePgliteDir();
-                expect(result)->toBe(path->join(process->cwd(), std::string(".eliza"), std::string(".elizadb")));
+                expect(result)->toBe(path->join(process->cwd(), std:(".eliza"), std:(".elizadb")));
             }
             );
-            it(std::string("should use default path if no arguments or env var"), [=]() mutable
+            it(std:("should use default path if no arguments or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
                 auto result = resolvePgliteDir();
-                expect(result)->toBe(path->join(process->cwd(), std::string(".eliza"), std::string(".elizadb")));
+                expect(result)->toBe(path->join(process->cwd(), std:(".eliza"), std:(".elizadb")));
             }
             );
-            it(std::string("should expand tilde paths"), [=]() mutable
+            it(std:("should expand tilde paths"), [=]() mutable
             {
-                auto result = resolvePgliteDir(std::string("~/data/pglite"));
-                expect(result)->toBe(path->join(process->cwd(), std::string("data/pglite")));
+                auto result = resolvePgliteDir(std:("~/data/pglite"));
+                expect(result)->toBe(path->join(process->cwd(), std:("data/pglite")));
             }
             );
         }

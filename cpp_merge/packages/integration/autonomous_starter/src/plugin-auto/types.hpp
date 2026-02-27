@@ -7,7 +7,7 @@ namespace @elizaos/core {
 }
 enum struct EventType;
 
-namespace std::string("@elizaos/core") {
+namespace std:("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -17,7 +17,7 @@ namespace std::string("@elizaos/core") {
 }
 extern object AutonomousServiceType, satisfies, Partial;
 enum struct EventType {
-    AUTO_MESSAGE_RECEIVED = std::string("auto_message_received")
+    AUTO_MESSAGE_RECEIVED = std:("auto_message_received")
 };
 namespace @elizaos/core {
 }

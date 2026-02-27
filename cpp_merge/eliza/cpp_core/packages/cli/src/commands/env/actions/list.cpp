@@ -1,4 +1,6 @@
 #include "list.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,20 +17,20 @@ std::future<void> listEnvVars() {
     std::cout << "  Architecture: " + std::to_string(colors.cyan(envInfo.os.arch)) << std::endl;
     std::cout << "  CLI Version: " + std::to_string(colors.cyan(envInfo.cli.version)) << std::endl;
     console.info(
-    "  Package Manager: " + std::to_string(colors.cyan(envInfo.packageManager.name)) + std::to_string(envInfo.packageManager.version ? ` v${envInfo.packageManager.version}` : "")
+    "  Package Manager: " + std::to_string(colors.cyan(envInfo.packageManager.name)) + std::to_string(envInfo.packageManager.version ? " v" + std::to_string(envInfo.packageManager.version) + "" : "")
     );
 
     // Display local environment section
     std::cout << colors.bold("\nLocal Environment Variables:") << std::endl;
     const auto localEnvFilePath = getLocalEnvPath();
-    std::cout << "Path: " + std::to_string(localEnvFilePath || path.join(process.cwd(), ".env")) << std::endl;
+    std::cout << "Path: " + std::to_string(localEnvFilePath || path.join(std::filesystem::current_path().string(), ".env")) << std::endl;
 
     if (!localEnvFilePath || !existsSync(localEnvFilePath)) {
         // No local .env file exists, provide guidance to the user
         std::cout << colors.yellow("  No local .env file found") << std::endl;
 
         // Check if .env.example exists and suggest copying it as a starting point
-        const auto exampleEnvPath = path.join(process.cwd(), ".env.example");
+        const auto exampleEnvPath = path.join(std::filesystem::current_path().string(), ".env.example");
         if (existsSync(exampleEnvPath)) {
             std::cout << colors.red("  [X] Missing .env file. Create one with:") << std::endl;
             std::cout << "     " + std::to_string(colors.bold(colors.green("cp .env.example .env"))) << std::endl;
@@ -42,7 +44,7 @@ std::future<void> listEnvVars() {
             } else {
                 // .env file exists, parse and display its contents
                 const auto localEnvVars = parseEnvFile(localEnvFilePath);
-                if (Object.keys(localEnvVars).length == 0) {
+                if (Object.keys(localEnvVars).size() == 0) {
                     std::cout << "  No local environment variables set" << std::endl;
                     } else {
                         for (const int [key, value] of Object.entries(localEnvVars)) {
@@ -71,7 +73,7 @@ std::future<void> handleListCommand(ListEnvOptions options) {
         std::cout << "  Architecture: " + std::to_string(colors.cyan(envInfo.os.arch)) << std::endl;
         std::cout << "  CLI Version: " + std::to_string(colors.cyan(envInfo.cli.version)) << std::endl;
         console.info(
-        "  Package Manager: " + std::to_string(colors.cyan(envInfo.packageManager.name)) + std::to_string(envInfo.packageManager.version ? ` v${envInfo.packageManager.version}` : "")
+        "  Package Manager: " + std::to_string(colors.cyan(envInfo.packageManager.name)) + std::to_string(envInfo.packageManager.version ? " v" + std::to_string(envInfo.packageManager.version) + "" : "")
         );
         } else if (options.local) {
             // Show ONLY local environment variables, no system information
@@ -84,7 +86,7 @@ std::future<void> handleListCommand(ListEnvOptions options) {
             }
 
             const auto localEnvVars = parseEnvFile(localEnvPath);
-            if (Object.keys(localEnvVars).length == 0) {
+            if (Object.keys(localEnvVars).size() == 0) {
                 std::cout << "  No local environment variables set" << std::endl;
                 } else {
                     for (const int [key, value] of Object.entries(localEnvVars)) {

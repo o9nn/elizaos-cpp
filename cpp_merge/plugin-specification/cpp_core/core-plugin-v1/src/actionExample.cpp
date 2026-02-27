@@ -13,13 +13,12 @@ Content convertContentToV1(ContentV2 content) {
 
     return {
         text: content.text || "",
-        // V2 uses 'actions' array, V1 might use 'action' std::string
+        // V2 uses 'actions' array, V1 might use 'action' std:
         action:
         Array.isArray(content.actions) && content.actions.size() > 0 ? content.actions[0] : std::nullopt,
         // Copy all other properties
         ...Object.entries(content);
-        .filter(([key]) => !["text", "actions", "action"].includes(key));
-        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
+        .filter[&](([key]) { return !["text", "actions", "action"].count(key) > 0); }.reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
         }
 
 }
@@ -33,12 +32,11 @@ ContentV2 convertContentToV2(Content content) {
 
     return {
         text: content.text || "",
-        // V1 uses 'action' std::string, V2 uses 'actions' array
+        // V1 uses 'action' std:, V2 uses 'actions' array
         actions: content.action ? [content.action] : [],
         // Copy all other properties
         ...Object.entries(content);
-        .filter(([key]) => !["text", "action"].includes(key));
-        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
+        .filter[&](([key]) { return !["text", "action"].count(key) > 0); }.reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
         }
 
 }

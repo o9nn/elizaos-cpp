@@ -58,7 +58,7 @@ void CombinedEnvHooks::onCopyRepoStarted(P0 repo)
         }
         catch (const any& error)
         {
-            console->error(std::string("Hook error in onCopyRepoStarted:"), error);
+            console->error(std:("Hook error in onCopyRepoStarted:"), error);
         }
     }
 }

@@ -1,10 +1,11 @@
 #include "run-single.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement problemStatement, AgentConfig agent) {
+std: getDefaultOutputDir(const std:& outputDir, ProblemStatement problemStatement, AgentConfig agent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (outputDir != 'DEFAULT') {
@@ -12,7 +13,7 @@ std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement p
     }
 
     // Generate default based on problem statement and agent
-    const auto timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const auto timestamp = std::make_unique<Date>().toISOString().replace(/[:.]/g, "-");
     const auto psId = problemStatement.id || "unknown";
     const auto agentName = agent.type || "agent";
 

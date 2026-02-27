@@ -23,7 +23,7 @@ namespace elizaos {
 /**
  * Displays system information and lists local environment variables, masking sensitive values.
  *
- * Prints details about the current platform, architecture, CLI version, and package manager. Shows environment variables from the project's `.env` file, masking sensitive values, or provides guidance if the file is missing. Includes a link to the web UI for editing variables.
+ * Prints details about the current platform, architecture, CLI version, and package manager. Shows environment variables from the project's ".env" file, masking sensitive values, or provides guidance if the file is missing. Includes a link to the web UI for editing variables.
  */
 std::future<void> listEnvVars();
 

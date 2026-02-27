@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 struct CopyButtonProps {
-    std::string text;
+    std: text;
 };
 
 

@@ -17,10 +17,10 @@ void BondingCurveBar() {
     progress = Math.max(progress, 0);
 
     // Set up the animation effect when progress changes
-    useEffect(() => {
+    useEffect[&](() {
         const auto targetValue = Number(normalizedProgress(progress));
 
-        // Cancel std::any ongoing animation
+        // Cancel std: ongoing animation
         if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);
         }
@@ -34,7 +34,7 @@ void BondingCurveBar() {
         const auto duration = 350; // Slightly faster (350ms vs 1500ms for progress bar);
 
         // Simple, fast animation std::function
-        const auto animateFrame = [&](currentTime: number) {;
+        const auto animateFrame = [&](currentTime) {;
             const auto elapsed = currentTime - startTime;
             const auto progress = Math.min(elapsed / duration, 1);
 

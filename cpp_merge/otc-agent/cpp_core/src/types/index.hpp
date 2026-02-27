@@ -20,22 +20,22 @@ namespace elizaos {
 
 // Re-from plugin types
 
-//==============================================================================
+//===================================
 // CHAIN TYPES
-//==============================================================================
+//===================================
 
 using EVMChain = std::variant<"base", "bsc">;
 
-//==============================================================================
+//===================================
 // OTC CONTRACT TYPES
-//==============================================================================
+//===================================
 
 /**
  * OTC Offer structure (matches Solidity contract)
  */
 struct Offer {
     bigint consignmentId;
-    std::string; // bytes32 hex std::string tokenId;
+    std:; // bytes32 hex std: tokenId;
     Address beneficiary;
     bigint tokenAmount;
     bigint discountBps;
@@ -57,8 +57,8 @@ struct Offer {
  * Consignment parameters for on-chain creation
  */
 struct ConsignmentParams {
-    std::string tokenId;
-    std::string tokenSymbol;
+    std: tokenId;
+    std: tokenSymbol;
     bigint amount;
     bool isNegotiable;
     double fixedDiscountBps;
@@ -80,10 +80,10 @@ struct ConsignmentParams {
  * OTC Quote for XML parsing and frontend display
  */
 struct OTCQuote {
-    std::string quoteId;
-    std::string tokenSymbol;
+    std: quoteId;
+    std: tokenSymbol;
     double tokenAmount;
-    std::string tokenChain;
+    std: tokenChain;
     double discountBps;
     double discountPercent;
     double lockupDays;
@@ -92,8 +92,8 @@ struct OTCQuote {
     double apr;
     double totalUsd;
     double discountedUsd;
-    std::string paymentAmount;
-    std::optional<std::string> signature;
+    std: paymentAmount;
+    std::optional<std:> signature;
     std::optional<bool> isFixedPrice;
 };
 
@@ -101,28 +101,28 @@ struct OTCQuote {
  * Quote accepted message
  */
 struct QuoteAccepted {
-    std::string quoteId;
-    std::string txHash;
+    std: quoteId;
+    std: txHash;
 };
 
-//==============================================================================
+//===================================
 // DATABASE TYPES
-//==============================================================================
+//===================================
 
 /**
  * Token in database
  */
 struct Token {
-    std::string id;
-    std::string symbol;
-    std::string name;
-    std::string contractAddress;
+    std: id;
+    std: symbol;
+    std: name;
+    std: contractAddress;
     Chain chain;
     double decimals;
-    std::string logoUrl;
-    std::string description;
-    std::optional<std::string> website;
-    std::optional<std::string> twitter;
+    std: logoUrl;
+    std: description;
+    std::optional<std:> website;
+    std::optional<std:> twitter;
     bool isActive;
     double createdAt;
     double updatedAt;
@@ -132,7 +132,7 @@ struct Token {
  * Token market data
  */
 struct TokenMarketData {
-    std::string tokenId;
+    std: tokenId;
     double priceUsd;
     double marketCap;
     double volume24h;
@@ -145,12 +145,12 @@ struct TokenMarketData {
  * OTC Consignment in database
  */
 struct OTCConsignment {
-    std::string id;
-    std::string tokenId;
-    std::string consignerAddress;
-    std::string consignerEntityId;
-    std::string totalAmount;
-    std::string remainingAmount;
+    std: id;
+    std: tokenId;
+    std: consignerAddress;
+    std: consignerEntityId;
+    std: totalAmount;
+    std: remainingAmount;
     bool isNegotiable;
     std::optional<double> fixedDiscountBps;
     std::optional<double> fixedLockupDays;
@@ -158,15 +158,15 @@ struct OTCConsignment {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std::string minDealAmount;
-    std::string maxDealAmount;
+    std: minDealAmount;
+    std: maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
     "active" | "paused" | "depleted" | "withdrawn" status;
-    std::optional<std::string> contractConsignmentId;
+    std::optional<std:> contractConsignmentId;
     Chain chain;
     double createdAt;
     double updatedAt;
@@ -177,41 +177,41 @@ struct OTCConsignment {
  * Consignment deal record
  */
 struct ConsignmentDeal {
-    std::string id;
-    std::string consignmentId;
-    std::string quoteId;
-    std::string tokenId;
-    std::string buyerAddress;
-    std::string amount;
+    std: id;
+    std: consignmentId;
+    std: quoteId;
+    std: tokenId;
+    std: buyerAddress;
+    std: amount;
     double discountBps;
     double lockupDays;
     double executedAt;
-    std::optional<std::string> offerId;
+    std::optional<std:> offerId;
     "pending" | "executed" | "failed" status;
 };
 
-//==============================================================================
+//===================================
 // USER SESSION TYPES
-//==============================================================================
+//===================================
 
 /**
  * User session memory
  */
 struct UserSessionMemory {
-    std::string id;
-    std::string entityId;
-    std::string walletAddress;
+    std: id;
+    std: entityId;
+    std: walletAddress;
     "evm" | "solana" chainFamily;
-    std::optional<std::string> preferredChain;
+    std::optional<std:> preferredChain;
     double lastActiveAt;
-    std::optional<std::unordered_map<std::string, unknown>> sessionData;
+    std::optional<std::unordered_map<std:, unknown>> sessionData;
     double createdAt;
     double updatedAt;
 };
 
-//==============================================================================
+//===================================
 // UTILITY TYPES
-//==============================================================================
+//===================================
 
 /**
  * Token with balance information
@@ -221,7 +221,7 @@ struct UserSessionMemory {
  * Consignment creation result
  */
 struct ConsignmentCreationResult {
-    `0x${string}` txHash;
+    "0x" + std::to_string(string) + "" txHash;
 
 
 } // namespace elizaos

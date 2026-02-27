@@ -2,7 +2,7 @@
 
 string preprocessFilePathContent(string content)
 {
-    return path->normalize(content->trim())->replace((new RegExp(std::string("\\"))), std::string("/"));
+    return path->normalize(content->trim())->replace((new RegExp(std:("\\"))), std:("/"));
 };
 
 
@@ -14,7 +14,7 @@ string preprocessTextContent(string content)
 
 string preprocessCodeContent(string content)
 {
-    return content->trim()->replace((new RegExp(std::string("\r\n"))), std::string("\
+    return content->trim()->replace((new RegExp(std:("\r\n"))), std:("\
 "));
 };
 
@@ -53,7 +53,7 @@ MatchContent preprocessContent(MatchContent content)
     }
     return utils::assign(object{
         , 
-        object::pair{std::string("content"), processedString}
+        object::pair{std:("content"), processedString}
     }, content);
 };
 

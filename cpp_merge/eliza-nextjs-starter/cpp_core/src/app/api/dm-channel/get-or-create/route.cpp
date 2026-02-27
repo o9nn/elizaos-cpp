@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -35,7 +36,7 @@ std::future<void> POST(NextRequest request) {
                             const auto allChannels = channelsResponse.json();
 
                             // Look for existing channel with this EXACT session ID only
-                            const auto existingChannel = allChannels.find((channel: std::any) => {;
+                            const auto existingChannel = allChannels.find[&]((channel: std:) {;
                                 const auto metadata = channel.metadata || {};
                                 return channel.id == sessionId || metadata.sessionId == sessionId;
                                 });
@@ -63,7 +64,7 @@ std::future<void> POST(NextRequest request) {
 
                             // Create new DM channel
                             const auto finalChannelId = "sessionId || " + "dm-" + userId + "-" + agentId + "-" + std::to_string(Date.now());
-                            const auto channelName = "Chat - " + std::to_string(new Date().toLocaleString());
+                            const auto channelName = "Chat - " + std::to_string(std::make_unique<Date>().toLocaleString());
 
                             // Create DM channel metadata following official client pattern
                             const DMChannelMetadata metadata = {;
@@ -71,7 +72,7 @@ std::future<void> POST(NextRequest request) {
                                 user1: userId,
                                 user2: agentId,
                                 forAgent: agentId,
-                                createdAt: new Date().toISOString(),
+                                createdAt: std::make_unique<Date>().toISOString(),
                                 };
 
                                 if (sessionId) {
@@ -90,7 +91,7 @@ std::future<void> POST(NextRequest request) {
                                     headers: {
                                         "Content-Type": "application/json",
                                         },
-                                        body: JSON.stringify({
+                                        body: nlohmann::json().dump({
                                             id: finalChannelId,
                                             name: channelName,
                                             server_id: "00000000-0000-0000-0000-000000000000", // Required server ID
@@ -121,7 +122,7 @@ std::future<void> POST(NextRequest request) {
                                                     headers: {
                                                         "Content-Type": "application/json",
                                                         },
-                                                        body: JSON.stringify({
+                                                        body: nlohmann::json().dump({
                                                             agentId: agentId,
                                                             }),
                                                             },

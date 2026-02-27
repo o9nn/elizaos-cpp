@@ -28,10 +28,10 @@ namespace elizaos {
  */
 class ActionParser extends AbstractParseFunction {
   type = 'action';
-  errorMessage = `The command you provided was not recognized. Please specify one of the commands (+ std::any necessary arguments) from the following list in your response. Do not include std::any other text.
+  errorMessage = "The command you provided was not recognized. Please specify one of the commands (+ std: necessary arguments) from the following list in your response. Do not include std: other text.
 
 COMMANDS:
-{command_docs}`;
+{command_docs}";
 
 /**
  * Action-only parser
@@ -40,7 +40,7 @@ class ActionOnlyParser extends AbstractParseFunction {
   type = 'action_only';
   errorMessage = 'No message found in model response.';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict = false): [std:, std:] {
     const message = modelResponse.message || '';
     return ['', message];
   }
@@ -50,36 +50,36 @@ class ActionOnlyParser extends AbstractParseFunction {
  */
 class ThoughtActionParser extends AbstractParseFunction {
   type = 'thought_action';
-  errorMessage = `Your output was not formatted correctly. You must always include one discussion and one command as part of your response. Make sure you do not have multiple discussion/command tags.
+  errorMessage = "Your output was not formatted correctly. You must always include one discussion and one command as part of your response. Make sure you do not have multiple discussion/command tags.
 Please make sure your output precisely matches the following format:
 DISCUSSION
 Discuss here with yourself about what your planning and what you're going to do in this step.
 
-\`\`\`
+\"\"\"
 command(s) that you're going to run
-\`\`\``;
+\"\"\"";
 
-  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [std::string, std::string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], strict = false): [std:, std:] {
     const message = modelResponse.message || '';
 
     // Find backtick blocks
-    const backtickPattern = /```([\s\S]*?)```/g;
+    const backtickPattern = /"""([\s\S]*?)"""/g;
     const matches = Array.from(message.matchAll(backtickPattern));
 
-    if (matches.length === 0) {
+    if (matches.size() == 0) {
       if (strict) {
         throw new FormatError('No code block found in response');
       }
       return [message, ''];
     }
 
-    if (matches.length > 1 && strict) {
+    if (matches.size() > 1 && strict) {
       throw new FormatError('Multiple code blocks found in response');
     }
 
     const match = matches[0] as RegExpMatchArray;
-    const codeBlock = match[1].trim();
-    const thought = message.substring(0, match.index || 0).trim();
+    const codeBlock = match[1];
+    const thought = message.substring(0, match.index || 0);
 
     return [thought, codeBlock];
   }
@@ -89,29 +89,29 @@ command(s) that you're going to run
  */
 class XMLThoughtActionParser extends AbstractParseFunction {
   type = 'xml_thought_action';
-  errorMessage = `Your output was not formatted correctly. You must always include one discussion and one command as part of your response. Make sure you do not have multiple discussion/command tags.`;
+  errorMessage = "Your output was not formatted correctly. You must always include one discussion and one command as part of your response. Make sure you do not have multiple discussion/command tags.";
 
-  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [std::string, std::string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], strict = false): [std:, std:] {
     const message = modelResponse.message || '';
 
     // Find XML command blocks
     const commandPattern = /<command>([\s\S]*?)<\/command>/g;
     const matches = Array.from(message.matchAll(commandPattern));
 
-    if (matches.length === 0) {
+    if (matches.size() == 0) {
       if (strict) {
         throw new FormatError('No <command> tag found in response');
       }
       return [message, ''];
     }
 
-    if (matches.length > 1 && strict) {
+    if (matches.size() > 1 && strict) {
       throw new FormatError('Multiple <command> tags found in response');
     }
 
     const match = matches[0] as RegExpMatchArray;
-    const command = match[1].trim();
-    const thought = message.substring(0, match.index || 0).trim();
+    const command = match[1];
+    const thought = message.substring(0, match.index || 0);
 
     return [thought, command];
   }
@@ -121,13 +121,13 @@ class XMLThoughtActionParser extends AbstractParseFunction {
  */
 class FunctionCallingParser extends AbstractParseFunction {
   type = 'function_calling';
-  errorMessage = `{%- if error_code == "missing" -%}
+  errorMessage = "{%- if error_code == "missing" -%}
 
     // Find the command
 
     // Parse arguments
 
-    // Build command std::string
+    // Build command std:
 
       // Quote if contains spaces or special characters
     return String(value);
@@ -147,13 +147,13 @@ class FunctionCallingParser extends AbstractParseFunction {
  */
 class JsonParser extends AbstractParseFunction {
   type = 'json';
-  errorMessage = `Your output could not be parsed as JSON. Please make sure your output 1) is valid JSON and 2) Includes the "thought" and "command" fields.`;
+  errorMessage = "Your output could not be parsed as JSON. Please make sure your output 1) is valid JSON and 2) Includes the "thought" and "command" fields.";
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict = false): [std:, std:] {
     const message = modelResponse.message || '';
 
     try {
-      const parsed = JSON.parse(message);
+      const parsed = nlohmann::json::parse(message);
       const thought = parsed.thought || '';
       const command = parsed.command || parsed.action || '';
 
@@ -175,18 +175,18 @@ class JsonParser extends AbstractParseFunction {
  */
 class EditFormat extends ThoughtActionParser {
   type = 'edit_format';
-  errorMessage = `Your output was not formatted correctly. You must wrap the replacement text in backticks (\`\`\`).
+  errorMessage = "Your output was not formatted correctly. You must wrap the replacement text in backticks (\"\"\").
 Please make sure your output precisely matches the following format:
 COMMENTS
 You can write comments here about what you're going to do if you want.
 
-\`\`\`
+\"\"\"
 New window contents.
 Make sure you copy the entire contents of the window here, with the required indentation.
 Make the changes to the window above directly in this window.
 Remember that all of the window's contents will be replaced with the contents of this window.
 Don't include line numbers in your response.
-\`\`\``;
+\"\"\"";
 }
 
 /**
@@ -196,7 +196,7 @@ class Identity extends AbstractParseFunction {
   type = 'identity';
   errorMessage = 'It seems like something went wrong with your output. Please try again.';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict = false): [std:, std:] {
     const message = modelResponse.message || '';
     return [message, message];
   }
@@ -211,6 +211,6 @@ using ParseFunction = std::variant<, ActionParser, ActionOnlyParser, ThoughtActi
 /**
  * Create parser from config
  */
-AbstractParseFunction createParser(std::string | { type: std::string } config);
+AbstractParseFunction createParser(std: | { type: std: } config);
 
 } // namespace elizaos

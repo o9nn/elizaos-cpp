@@ -4,9 +4,9 @@ object calculateLevelStats(double xp)
 {
     if (xp < 0) {
         return object{
-            object::pair{std::string("level"), 1}, 
-            object::pair{std::string("xpToNextLevel"), Math->floor((1 / 4) * xpSum(1))}, 
-            object::pair{std::string("progress"), 0}
+            object::pair{std:("level"), 1}, 
+            object::pair{std:("xpToNextLevel"), Math->floor((1 / 4) * xpSum(1))}, 
+            object::pair{std:("progress"), 0}
         };
     }
     auto level = 1;
@@ -19,17 +19,17 @@ object calculateLevelStats(double xp)
             auto currentLevelXP = Math->floor((1 / 4) * xpSum(level - 1));
             auto progress = (xp - currentLevelXP) / (nextLevelXP - currentLevelXP);
             return object{
-                object::pair{std::string("level"), std::string("level")}, 
-                object::pair{std::string("xpToNextLevel"), std::string("xpToNextLevel")}, 
-                object::pair{std::string("progress"), std::string("progress")}
+                object::pair{std:("level"), std:("level")}, 
+                object::pair{std:("xpToNextLevel"), std:("xpToNextLevel")}, 
+                object::pair{std:("progress"), std:("progress")}
             };
         }
         level++;
     }
     return object{
-        object::pair{std::string("level"), maxLevel}, 
-        object::pair{std::string("xpToNextLevel"), 0}, 
-        object::pair{std::string("progress"), 0}
+        object::pair{std:("level"), maxLevel}, 
+        object::pair{std:("xpToNextLevel"), 0}, 
+        object::pair{std:("progress"), 0}
     };
 };
 

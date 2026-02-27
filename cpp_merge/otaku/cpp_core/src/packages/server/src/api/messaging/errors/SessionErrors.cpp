@@ -1,4 +1,5 @@
 #include "SessionErrors.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void createErrorHandler() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return [&](err: Error, _req: std::any, res: std::any, next: std::any) {;
+    return [&](err: Error, _req: std:, res: std:, next: std:) {;
         // If response was already sent, delegate to default Express error handler
         if (res.headersSent) {
             return next(err);
@@ -24,7 +25,7 @@ void createErrorHandler() {
                 error: {
                     code: "VALIDATION_ERROR",
                     message: err.message,
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     },
                     });
                 }
@@ -37,8 +38,8 @@ void createErrorHandler() {
                     error: {
                         code: "INTERNAL_SERVER_ERROR",
                         message: "An unexpected error occurred",
-                        timestamp: new Date().toISOString(),
-                        ...(process.env.NODE_ENV == "development" && {
+                        timestamp: std::make_unique<Date>().toISOString(),
+                        ...(std::getenv("NODE_ENV") == "development" && {
                             details: err.message,
                             stack: err.stack,
                             }),
@@ -48,14 +49,14 @@ void createErrorHandler() {
 
 }
 
-error is SessionError isSessionError(const std::any& error) {
+error is SessionError isSessionError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof SessionError check */;
 
 }
 
-error is ValidationError isValidationError(const std::any& error) {
+error is ValidationError isValidationError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof ValidationError check */;

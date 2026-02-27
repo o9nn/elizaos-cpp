@@ -1,10 +1,14 @@
 #include "run-bun.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd) {
+std::future<void> runBunCommand(const std::vector<std::string>& args, const std:& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -12,11 +16,11 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
 
         // In CI environments, optimize bun install with appropriate flags
         const auto isInstallCommand = args[0] == "install";
-        const auto isCI = process.env.CI || process.env.ELIZA_TEST_MODE == "true";
+        const auto isCI = std::getenv("CI") || std::getenv("ELIZA_TEST_MODE") == "true";
 
         if (isCI && isInstallCommand) {
             // Use flags that actually exist in Bun to optimize CI installations
-            if (!finalArgs.includes('--frozen-lockfile')) {
+            if (!finalArgs.count('--frozen-lockfile') > 0) {
                 finalArgs.push_back("--frozen-lockfile"); // Prevent lockfile changes in CI;
             }
             std::cout << "✅ Using CI-optimized flags for faster installation..." << std::endl;
@@ -24,9 +28,9 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
 
         try {
             execa("bun", finalArgs, { cwd, stdio: "inherit" });
-            } catch (error: std::any) {
-                if (error.code == 'ENOENT' || error.message.includes('bun: command not found')) {
-                    throw std::runtime_error(`Bun command not found. ${displayBunInstallationTipCompact()}`);
+            } catch (error: std:) {
+                if (error.code == 'ENOENT' || error.message.count('bun: command not found') > 0) {
+                    throw std::runtime_error("Bun command not found. " + std::to_string(displayBunInstallationTipCompact()) + "");
                 }
 
                 // If CI-optimized install fails, try again with basic args

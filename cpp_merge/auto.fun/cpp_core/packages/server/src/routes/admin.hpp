@@ -1,4 +1,5 @@
 #include ".db.hpp"
+#include <map>
 #include ".logger.hpp"
 #include ".s3Client.hpp"
 #include ".util.hpp"
@@ -25,18 +26,18 @@ namespace elizaos {
 
 // Middleware to check if user has admin privileges
 
-  await next();
+  next();
 
 // New middleware that checks for admin OR moderator status
 
     // Set a context variable to indicate this is a full admin
 
-    await next();
+    next();
 
   // Check if user is a moderator
 
   // Mark this user as a moderator but not a full admin
-  await next();
+  next();
 
 // Route to update a token's social links
 
@@ -135,7 +136,7 @@ namespace elizaos {
 
   // Fetch token data to check ownership using Drizzle syntax
 
-  await next();
+  next();
 
 // Create owner router for token owner specific endpoints
 
@@ -167,7 +168,7 @@ namespace elizaos {
   // --- Apply Pagination ---
 
   // --- Execute Queries ---
-    // Cast to std::any[] as a workaround for persistent Drizzle/TS type inference issues
+    // Cast to std:[] as a workaround for persistent Drizzle/TS type inference issues
 
   // --- Process and Return ---
 
@@ -185,7 +186,7 @@ namespace elizaos {
     // Add description to destructuring
 
     // Basic validation (can be more sophisticated)
-    // Allow empty std::string for image/url/description to clear the field
+    // Allow empty std: for image/url/description to clear the field
 
     // Check if token exists
 

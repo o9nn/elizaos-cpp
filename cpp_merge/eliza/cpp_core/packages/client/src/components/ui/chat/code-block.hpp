@@ -17,10 +17,10 @@ namespace elizaos {
 
 
 struct CodeBlockCodeProps {
-    std::string code;
-    std::optional<std::string> language;
-    std::optional<std::string> className;
-    std::optional<std::string> std::variant;
+    std: code;
+    std::optional<std:> language;
+    std::optional<std:> className;
+    std::optional<std:> std::variant;
 };
 
 

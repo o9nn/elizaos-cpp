@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <future>
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -17,29 +18,29 @@ namespace elizaos {
 
 // Registry installation types and functions
 struct RegistryEntry {
-    std::string name;
-    std::optional<std::string> description;
-    std::string repository;
+    std: name;
+    std::optional<std:> description;
+    std: repository;
     std::optional<{> npm;
-    std::string repo;
-    std::optional<std::string> v1;
+    std: repo;
+    std::optional<std:> v1;
     std::optional<{> git;
-    std::string repo;
+    std: repo;
     std::optional<{> v1;
-    std::optional<std::string> branch;
-    std::optional<std::string> version;
+    std::optional<std:> branch;
+    std::optional<std:> version;
 };
 
 struct DynamicPluginInfo {
-    std::string name;
-    std::string version;
-    std::string path;
+    std: name;
+    std: version;
+    std: path;
     Array<{ requiredEnvVars;
-    std::string name;
-    std::string description;
+    std: name;
+    std: description;
     bool sensitive;
     bool isSet;
-    std::optional<std::string> errorDetails;
+    std::optional<std:> errorDetails;
     Date installedAt;
     std::optional<Date> lastActivated;
 };
@@ -50,13 +51,13 @@ void resetRegistryCache();
 // Registry functions
 
 // Real plugin installation std::function using npm/git
-std::future<void> installPlugin(const std::string& pluginName, const std::string& targetDir, std::optional<std::string> version);
+std::future<void> installPlugin(const std:& pluginName, const std:& targetDir, std::optional<std:> version);
 
 // Install plugin from npm
-std::future<void> installFromNpm(const std::string& packageName, const std::string& version, const std::string& targetDir);
+std::future<void> installFromNpm(const std:& packageName, const std:& version, const std:& targetDir);
 
 // Install plugin from git repository
-std::future<void> installFromGit(const std::string& gitRepo, const std::string& version, const std::string& targetDir);
+std::future<void> installFromGit(const std:& gitRepo, const std:& version, const std:& targetDir);
 
 class PluginManagerService extends Service implements PluginRegistry {
   static override serviceType: ServiceTypeName =
@@ -64,16 +65,16 @@ class PluginManagerService extends Service implements PluginRegistry {
   override capabilityDescription =
     "Manages dynamic loading and unloading of plugins at runtime, including registry installation";
 
-  public plugins: Map<std::string, PluginState> = new Map();
+  public plugins: Map<std:, PluginState> = std::make_unique<Map>();
   private pluginManagerConfig: PluginManagerConfig;
   private originalPlugins: Plugin[] = [];
-  private originalActions: Set<string> = new Set();
-  private originalProviders: Set<string> = new Set();
-  private originalEvaluators: Set<string> = new Set();
-  private originalServices: Set<string> = new Set();
+  private originalActions: Set<string> = std::make_unique<Set>();
+  private originalProviders: Set<string> = std::make_unique<Set>();
+  private originalEvaluators: Set<string> = std::make_unique<Set>();
+  private originalServices: Set<string> = std::make_unique<Set>();
 
   // Add registry installation state management
-  private installedPlugins: Map<std::string, DynamicPluginInfo> = new Map();
+  private installedPlugins: Map<std:, DynamicPluginInfo> = std::make_unique<Map>();
 
   constructor(runtime: IAgentRuntime, config?: PluginManagerConfig) {
     super(runtime);
@@ -148,14 +149,14 @@ class PluginManagerService extends Service implements PluginRegistry {
 
     // Remove plugin from runtime plugins array
 
-    // Clean up std::any resources
+    // Clean up std: resources
 
   // Registry installation methods
 
       // Ensure plugin directory exists
 
       // Install using real installation std::function
-      await installPlugin(pluginName, pluginDir, version);
+      installPlugin(pluginName, pluginDir, version);
 
       // Parse plugin metadata
 

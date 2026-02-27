@@ -1,4 +1,9 @@
 #include "defillama.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -21,11 +26,11 @@ std::optional<YieldPool> shapeYieldPool(RawYieldPool raw) {
     }
 
     const auto rewardTokens = Array.isArray(raw.rewardTokens);
-    ? raw.rewardTokens.filter((token) => typeof token == "string");
+    ? raw.rewardTokens.filter[&]((token) { return typeof token == "string"); };
     : nullptr;
 
     const auto underlyingTokens = Array.isArray(raw.underlyingTokens);
-    ? raw.underlyingTokens.filter((token) => typeof token == "string");
+    ? raw.underlyingTokens.filter[&]((token) { return typeof token == "string"); };
     : nullptr;
 
     return {
@@ -54,7 +59,7 @@ std::optional<double> normalizeNullableNumber(const std::optional<double>& value
     if (typeof value == "number" && Number.isFinite(value)) {
         return value;
     }
-    if (typeof value == "string" && value.trim()) {
+    if (typeof value == "string" && value) {
         const auto parsed = Number(value);
         if (!Number.isNaN(parsed) && Number.isFinite(parsed)) {
             return parsed;
@@ -70,7 +75,7 @@ ProtocolSummary shapeProtocol(DefiLlamaProtocol p) {
     const std::vector<std::string> chains = Array.isArray(p.chains) ? Array.from(new Set(p.chains)) : [];
     const auto chainTvls = shapeChainTvlsRecord((p as { chainTvls?: ChainTvlsRawRecord }).chainTvls);
 
-    const auto toNumberOrNull = (value: number | std::string | nullptr | std::nullopt): number | nullptr =>;
+    const auto toNumberOrNull = (value | std: | nullptr | std::nullopt) | nullptr =>;
     typeof value == "number" && Number.isFinite(value) ? value : nullptr;
 
     const auto slugValue = typeof p.slug == "string" ? p.slug : nullptr;
@@ -96,23 +101,23 @@ ProtocolSummary shapeProtocol(DefiLlamaProtocol p) {
         geckoId: geckoValue,
         cmcId: cmcValue,
         twitter: twitterValue,
-        tvl: toNumberOrNull((p as { tvl?: number }).tvl),
-        tvlChange1h: toNumberOrNull((p as { change_1h?: number }).change_1h),
-        tvlChange1d: toNumberOrNull((p as { change_1d?: number }).change_1d),
-        tvlChange7d: toNumberOrNull((p as { change_7d?: number }).change_7d),
+        tvl: toNumberOrNull((p as { tvl? }).tvl),
+        tvlChange1h: toNumberOrNull((p as { change_1h? }).change_1h),
+        tvlChange1d: toNumberOrNull((p as { change_1d? }).change_1d),
+        tvlChange7d: toNumberOrNull((p as { change_7d? }).change_7d),
         chainTvls,
         };
 
 }
 
-std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord value) {
+std::unordered_map<std:, double> shapeChainTvlsRecord(ChainTvlsRawRecord value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
         return {}
     }
 
-    const std::unordered_map<std::string, double> shaped = {};
+    const std::unordered_map<std:, double> shaped = {};
     for (const int [chainName, rawValue] of Object.entries(value)) {
         if (typeof rawValue == "number" && Number.isFinite(rawValue)) {
             shaped[chainName] = rawValue;
@@ -129,7 +134,7 @@ std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord 
 
 }
 
-ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::string& fallbackSlug) {
+ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std:& fallbackSlug) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<ProtocolTvlPoint> totalSeries = Array.isArray(raw.tvl);
@@ -139,7 +144,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
         }));
         : [];
 
-        const std::unordered_map<std::string, std::vector<ProtocolTvlPoint>> chainSeries = {};
+        const std::unordered_map<std:, std::vector<ProtocolTvlPoint>> chainSeries = {};
         if (raw.chainTvls) {
             for (const int [chainName, chainData] of Object.entries(raw.chainTvls)) {
                 const auto series = Array.isArray(chainData.tvl);
@@ -149,7 +154,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
                     }));
                     : [];
 
-                    if (series.length > 0) {
+                    if (series.size() > 0) {
                         chainSeries[chainName] = series;
                     }
                 }
@@ -171,12 +176,12 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
 
 point is isRawProtocolHistoryPoint(RawProtocolHistoryPoint point) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    date: number; totalLiquidityUSD: number
+    date; totalLiquidityUSD
 }
 
 point is isRawChainTvlPoint(RawChainTvlPoint point) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    date: number; tvl: number
+    date; tvl
 }
 
 } // namespace elizaos

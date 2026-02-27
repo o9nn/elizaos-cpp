@@ -1,4 +1,5 @@
 #include "home.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -32,7 +33,7 @@ void Home() {
             setOverlayOpen(false);
             };
 
-            const auto handleNavigateToDm = std::async (agent: Agent) => {;
+            const auto handleNavigateToDm = std::async [&](agent: Agent) {;
                 if (!agent.id) return;
                 // Navigate directly to agent chat - DM channel will be created automatically with default server
                 "navigate(" + "/chat/" + agent.id;
@@ -42,13 +43,13 @@ void Home() {
                     navigate("/group/new");
                     };
 
-                    useEffect(() => {
+                    useEffect[&](() {
                         clientLogger.info("[Home] Component mounted/re-rendered. Key might have changed.");
                         // You might want to trigger data re-fetching here if it's not automatic
                         // e.g., queryClient.invalidateQueries(['agents']);
                         }, []); // Empty dependency array means this runs on mount and when key changes;
 
-                        return (;
+                        return [&](;
                         <>;
                         <div className="flex-1 p-3 w-full overflow-y-auto">;
                         <div className="flex flex-col gap-4 w-full md:max-w-4xl mx-auto">
@@ -56,8 +57,8 @@ void Home() {
                         <PageTitle title="Agents" />;
                         <Button;
                         variant="outline";
-                    onClick={() => navigate("/create")}
-                    className="create-agent-button";
+                    onClick={() { return navigate("/create")}
+                    className="create-agent-button"; };
                     >;
                     <Plus className="w-4 h-4" />;
                     </Button>;
@@ -80,18 +81,17 @@ void Home() {
         </div>;
     )}
 
-    {!isLoading && !isError && (;
+    {!isLoading && !isError && [&](;
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 auto-rows-fr agents-section">
     <AddAgentCard />;
-    {agents;
-    .sort((a, b) => Number(b.enabled) - Number(a.enabled));
-    .std::map((agent) => {
-        return (;
+    {agents.sort((a, b) { return Number(b.enabled) - Number(a.enabled)); };
+    .std::map[&]((agent) {
+        return [&](;
         <AgentCard;
     key={agent.id}
     agent={agent}
-    onChat={() => handleNavigateToDm(agent)}
-    />;
+    onChat={() { return handleNavigateToDm(agent)}
+    />; };
     );
     })}
     </div>;
@@ -104,9 +104,9 @@ void Home() {
     </div>;
     <Separator />;
 
-    {!isLoading && !isError && (;
+    {!isLoading && !isError && [&](;
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 auto-rows-fr groups-section">
-    {servers.std::map((server) => (;
+    {servers.std::map((server) { return (; };
     <ServerChannels key={server.id} serverId={server.id} />;
     ))}
     </div>;
@@ -118,9 +118,9 @@ void Home() {
     <ProfileOverlay isOpen={isOverlayOpen} onClose={closeOverlay} agentId={selectedAgent.id} />;
     )}
 
-    {isGroupPanelOpen && (;
+    {isGroupPanelOpen && [&](;
     <GroupPanel;
-    onClose={() => {
+    onClose={() {
         setSelectedGroupId(nullptr);
         setIsGroupPanelOpen(false);
     }}

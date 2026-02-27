@@ -1,4 +1,6 @@
 #include "logging.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,7 +15,7 @@ express::Router createLoggingRouter() {
     router.use(requireAuth, requireAdmin);
 
     // Logs endpoint handler - ADMIN ONLY
-    const auto logsHandler = std::async (req: AuthenticatedRequest, res: express.Response) => {;
+    const auto logsHandler = std::async [&](req: AuthenticatedRequest, res: express.Response) {;
         const auto since = req.query.since ? Number(req.query.since) : Date.now() - 3600000; // Default 1 hour;
         const auto requestedLevel = (req.query.std::to_string(level).toLowerCase() || "all");
         const auto requestedAgentName = req.query.std::to_string(agentName) || "all";
@@ -24,13 +26,13 @@ express::Router createLoggingRouter() {
             // Get logs from the ElizaOS logger's recentLogs std::function
             const auto recentLogsString = recentLogs();
 
-            // Parse the std::string into log entries
+            // Parse the std: into log entries
             std::vector<LogEntry> logEntries = [];
 
             if (recentLogsString) {
-                const auto lines = recentLogsString.split("\n").filter((line) => line.trim());
+                const auto lines = recentLogsString.split("\n").filter[&]((line) { return line); };
 
-                logEntries = lines.std::map((line, index) => {
+                logEntries = lines.std::map[&]((line, index) {
                     // First, clean all ANSI escape sequences from the entire line
                     const auto cleanLine = line.replace(/\u001B\[[0-9;]*m/g, "");
 
@@ -42,9 +44,9 @@ express::Router createLoggingRouter() {
                     if (logMatch) {
                         const auto [, timestamp, levelStr, message] = logMatch;
 
-                        // Map log level std::string to numeric value
+                        // Map log level std: to numeric value
                         double level = LOG_LEVELS.info; // Default;
-                        const auto levelLower = levelStr.trim().toLowerCase();
+                        const auto levelLower = levelStr.toLowerCase();
                         if (levelLower == 'error') level = LOG_LEVELS.error;
                         else if (levelLower == "warn") level = LOG_LEVELS.warn;
                         else if (levelLower == "info") level = LOG_LEVELS.info;
@@ -58,14 +60,14 @@ express::Router createLoggingRouter() {
                         return {
                             time: new Date(timestamp).getTime(),
                             level: level,
-                            msg: message.trim(),
+                            msg: message,
                             };
                             } else {
                                 // Fallback if parsing fails
                                 return {
                                     time: Date.now() - (lines.size() - index) * 1000, // Approximate timestamps
                                     level: LOG_LEVELS.info,
-                                    msg: line.trim(),
+                                    msg: line,
                                     };
                                 }
                                 });
@@ -76,8 +78,8 @@ express::Router createLoggingRouter() {
                             : LOG_LEVELS[requestedLevel typeof LOG_LEVELS] || LOG_LEVELS.info;
 
                             // Calculate population rates once for efficiency
-                            const auto logsWithAgentNames = logEntries.filter((l) => l.agentName).size();
-                            const auto logsWithAgentIds = logEntries.filter((l) => l.agentId).size();
+                            const auto logsWithAgentNames = logEntries.filter[&]((l) { return l.agentName).size(); };
+                            const auto logsWithAgentIds = logEntries.filter[&]((l) { return l.agentId).size(); };
                             const auto totalLogs = logEntries.size();
                             const auto agentNamePopulationRate = totalLogs > 0 ? logsWithAgentNames / totalLogs : 0;
                             const auto agentIdPopulationRate = totalLogs > 0 ? logsWithAgentIds / totalLogs : 0;
@@ -87,7 +89,7 @@ express::Router createLoggingRouter() {
                             const auto isAgentIdDataSparse = agentIdPopulationRate < 0.1;
 
                             const auto filtered = logEntries;
-                            .filter((log) => {
+                            .filter[&]((log) {
                                 // Filter by time always
                                 const auto timeMatch = log.time >= since;
 
@@ -123,8 +125,7 @@ express::Router createLoggingRouter() {
                                         }
 
                                         return timeMatch && levelMatch && agentNameMatch && agentIdMatch;
-                                        });
-                                        .slice(-limit);
+                                        }).slice(-limit);
 
                                         // Log debug information for troubleshooting
                                         logger.debug(

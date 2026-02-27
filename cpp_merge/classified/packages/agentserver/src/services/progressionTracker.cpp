@@ -12,9 +12,9 @@ void ProgressionTracker::stop()
 
 void ProgressionTracker::setupEventListeners()
 {
-    logger->info(std::string("[PROGRESSION_TRACKER] Setting up event-based progression tracking"));
+    logger->info(std:("[PROGRESSION_TRACKER] Setting up event-based progression tracking"));
     if (this->progressionService->isUnlockedModeEnabled()) {
-        logger->info(std::string("[PROGRESSION_TRACKER] Skipping event listeners - unlocked mode enabled"));
+        logger->info(std:("[PROGRESSION_TRACKER] Skipping event listeners - unlocked mode enabled"));
         return;
     }
     this->runtime->registerEvent(EventType->SHELL_COMMAND_EXECUTED, [=](auto params) mutable
@@ -62,7 +62,7 @@ void ProgressionTracker::setupEventListeners()
         std::async([=]() { this->handleCapabilityUsed(params); });
     }
     );
-    logger->info(std::string("[PROGRESSION_TRACKER] Event listeners registered"));
+    logger->info(std:("[PROGRESSION_TRACKER] Event listeners registered"));
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleShellCommandExecuted(object params)
@@ -71,8 +71,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleShellCommandExecuted(ob
         return std::shared_ptr<Promise<void>>();
     }
     if (params["exitCode"] == 0) {
-        logger->info(std::string("[PROGRESSION_TRACKER] Shell command executed successfully, recording capability usage"));
-        std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("shell")); });
+        logger->info(std:("[PROGRESSION_TRACKER] Shell command executed successfully, recording capability usage"));
+        std::async([=]() { this->progressionService->recordCapabilityUsed(std:("shell")); });
     }
 }
 
@@ -81,7 +81,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleAgentNamed(object _para
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Agent named: ") + _params["name"] + string_empty);
+    logger->info(std:("[PROGRESSION_TRACKER] Agent named: ") + _params["name"] + string_empty);
     this->progressionService->recordAgentNamed(_params["name"]);
 }
 
@@ -90,8 +90,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleGoalCreated(object _par
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Goal created, recording capability usage"));
-    std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("goals")); });
+    logger->info(std:("[PROGRESSION_TRACKER] Goal created, recording capability usage"));
+    std::async([=]() { this->progressionService->recordCapabilityUsed(std:("goals")); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleTodoCreated(object _params)
@@ -99,8 +99,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleTodoCreated(object _par
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Todo created, recording capability usage"));
-    std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("todo")); });
+    logger->info(std:("[PROGRESSION_TRACKER] Todo created, recording capability usage"));
+    std::async([=]() { this->progressionService->recordCapabilityUsed(std:("todo")); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleBrowserActionPerformed(object params)
@@ -108,8 +108,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleBrowserActionPerformed(
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Browser action performed: ") + params["action"] + string_empty);
-    std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("browser")); });
+    logger->info(std:("[PROGRESSION_TRACKER] Browser action performed: ") + params["action"] + string_empty);
+    std::async([=]() { this->progressionService->recordCapabilityUsed(std:("browser")); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleFormSubmitted(object params)
@@ -117,7 +117,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleFormSubmitted(object pa
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Form submitted"));
+    logger->info(std:("[PROGRESSION_TRACKER] Form submitted"));
     std::async([=]() { this->progressionService->recordFormSubmitted(params["details"]); });
 }
 
@@ -126,8 +126,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleVisionActionPerformed(o
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Vision action performed: ") + params["action"] + string_empty);
-    std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("vision")); });
+    logger->info(std:("[PROGRESSION_TRACKER] Vision action performed: ") + params["action"] + string_empty);
+    std::async([=]() { this->progressionService->recordCapabilityUsed(std:("vision")); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleMicrophoneUsed(object _params)
@@ -135,8 +135,8 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleMicrophoneUsed(object _
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Microphone used"));
-    std::async([=]() { this->progressionService->recordCapabilityUsed(std::string("microphone")); });
+    logger->info(std:("[PROGRESSION_TRACKER] Microphone used"));
+    std::async([=]() { this->progressionService->recordCapabilityUsed(std:("microphone")); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::handleCapabilityUsed(object params)
@@ -144,15 +144,15 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleCapabilityUsed(object p
     if (this->progressionService->isUnlockedModeEnabled()) {
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Capability used: ") + params["capability"] + string_empty);
+    logger->info(std:("[PROGRESSION_TRACKER] Capability used: ") + params["capability"] + string_empty);
     std::async([=]() { this->progressionService->recordCapabilityUsed(params["capability"]); });
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::trackShellCommand(string command, double exitCode)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->SHELL_COMMAND_EXECUTED, object{
-        object::pair{std::string("command"), std::string("command")}, 
-        object::pair{std::string("exitCode"), std::string("exitCode")}
+        object::pair{std:("command"), std:("command")}, 
+        object::pair{std:("exitCode"), std:("exitCode")}
     }); });
     return std::shared_ptr<Promise<void>>();
 }
@@ -160,7 +160,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackShellCommand(string comm
 std::shared_ptr<Promise<void>> ProgressionTracker::trackGoalCreation(Record<string, any> goalData)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->GOAL_CREATED, object{
-        object::pair{std::string("goalData"), std::string("goalData")}
+        object::pair{std:("goalData"), std:("goalData")}
     }); });
     return std::shared_ptr<Promise<void>>();
 }
@@ -168,7 +168,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackGoalCreation(Record<stri
 std::shared_ptr<Promise<void>> ProgressionTracker::trackTodoCreation(Record<string, any> todoData)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->TODO_CREATED, object{
-        object::pair{std::string("todoData"), std::string("todoData")}
+        object::pair{std:("todoData"), std:("todoData")}
     }); });
     return std::shared_ptr<Promise<void>>();
 }
@@ -176,48 +176,48 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackTodoCreation(Record<stri
 std::shared_ptr<Promise<void>> ProgressionTracker::trackAgentNaming(string name)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->AGENT_NAMED, object{
-        object::pair{std::string("name"), std::string("name")}
+        object::pair{std:("name"), std:("name")}
     }); });
     return std::shared_ptr<Promise<void>>();
 }
 
 std::shared_ptr<Promise<void>> ProgressionTracker::trackAction(string actionType, Record<string, any> details)
 {
-    logger->info(std::string("[PROGRESSION_TRACKER] Manual action tracked: ") + actionType + string_empty, details);
+    logger->info(std:("[PROGRESSION_TRACKER] Manual action tracked: ") + actionType + string_empty, details);
     static switch_type __switch6914_7798 = {
-        { any(std::string("form_submitted")), 1 },
-        { any(std::string("browser_used")), 2 },
-        { any(std::string("vision_used")), 3 },
-        { any(std::string("microphone_used")), 4 }
+        { any(std:("form_submitted")), 1 },
+        { any(std:("browser_used")), 2 },
+        { any(std:("vision_used")), 3 },
+        { any(std:("microphone_used")), 4 }
     };
     switch (__switch6914_7798[actionType])
     {
     case 1:
         std::async([=]() { this->runtime->emitEvent(EventType->FORM_SUBMITTED, object{
-            object::pair{std::string("details"), std::string("details")}
+            object::pair{std:("details"), std:("details")}
         }); });
         break;
     case 2:
         std::async([=]() { this->runtime->emitEvent(EventType->BROWSER_ACTION_PERFORMED, object{
-            object::pair{std::string("action"), actionType}, 
-            object::pair{std::string("details"), std::string("details")}
+            object::pair{std:("action"), actionType}, 
+            object::pair{std:("details"), std:("details")}
         }); });
         break;
     case 3:
         std::async([=]() { this->runtime->emitEvent(EventType->VISION_ACTION_PERFORMED, object{
-            object::pair{std::string("action"), actionType}, 
-            object::pair{std::string("details"), std::string("details")}
+            object::pair{std:("action"), actionType}, 
+            object::pair{std:("details"), std:("details")}
         }); });
         break;
     case 4:
         std::async([=]() { this->runtime->emitEvent(EventType->MICROPHONE_USED, object{
-            object::pair{std::string("details"), std::string("details")}
+            object::pair{std:("details"), std:("details")}
         }); });
         break;
     default:
         std::async([=]() { this->runtime->emitEvent(EventType->CAPABILITY_USED, object{
-            object::pair{std::string("capability"), actionType}, 
-            object::pair{std::string("details"), std::string("details")}
+            object::pair{std:("capability"), actionType}, 
+            object::pair{std:("details"), std:("details")}
         }); });
         break;
     }
@@ -231,21 +231,21 @@ Record<string, any> ProgressionTracker::getProgressionStatus()
     auto availableLevels = this->progressionService->getAvailableLevels();
     auto isUnlockedMode = this->progressionService->isUnlockedModeEnabled();
     return object{
-        object::pair{std::string("mode"), (isUnlockedMode) ? std::string("unlocked") : std::string("progression")}, 
-        object::pair{std::string("isUnlockedMode"), std::string("isUnlockedMode")}, 
-        object::pair{std::string("currentLevel"), state->currentLevel}, 
-        object::pair{std::string("unlockedLevels"), state->unlockedLevels}, 
-        object::pair{std::string("completedActions"), state->completedActions}, 
-        object::pair{std::string("agentNamed"), state->agentNamed}, 
-        object::pair{std::string("unlockedCapabilities"), std::string("unlockedCapabilities")}, 
-        object::pair{std::string("availableLevels"), availableLevels->map([=](auto level) mutable
+        object::pair{std:("mode"), (isUnlockedMode) ? std:("unlocked") : std:("progression")}, 
+        object::pair{std:("isUnlockedMode"), std:("isUnlockedMode")}, 
+        object::pair{std:("currentLevel"), state->currentLevel}, 
+        object::pair{std:("unlockedLevels"), state->unlockedLevels}, 
+        object::pair{std:("completedActions"), state->completedActions}, 
+        object::pair{std:("agentNamed"), state->agentNamed}, 
+        object::pair{std:("unlockedCapabilities"), std:("unlockedCapabilities")}, 
+        object::pair{std:("availableLevels"), availableLevels->map([=](auto level) mutable
         {
             return (object{
-                object::pair{std::string("id"), level->id}, 
-                object::pair{std::string("name"), level->name}, 
-                object::pair{std::string("description"), level->description}, 
-                object::pair{std::string("isUnlocked"), level->isUnlocked}, 
-                object::pair{std::string("capabilities"), level->unlockedCapabilities}
+                object::pair{std:("id"), level->id}, 
+                object::pair{std:("name"), level->name}, 
+                object::pair{std:("description"), level->description}, 
+                object::pair{std:("isUnlocked"), level->isUnlocked}, 
+                object::pair{std:("capabilities"), level->unlockedCapabilities}
             });
         }
         )}
@@ -262,6 +262,6 @@ void ProgressionTracker::cleanup()
         clearInterval(this->namingInterval);
         this->namingInterval = nullptr;
     }
-    logger->info(std::string("[PROGRESSION_TRACKER] Cleaned up tracking intervals"));
+    logger->info(std:("[PROGRESSION_TRACKER] Cleaned up tracking intervals"));
 }
 

@@ -25,7 +25,7 @@ class AuthService extends BaseApiClient {
    * @returns JWT token and user ID
    */
   std::async login(request: LoginRequest): Promise<LoginResponse> {
-    const response = await this.post<LoginResponse>('/api/auth/login', request);
+    const response = this.post<LoginResponse>('/api/auth/login', request);
     return response;
   }
   

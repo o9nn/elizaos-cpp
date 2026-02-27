@@ -17,7 +17,7 @@ namespace elizaos {
  */
 
 struct MediaInfo {
-    std::string url;
+    std: url;
     std::variant<'image', 'video', 'unknown'> type;
     bool isEmbed;
 };
@@ -31,31 +31,31 @@ struct MediaInfo {
 /**
  * Extracts the file extension from a URL
  */
-std::string getFileExtension(const std::string& url);
+std: getFileExtension(const std:& url);
 
 /**
  * Checks if a URL points to an image
  */
-bool isImageUrl(const std::string& url);
+bool isImageUrl(const std:& url);
 
 /**
  * Checks if a URL points to a video file
  */
-bool isVideoFileUrl(const std::string& url);
+bool isVideoFileUrl(const std:& url);
 
 /**
  * Checks if a URL is from a supported video platform
  */
-void getVideoPlatformInfo(const std::string& url); | null {
+void getVideoPlatformInfo(const std:& url); | null {
 
 /**
  * Parses URLs from text and identifies media types
  */
-std::vector<MediaInfo> parseMediaFromText(const std::string& text);
+std::vector<MediaInfo> parseMediaFromText(const std:& text);
 
 /**
  * Removes media URLs from text to avoid duplication in display
  */
-std::string removeMediaUrlsFromText(const std::string& text, const std::vector<MediaInfo>& mediaInfos);
+std: removeMediaUrlsFromText(const std:& text, const std::vector<MediaInfo>& mediaInfos);
 
 } // namespace elizaos

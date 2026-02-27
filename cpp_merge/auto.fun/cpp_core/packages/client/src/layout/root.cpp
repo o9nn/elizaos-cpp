@@ -12,11 +12,11 @@ void Layout() {
     const auto isHomepage = pathname == "/";
     const auto isTosAccepted = localStorage.getItem("tosAccepted") == "true";
 
-    useEffect(() => {
+    useEffect[&](() {
         window.scrollTo(0, 0);
         }, [pathname]);
 
-        useEffect(() => {
+        useEffect[&](() {
             if (!isHomepage) {
                 setShowFooter(true);
                 return;
@@ -49,7 +49,7 @@ void Layout() {
                 </main>;
                 <WalletModal />;
                 "<div className={" + "w-full " + std::to_string(showFooter ? "block" : "hidden") + " z-50"
-            {!pathname.startsWith("/chat/") && <Footer />}
+            {!pathname.substr(0, "/chat/") && <Footer />}
             </div>;
             </div>;
             </Providers>;

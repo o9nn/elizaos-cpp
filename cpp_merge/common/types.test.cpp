@@ -2,85 +2,85 @@
 
 void Main(void)
 {
-    describe(std::string("types"), [=]() mutable
+    describe(std:("types"), [=]() mutable
     {
-        describe(std::string("EnvVarConfig"), [=]() mutable
+        describe(std:("EnvVarConfig"), [=]() mutable
         {
-            it(std::string("should allow valid EnvVarConfig objects"), [=]() mutable
+            it(std:("should allow valid EnvVarConfig objects"), [=]() mutable
             {
                 auto config = object{
-                    object::pair{std::string("type"), std::string("api_key")}, 
-                    object::pair{std::string("required"), true}, 
-                    object::pair{std::string("description"), std::string("Test API key")}, 
-                    object::pair{std::string("canGenerate"), false}, 
-                    object::pair{std::string("status"), std::string("missing")}, 
-                    object::pair{std::string("attempts"), 0}, 
-                    object::pair{std::string("plugin"), std::string("test-plugin")}
+                    object::pair{std:("type"), std:("api_key")}, 
+                    object::pair{std:("required"), true}, 
+                    object::pair{std:("description"), std:("Test API key")}, 
+                    object::pair{std:("canGenerate"), false}, 
+                    object::pair{std:("status"), std:("missing")}, 
+                    object::pair{std:("attempts"), 0}, 
+                    object::pair{std:("plugin"), std:("test-plugin")}
                 };
-                expect(config->type)->toBe(std::string("api_key"));
+                expect(config->type)->toBe(std:("api_key"));
                 expect(config->required)->toBe(true);
-                expect(config->description)->toBe(std::string("Test API key"));
+                expect(config->description)->toBe(std:("Test API key"));
                 expect(config->canGenerate)->toBe(false);
-                expect(config->status)->toBe(std::string("missing"));
+                expect(config->status)->toBe(std:("missing"));
                 expect(config->attempts)->toBe(0);
-                expect(config->plugin)->toBe(std::string("test-plugin"));
+                expect(config->plugin)->toBe(std:("test-plugin"));
             }
             );
-            it(std::string("should allow optional fields"), [=]() mutable
+            it(std:("should allow optional fields"), [=]() mutable
             {
                 auto config = object{
-                    object::pair{std::string("type"), std::string("secret")}, 
-                    object::pair{std::string("required"), false}, 
-                    object::pair{std::string("description"), std::string("Optional secret")}, 
-                    object::pair{std::string("canGenerate"), true}, 
-                    object::pair{std::string("status"), std::string("valid")}, 
-                    object::pair{std::string("attempts"), 2}, 
-                    object::pair{std::string("plugin"), std::string("test-plugin")}, 
-                    object::pair{std::string("value"), std::string("secret-value")}, 
-                    object::pair{std::string("validatedAt"), Date->now()}, 
-                    object::pair{std::string("lastError"), std::string("Previous validation failed")}, 
-                    object::pair{std::string("validationMethod"), std::string("api_key:openai")}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("type"), std:("secret")}, 
+                    object::pair{std:("required"), false}, 
+                    object::pair{std:("description"), std:("Optional secret")}, 
+                    object::pair{std:("canGenerate"), true}, 
+                    object::pair{std:("status"), std:("valid")}, 
+                    object::pair{std:("attempts"), 2}, 
+                    object::pair{std:("plugin"), std:("test-plugin")}, 
+                    object::pair{std:("value"), std:("secret-value")}, 
+                    object::pair{std:("validatedAt"), Date->now()}, 
+                    object::pair{std:("lastError"), std:("Previous validation failed")}, 
+                    object::pair{std:("validationMethod"), std:("api_key:openai")}, 
+                    object::pair{std:("createdAt"), Date->now()}
                 };
-                expect(config->value)->toBe(std::string("secret-value"));
-                expect(type_of(config->validatedAt))->toBe(std::string("number"));
-                expect(config->lastError)->toBe(std::string("Previous validation failed"));
-                expect(config->validationMethod)->toBe(std::string("api_key:openai"));
-                expect(type_of(config->createdAt))->toBe(std::string("number"));
+                expect(config->value)->toBe(std:("secret-value"));
+                expect(type_of(config->validatedAt))->toBe(std:("number"));
+                expect(config->lastError)->toBe(std:("Previous validation failed"));
+                expect(config->validationMethod)->toBe(std:("api_key:openai"));
+                expect(type_of(config->createdAt))->toBe(std:("number"));
             }
             );
-            it(std::string("should support all valid types"), [=]() mutable
+            it(std:("should support all valid types"), [=]() mutable
             {
-                auto types = array<any>{ std::string("api_key"), std::string("private_key"), std::string("public_key"), std::string("secret"), std::string("url"), std::string("config"), std::string("credential") };
+                auto types = array<any>{ std:("api_key"), std:("private_key"), std:("public_key"), std:("secret"), std:("url"), std:("config"), std:("credential") };
                 types->forEach([=](auto type) mutable
                 {
                     auto config = object{
-                        object::pair{std::string("type"), std::string("type")}, 
-                        object::pair{std::string("required"), true}, 
-                        object::pair{std::string("description"), std::string("Test ") + type + string_empty}, 
-                        object::pair{std::string("canGenerate"), false}, 
-                        object::pair{std::string("status"), std::string("missing")}, 
-                        object::pair{std::string("attempts"), 0}, 
-                        object::pair{std::string("plugin"), std::string("test")}
+                        object::pair{std:("type"), std:("type")}, 
+                        object::pair{std:("required"), true}, 
+                        object::pair{std:("description"), std:("Test ") + type + string_empty}, 
+                        object::pair{std:("canGenerate"), false}, 
+                        object::pair{std:("status"), std:("missing")}, 
+                        object::pair{std:("attempts"), 0}, 
+                        object::pair{std:("plugin"), std:("test")}
                     };
                     expect(config->type)->toBe(type);
                 }
                 );
             }
             );
-            it(std::string("should support all valid statuses"), [=]() mutable
+            it(std:("should support all valid statuses"), [=]() mutable
             {
-                auto statuses = array<any>{ std::string("missing"), std::string("generating"), std::string("validating"), std::string("invalid"), std::string("valid") };
+                auto statuses = array<any>{ std:("missing"), std:("generating"), std:("validating"), std:("invalid"), std:("valid") };
                 statuses->forEach([=](auto status) mutable
                 {
                     auto config = object{
-                        object::pair{std::string("type"), std::string("config")}, 
-                        object::pair{std::string("required"), true}, 
-                        object::pair{std::string("description"), std::string("Test config")}, 
-                        object::pair{std::string("canGenerate"), false}, 
-                        object::pair{std::string("status"), std::string("status")}, 
-                        object::pair{std::string("attempts"), 0}, 
-                        object::pair{std::string("plugin"), std::string("test")}
+                        object::pair{std:("type"), std:("config")}, 
+                        object::pair{std:("required"), true}, 
+                        object::pair{std:("description"), std:("Test config")}, 
+                        object::pair{std:("canGenerate"), false}, 
+                        object::pair{std:("status"), std:("status")}, 
+                        object::pair{std:("attempts"), 0}, 
+                        object::pair{std:("plugin"), std:("test")}
                     };
                     expect(config->status)->toBe(status);
                 }
@@ -89,104 +89,104 @@ void Main(void)
             );
         }
         );
-        describe(std::string("EnvVarMetadata"), [=]() mutable
+        describe(std:("EnvVarMetadata"), [=]() mutable
         {
-            it(std::string("should allow nested plugin configurations"), [=]() mutable
+            it(std:("should allow nested plugin configurations"), [=]() mutable
             {
                 auto metadata = object{
-                    object::pair{std::string("plugin1"), object{
-                        object::pair{std::string("VAR1"), object{
-                            object::pair{std::string("type"), std::string("api_key")}, 
-                            object::pair{std::string("required"), true}, 
-                            object::pair{std::string("description"), std::string("Plugin 1 API key")}, 
-                            object::pair{std::string("canGenerate"), false}, 
-                            object::pair{std::string("status"), std::string("missing")}, 
-                            object::pair{std::string("attempts"), 0}, 
-                            object::pair{std::string("plugin"), std::string("plugin1")}
+                    object::pair{std:("plugin1"), object{
+                        object::pair{std:("VAR1"), object{
+                            object::pair{std:("type"), std:("api_key")}, 
+                            object::pair{std:("required"), true}, 
+                            object::pair{std:("description"), std:("Plugin 1 API key")}, 
+                            object::pair{std:("canGenerate"), false}, 
+                            object::pair{std:("status"), std:("missing")}, 
+                            object::pair{std:("attempts"), 0}, 
+                            object::pair{std:("plugin"), std:("plugin1")}
                         }}, 
-                        object::pair{std::string("VAR2"), object{
-                            object::pair{std::string("type"), std::string("secret")}, 
-                            object::pair{std::string("required"), false}, 
-                            object::pair{std::string("description"), std::string("Plugin 1 secret")}, 
-                            object::pair{std::string("canGenerate"), true}, 
-                            object::pair{std::string("status"), std::string("valid")}, 
-                            object::pair{std::string("attempts"), 1}, 
-                            object::pair{std::string("plugin"), std::string("plugin1")}
+                        object::pair{std:("VAR2"), object{
+                            object::pair{std:("type"), std:("secret")}, 
+                            object::pair{std:("required"), false}, 
+                            object::pair{std:("description"), std:("Plugin 1 secret")}, 
+                            object::pair{std:("canGenerate"), true}, 
+                            object::pair{std:("status"), std:("valid")}, 
+                            object::pair{std:("attempts"), 1}, 
+                            object::pair{std:("plugin"), std:("plugin1")}
                         }}
                     }}, 
-                    object::pair{std::string("plugin2"), object{
-                        object::pair{std::string("CONFIG_VAR"), object{
-                            object::pair{std::string("type"), std::string("config")}, 
-                            object::pair{std::string("required"), true}, 
-                            object::pair{std::string("description"), std::string("Plugin 2 config")}, 
-                            object::pair{std::string("canGenerate"), false}, 
-                            object::pair{std::string("status"), std::string("valid")}, 
-                            object::pair{std::string("attempts"), 0}, 
-                            object::pair{std::string("plugin"), std::string("plugin2")}
+                    object::pair{std:("plugin2"), object{
+                        object::pair{std:("CONFIG_VAR"), object{
+                            object::pair{std:("type"), std:("config")}, 
+                            object::pair{std:("required"), true}, 
+                            object::pair{std:("description"), std:("Plugin 2 config")}, 
+                            object::pair{std:("canGenerate"), false}, 
+                            object::pair{std:("status"), std:("valid")}, 
+                            object::pair{std:("attempts"), 0}, 
+                            object::pair{std:("plugin"), std:("plugin2")}
                         }}
                     }}
                 };
-                expect(Object->keys(metadata))->toEqual(array<string>{ std::string("plugin1"), std::string("plugin2") });
-                expect(Object->keys(metadata->plugin1))->toEqual(array<string>{ std::string("VAR1"), std::string("VAR2") });
-                expect(Object->keys(metadata->plugin2))->toEqual(array<string>{ std::string("CONFIG_VAR") });
-                expect(metadata->plugin1["VAR1"]->type)->toBe(std::string("api_key"));
-                expect(metadata->plugin2["CONFIG_VAR"]->type)->toBe(std::string("config"));
+                expect(Object->keys(metadata))->toEqual(array<string>{ std:("plugin1"), std:("plugin2") });
+                expect(Object->keys(metadata->plugin1))->toEqual(array<string>{ std:("VAR1"), std:("VAR2") });
+                expect(Object->keys(metadata->plugin2))->toEqual(array<string>{ std:("CONFIG_VAR") });
+                expect(metadata->plugin1["VAR1"]->type)->toBe(std:("api_key"));
+                expect(metadata->plugin2["CONFIG_VAR"]->type)->toBe(std:("config"));
             }
             );
         }
         );
-        describe(std::string("GenerationScript"), [=]() mutable
+        describe(std:("GenerationScript"), [=]() mutable
         {
-            it(std::string("should allow valid GenerationScript objects"), [=]() mutable
+            it(std:("should allow valid GenerationScript objects"), [=]() mutable
             {
                 auto script = object{
-                    object::pair{std::string("variableName"), std::string("SECRET_KEY")}, 
-                    object::pair{std::string("pluginName"), std::string("test-plugin")}, 
-                    object::pair{std::string("script"), std::string("std::cout << "generated value" << std::endl;")}, 
-                    object::pair{std::string("dependencies"), array<string>{ std::string("crypto") }}, 
-                    object::pair{std::string("attempts"), 0}, 
-                    object::pair{std::string("status"), std::string("pending")}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("variableName"), std:("SECRET_KEY")}, 
+                    object::pair{std:("pluginName"), std:("test-plugin")}, 
+                    object::pair{std:("script"), std:("std::cout << "generated value" << std::endl;")}, 
+                    object::pair{std:("dependencies"), array<string>{ std:("crypto") }}, 
+                    object::pair{std:("attempts"), 0}, 
+                    object::pair{std:("status"), std:("pending")}, 
+                    object::pair{std:("createdAt"), Date->now()}
                 };
-                expect(script->variableName)->toBe(std::string("SECRET_KEY"));
-                expect(script->pluginName)->toBe(std::string("test-plugin"));
-                expect(script->script)->toBe(std::string("std::cout << "generated value" << std::endl;"));
-                expect(script->dependencies)->toEqual(array<string>{ std::string("crypto") });
+                expect(script->variableName)->toBe(std:("SECRET_KEY"));
+                expect(script->pluginName)->toBe(std:("test-plugin"));
+                expect(script->script)->toBe(std:("std::cout << "generated value" << std::endl;"));
+                expect(script->dependencies)->toEqual(array<string>{ std:("crypto") });
                 expect(script->attempts)->toBe(0);
-                expect(script->status)->toBe(std::string("pending"));
-                expect(type_of(script->createdAt))->toBe(std::string("number"));
+                expect(script->status)->toBe(std:("pending"));
+                expect(type_of(script->createdAt))->toBe(std:("number"));
             }
             );
-            it(std::string("should allow optional fields"), [=]() mutable
+            it(std:("should allow optional fields"), [=]() mutable
             {
                 auto script = object{
-                    object::pair{std::string("variableName"), std::string("API_KEY")}, 
-                    object::pair{std::string("pluginName"), std::string("test-plugin")}, 
-                    object::pair{std::string("script"), std::string("std::cout << "api key" << std::endl;")}, 
-                    object::pair{std::string("dependencies"), array<any>()}, 
-                    object::pair{std::string("attempts"), 2}, 
-                    object::pair{std::string("status"), std::string("failed")}, 
-                    object::pair{std::string("createdAt"), Date->now()}, 
-                    object::pair{std::string("output"), std::string("Generated output")}, 
-                    object::pair{std::string("error"), std::string("Generation failed")}
+                    object::pair{std:("variableName"), std:("API_KEY")}, 
+                    object::pair{std:("pluginName"), std:("test-plugin")}, 
+                    object::pair{std:("script"), std:("std::cout << "api key" << std::endl;")}, 
+                    object::pair{std:("dependencies"), array<any>()}, 
+                    object::pair{std:("attempts"), 2}, 
+                    object::pair{std:("status"), std:("failed")}, 
+                    object::pair{std:("createdAt"), Date->now()}, 
+                    object::pair{std:("output"), std:("Generated output")}, 
+                    object::pair{std:("error"), std:("Generation failed")}
                 };
-                expect(script->output)->toBe(std::string("Generated output"));
-                expect(script->error)->toBe(std::string("Generation failed"));
+                expect(script->output)->toBe(std:("Generated output"));
+                expect(script->error)->toBe(std:("Generation failed"));
             }
             );
-            it(std::string("should support all valid statuses"), [=]() mutable
+            it(std:("should support all valid statuses"), [=]() mutable
             {
-                auto statuses = array<any>{ std::string("pending"), std::string("running"), std::string("success"), std::string("failed") };
+                auto statuses = array<any>{ std:("pending"), std:("running"), std:("success"), std:("failed") };
                 statuses->forEach([=](auto status) mutable
                 {
                     auto script = object{
-                        object::pair{std::string("variableName"), std::string("TEST_VAR")}, 
-                        object::pair{std::string("pluginName"), std::string("test")}, 
-                        object::pair{std::string("script"), std::string("std::cout << "test" << std::endl;")}, 
-                        object::pair{std::string("dependencies"), array<any>()}, 
-                        object::pair{std::string("attempts"), 0}, 
-                        object::pair{std::string("status"), std::string("status")}, 
-                        object::pair{std::string("createdAt"), Date->now()}
+                        object::pair{std:("variableName"), std:("TEST_VAR")}, 
+                        object::pair{std:("pluginName"), std:("test")}, 
+                        object::pair{std:("script"), std:("std::cout << "test" << std::endl;")}, 
+                        object::pair{std:("dependencies"), array<any>()}, 
+                        object::pair{std:("attempts"), 0}, 
+                        object::pair{std:("status"), std:("status")}, 
+                        object::pair{std:("createdAt"), Date->now()}
                     };
                     expect(script->status)->toBe(status);
                 }
@@ -195,69 +195,69 @@ void Main(void)
             );
         }
         );
-        describe(std::string("GenerationScriptMetadata"), [=]() mutable
+        describe(std:("GenerationScriptMetadata"), [=]() mutable
         {
-            it(std::string("should allow script configurations by script ID"), [=]() mutable
+            it(std:("should allow script configurations by script ID"), [=]() mutable
             {
                 auto metadata = object{
-                    object::pair{std::string("script1"), object{
-                        object::pair{std::string("variableName"), std::string("SECRET_KEY")}, 
-                        object::pair{std::string("pluginName"), std::string("plugin1")}, 
-                        object::pair{std::string("script"), std::string("crypto.randomBytes(32).toString("hex")")}, 
-                        object::pair{std::string("dependencies"), array<any>()}, 
-                        object::pair{std::string("attempts"), 0}, 
-                        object::pair{std::string("status"), std::string("pending")}, 
-                        object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("script1"), object{
+                        object::pair{std:("variableName"), std:("SECRET_KEY")}, 
+                        object::pair{std:("pluginName"), std:("plugin1")}, 
+                        object::pair{std:("script"), std:("crypto.randomBytes(32).toString("hex")")}, 
+                        object::pair{std:("dependencies"), array<any>()}, 
+                        object::pair{std:("attempts"), 0}, 
+                        object::pair{std:("status"), std:("pending")}, 
+                        object::pair{std:("createdAt"), Date->now()}
                     }}, 
-                    object::pair{std::string("script2"), object{
-                        object::pair{std::string("variableName"), std::string("PRIVATE_KEY")}, 
-                        object::pair{std::string("pluginName"), std::string("plugin2")}, 
-                        object::pair{std::string("script"), std::string("generateKeyPair()")}, 
-                        object::pair{std::string("dependencies"), array<string>{ std::string("crypto") }}, 
-                        object::pair{std::string("attempts"), 1}, 
-                        object::pair{std::string("status"), std::string("success")}, 
-                        object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("script2"), object{
+                        object::pair{std:("variableName"), std:("PRIVATE_KEY")}, 
+                        object::pair{std:("pluginName"), std:("plugin2")}, 
+                        object::pair{std:("script"), std:("generateKeyPair()")}, 
+                        object::pair{std:("dependencies"), array<string>{ std:("crypto") }}, 
+                        object::pair{std:("attempts"), 1}, 
+                        object::pair{std:("status"), std:("success")}, 
+                        object::pair{std:("createdAt"), Date->now()}
                     }}
                 };
-                expect(Object->keys(metadata))->toEqual(array<string>{ std::string("script1"), std::string("script2") });
-                expect(metadata->script1->variableName)->toBe(std::string("SECRET_KEY"));
-                expect(metadata->script2->status)->toBe(std::string("success"));
+                expect(Object->keys(metadata))->toEqual(array<string>{ std:("script1"), std:("script2") });
+                expect(metadata->script1->variableName)->toBe(std:("SECRET_KEY"));
+                expect(metadata->script2->status)->toBe(std:("success"));
             }
             );
         }
         );
-        describe(std::string("ValidationResult"), [=]() mutable
+        describe(std:("ValidationResult"), [=]() mutable
         {
-            it(std::string("should allow valid ValidationResult objects"), [=]() mutable
+            it(std:("should allow valid ValidationResult objects"), [=]() mutable
             {
                 auto validResult = object{
-                    object::pair{std::string("isValid"), true}, 
-                    object::pair{std::string("details"), std::string("Validation passed successfully")}
+                    object::pair{std:("isValid"), true}, 
+                    object::pair{std:("details"), std:("Validation passed successfully")}
                 };
                 expect(validResult->isValid)->toBe(true);
-                expect(validResult->details)->toBe(std::string("Validation passed successfully"));
+                expect(validResult->details)->toBe(std:("Validation passed successfully"));
                 expect(validResult->error)->toBeUndefined();
             }
             );
-            it(std::string("should allow invalid ValidationResult objects"), [=]() mutable
+            it(std:("should allow invalid ValidationResult objects"), [=]() mutable
             {
                 auto invalidResult = object{
-                    object::pair{std::string("isValid"), false}, 
-                    object::pair{std::string("error"), std::string("Validation failed")}, 
-                    object::pair{std::string("details"), std::string("API key format is incorrect")}
+                    object::pair{std:("isValid"), false}, 
+                    object::pair{std:("error"), std:("Validation failed")}, 
+                    object::pair{std:("details"), std:("API key format is incorrect")}
                 };
                 expect(invalidResult->isValid)->toBe(false);
-                expect(invalidResult->error)->toBe(std::string("Validation failed"));
-                expect(invalidResult->details)->toBe(std::string("API key format is incorrect"));
+                expect(invalidResult->error)->toBe(std:("Validation failed"));
+                expect(invalidResult->details)->toBe(std:("API key format is incorrect"));
             }
             );
-            it(std::string("should allow minimal ValidationResult objects"), [=]() mutable
+            it(std:("should allow minimal ValidationResult objects"), [=]() mutable
             {
                 auto minimalValid = object{
-                    object::pair{std::string("isValid"), true}
+                    object::pair{std:("isValid"), true}
                 };
                 auto minimalInvalid = object{
-                    object::pair{std::string("isValid"), false}
+                    object::pair{std:("isValid"), false}
                 };
                 expect(minimalValid->isValid)->toBe(true);
                 expect(minimalInvalid->isValid)->toBe(false);
@@ -265,25 +265,25 @@ void Main(void)
             );
         }
         );
-        describe(std::string("EnvVarUpdate"), [=]() mutable
+        describe(std:("EnvVarUpdate"), [=]() mutable
         {
-            it(std::string("should allow valid EnvVarUpdate objects"), [=]() mutable
+            it(std:("should allow valid EnvVarUpdate objects"), [=]() mutable
             {
                 auto update = object{
-                    object::pair{std::string("pluginName"), std::string("test-plugin")}, 
-                    object::pair{std::string("variableName"), std::string("API_KEY")}, 
-                    object::pair{std::string("value"), std::string("sk-test123")}
+                    object::pair{std:("pluginName"), std:("test-plugin")}, 
+                    object::pair{std:("variableName"), std:("API_KEY")}, 
+                    object::pair{std:("value"), std:("sk-test123")}
                 };
-                expect(update->pluginName)->toBe(std::string("test-plugin"));
-                expect(update->variableName)->toBe(std::string("API_KEY"));
-                expect(update->value)->toBe(std::string("sk-test123"));
+                expect(update->pluginName)->toBe(std:("test-plugin"));
+                expect(update->variableName)->toBe(std:("API_KEY"));
+                expect(update->value)->toBe(std:("sk-test123"));
             }
             );
         }
         );
-        describe(std::string("Type compatibility"), [=]() mutable
+        describe(std:("Type compatibility"), [=]() mutable
         {
-            it(std::string("should allow empty metadata objects"), [=]() mutable
+            it(std:("should allow empty metadata objects"), [=]() mutable
             {
                 auto emptyEnvVars = object{};
                 auto emptyScripts = object{};
@@ -291,18 +291,18 @@ void Main(void)
                 expect(Object->keys(emptyScripts))->toEqual(array<any>());
             }
             );
-            it(std::string("should work with all credential types"), [=]() mutable
+            it(std:("should work with all credential types"), [=]() mutable
             {
                 auto credentialConfig = object{
-                    object::pair{std::string("type"), std::string("credential")}, 
-                    object::pair{std::string("required"), true}, 
-                    object::pair{std::string("description"), std::string("Database credentials")}, 
-                    object::pair{std::string("canGenerate"), false}, 
-                    object::pair{std::string("status"), std::string("missing")}, 
-                    object::pair{std::string("attempts"), 0}, 
-                    object::pair{std::string("plugin"), std::string("database-plugin")}
+                    object::pair{std:("type"), std:("credential")}, 
+                    object::pair{std:("required"), true}, 
+                    object::pair{std:("description"), std:("Database credentials")}, 
+                    object::pair{std:("canGenerate"), false}, 
+                    object::pair{std:("status"), std:("missing")}, 
+                    object::pair{std:("attempts"), 0}, 
+                    object::pair{std:("plugin"), std:("database-plugin")}
                 };
-                expect(credentialConfig->type)->toBe(std::string("credential"));
+                expect(credentialConfig->type)->toBe(std:("credential"));
             }
             );
         }

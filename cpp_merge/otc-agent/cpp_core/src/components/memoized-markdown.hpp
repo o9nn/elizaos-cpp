@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-std::vector<std::string> parseMarkdownIntoBlocks(const std::string& markdown);
+std::vector<std::string> parseMarkdownIntoBlocks(const std:& markdown);
 
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "search-bar.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,14 +13,14 @@ void SearchBar() {
     const auto [showSearchResults, setShowSearchResults] = useState(false);
     const auto ref = useRef<HTMLDivElement>(nullptr);
 
-    useOutsideClickDetection([ref], () => {
+    useOutsideClickDetection[&]([ref], () {
         setShowSearchResults(false);
         });
 
-        const auto query = useQuery({;
+        const auto query = useQuery[&]({;
             queryKey: ["search-tokens", searchQuery],
-            queryFn: std::async () => {
-                if (!searchQuery || searchQuery.length < 2) return { tokens: [] };
+            queryFn: std::async () {
+                if (!searchQuery || searchQuery.size() < 2) return { tokens: [] };
                 const auto data = getSearchTokens({ search: searchQuery });
                 return data as { tokens: IToken[] };
                 },
@@ -30,8 +31,8 @@ void SearchBar() {
                 refetchOnMount: false,
                 });
 
-                const auto debouncedSetSearchQuery = useCallback(;
-                debounce((value: std::string) => {
+                const auto debouncedSetSearchQuery = useCallback[&](;
+                debounce((value: std:) {
                     setSearchQuery(value);
                     }, 300),
                     [],
@@ -44,7 +45,7 @@ void SearchBar() {
                         debouncedSetSearchQuery(value);
                         };
 
-                        useEffect(() => {
+                        useEffect[&](() {
                             return [&]() {;
                                 debouncedSetSearchQuery.cancel();
                                 };
@@ -76,13 +77,13 @@ void SearchBar() {
                     <div className="text-autofun-background-action-highlight">;
                     No tokens found.;
                     </div>;
-                    ) : (
-                    query.data.tokens.std::map((token: IToken) => (
-                    <AgentSearchResult;
+                    ) : [&](
+                    query.data.tokens.std::map((token: IToken) { return (
+                    <AgentSearchResult; };
                 key={token.mint}
             token={token}
-        onNavigate={() => setShowSearchResults(false)}
-        />;
+        onNavigate={[&]() { return setShowSearchResults(false)}
+        />; };
         ));
     )}
     </div>;

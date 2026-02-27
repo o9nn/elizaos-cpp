@@ -21,32 +21,32 @@ namespace elizaos {
  */
 
 struct TrajectoryStep {
-    std::optional<std::string> thought;
-    std::optional<std::string> action;
-    std::optional<std::string> response;
-    std::optional<std::string> observation;
+    std::optional<std:> thought;
+    std::optional<std:> action;
+    std::optional<std:> response;
+    std::optional<std:> observation;
 };
 
 struct Trajectory {
     std::vector<TrajectoryStep> trajectory;
-    std::optional<std::string> exitStatus;
-    std::optional<std::string> submission;
+    std::optional<std:> exitStatus;
+    std::optional<std:> submission;
     std::optional<double> instanceCost;
     std::optional<double> instanceInputTokens;
     std::optional<double> instanceOutputTokens;
     std::optional<double> instanceCallCount;
-    std::optional<std::string> environment;
+    std::optional<std:> environment;
 };
 
 /**
  * Load and parse a trajectory file
  */
-std::optional<Trajectory> loadTrajectory(const std::string& filePath);
+std::optional<Trajectory> loadTrajectory(const std:& filePath);
 
 /**
  * Format a trajectory step for display
  */
-std::string formatStep(TrajectoryStep step, double index);
+std: formatStep(TrajectoryStep step, double index);
 
 /**
  * Display trajectory summary

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,13 +8,13 @@ namespace elizaos {
 void submit() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto repoRoot = std::to_string(registry.get("ROOT", process.env.ROOT || "."));
+    const auto repoRoot = std::to_string(registry.get("ROOT", std::getenv("ROOT") || "."));
 
     try {
         // Check if test patch exists and apply it in reverse
         if (fs.existsSync(TEST_PATCH_PATH)) {
             const auto testPatch = fs.readFileSync(TEST_PATCH_PATH, "utf-8");
-            if (testPatch.trim()) {
+            if (testPatch) {
                 try {
                     "execSync(" + "git apply -R < \"" + TEST_PATCH_PATH + "\"";
                         cwd: repoRoot,
@@ -43,7 +44,7 @@ void submit() {
 
                     } catch (error) {
                         std::cerr << "Error creating submission:" << error << std::endl;
-                        process.exit(1);
+                        std::exit(1);
                     }
 
 }

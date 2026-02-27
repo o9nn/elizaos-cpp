@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-void updateApiKey(const std::string& newKey);
+void updateApiKey(const std:& newKey);
 
 
 } // namespace elizaos

@@ -1,4 +1,6 @@
 #include "chat.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -39,7 +41,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
             const auto { confirm, isOpen, onOpenChange, onConfirm, options } = useConfirmation();
 
             // Helper to update chat state
-            const auto updateChatState = useCallback((updates: Partial<ChatUIState>) => {;
+            const auto updateChatState = useCallback[&]((updates: Partial<ChatUIState>) {;
                 setChatState((prev) => ({ ...prev, ...updates }));
                 }, []);
 
@@ -86,11 +88,10 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                 const auto allAgents = agentsResponse.agents || [];
 
                 // Get agents in the current group
-                const auto groupAgents = useMemo(() => {;
+                const auto groupAgents = useMemo[&](() {;
                     if (chatType != ChannelType.GROUP || !participants) return [];
                     return participants;
-                    .std::map((pId) => allAgents.find((a) => a.id == pId));
-                    .filter(Boolean)[];
+                    .std::map[&]((pId) { return allAgents.find[&]((a) { return a.id == pId)); }; }.filter(Boolean)[];
                     }, [chatType, participants, allAgents]);
 
                     const auto agentAvatarMap = useMemo(;
@@ -100,14 +101,14 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                         if (agent.id && agent.settings.avatar) acc[agent.id] = agent.settings.avatar;
                         return acc;
                         },
-                        {}<UUID, std::string | nullptr>;
+                        {}<UUID, std: | nullptr>;
                         ),
                         [allAgents];
                         );
 
                         const auto getAgentInMessage = useCallback(;
                         [&](agentId: UUID) {
-                            return allAgents.find((a) => a.id == agentId);
+                            return allAgents.find[&]((a) { return a.id == agentId); };
                             },
                             [allAgents];
                             );
@@ -119,11 +120,11 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                 scrollToBottom,
                                 disableAutoScroll,
                                 autoScrollEnabled,
-                                } = useAutoScroll({ smooth: true });
+                                } = useAutoScroll(Config{smooth = true});
                                 const auto prevMessageCountRef = useRef(0);
-                                const auto safeScrollToBottom = useCallback(() => {;
+                                const auto safeScrollToBottom = useCallback[&](() {;
                                     if (scrollRef.current) {
-                                        setTimeout(() => scrollToBottom(), 0);
+                                        setTimeout[&](() { return scrollToBottom(), 0); };
                                     }
                                     }, [scrollToBottom, scrollRef]);
 
@@ -132,14 +133,14 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                     const auto autoCreateTimeoutRef = useRef<NodeJS.Timeout | nullptr>(nullptr);
 
                                     // Handle DM channel creation
-                                    const auto handleNewDmChannel = useCallback(;
-                                    std::async (agentIdForNewChannel: UUID | std::nullopt) => {
+                                    const auto handleNewDmChannel = useCallback[&](;
+                                    std::async (agentIdForNewChannel: UUID | std::nullopt) {
                                         if (!agentIdForNewChannel || chatType != 'DM') return;
                                         const auto newChatName = "Chat - " + std::to_string(moment().format("MMM D, HH:mm:ss"));
                                         clientLogger.info(;
                                         "[Chat] Creating new distinct DM channel with agent " + agentIdForNewChannel + ", name: \"" + newChatName + "\""
                                         );
-                                        updateChatState({ isCreatingDM: true });
+                                        updateChatState(Config{isCreatingDM = true});
                                         try {
                                             // Mark as auto-created so the effect doesn't attempt a duplicate.
                                             autoCreatedDmRef.current = true;
@@ -149,12 +150,12 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                 channelName: newChatName, // Provide a unique name
                                                 });
                                                 updateChatState({ currentDmChannelId: newChannel.id, input: "" });
-                                                setTimeout(() => safeScrollToBottom(), 150);
+                                                setTimeout[&](() { return safeScrollToBottom(), 150); };
                                                 } catch (error) {
                                                     clientLogger.error("[Chat] Error creating new distinct DM channel:", error);
                                                     // Toast is handled by the mutation hook
                                                     } finally {
-                                                        updateChatState({ isCreatingDM: false });
+                                                        updateChatState(Config{isCreatingDM = false});
                                                     }
                                                     },
                                                     [chatType, createDmChannelMutation, updateChatState, safeScrollToBottom];
@@ -163,33 +164,33 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                     // Handle DM channel selection
                                                     const auto handleSelectDmRoom = useCallback(;
                                                     [&](channelIdToSelect: UUID) {
-                                                        const auto selectedChannel = agentDmChannels.find((channel) => channel.id == channelIdToSelect);
+                                                        const auto selectedChannel = agentDmChannels.find[&]((channel) { return channel.id == channelIdToSelect); };
                                                         if (selectedChannel) {
                                                             clientLogger.info(;
                                                             "[Chat] DM Channel selected: " + selectedChannel.name + " (Channel ID: " + selectedChannel.id + ")"
                                                             );
                                                             updateChatState({ currentDmChannelId: selectedChannel.id, input: "" });
-                                                            setTimeout(() => safeScrollToBottom(), 150);
+                                                            setTimeout[&](() { return safeScrollToBottom(), 150); };
                                                         }
                                                         },
                                                         [agentDmChannels, updateChatState, safeScrollToBottom];
                                                         );
 
                                                         // Handle DM channel deletion
-                                                        const auto handleDeleteCurrentDmChannel = useCallback(() => {;
+                                                        const auto handleDeleteCurrentDmChannel = useCallback[&](() {;
                                                             if (chatType != ChannelType.DM || !chatState.currentDmChannelId || !targetAgentData.id)
                                                             return;
-                                                            const auto channelToDelete = agentDmChannels.find((ch) => ch.id == chatState.currentDmChannelId);
+                                                            const auto channelToDelete = agentDmChannels.find[&]((ch) { return ch.id == chatState.currentDmChannelId); };
                                                             if (!channelToDelete) return;
 
-                                                            confirm(;
+                                                            confirm[&](;
                                                             {
                                                                 title: "Delete Chat",
                                                                 "description: " + "Are you sure you want to delete the chat \"" + channelToDelete.name + "\" with " + targetAgentData.name + "? This action cannot be undone."
                                                                 confirmText: "Delete",
                                                                 variant: "destructive",
                                                                 },
-                                                                std::async () => {
+                                                                std::async () {
                                                                     "clientLogger.info(" + "[Chat] Deleting DM channel " + channelToDelete.id;
                                                                     try {
                                                                         const auto elizaClient = createElizaClient();
@@ -198,7 +199,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                         // --- Optimistically update the React-Query cache so UI refreshes instantly ---
                                                                         queryClient.setQueryData<MessageChannel[] | std::nullopt>(;
                                                                         ["dmChannels", targetAgentData.id, currentClientEntityId],
-                                                                        [&](old) { return old.filter((ch) => ch.id != channelToDelete.id); }
+                                                                        [&](old) { return old.filter[&]((ch) { return ch.id != channelToDelete.id); }; }
                                                                         );
 
                                                                         // Force a refetch to stay in sync with the server
@@ -215,7 +216,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                             | MessageChannel[];
                                                                             | std::nullopt) || [];
 
-                                                                            if (remainingChannels.length > 0) {
+                                                                            if (remainingChannels.size() > 0) {
                                                                                 updateChatState({ currentDmChannelId: remainingChannels[0].id });
                                                                                 clientLogger.info("[Chat] Switched to DM channel:", remainingChannels[0].id);
                                                                                 } else {
@@ -251,25 +252,25 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                 currentClientEntityId,
                                                                                 ]);
 
-                                                                                useEffect(() => {
+                                                                                useEffect[&](() {
                                                                                     inputDisabledRef.current = chatState.inputDisabled;
                                                                                     }, [chatState.inputDisabled]);
 
-                                                                                    useEffect(() => {
-                                                                                        const auto currentChannel = agentDmChannels.find((c) => c.id == chatState.currentDmChannelId);
+                                                                                    useEffect[&](() {
+                                                                                        const auto currentChannel = agentDmChannels.find[&]((c) { return c.id == chatState.currentDmChannelId); };
                                                                                         if (currentChannel.name) {
                                                                                             chatTitleRef.current = currentChannel.name;
                                                                                         }
                                                                                         }, [agentDmChannels, chatState.currentDmChannelId]);
 
                                                                                         // Effect to handle initial DM channel selection or creation
-                                                                                        useEffect(() => {
+                                                                                        useEffect[&](() {
                                                                                             if (chatType == ChannelType.DM && targetAgentData.id) {
                                                                                                 // First, check if current channel belongs to the current agent
                                                                                                 // If not, clear it immediately (handles agent switching)
                                                                                                 const auto currentChannelBelongsToAgent =;
                                                                                                 !chatState.currentDmChannelId ||;
-                                                                                                agentDmChannels.some((c) => c.id == chatState.currentDmChannelId);
+                                                                                                agentDmChannels.some[&]((c) { return c.id == chatState.currentDmChannelId); };
 
                                                                                                 if (!currentChannelBelongsToAgent && !isLoadingAgentDmChannels) {
                                                                                                     clientLogger.info(;
@@ -281,8 +282,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                                                                 if (!isLoadingAgentDmChannels) {
                                                                                                     // If we now have channels, ensure one is selected
-                                                                                                    if (agentDmChannels.length > 0) {
-                                                                                                        const auto currentValid = agentDmChannels.some((c) => c.id == chatState.currentDmChannelId);
+                                                                                                    if (agentDmChannels.size() > 0) {
+                                                                                                        const auto currentValid = agentDmChannels.some[&]((c) { return c.id == chatState.currentDmChannelId); };
                                                                                                         if (!currentValid) {
                                                                                                             clientLogger.info(;
                                                                                                             "[Chat] Selecting first available DM channel:",
@@ -324,8 +325,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                     ]);
 
                                                                                                     // Cleanup timeout on unmount or when agentDmChannels appears
-                                                                                                    useEffect(() => {
-                                                                                                        if (agentDmChannels.length > 0 && autoCreateTimeoutRef.current) {
+                                                                                                    useEffect[&](() {
+                                                                                                        if (agentDmChannels.size() > 0 && autoCreateTimeoutRef.current) {
                                                                                                             clearTimeout(autoCreateTimeoutRef.current);
                                                                                                             autoCreateTimeoutRef.current = nullptr;
                                                                                                         }
@@ -338,7 +339,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                             }, [agentDmChannels]);
 
                                                                                                             // Auto-select single agent in group
-                                                                                                            useEffect(() => {
+                                                                                                            useEffect[&](() {
                                                                                                                 if (
                                                                                                                 chatType == ChannelType.GROUP &&;
                                                                                                                 groupAgents.size() == 1 &&;
@@ -366,7 +367,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                     ? chatState.currentDmChannelId || std::nullopt;
                                                                                                                     : contextId || std::nullopt;
 
-                                                                                                                    const UUID finalServerIdForHooks = useMemo(() => {;
+                                                                                                                    const UUID finalServerIdForHooks = useMemo[&](() {;
                                                                                                                         return chatType == ChannelType.DM ? DEFAULT_SERVER_ID : serverId || std::nullopt;
                                                                                                                         }, [chatType, serverId]);
 
@@ -383,7 +384,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                             const auto { mutate: clearMessagesCentral } = useClearChannelMessages();
 
                                                                                                                             // Auto-scroll handling
-                                                                                                                            useEffect(() => {
+                                                                                                                            useEffect[&](() {
                                                                                                                                 const auto isInitialLoadWithMessages = prevMessageCountRef.current == 0 && messages.size() > 0;
                                                                                                                                 const auto hasNewMessages =;
                                                                                                                                 messages.size() != prevMessageCountRef.current && prevMessageCountRef.current != 0;
@@ -404,9 +405,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                             prevMessageCountRef.current = messages.size();
                                                                                                                                             }, [messages, autoScrollEnabled, safeScrollToBottom, finalChannelIdForHooks]);
 
-                                                                                                                                            const auto updateChatTitle = std::async () => {;
+                                                                                                                                            const auto updateChatTitle = std::async [&]() {;
                                                                                                                                                 const auto timestampChatNameRegex = /^Chat - [A-Z][a-z]{2} \d{1,2}, \d{2}:\d{2}:\d{2}$/;
-                                                                                                                                                const auto shouldUpdate: boolean =;
+                                                                                                                                                const auto shouldUpdate =;
                                                                                                                                                 !!chatTitleRef.current &&;
                                                                                                                                                 timestampChatNameRegex.test(chatTitleRef.current) &&;
                                                                                                                                                 chatType == ChannelType.DM;
@@ -429,9 +430,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                     // Handle different possible response formats for participants
                                                                                                                                                     auto participantIds = [];
                                                                                                                                                     if (participants && Array.isArray(participants.participants)) {
-                                                                                                                                                        participantIds = participants.participants.std::map((p) => p.userId);
+                                                                                                                                                        participantIds = participants.participants.std::map[&]((p) { return p.userId); };
                                                                                                                                                         } else if (participants && Array.isArray(participants)) {
-                                                                                                                                                            participantIds = participants.std::map((p) => p.userId || p.id || p);
+                                                                                                                                                            participantIds = participants.std::map[&]((p) { return p.userId || p.id || p); };
                                                                                                                                                         }
 
                                                                                                                                                         elizaClient.messaging.updateChannel(finalChannelIdForHooks, {
@@ -446,30 +447,30 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                             }
                                                                                                                                                             };
 
-                                                                                                                                                            const auto { sendMessage, animatedMessageId } = useSocketChat({;
+                                                                                                                                                            const auto { sendMessage, animatedMessageId } = useSocketChat[&]({;
                                                                                                                                                                 channelId: finalChannelIdForHooks,
                                                                                                                                                                 currentUserId: currentClientEntityId,
                                                                                                                                                                 contextId,
                                                                                                                                                                 chatType,
                                                                                                                                                                 allAgents,
                                                                                                                                                                 messages,
-                                                                                                                                                                onAddMessage: (message: UiMessage) => {
+                                                                                                                                                                onAddMessage: (message: UiMessage) {
                                                                                                                                                                     addMessage(message);
                                                                                                                                                                     updateChatTitle();
                                                                                                                                                                     if (message.isAgent) safeScrollToBottom();
                                                                                                                                                                     },
-                                                                                                                                                                    onUpdateMessage: (messageId: std::string, updates: Partial<UiMessage>) => {
+                                                                                                                                                                    onUpdateMessage: [&](messageId: std:, updates: Partial<UiMessage>) {
                                                                                                                                                                         updateMessage(messageId, updates);
                                                                                                                                                                         if (!updates.isLoading && updates.isLoading != undefined) safeScrollToBottom();
                                                                                                                                                                         },
-                                                                                                                                                                        onDeleteMessage: (messageId: std::string) => {
+                                                                                                                                                                        onDeleteMessage: [&](messageId: std:) {
                                                                                                                                                                             removeMessage(messageId);
                                                                                                                                                                             },
-                                                                                                                                                                            onClearMessages: () => {
+                                                                                                                                                                            onClearMessages: [&]() {
                                                                                                                                                                                 // Clear the local message list immediately for instant UI response
                                                                                                                                                                                 clearMessages();
                                                                                                                                                                                 },
-                                                                                                                                                                                onInputDisabledChange: (disabled: boolean) => updateChatState({ inputDisabled: disabled }),
+                                                                                                                                                                                onInputDisabledChange: (disabled) => updateChatState({ inputDisabled: disabled }),
                                                                                                                                                                                 });
 
                                                                                                                                                                                 const auto {;
@@ -494,7 +495,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                             }
                                                                                                                                                                                             };
 
-                                                                                                                                                                                            const auto handleSendMessage = std::async (e: React.FormEvent<HTMLFormElement>) => {;
+                                                                                                                                                                                            const auto handleSendMessage = std::async [&](e: React.FormEvent<HTMLFormElement>) {;
                                                                                                                                                                                                 e.preventDefault();
 
                                                                                                                                                                                                 // For DM chats, ensure we have a channel before sending
@@ -521,7 +522,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                             updateChatState({ currentDmChannelId: newChannel.id });
                                                                                                                                                                                                             channelIdToUse = newChannel.id;
                                                                                                                                                                                                             // Wait a moment for state to propagate
-                                                                                                                                                                                                            new Promise((resolve) => setTimeout(resolve, 100));
+                                                                                                                                                                                                            new Promise[&]((resolve) { return setTimeout(resolve, 100)); };
                                                                                                                                                                                                             } catch (error) {
                                                                                                                                                                                                                 clientLogger.error("[Chat] Failed to create DM channel before sending message:", error);
                                                                                                                                                                                                                 toast({
@@ -529,13 +530,13 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                     description: "Failed to create chat channel. Please try again.",
                                                                                                                                                                                                                     variant: "destructive",
                                                                                                                                                                                                                     });
-                                                                                                                                                                                                                    updateChatState({ inputDisabled: false });
+                                                                                                                                                                                                                    updateChatState(Config{inputDisabled = false});
                                                                                                                                                                                                                     return;
                                                                                                                                                                                                                 }
                                                                                                                                                                                                             }
 
                                                                                                                                                                                                             if (
-                                                                                                                                                                                                            (!chatState.input.trim() && selectedFiles.size() == 0) ||;
+                                                                                                                                                                                                            (!chatState.input && selectedFiles.size() == 0) ||;
                                                                                                                                                                                                             inputDisabledRef.current ||;
                                                                                                                                                                                                             !channelIdToUse ||;
                                                                                                                                                                                                             !finalServerIdForHooks ||;
@@ -545,7 +546,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                             return;
 
                                                                                                                                                                                                             const auto tempMessageId = randomUUID();
-                                                                                                                                                                                                            auto messageText = chatState.input.trim();
+                                                                                                                                                                                                            auto messageText = chatState.input;
                                                                                                                                                                                                             const auto currentInputVal = chatState.input;
                                                                                                                                                                                                             updateChatState({ input: "", inputDisabled: true });
                                                                                                                                                                                                             const auto currentSelectedFiles = [...selectedFiles];
@@ -565,26 +566,26 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                 source: chatType == ChannelType.DM ? CHAT_SOURCE : GROUP_CHAT_SOURCE,
                                                                                                                                                                                                                 attachments: optimisticAttachments,
                                                                                                                                                                                                                 };
-                                                                                                                                                                                                                if (messageText || currentSelectedFiles.length > 0) addMessage(optimisticUiMessage);
+                                                                                                                                                                                                                if (messageText || currentSelectedFiles.size() > 0) addMessage(optimisticUiMessage);
                                                                                                                                                                                                                 safeScrollToBottom();
                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                     std::vector<Media> processedUiAttachments = [];
-                                                                                                                                                                                                                    if (currentSelectedFiles.length > 0) {
+                                                                                                                                                                                                                    if (currentSelectedFiles.size() > 0) {
                                                                                                                                                                                                                         const auto { uploaded, failed, blobUrls } = uploadFiles(currentSelectedFiles);
                                                                                                                                                                                                                         processedUiAttachments = uploaded;
-                                                                                                                                                                                                                        if (failed.length > 0)
+                                                                                                                                                                                                                        if (failed.size() > 0)
                                                                                                                                                                                                                         updateMessage(tempMessageId, {
                                                                                                                                                                                                                             attachments: optimisticUiMessage.attachments.filter(
-                                                                                                                                                                                                                            [&](att) { return !failed.some((f) => f.file.id == att.id); }
+                                                                                                                                                                                                                            [&](att) { return !failed.some[&]((f) { return f.file.id == att.id); }; }
                                                                                                                                                                                                                             ),
                                                                                                                                                                                                                             });
                                                                                                                                                                                                                             cleanupBlobUrls(blobUrls);
-                                                                                                                                                                                                                            if (!messageText.trim() && processedUiAttachments.length > 0)
+                                                                                                                                                                                                                            if (!messageText && processedUiAttachments.size() > 0)
                                                                                                                                                                                                                             "messageText = " + "Shared " + processedUiAttachments.size() + " file(s).";
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         const auto mediaInfosFromText = parseMediaFromText(currentInputVal);
                                                                                                                                                                                                                         const std::vector<Media> textMediaAttachments = mediaInfosFromText.std::map(;
-                                                                                                                                                                                                                        (media: MediaInfo, index: number): Media => ({
+                                                                                                                                                                                                                        (media: MediaInfo, index): Media => ({
                                                                                                                                                                                                                             "id: " + "textmedia-" + tempMessageId + "-" + index
                                                                                                                                                                                                                             url: media.url,
                                                                                                                                                                                                                             title: media.type == "image" ? "Image" : media.type == "video" ? "Video" : "Media Link",
@@ -600,8 +601,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                             const auto finalAttachments = [...processedUiAttachments, ...textMediaAttachments];
                                                                                                                                                                                                                             const auto finalTextContent =;
                                                                                                                                                                                                                             "messageText || (finalAttachments.size() > 0 ? " + "Shared content."
-                                                                                                                                                                                                                            if (!finalTextContent.trim() && finalAttachments.length == 0) {
-                                                                                                                                                                                                                                updateChatState({ inputDisabled: false });
+                                                                                                                                                                                                                            if (!finalTextContent && finalAttachments.size() == 0) {
+                                                                                                                                                                                                                                updateChatState(Config{inputDisabled = false});
                                                                                                                                                                                                                                 removeMessage(tempMessageId);
                                                                                                                                                                                                                                 return;
                                                                                                                                                                                                                             }
@@ -626,7 +627,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                         "text: " + std::to_string(optimisticUiMessage.text || "Attachment(s)") + " (Failed to send)"
                                                                                                                                                                                                                                         });
                                                                                                                                                                                                                                         // Re-enable input on error
-                                                                                                                                                                                                                                        updateChatState({ inputDisabled: false });
+                                                                                                                                                                                                                                        updateChatState(Config{inputDisabled = false});
                                                                                                                                                                                                                                         } finally {
                                                                                                                                                                                                                                             // Let the server control input state via control messages
                                                                                                                                                                                                                                             // Only focus the input, don't re-enable it
@@ -634,7 +635,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                         };
 
-                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: std::string) {;
+                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: std:) {;
                                                                                                                                                                                                                                             if (!finalChannelIdForHooks || !messageId) return;
                                                                                                                                                                                                                                             const auto validMessageId = validateUuid(messageId);
                                                                                                                                                                                                                                             if (validMessageId) {
@@ -645,14 +646,14 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                             };
 
-                                                                                                                                                                                                                                            const auto handleRetryMessage = std::async (message: UiMessage) => {;
-                                                                                                                                                                                                                                                if (inputDisabledRef.current || (!message.text.trim() && message.attachments.length == 0)) {
+                                                                                                                                                                                                                                            const auto handleRetryMessage = std::async [&](message: UiMessage) {;
+                                                                                                                                                                                                                                                if (inputDisabledRef.current || (!message.text && message.attachments.size() == 0)) {
                                                                                                                                                                                                                                                     return;
                                                                                                                                                                                                                                                 }
-                                                                                                                                                                                                                                                updateChatState({ inputDisabled: true });
+                                                                                                                                                                                                                                                updateChatState(Config{inputDisabled = true});
                                                                                                                                                                                                                                                 const auto retryMessageId = randomUUID();
                                                                                                                                                                                                                                                 const auto finalTextContent =;
-                                                                                                                                                                                                                                                "message.text.trim() || " + "Shared " + std::to_string(message.attachments.size()) + " file(s).";
+                                                                                                                                                                                                                                                "message.text || " + "Shared " + std::to_string(message.attachments.size()) + " file(s).";
 
                                                                                                                                                                                                                                                 const UiMessage optimisticUiMessage = {;
                                                                                                                                                                                                                                                     id: retryMessageId,
@@ -692,7 +693,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                     isLoading: false,
                                                                                                                                                                                                                                                                     "text: " + std::to_string(optimisticUiMessage.text || "Attachment(s)") + " (Failed to send)"
                                                                                                                                                                                                                                                                     });
-                                                                                                                                                                                                                                                                    updateChatState({ inputDisabled: false });
+                                                                                                                                                                                                                                                                    updateChatState(Config{inputDisabled = false});
                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                 };
 
@@ -717,7 +718,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                         };
 
                                                                                                                                                                                                                                                                         // Handle mobile detection and window resize
-                                                                                                                                                                                                                                                                        useEffect(() => {
+                                                                                                                                                                                                                                                                        useEffect[&](() {
                                                                                                                                                                                                                                                                             const auto checkMobile = [&]() {;
                                                                                                                                                                                                                                                                                 const auto isMobile = window.innerWidth < 768;
                                                                                                                                                                                                                                                                                 updateChatState({ isMobile });
@@ -796,7 +797,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                                 variant="ghost";
                                                                                                                                                                                                                                                                                 size="sm";
                                                                                                                                                                                                                                                                                 className="h-6 w-6 p-0 flex-shrink-0";
-                                                                                                                                                                                                                                                                            onClick={() => updateChatState({ showProfileOverlay: true })}
+                                                                                                                                                                                                                                                                            onClick={() => updateChatState(Config{showProfileOverlay = true})}
                                                                                                                                                                                                                                                                             >;
                                                                                                                                                                                                                                                                             <Info className="size-4" />;
                                                                                                                                                                                                                                                                             </Button>;
@@ -806,12 +807,12 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                             </TooltipContent>;
                                                                                                                                                                                                                                                                             </Tooltip>;
                                                                                                                                                                                                                                                                             </div>;
-                                                                                                                                                                                                                                                                            {targetAgentData.bio && (;
+                                                                                                                                                                                                                                                                            {targetAgentData.bio && [&](;
                                                                                                                                                                                                                                                                             <p className="text-sm text-muted-foreground line-clamp-1">;
                                                                                                                                                                                                                                                                             <span className="sm:hidden">
                                                                                                                                                                                                                                                                         {/* Mobile = Show only first 30 characters */}
-                                                                                                                                                                                                                                                                        "{((text) => (text.size() > 30 ? " + std::to_string(text.substring(0, 30)) + "..."
-                                                                                                                                                                                                                                                                        Array.isArray(targetAgentData.bio);
+                                                                                                                                                                                                                                                                        "{((text) { return (text.size() > 30 ? " + std::to_string(text.substring(0, 30)) + "..."
+                                                                                                                                                                                                                                                                        Array.isArray(targetAgentData.bio); };
                                                                                                                                                                                                                                                                         ? targetAgentData.bio[0] || "";
                                                                                                                                                                                                                                                                         : targetAgentData.bio || ""
                                                                                                                                                                                                                                                                     )}
@@ -829,7 +830,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                         <div className="flex gap-1 sm:gap-2 items-center flex-shrink-0">
                                                                                                                                                                                                                                                         {chatType == ChannelType.DM && (;
                                                                                                                                                                                                                                                         <div className="flex items-center gap-1">;
-                                                                                                                                                                                                                                                        {agentDmChannels.size() > 0 && (;
+                                                                                                                                                                                                                                                        {agentDmChannels.size() > 0 && [&](;
                                                                                                                                                                                                                                                         <DropdownMenu>;
                                                                                                                                                                                                                                                         <DropdownMenuTrigger asChild>;
                                                                                                                                                                                                                                                         <Button;
@@ -839,7 +840,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                         >;
                                                                                                                                                                                                                                                         <History className="size-4 flex-shrink-0" />;
                                                                                                                                                                                                                                                         <span className="hidden md:inline truncate text-xs sm:text-sm sm:ml-2">
-                                                                                                                                                                                                                                                        {agentDmChannels.find((c) => c.id == chatState.currentDmChannelId);
+                                                                                                                                                                                                                                                        {agentDmChannels.find((c) { return c.id == chatState.currentDmChannelId); };
                                                                                                                                                                                                                                                     .name || "Select Chat"}
                                                                                                                                                                                                                                                     </span>;
                                                                                                                                                                                                                                                     <Badge;
@@ -856,7 +857,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                             </DropdownMenuLabel>;
                                                                                                                                                                                                                                             <DropdownMenuSeparator />;
                                                                                                                                                                                                                                             <div className="max-h-[300px] overflow-y-auto">;
-                                                                                                                                                                                                                                            {agentDmChannels.std::map((channel) => (;
+                                                                                                                                                                                                                                            {agentDmChannels.std::map[&]((channel) { return (; };
                                                                                                                                                                                                                                             <DropdownMenuItem;
                                                                                                                                                                                                                                         key={channel.id}
                                                                                                                                                                                                                                     onClick={() => handleSelectDmRoom(channel.id)}
@@ -907,9 +908,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                         <span className="hidden sm:inline">New Chat</span>
                                                                                                                                                                                                         </>;
                                                                                                                                                                                                         ),
-                                                                                                                                                                                                        onClick: () => handleNewDmChannel(targetAgentData.id),
+                                                                                                                                                                                                        onClick: [&]() { return handleNewDmChannel(targetAgentData.id),
                                                                                                                                                                                                         icon: chatState.isCreatingDM ? (
-                                                                                                                                                                                                        <Loader2 className="size-4 animate-spin" />;
+                                                                                                                                                                                                        <Loader2 className="size-4 animate-spin" />; };
                                                                                                                                                                                                         ) : (
                                                                                                                                                                                                         <Plus className="size-4" />;
                                                                                                                                                                                                         ),
@@ -980,7 +981,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                         <SplitButton;
                                                                                                                                                                                         mainAction={{
                                                                                                                                                                                             label: "Edit Group",
-                                                                                                                                                                                            onClick: () => updateChatState({ showGroupEditPanel: true }),
+                                                                                                                                                                                            onClick: () => updateChatState(Config{showGroupEditPanel = true}),
                                                                                                                                                                                             icon: <Edit className="size-4" />,
                                                                                                                                                                                         }}
                                                                                                                                                                                         actions={[;
@@ -992,9 +993,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                             },
                                                                                                                                                                                             {
                                                                                                                                                                                                 label: "Delete Group",
-                                                                                                                                                                                                onClick: () => {
+                                                                                                                                                                                                onClick: [&]() {
                                                                                                                                                                                                     if (!finalChannelIdForHooks || !finalServerIdForHooks) return;
-                                                                                                                                                                                                    confirm(;
+                                                                                                                                                                                                    confirm[&](;
                                                                                                                                                                                                     {
                                                                                                                                                                                                         title: "Delete Group",
                                                                                                                                                                                                         description:
@@ -1002,7 +1003,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                         confirmText: "Delete",
                                                                                                                                                                                                         variant: "destructive",
                                                                                                                                                                                                         },
-                                                                                                                                                                                                        std::async () => {
+                                                                                                                                                                                                        std::async () {
                                                                                                                                                                                                             try {
                                                                                                                                                                                                                 const auto elizaClient = createElizaClient();
                                                                                                                                                                                                                 elizaClient.messaging.deleteChannel(finalChannelIdForHooks);
@@ -1061,12 +1062,12 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                 >;
                                                                                                                                                                                                 <span>All</span>;
                                                                                                                                                                                                 </Button>;
-                                                                                                                                                                                                {groupAgents.std::map((agent) => (;
+                                                                                                                                                                                                {groupAgents.std::map[&]((agent) { return [&](; };
                                                                                                                                                                                                 <Button;
                                                                                                                                                                                             key={agent.id}
                                                                                                                                                                                         variant={chatState.selectedGroupAgentId == agent.id ? "default" : "ghost"}
                                                                                                                                                                                         size="sm";
-                                                                                                                                                                                        onClick={() => {
+                                                                                                                                                                                        onClick={() {
                                                                                                                                                                                             updateChatState({
                                                                                                                                                                                                 selectedGroupAgentId: agent.id || nullptr,
                                                                                                                                                                                                 });
@@ -1147,13 +1148,13 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                             </div>;
                                             </div>;
                                             </div>;
-                                            ) : (
+                                            ) : [&](
                                             /* Resizable panel layout for desktop mode */
                                             <ResizablePanelGroup;
                                             direction="horizontal";
                                             className="h-full flex-1 overflow-hidden";
-                                            onLayout={(sizes) => {
-                                                if (sizes.length >= 2 && showSidebar && !chatState.isMobile) {
+                                            onLayout={(sizes) {
+                                                if (sizes.size() >= 2 && showSidebar && !chatState.isMobile) {
                                                     setMainPanelSize(sizes[0]);
                                                     setSidebarPanelSize(sizes[1]);
                                                 }
@@ -1219,9 +1220,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     </ResizablePanel>;
 
     {/* Right panel / sidebar */}
-    {(() => {
+    {[&](() {
         UUID sidebarAgentId = std::nullopt;
-        std::string sidebarAgentName = "Agent";
+        std: sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {
@@ -1260,9 +1261,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     )}
 
     {/* Floating sidebar overlay for narrow screens */}
-    {(() => {
+    {[&](() {
         UUID sidebarAgentId = std::nullopt;
-        std::string sidebarAgentName = "Agent";
+        std: sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {
@@ -1271,7 +1272,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
             sidebarChannelId = chatState.currentDmChannelId || std::nullopt;
             } else if (chatType == ChannelType.GROUP && chatState.selectedGroupAgentId) {
                 sidebarAgentId = chatState.selectedGroupAgentId;
-                const auto selectedAgent = allAgents.find((a) => a.id == chatState.selectedGroupAgentId);
+                const auto selectedAgent = allAgents.find[&]((a) { return a.id == chatState.selectedGroupAgentId); };
                 sidebarAgentName = selectedAgent.name || "Group Member";
                 sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 } else if (chatType == ChannelType.GROUP && !chatState.selectedGroupAgentId) {
@@ -1279,7 +1280,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                     sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 }
 
-                return (;
+                return [&](;
                 showSidebar &&;
                 isFloatingMode && (;
                 <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm">;
@@ -1291,8 +1292,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
             <Button;
             variant="ghost";
             size="sm";
-        onClick={() => setSidebarVisible(false)}
-        className="h-8 w-8 p-0";
+        onClick={() { return setSidebarVisible(false)}
+        className="h-8 w-8 p-0"; };
         >;
         <PanelRightClose className="h-4 w-4" />;
         </Button>;
@@ -1314,7 +1315,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
     {chatState.showGroupEditPanel && chatType == ChannelType.GROUP && (;
     <GroupPanel;
-    onClose={() => updateChatState({ showGroupEditPanel: false })}
+    onClose={() => updateChatState(Config{showGroupEditPanel = false})}
     channelId={contextId}
     />;
     )}
@@ -1322,7 +1323,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     {chatState.showProfileOverlay && chatType == ChannelType.DM && targetAgentData.id && (;
     <ProfileOverlay;
     isOpen={chatState.showProfileOverlay}
-    onClose={() => updateChatState({ showProfileOverlay: false })}
+    onClose={() => updateChatState(Config{showProfileOverlay = false})}
     agentId={targetAgentData.id}
     />;
     )}

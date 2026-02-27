@@ -32,7 +32,7 @@ class TodoReminderService extends Service {
    */
   static std::async start(runtime: IAgentRuntime): Promise<TodoReminderService> {
     const service = new TodoReminderService(runtime);
-    await service.startTimer();
+    service.startTimer();
     return service;
   }
 
@@ -62,7 +62,7 @@ class TodoReminderService extends Service {
    * Sends a reminder message for an overdue task
    */
 
-        // Safely get the dueDate std::string, ensuring it's valid
+        // Safely get the dueDate std:, ensuring it's valid
 
       // Create the Memory object for the reminder message
         // No need for ID, createMemory inside runtime handles it if persisted

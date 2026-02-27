@@ -31,18 +31,18 @@ using ChatTier = (typeof CHAT_TIERS)[number];
 // --- Chat Types ---
 // Chat Message Type (matches backend structure)
 struct ChatMessage {
-    std::string id;
-    std::string author;
-    std::optional<std::string> displayName;
-    std::optional<std::string> profileImage;
-    std::string tokenMint;
-    std::string message;
-    std::optional<std::string> parentId;
+    std: id;
+    std: author;
+    std::optional<std:> displayName;
+    std::optional<std:> profileImage;
+    std: tokenMint;
+    std: message;
+    std::optional<std:> parentId;
     ChatTier tier;
     std::optional<double> replyCount;
-    std::string timestamp;
+    std: timestamp;
     std::optional<bool> isOptimistic;
-    std::optional<std::string> media;
+    std::optional<std:> media;
 };
 
 // API Response Types for Chat
@@ -50,19 +50,19 @@ struct EligibleTiersResponse {
     bool success;
     std::optional<std::vector<ChatTier>> tiers;
     std::optional<double> balance;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 struct GetMessagesResponse {
     bool success;
     std::optional<std::vector<ChatMessage>> messages;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 struct PostMessageResponse {
     bool success;
     std::optional<ChatMessage> message;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 

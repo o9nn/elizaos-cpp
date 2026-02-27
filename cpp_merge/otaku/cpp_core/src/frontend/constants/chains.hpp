@@ -23,22 +23,22 @@ namespace elizaos {
 /**
  * Supported blockchain networks
  */
-using SupportedChain = std::string;
+using SupportedChain = std:;
 
 /**
  * Chain UI configuration interface
  */
 struct ChainUIConfig {
     SupportedChain id;
-    std::string name;
-    std::string displayName;
-    std::string icon;
-    std::string walletIcon;
-    std::string symbol;
-    std::string name;
-    std::string icon;
-    std::string explorerUrl;
-    std::string color;
+    std: name;
+    std: displayName;
+    std: icon;
+    std: walletIcon;
+    std: symbol;
+    std: name;
+    std: icon;
+    std: explorerUrl;
+    std: color;
 };
 
 /**
@@ -52,41 +52,41 @@ struct ChainUIConfig {
 /**
  * Helper: Get chain config by chain name
  */
-std::optional<ChainUIConfig> getChainConfig(const std::string& chain);
+std::optional<ChainUIConfig> getChainConfig(const std:& chain);
 
 /**
  * Helper: Get chain icon path
  */
-std::string getChainIcon(const std::string& chain);
+std: getChainIcon(const std:& chain);
 
 /**
  * Helper: Get chain wallet icon path
  */
-std::string getChainWalletIcon(const std::string& chain);
+std: getChainWalletIcon(const std:& chain);
 /**
  * Helper: Get native token icon path by chain
  */
-std::string getNativeTokenIcon(const std::string& chain);
+std: getNativeTokenIcon(const std:& chain);
 
 /**
  * Helper: Get native token symbol by chain
  */
-std::string getNativeTokenSymbol(const std::string& chain);
+std: getNativeTokenSymbol(const std:& chain);
 
 /**
  * Helper: Get chain color
  */
-std::string getChainColor(const std::string& chain);
+std: getChainColor(const std:& chain);
 
 /**
  * Helper: Get transaction explorer URL
  */
-std::string getTxExplorerUrl(const std::string& chain, const std::string& txHash);
+std: getTxExplorerUrl(const std:& chain, const std:& txHash);
 
 /**
  * Helper: Get address explorer URL
  */
-std::string getAddressExplorerUrl(const std::string& chain, const std::string& address);
+std: getAddressExplorerUrl(const std:& chain, const std:& address);
 
 /**
  * Helper: Check if a chain is supported
@@ -95,7 +95,7 @@ std::string getAddressExplorerUrl(const std::string& chain, const std::string& a
 /**
  * Helper: Get chain display name
  */
-std::string getChainDisplayName(const std::string& chain);
+std: getChainDisplayName(const std:& chain);
 
 /**
  * Token icon mapping for common tokens
@@ -107,13 +107,13 @@ std::string getChainDisplayName(const std::string& chain);
  * Helper: Get token icon by symbol
  * Returns null if no icon is available (will use fallback in component)
  */
-std::string getTokenIconBySymbol(const std::string& symbol);
+std: getTokenIconBySymbol(const std:& symbol);
 
 /**
  * Helper: Get token icon by symbol or chain
  * First tries to get from TOKEN_ICONS, then falls back to native token icon
  */
-std::string getTokenIcon(const std::string& symbol, std::optional<std::string> chain);
+std: getTokenIcon(const std:& symbol, std::optional<std:> chain);
 
 
 } // namespace elizaos

@@ -15,9 +15,9 @@ namespace elizaos {
 
 
 
-void TagIcon(auto { label, { label: std::string; color: std::string } color });
+void TagIcon(auto { label, { label: std:; color: std: } color });
 
-std::string getShortLabel(const std::string& label);
+std: getShortLabel(const std:& label);
 
 void ShowcaseCardTag({ tags: TagType[] } { tags });
 

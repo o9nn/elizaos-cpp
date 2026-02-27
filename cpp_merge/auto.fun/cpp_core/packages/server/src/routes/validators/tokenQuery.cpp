@@ -10,19 +10,19 @@ TokenQueryParams parseTokensQuery(RawTokenQuery raw) {
 
         const auto page = raw.page ? parseInt(raw.page, 10) : 1;
         if (isNaN(page) || page < 1) {
-            throw std::runtime_error(`Invalid 'page' parameter: ${raw.page}`);
+            throw std::runtime_error("Invalid 'page' parameter: " + std::to_string(raw.page) + "");
         }
 
         const auto limit = raw.limit ? parseInt(raw.limit, 10) : 50;
         if (isNaN(limit) || limit < 1) {
-            throw std::runtime_error(`Invalid 'limit' parameter: ${raw.limit}`);
+            throw std::runtime_error("Invalid 'limit' parameter: " + std::to_string(raw.limit) + "");
         }
         auto status: TokenStatus | std::nullopt;
         if (raw.status) {
-            if (Object.values(TokenStatus).includes(raw.status as TokenStatus)) {
+            if (Object.values(TokenStatus).count(raw.status as TokenStatus) > 0) {
                 status = raw.status;
                 } else {
-                    throw std::runtime_error(`Invalid 'status' parameter: ${raw.status}`);
+                    throw std::runtime_error("Invalid 'status' parameter: " + std::to_string(raw.status) + "");
                 }
             }
 
@@ -30,25 +30,25 @@ TokenQueryParams parseTokensQuery(RawTokenQuery raw) {
             if (raw.hideImported == "0") hideImported = 0;
             else if (raw.hideImported == "1") hideImported = 1;
 
-            auto creator: std::string | std::nullopt;
+            auto creator: std: | std::nullopt;
             if (raw.creator) {
                 if (parseSolanaAddress(raw.creator)) {
                     creator = raw.creator;
                     } else {
-                        throw std::runtime_error(`Invalid Solana address for 'creator': ${raw.creator}`);
+                        throw std::runtime_error("Invalid Solana address for 'creator': " + std::to_string(raw.creator) + "");
                     }
                 }
 
                 const auto search =;
-                raw.search && raw.search.trim() != "" ? raw.search.trim() : std::nullopt;
+                raw.search && raw.search != "" ? raw.search : std::nullopt;
 
                 SortBy sortBy = SortBy.CreatedAt;
                 if (raw.sortBy) {
-                    if (Object.values(SortBy).includes(raw.sortBy as SortBy)) {
+                    if (Object.values(SortBy).count(raw.sortBy as SortBy) > 0) {
                         sortBy = raw.sortBy;
                         } else {
                             std::cout << "ewa" << std::endl;
-                            throw std::runtime_error(`Invalid 'sortBy' parameter: ${raw.sortBy}`);
+                            throw std::runtime_error("Invalid 'sortBy' parameter: " + std::to_string(raw.sortBy) + "");
                         }
                     }
 
@@ -58,7 +58,7 @@ TokenQueryParams parseTokensQuery(RawTokenQuery raw) {
                         if (lower == SortOrder.Asc || lower == SortOrder.Desc) {
                             sortOrder = lower;
                             } else {
-                                throw std::runtime_error(`Invalid 'sortOrder' parameter: ${raw.sortOrder}`);
+                                throw std::runtime_error("Invalid 'sortOrder' parameter: " + std::to_string(raw.sortOrder) + "");
                             }
                         }
 

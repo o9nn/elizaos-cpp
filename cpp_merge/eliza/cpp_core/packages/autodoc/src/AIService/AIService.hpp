@@ -1,4 +1,5 @@
 #include ".TypeScriptParser.js.hpp"
+#include <cstdlib>
 #include "utils/CodeFormatter.js.hpp"
 #include "utils/DocumentOrganizer.js.hpp"
 #include <functional>
@@ -35,15 +36,15 @@ class AIService {
    * @throws {Error} If OPENAI_API_KEY environment variable is not std::set
    */
   constructor(private configuration: Configuration) {
-    if (!process.env.OPENAI_API_KEY) {
+    if (!std::getenv("OPENAI_API_KEY")) {
       throw new Error('OPENAI_API_KEY is not set');
     }
-    this.chatModel = new ChatOpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    this.chatModel = new ChatOpenAI({ apiKey: std::getenv("OPENAI_API_KEY") });
     this.chatModelFAQ = new ChatOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: std::getenv("OPENAI_API_KEY"),
       model: 'gpt-4o',
     });
-    this.codeFormatter = new CodeFormatter();
+    this.codeFormatter = std::make_unique<CodeFormatter>();
   }
 
   /**

@@ -37,6 +37,6 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu);
  * @param envVars Current environment variables
  * @param yes Whether to auto-confirm prompts
  */
-std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes);
+std::future<void> addNewVariable(const std:& envPath, EnvVars envVars, auto yes);
 
 } // namespace elizaos

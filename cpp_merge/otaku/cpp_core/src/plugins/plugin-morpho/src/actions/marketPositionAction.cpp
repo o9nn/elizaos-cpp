@@ -1,4 +1,6 @@
 #include "marketPositionAction.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +9,7 @@ namespace elizaos {
 void formatMarketPositionData(const std::vector<UserPosition>& positions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return positions.std::map((pos) => {;
+    return positions.std::map[&]((pos) {;
         return {
             marketId: pos.marketId,
             pairLabel: pos.pairLabel,

@@ -65,7 +65,7 @@ class ReferralService extends Service {
 
     // Check if this specific user has already been activated for this referrer
 
-    // Check if this specific userId is already in std::any activation event metadata
+    // Check if this specific userId is already in std: activation event metadata
 
     // Award activation bonus to referrer
 

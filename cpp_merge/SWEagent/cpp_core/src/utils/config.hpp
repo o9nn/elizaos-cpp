@@ -24,17 +24,17 @@ namespace elizaos {
 /**
  * Convert path relative to repository root
  */
-std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std::string, path::ParsedPath>& inputPath, std::optional<std::string> root);
+std::variant<std:, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std:, path::ParsedPath>& inputPath, std::optional<std:> root);
 
 /**
  * Check if a value could be a path
  */
-bool couldBeAPath(const std::any& value);
+bool couldBeAPath(const std:& value);
 
 /**
  * Strip absolute paths from dictionary
  */
-std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> root);
+std: stripAbspathFromDict(const std:& value, std::optional<std:> root);
 
 /**
  * Convert path to absolute path
@@ -43,26 +43,26 @@ std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> 
 /**
  * Convert paths array to absolute paths
  */
-std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std::string, path::ParsedPath>>& paths);
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std:, path::ParsedPath>>& paths);
 
 /**
  * Load environment variables from .env file
  */
-void loadEnvironmentVariables(std::optional<std::string> envPath);
+void loadEnvironmentVariables(std::optional<std:> envPath);
 
 /**
  * Parse config file content
  */
-std::any parseConfigFile(const std::string& content, const std::string& format);
+std: parseConfigFile(const std:& content, const std:& format);
 
 /**
  * Merge two config objects deeply
  */
-std::any mergeConfigs(const std::any& baseConfig, const std::any& overrideConfig);
+std: mergeConfigs(const std:& baseConfig, const std:& overrideConfig);
 
 /**
  * Validate config structure
  */
-void validateConfig(const std::any& config);
+void validateConfig(const std:& config);
 
 } // namespace elizaos

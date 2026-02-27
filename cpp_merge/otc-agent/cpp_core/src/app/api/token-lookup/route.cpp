@@ -1,10 +1,13 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isSolanaAddress(const std::string& address) {
+bool isSolanaAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Solana addresses are base58 encoded, typically 32-44 characters
@@ -14,17 +17,17 @@ bool isSolanaAddress(const std::string& address) {
 
 }
 
-bool isEvmAddress(const std::string& address) {
+bool isEvmAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 
 }
 
-std::future<std::optional<TokenInfo>> lookupSolanaToken(const std::string& address, const std::string& codexKey) {
+std::future<std::optional<TokenInfo>> lookupSolanaToken(const std:& address, const std:& codexKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto query = `;
+    const auto query = ";
     query GetToken($input: TokenInput!) {
         token(input: $input) {
             name;
@@ -36,7 +39,7 @@ std::future<std::optional<TokenInfo>> lookupSolanaToken(const std::string& addre
             }
         }
     }
-    `;
+    ";
 
     try {
         const auto response = fetch(CODEX_GRAPHQL_URL, {;
@@ -45,7 +48,7 @@ std::future<std::optional<TokenInfo>> lookupSolanaToken(const std::string& addre
                 "Content-Type": "application/json",
                 Authorization: codexKey,
                 },
-                body: JSON.stringify({
+                body: nlohmann::json().dump({
                     query,
                     variables: {
                         input: {
@@ -80,7 +83,7 @@ std::future<std::optional<TokenInfo>> lookupSolanaToken(const std::string& addre
 
 }
 
-std::future<std::optional<TokenInfo>> lookupEvmToken(const std::string& address, const std::string& chain, const std::string& alchemyKey) {
+std::future<std::optional<TokenInfo>> lookupEvmToken(const std:& address, const std:& chain, const std:& alchemyKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto alchemyNetwork = chain == "bsc" ? "bnb-mainnet" : "base-mainnet";
@@ -91,7 +94,7 @@ std::future<std::optional<TokenInfo>> lookupEvmToken(const std::string& address,
         const auto response = fetch(url, {;
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: nlohmann::json().dump({
                 jsonrpc: "2.0",
                 id: 1,
                 method: "alchemy_getTokenMetadata",
@@ -152,7 +155,7 @@ std::future<void> GET(NextRequest request) {
     std::optional<TokenInfo> token = nullptr;
 
     if (chain == "solana") {
-        const auto codexKey = process.env.CODEX_API_KEY;
+        const auto codexKey = std::getenv("CODEX_API_KEY");
         if (!codexKey) {
             return NextResponse.json(;
             { error: "Solana token lookup not configured" },
@@ -161,7 +164,7 @@ std::future<void> GET(NextRequest request) {
         }
         token = lookupSolanaToken(address, codexKey);
         } else {
-            const auto alchemyKey = process.env.ALCHEMY_API_KEY;
+            const auto alchemyKey = std::getenv("ALCHEMY_API_KEY");
             if (!alchemyKey) {
                 return NextResponse.json(;
                 { error: "EVM token lookup not configured" },

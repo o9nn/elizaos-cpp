@@ -1,4 +1,6 @@
 #include "messages.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,10 +21,10 @@ std::future<void> getActorDetails(auto roomId) {
 void formatActors() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!actors || actors.length == 0) {
+    if (!actors || actors.size() == 0) {
         return "No actors available.";
     }
-    return actors.std::map((actor) => actor.name).join(", ");
+    return actors.std::map[&]((actor) { return actor.name).join(", "); };
 
 }
 

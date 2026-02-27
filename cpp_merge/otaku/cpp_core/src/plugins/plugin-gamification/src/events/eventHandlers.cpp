@@ -1,10 +1,12 @@
 #include "eventHandlers.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double validateVolumeUsd(const std::any& volume) {
+double validateVolumeUsd(const std:& volume) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = Number(volume);
@@ -53,7 +55,7 @@ std::future<std::optional<UUID>> getUserIdFromMessage(std::optional<UUID> messag
                     roomId,
                     count: 50, // Reduced from 100
                     });
-                    const auto message = memories.find((m: Memory) => m.id == messageId);
+                    const auto message = memories.find[&]((m: Memory) { return m.id == messageId); };
                     if (!message.entityId) return null;
 
                     return resolveActualUserId(message.entityId);
@@ -93,7 +95,7 @@ std::future<bool> recordSwapPoints(ActionEventPayload payload) {
         }
 
         // Validate volumeUsd to prevent negative/NaN values
-        // Use ?? instead of || to preserve valid zero values
+        // Use || instead of || to preserve valid zero values
         const auto volumeUsd = validateVolumeUsd(actionResult.values.volumeUsd || actionResult.values.valueUsd);
 
         const auto userId = getUserIdFromMessage(payload.runtime, payload.messageId, payload.roomId, payload.entityId);
@@ -139,7 +141,7 @@ std::future<bool> recordBridgePoints(ActionEventPayload payload) {
         }
 
         // Validate volumeUsd to prevent negative/NaN values
-        // Use ?? instead of || to preserve valid zero values
+        // Use || instead of || to preserve valid zero values
         const auto volumeUsd = validateVolumeUsd(actionResult.values.volumeUsd || actionResult.values.valueUsd);
         const auto chain = actionResult.values.destinationChain || actionResult.values.toChain;
 
@@ -248,7 +250,7 @@ std::future<void> recordChatPoints(RunEventPayload payload) {
                     roomId: payload.roomId,
                     count: 50, // Reduced from 100
                     });
-                    const auto message = memories.find((m) => m.id == payload.messageId);
+                    const auto message = memories.find[&]((m) { return m.id == payload.messageId); };
                     input = message.content.text || "";
                 }
                 } catch (error) {

@@ -1,4 +1,5 @@
 #include ".utils/files.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,43 +19,43 @@ namespace elizaos {
  */
 
 struct TrajectoryStep {
-    std::optional<std::string> thought;
-    std::optional<std::string> action;
-    std::optional<std::string> observation;
-    std::optional<std::string> response;
+    std::optional<std:> thought;
+    std::optional<std:> action;
+    std::optional<std:> observation;
+    std::optional<std:> response;
     std::optional<double> execution_time;
-    std::optional<std::unordered_map<std::string, unknown>> state;
-    std::optional<std::vector<{ role: std::string; content: std::string; messageType?: std::string }>> query;
+    std::optional<std::unordered_map<std:, unknown>> state;
+    std::optional<std::vector<{ role: std:; content: std:; messageType?: std: }>> query;
 
 struct TrajectoryData {
     std::vector<TrajectoryStep> trajectory;
-    std::unordered_map<std::string, unknown> info;
-    std::optional<std::vector<{ role: std::string; content: std::string | Record<std::string, unknown>; [key: std::string]: unknown }>> history;
+    std::unordered_map<std:, unknown> info;
+    std::optional<std::vector<{ role: std:; content: std: | Record<std:, unknown>; [key: std:]: unknown }>> history;
 
 /**
  * Inspector CLI class
  */
 class TrajectoryInspector {
   private trajData: TrajectoryData;
-  private currentStep: number = -1;
-  private showFull: boolean = false;
-  // private trajPath: std::string;  // Currently unused
-  private goldPatch?: std::string;
+  private currentStep = -1;
+  private showFull = false;
+  // private trajPath: std:;  // Currently unused
+  private goldPatch?: std:;
 
-  constructor(trajPath: std::string, dataPath?: std::string) {
+  constructor(trajPath: std:, dataPath?: std:) {
     // this.trajPath = trajPath;  // Currently unused
 
     // Load trajectory
     const content = fs.readFileSync(trajPath, 'utf-8');
-    if (trajPath.endsWith('.yaml') || trajPath.endsWith('.yml')) {
+    if (trajPath.rfind('.yaml') || trajPath.rfind('.yml')) {
       this.trajData = yaml.load(content) as TrajectoryData;
     } else {
-      this.trajData = JSON.parse(content);
+      this.trajData = nlohmann::json::parse(content);
     }
 
     // Load gold patch if available
     if (dataPath) {
-      const data = loadFile(dataPath) as Record<std::string, { patch?: std::string }> | null;
+      const data = loadFile(dataPath) as Record<std:, { patch?: std: }> | null;
       const instanceId = path.basename(path.dirname(trajPath));
       this.goldPatch = data?.[instanceId]?.patch;
     }
@@ -76,11 +77,11 @@ class TrajectoryInspector {
 /**
  * Find trajectory files in a directory
  */
-std::vector<std::string> findTrajFiles(const std::string& dir);
+std::vector<std::string> findTrajFiles(const std:& dir);
 
 /**
  * Main std::function for inspector CLI
  */
-std::future<void> inspectorCli(std::string = '.' trajectoryPath, std::optional<std::string> dataPath);
+std::future<void> inspectorCli(std: = '.' trajectoryPath, std::optional<std:> dataPath);
 
 } // namespace elizaos

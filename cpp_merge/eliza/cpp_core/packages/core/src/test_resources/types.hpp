@@ -31,10 +31,10 @@ namespace elizaos {
  * @property {string} [role] - The role of the user (std::optional).
  */
 struct User {
-    std::string id;
-    std::optional<std::string> email;
-    std::optional<std::string> phone;
-    std::optional<std::string> role;
+    std: id;
+    std::optional<std:> email;
+    std::optional<std:> phone;
+    std::optional<std:> role;
 };
 
 

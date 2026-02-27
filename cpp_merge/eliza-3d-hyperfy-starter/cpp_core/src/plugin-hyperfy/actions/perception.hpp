@@ -25,23 +25,23 @@ enum SnapshotType {
 /* HYPERFY_SCENE_PERCEPTION action                                            */
 /* -------------------------------------------------------------------------- */
 
-      await callback({ text: 'Unable to observe environment. Hyperfy world not available.' });
+      callback({ text: 'Unable to observe environment. Hyperfy world not available.' });
 
     /* Decide snapshot strategy */
-      await callback({ thought: 'Cannot decide how to look.', metadata: { error: 'selector_failure' } });
+      callback({ thought: 'Cannot decide how to look.', metadata: { error: 'selector_failure' } });
 
     /* Capture snapshot */
-      await callback({ thought: 'Snapshot failed.', metadata: { error: 'snapshot_failure', snapshotType } });
+      callback({ thought: 'Snapshot failed.', metadata: { error: 'snapshot_failure', snapshotType } });
 
     /* IMAGE_DESCRIPTION – detailed scene analysis */
-      await callback({ thought: 'Cannot understand the scene.', metadata: { error: 'vision_failure' } });
+      callback({ thought: 'Cannot understand the scene.', metadata: { error: 'vision_failure' } });
 
     //  Add dynamic header for scene perception
 
     /* generate final XML response */
-      await callback({ thought: 'No response generated.', metadata: { error: 'text_large_failure' } });
+      callback({ thought: 'No response generated.', metadata: { error: 'text_large_failure' } });
 
-      await callback({ thought: 'Malformed XML.', metadata: { error: 'xml_parse_failure', xmlRaw } });
+      callback({ thought: 'Malformed XML.', metadata: { error: 'xml_parse_failure', xmlRaw } });
 
     // General observation
   

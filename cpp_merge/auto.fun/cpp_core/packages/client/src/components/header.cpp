@@ -28,7 +28,7 @@ void Header() {
             });
         }
 
-        useEffect(() => {
+        useEffect[&](() {
             if (drawerOpen) {
                 setDrawerOpen(false);
             }

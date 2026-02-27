@@ -1,10 +1,16 @@
 #include "wallet-token-scanner.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address, Chain chain, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanEvmTokens(const std:& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -21,14 +27,14 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address,
                 }
 
                 interface EvmToken {
-                    contractAddress: std::string;
-                    symbol: std::string;
-                    name: std::string;
-                    decimals: number;
-                    balance: std::string;
-                    logoUrl?: std::string;
-                    priceUsd?: number;
-                    balanceUsd?: number;
+                    contractAddress: std:;
+                    symbol: std:;
+                    name: std:;
+                    decimals;
+                    balance: std:;
+                    logoUrl?: std:;
+                    priceUsd?;
+                    balanceUsd?;
                 }
 
                 const auto tokens = (data.tokens[]) || [];
@@ -56,7 +62,7 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address,
     }
 }
 
-std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& address, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanSolanaTokens(const std:& address, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -74,14 +80,14 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& addre
             const auto data = response.json();
 
             interface SolanaToken {
-                mint: std::string;
-                amount: number;
-                decimals: number;
-                symbol?: std::string;
-                name?: std::string;
-                logoURI?: std::string | nullptr;
-                priceUsd?: number;
-                balanceUsd?: number;
+                mint: std:;
+                amount;
+                decimals;
+                symbol?: std:;
+                name?: std:;
+                logoURI?: std: | nullptr;
+                priceUsd?;
+                balanceUsd?;
             }
 
             const auto tokens = (data.tokens || [])[];
@@ -105,19 +111,19 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& addre
 
 }
 
-std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain) {
+std::future<std::unordered_set<std:>> getRegisteredAddresses(Chain chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto response = "fetch(" + "/api/tokens?chain=" + chain;
         const auto data = response.json();
 
-        // API returns { success: boolean, tokens: Array<{ contractAddress: std::string }> }
+        // API returns { success, tokens: Array<{ contractAddress: std: }> }
         if (!data.success || !data.tokens) {
-            return new Set();
+            return std::make_unique<Set>();
         }
 
-        const std::vector<std::any> registeredTokens = data.tokens;
+        const std::vector<std::string> registeredTokens = data.tokens;
         return new Set(;
         registeredTokens.std::map((t) =>;
         // EVM addresses are case-insensitive, Solana addresses are case-sensitive
@@ -128,12 +134,12 @@ std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain)
         );
         } catch {
             // Graceful degradation: return empty std::set if API fails
-            return new Set();
+            return std::make_unique<Set>();
         }
 
 }
 
-std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& address, Chain chain, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanWalletTokens(const std:& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -152,7 +158,7 @@ std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& addre
                 // Use backend API for EVM chains (no publicClient needed)
                 tokensPromise = scanEvmTokens(address, chain, forceRefresh);
                 } else {
-                    throw std::runtime_error(`Unsupported chain: ${chain}`);
+                    throw std::runtime_error("Unsupported chain: " + std::to_string(chain) + "");
                 }
 
                 // Wait for both
@@ -173,16 +179,16 @@ std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& addre
     }
 }
 
-std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMultiChain(std::optional<std::string> evmAddress, std::optional<std::string> solanaAddress) {
+std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMultiChain(std::optional<std:> evmAddress, std::optional<std:> solanaAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::vector<ScannedToken>> results = {};
+    const std::unordered_map<std:, std::vector<ScannedToken>> results = {};
 
     const std::vector<std::future<void>> promises = [];
 
     if (evmAddress) {
         promises.push_back(;
-        scanWalletTokens(evmAddress, "base").then((tokens) => {
+        scanWalletTokens(evmAddress, "base").then[&]((tokens) {
             results.base = tokens;
             }),
             );
@@ -190,7 +196,7 @@ std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMult
 
         if (solanaAddress) {
             promises.push_back(;
-            scanWalletTokens(solanaAddress, "solana").then((tokens) => {
+            scanWalletTokens(solanaAddress, "solana").then[&]((tokens) {
                 results.solana = tokens;
                 }),
                 );

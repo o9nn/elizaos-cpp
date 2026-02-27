@@ -36,9 +36,7 @@ namespace elizaos {
 
 // TokenAgents schema
 
-// Default local database connection std::string
-
-void getDB();
+// Default local database connection std getDB();
 
 // Type definitions for common query results
 using Token = typeof schema.tokens.$inferSelect;

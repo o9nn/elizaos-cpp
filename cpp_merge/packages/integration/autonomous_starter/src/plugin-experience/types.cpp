@@ -3,7 +3,7 @@
 namespace @elizaos/core {
 }
 object ExperienceServiceType = object{
-    object::pair{std::string("EXPERIENCE"), as<std::shared_ptr<const>>(std::string("EXPERIENCE"))}
+    object::pair{std:("EXPERIENCE"), as<std::shared_ptr<const>>(std:("EXPERIENCE"))}
 }, satisfies, Partial;
 
 void Main(void)

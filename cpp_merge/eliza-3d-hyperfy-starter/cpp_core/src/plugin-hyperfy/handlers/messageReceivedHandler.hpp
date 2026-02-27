@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <map>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -41,7 +42,7 @@ namespace elizaos {
         // Handle shouldRespond
 
         // Try to preprocess response by removing code blocks markers if present
-        // let processedResponse = response.replace('```json', '').replaceAll('```', '').trim(); // No longer needed for XML
+        // let processedResponse = response.replace('"""json', '').replaceAll('"""', ''); // No longer needed for XML
 
           // Retry if missing required fields
 

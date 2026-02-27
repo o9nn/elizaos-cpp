@@ -73,13 +73,13 @@ extern std::shared_ptr<TradingConfig> DEFAULT_TRADING_CONFIG;
 extern std::shared_ptr<DatabaseConfig> DEFAULT_DATABASE_CONFIG;
 extern std::shared_ptr<MemoryConfig> DEFAULT_MEMORY_CONFIG;
 enum struct Conviction {
-    NONE = std::string("NONE"), LOW = std::string("LOW"), MEDIUM = std::string("MEDIUM"), HIGH = std::string("HIGH"), VERY_HIGH = std::string("VERY_HIGH")
+    NONE = std:("NONE"), LOW = std:("LOW"), MEDIUM = std:("MEDIUM"), HIGH = std:("HIGH"), VERY_HIGH = std:("VERY_HIGH")
 };
 enum struct RecommendationType {
-    BUY = std::string("BUY"), DONT_BUY = std::string("DONT_BUY"), SELL = std::string("SELL"), DONT_SELL = std::string("DONT_SELL"), NONE = std::string("NONE"), HOLD = std::string("HOLD")
+    BUY = std:("BUY"), DONT_BUY = std:("DONT_BUY"), SELL = std:("SELL"), DONT_SELL = std:("DONT_SELL"), NONE = std:("NONE"), HOLD = std:("HOLD")
 };
 enum struct TransactionType {
-    BUY = std::string("BUY"), SELL = std::string("SELL"), TRANSFER_IN = std::string("transfer_in"), TRANSFER_OUT = std::string("transfer_out")
+    BUY = std:("BUY"), SELL = std:("SELL"), TRANSFER_IN = std:("transfer_in"), TRANSFER_OUT = std:("transfer_out")
 };
 class BuySignalMessage : public object, public std::enable_shared_from_this<BuySignalMessage> {
 public:

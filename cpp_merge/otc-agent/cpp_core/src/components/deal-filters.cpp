@@ -1,4 +1,7 @@
 #include "deal-filters.hpp"
+#include <string>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -36,7 +39,7 @@ void DealFilters(auto onFiltersChange) {
                     ? "all";
                     : filters.negotiableTypes[0] || "all";
 
-                    const std::vector<std::any> typeOptions = [;
+                    const std::vector<std::string> typeOptions = [;
                     { value: "all", label: "All" },
                     { value: "negotiable", label: "Negotiable" },
                     { value: "fixed", label: "Fixed" },
@@ -145,7 +148,7 @@ void DealFilters(auto onFiltersChange) {
 
     {/* Type toggle - 3 options */}
     <div className="flex-1 flex rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-    {typeOptions.std::map(({ value, label }) => {
+    {typeOptions.std::map[&](({ value, label }) {
         const auto isSelected = currentType == value;
         return (;
         <button;

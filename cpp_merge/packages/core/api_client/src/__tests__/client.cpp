@@ -2,13 +2,13 @@
 
 void Main(void)
 {
-    describe(std::string("ElizaClient"), [=]() mutable
+    describe(std:("ElizaClient"), [=]() mutable
     {
         shared config = object{
-            object::pair{std::string("baseUrl"), std::string("http://localhost:3000")}, 
-            object::pair{std::string("apiKey"), std::string("test-key")}
+            object::pair{std:("baseUrl"), std:("http://localhost:3000")}, 
+            object::pair{std:("apiKey"), std:("test-key")}
         };
-        it(std::string("should create client with all services"), [=]() mutable
+        it(std:("should create client with all services"), [=]() mutable
         {
             auto client = std::make_shared<ElizaClient>(config);
             expect(client->agents)->toBeInstanceOf(AgentsService);
@@ -20,14 +20,14 @@ void Main(void)
             expect(client->system)->toBeInstanceOf(SystemService);
         }
         );
-        it(std::string("should create client using static create method"), [=]() mutable
+        it(std:("should create client using static create method"), [=]() mutable
         {
             auto client = ElizaClient::create(config);
             expect(client)->toBeInstanceOf(ElizaClient);
             expect(client->agents)->toBeInstanceOf(AgentsService);
         }
         );
-        it(std::string("should pass config to all services"), [=]() mutable
+        it(std:("should pass config to all services"), [=]() mutable
         {
             auto client = std::make_shared<ElizaClient>(config);
             expect(client->agents)->toBeDefined();

@@ -1,4 +1,8 @@
 #include "route.hpp"
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +16,7 @@ std::future<void> GET(NextRequest request) {
     const auto cronSecret = CRON_SECRET;
 
     // Always require authentication in production
-    if (!cronSecret && process.env.NODE_ENV == "production") {
+    if (!cronSecret && std::getenv("NODE_ENV") == "production") {
         std::cerr << "[Cron API] No CRON_SECRET configured in production" << std::endl;
         return NextResponse.json(;
         { error: "Server configuration error" },
@@ -20,12 +24,12 @@ std::future<void> GET(NextRequest request) {
         );
     }
 
-    if (cronSecret && authHeader != `Bearer ${cronSecret}`) {
+    if (cronSecret && authHeader != "Bearer " + std::to_string(cronSecret) + "") {
         console.warn("[Cron API] Unauthorized cron access attempt", {
             ip:
             request.headers.get("x-forwarded-for") ||;
             request.headers.get("x-real-ip"),
-            timestamp: new Date().toISOString(),
+            timestamp: std::make_unique<Date>().toISOString(),
             });
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -35,7 +39,7 @@ std::future<void> GET(NextRequest request) {
         try {
             OTC_ADDRESS = getContractAddress();
             console.log(
-            "[Check Matured OTC] Using contract address: " + OTC_ADDRESS + " for network: " + std::to_string(process.env.NETWORK || "localnet")
+            "[Check Matured OTC] Using contract address: " + OTC_ADDRESS + " for network: " + std::to_string(std::getenv("NETWORK") || "localnet")
             );
             } catch (error) {
                 std::cerr << "[Check Matured OTC] Failed to get contract address:" << error << std::endl;
@@ -125,10 +129,10 @@ std::future<void> GET(NextRequest request) {
                         }
 
                         const auto result: {;
-                            maturedOffers: std::string[];
-                            claimedOffers: std::string[];
-                            failedOffers: { id: std::string; error: std::string }[];
-                            txHash?: std::string;
+                            maturedOffers: std:[];
+                            claimedOffers: std:[];
+                            failedOffers: { id: std:; error: std: }[];
+                            txHash?: std:;
                             } = {
                                 maturedOffers: maturedOffers.std::map(String),
                                 claimedOffers: [],
@@ -136,7 +140,7 @@ std::future<void> GET(NextRequest request) {
                                 };
 
                                 // Execute autoClaim as approver if configured and there are matured offers
-                                if (maturedOffers.length > 0) {
+                                if (maturedOffers.size() > 0) {
                                     if (!EVM_PRIVATE_KEY) {
                                         return NextResponse.json(;
                                         {
@@ -159,7 +163,7 @@ std::future<void> GET(NextRequest request) {
                                             // Chunk to avoid gas issues (e.g., 50 per tx)
                                             const auto chunkSize = 50;
                                             const std::vector<std::vector<bigint>> chunks = [];
-                                            for (int i = 0; i < maturedOffers.length; i += chunkSize) {
+                                            for (int i = 0; i < maturedOffers.size(); i += chunkSize) {
                                                 chunks.push_back(maturedOffers.slice(i, i + chunkSize));
                                             }
 
@@ -181,7 +185,7 @@ std::future<void> GET(NextRequest request) {
 
                                             return NextResponse.json({;
                                                 success: true,
-                                                timestamp: new Date().toISOString(),
+                                                timestamp: std::make_unique<Date>().toISOString(),
                                                 ...result,
                                                 });
 

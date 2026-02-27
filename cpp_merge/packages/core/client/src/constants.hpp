@@ -9,7 +9,7 @@ extern string CHAT_SOURCE;
 extern string GROUP_CHAT_SOURCE;
 extern double AVATAR_IMAGE_MAX_SIZE;
 enum struct FIELD_REQUIREMENT_TYPE {
-    REQUIRED = std::string("required"), OPTIONAL = std::string("optional")
+    REQUIRED = std:("required"), OPTIONAL = std:("optional")
 };
 extern object FIELD_REQUIREMENTS;
 #endif

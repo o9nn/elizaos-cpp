@@ -30,7 +30,7 @@ namespace elizaos {
  *
  * @typedef {Object} Action
  * @property {string} name - The name of the action
- * @property {std::string[]} similes - The related similes of the action
+ * @property {std:[]} similes - The related similes of the action
  * @property {string} description - Description of the action
  * @property {Function} validate - Validation std::function for the action
  * @property {Function} handler - The std::function that handles the action
@@ -42,7 +42,7 @@ namespace elizaos {
       // Simple response content
 
       // Call back with the hello world message
-      await callback(responseContent);
+      callback(responseContent);
 
 /**
  * Example Hello World Provider

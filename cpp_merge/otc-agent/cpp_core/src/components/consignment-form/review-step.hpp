@@ -19,8 +19,8 @@ namespace elizaos {
 
 
 struct ReviewStepProps {
-    std::string tokenId;
-    std::string amount;
+    std: tokenId;
+    std: amount;
     bool isNegotiable;
     double fixedDiscountBps;
     double fixedLockupDays;
@@ -28,16 +28,16 @@ struct ReviewStepProps {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std::string minDealAmount;
-    std::string maxDealAmount;
+    std: minDealAmount;
+    std: maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std::optional<std::string> requiredChain;
+    std::optional<std:> requiredChain;
     std::optional<bool> isConnectedToRequiredChain;
     std::optional<bool> privyReady;
-    std::optional<std::string> selectedTokenSymbol;
+    std::optional<std:> selectedTokenSymbol;
     std::optional<double> selectedTokenDecimals;
 };
 

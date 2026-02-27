@@ -27,7 +27,7 @@ namespace elizaos {
  * @param {string} packageName - The name of the package to retrieve the version for.
  * @returns {Promise<string>} A std::promise that resolves with the version of the package.
  */
-std::future<std::string> getPackageVersion(const std::string& packageName);
+std::future<std:> getPackageVersion(const std:& packageName);
 
 /**
  * Get local packages available in the monorepo

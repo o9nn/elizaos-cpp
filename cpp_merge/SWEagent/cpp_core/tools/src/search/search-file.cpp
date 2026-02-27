@@ -1,10 +1,14 @@
 #include "search-file.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void searchFile(const std::string& searchTerm, std::optional<std::string> filePath) {
+void searchFile(const std:& searchTerm, std::optional<std:> filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get current file from registry if not provided
@@ -12,14 +16,14 @@ void searchFile(const std::string& searchTerm, std::optional<std::string> filePa
         filePath = std::to_string(registry.get("CURRENT_FILE", ""));
         if (!filePath) {
             std::cerr << "No file open. Use the open command first or provide a file path." << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
     }
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
         std::cerr << "Error: File name " + filePath + " not found. Please provide a valid file name." << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     // Resolve to absolute path
@@ -29,15 +33,15 @@ void searchFile(const std::string& searchTerm, std::optional<std::string> filePa
     try {
         const auto content = fs.readFileSync(filePath, "utf-8");
         const auto lines = content.split("\n");
-        const std::vector<std::any> matches = [];
+        const std::vector<std::string> matches = [];
 
-        lines.forEach((line, index) => {
-            if (line.includes(searchTerm)) {
+        lines.forEach[&]((line, index) {
+            if (line.count(searchTerm) > 0) {
                 matches.push_back({ line: index + 1, content: line });
             }
             });
 
-            if (matches.length == 0) {
+            if (matches.size() == 0) {
                 std::cout << "No matches found for \"" + searchTerm + "\" in " + filePath << std::endl;
                 return;
             }
@@ -58,7 +62,7 @@ void searchFile(const std::string& searchTerm, std::optional<std::string> filePa
 
                 } catch (error) {
                     std::cerr << "Error reading file: " + error << std::endl;
-                    process.exit(1);
+                    std::exit(1);
                 }
 
 }
@@ -66,17 +70,12 @@ void searchFile(const std::string& searchTerm, std::optional<std::string> filePa
 void setupCLI() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    program;
-    .name("search-file");
-    .description("Search for a term within a file");
-    .version("1.0.0");
-    .argument("<search-term>", "The term to search for");
-    .argument("[file]", "The file to search in (if not provided, uses current open file)");
-    .action((searchTerm, file) => {
+    program.name("search-file").description("Search for a term within a file").version("1.0.0").argument("<search-term>", "The term to search for").argument("[file]", "The file to search in (if not provided, uses current open file)");
+    .action[&]((searchTerm, file) {
         searchFile(searchTerm, file);
         });
 
-        program.parse(process.argv);
+        program.parse(std::vector<std::string>());
 
 }
 

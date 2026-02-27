@@ -9,7 +9,7 @@ void LogsPage() {
 
     const auto [logLevel, setLogLevel] = useState("all");
 
-    return (;
+    return [&](;
     <div className="container mx-auto p-6 h-full flex flex-col">;
     <div className="flex items-center justify-between mb-6">;
     <h1 className="text-2xl font-bold">System Logs</h1>;
@@ -29,7 +29,7 @@ void LogsPage() {
     </SelectContent>;
     </Select>;
     </div>;
-    <Button variant="outline" onClick={() => window.location.reload()}>;
+    <Button variant="outline" onClick={() { return window.location.reload()}>; };
     Refresh;
     </Button>;
     </div>;

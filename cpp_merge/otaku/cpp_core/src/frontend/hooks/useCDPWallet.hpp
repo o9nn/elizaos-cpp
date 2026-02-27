@@ -23,19 +23,19 @@ namespace elizaos {
  * to access wallet state throughout the application.
  * 
  * @returns {Object} Wallet information including:
- *   - isInitialized: boolean - Whether CDP SDK has finished initializing (IMPORTANT: wait for this before using wallet data)
- *   - isSignedIn: boolean - Whether user is authenticated with CDP wallet
- *   - evmAddress: std::string | undefined - EVM wallet address (Ethereum, Base, etc.)
- *   - solanaAddress: std::string | undefined - Solana wallet address
- *   - userEmail: std::string | undefined - User's email address from CDP
- *   - hasWallet: boolean - Whether user has std::any wallet connected
- *   - isCdpConfigured: boolean - Whether CDP is properly configured
- *   - signOut: () => Promise<void> - Function to sign out the user
+ *   - isInitialized - Whether CDP SDK has finished initializing (IMPORTANT: wait for this before using wallet data)
+ *   - isSignedIn - Whether user is authenticated with CDP wallet
+ *   - evmAddress: std: | undefined - EVM wallet address (Ethereum, Base, etc.)
+ *   - solanaAddress: std: | undefined - Solana wallet address
+ *   - userEmail: std: | undefined - User's email address from CDP
+ *   - hasWallet - Whether user has std: wallet connected
+ *   - isCdpConfigured - Whether CDP is properly configured
+ *   - signOut: [&]() { return Promise<void> - Function to sign out the user
  * 
  * @example
- * ```tsx
- * void MyComponent();
- * ```
+ * """tsx
+ * void MyComponent(); };
+ * """
  */
 void useCDPWallet();
 

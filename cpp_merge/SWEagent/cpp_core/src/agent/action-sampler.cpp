@@ -14,7 +14,7 @@ AbstractActionSampler createActionSampler(ActionSamplerConfig config, AbstractMo
             // case "binary_trajectory_comparison":
             return BinaryTrajectoryComparison.fromConfig(config, model, tools);
             // default:
-            throw std::runtime_error(`Unknown action sampler type: ${(config as ActionSamplerConfig).type}`);
+            throw std::runtime_error("Unknown action sampler type: " + std::to_string((config as ActionSamplerConfig).type) + "");
         }
 
     } catch (const std::exception& e) {

@@ -4,10 +4,10 @@
 
 namespace elizaos {
 
-AgentTemplate getTemplateById(const std::string& id) {
+AgentTemplate getTemplateById(const std:& id) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return agentTemplates.find((template) => template.id == id);
+    return agentTemplates.find[&]((template) { return template.id == id); };
 
 }
 

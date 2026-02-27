@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <future>
+#include <filesystem>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,8 +21,8 @@ std::future<void> POST(NextRequest request) {
         }
 
         const auto SOLANA_RPC =;
-        process.env.NEXT_PUBLIC_SOLANA_RPC || "http://127.0.0.1:8899";
-        const auto SOLANA_DESK = process.env.NEXT_PUBLIC_SOLANA_DESK;
+        std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "http://127.0.0.1:8899";
+        const auto SOLANA_DESK = std::getenv("NEXT_PUBLIC_SOLANA_DESK");
 
         if (!SOLANA_DESK) {
             throw std::runtime_error("SOLANA_DESK not configured");
@@ -27,10 +30,10 @@ std::future<void> POST(NextRequest request) {
 
         // Load desk keypair
         const auto deskKeypairPath = path.join(;
-        process.cwd(),
+        std::filesystem::current_path().string(),
         "solana/otc-program/desk-keypair.json",
         );
-        const auto deskKeypairData = JSON.parse(;
+        const auto deskKeypairData = nlohmann::json::parse(;
         fs.readFile(deskKeypairPath, "utf8"),
         );
         const auto deskKeypair = Keypair.fromSecretKey(Uint8Array.from(deskKeypairData));
@@ -38,25 +41,25 @@ std::future<void> POST(NextRequest request) {
 
         // Load IDL
         const auto idlPath = path.join(;
-        process.cwd(),
+        std::filesystem::current_path().string(),
         "solana/otc-program/target/idl/otc.json",
         );
-        const auto idl = /* JSON.parse */ fs.readFile(idlPath, "utf8");
+        const auto idl = /* JSON::parse */ fs.readFile(idlPath, "utf8");
 
         const auto connection = new Connection(SOLANA_RPC, "confirmed");
 
         const AnchorWallet wallet = {;
             publicKey: deskKeypair.publicKey,
-            signTransaction: std::async <T extends Transaction | VersionedTransaction>(
+            signTransaction: std::async <T extends Transaction | VersionedTransaction>[&](
             tx: T,
-            ) => {
+            ) {
                 (tx).partialSign(deskKeypair);
                 return tx;
                 },
-                signAllTransactions: std::async <T extends Transaction | VersionedTransaction>(
+                signAllTransactions: std::async <T extends Transaction | VersionedTransaction>[&](
                 txs: T[],
-                ) => {
-                    txs.forEach((tx) => (tx).partialSign(deskKeypair));
+                ) {
+                    txs.forEach[&]((tx) { return (tx).partialSign(deskKeypair)); };
                     return txs;
                     },
                     };
@@ -70,7 +73,7 @@ std::future<void> POST(NextRequest request) {
 
                         // Fetch offer
                         // Type assertion needed as anchor's account namespace types are dynamic
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-std:
                         const auto programAccounts = program.account;
                         const auto offer = new PublicKey(offerAddress);
                         const auto offerData = programAccounts.offer.fetch(offer);
@@ -121,9 +124,7 @@ std::future<void> POST(NextRequest request) {
                                 );
 
                                 // Claim tokens (desk signs because it holds the tokens)
-                                const auto tx = program.methods;
-                                .claim(new anchor.BN(offerData.id));
-                                .accounts({
+                                const auto tx = program.methods.claim(new anchor.BN(offerData.id)).accounts({
                                     desk,
                                     deskSigner: deskKeypair.publicKey,
                                     offer,
@@ -133,9 +134,7 @@ std::future<void> POST(NextRequest request) {
                                     tokenProgram: new PublicKey(
                                     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
                                     ),
-                                    });
-                                    .signers([deskKeypair]);
-                                    .rpc();
+                                    }).signers([deskKeypair]).rpc();
 
                                     std::cout << "[Solana Claim] ✅ Claimed " + offerAddress << "tx: ${tx}" << std::endl;
 

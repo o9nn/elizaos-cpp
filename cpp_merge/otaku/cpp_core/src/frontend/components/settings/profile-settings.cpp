@@ -1,4 +1,5 @@
 #include "profile-settings.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

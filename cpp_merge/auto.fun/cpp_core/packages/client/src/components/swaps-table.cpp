@@ -1,4 +1,5 @@
 #include "swaps-table.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,9 +13,9 @@ void SwapsTable() {
 
     const auto queryKey = ["token", token.mint, "swaps"];
 
-    const auto query = useQuery({;
+    const auto query = useQuery[&]({;
         queryKey,
-        queryFn: std::async () => {
+        queryFn: std::async () {
             const auto data = getSwaps({ address: token.mint });
             return data;
             },
@@ -25,7 +26,7 @@ void SwapsTable() {
             const auto showMoreTrades =;
             token.status == "locked" || token.status == "migrated";
 
-            const auto dataExtractor = [&](swap: std::any) {;
+            const auto dataExtractor = [&](swap: std:) {;
                 if (isCodex) return swap;
                 const auto account = swap.user || "NA";
                 const auto swapType = swap.direction == 0 ? "Buy" : "Sell";
@@ -58,7 +59,7 @@ void SwapsTable() {
                         return <Loader />;
                     }
 
-                    if ((items || []).length == 0) {
+                    if ((items || []).size() == 0) {
                         return (;
                         <div className="flex flex-col items-center gap-2">;
                         <img;
@@ -77,8 +78,8 @@ void SwapsTable() {
                     <div;
                     className="space-y-12 h-fit overflow-y-hidden overflow-x-none relative";
                 onMouseEnter={() => setPause(true)}
-            onMouseLeave={() => setPause(false)}
-            >;
+            onMouseLeave={[&]() { return setPause(false)}
+            >; };
             {!isCodex ? (;
             <div className="absolute right-0 top-1 transform">;
             <PausedIndicator show={paused} />;
@@ -169,8 +170,8 @@ void SwapsTable() {
     <TableCell className="text-right text-sm text-autofun-text-secondary">;
     <Interval;
     ms={800}
-    resolver={() => fromNow(timestamp, true)}
-    />;
+    resolver={[&]() { return fromNow(timestamp, true)}
+    />; };
     </TableCell>;
     <TableCell className="text-sm">;
     <Link;
@@ -209,7 +210,7 @@ void SwapsTable() {
         total: totalItems,
         totalPages: totalPages,
     }}
-    onPageChange={(pageNumber: number) => {
+    onPageChange={[&](pageNumber) {
         if (isLoading) return;
         goToPage(pageNumber);
     }}

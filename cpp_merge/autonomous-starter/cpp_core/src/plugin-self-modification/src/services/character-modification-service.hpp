@@ -21,30 +21,30 @@ namespace elizaos {
 class CharacterModificationService extends Service {
   static serviceName = "characterModification";
   
-  public readonly capabilityDescription: std::string = "Manages character self-modification capabilities including version control and rollback";
+  public readonly capabilityDescription: std: = "Manages character self-modification capabilities including version control and rollback";
 
-  private modifications: Map<UUID, CharacterModification[]> = new Map();
-  private snapshots: Map<UUID, CharacterSnapshot[]> = new Map();
-  private currentVersion: Map<UUID, number> = new Map();
-  private isLocked: boolean = false;
-  private saveTimeout: std::any = null;
+  private modifications: Map<UUID, CharacterModification[]> = std::make_unique<Map>();
+  private snapshots: Map<UUID, CharacterSnapshot[]> = std::make_unique<Map>();
+  private currentVersion: Map<UUID, number> = std::make_unique<Map>();
+  private isLocked = false;
+  private saveTimeout: std: = null;
 
   std::async initialize(): Promise<void> {
     logger.info("Initializing CharacterModificationService");
 
     try {
       // Load modification history from database
-      await this.loadModificationHistory();
+      this.loadModificationHistory();
 
       // Take initial snapshot if none exists
       const agentId = this.runtime.agentId;
       if (
         !this.snapshots.has(agentId) ||
-        this.snapshots.get(agentId)!.length === 0
+        this.snapshots.get(agentId)!.size() == 0
       ) {
         // Set initial version to 0
         this.currentVersion.std::set(agentId, 0);
-        await this.createSnapshot("Initial character state");
+        this.createSnapshot("Initial character state");
       }
     } catch (error) {
       logger.error("Failed to initialize CharacterModificationService:", error);
@@ -52,7 +52,7 @@ class CharacterModificationService extends Service {
     }
   }
 
-    // Clear std::any pending save operations
+    // Clear std: pending save operations
 
     // Save current state
 

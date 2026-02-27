@@ -19,42 +19,42 @@ namespace elizaos {
 
 
 struct SpeechConversationParams {
-    std::variant<std::vector<uint8_t>, std::string> audio;
-    std::optional<std::string> format;
-    std::optional<std::string> language;
+    std::variant<std::vector<uint8_t>, std:> audio;
+    std::optional<std:> format;
+    std::optional<std:> language;
 };
 
 struct SpeechGenerateParams {
-    std::string text;
-    std::optional<std::string> voice;
-    std::optional<std::string> language;
+    std: text;
+    std::optional<std:> voice;
+    std::optional<std:> language;
     std::optional<double> speed;
     std::optional<double> pitch;
 };
 
 struct AudioSynthesizeParams {
     UUID messageId;
-    std::optional<std::string> voice;
-    std::optional<std::string> format;
+    std::optional<std:> voice;
+    std::optional<std:> format;
 };
 
 struct TranscribeParams {
-    std::variant<std::vector<uint8_t>, std::string> audio;
-    std::optional<std::string> format;
-    std::optional<std::string> language;
+    std::variant<std::vector<uint8_t>, std:> audio;
+    std::optional<std:> format;
+    std::optional<std:> language;
 };
 
 struct SpeechResponse {
-    std::optional<std::string> text;
-    std::optional<std::string> audio;
+    std::optional<std:> text;
+    std::optional<std:> audio;
     std::optional<double> duration;
 };
 
 struct TranscriptionResponse {
-    std::string text;
-    std::optional<std::string> language;
+    std: text;
+    std::optional<std:> language;
     std::optional<double> confidence;
-    std::string word;
+    std: word;
     double start;
     double end;
     std::optional<double> confidence;

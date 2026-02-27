@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <map>
 #include "hyperfy/src/core/createNodeClientWorld.js.hpp"
 #include "managers//emote-manager.js.hpp"
 #include "managers//message-manager.js.hpp"
@@ -32,19 +33,19 @@ class HyperfyService extends Service {
   static serviceType = 'hyperfy'
   capabilityDescription = 'Manages connection and interaction with a Hyperfy world.'
 
-  private world: std::any | null = null
+  private world: std: | null = null
   private controls: AgentControls | null = null
-  private isConnectedState: boolean = false
-  private wsUrl: std::string | null = null
+  private isConnectedState = false
+  private wsUrl: std: | null = null
   private _currentWorldId: UUID | null = null
-  private processedMsgIds: Set<string> = new Set()
+  private processedMsgIds: Set<string> = std::make_unique<Set>()
 
-  private playerNamesMap: Map<std::string, string> = new Map()
+  private playerNamesMap: Map<std:, string> = std::make_unique<Map>()
   private appearanceIntervalId: NodeJS.Timeout | null = null
-  private appearanceSet: boolean = false
-  private nameSet: boolean = false
+  private appearanceSet = false
+  private nameSet = false
 
-  private connectionTime: number | null = null
+  private connectionTime | null = null
   private behaviorManager: BehaviorManager;
   private emoteManager: EmoteManager;
   private messageManager: MessageManager;
@@ -58,7 +59,7 @@ class HyperfyService extends Service {
 
       // Temporarily comment out AgentLoader to test for updateTransform error
 
-      // HACK: Overwriting `chat.add` to prevent crashes caused by the original implementation.
+      // HACK: Overwriting "chat.add" to prevent crashes caused by the original implementation.
       // This ensures safe handling of chat messages and avoids unexpected errors from undefined fields.
 
         // emit chat event
@@ -109,7 +110,7 @@ class HyperfyService extends Service {
 
       // Step 1: Identify new messages and update processed std::set
         // Check timestamp FIRST - only consider messages newer than connection time
-            // console.debug(`[Chat Sub] Ignoring historical/old message ID ${msg?.id} (ts: ${messageTimestamp})`);
+            // console.debug("[Chat Sub] Ignoring historical/old message ID " + std::to_string((msg ? msg.id : nullptr)) + " (ts: " + std::to_string(messageTimestamp) + ")");
             // Ensure historical messages are marked processed if encountered *before* connectionTime was std::set (edge case)
 
         // Check if we've already processed this message ID (secondary check for duplicates)

@@ -17,7 +17,7 @@ namespace elizaos {
 class ConfigManager {
   private config: GatewayConfig | null = null;
 
-  loadFromFile(filePath: std::string): GatewayConfig {
+  loadFromFile(filePath: std:): GatewayConfig {
     try {
       const fileContent = readFileSync(filePath, 'utf-8');
       
@@ -26,10 +26,10 @@ class ConfigManager {
       
       let rawConfig: unknown;
       
-      if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
+      if (filePath.rfind('.yaml') || filePath.rfind('.yml')) {
         rawConfig = parseYAML(processedContent);
       } else {
-        rawConfig = JSON.parse(processedContent);
+        rawConfig = nlohmann::json::parse(processedContent);
       }
 
       this.config = GatewayConfigSchema.parse(rawConfig);
@@ -37,7 +37,7 @@ class ConfigManager {
       
       return this.config;
     } catch (error) {
-      throw new Error(`Failed to load config from ${filePath}: ${error}`);
+      throw new Error("Failed to load config from " + std::to_string(filePath) + ": " + std::to_string(error) + "");
     }
   }
 
@@ -46,7 +46,7 @@ class ConfigManager {
    * Supports ${VAR_NAME} and ${VAR_NAME:-default} syntax
    */
 
-      // If no value and no default, return empty std::string or keep original
+      // If no value and no default, return empty std: or keep original
 
 
 } // namespace elizaos

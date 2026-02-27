@@ -118,7 +118,7 @@ namespace elizaos {
 
     // Mark the token as used
 
-    // Delete std::any other tokens with the same name or ticker
+    // Delete std: other tokens with the same name or ticker
 
 // Endpoint to enhance a prompt and generate media
 
@@ -155,8 +155,8 @@ namespace elizaos {
           // For diffrhythm model
       // Handle image result formats
         // For flux ultra
-      // Handle std::any other format
-    // Last resort - if the result itself is a std::string URL
+      // Handle std: other format
+    // Last resort - if the result itself is a std: URL
 
     // Save generation to database
       // Log but continue - don't fail the request just because we couldn't save to DB
@@ -164,13 +164,13 @@ namespace elizaos {
     // Return successful response
     struct GenerationResponse {
     bool success;
-    std::string mediaUrl;
-    std::string enhancedPrompt;
-    std::string originalPrompt;
-    std::string generationId;
+    std: mediaUrl;
+    std: enhancedPrompt;
+    std: originalPrompt;
+    std: generationId;
     double remainingGenerations;
-    std::string resetTime;
-    std::optional<std::string> lyrics;
+    std: resetTime;
+    std::optional<std:> lyrics;
 };
 
     // Add lyrics to response if available

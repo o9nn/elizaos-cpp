@@ -1,10 +1,12 @@
 #include "upgrade.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOptions opts) {
+std::future<void> upgradePlugin(const std:& pluginPath, UpgradePluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -14,14 +16,14 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
 
             // Set API key if provided
             if (opts.apiKey) {
-                process.env.ANTHROPIC_API_KEY = opts.apiKey;
+                std::getenv("ANTHROPIC_API_KEY") = opts.apiKey;
             }
 
             // Check for API key
-            if (!process.env.ANTHROPIC_API_KEY) {
+            if (!std::getenv("ANTHROPIC_API_KEY")) {
                 std::cerr << "ANTHROPIC_API_KEY is required for plugin upgrade." << std::endl;
                 std::cout << "\nPlease std::set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
             // Create migrator instance with options
@@ -31,7 +33,7 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
                 });
 
                 // Run migration
-                std::cout << "\n" + std::to_string(emoji.rocket(`Starting plugin upgrade for: ${pluginPath}`)) + "\n" << std::endl;
+                std::cout << "\n" + std::to_string(emoji.rocket("Starting plugin upgrade for: " + std::to_string(pluginPath) + "")) + "\n" << std::endl;
                 const MigrationResult result = migrator.migrate(pluginPath);
 
                 if (result.success) {
@@ -46,11 +48,11 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
                     std::cout << "4. Push to GitHub and create a pull request when ready" << std::endl;
                     } else {
                         std::cerr << "Plugin upgrade failed: " + std::to_string(result.error.message) << std::endl;
-                        process.exit(1);
+                        std::exit(1);
                     }
                     } catch (error) {
                         handleError(error);
-                        process.exit(1);
+                        std::exit(1);
                     }
 
     } catch (const std::exception& e) {

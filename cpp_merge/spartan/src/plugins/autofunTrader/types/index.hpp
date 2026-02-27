@@ -12,7 +12,7 @@ class PortfolioStatus;
 class TradePerformanceData;
 
 enum struct ServiceTypes {
-    AUTOFUN_TRADING = std::string("AUTOFUN_TRADING")
+    AUTOFUN_TRADING = std:("AUTOFUN_TRADING")
 };
 class TokenSignal : public object, public std::enable_shared_from_this<TokenSignal> {
 public:

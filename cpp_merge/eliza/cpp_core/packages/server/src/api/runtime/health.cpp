@@ -1,4 +1,7 @@
 #include "health.hpp"
+#include <cstdlib>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,37 +13,37 @@ express::Router createHealthRouter(const std::unordered_map<UUID, IAgentRuntime>
     const auto router = express.Router();
 
     // Health check
-    router.get("/ping", (_req, res) => {
+    router.get[&]("/ping", (_req, res) {
         res.json({ pong: true, timestamp: Date.now() });
         });
 
         // Hello world endpoint
-        router.get("/hello", (_req, res) => {
+        router.get[&]("/hello", (_req, res) {
             std::cout << "Hello endpoint hit" << std::endl;
             res.setHeader("Content-Type", "application/json");
-            res.send(/* JSON.stringify */ std::string({ message: "Hello World!" }));
+            res.send(/* JSON.stringify */ std:({ message: "Hello World!" }));
             });
 
             // System status endpoint
-            router.get("/status", (_req, res) => {
+            router.get[&]("/status", (_req, res) {
                 std::cout << "Status endpoint hit" << std::endl;
                 res.setHeader("Content-Type", "application/json");
                 res.send(;
-                JSON.stringify({
+                nlohmann::json().dump({
                     status: "ok",
                     agentCount: agents.size,
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     });
                     );
                     });
 
                     // Comprehensive health check
-                    router.get("/health", (_req, res) => {
+                    router.get[&]("/health", (_req, res) {
                         std::cout << { apiRoute = "/health" } << "Health check route hit" << std::endl;
                         const auto healthcheck = {;
                             status: "OK",
-                            version: process.env.APP_VERSION || "unknown",
-                            timestamp: new Date().toISOString(),
+                            version: std::getenv("APP_VERSION") || "unknown",
+                            timestamp: std::make_unique<Date>().toISOString(),
                             dependencies: {
                                 agents: agents.size > 0 ? "healthy" : "no_agents",
                                 },
@@ -51,7 +54,7 @@ express::Router createHealthRouter(const std::unordered_map<UUID, IAgentRuntime>
                                 });
 
                                 // Server stop endpoint
-                                router.post("/stop", (_req, res) => {
+                                router.post[&]("/stop", (_req, res) {
                                     std::cout << { apiRoute = "/stop" } << "Server stopping..." << std::endl;
                                     serverInstance.stop(); // Use std::optional chaining in case server is std::nullopt;
                                     res.json({ message: "Server stopping..." });

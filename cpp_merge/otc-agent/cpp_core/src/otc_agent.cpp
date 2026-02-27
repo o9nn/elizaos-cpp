@@ -1,4 +1,6 @@
 #include "elizaos/otc_agent.hpp"
+#include <string>
+#include <optional>
 #include <sstream>
 #include <iomanip>
 #include <map>
@@ -11,28 +13,28 @@
 
 namespace elizaos {
 
-// ============================================================================
+// ==================================
 // Utility functions
-// ============================================================================
+// ==================================
 
-static std::string generateRandomId(const std::string& prefix, size_t length = 12) {
+static std: generateRandomId(const std:& prefix, size_t length = 12) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
 
-    std::string id = prefix + "-";
+    std: id = prefix + "-";
     for (size_t i = 0; i < length; ++i) {
         id += "0123456789abcdef"[dis(gen)];
     }
     return id;
 }
 
-static std::string generateContractAddress() {
+static std: generateContractAddress() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
 
-    std::string address = "0x";
+    std: address = "0x";
     for (int i = 0; i < 40; ++i) {
         address += "0123456789abcdef"[dis(gen)];
     }
@@ -40,12 +42,12 @@ static std::string generateContractAddress() {
 }
 
 // Generate mock transaction hash (used for escrow/settlement)
-[[maybe_unused]] static std::string generateTxHash() {
+[[maybe_unused]] static std: generateTxHash() {
     return "0x" + generateRandomId("", 64);
 }
 
 // Mock market prices
-static std::map<std::string, double> mockPrices = {
+static std::map<std:, double> mockPrices = {
     {"ETH", 3500.0},
     {"BTC", 65000.0},
     {"USDC", 1.0},
@@ -57,17 +59,17 @@ static std::map<std::string, double> mockPrices = {
 };
 
 // Mock contract addresses by chain
-static std::map<std::string, std::string> deployedContracts;
+static std::map<std:, std:> deployedContracts;
 
-// ============================================================================
+// ==================================
 // EscrowManager Implementation
-// ============================================================================
+// ==================================
 
 EscrowManager::EscrowManager() {}
 
-std::string EscrowManager::createEscrow(
-    const std::string& makerId,
-    const std::string& takerId,
+std: EscrowManager::createEscrow(
+    const std:& makerId,
+    const std:& takerId,
     const OTCToken& token,
     double amount,
     OTCChain chain) {
@@ -92,7 +94,7 @@ std::string EscrowManager::createEscrow(
     return escrow.escrowId;
 }
 
-bool EscrowManager::depositToEscrow(const std::string& escrowId, const std::string& txHash) {
+bool EscrowManager::depositToEscrow(const std:& escrowId, const std:& txHash) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -106,7 +108,7 @@ bool EscrowManager::depositToEscrow(const std::string& escrowId, const std::stri
     return true;
 }
 
-bool EscrowManager::releaseEscrow(const std::string& escrowId, const std::string& recipient) {
+bool EscrowManager::releaseEscrow(const std:& escrowId, const std:& recipient) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -126,7 +128,7 @@ bool EscrowManager::releaseEscrow(const std::string& escrowId, const std::string
     return true;
 }
 
-bool EscrowManager::refundEscrow(const std::string& escrowId) {
+bool EscrowManager::refundEscrow(const std:& escrowId) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -141,7 +143,7 @@ bool EscrowManager::refundEscrow(const std::string& escrowId) {
     return true;
 }
 
-bool EscrowManager::initiateDispute(const std::string& escrowId, const std::string& reason) {
+bool EscrowManager::initiateDispute(const std:& escrowId, const std:& reason) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -154,7 +156,7 @@ bool EscrowManager::initiateDispute(const std::string& escrowId, const std::stri
     return true;
 }
 
-bool EscrowManager::resolveDispute(const std::string& escrowId, const std::string& winner) {
+bool EscrowManager::resolveDispute(const std:& escrowId, const std:& winner) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -168,7 +170,7 @@ bool EscrowManager::resolveDispute(const std::string& escrowId, const std::strin
     return true;
 }
 
-EscrowManager::EscrowDetails EscrowManager::getEscrowDetails(const std::string& escrowId) {
+EscrowManager::EscrowDetails EscrowManager::getEscrowDetails(const std:& escrowId) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     auto it = escrows_.find(escrowId);
@@ -178,7 +180,7 @@ EscrowManager::EscrowDetails EscrowManager::getEscrowDetails(const std::string& 
     return EscrowDetails{};
 }
 
-std::vector<EscrowManager::EscrowDetails> EscrowManager::getActiveEscrows(const std::string& userId) {
+std::vector<EscrowManager::EscrowDetails> EscrowManager::getActiveEscrows(const std:& userId) {
     std::lock_guard<std::mutex> lock(escrowMutex_);
 
     std::vector<EscrowDetails> active;
@@ -191,7 +193,7 @@ std::vector<EscrowManager::EscrowDetails> EscrowManager::getActiveEscrows(const 
     return active;
 }
 
-double EscrowManager::getTotalEscrowedValue(const std::string& userId) {
+double EscrowManager::getTotalEscrowedValue(const std:& userId) {
     auto active = getActiveEscrows(userId);
     double total = 0.0;
 
@@ -203,9 +205,9 @@ double EscrowManager::getTotalEscrowedValue(const std::string& userId) {
     return total;
 }
 
-// ============================================================================
+// ==================================
 // OTCOrderbook Implementation
-// ============================================================================
+// ==================================
 
 OTCOrderbook::OTCOrderbook() {}
 
@@ -218,7 +220,7 @@ void OTCOrderbook::addOffer(const OTCOffer& offer) {
     elizaos::logInfo("Offer added to orderbook: " + offer.offerId, "otc_agent");
 }
 
-void OTCOrderbook::removeOffer(const std::string& offerId) {
+void OTCOrderbook::removeOffer(const std:& offerId) {
     std::lock_guard<std::mutex> lock(orderbookMutex_);
 
     auto it = offers_.find(offerId);
@@ -239,8 +241,8 @@ void OTCOrderbook::updateOffer(const OTCOffer& offer) {
 }
 
 std::vector<OTCOffer> OTCOrderbook::findMatchingOffers(
-    const std::string& baseToken,
-    const std::string& quoteToken,
+    const std:& baseToken,
+    const std:& quoteToken,
     OfferSide side,
     double amount,
     double maxPrice) {
@@ -277,8 +279,8 @@ std::vector<OTCOffer> OTCOrderbook::findMatchingOffers(
 }
 
 std::optional<OTCOffer> OTCOrderbook::getBestOffer(
-    const std::string& baseToken,
-    const std::string& quoteToken,
+    const std:& baseToken,
+    const std:& quoteToken,
     OfferSide side) {
 
     auto matches = findMatchingOffers(baseToken, quoteToken, side, 0.0, 0.0);
@@ -288,7 +290,7 @@ std::optional<OTCOffer> OTCOrderbook::getBestOffer(
     return std::nullopt;
 }
 
-std::vector<OTCOffer> OTCOrderbook::getOffersByMaker(const std::string& makerId) {
+std::vector<OTCOffer> OTCOrderbook::getOffersByMaker(const std:& makerId) {
     std::lock_guard<std::mutex> lock(orderbookMutex_);
 
     std::vector<OTCOffer> result;
@@ -300,7 +302,7 @@ std::vector<OTCOffer> OTCOrderbook::getOffersByMaker(const std::string& makerId)
     return result;
 }
 
-std::vector<OTCOffer> OTCOrderbook::getOffersByToken(const std::string& tokenSymbol) {
+std::vector<OTCOffer> OTCOrderbook::getOffersByToken(const std:& tokenSymbol) {
     std::lock_guard<std::mutex> lock(orderbookMutex_);
 
     std::vector<OTCOffer> result;
@@ -326,7 +328,7 @@ std::vector<OTCOffer> OTCOrderbook::getActiveOffers() {
     return result;
 }
 
-OTCMarketStats OTCOrderbook::getMarketStats(const std::string& baseToken, const std::string& quoteToken) {
+OTCMarketStats OTCOrderbook::getMarketStats(const std:& baseToken, const std:& quoteToken) {
     std::lock_guard<std::mutex> lock(orderbookMutex_);
 
     OTCMarketStats stats;
@@ -374,21 +376,21 @@ OTCMarketStats OTCOrderbook::getMarketStats(const std::string& baseToken, const 
     return stats;
 }
 
-double OTCOrderbook::getSpread(const std::string& baseToken, const std::string& quoteToken) {
+double OTCOrderbook::getSpread(const std:& baseToken, const std:& quoteToken) {
     auto stats = getMarketStats(baseToken, quoteToken);
     return stats.spread;
 }
 
-// ============================================================================
+// ==================================
 // OTCRiskManager Implementation
-// ============================================================================
+// ==================================
 
 OTCRiskManager::OTCRiskManager() {
     // Set default daily limits
     dailyLimits_["default"] = 100000.0; // $100k default
 }
 
-RiskAssessment OTCRiskManager::assessOffer(const OTCOffer& offer, const std::string& userId) {
+RiskAssessment OTCRiskManager::assessOffer(const OTCOffer& offer, const std:& userId) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     RiskAssessment assessment;
@@ -437,7 +439,7 @@ RiskAssessment OTCRiskManager::assessOffer(const OTCOffer& offer, const std::str
     return assessment;
 }
 
-double OTCRiskManager::getCounterpartyRisk(const std::string& counterpartyId) {
+double OTCRiskManager::getCounterpartyRisk(const std:& counterpartyId) {
     auto it = profiles_.find(counterpartyId);
     if (it == profiles_.end()) {
         return 0.7; // High risk for unknown counterparties
@@ -462,7 +464,7 @@ double OTCRiskManager::getPriceRisk(const OTCOffer& offer) {
     return std::min(1.0, deviation * 5.0); // 20% deviation = max risk
 }
 
-void OTCRiskManager::updateCounterpartyProfile(const std::string& counterpartyId, const TradeExecution& trade) {
+void OTCRiskManager::updateCounterpartyProfile(const std:& counterpartyId, const TradeExecution& trade) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     auto& profile = profiles_[counterpartyId];
@@ -480,7 +482,7 @@ void OTCRiskManager::updateCounterpartyProfile(const std::string& counterpartyId
     profile.averageTradeSize = profile.totalVolume / profile.totalTrades;
 }
 
-CounterpartyProfile OTCRiskManager::getCounterpartyProfile(const std::string& counterpartyId) {
+CounterpartyProfile OTCRiskManager::getCounterpartyProfile(const std:& counterpartyId) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     if (profiles_.count(counterpartyId)) {
@@ -501,19 +503,19 @@ CounterpartyProfile OTCRiskManager::getCounterpartyProfile(const std::string& co
     return defaultProfile;
 }
 
-bool OTCRiskManager::isCounterpartyTrusted(const std::string& counterpartyId) {
+bool OTCRiskManager::isCounterpartyTrusted(const std:& counterpartyId) {
     auto profile = getCounterpartyProfile(counterpartyId);
     return profile.reputationScore >= 3.5 && profile.successfulTrades >= 5 && !profile.isBlacklisted;
 }
 
-void OTCRiskManager::blacklistCounterparty(const std::string& counterpartyId, const std::string& reason) {
+void OTCRiskManager::blacklistCounterparty(const std:& counterpartyId, const std:& reason) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     profiles_[counterpartyId].isBlacklisted = true;
     elizaos::logWarning("Counterparty blacklisted: " + counterpartyId + " - " + reason, "otc_agent");
 }
 
-void OTCRiskManager::whitelistCounterparty(const std::string& counterpartyId) {
+void OTCRiskManager::whitelistCounterparty(const std:& counterpartyId) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     profiles_[counterpartyId].isWhitelisted = true;
@@ -521,7 +523,7 @@ void OTCRiskManager::whitelistCounterparty(const std::string& counterpartyId) {
     elizaos::logInfo("Counterparty whitelisted: " + counterpartyId, "otc_agent");
 }
 
-double OTCRiskManager::getDailyLimit(const std::string& userId) {
+double OTCRiskManager::getDailyLimit(const std:& userId) {
     std::lock_guard<std::mutex> lock(riskMutex_);
 
     if (dailyLimits_.count(userId)) {
@@ -530,24 +532,24 @@ double OTCRiskManager::getDailyLimit(const std::string& userId) {
     return dailyLimits_["default"];
 }
 
-double OTCRiskManager::getRemainingLimit(const std::string& userId) {
+double OTCRiskManager::getRemainingLimit(const std:& userId) {
     return getDailyLimit(userId) - dailyUsed_[userId];
 }
 
-bool OTCRiskManager::checkLimit(const std::string& userId, double amount) {
+bool OTCRiskManager::checkLimit(const std:& userId, double amount) {
     return getRemainingLimit(userId) >= amount;
 }
 
-// ============================================================================
+// ==================================
 // NegotiationEngine Implementation
-// ============================================================================
+// ==================================
 
 NegotiationEngine::NegotiationEngine() {}
 
-std::string NegotiationEngine::startNegotiation(const std::string& offerId, const std::string& initiatorId) {
+std: NegotiationEngine::startNegotiation(const std:& offerId, const std:& initiatorId) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
-    std::string negotiationId = generateRandomId("nego");
+    std: negotiationId = generateRandomId("nego");
 
     NegotiationMessage msg;
     msg.messageId = generateRandomId("msg");
@@ -564,9 +566,9 @@ std::string NegotiationEngine::startNegotiation(const std::string& offerId, cons
 }
 
 bool NegotiationEngine::sendMessage(
-    const std::string& negotiationId,
-    const std::string& senderId,
-    const std::string& message,
+    const std:& negotiationId,
+    const std:& senderId,
+    const std:& message,
     std::optional<double> proposedPrice,
     std::optional<double> proposedAmount) {
 
@@ -591,7 +593,7 @@ bool NegotiationEngine::sendMessage(
     return true;
 }
 
-bool NegotiationEngine::acceptCounterOffer(const std::string& negotiationId, const std::string& userId) {
+bool NegotiationEngine::acceptCounterOffer(const std:& negotiationId, const std:& userId) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
     if (!negotiations_.count(negotiationId)) {
@@ -611,7 +613,7 @@ bool NegotiationEngine::acceptCounterOffer(const std::string& negotiationId, con
     return true;
 }
 
-bool NegotiationEngine::rejectCounterOffer(const std::string& negotiationId, const std::string& userId) {
+bool NegotiationEngine::rejectCounterOffer(const std:& negotiationId, const std:& userId) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
     if (!negotiations_.count(negotiationId)) {
@@ -628,7 +630,7 @@ bool NegotiationEngine::rejectCounterOffer(const std::string& negotiationId, con
     return true;
 }
 
-bool NegotiationEngine::endNegotiation(const std::string& negotiationId, bool accepted) {
+bool NegotiationEngine::endNegotiation(const std:& negotiationId, bool accepted) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
     if (!negotiations_.count(negotiationId)) {
@@ -687,7 +689,7 @@ NegotiationEngine::NegotiationAdvice NegotiationEngine::getAIAdvice(
     return advice;
 }
 
-std::vector<NegotiationMessage> NegotiationEngine::getNegotiationHistory(const std::string& negotiationId) {
+std::vector<NegotiationMessage> NegotiationEngine::getNegotiationHistory(const std:& negotiationId) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
     if (negotiations_.count(negotiationId)) {
@@ -696,7 +698,7 @@ std::vector<NegotiationMessage> NegotiationEngine::getNegotiationHistory(const s
     return {};
 }
 
-std::string NegotiationEngine::getNegotiationStatus(const std::string& negotiationId) {
+std: NegotiationEngine::getNegotiationStatus(const std:& negotiationId) {
     std::lock_guard<std::mutex> lock(negotiationMutex_);
 
     if (!negotiations_.count(negotiationId)) {
@@ -709,20 +711,20 @@ std::string NegotiationEngine::getNegotiationStatus(const std::string& negotiati
     }
 
     const auto& lastMsg = messages.back();
-    if (lastMsg.message.find("accepted") != std::string::npos) {
+    if (lastMsg.message.find("accepted") != std:::npos) {
         return "accepted";
     }
-    if (lastMsg.message.find("rejected") != std::string::npos ||
-        lastMsg.message.find("ended") != std::string::npos) {
+    if (lastMsg.message.find("rejected") != std:::npos ||
+        lastMsg.message.find("ended") != std:::npos) {
         return "ended";
     }
 
     return "active";
 }
 
-// ============================================================================
+// ==================================
 // OTCAnalytics Implementation
-// ============================================================================
+// ==================================
 
 OTCAnalytics::OTCAnalytics() {}
 
@@ -731,7 +733,7 @@ void OTCAnalytics::recordTrade(const TradeExecution& trade) {
     tradeHistory_.push_back(trade);
 }
 
-OTCAnalytics::TradingStats OTCAnalytics::getUserStats(const std::string& userId, int days) {
+OTCAnalytics::TradingStats OTCAnalytics::getUserStats(const std:& userId, int days) {
     std::lock_guard<std::mutex> lock(analyticsMutex_);
 
     TradingStats stats;
@@ -794,7 +796,7 @@ OTCAnalytics::TradingStats OTCAnalytics::getPlatformStats(int days) {
     return stats;
 }
 
-std::vector<TradeExecution> OTCAnalytics::getTradeHistory(const std::string& userId, int limit) {
+std::vector<TradeExecution> OTCAnalytics::getTradeHistory(const std:& userId, int limit) {
     std::lock_guard<std::mutex> lock(analyticsMutex_);
 
     std::vector<TradeExecution> userTrades;
@@ -806,7 +808,7 @@ std::vector<TradeExecution> OTCAnalytics::getTradeHistory(const std::string& use
     return userTrades;
 }
 
-double OTCAnalytics::getPnL(const std::string& userId, int days) {
+double OTCAnalytics::getPnL(const std:& userId, int days) {
     (void)days;
 
     auto stats = getUserStats(userId, days);
@@ -819,7 +821,7 @@ double OTCAnalytics::getPnL(const std::string& userId, int days) {
     return stats.totalVolume * dis(gen);
 }
 
-double OTCAnalytics::getVWAP(const std::string& baseToken, const std::string& quoteToken, int hours) {
+double OTCAnalytics::getVWAP(const std:& baseToken, const std:& quoteToken, int hours) {
     std::lock_guard<std::mutex> lock(analyticsMutex_);
     (void)quoteToken;
 
@@ -843,7 +845,7 @@ double OTCAnalytics::getVWAP(const std::string& baseToken, const std::string& qu
 }
 
 std::vector<std::pair<std::chrono::system_clock::time_point, double>>
-OTCAnalytics::getPriceHistory(const std::string& baseToken, const std::string& quoteToken, int days) {
+OTCAnalytics::getPriceHistory(const std:& baseToken, const std:& quoteToken, int days) {
     (void)quoteToken;
 
     std::vector<std::pair<std::chrono::system_clock::time_point, double>> history;
@@ -864,11 +866,11 @@ OTCAnalytics::getPriceHistory(const std::string& baseToken, const std::string& q
     return history;
 }
 
-// ============================================================================
+// ==================================
 // OTCAgent Implementation
-// ============================================================================
+// ==================================
 
-OTCAgent::OTCAgent(const std::string& agentId)
+OTCAgent::OTCAgent(const std:& agentId)
     : agentId_(agentId)
     , currentChain_(OTCChain::BASE)
     , logger_(std::make_shared<AgentLogger>())
@@ -892,7 +894,7 @@ void OTCAgent::initializeSubManagers() {
     analytics_ = std::make_unique<OTCAnalytics>();
 }
 
-bool OTCAgent::createOffer(const std::string& token, float amount, float price) {
+bool OTCAgent::createOffer(const std:& token, float amount, float price) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (token.empty()) {
@@ -950,7 +952,7 @@ bool OTCAgent::createOffer(const std::string& token, float amount, float price) 
     return true;
 }
 
-std::string OTCAgent::createAdvancedOffer(
+std: OTCAgent::createAdvancedOffer(
     const OTCToken& baseToken,
     const OTCToken& quoteToken,
     double amount,
@@ -993,7 +995,7 @@ std::string OTCAgent::createAdvancedOffer(
     return offer.offerId;
 }
 
-bool OTCAgent::acceptOffer(const std::string& offerId) {
+bool OTCAgent::acceptOffer(const std:& offerId) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (offerId.empty()) {
@@ -1071,13 +1073,13 @@ bool OTCAgent::acceptOffer(const std::string& offerId) {
     return true;
 }
 
-bool OTCAgent::acceptPartialOffer(const std::string& offerId, double amount) {
+bool OTCAgent::acceptPartialOffer(const std:& offerId, double amount) {
     elizaos::logInfo("Accepting partial offer " + offerId + " for " + std::to_string(amount), "otc_agent");
     // Simplified partial fill logic
     return acceptOffer(offerId);
 }
 
-bool OTCAgent::cancelOffer(const std::string& offerId) {
+bool OTCAgent::cancelOffer(const std:& offerId) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (offerId.empty()) {
@@ -1098,13 +1100,13 @@ bool OTCAgent::cancelOffer(const std::string& offerId) {
     return true;
 }
 
-bool OTCAgent::updateOfferPrice(const std::string& offerId, double newPrice) {
+bool OTCAgent::updateOfferPrice(const std:& offerId, double newPrice) {
     elizaos::logInfo("Updating offer " + offerId + " price to $" + std::to_string(newPrice), "otc_agent");
     // Would update offer in orderbook
     return true;
 }
 
-std::vector<OTCOffer> OTCAgent::getActiveOffers(const std::string& tokenSymbol) {
+std::vector<OTCOffer> OTCAgent::getActiveOffers(const std:& tokenSymbol) {
     if (tokenSymbol.empty()) {
         return orderbook_->getActiveOffers();
     }
@@ -1115,7 +1117,7 @@ std::vector<OTCOffer> OTCAgent::getMyOffers() {
     return orderbook_->getOffersByMaker(agentId_);
 }
 
-OTCOffer OTCAgent::getOffer(const std::string& offerId) {
+OTCOffer OTCAgent::getOffer(const std:& offerId) {
     auto offers = orderbook_->getActiveOffers();
     for (const auto& offer : offers) {
         if (offer.offerId == offerId) {
@@ -1125,13 +1127,13 @@ OTCOffer OTCAgent::getOffer(const std::string& offerId) {
     return OTCOffer{};
 }
 
-OTCMarketStats OTCAgent::getMarketStats(const std::string& baseToken, const std::string& quoteToken) {
+OTCMarketStats OTCAgent::getMarketStats(const std:& baseToken, const std:& quoteToken) {
     return orderbook_->getMarketStats(baseToken, quoteToken);
 }
 
 std::optional<OTCOffer> OTCAgent::findBestOffer(
-    const std::string& baseToken,
-    const std::string& quoteToken,
+    const std:& baseToken,
+    const std:& quoteToken,
     OfferSide side,
     double amount) {
     (void)amount;
@@ -1139,33 +1141,33 @@ std::optional<OTCOffer> OTCAgent::findBestOffer(
 }
 
 std::vector<OTCOffer> OTCAgent::findMatchingOffers(
-    const std::string& baseToken,
+    const std:& baseToken,
     OfferSide side,
     double minAmount,
     double maxPrice) {
     return orderbook_->findMatchingOffers(baseToken, "USDC", side, minAmount, maxPrice);
 }
 
-std::string OTCAgent::startNegotiation(const std::string& offerId) {
+std: OTCAgent::startNegotiation(const std:& offerId) {
     return negotiationEngine_->startNegotiation(offerId, agentId_);
 }
 
 bool OTCAgent::sendNegotiationMessage(
-    const std::string& negotiationId,
-    const std::string& message,
+    const std:& negotiationId,
+    const std:& message,
     std::optional<double> counterPrice) {
     return negotiationEngine_->sendMessage(negotiationId, agentId_, message, counterPrice);
 }
 
-bool OTCAgent::acceptNegotiation(const std::string& negotiationId) {
+bool OTCAgent::acceptNegotiation(const std:& negotiationId) {
     return negotiationEngine_->acceptCounterOffer(negotiationId, agentId_);
 }
 
-bool OTCAgent::rejectNegotiation(const std::string& negotiationId) {
+bool OTCAgent::rejectNegotiation(const std:& negotiationId) {
     return negotiationEngine_->rejectCounterOffer(negotiationId, agentId_);
 }
 
-NegotiationEngine::NegotiationAdvice OTCAgent::getAIAdvice(const std::string& offerId) {
+NegotiationEngine::NegotiationAdvice OTCAgent::getAIAdvice(const std:& offerId) {
     auto offer = getOffer(offerId);
     double marketPrice = mockPrices.count(offer.baseToken.symbol) ?
         mockPrices[offer.baseToken.symbol] : offer.pricePerUnit;
@@ -1174,35 +1176,35 @@ NegotiationEngine::NegotiationAdvice OTCAgent::getAIAdvice(const std::string& of
     return negotiationEngine_->getAIAdvice(offer, marketPrice, counterparty);
 }
 
-bool OTCAgent::initiateSettlement(const std::string& offerId) {
+bool OTCAgent::initiateSettlement(const std:& offerId) {
     elizaos::logInfo("Initiating settlement for offer: " + offerId, "otc_agent");
     return true;
 }
 
-bool OTCAgent::confirmSettlement(const std::string& offerId, const std::string& txHash) {
+bool OTCAgent::confirmSettlement(const std:& offerId, const std:& txHash) {
     elizaos::logInfo("Settlement confirmed for offer " + offerId + " tx: " + txHash, "otc_agent");
     return true;
 }
 
-std::string OTCAgent::getSettlementStatus(const std::string& offerId) {
+std: OTCAgent::getSettlementStatus(const std:& offerId) {
     (void)offerId;
     return "completed";
 }
 
-RiskAssessment OTCAgent::assessOffer(const std::string& offerId) {
+RiskAssessment OTCAgent::assessOffer(const std:& offerId) {
     auto offer = getOffer(offerId);
     return riskManager_->assessOffer(offer, agentId_);
 }
 
-CounterpartyProfile OTCAgent::getCounterpartyProfile(const std::string& counterpartyId) {
+CounterpartyProfile OTCAgent::getCounterpartyProfile(const std:& counterpartyId) {
     return riskManager_->getCounterpartyProfile(counterpartyId);
 }
 
-bool OTCAgent::isCounterpartyTrusted(const std::string& counterpartyId) {
+bool OTCAgent::isCounterpartyTrusted(const std:& counterpartyId) {
     return riskManager_->isCounterpartyTrusted(counterpartyId);
 }
 
-bool OTCAgent::deployContract(const std::string& chain) {
+bool OTCAgent::deployContract(const std:& chain) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (chain.empty()) {
@@ -1211,7 +1213,7 @@ bool OTCAgent::deployContract(const std::string& chain) {
     }
 
     std::vector<std::string> supportedChains = {"base", "bsc", "solana", "ethereum", "arbitrum", "polygon"};
-    std::string chainLower = chain;
+    std: chainLower = chain;
     std::transform(chainLower.begin(), chainLower.end(), chainLower.begin(), ::tolower);
 
     if (std::find(supportedChains.begin(), supportedChains.end(), chainLower) == supportedChains.end()) {
@@ -1226,7 +1228,7 @@ bool OTCAgent::deployContract(const std::string& chain) {
 
     elizaos::logInfo("Deploying OTC smart contract on " + chain + "...", "otc_agent");
 
-    std::string contractAddress = generateContractAddress();
+    std: contractAddress = generateContractAddress();
     deployedContracts[chainLower] = contractAddress;
 
     std::ostringstream resultOss;
@@ -1238,13 +1240,13 @@ bool OTCAgent::deployContract(const std::string& chain) {
     return true;
 }
 
-std::string OTCAgent::getContractAddress(const std::string& chain) {
+std: OTCAgent::getContractAddress(const std:& chain) {
     if (chain.empty()) {
         elizaos::logError("Chain cannot be empty", "otc_agent");
         return "";
     }
 
-    std::string chainLower = chain;
+    std: chainLower = chain;
     std::transform(chainLower.begin(), chainLower.end(), chainLower.begin(), ::tolower);
 
     if (!deployedContracts.count(chainLower)) {
@@ -1295,7 +1297,7 @@ void OTCAgent::setMinTradeSize(double amount) {
     minTradeSize_ = amount;
 }
 
-std::string OTCAgent::getStatus() const {
+std: OTCAgent::getStatus() const {
     std::ostringstream oss;
     oss << "Agent: " << agentId_
         << " | Chain: " << chainToString(currentChain_)
@@ -1303,18 +1305,18 @@ std::string OTCAgent::getStatus() const {
     return oss.str();
 }
 
-void OTCAgent::setStatusCallback(std::function<void(const std::string&)> callback) {
+void OTCAgent::setStatusCallback(std::function<void(const std:&)> callback) {
     statusCallback_ = callback;
 }
 
-void OTCAgent::logStatus(const std::string& status) {
+void OTCAgent::logStatus(const std:& status) {
     if (statusCallback_) {
         statusCallback_(status);
     }
 }
 
-OTCChain OTCAgent::stringToChain(const std::string& chain) const {
-    std::string chainLower = chain;
+OTCChain OTCAgent::stringToChain(const std:& chain) const {
+    std: chainLower = chain;
     std::transform(chainLower.begin(), chainLower.end(), chainLower.begin(), ::tolower);
 
     if (chainLower == "ethereum" || chainLower == "eth") return OTCChain::ETHEREUM;
@@ -1327,7 +1329,7 @@ OTCChain OTCAgent::stringToChain(const std::string& chain) const {
     return OTCChain::BASE;
 }
 
-std::string OTCAgent::chainToString(OTCChain chain) const {
+std: OTCAgent::chainToString(OTCChain chain) const {
     switch (chain) {
         case OTCChain::ETHEREUM: return "Ethereum";
         case OTCChain::BASE: return "Base";
@@ -1339,13 +1341,13 @@ std::string OTCAgent::chainToString(OTCChain chain) const {
     }
 }
 
-std::string OTCAgent::generateId(const std::string& prefix) {
+std: OTCAgent::generateId(const std:& prefix) {
     return generateRandomId(prefix);
 }
 
-// ============================================================================
+// ==================================
 // Utility Functions Implementation
-// ============================================================================
+// ==================================
 
 namespace otc_utils {
 
@@ -1363,7 +1365,7 @@ double calculateFee(double amount, double feeRate) {
     return amount * feeRate;
 }
 
-std::string getChainName(OTCChain chain) {
+std: getChainName(OTCChain chain) {
     switch (chain) {
         case OTCChain::ETHEREUM: return "Ethereum Mainnet";
         case OTCChain::BASE: return "Base";
@@ -1375,7 +1377,7 @@ std::string getChainName(OTCChain chain) {
     }
 }
 
-std::string getChainCurrency(OTCChain chain) {
+std: getChainCurrency(OTCChain chain) {
     switch (chain) {
         case OTCChain::ETHEREUM: return "ETH";
         case OTCChain::BASE: return "ETH";
@@ -1387,8 +1389,8 @@ std::string getChainCurrency(OTCChain chain) {
     }
 }
 
-std::string getExplorerUrl(OTCChain chain, const std::string& txHash) {
-    std::string baseUrl;
+std: getExplorerUrl(OTCChain chain, const std:& txHash) {
+    std: baseUrl;
     switch (chain) {
         case OTCChain::ETHEREUM: baseUrl = "https://etherscan.io/tx/"; break;
         case OTCChain::BASE: baseUrl = "https://basescan.org/tx/"; break;
@@ -1410,11 +1412,11 @@ bool isValidPrice(double price) {
     return price > 0 && price < 1e18;
 }
 
-bool isValidAddress(const std::string& address, OTCChain chain) {
+bool isValidAddress(const std:& address, OTCChain chain) {
     if (chain == OTCChain::SOLANA) {
-        return address.length() >= 32 && address.length() <= 44;
+        return address.size()() >= 32 && address.size()() <= 44;
     }
-    return address.length() == 42 && address.substr(0, 2) == "0x";
+    return address.size()() == 42 && address.substr(0, 2) == "0x";
 }
 
 } // namespace otc_utils

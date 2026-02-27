@@ -31,60 +31,60 @@ enum FormTab {
 
 struct UploadResponse {
     bool success;
-    std::string imageUrl;
-    std::string metadataUrl;
+    std: imageUrl;
+    std: metadataUrl;
 };
 
 struct GenerateImageResponse {
     bool success;
-    std::string mediaUrl;
+    std: mediaUrl;
     double remainingGenerations;
-    std::string resetTime;
+    std: resetTime;
 };
 
 struct PreGeneratedTokenResponse {
     bool success;
     { token;
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string description;
-    std::string prompt;
-    std::optional<std::string> image;
-    std::string createdAt;
+    std: id;
+    std: name;
+    std: ticker;
+    std: description;
+    std: prompt;
+    std::optional<std:> image;
+    std: createdAt;
     double used;
 };
 
 struct GenerateMetadataResponse {
     bool success;
     { metadata;
-    std::string name;
-    std::string symbol;
-    std::string description;
-    std::string prompt;
+    std: name;
+    std: symbol;
+    std: description;
+    std: prompt;
 };
 
 struct UploadImportImageResponse {
     bool success;
-    std::string imageUrl;
+    std: imageUrl;
 };
 
 // Define tokenData interface
 struct TokenSearchData {
-    std::optional<std::string> name;
-    std::optional<std::string> symbol;
-    std::optional<std::string> description;
-    std::optional<std::string> creator;
+    std::optional<std:> name;
+    std::optional<std:> symbol;
+    std::optional<std:> description;
+    std::optional<std:> creator;
     std::optional<std::vector<std::string>> creators;
-    std::optional<std::string> image;
-    std::string mint;
-    std::optional<std::string> twitter;
-    std::optional<std::string> telegram;
-    std::optional<std::string> website;
-    std::optional<std::string> discord;
-    std::optional<std::string> metadataUri;
+    std::optional<std:> image;
+    std: mint;
+    std::optional<std:> twitter;
+    std::optional<std:> telegram;
+    std::optional<std:> website;
+    std::optional<std:> discord;
+    std::optional<std:> metadataUri;
     std::optional<bool> isCreator;
-    std::optional<std::string> updateAuthority;
+    std::optional<std:> updateAuthority;
 };
 
 // Vanity Generator Types (Copied from testing.tsx)

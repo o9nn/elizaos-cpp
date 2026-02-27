@@ -8,7 +8,7 @@ WebSocketClient getWebSocketClient() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!wsClient) {
-        wsClient = new WebSocketClient();
+        wsClient = std::make_unique<WebSocketClient>();
     }
     return wsClient;
 

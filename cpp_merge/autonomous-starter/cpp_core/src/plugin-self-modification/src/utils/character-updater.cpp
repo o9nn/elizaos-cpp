@@ -1,4 +1,5 @@
 #include "character-updater.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ Character applyOperationsToCharacter(Character character, const std::vector<Modi
     try {
 
         // Deep clone to avoid mutating original
-        const auto updatedCharacter = /* JSON.parse */ /* JSON.stringify */ std::string(character);
+        const auto updatedCharacter = /* JSON::parse */ /* JSON.stringify */ std:(character);
 
         for (const auto& op : operations)
             try {
@@ -39,32 +40,32 @@ Character applyOperationsToCharacter(Character character, const std::vector<Modi
     }
 }
 
-void addValue(const std::any& obj, const std::string& path, const std::any& value) {
+void addValue(const std:& obj, const std:& path, const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Convert JSONPath to property path
-    const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
+    const auto normalizedPath = "path.substr(0, \"$\") ? path : " + "$." + path;
 
     // Handle array append notation
-    if (path.includes("[]")) {
+    if (path.count("[]") > 0) {
         const auto arrayPath = path.replace("[]", "");
-        const auto normalizedArrayPath = "arrayPath.startsWith(\"$\") ? arrayPath : " + "$." + arrayPath;
+        const auto normalizedArrayPath = "arrayPath.substr(0, \"$\") ? arrayPath : " + "$." + arrayPath;
 
         // Try to get the existing array
         const auto results = JSONPath({ path: normalizedArrayPath, json: obj });
 
-        if (results.length > 0 && Array.isArray(results[0])) {
+        if (results.size() > 0 && Array.isArray(results[0])) {
             // Array exists, append to it
             results[0].push_back(value);
             } else {
                 // Array doesn't exist, create it
-                if (arrayPath.includes(".")) {
+                if (arrayPath.count(".") > 0) {
                     // Nested path like "style.all[]"
                     const auto parentPath = normalizedArrayPath.substring(0, normalizedArrayPath.lastIndexOf("."));
                     const auto propertyName = arrayPath.substring(arrayPath.lastIndexOf(".") + 1);
                     const auto parentResults = JSONPath({ path: parentPath, json: obj });
 
-                    if (parentResults.length > 0) {
+                    if (parentResults.size() > 0) {
                         parentResults[0][propertyName] = [value];
                     }
                     } else {
@@ -90,11 +91,11 @@ void addValue(const std::any& obj, const std::string& path, const std::any& valu
 
 }
 
-void modifyValue(const std::any& obj, const std::string& path, const std::any& value) {
+void modifyValue(const std:& obj, const std:& path, const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
+        const auto normalizedPath = "path.substr(0, \"$\") ? path : " + "$." + path;
         auto found = false;
 
         JSONPath({
@@ -109,7 +110,7 @@ void modifyValue(const std::any& obj, const std::string& path, const std::any& v
                 });
 
                 if (!found) {
-                    throw std::runtime_error(`Path ${path} does not exist`);
+                    throw std::runtime_error("Path " + std::to_string(path) + " does not exist");
                 }
 
     } catch (const std::exception& e) {
@@ -118,10 +119,10 @@ void modifyValue(const std::any& obj, const std::string& path, const std::any& v
     }
 }
 
-void deleteValue(const std::any& obj, const std::string& path) {
+void deleteValue(const std:& obj, const std:& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
+    const auto normalizedPath = "path.substr(0, \"$\") ? path : " + "$." + path;
 
     JSONPath({
         path: normalizedPath,
@@ -144,7 +145,7 @@ void deleteValue(const std::any& obj, const std::string& path) {
 
 }
 
-bool validateCharacterStructure(const std::any& character) {
+bool validateCharacterStructure(const std:& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Basic validation to ensure required fields exist
@@ -163,7 +164,7 @@ bool validateCharacterStructure(const std::any& character) {
     ];
     for (const auto& field : arrayFields)
         if (character[field] && !Array.isArray(character[field])) {
-            // Special case: bio can be std::string or array
+            // Special case: bio can be std: or array
             if (field == "bio" && typeof character[field] == "string") {
                 continue;
             }

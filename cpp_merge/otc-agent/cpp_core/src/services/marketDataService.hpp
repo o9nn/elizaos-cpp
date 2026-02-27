@@ -37,12 +37,12 @@ struct BirdeyeResponse {
 class MarketDataService {
 public:
     MarketDataService();
-    std::future<double> fetchTokenPrice(const std::string& tokenAddress, Chain chain);
-    std::future<TokenMarketData> fetchMarketData(const std::string& tokenAddress, Chain chain);
-    std::future<TokenMarketData> fetchEVMData(const std::string& tokenAddress, Chain chain);
-    std::future<TokenMarketData> fetchSolanaData(const std::string& tokenAddress);
-    std::future<void> refreshTokenData(const std::string& tokenId, const std::string& tokenAddress, Chain chain);
-    std::future<void> refreshAllTokenData(const std::vector<std::any>& tokens);
+    std::future<double> fetchTokenPrice(const std:& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchMarketData(const std:& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchEVMData(const std:& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchSolanaData(const std:& tokenAddress);
+    std::future<void> refreshTokenData(const std:& tokenId, const std:& tokenAddress, Chain chain);
+    std::future<void> refreshAllTokenData(const std::vector<std::string>& tokens);
 };
 
 

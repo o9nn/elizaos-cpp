@@ -1,25 +1,26 @@
 #include "version-check.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> checkCliVersion() {
+std::future<std:> checkCliVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto cliPackageJsonPath = path.resolve(;
-        path.dirname(fileURLToPath(import.meta.url)),
+        path.dirname(fileURLToPath("__FILE__")),
         "../package.json";
         );
 
         const auto cliPackageJsonContent = fs.readFile(cliPackageJsonPath, "utf-8");
-        const auto cliPackageJson = /* JSON.parse */ cliPackageJsonContent;
+        const auto cliPackageJson = /* JSON::parse */ cliPackageJsonContent;
         const auto currentVersion = cliPackageJson.version || "0.0.0";
 
         // Get the time data for all published versions to find the most recent
         const auto { stdout } = execa("npm", ["view", "@elizaos/cli", "time", "--json"]);
-        const auto timeData = /* JSON.parse */ stdout;
+        const auto timeData = /* JSON::parse */ stdout;
 
         // Remove metadata entries like 'created' and 'modified'
         delete timeData.created;
@@ -48,7 +49,7 @@ std::future<std::string> checkCliVersion() {
 
                 if (clack.isCancel(update)) {
                     clack.cancel("Operation cancelled.");
-                    process.exit(0);
+                    std::exit(0);
                 }
 
                 if (update) {
@@ -57,7 +58,7 @@ std::future<std::string> checkCliVersion() {
                     try {
                         performCliUpdate();
                         // If update is successful, exit
-                        process.exit(0);
+                        std::exit(0);
                         } catch (updateError) {
                             std::cerr << "Failed to update CLI:" << updateError << std::endl;
                             // Continue with current version if update fails

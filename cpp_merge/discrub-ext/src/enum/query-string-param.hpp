@@ -5,6 +5,6 @@
 enum struct QueryStringParam;
 
 enum struct QueryStringParam {
-    AROUND = std::string("around"), BEFORE = std::string("before"), AFTER = std::string("after")
+    AROUND = std:("around"), BEFORE = std:("before"), AFTER = std:("after")
 };
 #endif

@@ -20,11 +20,11 @@ namespace elizaos {
 
 class AgentActions {
 public:
-    AgentActions(const std::any& world);
+    AgentActions(const std:& world);
     void register(ActionNode node);
     void unregister(ActionNode node);
     std::vector<ActionNode> getNearby(std::optional<double> maxDistance);
-    void performAction(std::optional<std::string> entityID);
+    void performAction(std::optional<std:> entityID);
     void releaseAction();
     void init();
     void start();

@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +13,7 @@ std::future<void> GET(NextRequest request) {
     const auto authHeader = request.headers.get("authorization");
 
     // Always require auth in production
-    if (process.env.NODE_ENV == "production" && !CRON_SECRET) {
+    if (std::getenv("NODE_ENV") == "production" && !CRON_SECRET) {
         console.error(
         "[Reconciliation Cron] No CRON_SECRET configured in production",
         );
@@ -21,12 +23,12 @@ std::future<void> GET(NextRequest request) {
         );
     }
 
-    if (CRON_SECRET && authHeader != `Bearer ${CRON_SECRET}`) {
+    if (CRON_SECRET && authHeader != "Bearer " + std::to_string(CRON_SECRET) + "") {
         console.warn("[Reconciliation Cron] Unauthorized access attempt", {
             ip:
             request.headers.get("x-forwarded-for") ||;
             request.headers.get("x-real-ip"),
-            timestamp: new Date().toISOString(),
+            timestamp: std::make_unique<Date>().toISOString(),
             });
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
@@ -43,7 +45,7 @@ std::future<void> GET(NextRequest request) {
         auto quoteService = runtime.getService("QuoteService");
 
         while (!quoteService && retries < maxRetries) {
-            new Promise((resolve) => setTimeout(resolve, 200));
+            new Promise[&]((resolve) { return setTimeout(resolve, 200)); };
             quoteService = runtime.getService("QuoteService");
             retries++;
         }
@@ -71,7 +73,7 @@ std::future<void> GET(NextRequest request) {
                 success: true,
                 action: "reconcile_all",
                 duration,
-                timestamp: new Date().toISOString(),
+                timestamp: std::make_unique<Date>().toISOString(),
                 });
 
 }

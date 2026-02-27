@@ -19,18 +19,18 @@ namespace elizaos {
 // Simple spinner component
 
 struct ChatSession {
-    std::string id;
-    std::string title;
+    std: id;
+    std: title;
     double messageCount;
-    std::string lastActivity;
-    std::string preview;
+    std: lastActivity;
+    std: preview;
     bool isFromAgent;
-    std::optional<std::string> channelId;
+    std::optional<std:> channelId;
 };
 
 struct ChatSessionsProps {
-    std::string userId;
-    std::optional<std::string> currentSessionId;
+    std: userId;
+    std::optional<std:> currentSessionId;
     std::optional<bool> showSwitcher;
 };
 

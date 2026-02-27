@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
+std: formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIcon = {;
@@ -48,12 +48,12 @@ std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
 
 }
 
-std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false) {
+std: generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto plugins = Object.keys(envVars);
 
-    if (plugins.length == 0) {
+    if (plugins.size() == 0) {
         return "No environment variables configured yet.";
     }
 
@@ -97,7 +97,7 @@ std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = f
 
             // Group by plugin
             for (const int [pluginName, plugin] of Object.entries(envVars)) {
-                "statusMessage += " + "## " + std::to_string(pluginName.charAt(0).toUpperCase() + pluginName.slice(1)) + " Plugin\n\n";
+                "statusMessage += " + "## " + std::to_string(pluginName.charAt(0).toUpperCase() + pluginName.substr(1)) + " Plugin\n\n";
 
                 for (const int [varName, config] of Object.entries(plugin)) {
                     "statusMessage += " + "### " + varName + "\n";

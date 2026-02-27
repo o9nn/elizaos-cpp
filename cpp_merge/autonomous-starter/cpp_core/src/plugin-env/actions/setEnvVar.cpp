@@ -1,4 +1,7 @@
 #include "setEnvVar.hpp"
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,20 +12,16 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
     // Generate context for available environment variables
     const auto envVarsContext = Object.entries(envVars);
-    .std::map(([pluginName, plugin]) => {
-        return Object.entries(plugin);
-        .filter(;
+    .std::map[&](([pluginName, plugin]) {
+        return Object.entries(plugin).filter(;
         ([, config]) =>;
         config.status == "missing" || config.status == "invalid",
         );
-        .std::map(([varName, config]) => {
+        .std::map[&](([varName, config]) {
             const auto requiredStr = config.required ? "Required." : "Optional.";
             return pluginName + "." + varName + ": " + config.description + " " + requiredStr;
-            });
-            .join("\n");
-            });
-            .filter(Boolean);
-            .join("\n");
+            }).join("\n");
+            }).filter(Boolean).join("\n");
 
             if (!envVarsContext) {
                 return [];
@@ -43,14 +42,14 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
                             });
 
                             // Custom parsing for arrays since parseJSONObjectFromText only handles objects
-                            auto parsed: std::any;
+                            auto parsed: std:;
                             const auto jsonBlockMatch = "result.match(/" + "json\n([\s\S]*?)\n";
 
                             try {
                                 if (jsonBlockMatch) {
-                                    parsed = /* JSON.parse */ jsonBlockMatch[1].trim();
+                                    parsed = /* JSON::parse */ jsonBlockMatch[1];
                                     } else {
-                                        parsed = /* JSON.parse */ result.trim();
+                                        parsed = /* JSON::parse */ result;
                                     }
                                     } catch (parseError) {
                                         std::cerr << "Error parsing JSON from model response:" << parseError << std::endl;
@@ -91,12 +90,12 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
 std::future<> processEnvVarUpdates(IAgentRuntime runtime, const std::vector<EnvVarUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny: boolean; messages: std::string[]
+    updatedAny; messages: std:[]
 }
 
 void getNextMissingEnvVar(EnvVarMetadata envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    plugin: std::string; varName: std::string; config: EnvVarConfig
+    plugin: std:; varName: std:; config: EnvVarConfig
 }
 
 } // namespace elizaos

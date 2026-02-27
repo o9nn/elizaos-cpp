@@ -10,12 +10,12 @@ void useAddAgentToServer() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
 
-    return useMutation({;
-        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
+    return useMutation[&]({;
+        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) {
             const auto elizaClient = createElizaClient();
             return elizaClient.agents.addAgentToServer(serverId, agentId);
             },
-            onSuccess: (_data, variables) => {
+            onSuccess: [&](_data, variables) {
                 // Invalidate server agents query
                 queryClient.invalidateQueries({ queryKey: ["serverAgents", variables.serverId] });
                 queryClient.invalidateQueries({ queryKey: ["agentServers", variables.agentId] });
@@ -25,7 +25,7 @@ void useAddAgentToServer() {
                     description: "Agent has been successfully added to the server",
                     });
                     },
-                    onError: (error) => {
+                    onError: [&](error) {
                         toast({
                             title: "Error",
                             description: true /* instanceof check */ ? error.message : "Failed to add agent to server",
@@ -42,12 +42,12 @@ void useRemoveAgentFromServer() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
 
-    return useMutation({;
-        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
+    return useMutation[&]({;
+        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) {
             const auto elizaClient = createElizaClient();
             return elizaClient.agents.removeAgentFromServer(serverId, agentId);
             },
-            onSuccess: (_data, variables) => {
+            onSuccess: [&](_data, variables) {
                 // Invalidate server agents query
                 queryClient.invalidateQueries({ queryKey: ["serverAgents", variables.serverId] });
                 queryClient.invalidateQueries({ queryKey: ["agentServers", variables.agentId] });
@@ -57,7 +57,7 @@ void useRemoveAgentFromServer() {
                     description: "Agent has been successfully removed from the server",
                     });
                     },
-                    onError: (error) => {
+                    onError: [&](error) {
                         toast({
                             title: "Error",
                             description: true /* instanceof check */ ? error.message : "Failed to remove agent from server",

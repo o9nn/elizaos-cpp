@@ -101,9 +101,9 @@ public:
 template <typename P0>
 std::tuple<string, string> ToolHandler::parseActions(P0 output)
 {
-    auto modelResponse = (type_of(output) == std::string("string")) ? any(object{
-        object::pair{std::string("message"), output}
-    }) : any(output);
+    auto modelResponse = (type_of(output) == std:("string")) ? any(object{
+        object::pair{std:("message"), output}
+    }) (output);
     return this->parser->parse(modelResponse, OR((this->config->commands), (array<any>())), false);
 }
 

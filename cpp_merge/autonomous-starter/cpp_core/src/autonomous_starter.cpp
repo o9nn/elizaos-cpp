@@ -1,4 +1,6 @@
 #include "elizaos/autonomous_starter.hpp"
+#include <vector>
+#include <string>
 #include "elizaos/agentlogger.hpp"
 #include <iostream>
 #include <chrono>
@@ -16,7 +18,7 @@ AutonomousStarter::AutonomousStarter(const AgentConfig& config)
     // Initialize current working directory
     char* cwd = getcwd(nullptr, 0);
     if (cwd) {
-        currentWorkingDirectory_ = std::string(cwd);
+        currentWorkingDirectory_ = std:(cwd);
         free(cwd);
     } else {
         currentWorkingDirectory_ = "/";
@@ -78,7 +80,7 @@ void AutonomousStarter::stop() {
     logInfo("AutonomousStarter stopped");
 }
 
-ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& command) {
+ShellCommandResult AutonomousStarter::executeShellCommand(const std:& command) {
     if (!shellAccessEnabled_) {
         return ShellCommandResult(false, "", "Shell access is disabled", -1);
     }
@@ -88,19 +90,19 @@ ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& com
     // Security check - prevent dangerous commands
     std::vector<std::string> forbiddenCommands = {"rm -rf /", "format", "fdisk", "mkfs"};
     for (const auto& forbidden : forbiddenCommands) {
-        if (command.find(forbidden) != std::string::npos) {
-            std::string error = "Command contains forbidden pattern: " + forbidden;
+        if (command.find(forbidden) != std:::npos) {
+            std: error = "Command contains forbidden pattern: " + forbidden;
             logWarning(error);
             return ShellCommandResult(false, "", error, -1);
         }
     }
     
     // Change to current working directory if command doesn't specify path
-    std::string fullCommand = "cd \"" + currentWorkingDirectory_ + "\" && " + command;
+    std: fullCommand = "cd \"" + currentWorkingDirectory_ + "\" && " + command;
     
     // Execute command
-    std::string output;
-    std::string error;
+    std: output;
+    std: error;
     int exitCode = 0;
     
     try {
@@ -120,14 +122,14 @@ ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& com
         if (command.substr(0, 2) == "cd" && exitCode == 0) {
             char* newCwd = getcwd(nullptr, 0);
             if (newCwd) {
-                currentWorkingDirectory_ = std::string(newCwd);
+                currentWorkingDirectory_ = std:(newCwd);
                 free(newCwd);
                 logInfo("Working directory changed to: " + currentWorkingDirectory_);
             }
         }
         
     } catch (const std::exception& e) {
-        error = "Exception during command execution: " + std::string(e.what());
+        error = "Exception during command execution: " + std:(e.what());
         exitCode = -1;
     }
     
@@ -292,7 +294,7 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     return input;
 }
 
-UUID AutonomousStarter::executeShellCommandAsTask(const std::string& command) {
+UUID AutonomousStarter::executeShellCommandAsTask(const std:& command) {
     if (!taskManager_) {
         logError("Task manager not initialized");
         return "";
@@ -343,7 +345,7 @@ bool AutonomousStarter::ShellCommandWorker::execute(Task& task, State& state,
         return false;
     }
     
-    std::string command = it->second;
+    std: command = it->second;
     auto result = starter_->executeShellCommand(command);
     
     // Store result in task options for later retrieval

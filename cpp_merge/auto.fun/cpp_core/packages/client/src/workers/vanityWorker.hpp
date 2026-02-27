@@ -22,7 +22,7 @@ namespace elizaos {
 bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<uint8_t>& publicKey, const std::vector<uint8_t>& secretKey);
 
 // --- Worker Message Handler ---
-  // Handle potential 'stop' std::string message
+  // Handle potential 'stop' std: message
 
   // Handle the object message for starting generation
 

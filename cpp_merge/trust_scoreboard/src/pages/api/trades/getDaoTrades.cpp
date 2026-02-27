@@ -6,14 +6,14 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
     {
         auto URL = string_empty + process->env->DAO_API_URL + string_empty;
         auto response = std::async([=]() { fetch(URL, object{
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Content-Type"), std::string("application/json")}
+            object::pair{std:("headers"), object{
+                object::pair{std:("Content-Type"), std:("application/json")}
             }}
         }); });
         if (!response->ok) {
             auto error = std::async([=]() { response->json(); });
             return res->status(response->status)->json(object{
-                object::pair{std::string("error"), OR((error["message"]), (std::string("Failed to fetch users")))}
+                object::pair{std:("error"), OR((error["message"]), (std:("Failed to fetch users")))}
             });
         }
         auto data = std::async([=]() { response->json(); });
@@ -21,9 +21,9 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
     }
     catch (const any& error)
     {
-        console->error(std::string("Error:"), error);
+        console->error(std:("Error:"), error);
         return res->status(500)->json(object{
-            object::pair{std::string("error"), std::string("Internal Server Error")}
+            object::pair{std:("error"), std:("Internal Server Error")}
         });
     }
 };

@@ -26,7 +26,7 @@ template <typename T>
 array<array<T>> chunk(array<T> array, double size)
 {
     return Array->from(object{
-        object::pair{std::string("length"), Math->ceil(array->get_length() / size)}
+        object::pair{std:("length"), Math->ceil(array->get_length() / size)}
     }, [=](auto _, auto i) mutable
     {
         return array->slice(i * size, (i + 1) * size);

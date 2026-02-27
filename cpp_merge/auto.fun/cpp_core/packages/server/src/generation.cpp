@@ -1,35 +1,42 @@
 #include "generation.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<> checkRateLimits(const std::string& mint, MediaType type, std::optional<std::string> publicKey) {
+std::future<> checkRateLimits(const std:& mint, MediaType type, std::optional<std:> publicKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed: boolean; remaining: number; message?: std::string
+    allowed; remaining; message?: std:
 }
 
-std::future<> checkTokenOwnership(const std::string& mint, const std::string& publicKey, std::string mode = "fast", MediaType mediaType = MediaType.IMAGE) {
+std::future<> checkTokenOwnership(const std:& mint, const std:& publicKey, std: mode = "fast", MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed: boolean; message?: std::string
+    allowed; message?: std:
 }
 
-std::future<> checkBlockchainTokenBalance(const std::string& mint, const std::string& publicKey, double minimumRequired) {
+std::future<> checkBlockchainTokenBalance(const std:& mint, const std:& publicKey, double minimumRequired) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed: boolean; message?: std::string
+    allowed; message?: std:
 }
 
-std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, std::optional<std::string> stylePrompt) {
+std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optional<std:> stylePrompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
-        // Ensure it promises a std::string
+        // Ensure it promises a std:
         try {
-            if (!process.env.FAL_API_KEY) {
+            if (!std::getenv("FAL_API_KEY")) {
                 throw new Error(
                 "FAL_API_KEY environment variable not std::set for lyrics generation.";
                 );
             }
-            fal.config({ credentials: process.env.FAL_API_KEY });
+            fal.config({ credentials: std::getenv("FAL_API_KEY") });
 
             const auto systemPrompt = "You are a creative songwriter. Create lyrics for a song about the token \"" + tokenMetadata.name + "\" (" + tokenMetadata.symbol;
             The song should capture the essence of the token's description: "${tokenMetadata.description}".
@@ -62,40 +69,40 @@ std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, s
             // Temperature adjustment might need different handling with Fal
             };
 
-            const std::any response = fal.subscribe("fal-ai/any-llm", {;
+            const std: response = fal.subscribe("fal-ai/any-llm", {;
                 input: falInput,
                 logs: true, // Optional: for debugging
                 });
 
                 // Ensure the lyrics have proper formatting
                 auto lyrics = response.data.output || response.output || ""; // Adjust based on actual Fal response structure;
-                lyrics = lyrics.trim();
+                lyrics = lyrics;
 
                 // Basic validation - return fallback STRING on failure
-                if (!lyrics || !lyrics.includes("[") || lyrics.length < 20) {
+                if (!lyrics || !lyrics.count("[") > 0 || lyrics.size() < 20) {
                     logger.error(
                     "Failed to generate valid lyrics structure from Fal AI. Response:",
                     lyrics;
                     );
-                    // Return a fallback std::string
+                    // Return a fallback std:
                     return "[verse]\n[00:00.00] Song about " + tokenMetadata.name + "\n[00:03.00] Symbol " + tokenMetadata.symbol + "\n[chorus]\n[00:06.00] Based on: " + std::to_string(tokenMetadata.description.substring(0, 50)) + "...\n[00:09.00] Fal AI generation failed.";
                 }
 
                 // Add section markers if they're missing (might be less necessary if prompt works well)
-                if (!lyrics.includes("[verse]")) {
+                if (!lyrics.count("[verse]") > 0) {
                     "lyrics = " + "[verse]\n" + lyrics;
                 }
-                if (!lyrics.includes("[chorus]")) {
+                if (!lyrics.count("[chorus]") > 0) {
                     // Find the first timestamp after [verse] lines and insert [chorus] before it
                     const auto lines = lyrics.split("\n");
                     auto verseEnded = false;
                     auto chorusInserted = false;
-                    for (int i = 0; i < lines.length; i++) {
-                        if (lines[i].includes("[verse]")) verseEnded = true;
+                    for (int i = 0; i < lines.size(); i++) {
+                        if (lines[i].count("[verse]") > 0) verseEnded = true;
                         if (
                         verseEnded &&;
                         lines[i].match(/\[\d{2}:\d{2}\.\d{2}\]/) &&
-                        !lines[i - 1].includes("[verse]");
+                        !lines[i - 1].count("[verse]") > 0;
                         ) {
                             lines.splice(i, 0, "[chorus]");
                             chorusInserted = true;
@@ -110,10 +117,10 @@ std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, s
                 // Add timestamps if they're missing (less likely if prompt works)
                 const auto lines = lyrics.split("\n");
                 auto currentTime = 0;
-                const auto formattedLines = lines.std::map((line: std::string) => {;
+                const auto formattedLines = lines.std::map[&]((line: std:) {;
                     if (
-                    line.trim() == "" ||;
-                    (line.startsWith("[") && !line.match(/\[\d{2}:\d{2}\.\d{2}\]/))
+                    line == "" ||;
+                    (line.substr(0, "[") && !line.match(/\[\d{2}:\d{2}\.\d{2}\]/))
                     ) {
                         return line; // Keep section markers or empty lines;
                     }
@@ -123,7 +130,7 @@ std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, s
                         const auto milliseconds = Math.floor((currentTime % 1) * 100);
                         const auto timestamp = "[" + std::to_string(std::to_string(minutes).padStart(2, "0")) + ":" + std::to_string(std::to_string(seconds).padStart(2, "0")) + "." + std::to_string(std::to_string(milliseconds).padStart(2, "0")) + "]";
                         currentTime += 2.5; // Add 2.5 seconds between lines;
-                        return timestamp + " " + std::to_string(line.trim());
+                        return timestamp + " " + std::to_string(line);
                         } else {
                             // Extract time if present to keep track for subsequent lines
                             const auto timeMatch = line.match(/\[(\d{2}):(\d{2})\.(\d{2})\]/);
@@ -137,11 +144,11 @@ std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, s
                         return line;
                         });
 
-                        return formattedLines.join("\n"); // Return the final std::string;
+                        return formattedLines.join("\n"); // Return the final std:;
 
                         } catch (error) {
                             std::cerr << "Error generating lyrics:" << error << std::endl;
-                            // Also return a fallback std::string on catch
+                            // Also return a fallback std: on catch
                             return "[verse]\n[00:00.00] Error generating lyrics for " + tokenMetadata.name + ".";
                             // OR re-throw if generateMedia should handle the error
                             // throw error;
@@ -153,17 +160,17 @@ std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, s
     }
 }
 
-std::future<std::string> generateStylePrompt(const std::string& userPrompt) {
+std::future<std:> generateStylePrompt(const std:& userPrompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
-            if (!process.env.FAL_API_KEY) {
+            if (!std::getenv("FAL_API_KEY")) {
                 throw new Error(
                 "FAL_API_KEY environment variable not std::set for style generation.";
                 );
             }
-            fal.config({ credentials: process.env.FAL_API_KEY });
+            fal.config({ credentials: std::getenv("FAL_API_KEY") });
 
         const auto prompt = "Prompt: " + userPrompt;
 
@@ -174,15 +181,15 @@ std::future<std::string> generateStylePrompt(const std::string& userPrompt) {
             prompt: prompt,
             };
 
-            const std::any response = fal.subscribe("fal-ai/any-llm", {;
+            const std: response = fal.subscribe("fal-ai/any-llm", {;
                 input: falInput,
                 logs: true,
                 });
 
                 auto style = response.data.output || response.output || "";
-                style = style.trim();
+                style = style;
 
-                if (!style || style.length < 10) {
+                if (!style || style.size() < 10) {
                     logger.error(
                     "Failed to generate valid style from Fal AI. Response:",
                     style;
@@ -203,11 +210,11 @@ std::future<std::string> generateStylePrompt(const std::string& userPrompt) {
     }
 }
 
-std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
+std: formatLyricsForDiffrhythm(const std:& lyrics) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Split lyrics into lines and clean up
-    const auto lines = lyrics.split("\n").filter((line) => line.trim() != "");
+    const auto lines = lyrics.split("\n").filter[&]((line) { return line != ""); };
 
     // Process lines to ensure proper format
     const std::vector<std::string> formattedLines = [];
@@ -216,13 +223,13 @@ std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
     for (const auto& line : lines)
         // Skip empty lines and metadata/section markers typically added by LLMs
         if (
-        !line.trim() ||;
-        line.toLowerCase().includes("here's a song") || // Common LLM preamble;
-        line.toLowerCase().startsWith("[verse") ||;
-        line.toLowerCase().startsWith("[chorus") ||;
-        line.toLowerCase().startsWith("[bridge") ||;
-        line.toLowerCase().startsWith("[intro") ||;
-        line.toLowerCase().startsWith("[outro") ||;
+        !line ||;
+        line.toLowerCase().count("here's a song") > 0 || // Common LLM preamble;
+        line.toLowerCase().substr(0, "[verse") ||;
+        line.toLowerCase().substr(0, "[chorus") ||;
+        line.toLowerCase().substr(0, "[bridge") ||;
+        line.toLowerCase().substr(0, "[intro") ||;
+        line.toLowerCase().substr(0, "[outro") ||;
         (std::find(line.begin(), line.end(), "...") != line.end()) || // Ellipses often indicate incomplete/filler;
         (std::find(line.begin(), line.end(), "---") != line.end()) || // Separators;
         (std::find(line.begin(), line.end(), "***") != line.end()) || // Separators;
@@ -235,12 +242,12 @@ std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
         const auto timestampMatch = line.match(/^\[(\d{2}:\d{2}\.\d{2})\]/);
         if (timestampMatch) {
             const auto timestamp = timestampMatch[1];
-            const auto lyricText = line.substring(timestampMatch[0].size()).trim(); // Get text after timestamp;
+            const auto lyricText = line.substring(timestampMatch[0].size()); // Get text after timestamp;
             if (lyricText) { // Only add if there's actual lyric text
             "formattedLines.push_back(" + "[" + timestamp + "]" + lyricText;
             // Update currentTime based on this timestamp for the next iteration
             const auto timeParts = timestamp.split(/[:.]/);
-            if (timeParts.length == 3) {
+            if (timeParts.size() == 3) {
                 const auto minutes = parseInt(timeParts[0], 10);
                 const auto seconds = parseInt(timeParts[1], 10);
                 const auto ms = parseInt(timeParts[2], 10);
@@ -254,7 +261,7 @@ std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
             const auto milliseconds = Math.floor((currentTime % 1) * 100); // Use 100 for two decimal places;
             const auto timestamp = "[" + std::to_string(std::to_string(minutes).padStart(2, "0")) + ":" + std::to_string(std::to_string(seconds).padStart(2, "0")) + "." + std::to_string(std::to_string(milliseconds).padStart(2, "0")) + "]";
 
-            const auto lyricText = line.trim(); // Use the cleaned line text;
+            const auto lyricText = line; // Use the cleaned line text;
             if (lyricText) { // Only add if there's actual lyric text
             "formattedLines.push_back(" + timestamp + lyricText;
             currentTime += 3.0; // Add estimated duration (e.g., 3 seconds) before the next line;
@@ -269,7 +276,7 @@ std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
 
 }
 
-std::future<void> generateMedia(std::optional<std::any> data) {
+std::future<void> generateMedia(std::optional<std:> data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -277,19 +284,19 @@ std::future<void> generateMedia(std::optional<std::any> data) {
         const auto timeout = 300000;
 
         // Initialize fal.ai client
-        if (!process.env.FAL_API_KEY) {
+        if (!std::getenv("FAL_API_KEY")) {
             throw std::runtime_error("FAL_API_KEY environment variable not set.");
         }
         fal.config({
-            credentials: process.env.FAL_API_KEY,
+            credentials: std::getenv("FAL_API_KEY"),
             });
             std::cout << "Fal AI client configured." << std::endl;
 
             // Create a timeout std::promise
             const auto timeoutPromise = new Promise((_, reject) =>;
-            setTimeout(;
-            "() => reject(std::runtime_error(" + "Media generation timed out after " + timeout + "ms"
-            timeout;
+            setTimeout[&](;
+            "() { return reject(std::runtime_error(" + "Media generation timed out after " + timeout + "ms"
+            timeout; };
             );
             );
 
@@ -301,23 +308,23 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                 const auto model = isProMode;
                 ? "fal-ai/flux-pro/v1.1-ultra";
                 : "fal-ai/flux/schnell";
-                const std::any input = { prompt = data.prompt };
+                const std: input = { prompt = data.prompt };
 
                 if (isProMode) {
                     std::cout << "Using Fal AI (" + model + ") for pro image generation..." << std::endl;
                     if (data.width) input.width = data.width;
                     if (data.height) input.height = data.height;
-                    // Add std::any other pro-specific params here
+                    // Add std: other pro-specific params here
                     } else {
                         std::cout << "Using Fal AI (" + model + ") for fast image generation..." << std::endl;
                         input.num_inference_steps = 4; // Schnell default/equivalent;
-                        // Add std::any other schnell-specific params here
+                        // Add std: other schnell-specific params here
                     }
 
-                    generationPromise = fal.subscribe(model, {
+                    generationPromise = fal.subscribe[&](model, {
                         input,
                         logs: true,
-                        onQueueUpdate: (update: std::any) => {
+                        onQueueUpdate: (update: std:) {
                             if (update.status == "IN_PROGRESS") {
                                 std::cout << "Image generation progress:" << update.logs << std::endl;
                             }
@@ -333,13 +340,13 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                             ? "fal-ai/pixverse/v4/image-to-video";
                             : "fal-ai/pixverse/v4/image-to-video/fast";
 
-                            generationPromise = fal.subscribe(model, {
+                            generationPromise = fal.subscribe[&](model, {
                                 input: {
                                     prompt: data.prompt,
                                     image_url: data.image_url,
                                     },
                                     logs: true,
-                                    onQueueUpdate: (update: std::any) => {
+                                    onQueueUpdate: (update: std:) {
                                         if (update.status == "IN_PROGRESS") {
                                             std::cout << "Image-to-video generation progress:" << update.logs << std::endl;
                                         }
@@ -361,7 +368,7 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                     ...(data.height ? { height: data.height } : {}),
                                                     },
                                                     logs: true,
-                                                    onQueueUpdate: (update: std::any) => {
+                                                    onQueueUpdate: [&](update: std:) {
                                                         if (update.status == "IN_PROGRESS") {
                                                             std::cout << "Video generation progress:" << update.logs << std::endl;
                                                         }
@@ -377,12 +384,12 @@ std::future<void> generateMedia(std::optional<std::any> data) {
 
                                                         if (!data.lyrics) {
                                                             std::cout << "Generating lyrics for audio..." << std::endl;
-                                                            // generateLyrics now guarantees a std::string return
+                                                            // generateLyrics now guarantees a std: return
                                                             lyricsToUsePromise = generateLyrics(;
                                                             {
                                                                 name: data.prompt.split(":")[0] || "",
-                                                                symbol: data.prompt.split(":")[1].trim() || "",
-                                                                description: data.prompt.split(":")[2].trim() || "",
+                                                                symbol: data.prompt.split(":")[1] || "",
+                                                                description: data.prompt.split(":")[2] || "",
                                                                 },
                                                                 data.style_prompt || stylePrompt;
                                                                 );
@@ -394,7 +401,7 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                                 throw std::runtime_error("No lyrics found");
                                                             }
 
-                                                            // lyricsToUse is now guaranteed to be a std::string here
+                                                            // lyricsToUse is now guaranteed to be a std: here
                                                             const auto formattedLyrics = formatLyricsForDiffrhythm(lyricsToUse); // Now safe to call;
 
                                                             // Check for existing audio context file in S3
@@ -413,7 +420,7 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                                     const auto listResponse = s3Client.send(listCmd);
                                                                     const auto audioContextKey = listResponse.Contents.[0].Key;
                                                                     if (audioContextKey) {
-                                                                        "referenceAudioUrl = " + process.env.S3_PUBLIC_URL + "/" + audioContextKey + "?t=" + std::to_string(Date.now());
+                                                                        "referenceAudioUrl = " + std::getenv("S3_PUBLIC_URL") + "/" + audioContextKey + "?t=" + std::to_string(Date.now());
                                                                         std::cout << "Using existing audio context file:" << referenceAudioUrl << std::endl;
                                                                         } else {
                                                                             std::cout << "No existing audio context file found << using default" << std::endl;
@@ -433,12 +440,12 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                                             scheduler: data.scheduler || "euler",
                                                                             num_inference_steps: data.num_inference_steps || 32,
                                                                             };
-                                                                            std::cout << "DiffRhythm input:" << /* JSON.stringify */ std::string(input, nullptr, 2) << std::endl;
+                                                                            std::cout << "DiffRhythm input:" << /* JSON.stringify */ std:(input, nullptr, 2) << std::endl;
 
-                                                                            generationPromise = fal.subscribe("fal-ai/diffrhythm", {
+                                                                            generationPromise = fal.subscribe[&]("fal-ai/diffrhythm", {
                                                                                 input,
                                                                                 logs: true,
-                                                                                onQueueUpdate: (update: std::any) => {
+                                                                                onQueueUpdate: (update: std:) {
                                                                                     if (update.status == "IN_PROGRESS") {
                                                                                         std::cout << "Music generation progress:" << update.logs << std::endl;
                                                                                     }
@@ -450,7 +457,7 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                                                     generationPromise,
                                                                                     timeoutPromise,
                                                                                     ]));
-                                                                                    std::cout << "Audio generation result:" << /* JSON.stringify */ std::string(result, nullptr, 2) << std::endl;
+                                                                                    std::cout << "Audio generation result:" << /* JSON.stringify */ std:(result, nullptr, 2) << std::endl;
 
                                                                                     const auto audioUrl = result.data.audio.url;
                                                                                     if (!audioUrl) {
@@ -472,7 +479,7 @@ std::future<void> generateMedia(std::optional<std::any> data) {
                                                                                                     );
                                                                                                 }
 
-                                                                                                // If generationPromise was std::set (for Image/Video cases), await and return
+                                                                                                // If generationPromise was std::set (for Image/Video cases), and return
                                                                                                 return Promise.race([generationPromise, timeoutPromise]);
 
     } catch (const std::exception& e) {
@@ -481,13 +488,13 @@ std::future<void> generateMedia(std::optional<std::any> data) {
     }
 }
 
-std::future<MediaGeneration> generateImage(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator) {
+std::future<MediaGeneration> generateImage(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
             // In test mode, return a test image
-            if (process.env.NODE_ENV == "test") {
+            if (std::getenv("NODE_ENV") == "test") {
                 return {
                     id: crypto.randomUUID(),
                     mint,
@@ -498,15 +505,15 @@ std::future<MediaGeneration> generateImage(const std::string& mint, const std::s
                     seed: 12345,
                     numInferenceSteps: 30,
                     creator: creator || "test-creator",
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     dailyGenerationCount: 1,
-                    lastGenerationReset: new Date().toISOString(),
+                    lastGenerationReset: std::make_unique<Date>().toISOString(),
                     };
                 }
 
                 // For production, we would call the actual Fal.ai API
                 // This is simplified for the test scenario
-                if (!process.env.FAL_API_KEY) {
+                if (!std::getenv("FAL_API_KEY")) {
                     throw std::runtime_error("FAL_API_KEY is not configured");
                 }
 
@@ -524,9 +531,9 @@ std::future<MediaGeneration> generateImage(const std::string& mint, const std::s
                     seed: Math.floor(Math.random() * 1000000),
                     numInferenceSteps: 30,
                     creator: creator || "",
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     dailyGenerationCount: 1,
-                    lastGenerationReset: new Date().toISOString(),
+                    lastGenerationReset: std::make_unique<Date>().toISOString(),
                     };
                     } catch (error) {
                         std::cerr << "Error generating image:" << error << std::endl;
@@ -539,13 +546,13 @@ std::future<MediaGeneration> generateImage(const std::string& mint, const std::s
     }
 }
 
-std::future<MediaGeneration> generateVideo(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator) {
+std::future<MediaGeneration> generateVideo(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
             // In test mode, return a test video
-            if (process.env.NODE_ENV == "test") {
+            if (std::getenv("NODE_ENV") == "test") {
                 return {
                     id: crypto.randomUUID(),
                     mint,
@@ -560,15 +567,15 @@ std::future<MediaGeneration> generateVideo(const std::string& mint, const std::s
                     motionBucketId: 127,
                     duration: 2,
                     creator: creator || "test-creator",
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     dailyGenerationCount: 1,
-                    lastGenerationReset: new Date().toISOString(),
+                    lastGenerationReset: std::make_unique<Date>().toISOString(),
                     };
                 }
 
                 // For production, we would call the actual Fal.ai API
                 // This is simplified for the test scenario
-                if (!process.env.FAL_API_KEY) {
+                if (!std::getenv("FAL_API_KEY")) {
                     throw std::runtime_error("FAL_API_KEY is not configured");
                 }
 
@@ -590,9 +597,9 @@ std::future<MediaGeneration> generateVideo(const std::string& mint, const std::s
                     motionBucketId: 127,
                     duration: 2,
                     creator: creator || "",
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     dailyGenerationCount: 1,
-                    lastGenerationReset: new Date().toISOString(),
+                    lastGenerationReset: std::make_unique<Date>().toISOString(),
                     };
                     } catch (error) {
                         std::cerr << "Error generating video:" << error << std::endl;
@@ -605,17 +612,17 @@ std::future<MediaGeneration> generateVideo(const std::string& mint, const std::s
     }
 }
 
-std::future<double> getDailyGenerationCount(const std::any& db, const std::string& mint, const std::string& creator) {
+std::future<double> getDailyGenerationCount(const std:& db, const std:& mint, const std:& creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         // In test mode, return a low count
-        if (process.env.NODE_ENV == "test") {
+        if (std::getenv("NODE_ENV") == "test") {
             return 1;
         }
 
         // For real implementation, query the database and update
-        const auto now = new Date();
+        const auto now = std::make_unique<Date>();
         const auto today = new Date(;
         now.getFullYear(),
         now.getMonth(),
@@ -623,14 +630,9 @@ std::future<double> getDailyGenerationCount(const std::any& db, const std::strin
         ).toISOString();
 
         // Find the last generation for this creator and token
-        const auto generations = db;
-        .select();
-        .from(db.mediaGenerations);
-        .where({ mint, creator });
-        .orderBy("timestamp", "desc");
-        .limit(1);
+        const auto generations = db.select().from(db.mediaGenerations).where({ mint, creator }).orderBy("timestamp", "desc").limit(1);
 
-        if (generations.length == 0) {
+        if (generations.size() == 0) {
             return 1; // First generation;
         }
 
@@ -651,13 +653,13 @@ std::future<double> getDailyGenerationCount(const std::any& db, const std::strin
 
 }
 
-std::future<std::optional<std::unordered_map<std::string, std::string>>> generateMetadata(auto maxRetries) {
+std::future<std::optional<std::unordered_map<std:, std:>>> generateMetadata(auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         auto retryCount = 0;
-        if (!process.env.FAL_API_KEY) { throw new Error("FAL_API_KEY not set"); }
-        fal.config({ credentials: process.env.FAL_API_KEY });
+        if (!std::getenv("FAL_API_KEY")) { throw new Error("FAL_API_KEY not set"); }
+        fal.config({ credentials: std::getenv("FAL_API_KEY") });
 
         while (retryCount < maxRetries) {
             try {
@@ -669,7 +671,7 @@ std::future<std::optional<std::unordered_map<std::string, std::string>>> generat
                     system_prompt: systemPromptContent,
                     prompt: "Generate the token metadata based on the system prompt.",
                     };
-                    const std::any response = fal.subscribe("fal-ai/any-llm", {;
+                    const std: response = fal.subscribe("fal-ai/any-llm", {;
                         input: {
                             prompt: falInput.prompt,
                             system_prompt: falInput.system_prompt,
@@ -678,13 +680,13 @@ std::future<std::optional<std::unordered_map<std::string, std::string>>> generat
                             logs: true,
                             });
 
-                            std::optional<std::unordered_map<std::string, std::string>> metadata = nullptr;
+                            std::optional<std::unordered_map<std:, std:>> metadata = nullptr;
                             const auto rawOutput = response.data.output || response.output || "";
                             const auto jsonRegex = /{.*}/s; // Changed regex to be less greedy and handle newlines;
                             const auto jsonString = typeof rawOutput == "string" ? rawOutput.match(jsonRegex).[0] : nullptr;
 
                             if (jsonString) {
-                                try { metadata = /* JSON.parse */ jsonString; } catch (parseError) {
+                                try { metadata = /* JSON::parse */ jsonString; } catch (parseError) {
                                     std::cout << "Metadata JSON parse failed attempt " + std::to_string(retryCount + 1) << "trying field extraction..." << std::endl;
                                     const auto nameMatch = jsonString.match(/"name"\s*:\s*"((?:[^\"\\]|\\.)*)"/);
                                     const auto symbolMatch = jsonString.match(/"symbol"\s*:\s*"((?:[^\"\\]|\\.)*)"/);
@@ -692,10 +694,10 @@ std::future<std::optional<std::unordered_map<std::string, std::string>>> generat
                                     const auto promptMatch = jsonString.match(/"prompt"\s*:\s*"((?:[^\"\\]|\\.)*)"/);
                                     if (nameMatch.[1] && symbolMatch.[1] && descMatch.[1] && promptMatch.[1]) {
                                         metadata = {
-                                            "name: /* JSON.parse */ " + "\"" + std::to_string(nameMatch[1] + "\""
-                                            "symbol: /* JSON.parse */ " + "\"" + std::to_string(symbolMatch[1] + "\""
-                                            "description: /* JSON.parse */ " + "\"" + std::to_string(descMatch[1] + "\""
-                                            "prompt: /* JSON.parse */ " + "\"" + std::to_string(promptMatch[1] + "\""
+                                            "name: /* JSON::parse */ " + "\"" + std::to_string(nameMatch[1] + "\""
+                                            "symbol: /* JSON::parse */ " + "\"" + std::to_string(symbolMatch[1] + "\""
+                                            "description: /* JSON::parse */ " + "\"" + std::to_string(descMatch[1] + "\""
+                                            "prompt: /* JSON::parse */ " + "\"" + std::to_string(promptMatch[1] + "\""
                                             };
                                             std::cout << "Successfully extracted fields attempt " + std::to_string(retryCount + 1) << std::endl;
                                             } else {
@@ -717,14 +719,14 @@ std::future<std::optional<std::unordered_map<std::string, std::string>>> generat
                                             std::cerr << "Error during metadata generation attempt " + std::to_string(retryCount + 1) + ":" << error << std::endl;
                                         }
                                         retryCount++;
-                                        if (retryCount < maxRetries) await new Promise((resolve) => setTimeout(resolve, 500));
+                                        if (retryCount < maxRetries) new Promise[&]((resolve) { return setTimeout(resolve, 500)); };
                                     }
                                     std::cerr << "Failed to generate metadata after " + maxRetries + " attempts" << std::endl;
                                     // Return fallback or null
-                                    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test") {
+                                    if (std::getenv("NODE_ENV") == "development" || std::getenv("NODE_ENV") == "test") {
                                         const auto randomNum = Math.floor(Math.random() * 1000);
                                         std::cout << "Using fallback metadata in dev/test" << std::endl;
-                                        return { name: `FallbackToken${randomNum}`, symbol: `FB${randomNum % 100}`, description: "Fallback", prompt: "Fallback" }
+                                        return { name: "FallbackToken" + std::to_string(randomNum) + "", symbol: "FB" + std::to_string(randomNum % 100) + "", description: "Fallback", prompt: "Fallback" }
                                     }
                                     return nullptr;
 
@@ -737,9 +739,9 @@ std::future<std::optional<std::unordered_map<std::string, std::string>>> generat
 std::future<> generateTokenOnDemand() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    success: boolean;
-    token?: { id: std::string; name: std::string; ticker: std::string; description: std::string; prompt: std::string; image?: std::string; createdAt: std::string; used: number; };
-    error?: std::string;
+    success;
+    token?: { id: std:; name: std:; ticker: std:; description: std:; prompt: std:; image?: std:; createdAt: std:; used; };
+    error?: std:;
 
 }
 
@@ -775,7 +777,7 @@ std::future<void> generatePreGeneratedTokens() {
                         }));
 
                         const auto sourceImageUrl = imageResult.data.images.[0].url || imageResult.image.url || "";
-                        if (!sourceImageUrl || !sourceImageUrl.startsWith("http")) {
+                        if (!sourceImageUrl || !sourceImageUrl.substr(0, "http")) {
                             throw std::runtime_error("Invalid image URL received from Fal");
                         }
 
@@ -808,7 +810,7 @@ std::future<void> generatePreGeneratedTokens() {
                             description: metadata.description,
                             prompt: metadata.prompt,
                             image: finalImageUrl,
-                            createdAt: new Date(),
+                            createdAt: std::make_unique<Date>(),
                             used: 0 // Ensure it's std::set to unused
                             });
 
@@ -833,7 +835,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
 
     // Determine threshold from environment or default
     if (threshold == undefined || threshold == null) {
-        threshold = parseInt(process.env.PREGENERATED_TOKENS_COUNT || "3");
+        threshold = parseInt(std::getenv("PREGENERATED_TOKENS_COUNT") || "3");
         } else {
             threshold = Number(threshold);
             if (isNaN(threshold) || threshold < 0) {
@@ -855,8 +857,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
             // Count *only unused* tokens
             const auto countResult = db;
             ".select({ count: sql" + "count(*)"
-            .from(preGeneratedTokens);
-            .where(eq(preGeneratedTokens.used, 0));
+            .from(preGeneratedTokens).where(eq(preGeneratedTokens.used, 0));
 
             const auto currentUnusedCount = Number(countResult[0].count || 0);
             std::cout << "Current unused token count: " + currentUnusedCount << std::endl;
@@ -884,7 +885,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
 
                 if (failures > 0) {
                     std::cerr << "Failed to generate " + failures + " tokens during replenishment." << std::endl;
-                    results.forEach((result, index) => {
+                    results.forEach[&]((result, index) {
                         if (result.status == 'rejected') {
                             std::cerr << "[Token " + std::to_string(index + 1) + "] Failure reason:" << result.reason << std::endl;
                         }
@@ -899,17 +900,17 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
 
 }
 
-std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType mediaType = MediaType.IMAGE) {
+std::future<std:> generateEnhancedPrompt(const std:& userPrompt, std::optional<std:> tokenMetadata, MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
-            if (!process.env.FAL_API_KEY) {
+            if (!std::getenv("FAL_API_KEY")) {
                 throw new Error(
                 "FAL_API_KEY environment variable not std::set for prompt enhancement.";
                 );
             }
-            fal.config({ credentials: process.env.FAL_API_KEY });
+            fal.config({ credentials: std::getenv("FAL_API_KEY") });
 
             // Adjust prompt based on media type
             auto systemPromptContent = enhancePrompt(userPrompt, tokenMetadata);
@@ -934,7 +935,7 @@ std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, s
                         // Temperature adjustment might need different handling with Fal
                         };
 
-                        const std::any response = fal.subscribe("fal-ai/any-llm", {;
+                        const std: response = fal.subscribe("fal-ai/any-llm", {;
                             input: {
                                 prompt: falInput.prompt,
                                 system_prompt: falInput.system_prompt,
@@ -946,15 +947,15 @@ std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, s
                                 // Extract just the prompt text from the response
                                 auto enhancedPrompt = response.data.output || response.output || ""; // Adjust based on actual Fal response structure;
                                 // Clean up potential extraneous text if the model didn't follow instructions perfectly
-                                enhancedPrompt = enhancedPrompt.trim().replace(/^"|"$/g, ""); // Remove surrounding quotes;
+                                enhancedPrompt = enhancedPrompt.replace(/^"|"$/g, ""); // Remove surrounding quotes;
 
                                 // If the prompt is too long, truncate it to 500 characters
-                                if (enhancedPrompt.length > 500) {
-                                    enhancedPrompt = enhancedPrompt.substring(0, 500).trim();
+                                if (enhancedPrompt.size() > 500) {
+                                    enhancedPrompt = enhancedPrompt.substring(0, 500);
                                 }
 
                                 // Basic validation if enhancement failed
-                                if (!enhancedPrompt || enhancedPrompt.length < 10) {
+                                if (!enhancedPrompt || enhancedPrompt.size() < 10) {
                                     logger.warn(
                                     "Fal AI prompt enhancement resulted in a short/empty prompt, falling back.";
                                     );
@@ -976,7 +977,7 @@ std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, s
     }
 }
 
-std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, const std::string& description) {
+std::future<void> generateAdditionalTokenImages(const std:& tokenMint, const std:& description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -1003,8 +1004,8 @@ std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, co
             ]);
 
             // Generate and upload each image in parallel
-            Promise.all(;
-            enhancedPrompts.std::map(std::async (prompt, index) => {
+            Promise.all[&](;
+            enhancedPrompts.std::map(std::async (prompt, index) {
                 if (!prompt) {
                     logger.error(
                     "Failed to generate enhanced prompt " + std::to_string(index + 1) + " for token " + tokenMint;

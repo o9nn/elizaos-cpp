@@ -1,4 +1,5 @@
 #include "deploy-mainnet.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -22,12 +23,12 @@ std::future<void> main() {
     auto desk: Keypair;
 
     if (fs.existsSync(deskKeypairPath)) {
-        const auto secret = /* JSON.parse */ fs.readFileSync(deskKeypairPath, "utf8");
+        const auto secret = /* JSON::parse */ fs.readFileSync(deskKeypairPath, "utf8");
         desk = Keypair.fromSecretKey(Uint8Array.from(secret));
         std::cout << "🏦 Using existing Desk:" << desk.std::to_string(publicKey) << std::endl;
         } else {
             desk = Keypair.generate();
-            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
             std::cout << "⚠️  Created NEW Desk keypair:" << desk.std::to_string(publicKey) << std::endl;
             std::cout << "⚠️  BACKUP THIS KEYPAIR IMMEDIATELY." << std::endl;
         }
@@ -39,17 +40,13 @@ std::future<void> main() {
         // 3. Initialize Desk (no token_mint required - all tokens registered via TokenRegistry)
         try {
             std::cout << "\n⚙️  Initializing desk..." << std::endl;
-            program.methods;
-            .initDesk(new BN(500_000_000), new BN(1800)) // $5 min, 30 min expiry;
-            .accountsPartial({
+            program.methods.initDesk(new BN(500_000_000), new BN(1800)) // $5 min, 30 min expiry.accountsPartial({
                 payer: provider.wallet.publicKey,
                 owner: provider.wallet.publicKey,
                 agent: provider.wallet.publicKey,
                 usdcMint: usdcMint,
                 desk: desk.publicKey,
-                });
-                .signers([desk]);
-                .rpc();
+                }).signers([desk]).rpc();
                 std::cout << "✅ Desk initialized" << std::endl;
                 } catch (e: unknown) {
                     const auto error = e;
@@ -69,10 +66,10 @@ std::future<void> main() {
                     const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/mainnet-solana.json");
                     const auto deploymentDir = path.dirname(deploymentPath);
                     if (!fs.existsSync(deploymentDir)) {
-                        fs.mkdirSync(deploymentDir, { recursive: true });
+                        fs.mkdirSync(deploymentDir, Config{recursive = true});
                     }
 
-                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(envData, nullptr, 2));
+                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std:(envData, nullptr, 2));
                     std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 
 }

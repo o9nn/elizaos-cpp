@@ -15,7 +15,7 @@ any useSidebarState()
         }
         catch (const any& error)
         {
-            clientLogger->error(std::string("Error reading sidebar state from localStorage:"), error);
+            clientLogger->error(std:("Error reading sidebar state from localStorage:"), error);
             setIsVisible(false);
         }
     }
@@ -29,7 +29,7 @@ any useSidebarState()
         }
         catch (const any& error)
         {
-            clientLogger->error(std::string("Error saving sidebar state to localStorage:"), error);
+            clientLogger->error(std:("Error saving sidebar state to localStorage:"), error);
         }
     }
     , array<any>());
@@ -39,14 +39,14 @@ any useSidebarState()
     }
     , array<any>{ isVisible, setSidebarVisible });
     return object{
-        object::pair{std::string("isVisible"), std::string("isVisible")}, 
-        object::pair{std::string("setSidebarVisible"), std::string("setSidebarVisible")}, 
-        object::pair{std::string("toggleSidebar"), std::string("toggleSidebar")}
+        object::pair{std:("isVisible"), std:("isVisible")}, 
+        object::pair{std:("setSidebarVisible"), std:("setSidebarVisible")}, 
+        object::pair{std:("toggleSidebar"), std:("toggleSidebar")}
     };
 };
 
 
-string SIDEBAR_STATE_KEY = std::string("eliza-agent-sidebar-visible");
+string SIDEBAR_STATE_KEY = std:("eliza-agent-sidebar-visible");
 
 void Main(void)
 {

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-AbstractParseFunction createParser(const std::variant<std::string, std::any>& config) {
+AbstractParseFunction createParser(const std::variant<std:, std:>& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -12,23 +12,23 @@ AbstractParseFunction createParser(const std::variant<std::string, std::any>& co
 
         switch (type) {
             // case "action":
-            return new ActionParser();
+            return std::make_unique<ActionParser>();
             // case "action_only":
-            return new ActionOnlyParser();
+            return std::make_unique<ActionOnlyParser>();
             // case "thought_action":
-            return new ThoughtActionParser();
+            return std::make_unique<ThoughtActionParser>();
             // case "xml_thought_action":
-            return new XMLThoughtActionParser();
+            return std::make_unique<XMLThoughtActionParser>();
             // case "function_calling":
-            return new FunctionCallingParser();
+            return std::make_unique<FunctionCallingParser>();
             // case "json":
-            return new JsonParser();
+            return std::make_unique<JsonParser>();
             // case "edit_format":
-            return new EditFormat();
+            return std::make_unique<EditFormat>();
             // case "identity":
-            return new Identity();
+            return std::make_unique<Identity>();
             // default:
-            throw std::runtime_error(`Unknown parser type: ${type}`);
+            throw std::runtime_error("Unknown parser type: " + std::to_string(type) + "");
         }
 
     } catch (const std::exception& e) {

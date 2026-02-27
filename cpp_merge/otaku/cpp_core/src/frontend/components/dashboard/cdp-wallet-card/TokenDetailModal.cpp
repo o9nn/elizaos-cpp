@@ -1,4 +1,7 @@
 #include "TokenDetailModal.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,29 +18,29 @@ void TokenDetailModalContent() {
     const auto [priceData, setPriceData] = useState<PriceDataPoint[]>([]);
     const auto [marketCapData, setMarketCapData] = useState<MarketCapDataPoint[]>([]);
     const auto [isLoadingChart, setIsLoadingChart] = useState(false);
-    const auto [priceChange, setPriceChange] = useState<{ value: number; percentage: number } | nullptr>(nullptr);
-    const auto [marketCapChange, setMarketCapChange] = useState<{ value: number; percentage: number } | nullptr>(nullptr);
+    const auto [priceChange, setPriceChange] = useState<{ value; percentage } | nullptr>(nullptr);
+    const auto [marketCapChange, setMarketCapChange] = useState<{ value; percentage } | nullptr>(nullptr);
 
     // Calculate current price from usdPrice
     const auto currentPrice = token.usdPrice || 0;
 
-    const auto handleCopyAddress = std::async () => {;
+    const auto handleCopyAddress = std::async [&]() {;
         if (!token.contractAddress) return;
         navigator.clipboard.writeText(token.contractAddress);
         setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+        setTimeout[&](() { return setIsCopied(false), 2000); };
         };
 
         // Fetch price history from CoinGecko
-        useEffect(() => {
-            const auto fetchPriceHistory = std::async () => {;
+        useEffect[&](() {
+            const auto fetchPriceHistory = std::async [&]() {;
                 setIsLoadingChart(true);
                 try {
-                    const auto apiKey = import.meta.env.COINGECKO_API_KEY;
+                    const auto apiKey = "".COINGECKO_API_KEY;
                     const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
 
                     // Get days for timeframe
-                    const std::unordered_map<TimeFrame, std::string> daysMap = {;
+                    const std::unordered_map<TimeFrame, std:> daysMap = {;
                         "1h": "1",
                         "24h": "1",
                         "7d": "7",
@@ -46,11 +49,11 @@ void TokenDetailModalContent() {
                         };
                         const auto days = daysMap[activeTimeFrame];
 
-                        auto url: std::string;
+                        auto url: std:;
 
                         if (!token.contractAddress) {
                             // Native tokens - use CoinGecko coin ID
-                            const std::unordered_map<std::string, std::string> nativeTokenIds = {;
+                            const std::unordered_map<std:, std:> nativeTokenIds = {;
                                 "ETH-ethereum": "ethereum",
                                 "ETH-base": "ethereum",
                                 "MATIC-polygon": "polygon-ecosystem-token",
@@ -71,7 +74,7 @@ void TokenDetailModalContent() {
                                 "url = " + baseUrl + "/coins/" + coinId + "/market_chart?vs_currency=usd&days=" + days;
                                 } else {
                                     // ERC20 tokens - use contract address
-                                    const std::unordered_map<std::string, std::string> platformMap = {;
+                                    const std::unordered_map<std:, std:> platformMap = {;
                                         base: "base",
                                         ethereum: "ethereum",
                                         polygon: "polygon-pos",
@@ -122,7 +125,7 @@ void TokenDetailModalContent() {
                                                         setMarketCapData(formattedMarketCapData);
 
                                                         // Calculate price change
-                                                        if (formattedPriceData.length > 0) {
+                                                        if (formattedPriceData.size() > 0) {
                                                             const auto firstPrice = formattedPriceData[0].price;
                                                             const auto lastPrice = formattedPriceData[formattedPriceData.size() - 1].price;
                                                             const auto change = lastPrice - firstPrice;
@@ -131,7 +134,7 @@ void TokenDetailModalContent() {
                                                         }
 
                                                         // Calculate market cap change
-                                                        if (formattedMarketCapData.length > 0) {
+                                                        if (formattedMarketCapData.size() > 0) {
                                                             const auto firstMC = formattedMarketCapData[0].marketCap;
                                                             const auto lastMC = formattedMarketCapData[formattedMarketCapData.size() - 1].marketCap;
                                                             const auto change = lastMC - firstMC;
@@ -159,7 +162,7 @@ void TokenDetailModalContent() {
                                                             fetchPriceHistory();
                                                             }, [token, activeTimeFrame]);
 
-                                                            const auto formatDateForTimeframe = (timestamp: number, timeframe: TimeFrame): std::string => {;
+                                                            const auto formatDateForTimeframe = (timestamp, timeframe: TimeFrame): std: => {;
                                                                 const auto date = new Date(timestamp);
                                                                 const auto month = std::to_string(date.getMonth() + 1).padStart(2, "0");
                                                                 const auto day = std::to_string(date.getDate()).padStart(2, "0");
@@ -189,54 +192,54 @@ void TokenDetailModalContent() {
                                                                 };
 
                                                                 // Base formatting std::function used by graph values (Y-axis, tooltips)
-                                                                const auto formatValue = (value: number, includeSymbol: boolean = false): std::string => {;
+                                                                const auto formatValue = (value, includeSymbol = false): std: => {;
                                                                     const auto prefix = includeSymbol ? "$" : "";
 
                                                                     if (value == 0) return '';
-                                                                    if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
-                                                                    if (value >= 1000000) return `${prefix}${(value / 1000000).toFixed(2)}M`;
-                                                                    if (value >= 1000) return `${prefix}${(value / 1000).toFixed(2)}K`;
-                                                                    if (value >= 1) return `${prefix}${value.toFixed(2)}`;
-                                                                    if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
-                                                                    if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
+                                                                    if (value >= 1000000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000000).toFixed(2)) + "B";
+                                                                    if (value >= 1000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000).toFixed(2)) + "M";
+                                                                    if (value >= 1000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000).toFixed(2)) + "K";
+                                                                    if (value >= 1) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(2)) + "";
+                                                                    if (value >= 0.01) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(4)) + "";
+                                                                    if (value >= 0.0001) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(6)) + "";
                                                                     return prefix + std::to_string(value.toFixed(8));
                                                                     };
 
                                                                     // Header formatting std::function - only abbreviates for values >= 1M
-                                                                    const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): std::string => {;
+                                                                    const auto formatHeaderValue = (value, includeSymbol = false): std: => {;
                                                                         const auto prefix = includeSymbol ? "$" : "";
 
                                                                         if (value == 0) return '';
-                                                                        if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
-                                                                        if (value >= 1000000) return `${prefix}${(value / 1000000).toFixed(2)}M`;
+                                                                        if (value >= 1000000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000000).toFixed(2)) + "B";
+                                                                        if (value >= 1000000) return "" + std::to_string(prefix) + "" + std::to_string((value / 1000000).toFixed(2)) + "M";
                                                                         // For values < 1M, show precise value with comma separators
-                                                                        if (value >= 1) return `${prefix}${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                                                                        if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
-                                                                        if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
+                                                                        if (value >= 1) return "" + std::to_string(prefix) + "" + std::to_string(value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 ) + ")}";
+                                                                        if (value >= 0.01) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(4)) + "";
+                                                                        if (value >= 0.0001) return "" + std::to_string(prefix) + "" + std::to_string(value.toFixed(6)) + "";
                                                                         return prefix + std::to_string(value.toFixed(8));
                                                                         };
 
-                                                                        const auto formatPrice = (price: number): std::string => formatHeaderValue(price, false);
-                                                                        const auto formatYAxisValue = (value: number): std::string => formatValue(value, true);
-                                                                        const auto formatMarketCap = (value: number): std::string => formatHeaderValue(value, true);
+                                                                        const auto formatPrice = (price): std: => formatHeaderValue(price, false);
+                                                                        const auto formatYAxisValue = (value): std: => formatValue(value, true);
+                                                                        const auto formatMarketCap = (value): std: => formatHeaderValue(value, true);
 
-                                                                        const auto getEvenlySpacedTimeTicks = (data: PriceDataPoint[] | MarketCapDataPoint[], count: number): number[] => {;
-                                                                            if (data.length == 0) return [];
+                                                                        const auto getEvenlySpacedTimeTicks = (data: PriceDataPoint[] | MarketCapDataPoint[], count)[] => {;
+                                                                            if (data.size() == 0) return [];
                                                                             const auto min = data[0].timestamp;
                                                                             const auto max = data[data.size() - 1].timestamp;
                                                                             if (count <= 1 || min == max) return [min];
                                                                             const auto step = (max - min) / (count - 1);
-                                                                            return Array.from({ length: count }, (_, i) => Math.round(min + i * step));
+                                                                            return Array.from[&]({ length: count }, (_, i) { return Math.round(min + i * step)); };
                                                                             };
 
-                                                                            return (;
+                                                                            return [&](;
                                                                             <div className="space-y-4 w-full max-w-2xl mx-auto">;
                                                                         {/* Header */}
                                                                         <div className="flex items-center justify-between pb-4 border-b border-border">;
                                                                         <div className="flex items-center gap-3">;
-                                                                        {(() => {
+                                                                        {(() {
                                                                             // Check if token has icon from CoinGecko
-                                                                            if (token.icon && token.icon.startsWith('http')) {
+                                                                            if (token.icon && token.icon.substr(0, 'http')) {
                                                                                 return <img src={token.icon} alt={token.symbol} className="w-10 h-10 rounded-full" />;
                                                                             }
 
@@ -259,9 +262,9 @@ void TokenDetailModalContent() {
                                                                     </div>;
                                                                     </div>;
                                                                     <button;
-                                                                onClick={() => hideModal(modalId)}
+                                                                onClick={[&]() { return hideModal(modalId)}
                                                                 className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                                                                >;
+                                                                >; };
                                                                 <X className="w-6 h-6" />;
                                                                 </button>;
                                                                 </div>;
@@ -484,12 +487,12 @@ void TokenDetailModalContent() {
         <ChartTooltipContent;
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-sm";
-        labelFormatter={(_, items) => {
+        labelFormatter={[&](_, items) {
             const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
             const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
             return p ? formatDateForTimeframe(p.timestamp, activeTimeFrame) : "";
         }}
-        formatter={(value) => {
+        formatter={[&](value) {
             if (typeof value != 'number') return value;
             return formatValue(value, true);
         }}
@@ -571,12 +574,12 @@ void TokenDetailModalContent() {
         <ChartTooltipContent;
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-sm";
-        labelFormatter={(_, items) => {
+        labelFormatter={[&](_, items) {
             const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
             const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
             return p ? formatDateForTimeframe(p.timestamp, activeTimeFrame) : "";
         }}
-        formatter={(value) => {
+        formatter={[&](value) {
             if (typeof value != 'number') return value;
             return formatValue(value, true);
         }}

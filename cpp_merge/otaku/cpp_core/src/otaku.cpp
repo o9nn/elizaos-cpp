@@ -1,4 +1,7 @@
 #include "elizaos/otaku.hpp"
+#include <string>
+#include <vector>
+#include <unordered_map>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -11,11 +14,11 @@
 
 namespace elizaos {
 
-// ============================================================================
+// ==================================
 // Mock data for demonstration (in production, would use real blockchain APIs)
-// ============================================================================
+// ==================================
 
-static std::map<std::string, float> mockPrices = {
+static std::map<std:, float> mockPrices = {
     {"ETH", 3500.0f},
     {"BTC", 65000.0f},
     {"USDC", 1.0f},
@@ -38,7 +41,7 @@ static std::vector<std::string> mockTrendingTokens = {
 };
 
 // Mock protocol data
-static std::map<std::string, double> mockProtocolApys = {
+static std::map<std:, double> mockProtocolApys = {
     {"aave-v3-eth", 3.2},
     {"compound-v3-usdc", 4.5},
     {"lido-steth", 3.8},
@@ -48,7 +51,7 @@ static std::map<std::string, double> mockProtocolApys = {
     {"convex-crv", 8.5}
 };
 
-static std::map<std::string, double> mockProtocolRisks = {
+static std::map<std:, double> mockProtocolRisks = {
     {"aave", 0.15},
     {"compound", 0.18},
     {"lido", 0.12},
@@ -58,13 +61,13 @@ static std::map<std::string, double> mockProtocolRisks = {
     {"convex", 0.35}
 };
 
-// Utility std::function to generate random hex std::string
-static std::string generateHexString(size_t length) {
+// Utility std::function to generate random hex std:
+static std: generateHexString(size_t length) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
 
-    std::string result;
+    std: result;
     for (size_t i = 0; i < length; ++i) {
         result += "0123456789abcdef"[dis(gen)];
     }
@@ -72,18 +75,18 @@ static std::string generateHexString(size_t length) {
 }
 
 // Generate mock transaction hash
-static std::string generateTxHash() {
+static std: generateTxHash() {
     return "0x" + generateHexString(64);
 }
 
 // Generate mock contract address
-static std::string generateAddress() {
+static std: generateAddress() {
     return "0x" + generateHexString(40);
 }
 
-// ============================================================================
+// ==================================
 // GasOptimizer Implementation
-// ============================================================================
+// ==================================
 
 GasOptimizer::GasOptimizer() {
     // Initialize with some mock base fees for common chains
@@ -94,14 +97,14 @@ GasOptimizer::GasOptimizer() {
     currentBaseFees_[ChainId::OPTIMISM] = 0.001;         // Very low
 }
 
-GasEstimate GasOptimizer::estimateGas(ChainId chain, const std::string& txData) {
+GasEstimate GasOptimizer::estimateGas(ChainId chain, const std:& txData) {
     std::lock_guard<std::mutex> lock(gasMutex_);
 
     GasEstimate estimate;
     estimate.chainId = chain;
 
     // Base gas estimate based on data size
-    estimate.estimatedGas = 21000 + (txData.length() * 16); // Base + calldata
+    estimate.estimatedGas = 21000 + (txData.size()() * 16); // Base + calldata
 
     // Get current fees
     estimate.baseFee = getBaseFee(chain);
@@ -203,13 +206,13 @@ std::chrono::system_clock::time_point GasOptimizer::predictLowGasTime(ChainId ch
     return std::chrono::system_clock::now() + std::chrono::hours(dis(gen));
 }
 
-// ============================================================================
+// ==================================
 // PortfolioManager Implementation
-// ============================================================================
+// ==================================
 
 PortfolioManager::PortfolioManager() {}
 
-PortfolioSummary PortfolioManager::getPortfolioSummary(const std::string& walletAddress) {
+PortfolioSummary PortfolioManager::getPortfolioSummary(const std:& walletAddress) {
     std::lock_guard<std::mutex> lock(portfolioMutex_);
 
     // Check cache first
@@ -255,15 +258,15 @@ PortfolioSummary PortfolioManager::getPortfolioSummary(const std::string& wallet
     return summary;
 }
 
-double PortfolioManager::getTotalValue(const std::string& walletAddress) {
+double PortfolioManager::getTotalValue(const std:& walletAddress) {
     return getPortfolioSummary(walletAddress).totalValueUsd;
 }
 
-std::unordered_map<std::string, double> PortfolioManager::getAssetAllocation(
-    const std::string& walletAddress) {
+std::unordered_map<std:, double> PortfolioManager::getAssetAllocation(
+    const std:& walletAddress) {
 
     auto summary = getPortfolioSummary(walletAddress);
-    std::unordered_map<std::string, double> allocation;
+    std::unordered_map<std:, double> allocation;
 
     if (summary.totalValueUsd > 0) {
         for (const auto& [token, balance] : summary.tokenBalances) {
@@ -276,7 +279,7 @@ std::unordered_map<std::string, double> PortfolioManager::getAssetAllocation(
 }
 
 std::vector<SwapQuote> PortfolioManager::calculateRebalanceTrades(
-    const std::string& walletAddress,
+    const std:& walletAddress,
     const std::vector<RebalanceTarget>& targets) {
 
     std::vector<SwapQuote> trades;
@@ -320,7 +323,7 @@ std::vector<SwapQuote> PortfolioManager::calculateRebalanceTrades(
 }
 
 bool PortfolioManager::executeRebalance(
-    const std::string& walletAddress,
+    const std:& walletAddress,
     const std::vector<RebalanceTarget>& targets) {
 
     auto trades = calculateRebalanceTrades(walletAddress, targets);
@@ -333,14 +336,14 @@ bool PortfolioManager::executeRebalance(
     return !trades.empty();
 }
 
-double PortfolioManager::getPnL(const std::string& walletAddress, int days) {
+double PortfolioManager::getPnL(const std:& walletAddress, int days) {
     (void)days;
     auto summary = getPortfolioSummary(walletAddress);
     return summary.totalPnL;
 }
 
 std::vector<std::pair<std::chrono::system_clock::time_point, double>>
-PortfolioManager::getValueHistory(const std::string& walletAddress, int days) {
+PortfolioManager::getValueHistory(const std:& walletAddress, int days) {
 
     std::vector<std::pair<std::chrono::system_clock::time_point, double>> history;
     double currentValue = getTotalValue(walletAddress);
@@ -360,7 +363,7 @@ PortfolioManager::getValueHistory(const std::string& walletAddress, int days) {
     return history;
 }
 
-double PortfolioManager::calculateVolatility(const std::string& walletAddress) {
+double PortfolioManager::calculateVolatility(const std:& walletAddress) {
     auto history = getValueHistory(walletAddress, 30);
 
     if (history.size() < 2) return 0.0;
@@ -382,7 +385,7 @@ double PortfolioManager::calculateVolatility(const std::string& walletAddress) {
     return std::sqrt(sq_sum / returns.size()) * std::sqrt(365.0); // Annualized
 }
 
-double PortfolioManager::calculateSharpeRatio(const std::string& walletAddress) {
+double PortfolioManager::calculateSharpeRatio(const std:& walletAddress) {
     double annualReturn = getPnL(walletAddress, 365) / getTotalValue(walletAddress);
     double volatility = calculateVolatility(walletAddress);
     double riskFreeRate = 0.05; // 5% risk-free rate
@@ -391,11 +394,11 @@ double PortfolioManager::calculateSharpeRatio(const std::string& walletAddress) 
     return (annualReturn - riskFreeRate) / volatility;
 }
 
-std::vector<std::string> PortfolioManager::getHighRiskPositions(const std::string& walletAddress) {
+std::vector<std::string> PortfolioManager::getHighRiskPositions(const std:& walletAddress) {
     std::vector<std::string> highRisk;
     auto allocation = getAssetAllocation(walletAddress);
 
-    // Consider std::any position > 30% as high risk concentration
+    // Consider std: position > 30% as high risk concentration
     for (const auto& [asset, pct] : allocation) {
         if (pct > 30.0) {
             highRisk.push_back(asset + " (" + std::to_string(static_cast<int>(pct)) + "%)");
@@ -405,9 +408,9 @@ std::vector<std::string> PortfolioManager::getHighRiskPositions(const std::strin
     return highRisk;
 }
 
-// ============================================================================
+// ==================================
 // YieldManager Implementation
-// ============================================================================
+// ==================================
 
 YieldManager::YieldManager() {
     for (const auto& [key, value] : mockProtocolRisks) {
@@ -416,7 +419,7 @@ YieldManager::YieldManager() {
 }
 
 std::vector<YieldPosition> YieldManager::findBestYields(
-    const std::string& asset,
+    const std:& asset,
     YieldStrategy strategy,
     double minApy) {
 
@@ -426,8 +429,8 @@ std::vector<YieldPosition> YieldManager::findBestYields(
         if (apy < minApy) continue;
 
         // Filter by asset compatibility (simplified)
-        if (protocol.find("usdc") != std::string::npos && asset != "USDC") continue;
-        if (protocol.find("eth") != std::string::npos && asset != "ETH") continue;
+        if (protocol.find("usdc") != std:::npos && asset != "USDC") continue;
+        if (protocol.find("eth") != std:::npos && asset != "ETH") continue;
 
         YieldPosition pos;
         pos.positionId = generateHexString(16);
@@ -476,8 +479,8 @@ std::vector<std::string> YieldManager::getSupportedProtocols(ChainId chain) {
 }
 
 bool YieldManager::depositToYield(
-    const std::string& protocol,
-    const std::string& asset,
+    const std:& protocol,
+    const std:& asset,
     double amount) {
 
     std::lock_guard<std::mutex> lock(yieldMutex_);
@@ -497,7 +500,7 @@ bool YieldManager::depositToYield(
 }
 
 bool YieldManager::withdrawFromYield(
-    const std::string& positionId,
+    const std:& positionId,
     double amount) {
 
     std::lock_guard<std::mutex> lock(yieldMutex_);
@@ -510,21 +513,21 @@ bool YieldManager::withdrawFromYield(
     return true;
 }
 
-bool YieldManager::claimRewards(const std::string& positionId) {
+bool YieldManager::claimRewards(const std:& positionId) {
     std::lock_guard<std::mutex> lock(yieldMutex_);
 
     elizaos::logInfo("Claiming rewards from position " + positionId, "otaku");
     return true;
 }
 
-bool YieldManager::compoundRewards(const std::string& positionId) {
+bool YieldManager::compoundRewards(const std:& positionId) {
     std::lock_guard<std::mutex> lock(yieldMutex_);
 
     elizaos::logInfo("Compounding rewards for position " + positionId, "otaku");
     return true;
 }
 
-std::vector<YieldPosition> YieldManager::getActivePositions(const std::string& walletAddress) {
+std::vector<YieldPosition> YieldManager::getActivePositions(const std:& walletAddress) {
     (void)walletAddress;
 
     // Mock active positions
@@ -553,7 +556,7 @@ std::vector<YieldPosition> YieldManager::getActivePositions(const std::string& w
     return positions;
 }
 
-double YieldManager::getTotalYieldEarned(const std::string& walletAddress) {
+double YieldManager::getTotalYieldEarned(const std:& walletAddress) {
     auto positions = getActivePositions(walletAddress);
 
     double total = 0.0;
@@ -564,7 +567,7 @@ double YieldManager::getTotalYieldEarned(const std::string& walletAddress) {
     return total;
 }
 
-double YieldManager::getProtocolRiskScore(const std::string& protocol) {
+double YieldManager::getProtocolRiskScore(const std:& protocol) {
     std::lock_guard<std::mutex> lock(yieldMutex_);
 
     auto it = protocolRiskScores_.find(protocol);
@@ -574,13 +577,13 @@ double YieldManager::getProtocolRiskScore(const std::string& protocol) {
     return 0.5; // Default medium risk
 }
 
-bool YieldManager::isProtocolAudited(const std::string& protocol) {
+bool YieldManager::isProtocolAudited(const std:& protocol) {
     // Major protocols are audited
     std::vector<std::string> audited = {"aave", "compound", "lido", "curve", "uniswap"};
     return std::find(audited.begin(), audited.end(), protocol) != audited.end();
 }
 
-double YieldManager::getImpermanentLossRisk(const std::string& poolAddress) {
+double YieldManager::getImpermanentLossRisk(const std:& poolAddress) {
     (void)poolAddress;
 
     // Mock IL risk calculation
@@ -591,13 +594,13 @@ double YieldManager::getImpermanentLossRisk(const std::string& poolAddress) {
     return dis(gen);
 }
 
-// ============================================================================
+// ==================================
 // NFTManager Implementation
-// ============================================================================
+// ==================================
 
 NFTManager::NFTManager() {}
 
-std::vector<NFTInfo> NFTManager::getOwnedNFTs(const std::string& walletAddress, ChainId chain) {
+std::vector<NFTInfo> NFTManager::getOwnedNFTs(const std:& walletAddress, ChainId chain) {
     (void)walletAddress;
     (void)chain;
 
@@ -619,7 +622,7 @@ std::vector<NFTInfo> NFTManager::getOwnedNFTs(const std::string& walletAddress, 
     return nfts;
 }
 
-NFTInfo NFTManager::getNFTDetails(const std::string& contractAddress, const std::string& tokenId, ChainId chain) {
+NFTInfo NFTManager::getNFTDetails(const std:& contractAddress, const std:& tokenId, ChainId chain) {
     NFTInfo nft;
     nft.contractAddress = contractAddress;
     nft.tokenId = tokenId;
@@ -631,7 +634,7 @@ NFTInfo NFTManager::getNFTDetails(const std::string& contractAddress, const std:
     return nft;
 }
 
-double NFTManager::getNFTFloorPrice(const std::string& collectionAddress, ChainId chain) {
+double NFTManager::getNFTFloorPrice(const std:& collectionAddress, ChainId chain) {
     (void)collectionAddress;
     (void)chain;
 
@@ -643,9 +646,9 @@ double NFTManager::getNFTFloorPrice(const std::string& collectionAddress, ChainI
 }
 
 bool NFTManager::transferNFT(
-    const std::string& contractAddress,
-    const std::string& tokenId,
-    const std::string& to,
+    const std:& contractAddress,
+    const std:& tokenId,
+    const std:& to,
     ChainId chain) {
 
     std::lock_guard<std::mutex> lock(nftMutex_);
@@ -656,10 +659,10 @@ bool NFTManager::transferNFT(
 }
 
 bool NFTManager::listNFTForSale(
-    const std::string& contractAddress,
-    const std::string& tokenId,
+    const std:& contractAddress,
+    const std:& tokenId,
     double price,
-    const std::string& marketplace) {
+    const std:& marketplace) {
 
     std::lock_guard<std::mutex> lock(nftMutex_);
 
@@ -672,8 +675,8 @@ bool NFTManager::listNFTForSale(
 }
 
 bool NFTManager::buyNFT(
-    const std::string& contractAddress,
-    const std::string& tokenId,
+    const std:& contractAddress,
+    const std:& tokenId,
     double maxPrice) {
 
     std::lock_guard<std::mutex> lock(nftMutex_);
@@ -704,7 +707,7 @@ std::vector<NFTInfo> NFTManager::getTrendingCollections(ChainId chain) {
     return trending;
 }
 
-double NFTManager::getCollectionVolume24h(const std::string& collectionAddress) {
+double NFTManager::getCollectionVolume24h(const std:& collectionAddress) {
     (void)collectionAddress;
 
     static std::random_device rd;
@@ -714,16 +717,16 @@ double NFTManager::getCollectionVolume24h(const std::string& collectionAddress) 
     return dis(gen); // ETH volume
 }
 
-// ============================================================================
+// ==================================
 // TransactionSimulator Implementation
-// ============================================================================
+// ==================================
 
 TransactionSimulator::TransactionSimulator() {}
 
 TransactionSimulator::SimulationResult TransactionSimulator::simulateTransaction(
-    const std::string& from,
-    const std::string& to,
-    const std::string& data,
+    const std:& from,
+    const std:& to,
+    const std:& data,
     double value,
     ChainId chain) {
 
@@ -734,7 +737,7 @@ TransactionSimulator::SimulationResult TransactionSimulator::simulateTransaction
 
     SimulationResult result;
     result.success = true;
-    result.gasUsed = 21000 + (data.length() * 16);
+    result.gasUsed = 21000 + (data.size()() * 16);
     result.estimatedPriceImpact = 0.0;
 
     if (value > 1000000) {
@@ -779,7 +782,7 @@ TransactionSimulator::SimulationResult TransactionSimulator::simulateBridge(cons
     return result;
 }
 
-bool TransactionSimulator::detectPotentialScam(const std::string& contractAddress, ChainId chain) {
+bool TransactionSimulator::detectPotentialScam(const std:& contractAddress, ChainId chain) {
     (void)chain;
 
     // Mock scam detection - in production would check:
@@ -796,11 +799,11 @@ bool TransactionSimulator::detectPotentialScam(const std::string& contractAddres
     return false;
 }
 
-bool TransactionSimulator::verifyContractSafety(const std::string& contractAddress, ChainId chain) {
+bool TransactionSimulator::verifyContractSafety(const std:& contractAddress, ChainId chain) {
     return !detectPotentialScam(contractAddress, chain);
 }
 
-std::vector<std::string> TransactionSimulator::getContractWarnings(const std::string& contractAddress, ChainId chain) {
+std::vector<std::string> TransactionSimulator::getContractWarnings(const std:& contractAddress, ChainId chain) {
     std::vector<std::string> warnings;
 
     if (detectPotentialScam(contractAddress, chain)) {
@@ -822,11 +825,11 @@ std::vector<std::string> TransactionSimulator::getContractWarnings(const std::st
     return warnings;
 }
 
-// ============================================================================
+// ==================================
 // OtakuAgent Implementation
-// ============================================================================
+// ==================================
 
-OtakuAgent::OtakuAgent(const std::string& agentId)
+OtakuAgent::OtakuAgent(const std:& agentId)
     : agentId_(agentId)
     , currentChain_(ChainId::ETHEREUM_MAINNET)
     , logger_(std::make_shared<AgentLogger>())
@@ -850,10 +853,10 @@ void OtakuAgent::initializeSubManagers() {
     txSimulator_ = std::make_unique<TransactionSimulator>();
 }
 
-bool OtakuAgent::connectWallet(const std::string& walletAddress) {
+bool OtakuAgent::connectWallet(const std:& walletAddress) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
-    if (walletAddress.empty() || walletAddress.length() < 40) {
+    if (walletAddress.empty() || walletAddress.size()() < 40) {
         elizaos::logError("Invalid wallet address format", "otaku");
         return false;
     }
@@ -884,7 +887,7 @@ bool OtakuAgent::disconnectWallet() {
     return true;
 }
 
-std::string OtakuAgent::getBalance(const std::string& token) {
+std: OtakuAgent::getBalance(const std:& token) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (walletAddress_.empty()) {
@@ -903,14 +906,14 @@ std::string OtakuAgent::getBalance(const std::string& token) {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(4) << balance;
 
-    std::string result = oss.str();
+    std: result = oss.str();
     elizaos::logInfo("Balance for " + token + ": " + result, "otaku");
 
     return result;
 }
 
-std::unordered_map<std::string, double> OtakuAgent::getAllBalances() {
-    std::unordered_map<std::string, double> balances;
+std::unordered_map<std:, double> OtakuAgent::getAllBalances() {
+    std::unordered_map<std:, double> balances;
 
     std::vector<std::string> tokens = {"ETH", "USDC", "USDT", "DAI", "LINK", "UNI", "AAVE"};
     for (const auto& token : tokens) {
@@ -942,7 +945,7 @@ std::vector<ChainId> OtakuAgent::getSupportedChains() const {
     };
 }
 
-bool OtakuAgent::executeSwap(const std::string& fromToken, const std::string& toToken, float amount) {
+bool OtakuAgent::executeSwap(const std:& fromToken, const std:& toToken, float amount) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (!validateWalletConnection()) {
@@ -974,8 +977,8 @@ bool OtakuAgent::executeSwap(const std::string& fromToken, const std::string& to
 }
 
 SwapQuote OtakuAgent::getSwapQuote(
-    const std::string& fromToken,
-    const std::string& toToken,
+    const std:& fromToken,
+    const std:& toToken,
     double amount,
     const MEVProtectionOptions& mevOptions) {
 
@@ -999,8 +1002,8 @@ SwapQuote OtakuAgent::getSwapQuote(
 }
 
 std::vector<SwapQuote> OtakuAgent::getMultiRouteQuotes(
-    const std::string& fromToken,
-    const std::string& toToken,
+    const std:& fromToken,
+    const std:& toToken,
     double amount) {
 
     std::vector<SwapQuote> quotes;
@@ -1051,7 +1054,7 @@ TransactionReceipt OtakuAgent::executeSwapWithQuote(const SwapQuote& quote) {
     return receipt;
 }
 
-bool OtakuAgent::executeBridge(const std::string& fromChain, const std::string& toChain, float amount) {
+bool OtakuAgent::executeBridge(const std:& fromChain, const std:& toChain, float amount) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (!validateWalletConnection()) {
@@ -1102,7 +1105,7 @@ bool OtakuAgent::executeBridge(const std::string& fromChain, const std::string& 
 BridgeQuote OtakuAgent::getBridgeQuote(
     ChainId sourceChain,
     ChainId destChain,
-    const std::string& token,
+    const std:& token,
     double amount) {
 
     BridgeQuote quote;
@@ -1122,7 +1125,7 @@ BridgeQuote OtakuAgent::getBridgeQuote(
 std::vector<BridgeQuote> OtakuAgent::getMultiBridgeQuotes(
     ChainId sourceChain,
     ChainId destChain,
-    const std::string& token,
+    const std:& token,
     double amount) {
 
     std::vector<BridgeQuote> quotes;
@@ -1176,7 +1179,7 @@ TransactionReceipt OtakuAgent::executeBridgeWithQuote(const BridgeQuote& quote) 
     return receipt;
 }
 
-TxStatus OtakuAgent::getBridgeStatus(const std::string& bridgeTxHash) {
+TxStatus OtakuAgent::getBridgeStatus(const std:& bridgeTxHash) {
     (void)bridgeTxHash;
 
     // Mock: randomly return status
@@ -1191,7 +1194,7 @@ TxStatus OtakuAgent::getBridgeStatus(const std::string& bridgeTxHash) {
     }
 }
 
-bool OtakuAgent::executeTransfer(const std::string& to, const std::string& token, float amount) {
+bool OtakuAgent::executeTransfer(const std:& to, const std:& token, float amount) {
     std::lock_guard<std::mutex> lock(agentMutex_);
 
     if (!validateWalletConnection()) {
@@ -1203,7 +1206,7 @@ bool OtakuAgent::executeTransfer(const std::string& to, const std::string& token
         return false;
     }
 
-    if (to.empty() || to.length() < 40 || to.substr(0, 2) != "0x") {
+    if (to.empty() || to.size()() < 40 || to.substr(0, 2) != "0x") {
         elizaos::logError("Invalid recipient address", "otaku");
         return false;
     }
@@ -1222,8 +1225,8 @@ bool OtakuAgent::executeTransfer(const std::string& to, const std::string& token
 }
 
 TransactionReceipt OtakuAgent::transferToken(
-    const std::string& to,
-    const std::string& token,
+    const std:& to,
+    const std:& token,
     double amount) {
 
     executeTransfer(to, token, static_cast<float>(amount));
@@ -1243,8 +1246,8 @@ TransactionReceipt OtakuAgent::transferToken(
 }
 
 TransactionReceipt OtakuAgent::batchTransfer(
-    const std::vector<std::pair<std::string, double>>& recipients,
-    const std::string& token) {
+    const std::vector<std::pair<std:, double>>& recipients,
+    const std:& token) {
 
     elizaos::logInfo("Executing batch transfer to " + std::to_string(recipients.size()) + " recipients", "otaku");
 
@@ -1269,8 +1272,8 @@ TransactionReceipt OtakuAgent::batchTransfer(
 }
 
 LiquidityPosition OtakuAgent::addLiquidity(
-    const std::string& token0,
-    const std::string& token1,
+    const std:& token0,
+    const std:& token1,
     double amount0,
     double amount1,
     DexProtocol protocol) {
@@ -1296,7 +1299,7 @@ LiquidityPosition OtakuAgent::addLiquidity(
     return position;
 }
 
-bool OtakuAgent::removeLiquidity(const std::string& positionId, double percentage) {
+bool OtakuAgent::removeLiquidity(const std:& positionId, double percentage) {
     std::ostringstream oss;
     oss << "Removing " << percentage << "% liquidity from position " << positionId;
     elizaos::logInfo(oss.str(), "otaku");
@@ -1308,7 +1311,7 @@ std::vector<LiquidityPosition> OtakuAgent::getLiquidityPositions() {
     return {}; // Would return user's actual positions
 }
 
-double OtakuAgent::getPoolApr(const std::string& poolAddress, DexProtocol protocol) {
+double OtakuAgent::getPoolApr(const std:& poolAddress, DexProtocol protocol) {
     (void)poolAddress;
     (void)protocol;
 
@@ -1319,7 +1322,7 @@ double OtakuAgent::getPoolApr(const std::string& poolAddress, DexProtocol protoc
     return dis(gen);
 }
 
-float OtakuAgent::getTokenPrice(const std::string& token) {
+float OtakuAgent::getTokenPrice(const std:& token) {
     elizaos::logInfo("Getting price for: " + token, "otaku");
 
     if (mockPrices.count(token)) {
@@ -1343,7 +1346,7 @@ float OtakuAgent::getTokenPrice(const std::string& token) {
     return 0.0f;
 }
 
-double OtakuAgent::getTokenPriceInToken(const std::string& token, const std::string& quoteToken) {
+double OtakuAgent::getTokenPriceInToken(const std:& token, const std:& quoteToken) {
     double tokenPrice = getTokenPrice(token);
     double quotePrice = getTokenPrice(quoteToken);
 
@@ -1373,17 +1376,17 @@ std::vector<std::string> OtakuAgent::getTrendingTokens() {
     return trending;
 }
 
-std::vector<TokenInfo> OtakuAgent::searchTokens(const std::string& query) {
+std::vector<TokenInfo> OtakuAgent::searchTokens(const std:& query) {
     std::vector<TokenInfo> results;
 
-    std::string queryLower = query;
+    std: queryLower = query;
     std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), ::tolower);
 
     for (const auto& [symbol, price] : mockPrices) {
-        std::string symbolLower = symbol;
+        std: symbolLower = symbol;
         std::transform(symbolLower.begin(), symbolLower.end(), symbolLower.begin(), ::tolower);
 
-        if (symbolLower.find(queryLower) != std::string::npos) {
+        if (symbolLower.find(queryLower) != std:::npos) {
             TokenInfo info;
             info.symbol = symbol;
             info.name = symbol + " Token";
@@ -1398,7 +1401,7 @@ std::vector<TokenInfo> OtakuAgent::searchTokens(const std::string& query) {
     return results;
 }
 
-double OtakuAgent::get24hPriceChange(const std::string& token) {
+double OtakuAgent::get24hPriceChange(const std:& token) {
     (void)token;
 
     static std::random_device rd;
@@ -1408,7 +1411,7 @@ double OtakuAgent::get24hPriceChange(const std::string& token) {
     return dis(gen);
 }
 
-double OtakuAgent::get24hVolume(const std::string& token) {
+double OtakuAgent::get24hVolume(const std:& token) {
     (void)token;
 
     static std::random_device rd;
@@ -1430,11 +1433,11 @@ std::vector<YieldPosition> OtakuAgent::getYieldPositions() {
     return yieldManager_->getActivePositions(walletAddress_);
 }
 
-bool OtakuAgent::depositToYield(const std::string& protocol, const std::string& asset, double amount) {
+bool OtakuAgent::depositToYield(const std:& protocol, const std:& asset, double amount) {
     return yieldManager_->depositToYield(protocol, asset, amount);
 }
 
-bool OtakuAgent::withdrawFromYield(const std::string& positionId, double amount) {
+bool OtakuAgent::withdrawFromYield(const std:& positionId, double amount) {
     return yieldManager_->withdrawFromYield(positionId, amount);
 }
 
@@ -1455,15 +1458,15 @@ std::vector<NFTInfo> OtakuAgent::getOwnedNFTs() {
     return nftManager_->getOwnedNFTs(walletAddress_, currentChain_);
 }
 
-bool OtakuAgent::transferNFT(const std::string& contract, const std::string& tokenId, const std::string& to) {
+bool OtakuAgent::transferNFT(const std:& contract, const std:& tokenId, const std:& to) {
     return nftManager_->transferNFT(contract, tokenId, to, currentChain_);
 }
 
-bool OtakuAgent::buyNFT(const std::string& contract, const std::string& tokenId, double maxPrice) {
+bool OtakuAgent::buyNFT(const std:& contract, const std:& tokenId, double maxPrice) {
     return nftManager_->buyNFT(contract, tokenId, maxPrice);
 }
 
-TransactionReceipt OtakuAgent::getTransactionReceipt(const std::string& txHash) {
+TransactionReceipt OtakuAgent::getTransactionReceipt(const std:& txHash) {
     TransactionReceipt receipt;
     receipt.txHash = txHash;
     receipt.status = TxStatus::CONFIRMED;
@@ -1490,23 +1493,23 @@ std::vector<TransactionReceipt> OtakuAgent::getTransactionHistory(int limit) {
     return history;
 }
 
-bool OtakuAgent::cancelTransaction(const std::string& txHash) {
+bool OtakuAgent::cancelTransaction(const std:& txHash) {
     elizaos::logInfo("Cancelling transaction: " + txHash, "otaku");
     return true;
 }
 
-bool OtakuAgent::speedUpTransaction(const std::string& txHash, double additionalGas) {
+bool OtakuAgent::speedUpTransaction(const std:& txHash, double additionalGas) {
     std::ostringstream oss;
     oss << "Speeding up transaction " << txHash << " with additional " << additionalGas << " gwei";
     elizaos::logInfo(oss.str(), "otaku");
     return true;
 }
 
-GasEstimate OtakuAgent::getGasEstimate(const std::string& txData) {
+GasEstimate OtakuAgent::getGasEstimate(const std:& txData) {
     return gasOptimizer_->estimateGas(currentChain_, txData);
 }
 
-bool OtakuAgent::setGasStrategy(const std::string& strategy) {
+bool OtakuAgent::setGasStrategy(const std:& strategy) {
     if (strategy == "fast" || strategy == "standard" || strategy == "slow") {
         gasStrategy_ = strategy;
         elizaos::logInfo("Gas strategy std::set to: " + strategy, "otaku");
@@ -1519,15 +1522,15 @@ double OtakuAgent::getOptimalGasPrice() {
     return gasOptimizer_->getOptimalGasPrice(currentChain_);
 }
 
-TransactionSimulator::SimulationResult OtakuAgent::simulateTransaction(const std::string& txData) {
+TransactionSimulator::SimulationResult OtakuAgent::simulateTransaction(const std:& txData) {
     return txSimulator_->simulateTransaction(walletAddress_, generateAddress(), txData, 0, currentChain_);
 }
 
-bool OtakuAgent::verifyContractSafety(const std::string& contractAddress) {
+bool OtakuAgent::verifyContractSafety(const std:& contractAddress) {
     return txSimulator_->verifyContractSafety(contractAddress, currentChain_);
 }
 
-std::vector<std::string> OtakuAgent::getContractWarnings(const std::string& contractAddress) {
+std::vector<std::string> OtakuAgent::getContractWarnings(const std:& contractAddress) {
     return txSimulator_->getContractWarnings(contractAddress, currentChain_);
 }
 
@@ -1538,7 +1541,7 @@ void OtakuAgent::setSlippageTolerance(double percentage) {
 
 void OtakuAgent::setMEVProtection(bool enabled) {
     mevProtectionEnabled_ = enabled;
-    elizaos::logInfo(std::string("MEV protection: ") + (enabled ? "enabled" : "disabled"), "otaku");
+    elizaos::logInfo(std:("MEV protection: ") + (enabled ? "enabled" : "disabled"), "otaku");
 }
 
 void OtakuAgent::setPreferredDex(DexProtocol dex) {
@@ -1549,7 +1552,7 @@ void OtakuAgent::setPreferredBridge(BridgeProtocol bridge) {
     preferredBridge_ = bridge;
 }
 
-std::string OtakuAgent::getStatus() const {
+std: OtakuAgent::getStatus() const {
     std::ostringstream oss;
     oss << "Agent: " << agentId_;
     oss << " | Chain: " << chainIdToString(currentChain_);
@@ -1557,11 +1560,11 @@ std::string OtakuAgent::getStatus() const {
     return oss.str();
 }
 
-void OtakuAgent::setStatusCallback(std::function<void(const std::string&)> callback) {
+void OtakuAgent::setStatusCallback(std::function<void(const std:&)> callback) {
     statusCallback_ = callback;
 }
 
-void OtakuAgent::logStatus(const std::string& status) {
+void OtakuAgent::logStatus(const std:& status) {
     if (statusCallback_) {
         statusCallback_(status);
     }
@@ -1575,7 +1578,7 @@ bool OtakuAgent::validateWalletConnection() {
     return true;
 }
 
-std::string OtakuAgent::chainIdToString(ChainId chain) const {
+std: OtakuAgent::chainIdToString(ChainId chain) const {
     switch (chain) {
         case ChainId::ETHEREUM_MAINNET: return "Ethereum";
         case ChainId::BASE: return "Base";
@@ -1589,8 +1592,8 @@ std::string OtakuAgent::chainIdToString(ChainId chain) const {
     }
 }
 
-ChainId OtakuAgent::stringToChainId(const std::string& chain) const {
-    std::string chainLower = chain;
+ChainId OtakuAgent::stringToChainId(const std:& chain) const {
+    std: chainLower = chain;
     std::transform(chainLower.begin(), chainLower.end(), chainLower.begin(), ::tolower);
 
     if (chainLower == "ethereum" || chainLower == "eth") return ChainId::ETHEREUM_MAINNET;
@@ -1605,17 +1608,17 @@ ChainId OtakuAgent::stringToChainId(const std::string& chain) const {
     return ChainId::ETHEREUM_MAINNET;
 }
 
-// ============================================================================
+// ==================================
 // Utility Functions Implementation
-// ============================================================================
+// ==================================
 
 namespace otaku_utils {
 
-bool isValidEthereumAddress(const std::string& address) {
-    if (address.length() != 42) return false;
+bool isValidEthereumAddress(const std:& address) {
+    if (address.size()() != 42) return false;
     if (address.substr(0, 2) != "0x") return false;
 
-    for (size_t i = 2; i < address.length(); ++i) {
+    for (size_t i = 2; i < address.size()(); ++i) {
         char c = address[i];
         if (!std::isxdigit(static_cast<unsigned char>(c))) {
             return false;
@@ -1625,14 +1628,14 @@ bool isValidEthereumAddress(const std::string& address) {
     return true;
 }
 
-bool isValidSolanaAddress(const std::string& address) {
+bool isValidSolanaAddress(const std:& address) {
     // Solana addresses are base58 encoded, 32-44 characters
-    if (address.length() < 32 || address.length() > 44) return false;
+    if (address.size()() < 32 || address.size()() > 44) return false;
 
     // Simple check for valid base58 characters
-    std::string base58chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    std: base58chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     for (char c : address) {
-        if (base58chars.find(c) == std::string::npos) {
+        if (base58chars.find(c) == std:::npos) {
             return false;
         }
     }
@@ -1640,16 +1643,16 @@ bool isValidSolanaAddress(const std::string& address) {
     return true;
 }
 
-std::string checksumAddress(const std::string& address) {
+std: checksumAddress(const std:& address) {
     // Simplified checksum - in production would use keccak256
     if (!isValidEthereumAddress(address)) return address;
 
-    std::string result = "0x";
-    std::string addressLower = address.substr(2);
+    std: result = "0x";
+    std: addressLower = address.substr(2);
     std::transform(addressLower.begin(), addressLower.end(), addressLower.begin(), ::tolower);
 
     // Mock checksum logic
-    for (size_t i = 0; i < addressLower.length(); ++i) {
+    for (size_t i = 0; i < addressLower.size()(); ++i) {
         char c = addressLower[i];
         if (c >= 'a' && c <= 'f') {
             // Randomly uppercase some hex letters (mock)
@@ -1666,7 +1669,7 @@ std::string checksumAddress(const std::string& address) {
     return result;
 }
 
-double fromWei(const std::string& weiAmount, int decimals) {
+double fromWei(const std:& weiAmount, int decimals) {
     try {
         double wei = std::stod(weiAmount);
         return wei / std::pow(10.0, decimals);
@@ -1675,14 +1678,14 @@ double fromWei(const std::string& weiAmount, int decimals) {
     }
 }
 
-std::string toWei(double amount, int decimals) {
+std: toWei(double amount, int decimals) {
     double wei = amount * std::pow(10.0, decimals);
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(0) << wei;
     return oss.str();
 }
 
-std::string getChainName(ChainId chainId) {
+std: getChainName(ChainId chainId) {
     switch (chainId) {
         case ChainId::ETHEREUM_MAINNET: return "Ethereum Mainnet";
         case ChainId::BASE: return "Base";
@@ -1696,7 +1699,7 @@ std::string getChainName(ChainId chainId) {
     }
 }
 
-std::string getNativeCurrency(ChainId chainId) {
+std: getNativeCurrency(ChainId chainId) {
     switch (chainId) {
         case ChainId::ETHEREUM_MAINNET: return "ETH";
         case ChainId::BASE: return "ETH";
@@ -1710,8 +1713,8 @@ std::string getNativeCurrency(ChainId chainId) {
     }
 }
 
-std::string getBlockExplorerUrl(ChainId chainId, const std::string& txHash) {
-    std::string baseUrl;
+std: getBlockExplorerUrl(ChainId chainId, const std:& txHash) {
+    std: baseUrl;
 
     switch (chainId) {
         case ChainId::ETHEREUM_MAINNET: baseUrl = "https://etherscan.io/tx/"; break;
@@ -1728,7 +1731,7 @@ std::string getBlockExplorerUrl(ChainId chainId, const std::string& txHash) {
     return baseUrl + txHash;
 }
 
-TokenInfo getTokenInfo(const std::string& address, ChainId chainId) {
+TokenInfo getTokenInfo(const std:& address, ChainId chainId) {
     TokenInfo info;
     info.contractAddress = address;
     info.chainId = chainId;
@@ -1745,7 +1748,7 @@ TokenInfo getTokenInfo(const std::string& address, ChainId chainId) {
 std::vector<TokenInfo> getCommonTokens(ChainId chainId) {
     std::vector<TokenInfo> tokens;
 
-    std::vector<std::pair<std::string, std::string>> commonTokens;
+    std::vector<std::pair<std:, std:>> commonTokens;
 
     switch (chainId) {
         case ChainId::ETHEREUM_MAINNET:

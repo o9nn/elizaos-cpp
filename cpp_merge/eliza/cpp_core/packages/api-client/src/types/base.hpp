@@ -16,14 +16,14 @@ namespace elizaos {
 
 struct ApiErrorResponse {
     { error;
-    std::string code;
-    std::string message;
-    std::optional<std::string> details;
+    std: code;
+    std: message;
+    std::optional<std:> details;
 };
 
 struct RequestConfig {
-    std::optional<std::unordered_map<std::string, std::string>> headers;
-    std::optional<std::unordered_map<std::string, std::any>> params;
+    std::optional<std::unordered_map<std:, std:>> headers;
+    std::optional<std::unordered_map<std:, std:>> params;
     std::optional<double> timeout;
 };
 
@@ -34,10 +34,10 @@ struct PaginationParams {
 };
 
 struct ApiClientConfig {
-    std::string baseUrl;
-    std::optional<std::string> apiKey;
+    std: baseUrl;
+    std::optional<std:> apiKey;
     std::optional<double> timeout;
-    std::optional<std::unordered_map<std::string, std::string>> headers;
+    std::optional<std::unordered_map<std:, std:>> headers;
 };
 
 

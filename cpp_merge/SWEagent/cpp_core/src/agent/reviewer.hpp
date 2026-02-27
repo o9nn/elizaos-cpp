@@ -56,7 +56,7 @@ struct ReviewerResult {
  */
 struct PreselectorOutput {
     std::vector<double> chosenIdx;
-    std::string response;
+    std: response;
     History messages;
 };
 
@@ -65,7 +65,7 @@ struct PreselectorOutput {
  */
 struct ChooserOutput {
     double chosenIdx;
-    std::string response;
+    std: response;
     std::optional<PreselectorOutput | null> preselectorOutput;
     History messages;
 };
@@ -90,7 +90,7 @@ struct ChooserOutput {
 struct TrajFormatterConfig {
     std::vector<std::string> filter;
     std::vector<std::string> outputFilter;
-    std::string itemTemplate;
+    std: itemTemplate;
     double onlyShowLastNOutput;
 };
 
@@ -98,8 +98,8 @@ struct TrajFormatterConfig {
  * Configuration for reviewer
  */
 struct ReviewerConfig {
-    std::string systemTemplate;
-    std::string instanceTemplate;
+    std: systemTemplate;
+    std: instanceTemplate;
     double failureScorePenalty;
     TrajFormatterConfig trajFormatter;
     double nSample;
@@ -113,9 +113,9 @@ struct ReviewerConfig {
  */
 struct ChooserConfig {
     ModelConfig model;
-    std::string systemTemplate;
-    std::string instanceTemplate;
-    std::string submissionTemplate;
+    std: systemTemplate;
+    std: instanceTemplate;
+    std: submissionTemplate;
     double maxLenSubmission;
     std::optional<PreselectorConfig | null> preselector;
 };
@@ -125,9 +125,9 @@ struct ChooserConfig {
  */
 struct PreselectorConfig {
     ModelConfig model;
-    std::string systemTemplate;
-    std::string instanceTemplate;
-    std::string submissionTemplate;
+    std: systemTemplate;
+    std: instanceTemplate;
+    std: submissionTemplate;
     double maxLenSubmission;
 };
 
@@ -201,7 +201,7 @@ class Chooser {
     this.logger = logger;
   }
 
-    return parseInt(numbers[numbers.length - 1]);
+    return parseInt(numbers[numbers.size() - 1]);
 
     // Handle preselector if configured
       // Preselector logic would go here
@@ -214,7 +214,7 @@ class ChooserRetryLoop extends AbstractRetryLoop {
   private problemStatement: ProblemStatement;
   private chooser: Chooser;
   private submissions: ReviewSubmission[] = [];
-  // private __nConsecExitCost: number = 0; // Unused
+  // private __nConsecExitCost = 0; // Unused
   private logger: AgentLogger;
   private chooserOutput: ChooserOutput | null = null;
 
@@ -236,7 +236,7 @@ class ScoreRetryLoop extends AbstractRetryLoop {
   private config: ScoreRetryLoopConfig;
   private submissions: ReviewSubmission[] = [];
   private reviews: ReviewerResult[] = [];
-  private nConsecExitCost: number = 0;
+  private nConsecExitCost = 0;
   private logger: AgentLogger;
 
   constructor(config: ScoreRetryLoopConfig, problemStatement: ProblemStatement) {

@@ -1,21 +1,19 @@
 #include "migrations.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<TokenData>> getToken(const std::string& mint) {
+std::future<std::optional<TokenData>> getToken(const std:& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
-    const auto tokenRecords = db;
-    .select();
-    .from(tokens);
-    .where(eq(tokens.mint, mint));
-    .limit(1);
-    .execute();
+    const auto tokenRecords = db.select().from(tokens).where(eq(tokens.mint, mint)).limit(1).execute();
 
-    if (tokenRecords.length > 0) {
+    if (tokenRecords.size() > 0) {
         const auto tokenDb = tokenRecords[0];
         auto tokenSupply = tokenDb.tokenSupply;
         auto tokenSupplyUiAmount = tokenDb.tokenSupplyUiAmount;
@@ -29,7 +27,7 @@ std::future<std::optional<TokenData>> getToken(const std::string& mint) {
             tokenDecimals = supplyResult.tokenDecimals;
             lastSupplyUpdate = new Date(supplyResult.lastSupplyUpdate);
         }
-        const auto withdrawnAmounts = safeParse<{ withdrawnSol: number; withdrawnTokens: number } | "">(;
+        const auto withdrawnAmounts = safeParse<{ withdrawnSol; withdrawnTokens } | "">(;
         tokenDb.withdrawnAmounts,
         "";
         );
@@ -82,7 +80,7 @@ std::future<std::optional<TokenData>> getToken(const std::string& mint) {
             withdrawnAmounts: withdrawnAmounts || std::nullopt,
             poolInfo: safeParse<any>(tokenDb.poolInfo, std::nullopt),
             migration: typeof tokenDb.migration == "string"
-            ? safeParse<Record<std::string, any>>(tokenDb.migration, {});
+            ? safeParse<Record<std:, any>>(tokenDb.migration, {});
             : (tokenDb.migration || {}),
             tokenSupply: tokenDb.tokenSupply || std::nullopt,
             tokenSupplyUiAmount: tokenDb.tokenSupplyUiAmount || std::nullopt,
@@ -100,14 +98,14 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
 
     std::cout << "[Migrate] Starting " + step.name + " for token " + token.mint << std::endl;
 
-    const auto result = retryOperation(() => step.fn(token), retryCount, delay);
+    const auto result = retryOperation[&](() { return step.fn(token), retryCount, delay); };
 
     // Update token migration
     token.migration = token.migration || {}
-    (token.migration<std::string, any>)[step.name] = {
+    (token.migration<std:, any>)[step.name] = {
         status: "success",
         txId: result.txId,
-        updatedAt: new Date().toISOString(),
+        updatedAt: std::make_unique<Date>().toISOString(),
         };
         Object.assign(token, result.extraData);
         std::cout << step.name + " result:" << result << std::endl;
@@ -115,7 +113,7 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
         const std::optional<TokenData> tokenData = {;
             mint: token.mint,
             migration: token.migration,
-            lastUpdated: new Date().toISOString(),
+            lastUpdated: std::make_unique<Date>().toISOString(),
             status: "migrating",
             ...result.extraData,
             };
@@ -123,7 +121,7 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
             token.migration.lastStep = nextStepName || "done";
 
             updateTokenInDB(tokenData);
-            // await saveMigrationState(token, step.name);
+            // saveMigrationState(token, step.name);
 
             const auto ws = getWebSocketClient();
             if (step.eventName) {
@@ -150,7 +148,7 @@ std::future<bool> acquireMigrationLock(TokenData token) {
     updateTokenInDB({
         mint: token.mint,
         migration: token.migration,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: std::make_unique<Date>().toISOString(),
         });
 
         return true;
@@ -169,12 +167,12 @@ std::future<void> releaseMigrationLock(TokenData token) {
     updateTokenInDB({
         mint: token.mint,
         migration: token.migration,
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: std::make_unique<Date>().toISOString(),
         });
 
 }
 
-std::future<void> saveMigrationState(TokenData token, const std::string& step) {
+std::future<void> saveMigrationState(TokenData token, const std:& step) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
@@ -183,13 +181,11 @@ std::future<void> saveMigrationState(TokenData token, const std::string& step) {
         lastStep: step,
         };
 
-        db;
-        .update(tokens);
+        db.update(tokens);
         .std::set({
-            migration: /* JSON.stringify */ std::string(updatedMigration),
-            lastUpdated: new Date(),
-            });
-            .where(eq(tokens.mint, token.mint));
+            migration: /* JSON.stringify */ std:(updatedMigration),
+            lastUpdated: std::make_unique<Date>(),
+            }).where(eq(tokens.mint, token.mint));
 
 }
 
@@ -198,18 +194,13 @@ std::future<void> getMigrationState(TokenData token) {
 
     const auto db = getDB();
 
-    const auto tokenRecords = db;
-    .select();
-    .from(tokens);
-    .where(eq(tokens.mint, token.mint));
-    .limit(1);
-    .execute();
+    const auto tokenRecords = db.select().from(tokens).where(eq(tokens.mint, token.mint)).limit(1).execute();
 
-    if (tokenRecords.length > 0) {
+    if (tokenRecords.size() > 0) {
         const auto tokenRecord = tokenRecords[0];
         const auto migration =;
         typeof tokenRecord.migration == "string";
-        ? /* JSON.parse */ tokenRecord.migration;
+        ? /* JSON::parse */ tokenRecord.migration;
         : tokenRecord.migration;
 
         if (migration && tokenRecord.status != "locked") {
@@ -244,7 +235,7 @@ std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto
                     err;
                     );
                     if (attempt == retries) throw err;
-                    new Promise((r) => setTimeout(r, delay));
+                    new Promise[&]((r) { return setTimeout(r, delay)); };
                 }
             }
 
@@ -260,25 +251,21 @@ std::future<void> checkMigratingTokens(double limit) {
 
         try {
             const auto db = getDB();
-            const auto migratingTokens = db;
-            .select();
-            .from(tokens);
-            .where(and(eq(tokens.status, "migrating")));
-            .execute();
+            const auto migratingTokens = db.select().from(tokens).where(and(eq(tokens.status, "migrating"))).execute();
 
             const auto connection = new Connection(;
-            process.env.NETWORK == "devnet";
-            ? process.env.DEVNET_SOLANA_RPC_URL || "";
-            : process.env.MAINNET_SOLANA_RPC_URL || "",
+            std::getenv("NETWORK") == "devnet";
+            ? std::getenv("DEVNET_SOLANA_RPC_URL") || "";
+            : std::getenv("MAINNET_SOLANA_RPC_URL") || "",
             );
 
 
-            if (!process.env.EXECUTOR_PRIVATE_KEY) {
+            if (!std::getenv("EXECUTOR_PRIVATE_KEY")) {
                 throw std::runtime_error("Wallet private key not found");
             }
 
             const auto wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY),
+            Uint8Array.from(/* JSON::parse */ std::getenv("EXECUTOR_PRIVATE_KEY")),
             );
             const auto provider = new AnchorProvider(;
             connection,
@@ -302,8 +289,8 @@ std::future<void> checkMigratingTokens(double limit) {
             // );
 
             // Filter out tokens that have migration as null or empty object or migration.status is not locked
-            const auto filteredTokens = migratingTokens.filter((token) => {;
-                const auto migration = token.migration ? /* JSON.parse */ token.migration : nullptr;
+            const auto filteredTokens = migratingTokens.filter[&]((token) {;
+                const auto migration = token.migration ? /* JSON::parse */ token.migration : nullptr;
                 return (;
                 migration &&;
                 (typeof migration == "object" || migration.status != "locked");

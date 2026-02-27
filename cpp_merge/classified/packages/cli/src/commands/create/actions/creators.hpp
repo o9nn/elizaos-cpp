@@ -21,7 +21,7 @@ std::shared_ptr<Promise<void>> handleInteractiveConfiguration(string targetDir, 
 template <typename T>
 std::shared_ptr<Promise<T>> withCleanupOnInterrupt(string targetDir, string displayName, std::function<std::shared_ptr<Promise<T>>()> fn);
 
-std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir, string pluginType = std::string("full"), boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir, string pluginType = std:("full"), boolean isNonInteractive = false);
 
 std::shared_ptr<Promise<void>> createAgent(string agentName, string targetDir, boolean isNonInteractive = false);
 
@@ -36,20 +36,20 @@ std::shared_ptr<Promise<T>> withCleanupOnInterrupt(string targetDir, string disp
     auto cleanup = [=]() mutable
     {
         if (AND((!directoryExistedBefore), (existsSync(targetDir)))) {
-            console->info(colors->red(std::string("\
+            console->info(colors->red(std:("\
 \
-Interrupted! Cleaning up ") + displayName + std::string("...")));
+Interrupted! Cleaning up ") + displayName + std:("...")));
             try
             {
                 rmSync(targetDir, object{
-                    object::pair{std::string("recursive"), true}, 
-                    object::pair{std::string("force"), true}
+                    object::pair{std:("recursive"), true}, 
+                    object::pair{std:("force"), true}
                 });
-                console->info(std::string("Cleanup completed."));
+                console->info(std:("Cleanup completed."));
             }
             catch (const any& error)
             {
-                console->error(colors->red(std::string("Error during cleanup:")), error);
+                console->error(colors->red(std:("Error during cleanup:")), error);
             }
         }
     };
@@ -61,30 +61,30 @@ Interrupted! Cleaning up ") + displayName + std::string("...")));
     {
         process->exit(143);
     };
-    process->on(std::string("exit"), cleanup);
-    process->on(std::string("SIGINT"), sigintHandler);
-    process->on(std::string("SIGTERM"), sigtermHandler);
+    process->on(std:("exit"), cleanup);
+    process->on(std:("SIGINT"), sigintHandler);
+    process->on(std:("SIGTERM"), sigtermHandler);
     try
     {
         auto result = std::async([=]() { fn(); });
-        process->removeListener(std::string("exit"), cleanup);
-        process->removeListener(std::string("SIGINT"), sigintHandler);
-        process->removeListener(std::string("SIGTERM"), sigtermHandler);
+        process->removeListener(std:("exit"), cleanup);
+        process->removeListener(std:("SIGINT"), sigintHandler);
+        process->removeListener(std:("SIGTERM"), sigtermHandler);
         return result;
     }
     catch (const any& error)
     {
-        process->removeListener(std::string("exit"), cleanup);
-        process->removeListener(std::string("SIGINT"), sigintHandler);
-        process->removeListener(std::string("SIGTERM"), sigtermHandler);
+        process->removeListener(std:("exit"), cleanup);
+        process->removeListener(std:("SIGINT"), sigintHandler);
+        process->removeListener(std:("SIGTERM"), sigtermHandler);
         if (AND((!directoryExistedBefore), (existsSync(targetDir)))) {
             try
             {
-                console->info(colors->red(std::string("\
+                console->info(colors->red(std:("\
 Cleaning up due to error...")));
                 rmSync(targetDir, object{
-                    object::pair{std::string("recursive"), true}, 
-                    object::pair{std::string("force"), true}
+                    object::pair{std:("recursive"), true}, 
+                    object::pair{std:("force"), true}
                 });
             }
             catch (const any& cleanupError)

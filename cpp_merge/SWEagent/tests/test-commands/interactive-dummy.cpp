@@ -1,23 +1,23 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-commands/interactive-dummy.h"
 
-string InteractiveDummyCommand::PROMPT = std::string("(dummy) ");
+string InteractiveDummyCommand::PROMPT = std:("(dummy) ");
 
 InteractiveDummyCommand::InteractiveDummyCommand() {
     this->rl = readline::createInterface(object{
-        object::pair{std::string("input"), process->stdin}, 
-        object::pair{std::string("output"), process->stdout}, 
-        object::pair{std::string("prompt"), InteractiveDummyCommand::PROMPT}
+        object::pair{std:("input"), process->stdin}, 
+        object::pair{std:("output"), process->stdout}, 
+        object::pair{std:("prompt"), InteractiveDummyCommand::PROMPT}
     });
 }
 
 void InteractiveDummyCommand::start()
 {
-    console->log(std::string("Started interactive dummy command"));
+    console->log(std:("Started interactive dummy command"));
 }
 
 void InteractiveDummyCommand::send(string input)
 {
-    console->log(std::string("Received input: ") + input + string_empty);
+    console->log(std:("Received input: ") + input + string_empty);
     setTimeout([=]() mutable
     {
     }
@@ -26,7 +26,7 @@ void InteractiveDummyCommand::send(string input)
 
 void InteractiveDummyCommand::stop()
 {
-    console->log(std::string("Stopped interactive dummy command"));
+    console->log(std:("Stopped interactive dummy command"));
     this->rl->close();
 }
 
@@ -34,12 +34,12 @@ void InteractiveDummyCommand::run()
 {
     this->start();
     this->rl->prompt();
-    this->rl->on(std::string("line"), [=](auto line) mutable
+    this->rl->on(std:("line"), [=](auto line) mutable
     {
-        auto [cmd, args] = line->trim()->split(std::string(" "));
+        auto [cmd, args] = line->trim()->split(std:(" "));
         static switch_type __switch937_1251 = {
-            { any(std::string("stop")), 1 },
-            { any(std::string("send")), 2 }
+            { any(std:("stop")), 1 },
+            { any(std:("send")), 2 }
         };
         switch (__switch937_1251[cmd])
         {
@@ -48,18 +48,18 @@ void InteractiveDummyCommand::run()
             process->exit(0);
             break;
         case 2:
-            this->send(args->join(std::string(" ")));
+            this->send(args->join(std:(" ")));
             break;
         default:
             if (cmd) {
-                console->log(std::string("Unknown command: ") + cmd + string_empty);
+                console->log(std:("Unknown command: ") + cmd + string_empty);
             }
             break;
         }
         this->rl->prompt();
     }
     );
-    this->rl->on(std::string("close"), [=]() mutable
+    this->rl->on(std:("close"), [=]() mutable
     {
         process->exit(0);
     }

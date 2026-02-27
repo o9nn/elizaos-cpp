@@ -4,9 +4,9 @@ RealTimeMonitor::RealTimeMonitor() {
     this->redis = std::make_shared<Redis>(process->env->REDIS_URL);
     this->anomalyDetector = std::make_shared<AnomalyDetector>();
     this->alertThresholds = object{
-        object::pair{std::string("errorRate"), 0.05}, 
-        object::pair{std::string("latency"), 1000}, 
-        object::pair{std::string("userEngagement"), 0.4}
+        object::pair{std:("errorRate"), 0.05}, 
+        object::pair{std:("latency"), 1000}, 
+        object::pair{std:("userEngagement"), 0.4}
     };
 }
 
@@ -49,15 +49,15 @@ void RealTimeMonitor::triggerAlerts(array<std::shared_ptr<AnomalyResult>> anomal
     auto alerts = anomalies->map([=](auto anomaly) mutable
     {
         return (object{
-            object::pair{std::string("severity"), this->calculateSeverity(anomaly)}, 
-            object::pair{std::string("message"), this->formatAlertMessage(anomaly)}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}
+            object::pair{std:("severity"), this->calculateSeverity(anomaly)}, 
+            object::pair{std:("message"), this->formatAlertMessage(anomaly)}, 
+            object::pair{std:("timestamp"), std::make_shared<Date>()}
         });
     }
     );
     std::async([=]() { Promise->all(std::tuple<any, any, any>{ this->sendSlackAlerts(alerts), this->sendEmailAlerts(alerts), this->triggerPagerDuty(alerts->filter([=](auto a) mutable
     {
-        return a["severity"] == std::string("critical");
+        return a["severity"] == std:("critical");
     }
     )) }); });
 }

@@ -13,10 +13,10 @@ std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection 
             }
             doOnOutsideClick();
         };
-        document->addEventListener(std::string("click"), handleClickOutside);
+        document->addEventListener(std:("click"), handleClickOutside);
         return [=]() mutable
         {
-            document->removeEventListener(std::string("click"), handleClickOutside);
+            document->removeEventListener(std:("click"), handleClickOutside);
         };
     }
     , array<array<any>>{ refs, doOnOutsideClick });

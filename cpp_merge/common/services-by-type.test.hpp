@@ -20,7 +20,7 @@ public:
 
     string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std::string("Mock wallet service 1");
+    string capabilityDescription = std:("Mock wallet service 1");
 
     MockWalletService1(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService1>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -34,7 +34,7 @@ public:
 
     string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std::string("Mock wallet service 2");
+    string capabilityDescription = std:("Mock wallet service 2");
 
     MockWalletService2(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService2>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -48,7 +48,7 @@ public:
 
     string serviceType = ServiceType["PDF"];
 
-    string capabilityDescription = std::string("Mock PDF service");
+    string capabilityDescription = std:("Mock PDF service");
 
     MockPdfService(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockPdfService>>> start(std::shared_ptr<IAgentRuntime> runtime);

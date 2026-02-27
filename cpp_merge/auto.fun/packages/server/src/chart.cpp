@@ -9,29 +9,29 @@ any getLatestCandle(string tokenMint, any swap, any tokenInfo)
     if (!tokenInfo) {
         tokenInfo = std::async([=]() { db["select"]()["from"](tokens)["where"](eq(tokens->mint, tokenMint))["limit"](1); });
     }
-    if (tokenInfo["status"] == std::string("locked")) {
+    if (tokenInfo["status"] == std:("locked")) {
         try
         {
-            auto tokenAddress = (process->env->NETWORK == std::string("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) : any(tokenMint);
-            auto candles = std::async([=]() { fetchCodexBars(tokenAddress, candleStart, candleStart + candlePeriod, std::string("1"), undefined, undefined); });
+            auto tokenAddress = (process->env->NETWORK == std:("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) (tokenMint);
+            auto candles = std::async([=]() { fetchCodexBars(tokenAddress, candleStart, candleStart + candlePeriod, std:("1"), undefined, undefined); });
             if (candles->get_length() > 0) {
                 auto idx = candles->get_length() - 1;
                 auto lastRaw = const_(candles)[idx];
                 auto lastCandle = utils::assign(object{
                     , 
-                    object::pair{std::string("price"), lastRaw->close}, 
-                    object::pair{std::string("timestamp"), std::make_shared<Date>(lastRaw->time * 1000)}
+                    object::pair{std:("price"), lastRaw->close}, 
+                    object::pair{std:("timestamp"), std::make_shared<Date>(lastRaw->time * 1000)}
                 }, lastRaw);
                 return lastCandle;
             }
         }
         catch (const any& error)
         {
-            logger["error"](std::string("Error fetching latest candle from Codex:"), error);
+            logger["error"](std:("Error fetching latest candle from Codex:"), error);
         }
     }
     auto latestCandle = std::async([=]() { fetchPriceChartData(candleStart * 1000, (candleStart + candlePeriod) * 1000, 1, tokenMint); });
-    return (AND((latestCandle), (latestCandle->get_length() > 0))) ? any(const_(latestCandle)[0]) : any(nullptr);
+    return (AND((latestCandle), (latestCandle->get_length() > 0))) ? any(const_(latestCandle)[0]) (nullptr);
 };
 
 
@@ -40,26 +40,26 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
     auto db = getDB();
     auto [tokenInfo] = std::async([=]() { db["select"]()["from"](tokens)["where"](eq(tokens->mint, tokenMint))["limit"](1); });
     if (!tokenInfo) {
-        logger["error"](std::string("Token ") + tokenMint + std::string(" not found"));
+        logger["error"](std:("Token ") + tokenMint + std:(" not found"));
         return array<any>();
     }
-    if (tokenInfo["status"] != std::string("locked")) {
+    if (tokenInfo["status"] != std:("locked")) {
         auto swapRecordsRaw = array<any>();
         try
         {
             auto redisCache = std::async([=]() { getGlobalRedisCache(); });
-            auto listKey = std::string("swapsList:") + tokenMint + string_empty;
+            auto listKey = std:("swapsList:") + tokenMint + string_empty;
             auto swapStrings = std::async([=]() { redisCache->lrange(listKey, 0, -1); });
             swapRecordsRaw = swapStrings->map([=](auto s) mutable
             {
                 return JSON->parse(s);
             }
             );
-            logger["log"](std::string("Chart: Retrieved ") + swapRecordsRaw->get_length() + std::string(" raw swaps from Redis list ") + listKey + string_empty);
+            logger["log"](std:("Chart: Retrieved ") + swapRecordsRaw->get_length() + std:(" raw swaps from Redis list ") + listKey + string_empty);
         }
         catch (const any& redisError)
         {
-            logger["error"](std::string("Chart: Failed to read swaps from Redis list swapsList:") + tokenMint + std::string(":"), redisError);
+            logger["error"](std:("Chart: Failed to read swaps from Redis list swapsList:") + tokenMint + std:(":"), redisError);
             return array<any>();
         }
         shared solPrice = std::async([=]() { getSOLPrice(); });
@@ -76,10 +76,10 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
         )->map([=](auto swap) mutable
         {
             return (object{
-                object::pair{std::string("price"), OR((swap["priceUsd"]), (swap["price"]))}, 
-                object::pair{std::string("priceUsd"), OR((swap["priceUsd"]), (undefined))}, 
-                object::pair{std::string("timestamp"), std::make_shared<Date>(swap["timestamp"])}, 
-                object::pair{std::string("volume"), (swap["direction"] == 0) ? (OR((swap["amountIn"]), (0))) / 1000000000 : (OR((swap["amountOut"]), (0))) / 1000000000}
+                object::pair{std:("price"), OR((swap["priceUsd"]), (swap["price"]))}, 
+                object::pair{std:("priceUsd"), OR((swap["priceUsd"]), (undefined))}, 
+                object::pair{std:("timestamp"), std::make_shared<Date>(swap["timestamp"])}, 
+                object::pair{std:("volume"), (swap["direction"] == 0) ? (OR((swap["amountIn"]), (0))) / 1000000000 : (OR((swap["amountOut"]), (0))) / 1000000000}
             });
         }
         );
@@ -93,30 +93,30 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
         if (!priceFeeds->get_length()) return array<any>();
         auto cdFeeds = getCandleData(priceFeeds, range);
         return cdFeeds;
-    } else if (tokenInfo["status"] == std::string("locked")) {
+    } else if (tokenInfo["status"] == std:("locked")) {
         try
         {
-            auto tokenAddress = (process->env->NETWORK == std::string("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) : any(tokenMint);
-            auto resolution = std::string("1");
+            auto tokenAddress = (process->env->NETWORK == std:("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) (tokenMint);
+            auto resolution = std:("1");
             switch (static_cast<size_t>(range))
             {
             case 1:
-                resolution = std::string("1");
+                resolution = std:("1");
                 break;
             case 5:
-                resolution = std::string("5");
+                resolution = std:("5");
                 break;
             case 15:
-                resolution = std::string("15");
+                resolution = std:("15");
                 break;
             case 60:
-                resolution = std::string("60");
+                resolution = std:("60");
                 break;
             case 120:
-                resolution = std::string("60");
+                resolution = std:("60");
                 break;
             default:
-                resolution = std::string("1");
+                resolution = std:("1");
             }
             auto candles = std::async([=]() { fetchCodexBars(tokenAddress, Math->floor(start / 1000), Math->floor(end / 1000), resolution, undefined, undefined); });
             if (AND((range == 120), (candles->get_length() > 1))) {
@@ -125,21 +125,21 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
                 {
                     if (i + 1 < candles->get_length()) {
                         auto out = object{
-                            object::pair{std::string("open"), const_(candles)[i]->open}, 
-                            object::pair{std::string("high"), Math->max(const_(candles)[i]->high, const_(candles)[i + 1]->high)}, 
-                            object::pair{std::string("low"), Math->min(const_(candles)[i]->low, const_(candles)[i + 1]->low)}, 
-                            object::pair{std::string("close"), const_(candles)[i + 1]->close}, 
-                            object::pair{std::string("volume"), const_(candles)[i]->volume + const_(candles)[i + 1]->volume}, 
-                            object::pair{std::string("time"), const_(candles)[i]->time}, 
-                            object::pair{std::string("price"), const_(candles)[i]->close}, 
-                            object::pair{std::string("timestamp"), std::make_shared<Date>(const_(candles)[i]->time * 1000)}
+                            object::pair{std:("open"), const_(candles)[i]->open}, 
+                            object::pair{std:("high"), Math->max(const_(candles)[i]->high, const_(candles)[i + 1]->high)}, 
+                            object::pair{std:("low"), Math->min(const_(candles)[i]->low, const_(candles)[i + 1]->low)}, 
+                            object::pair{std:("close"), const_(candles)[i + 1]->close}, 
+                            object::pair{std:("volume"), const_(candles)[i]->volume + const_(candles)[i + 1]->volume}, 
+                            object::pair{std:("time"), const_(candles)[i]->time}, 
+                            object::pair{std:("price"), const_(candles)[i]->close}, 
+                            object::pair{std:("timestamp"), std::make_shared<Date>(const_(candles)[i]->time * 1000)}
                         };
                         combined->push(out);
                     } else {
                         auto lastCandle = utils::assign(object{
                             , 
-                            object::pair{std::string("price"), const_(candles)[i]->close}, 
-                            object::pair{std::string("timestamp"), std::make_shared<Date>(const_(candles)[i]->time * 1000)}
+                            object::pair{std:("price"), const_(candles)[i]->close}, 
+                            object::pair{std:("timestamp"), std::make_shared<Date>(const_(candles)[i]->time * 1000)}
                         }, const_(candles)[i]);
                         combined->push(lastCandle);
                     }
@@ -150,11 +150,11 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
         }
         catch (const any& error)
         {
-            logger["error"](std::string("Error fetching data with getBars API:"), error);
+            logger["error"](std:("Error fetching data with getBars API:"), error);
             try
             {
-                logger["log"](std::string("Falling back to getTokenEvents API"));
-                auto tokenAddress = (process->env->NETWORK == std::string("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) : any(tokenMint);
+                logger["log"](std:("Falling back to getTokenEvents API"));
+                auto tokenAddress = (process->env->NETWORK == std:("devnet")) ? any(DEV_TEST_TOKEN_ADDRESS) (tokenMint);
                 auto tokenEvents = std::async([=]() { fetchCodexTokenEvents(tokenAddress, Math->floor(start / 1000), Math->floor(end / 1000), 1399811149); });
                 auto priceFeeds = tokenEvents->filter([=](auto item) mutable
                 {
@@ -163,9 +163,9 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
                 )->map([=](auto item) mutable
                 {
                     return (object{
-                        object::pair{std::string("price"), parseFloat(OR((item->token1PoolValueUsd), (std::string("0"))))}, 
-                        object::pair{std::string("timestamp"), std::make_shared<Date>(item->timestamp * 1000)}, 
-                        object::pair{std::string("volume"), parseFloat(OR((item->data->amount0), (std::string("0"))))}
+                        object::pair{std:("price"), parseFloat(OR((item->token1PoolValueUsd), (std:("0"))))}, 
+                        object::pair{std:("timestamp"), std::make_shared<Date>(item->timestamp * 1000)}, 
+                        object::pair{std:("volume"), parseFloat(OR((item->data->amount0), (std:("0"))))}
                     });
                 }
                 );
@@ -175,7 +175,7 @@ any fetchPriceChartData(double start, double end, double range, string tokenMint
             }
             catch (const any& fallbackError)
             {
-                logger["error"](std::string("Fallback method also failed:"), fallbackError);
+                logger["error"](std:("Fallback method also failed:"), fallbackError);
                 return array<any>();
             }
         }
@@ -187,34 +187,34 @@ std::shared_ptr<Promise<array<any>>> fetchLockedTokenChartData(string token, dou
 {
     try
     {
-        auto codexApiUrl = std::string("https://api.dexscreener.com/latest/dex/tokens/") + token + string_empty;
+        auto codexApiUrl = std:("https://api.dexscreener.com/latest/dex/tokens/") + token + string_empty;
         auto response = std::async([=]() { fetch(codexApiUrl); });
         if (!response->ok) {
-            throw any(std::make_shared<Error>(std::string("Codex API error: ") + response->status + std::string(" ") + response->statusText + string_empty));
+            throw any(std::make_shared<Error>(std:("Codex API error: ") + response->status + std:(" ") + response->statusText + string_empty));
         }
         auto data = as<std::shared_ptr<DexScreenerResponse>>((std::async([=]() { response->json(); })));
         if (OR((OR((!data), (!data->pairs))), (data->pairs->get_length() == 0))) {
-            logger["error"](std::string("No pairs found for token ") + token + string_empty);
+            logger["error"](std:("No pairs found for token ") + token + string_empty);
             return array<any>();
         }
         auto pairs = data->pairs->sort([=](auto a, auto b) mutable
         {
-            return parseFloat(OR((b->liquidity->usd), (std::string("0")))) - parseFloat(OR((a->liquidity->usd), (std::string("0"))));
+            return parseFloat(OR((b->liquidity->usd), (std:("0")))) - parseFloat(OR((a->liquidity->usd), (std:("0"))));
         }
         );
         auto mainPair = const_(pairs)[0];
         if (OR((!mainPair), (!mainPair->priceUsd))) {
-            logger["error"](std::string("No price data found for token ") + token + string_empty);
+            logger["error"](std:("No price data found for token ") + token + string_empty);
             return array<any>();
         }
-        auto chartApiUrl = std::string("https://api.dexscreener.com/latest/dex/charts/solana/") + mainPair->pairAddress + string_empty;
+        auto chartApiUrl = std:("https://api.dexscreener.com/latest/dex/charts/solana/") + mainPair->pairAddress + string_empty;
         auto chartResponse = std::async([=]() { fetch(chartApiUrl); });
         if (!chartResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Chart API error: ") + chartResponse->status + std::string(" ") + chartResponse->statusText + string_empty));
+            throw any(std::make_shared<Error>(std:("Chart API error: ") + chartResponse->status + std:(" ") + chartResponse->statusText + string_empty));
         }
         auto chartData = as<std::shared_ptr<ChartResponse>>((std::async([=]() { chartResponse->json(); })));
         if (OR((OR((!chartData), (!chartData->priceCandles))), (chartData->priceCandles->get_length() == 0))) {
-            logger["error"](std::string("No candle data found for pair ") + mainPair->pairAddress + string_empty);
+            logger["error"](std:("No candle data found for pair ") + mainPair->pairAddress + string_empty);
             return array<any>();
         }
         auto candles = chartData->priceCandles->filter([=](auto candle) mutable
@@ -225,12 +225,12 @@ std::shared_ptr<Promise<array<any>>> fetchLockedTokenChartData(string token, dou
         )->map([=](auto candle) mutable
         {
             return (object{
-                object::pair{std::string("open"), parseFloat(candle->open)}, 
-                object::pair{std::string("high"), parseFloat(candle->high)}, 
-                object::pair{std::string("low"), parseFloat(candle->low)}, 
-                object::pair{std::string("close"), parseFloat(candle->close)}, 
-                object::pair{std::string("volume"), parseFloat(candle->volume)}, 
-                object::pair{std::string("time"), candle->time}
+                object::pair{std:("open"), parseFloat(candle->open)}, 
+                object::pair{std:("high"), parseFloat(candle->high)}, 
+                object::pair{std:("low"), parseFloat(candle->low)}, 
+                object::pair{std:("close"), parseFloat(candle->close)}, 
+                object::pair{std:("volume"), parseFloat(candle->volume)}, 
+                object::pair{std:("time"), candle->time}
             });
         }
         );
@@ -241,7 +241,7 @@ std::shared_ptr<Promise<array<any>>> fetchLockedTokenChartData(string token, dou
     }
     catch (const any& error)
     {
-        logger["error"](std::string("Error fetching locked token chart data: ") + error + string_empty);
+        logger["error"](std:("Error fetching locked token chart data: ") + error + string_empty);
         return array<any>();
     }
 };
@@ -276,12 +276,12 @@ array<std::shared_ptr<Candle>> groupCandlesByRange(array<std::shared_ptr<Candle>
                     currentRangeStart += rangeMs / 1000;
                     auto previousCandle = const_(groupedCandles)[groupedCandles->get_length() - 1];
                     groupedCandles->push(object{
-                        object::pair{std::string("open"), previousCandle->close}, 
-                        object::pair{std::string("high"), previousCandle->close}, 
-                        object::pair{std::string("low"), previousCandle->close}, 
-                        object::pair{std::string("close"), previousCandle->close}, 
-                        object::pair{std::string("volume"), 0}, 
-                        object::pair{std::string("time"), currentRangeStart}
+                        object::pair{std:("open"), previousCandle->close}, 
+                        object::pair{std:("high"), previousCandle->close}, 
+                        object::pair{std:("low"), previousCandle->close}, 
+                        object::pair{std:("close"), previousCandle->close}, 
+                        object::pair{std:("volume"), 0}, 
+                        object::pair{std:("time"), currentRangeStart}
                     });
                 }
                 currentRangeStart = candleRangeStart;
@@ -316,24 +316,24 @@ std::shared_ptr<Candle> createCandleFromGroup(array<std::shared_ptr<Candle>> gro
     }
     , 0);
     return object{
-        object::pair{std::string("open"), std::string("open")}, 
-        object::pair{std::string("high"), std::string("high")}, 
-        object::pair{std::string("low"), std::string("low")}, 
-        object::pair{std::string("close"), std::string("close")}, 
-        object::pair{std::string("volume"), std::string("volume")}, 
-        object::pair{std::string("time"), rangeStart}
+        object::pair{std:("open"), std:("open")}, 
+        object::pair{std:("high"), std:("high")}, 
+        object::pair{std:("low"), std:("low")}, 
+        object::pair{std:("close"), std:("close")}, 
+        object::pair{std:("volume"), std:("volume")}, 
+        object::pair{std:("time"), rangeStart}
     };
 };
 
 
-string DEV_TEST_TOKEN_ADDRESS = std::string("ANNTWQsQ9J3PeM6dXLjdzwYcSzr51RREWQnjuuCEpump");
+string DEV_TEST_TOKEN_ADDRESS = std:("ANNTWQsQ9J3PeM6dXLjdzwYcSzr51RREWQnjuuCEpump");
 std::function<array<std::shared_ptr<CandlePrice>>(array<std::shared_ptr<PriceFeedInfo>>, double)> getCandleData = [=](auto priceFeeds, auto range) mutable
 {
     auto priceHistory = priceFeeds->map([=](auto feed) mutable
     {
         return (object{
-            object::pair{std::string("price"), feed->price}, 
-            object::pair{std::string("ts"), feed->timestamp->getTime() / 1000}
+            object::pair{std:("price"), feed->price}, 
+            object::pair{std:("ts"), feed->timestamp->getTime() / 1000}
         });
     }
     )->sort([=](auto price1, auto price2) mutable
@@ -384,23 +384,23 @@ std::function<array<std::shared_ptr<CandlePrice>>(array<std::shared_ptr<PriceFee
         }
         if (prevIndex != pIndex) {
             auto newCandle = object{
-                object::pair{std::string("open"), st}, 
-                object::pair{std::string("high"), hi}, 
-                object::pair{std::string("low"), lo}, 
-                object::pair{std::string("close"), en}, 
-                object::pair{std::string("volume"), vol}, 
-                object::pair{std::string("time"), curCdStart}
+                object::pair{std:("open"), st}, 
+                object::pair{std:("high"), hi}, 
+                object::pair{std:("low"), lo}, 
+                object::pair{std:("close"), en}, 
+                object::pair{std:("volume"), vol}, 
+                object::pair{std:("time"), curCdStart}
             };
             cdFeeds->push(newCandle);
             lastValidCandle = newCandle;
         } else if (lastValidCandle) {
             cdFeeds->push(object{
-                object::pair{std::string("open"), lastValidCandle["close"]}, 
-                object::pair{std::string("high"), lastValidCandle["close"]}, 
-                object::pair{std::string("low"), lastValidCandle["close"]}, 
-                object::pair{std::string("close"), lastValidCandle["close"]}, 
-                object::pair{std::string("volume"), 0}, 
-                object::pair{std::string("time"), curCdStart}
+                object::pair{std:("open"), lastValidCandle["close"]}, 
+                object::pair{std:("high"), lastValidCandle["close"]}, 
+                object::pair{std:("low"), lastValidCandle["close"]}, 
+                object::pair{std:("close"), lastValidCandle["close"]}, 
+                object::pair{std:("volume"), 0}, 
+                object::pair{std:("time"), curCdStart}
             });
         }
     }

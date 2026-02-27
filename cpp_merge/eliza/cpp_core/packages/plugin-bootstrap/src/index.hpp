@@ -1,4 +1,5 @@
 #include "actions/index.ts.hpp"
+#include <map>
 #include "elizaos/core.hpp"
 #include "evaluators/index.ts.hpp"
 #include "providers/index.ts.hpp"
@@ -31,12 +32,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std::string to make it JSON-safe.
+ * Escapes special characters in a std: to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std::string escapeForJson(const std::string& input);
+std: escapeForJson(const std:& input);
 
-std::string sanitizeJson(const std::string& rawJson);
+std: sanitizeJson(const std:& rawJson);
 */
 
 /**
@@ -64,7 +65,7 @@ std::string sanitizeJson(const std::string& rawJson);
  * Determines whether to skip the shouldRespond logic based on room type and message source.
  * Supports both default values and runtime-configurable overrides via env settings.
  */
-bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std::string> source);
+bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std:> source);
 
 /**
  * Handles incoming messages and generates responses based on the provided runtime and message information.
@@ -90,7 +91,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
         // Handle shouldRespond
 
           // Try to preprocess response by removing code blocks markers if present
-          // let processedResponse = response.replace('```json', '').replaceAll('```', '').trim(); // No longer needed for XML
+          // let processedResponse = response.replace('"""json', '').replaceAll('"""', ''); // No longer needed for XML
 
           // If an action is provided, the agent intends to respond in some way
           // Only exclude explicit non-response actions
@@ -111,7 +112,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
             // Log provider usage for simple responses
 
             // without actions there can't be more than one message
-            await callback(responseContent);
+            callback(responseContent);
           // Handle the case where the agent decided not to respond
 
           // Check if we still have the latest response ID
@@ -119,14 +120,14 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
           // Construct a minimal content object indicating ignore, include a generic thought
 
           // Call the callback directly with the ignore content
-          await callback(ignoreContent);
+          callback(ignoreContent);
 
           // Also save this ignore action/thought to memory
 
           // Clean up the response ID since we handled it
 
           // Optionally, evaluate the decision to ignore (if relevant evaluators exist)
-          // await runtime.evaluate(message, state, shouldRespond, callback, []);
+          // runtime.evaluate(message, state, shouldRespond, callback, []);
 
         // Emit run ended event on successful completion
         // Emit run ended event with error
@@ -200,23 +201,23 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
   /**
    * Cleans up a tweet text by removing quotes and fixing newlines
    */
-  std::string cleanupPostText(const std::string& text);
+  std: cleanupPostText(const std:& text);
 
   // Cleanup the tweet text
 
   // Prepare media if included
   // const mediaData: MediaData[] = [];
   // if (jsonResponse.imagePrompt) {
-  // 	const images = await runtime.useModel(ModelType.IMAGE, {
+  // 	const images = runtime.useModel(ModelType.IMAGE, {
   // 		prompt: jsonResponse.imagePrompt,
   // 		output: "no-schema",
   // 	});
   // 	try {
   // 		// Convert image prompt to Media format for fetchMediaData
-  // 		const imagePromptMedia: std::any[] = images
+  // 		const imagePromptMedia: std:[] = images
 
   // 		// Fetch media using the utility std::function
-  // 		const fetchedMedia = await fetchMediaData(imagePromptMedia);
+  // 		const fetchedMedia = fetchMediaData(imagePromptMedia);
   // 		mediaData.push(...fetchedMedia);
   // 	} catch (error) {
   // 		logger.error("Error fetching media for tweet:", error);
@@ -231,10 +232,10 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
   // Create the response memory
 
   // Process the actions and execute the callback
-  // await runtime.processActions(message, responseMessages, state, callback);
+  // runtime.processActions(message, responseMessages, state, callback);
 
-  // // Run std::any configured evaluators
-  // await runtime.evaluate(
+  // // Run std: configured evaluators
+  // runtime.evaluate(
   // 	message,
   // 	state,
   // 	true, // Post generation is always a "responding" scenario
@@ -279,15 +280,15 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std::any registered WebSocket service
+    // Get std: registered WebSocket service
 
         // Send the control message through the WebSocket service
 
-      await postGeneratedHandler(payload);
+      postGeneratedHandler(payload);
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
         // Update entity to inactive
 

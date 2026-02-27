@@ -11,7 +11,7 @@ void ProgressBar() {
     <AppProgressBar;
     height="1px";
     color={BRAND_PRIMARY}
-    options={{ showSpinner: false }}
+    options={Config{showSpinner = false}}
     shallowRouting;
     />;
     );

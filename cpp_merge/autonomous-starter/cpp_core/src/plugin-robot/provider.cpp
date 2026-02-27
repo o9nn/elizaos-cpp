@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatAge(double ageMs) {
+std: formatAge(double ageMs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (ageMs < 1000) {

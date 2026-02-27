@@ -1,4 +1,9 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,22 +13,18 @@ std::future<void> getAllLockedTokens() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
-    const auto tokenData = db;
-    .select();
-    .from(tokens);
-    .where(eq(tokens.status, "locked"));
-    .limit(1);
+    const auto tokenData = db.select().from(tokens).where(eq(tokens.status, "locked")).limit(1);
     return tokenData;
 
 }
 
-std::future<void> handleSignature(const std::string& signature, const std::any& token, double solPriceUSD) {
+std::future<void> handleSignature(const std:& signature, const std:& token, double solPriceUSD) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto connection = new Connection(;
-    process.env.NETWORK == "devnet";
-    ? process.env.DEVNET_SOLANA_RPC_URL || "";
-    : process.env.MAINNET_SOLANA_RPC_URL || "",
+    std::getenv("NETWORK") == "devnet";
+    ? std::getenv("DEVNET_SOLANA_RPC_URL") || "";
+    : std::getenv("MAINNET_SOLANA_RPC_URL") || "",
     );
 
     // finalize
@@ -53,23 +54,21 @@ std::future<void> handleSignature(const std::string& signature, const std::any& 
 
 }
 
-std::future<void> processSwapLog(const std::any& token, const std::string& signature, double solPriceUSD, const std::vector<std::string>& logs) {
+std::future<void> processSwapLog(const std:& token, const std:& signature, double solPriceUSD, const std::vector<std::string>& logs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto wsClient = getWebSocketClient();
-        const auto swapLog = logs.find((l) => (std::find(l.begin(), l.end(), "Swap:") != l.end()));
-        const auto reservesLog = logs.find((l) => (std::find(l.begin(), l.end(), "Reserves:") != l.end()));
-        const auto mintLog = logs.find((l) => (std::find(l.begin(), l.end(), "Mint:") != l.end()));
-        const auto feeLog = logs.find((l) => (std::find(l.begin(), l.end(), "Fee:") != l.end()));
-        const auto swapeventLog = logs.find((log) => (std::find(log.begin(), log.end(), "SwapEvent:") != log.end()));
+        const auto swapLog = logs.find[&]((l) { return (std::find(l.begin(), l.end(), "Swap:") != l.end())); };
+        const auto reservesLog = logs.find[&]((l) { return (std::find(l.begin(), l.end(), "Reserves:") != l.end())); };
+        const auto mintLog = logs.find[&]((l) { return (std::find(l.begin(), l.end(), "Mint:") != l.end())); };
+        const auto feeLog = logs.find[&]((l) { return (std::find(l.begin(), l.end(), "Fee:") != l.end())); };
+        const auto swapeventLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "SwapEvent:") != log.end())); };
 
         if (!(mintLog && swapLog && reservesLog && feeLog)) return null;
 
         if (mintLog && swapLog && reservesLog && feeLog) {
-            const auto mintAddress = mintLog;
-            .split("Mint:")[1]
-            .trim();
+            const auto mintAddress = mintLog.split("Mint:")[1]
             .replace(/[",)]/g, "");
             if (
             !mintAddress ||;
@@ -80,33 +79,22 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                 std::cerr << "Invalid mint address format: " + mintAddress << std::endl;
                 return;
             }
-            const auto [user, direction, amount] = swapLog;
-            .split(" ");
-            .slice(-3);
-            .std::map((s) => s.replace(/[",)]/g, ""));
+            const auto [user, direction, amount] = swapLog.split(" ").slice(-3);
+            .std::map[&]((s) { return s.replace(/[",)]/g, "")); };
 
-            const auto [reserveToken, reserveLamport] = reservesLog;
-            .split(" ");
-            .slice(-2);
-            .std::map((s) => s.replace(/[",)]/g, ""));
+            const auto [reserveToken, reserveLamport] = reservesLog.split(" ").slice(-2);
+            .std::map[&]((s) { return s.replace(/[",)]/g, "")); };
 
-            const auto [_usr, _dir, amountOut] = swapeventLog!;
-            .split(" ");
-            .slice(-3);
-            .std::map((s) => s.replace(/[",)]/g, ""));
+            const auto [_usr, _dir, amountOut] = swapeventLog!.split(" ").slice(-3);
+            .std::map[&]((s) { return s.replace(/[",)]/g, "")); };
 
             const auto db = getDB();
-            const auto [existing] = db;
-            .select({
+            const auto [existing] = db.select({
                 price24hAgo: tokens.price24hAgo,
                 lastPriceUpdate: tokens.lastPriceUpdate,
-                });
-                .from(tokens);
-                .where(eq(tokens.mint, mintAddress));
-                .limit(1);
-                .execute();
+                }).from(tokens).where(eq(tokens.mint, mintAddress)).limit(1).execute();
 
-                const auto now = new Date();
+                const auto now = std::make_unique<Date>();
                 const auto slotTime = now.toISOString();
 
                 const auto prevPrice24hAgo = existing.price24hAgo || 0;
@@ -129,7 +117,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                 ? tokenPriceInSol * solPriceUSD * Math.pow(10, token.tokenDecimals);
                 : 0;
                 const auto marketCapUSD =;
-                (Number(process.env.TOKEN_SUPPLY) / Math.pow(10, token.tokenDecimals)) *;
+                (Number(std::getenv("TOKEN_SUPPLY")) / Math.pow(10, token.tokenDecimals)) *;
                 tokenPriceUSD;
                 const auto priceChange24h =;
                 prevPrice24hAgo > 0;
@@ -158,12 +146,12 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                     Math.pow(10, 9) /;
                     (Number(amountOut) / Math.pow(10, token.tokenDecimals)), // Buy price (SOL/token),
                     txId: signature,
-                    timestamp: new Date(),
+                    timestamp: std::make_unique<Date>(),
                     };
                     const auto redisCache = getGlobalRedisCache();
                     const auto listKey = "swapsList:" + mintAddress;
                     try {
-                        redisCache.lpush(listKey, /* JSON.stringify */ std::string(swapRecord));
+                        redisCache.lpush(listKey, /* JSON.stringify */ std:(swapRecord));
                         redisCache.ltrim(listKey, 0, MAX_SWAPS_TO_KEEP - 1);
                         logger.log(
                         "Helper: Saved swap to Redis list " + listKey + " & trimmed. Type: " + std::to_string(direction == "0" ? "buy" : "sell")
@@ -176,8 +164,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                             // Consider if we should proceed or return error
                         }
 
-                        const auto newToken = db;
-                        .update(tokens);
+                        const auto newToken = db.update(tokens);
                         .std::set({
                             reserveAmount: Number(reserveToken),
                             reserveLamport: Number(reserveLamport),
@@ -189,11 +176,11 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                             tokenPriceUSD,
                             solPriceUSD: solPriceUSD,
                             curveProgress:
-                            ((Number(reserveLamport) - Number(process.env.VIRTUAL_RESERVES)) /;
-                            (Number(process.env.CURVE_LIMIT) - Number(process.env.VIRTUAL_RESERVES))) *;
+                            ((Number(reserveLamport) - Number(std::getenv("VIRTUAL_RESERVES"))) /;
+                            (Number(std::getenv("CURVE_LIMIT")) - Number(std::getenv("VIRTUAL_RESERVES")))) *;
                             100,
                             txId: signature,
-                            lastUpdated: new Date(),
+                            lastUpdated: std::make_unique<Date>(),
                             "volume24h: sql" + "COALESCE(" + tokens.volume24h + ", 0) + " + std::to_string(direction == "1)
                             ? (Number(amount) / Math.pow(10, token.tokenDecimals)) *;
                             tokenPriceUSD;
@@ -208,9 +195,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                                 lastPriceUpdate: now,
                             }
                             : {}),
-                            });
-                            .where(eq(tokens.mint, mintAddress));
-                            .returning();
+                            }).where(eq(tokens.mint, mintAddress)).returning();
                             const auto { maxVolume, maxHolders } = getFeaturedMaxValues(db);
 
                             const auto enrichedToken = {;
@@ -225,11 +210,10 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                                 "wsClient.emit(" + "token-" + mintAddress;
                                     ...swapRecord,
                                     mint: mintAddress, // Add mint field for compatibility
-                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO std::string
+                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO std:
                                     });
                                     wsClient;
-                                    ".to(" + "token-" + swapRecord.tokenMint;
-                                    .emit("updateToken", enrichedToken);
+                                    ".to(" + "token-" + swapRecord.tokenMint.emit("updateToken", enrichedToken);
                                     return {
                                         mintAddress,
                                         currentPrice,
@@ -245,7 +229,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
 
 }
 
-bool shouldUpdateSupply(const std::any& token) {
+bool shouldUpdateSupply(const std:& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!token.lastSupplyUpdate) {
@@ -257,17 +241,17 @@ bool shouldUpdateSupply(const std::any& token) {
 
 }
 
-std::future<> updateTokenSupplyFromChain(const std::string& tokenMint) {
+std::future<> updateTokenSupplyFromChain(const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenSupply: std::string;
-    tokenSupplyUiAmount: number;
-    tokenDecimals: number;
-    lastSupplyUpdate: std::string;
+    tokenSupply: std:;
+    tokenSupplyUiAmount;
+    tokenDecimals;
+    lastSupplyUpdate: std:;
 
 }
 
-std::future<bool> isValidSwapTx(Connection connection, const std::string& signature, const std::string& mint) {
+std::future<bool> isValidSwapTx(Connection connection, const std:& signature, const std:& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tx = connection.getTransaction(signature, {;
@@ -277,7 +261,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std::string& signat
         const auto logs = tx.meta.logMessages;
         if (!logs) return false;
 
-        const auto has = [&](kw: std::string) { return logs.some((l) => (std::find(l.begin(), l.end(), kw) != l.end())); };
+        const auto has = [&](kw: std:) { return logs.some[&]((l) { return (std::find(l.begin(), l.end(), kw) != l.end())); }; };
         return (;
         has("Mint:") &&
         has("Swap:") &&
@@ -288,13 +272,13 @@ std::future<bool> isValidSwapTx(Connection connection, const std::string& signat
 
 }
 
-std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD, auto limit) {
+std::future<void> processLastValidSwap(const std:& token, double solPriceUSD, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rpcUrl =;
-    process.env.NETWORK == "devnet";
-    ? process.env.DEVNET_SOLANA_RPC_URL;
-    : process.env.MAINNET_SOLANA_RPC_URL;
+    std::getenv("NETWORK") == "devnet";
+    ? std::getenv("DEVNET_SOLANA_RPC_URL");
+    : std::getenv("MAINNET_SOLANA_RPC_URL");
 
     const auto connection = new Connection(rpcUrl || "", "confirmed");
     const auto mint = token.mint;
@@ -303,14 +287,14 @@ std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD
         return;
     }
 
-    // Fetch the last `limit` signatures
+    // Fetch the last "limit" signatures
     const auto sigs = connection.getSignaturesForAddress(new PublicKey(mint), {;
         limit,
         });
 
         // Iterate in order (most recent first)
         for (const int { signature } of sigs) {
-            if (await isValidSwapTx(connection, signature, mint)) {
+            if (isValidSwapTx(connection, signature, mint)) {
                 // Found the most recent valid swap—process it once
                 handleSignature(signature, token, solPriceUSD);
                 return;
@@ -319,14 +303,14 @@ std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD
 
 }
 
-std::future<double> updateHoldersCache(const std::string& mint, bool imported = false) {
+std::future<double> updateHoldersCache(const std:& mint, bool imported = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto env = process.env;
     try {
         // Use the utility std::function to get the RPC URL with proper API key
-        const auto connection = new Connection(process.env.NETWORK! == "devnet" ?;
-        process.env.DEVNET_SOLANA_RPC_URL! : process.env.MAINNET_SOLANA_RPC_URL!,
+        const auto connection = new Connection(std::getenv("NETWORK")! == "devnet" ?;
+        std::getenv("DEVNET_SOLANA_RPC_URL")! : std::getenv("MAINNET_SOLANA_RPC_URL")!,
         {
             commitment: "confirmed",
             confirmTransactionInitialTimeout: 60000, // 60 seconds
@@ -335,11 +319,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
         );
 
         const auto db = getDB();
-        const auto existingToken = db;
-        .select();
-        .from(tokens);
-        .where(eq(tokens.mint, mint));
-        .limit(1);
+        const auto existingToken = db.select().from(tokens).where(eq(tokens.mint, mint)).limit(1);
         if (existingToken.[0].imported == 1) {
             //ignore imported tokens
             std::cout << "Token " + mint << "skipping holder update." << std::endl;
@@ -369,7 +349,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                         },
                         );
 
-                        if (!accounts || accounts.length == 0) {
+                        if (!accounts || accounts.size() == 0) {
                             std::cout << "No accounts found for token " + mint << std::endl;
                             return 0;
                         }
@@ -378,8 +358,8 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
                         // Process accounts to extract holder information
                         auto totalTokens = 0;
-                        // Change type from TokenHolder to std::any or a new local type if needed
-                        const std::vector<std::any> holders = [];
+                        // Change type from TokenHolder to std: or a new local type if needed
+                        const std::vector<std::string> holders = [];
 
                         // Process each account to get holder details
                         for (const auto& account : accounts)
@@ -406,12 +386,12 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                     address: ownerAddress,
                                     amount: tokenBalance,
                                     percentage: 0, // Will calculate after we have the total
-                                    lastUpdated: new Date(), // Keep track of update time
+                                    lastUpdated: std::make_unique<Date>(), // Keep track of update time
                                     });
 
 
 
-                                    } catch (error: std::any) {
+                                    } catch (error: std:) {
                                         std::cerr << "Error processing account for " + mint + ":" << error << std::endl;
                                         // Continue with other accounts even if one fails
                                         continue;
@@ -426,12 +406,12 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                 }
 
                                 // Sort holders by amount (descending)
-                                holders.sort((a, b) => b.amount - a.amount);
+                                holders.sort[&]((a, b) { return b.amount - a.amount); };
 
                                 const auto holdersListKey = "holders:" + mint;
                                 try {
                                     // Store the entire list, stringified. No TTL.
-                                    redisCache.std::set(holdersListKey, /* JSON.stringify */ std::string(holders));
+                                    redisCache.std::set(holdersListKey, /* JSON.stringify */ std:(holders));
                                     logger.log(
                                     "Stored " + holders.size() + " holders in Redis list " + holdersListKey
                                     );
@@ -441,35 +421,29 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
                                     try {
                                         const auto wsClient = getWebSocketClient();
-                                        const auto limitedHolders = holders.slice(0, 50); // Emit only top 50;
+                                        const auto limitedHolders = holders.substr(0, 50-0); // Emit only top 50;
                                         "wsClient.emit(" + "token-" + mint;
                                         } catch (wsError) {
                                             std::cerr << "WebSocket error when emitting holder update:" << wsError << std::endl;
                                         }
 
 
-                                        db;
-                                        .update(tokens);
+                                        db.update(tokens);
                                         .std::set({
                                             holderCount: holders.size(), // Use full count
-                                            lastUpdated: new Date(),
-                                            });
-                                            .where(eq(tokens.mint, mint));
+                                            lastUpdated: std::make_unique<Date>(),
+                                            }).where(eq(tokens.mint, mint));
 
                                             // Emit WebSocket event to notify of token update (with new holder count)
                                             try {
-                                                const auto tokenData = db;
-                                                .select();
-                                                .from(tokens);
-                                                .where(eq(tokens.mint, mint));
-                                                .limit(1);
+                                                const auto tokenData = db.select().from(tokens).where(eq(tokens.mint, mint)).limit(1);
 
-                                                if (tokenData && tokenData.length > 0) {
+                                                if (tokenData && tokenData.size() > 0) {
                                                     processTokenUpdateEvent({
                                                         ...tokenData[0],
                                                         event: "holdersUpdated",
                                                         holderCount: holders.size(), // Use full count here too
-                                                        timestamp: new Date().toISOString(),
+                                                        timestamp: std::make_unique<Date>().toISOString(),
                                                         });
                                                     }
                                                     } catch (wsError) {
@@ -484,7 +458,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
 }
 
-std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false) {
+std::future<void> processTokenUpdateEvent(const std:& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -514,7 +488,7 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
                 );
 
                 // Use env var for debug check
-                const auto debugWs = process.env.DEBUG_WEBSOCKET == "true";
+                const auto debugWs = std::getenv("DEBUG_WEBSOCKET") == "true";
                 if (debugWs) {
                     std::cout << "Emitted token update event for " + tokenData.mint << std::endl;
                 }
@@ -524,7 +498,7 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
                     // If it's a new token event, *only* emit the global "newToken" event
                     wsClient.emit("global", "newToken", {
                         ...enrichedTokenData,
-                        timestamp: new Date(),
+                        timestamp: std::make_unique<Date>(),
                         });
                         if (debugWs) {
                             std::cout << "Emitted NEW token event to global feed: " + tokenData.mint << std::endl;
@@ -533,7 +507,7 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
                             // Otherwise, if shouldEmitGlobal is true (and it's not a new token), emit "updateToken" globally
                             "wsClient.emit(" + "token-" + tokenData.mint;
                                 ...enrichedTokenData,
-                                timestamp: new Date(),
+                                timestamp: std::make_unique<Date>(),
                                 });
 
                                 if (debugWs) {

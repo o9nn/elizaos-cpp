@@ -10,16 +10,16 @@ void TokenHeader() {
     const auto priceChange = marketData.priceChange24h || 0;
     const auto priceChangeColor = priceChange >= 0 ? "text-brand-500" : "text-red-600";
 
-    const auto formatMarketCap = [&](mc: number) {;
-        if (mc >= 1e9) return `$${(mc / 1e9).toFixed(2)}B`;
-        if (mc >= 1e6) return `$${(mc / 1e6).toFixed(2)}M`;
-        if (mc >= 1e3) return `$${(mc / 1e3).toFixed(2)}K`;
+    const auto formatMarketCap = [&](mc) {;
+        if (mc >= 1e9) return "$" + std::to_string((mc / 1e9).toFixed(2)) + "B";
+        if (mc >= 1e6) return "$" + std::to_string((mc / 1e6).toFixed(2)) + "M";
+        if (mc >= 1e3) return "$" + std::to_string((mc / 1e3).toFixed(2)) + "K";
         return "$" + std::to_string(mc.toFixed(2));
         };
 
-        const auto formatAddress = [&](address: std::string) {;
+        const auto formatAddress = [&](address: std:) {;
             if (!address) return "";
-            return std::to_string(address.slice(0, 6)) + "..." + std::to_string(address.slice(-4));
+            return std::to_string(address.substr(0, 6-0)) + "..." + std::to_string(address.slice(-4));
             };
 
             return (;

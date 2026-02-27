@@ -20,14 +20,14 @@ namespace elizaos {
 
 // Internal payload interfaces for API requests
 struct ChannelCreatePayload {
-    std::string name;
+    std: name;
     ChannelType type;
     UUID server_id;
     std::optional<ChannelMetadata> metadata;
 };
 
 struct GroupChannelCreatePayload {
-    std::string name;
+    std: name;
     UUID server_id;
     std::vector<UUID> participantCentralUserIds;
     std::optional<ChannelType> type;
@@ -71,7 +71,7 @@ class MessagingService extends BaseApiClient {
 
       // Create a new metadata object without the hoisted fields
 
-      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: std::string]: unknown)
+      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: std:]: unknown)
 
       // Only include metadata if there are remaining properties
 
@@ -192,9 +192,9 @@ class MessagingService extends BaseApiClient {
 
     // Remove user from participants
 
-  // =============================================================================
+  // ===================================
   // Jobs API - One-off messaging
-  // =============================================================================
+  // ===================================
 
   /**
    * Create a new job (one-off message to agent)
@@ -206,8 +206,8 @@ class MessagingService extends BaseApiClient {
    * @returns Job details including jobId and status
    * 
    * @example
-   * ```typescript
-   * const job = await client.messaging.createJob({
+   * """typescript
+   * const job = client.messaging.createJob({
    *   agentId: 'agent-uuid', // std::optional - uses first agent if not provided
    *   userId: 'user-uuid',
    *   content: 'What is the weather?',
@@ -215,7 +215,7 @@ class MessagingService extends BaseApiClient {
    *   metadata: { source: 'api' }
    * });
    * console.log(job.jobId);
-   * ```
+   * """
    */
 
   /**
@@ -227,12 +227,12 @@ class MessagingService extends BaseApiClient {
    * @returns Job details including status and result
    * 
    * @example
-   * ```typescript
-   * const job = await client.messaging.getJob('job-uuid');
-   * if (job.status === JobStatus.COMPLETED) {
-   *   console.log(job.result?.message.content);
+   * """typescript
+   * const job = client.messaging.getJob('job-uuid');
+   * if (job.status == JobStatus.COMPLETED) {
+   *   console.log(job.(result ? result.message.content : nullptr));
    * }
-   * ```
+   * """
    */
 
   /**
@@ -242,12 +242,12 @@ class MessagingService extends BaseApiClient {
    * @returns List of jobs with total counts
    * 
    * @example
-   * ```typescript
-   * const { jobs, total } = await client.messaging.listJobs({
+   * """typescript
+   * const { jobs, total } = client.messaging.listJobs({
    *   limit: 10,
    *   status: JobStatus.COMPLETED
    * });
-   * ```
+   * """
    */
 
   /**
@@ -256,11 +256,11 @@ class MessagingService extends BaseApiClient {
    * @returns Health information including job counts by status
    * 
    * @example
-   * ```typescript
-   * const health = await client.messaging.getJobsHealth();
-   * console.log(`Total jobs: ${health.totalJobs}`);
-   * console.log(`Completed: ${health.statusCounts.completed}`);
-   * ```
+   * """typescript
+   * const health = client.messaging.getJobsHealth();
+   * console.log("Total jobs: ${health.totalJobs}");
+   * console.log("Completed: ${health.statusCounts.completed}");
+   * """
    */
 
   /**
@@ -276,19 +276,19 @@ class MessagingService extends BaseApiClient {
    * @throws Error if job fails, times out, or max attempts reached
    * 
    * @example
-   * ```typescript
+   * """typescript
    * try {
-   *   const job = await client.messaging.createJob({
+   *   const job = client.messaging.createJob({
    *     userId: 'user-uuid',
    *     content: 'What is 2+2?'
    *   });
    *   
-   *   const result = await client.messaging.pollJob(job.jobId, 1000, 30);
-   *   console.log(result.result?.message.content);
+   *   const result = client.messaging.pollJob(job.jobId, 1000, 30);
+   *   console.log(result.(result ? result.message.content : nullptr));
    * } catch (error) {
    *   console.error('Job failed:', error);
    * }
-   * ```
+   * """
    */
 
       // Check if job reached a terminal state
@@ -307,13 +307,13 @@ class MessagingService extends BaseApiClient {
    * @throws Error if job fails, times out, or max attempts reached
    * 
    * @example
-   * ```typescript
-   * const result = await client.messaging.createAndWaitForJob({
+   * """typescript
+   * const result = client.messaging.createAndWaitForJob({
    *   userId: 'user-uuid',
    *   content: 'Explain quantum computing'
    * });
-   * console.log(result.result?.message.content);
-   * ```
+   * console.log(result.(result ? result.message.content : nullptr));
+   * """
    */
 
 } // namespace elizaos

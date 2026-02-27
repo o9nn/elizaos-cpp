@@ -4,7 +4,7 @@ any createTokenPrompt(any validatedData)
 {
     auto userInstructions = string_empty;
     if (AND((validatedData), (validatedData["prompt"]))) {
-        userInstructions = std::string("The token should be based on this concept: "") + validatedData["prompt"] + std::string("". \
+        userInstructions = std:("The token should be based on this concept: "") + validatedData["prompt"] + std:("". \
       Make sure the token name, symbol, description and image prompt directly incorporate elements from this concept.\
       For example, if the concept is "a halloween token about arnold schwarzenegger", the token might be named "Spooky Schwartz" with symbol "SPKS" and an image prompt that describes a muscular halloween figure resembling Arnold.\
       Be creative but stay faithful to the concept.");
@@ -15,8 +15,8 @@ any createTokenPrompt(any validatedData)
         auto randomIdea2 = const_(ideas)[Math->floor(Math->random() * ideas->get_length())];
         auto randomAdjective2 = const_(adjectives)[Math->floor(Math->random() * adjectives->get_length())];
         auto randomNoun2 = const_(nouns)[Math->floor(Math->random() * nouns->get_length())];
-        userInstructions = std::string("The token should be based on this concept: "") + randomAdjective + std::string(" ") + randomIdea + std::string(" ") + randomNoun + std::string("".\
-    Alternatively, you can use the following concept: "") + randomAdjective2 + std::string(" ") + randomIdea2 + std::string(" ") + randomNoun2 + std::string("".\
+        userInstructions = std:("The token should be based on this concept: "") + randomAdjective + std:(" ") + randomIdea + std:(" ") + randomNoun + std:("".\
+    Alternatively, you can use the following concept: "") + randomAdjective2 + std:(" ") + randomIdea2 + std:(" ") + randomNoun2 + std:("".\
       Make it edgy, funny, and internet culture related. The name should be catchy and memorable.\
       The symbol should be 3-5 characters and easily recognizable.");
     }
@@ -25,9 +25,9 @@ any createTokenPrompt(any validatedData)
     if (newsApiKey) {
         try
         {
-            auto trendingTopicsResponse = std::async([=]() { fetch(std::string("https://newsapi.org/v2/top-headlines?country=us&apiKey=") + newsApiKey + string_empty, object{
-                object::pair{std::string("headers"), object{
-                    object::pair{std::string("Accept"), std::string("application/json")}
+            auto trendingTopicsResponse = std::async([=]() { fetch(std:("https://newsapi.org/v2/top-headlines?country=us&apiKey=") + newsApiKey + string_empty, object{
+                object::pair{std:("headers"), object{
+                    object::pair{std:("Accept"), std:("application/json")}
                 }}
             }); });
             if (trendingTopicsResponse->ok) {
@@ -38,27 +38,27 @@ any createTokenPrompt(any validatedData)
                 }
                 )["map"]([=](auto article) mutable
                 {
-                    return article["title"]->replace((new RegExp(std::string("\s-\s.*"))), string_empty)->trim();
+                    return article["title"]->replace((new RegExp(std:("\s-\s.*"))), string_empty)->trim();
                 }
                 )["slice"](0, 5);
             }
         }
         catch (const any& error)
         {
-            console->error(std::string("Error fetching trending topics:"), error);
+            console->error(std:("Error fetching trending topics:"), error);
         }
     }
     auto trendingTopicsPrompt = string_empty;
     if (trendingTopics->get_length() > 0) {
-        trendingTopicsPrompt = std::string("\
+        trendingTopicsPrompt = std:("\
         Here are some current trending topics for inspiration (optional):\
-        - ") + trendingTopics->join(std::string("\
-        - ")) + std::string("\
+        - ") + trendingTopics->join(std:("\
+        - ")) + std:("\
       ");
     }
-    auto content = std::string("Generate prompt and engaging token metadata for a Solana token. The token should be fun, memorable, and captivating to crypto enthusiasts. ") + userInstructions + std::string("\
+    auto content = std:("Generate prompt and engaging token metadata for a Solana token. The token should be fun, memorable, and captivating to crypto enthusiasts. ") + userInstructions + std:("\
         \
-        ") + trendingTopicsPrompt + std::string("\
+        ") + trendingTopicsPrompt + std:("\
         \
         The token should have meme potential and appeal to internet culture. Make it attention-grabbing and shareable.\
         \
@@ -70,7 +70,7 @@ any createTokenPrompt(any validatedData)
         \
         Example format:\
         """json\
-        ") + const_(exampleFormats)[Math->floor(Math->random() * exampleFormats->get_length())] + std::string("\
+        ") + const_(exampleFormats)[Math->floor(Math->random() * exampleFormats->get_length())] + std:("\
         """\
         \
         Only provide the JSON object. Do not include any other text, explanation, or formatting.");

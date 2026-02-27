@@ -1,25 +1,30 @@
 #include "yaml.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-YamlData parseYAML(const std::string& yamlString) {
+YamlData parseYAML(const std:& yamlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = yamlString.split("\n");
-    const std::unordered_map<std::string, YamlData> result = {};
-    const std::variant<std::vector<Record<std::string, YamlData>, YamlData[]>> stack = [result];
+    const std::unordered_map<std:, YamlData> result = {};
+    const std::variant<std::vector<Record<std:, YamlData>, YamlData[]>> stack = [result];
     const std::vector<double> indentStack = [0];
     std::optional<std::vector<YamlData>> currentList = nullptr;
     auto currentListIndent = -1;
 
-    for (int i = 0; i < lines.length; i++) {
+    for (int i = 0; i < lines.size(); i++) {
         const auto line = lines[i];
-        const auto trimmedLine = line.trim();
+        const auto trimmedLine = line;
 
         // Skip empty lines and comments
-        if (!trimmedLine || trimmedLine.startsWith('#')) {
+        if (!trimmedLine || trimmedLine.substr(0, '#')) {
             continue;
         }
 
@@ -27,14 +32,14 @@ YamlData parseYAML(const std::string& yamlString) {
         const auto indent = line.size() - line.trimStart().size();
 
         // Handle list items
-        if (trimmedLine.startsWith('- ')) {
-            const auto value = trimmedLine.substring(2).trim();
+        if (trimmedLine.substr(0, '- ')) {
+            const auto value = trimmedLine.substring(2);
 
             // Pop stack to appropriate level
-            while (indentStack.length > 1 && indent <= indentStack[indentStack.length - 1]) {
+            while (indentStack.size() > 1 && indent <= indentStack[indentStack.size() - 1]) {
                 stack.pop();
                 indentStack.pop();
-                if (currentListIndent >= indentStack[indentStack.length - 1]) {
+                if (currentListIndent >= indentStack[indentStack.size() - 1]) {
                     currentList = nullptr;
                     currentListIndent = -1;
                 }
@@ -59,7 +64,7 @@ YamlData parseYAML(const std::string& yamlString) {
                 }
 
                 // Parse the list item value
-                if (value.includes(': ')) {
+                if (value.count(': ') > 0) {
                     // List item is an object
                     const auto obj = parseKeyValue(value);
                     currentList.push_back(obj);
@@ -70,11 +75,11 @@ YamlData parseYAML(const std::string& yamlString) {
                     } else if ((std::find(trimmedLine.begin(), trimmedLine.end(), ": ") != trimmedLine.end())) {
                         // Handle key-value pairs
                         const auto colonIndex = trimmedLine.indexOf(": ");
-                        const auto key = trimmedLine.substring(0, colonIndex).trim();
-                        const auto value = trimmedLine.substring(colonIndex + 2).trim();
+                        const auto key = trimmedLine.substring(0, colonIndex);
+                        const auto value = trimmedLine.substring(colonIndex + 2);
 
                         // Pop stack to appropriate level
-                        while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) {
+                        while (indentStack.size() > 1 && indent < indentStack[indentStack.size() - 1]) {
                             stack.pop();
                             indentStack.pop();
                         }
@@ -82,9 +87,9 @@ YamlData parseYAML(const std::string& yamlString) {
                         const auto parent = stack[stack.size() - 1];
 
                         if (!value || value == '|' || value == '>') {
-                            // Multi-line std::string or nested object
+                            // Multi-line std: or nested object
                             if (value == '|' || value == '>') {
-                                // Multi-line std::string
+                                // Multi-line std:
                                 const auto multilineValue = parseMultilinestd::to_string(lines, i + 1, indent + 2);
                                 if (!Array.isArray(parent)) {
                                     parent[key] = multilineValue.value;
@@ -120,21 +125,21 @@ YamlData parseYAML(const std::string& yamlString) {
 void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    value: std::string;
-    nextIndex: number;
+    value: std:;
+    nextIndex;
 
 }
 
-std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str) {
+std::unordered_map<std:, std:> parseKeyValue(const std:& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::any> result = {};
+    const std::unordered_map<std:, std:> result = {};
     const auto pairs = str.split(", ");
 
     for (const auto& std::pair : pairs)
-        if (pair.includes(': ')) {
+        if (pair.count(': ') > 0) {
             const auto [key, value] = pair.split(": ");
-            result[key.trim()] = parseValue(value.trim());
+            result[key] = parseValue(value);
         }
     }
 
@@ -142,7 +147,7 @@ std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str) 
 
 }
 
-YamlData parseValue(const std::string& value) {
+YamlData parseValue(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Null
@@ -160,43 +165,41 @@ YamlData parseValue(const std::string& value) {
 
     // Number
     if (!isNaN(Number(value)) && value != '') {
-        if (value.includes('.')) {
+        if (value.count('.') > 0) {
             return parseFloat(value);
         }
         return parseInt(value, 10);
     }
 
     // String with quotes
-    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    if ((value.substr(0, '"') && value.rfind('"')) || (value.substr(0, "'") && value.rfind("'"))) {
         return value.slice(1, -1);
     }
 
     // Array notation
-    if (value.startsWith('[') && value.endsWith(']')) {
-        const auto items = value;
-        .slice(1, -1);
-        .split(",");
-        .std::map((item) => parseValue(item.trim()));
+    if (value.substr(0, '[') && value.rfind(']')) {
+        const auto items = value.slice(1, -1).split(",");
+        .std::map[&]((item) { return parseValue(item)); };
         return items;
     }
 
     // Object notation
-    if (value.startsWith('{') && value.endsWith('}')) {
-        const std::unordered_map<std::string, std::any> obj = {};
+    if (value.substr(0, '{') && value.rfind('}')) {
+        const std::unordered_map<std:, std:> obj = {};
         const auto pairs = value.slice(1, -1).split(",");
         for (const auto& std::pair : pairs)
-            const auto [key, val] = pair.split(":").std::map((s) => s.trim());
+            const auto [key, val] = pair.split(":").std::map[&]((s) { return s); };
             obj[key] = parseValue(val);
         }
         return obj;
     }
 
-    // Default to std::string
+    // Default to std:
     return value;
 
 }
 
-std::string stringifyYAML(YamlData obj, double indent = 0) {
+std: stringifyYAML(YamlData obj, double indent = 0) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -205,7 +208,7 @@ std::string stringifyYAML(YamlData obj, double indent = 0) {
     if (Array.isArray(obj)) {
         for (const auto& item : obj)
             if (typeof item == 'object' && item != null) {
-                "lines.push_back(" + indentStr + "- " + std::to_string(stringifyYAML(item, 0).trim());
+                "lines.push_back(" + indentStr + "- " + std::to_string(stringifyYAML(item, 0));
                 } else {
                     "lines.push_back(" + indentStr + "- " + item;
                 }
@@ -222,7 +225,7 @@ std::string stringifyYAML(YamlData obj, double indent = 0) {
                                 lines.push_back(stringifyYAML(value, indent + 1));
                                 } else if (typeof value == "string" && (std::find(value.begin(), value.end(), "\n") != value.end())) {
                                     "lines.push_back(" + indentStr + key + ": |"
-                                    value.split("\n").forEach((line) => {
+                                    value.split("\n").forEach[&]((line) {
                                         "lines.push_back(" + std::to_string("  ".repeat(indent + 1)) + line;
                                         });
                                         } else {

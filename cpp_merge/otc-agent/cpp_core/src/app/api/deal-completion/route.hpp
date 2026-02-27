@@ -21,7 +21,7 @@ namespace elizaos {
 struct ReadContractParams {
     Address address;
     Abi abi;
-    std::string functionName;
+    std: functionName;
     std::optional<std::vector<readonly unknown>> args;
 };
 

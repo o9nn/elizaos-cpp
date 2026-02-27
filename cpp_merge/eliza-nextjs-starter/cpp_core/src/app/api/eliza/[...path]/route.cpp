@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +13,7 @@ std::future<void> GET(NextRequest request) {
         const auto path = resolvedParams.path.join("/");
         const auto searchParams = request.nextUrl.searchParams;
         const auto query = std::to_string(searchParams);
-        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path + std::to_string(query ? `?${query}` : "");
+        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path + std::to_string(query ? "?" + std::to_string(query) + "" : "");
 
         std::cout << "[Proxy] GET " + elizaUrl << std::endl;
 

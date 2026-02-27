@@ -5,6 +5,6 @@
 enum struct ResolutionType;
 
 enum struct ResolutionType {
-    HOVER_LIMITED = std::string("hoverLimited"), HOVER_FULL = std::string("hoverFull"), NO_HOVER_LIMITED = std::string("noHoverLimited"), NO_HOVER_FULL = std::string("noHoverFull")
+    HOVER_LIMITED = std:("hoverLimited"), HOVER_FULL = std:("hoverFull"), NO_HOVER_LIMITED = std:("noHoverLimited"), NO_HOVER_FULL = std:("noHoverFull")
 };
 #endif

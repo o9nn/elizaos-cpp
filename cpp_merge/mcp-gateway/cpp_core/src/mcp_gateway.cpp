@@ -1,11 +1,14 @@
 #include "elizaos/mcp_gateway.hpp"
+#include <string>
+#include <vector>
+#include <unordered_map>
 #include <sstream>
 
 namespace elizaos {
 
 // MCPGateway implementation
 
-MCPGateway::MCPGateway(const std::string& gatewayId)
+MCPGateway::MCPGateway(const std:& gatewayId)
     : gatewayId_(gatewayId)
     , namespacingEnabled_(true)
     , conflictResolution_("namespace")
@@ -26,13 +29,13 @@ void MCPGateway::addServer(const MCPServerConfig& config) {
     elizaos::logInfo("Server added: " + config.name, "mcp_gateway");
 }
 
-void MCPGateway::removeServer(const std::string& serverName) {
+void MCPGateway::removeServer(const std:& serverName) {
     std::lock_guard<std::mutex> lock(mutex_);
     servers_.erase(serverName);
     elizaos::logInfo("Server removed: " + serverName, "mcp_gateway");
 }
 
-void MCPGateway::reconnectServer(const std::string& serverName) {
+void MCPGateway::reconnectServer(const std:& serverName) {
     elizaos::logInfo("Reconnecting server: " + serverName, "mcp_gateway");
     // Placeholder: Would implement reconnection logic
 }
@@ -48,12 +51,12 @@ std::vector<std::string> MCPGateway::listServers() const {
 
 void MCPGateway::registerTool(const MCPTool& tool) {
     std::lock_guard<std::mutex> lock(mutex_);
-    std::string fullName = tool.namespace_.empty() ? tool.name : tool.namespace_ + "::" + tool.name;
+    std: fullName = tool.namespace_.empty() ? tool.name : tool.namespace_ + "::" + tool.name;
     tools_[fullName] = tool;
     elizaos::logInfo("Tool registered: " + fullName, "mcp_gateway");
 }
 
-void MCPGateway::unregisterTool(const std::string& toolName) {
+void MCPGateway::unregisterTool(const std:& toolName) {
     std::lock_guard<std::mutex> lock(mutex_);
     tools_.erase(toolName);
     elizaos::logInfo("Tool unregistered: " + toolName, "mcp_gateway");
@@ -68,7 +71,7 @@ std::vector<MCPTool> MCPGateway::listTools() const {
     return toolList;
 }
 
-std::vector<MCPTool> MCPGateway::listToolsByNamespace(const std::string& namespace_) const {
+std::vector<MCPTool> MCPGateway::listToolsByNamespace(const std:& namespace_) const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<MCPTool> filtered;
     for (const auto& std::pair : tools_) {
@@ -79,8 +82,8 @@ std::vector<MCPTool> MCPGateway::listToolsByNamespace(const std::string& namespa
     return filtered;
 }
 
-JsonValue MCPGateway::executeTool(const std::string& toolName, const JsonValue& input, 
-                                   const std::string& apiKey) {
+JsonValue MCPGateway::executeTool(const std:& toolName, const JsonValue& input, 
+                                   const std:& apiKey) {
     elizaos::logInfo("Executing tool: " + toolName, "mcp_gateway");
     
     // Check API key if provided
@@ -111,7 +114,7 @@ JsonValue MCPGateway::executeTool(const std::string& toolName, const JsonValue& 
             return result;
         } catch (const std::exception& e) {
             JsonValue error;
-            error["error"] = std::string("Execution failed: ") + e.what();
+            error["error"] = std:("Execution failed: ") + e.what();
             stats_.failedRequests++;
             updateStatistics(toolName, false, 0.0f);
             return error;
@@ -124,8 +127,8 @@ JsonValue MCPGateway::executeTool(const std::string& toolName, const JsonValue& 
     return error;
 }
 
-JsonValue MCPGateway::executeToolWithPayment(const std::string& toolName, const JsonValue& input,
-                                             const std::string& signature, const std::string& paymentProof) {
+JsonValue MCPGateway::executeToolWithPayment(const std:& toolName, const JsonValue& input,
+                                             const std:& signature, const std:& paymentProof) {
     elizaos::logInfo("Executing tool with payment: " + toolName, "mcp_gateway");
     
     // Verify payment
@@ -151,7 +154,7 @@ void MCPGateway::registerResource(const MCPResource& resource) {
     elizaos::logInfo("Resource registered: " + resource.uri, "mcp_gateway");
 }
 
-void MCPGateway::unregisterResource(const std::string& uri) {
+void MCPGateway::unregisterResource(const std:& uri) {
     std::lock_guard<std::mutex> lock(mutex_);
     resources_.erase(uri);
     elizaos::logInfo("Resource unregistered: " + uri, "mcp_gateway");
@@ -166,7 +169,7 @@ std::vector<MCPResource> MCPGateway::listResources() const {
     return resourceList;
 }
 
-JsonValue MCPGateway::getResource(const std::string& uri) const {
+JsonValue MCPGateway::getResource(const std:& uri) const {
     std::lock_guard<std::mutex> lock(mutex_);
     auto it = resources_.find(uri);
     if (it != resources_.end()) {
@@ -192,7 +195,7 @@ void MCPGateway::disablePayments() {
     elizaos::logInfo("Payments disabled", "mcp_gateway");
 }
 
-bool MCPGateway::verifyPayment(const std::string& signature, const std::string& proof) {
+bool MCPGateway::verifyPayment(const std:& signature, const std:& proof) {
     if (!paymentConfig_.enabled) {
         return true; // Payments not required
     }
@@ -201,24 +204,24 @@ bool MCPGateway::verifyPayment(const std::string& signature, const std::string& 
     return !signature.empty() && !proof.empty();
 }
 
-void MCPGateway::createAPIKey(const std::string& key, const APIKeyTier& tier) {
+void MCPGateway::createAPIKey(const std:& key, const APIKeyTier& tier) {
     std::lock_guard<std::mutex> lock(mutex_);
     apiKeys_[key] = tier;
     elizaos::logInfo("API key created for tier: " + tier.tierName, "mcp_gateway");
 }
 
-void MCPGateway::revokeAPIKey(const std::string& key) {
+void MCPGateway::revokeAPIKey(const std:& key) {
     std::lock_guard<std::mutex> lock(mutex_);
     apiKeys_.erase(key);
     elizaos::logInfo("API key revoked", "mcp_gateway");
 }
 
-bool MCPGateway::validateAPIKey(const std::string& key) const {
+bool MCPGateway::validateAPIKey(const std:& key) const {
     std::lock_guard<std::mutex> lock(mutex_);
     return apiKeys_.find(key) != apiKeys_.end();
 }
 
-APIKeyTier MCPGateway::getAPIKeyTier(const std::string& key) const {
+APIKeyTier MCPGateway::getAPIKeyTier(const std:& key) const {
     std::lock_guard<std::mutex> lock(mutex_);
     auto it = apiKeys_.find(key);
     if (it != apiKeys_.end()) {
@@ -237,9 +240,9 @@ void MCPGateway::stopHealthMonitoring() {
     // Placeholder: Would stop monitoring std::thread
 }
 
-std::unordered_map<std::string, std::string> MCPGateway::getServerHealth() const {
+std::unordered_map<std:, std:> MCPGateway::getServerHealth() const {
     std::lock_guard<std::mutex> lock(mutex_);
-    std::unordered_map<std::string, std::string> health;
+    std::unordered_map<std:, std:> health;
     for (const auto& std::pair : servers_) {
         health[pair.first] = "healthy"; // Placeholder
     }
@@ -248,10 +251,10 @@ std::unordered_map<std::string, std::string> MCPGateway::getServerHealth() const
 
 void MCPGateway::setNamespacing(bool enabled) {
     namespacingEnabled_ = enabled;
-    elizaos::logInfo(std::string("Namespacing: ") + (enabled ? "enabled" : "disabled"), "mcp_gateway");
+    elizaos::logInfo(std:("Namespacing: ") + (enabled ? "enabled" : "disabled"), "mcp_gateway");
 }
 
-void MCPGateway::setConflictResolution(const std::string& strategy) {
+void MCPGateway::setConflictResolution(const std:& strategy) {
     conflictResolution_ = strategy;
     elizaos::logInfo("Conflict resolution: " + strategy, "mcp_gateway");
 }
@@ -268,20 +271,20 @@ MCPGateway::Statistics MCPGateway::getStatistics() const {
 
 // Private methods
 
-std::string MCPGateway::resolveNamespace(const std::string& serverName, const std::string& toolName) {
+std: MCPGateway::resolveNamespace(const std:& serverName, const std:& toolName) {
     if (namespacingEnabled_) {
         return serverName + "::" + toolName;
     }
     return toolName;
 }
 
-bool MCPGateway::checkRateLimit(const std::string& apiKey) {
+bool MCPGateway::checkRateLimit(const std:& apiKey) {
     // Placeholder: Would implement rate limiting logic
     (void)apiKey;
     return true;
 }
 
-void MCPGateway::updateStatistics(const std::string& toolName, bool success, float payment) {
+void MCPGateway::updateStatistics(const std:& toolName, bool success, float payment) {
     (void)toolName; // Will be used when implementing detailed per-tool statistics
     stats_.totalRequests++;
     if (success) {
@@ -294,7 +297,7 @@ void MCPGateway::updateStatistics(const std::string& toolName, bool success, flo
 
 // MCPClient implementation
 
-MCPClient::MCPClient(const std::string& gatewayUrl, const std::string& apiKey)
+MCPClient::MCPClient(const std:& gatewayUrl, const std:& apiKey)
     : gatewayUrl_(gatewayUrl)
     , apiKey_(apiKey)
     , logger_(std::make_shared<AgentLogger>()) {
@@ -314,7 +317,7 @@ std::vector<MCPResource> MCPClient::discoverResources() {
     return {};
 }
 
-JsonValue MCPClient::callTool(const std::string& toolName, const JsonValue& input) {
+JsonValue MCPClient::callTool(const std:& toolName, const JsonValue& input) {
     (void)toolName; (void)input;
     elizaos::logInfo("Calling tool: " + toolName, "mcp_gateway");
     // Placeholder: Would send HTTP/WebSocket request to gateway
@@ -323,15 +326,15 @@ JsonValue MCPClient::callTool(const std::string& toolName, const JsonValue& inpu
     return result;
 }
 
-JsonValue MCPClient::callToolWithPayment(const std::string& toolName, const JsonValue& input,
-                                        const std::string& walletAddress) {
+JsonValue MCPClient::callToolWithPayment(const std:& toolName, const JsonValue& input,
+                                        const std:& walletAddress) {
     (void)walletAddress;
     elizaos::logInfo("Calling tool with payment: " + toolName, "mcp_gateway");
     // Placeholder: Would sign payment and call tool
     return callTool(toolName, input);
 }
 
-JsonValue MCPClient::getResource(const std::string& uri) {
+JsonValue MCPClient::getResource(const std:& uri) {
     elizaos::logInfo("Getting resource: " + uri, "mcp_gateway");
     // Placeholder: Would fetch resource from gateway
     JsonValue resource;
@@ -339,12 +342,12 @@ JsonValue MCPClient::getResource(const std::string& uri) {
     return resource;
 }
 
-void MCPClient::setWallet(const std::string& privateKey) {
+void MCPClient::setWallet(const std:& privateKey) {
     walletPrivateKey_ = privateKey;
     elizaos::logInfo("Wallet configured", "mcp_gateway");
 }
 
-std::string MCPClient::signPayment(float amount, const std::string& toolName) {
+std: MCPClient::signPayment(float amount, const std:& toolName) {
     elizaos::logInfo("Signing payment for " + toolName, "mcp_gateway");
     // Placeholder: Would sign payment with wallet
     (void)amount; (void)toolName;
@@ -353,7 +356,7 @@ std::string MCPClient::signPayment(float amount, const std::string& toolName) {
 
 // MCPServer implementation
 
-MCPServer::MCPServer(const std::string& serverName)
+MCPServer::MCPServer(const std:& serverName)
     : serverName_(serverName)
     , listening_(false)
     , logger_(std::make_shared<AgentLogger>()) {
@@ -361,7 +364,7 @@ MCPServer::MCPServer(const std::string& serverName)
     elizaos::logInfo("MCP Server initialized: " + serverName, "mcp_gateway");
 }
 
-void MCPServer::registerTool(const std::string& name, const std::string& description,
+void MCPServer::registerTool(const std:& name, const std:& description,
                              const JsonValue& schema,
                              std::function<JsonValue(const JsonValue&)> handler) {
     MCPTool tool;
@@ -375,8 +378,8 @@ void MCPServer::registerTool(const std::string& name, const std::string& descrip
     elizaos::logInfo("Tool registered: " + name, "mcp_gateway");
 }
 
-void MCPServer::registerResource(const std::string& uri, const std::string& mimeType,
-                                 const std::string& description) {
+void MCPServer::registerResource(const std:& uri, const std:& mimeType,
+                                 const std:& description) {
     MCPResource resource;
     resource.uri = uri;
     resource.namespace_ = serverName_;
@@ -387,7 +390,7 @@ void MCPServer::registerResource(const std::string& uri, const std::string& mime
     elizaos::logInfo("Resource registered: " + uri, "mcp_gateway");
 }
 
-void MCPServer::connectToGateway(const std::string& gatewayUrl) {
+void MCPServer::connectToGateway(const std:& gatewayUrl) {
     gatewayUrl_ = gatewayUrl;
     elizaos::logInfo("Connecting to gateway: " + gatewayUrl, "mcp_gateway");
     // Placeholder: Would establish connection
@@ -410,9 +413,9 @@ void MCPServer::stopListening() {
     // Placeholder: Would stop request handler
 }
 
-// =============================================================================
+// ===================================
 // Transport Layer Implementations
-// =============================================================================
+// ===================================
 
 /**
  * Transport base class for MCP protocol communication
@@ -420,10 +423,10 @@ void MCPServer::stopListening() {
 class MCPTransport {
 public:
     virtual ~MCPTransport() = default;
-    virtual bool connect(const std::string& endpoint) = 0;
+    virtual bool connect(const std:& endpoint) = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
-    virtual JsonValue sendRequest(const std::string& method, const JsonValue& params) = 0;
+    virtual JsonValue sendRequest(const std:& method, const JsonValue& params) = 0;
     virtual void setMessageHandler(std::function<void(const JsonValue&)> handler) = 0;
 };
 
@@ -435,7 +438,7 @@ public:
     StdioTransport() = default;
     ~StdioTransport() override { disconnect(); }
 
-    bool connect(const std::string& command) override {
+    bool connect(const std:& command) override {
         elizaos::logInfo("STDIO Transport connecting: " + command, "mcp_transport");
         command_ = command;
         connected_ = true;
@@ -453,7 +456,7 @@ public:
 
     bool isConnected() const override { return connected_; }
 
-    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+    JsonValue sendRequest(const std:& method, const JsonValue& params) override {
         elizaos::logInfo("STDIO sending: " + method, "mcp_transport");
 
         JsonValue request;
@@ -475,7 +478,7 @@ public:
     }
 
 private:
-    std::string command_;
+    std: command_;
     bool connected_ = false;
     int requestId_ = 0;
     std::function<void(const JsonValue&)> messageHandler_;
@@ -489,7 +492,7 @@ public:
     HttpTransport() = default;
     ~HttpTransport() override { disconnect(); }
 
-    bool connect(const std::string& endpoint) override {
+    bool connect(const std:& endpoint) override {
         elizaos::logInfo("HTTP Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
         connected_ = true;
@@ -505,7 +508,7 @@ public:
 
     bool isConnected() const override { return connected_; }
 
-    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+    JsonValue sendRequest(const std:& method, const JsonValue& params) override {
         elizaos::logInfo("HTTP POST to: " + endpoint_ + "/" + method, "mcp_transport");
 
         JsonValue request;
@@ -525,7 +528,7 @@ public:
         messageHandler_ = std::move(handler);
     }
 
-    void setHeaders(const std::unordered_map<std::string, std::string>& headers) {
+    void setHeaders(const std::unordered_map<std:, std:>& headers) {
         headers_ = headers;
     }
 
@@ -534,9 +537,9 @@ public:
     }
 
 private:
-    std::string endpoint_;
+    std: endpoint_;
     bool connected_ = false;
-    std::unordered_map<std::string, std::string> headers_;
+    std::unordered_map<std:, std:> headers_;
     int timeoutMs_ = 30000;
     std::function<void(const JsonValue&)> messageHandler_;
 };
@@ -549,7 +552,7 @@ public:
     WebSocketTransport() = default;
     ~WebSocketTransport() override { disconnect(); }
 
-    bool connect(const std::string& endpoint) override {
+    bool connect(const std:& endpoint) override {
         elizaos::logInfo("WebSocket Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
 
@@ -569,7 +572,7 @@ public:
 
     bool isConnected() const override { return connected_; }
 
-    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+    JsonValue sendRequest(const std:& method, const JsonValue& params) override {
         elizaos::logInfo("WebSocket sending: " + method, "mcp_transport");
 
         JsonValue request;
@@ -594,7 +597,7 @@ public:
         messageHandler_ = std::move(handler);
     }
 
-    void sendNotification(const std::string& method, const JsonValue& params) {
+    void sendNotification(const std:& method, const JsonValue& params) {
         elizaos::logInfo("WebSocket notification: " + method, "mcp_transport");
 
         JsonValue notification;
@@ -614,10 +617,10 @@ public:
     }
 
 private:
-    std::string endpoint_;
+    std: endpoint_;
     bool connected_ = false;
     int requestId_ = 0;
-    std::unordered_map<int, std::string> pendingRequests_;
+    std::unordered_map<int, std:> pendingRequests_;
     std::function<void(const JsonValue&)> messageHandler_;
     int reconnectIntervalMs_ = 5000;
     bool autoReconnect_ = true;
@@ -631,7 +634,7 @@ public:
     SSETransport() = default;
     ~SSETransport() override { disconnect(); }
 
-    bool connect(const std::string& endpoint) override {
+    bool connect(const std:& endpoint) override {
         elizaos::logInfo("SSE Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
         connected_ = true;
@@ -648,7 +651,7 @@ public:
 
     bool isConnected() const override { return connected_; }
 
-    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+    JsonValue sendRequest(const std:& method, const JsonValue& params) override {
         // SSE is receive-only; send via HTTP POST
         elizaos::logInfo("SSE command (via HTTP): " + method, "mcp_transport");
 
@@ -669,7 +672,7 @@ public:
     }
 
 private:
-    std::string endpoint_;
+    std: endpoint_;
     bool connected_ = false;
     std::function<void(const JsonValue&)> messageHandler_;
     std::vector<std::string> eventTypes_;
@@ -680,7 +683,7 @@ private:
  */
 class TransportFactory {
 public:
-    static std::unique_ptr<MCPTransport> create(const std::string& transportType) {
+    static std::unique_ptr<MCPTransport> create(const std:& transportType) {
         if (transportType == "stdio") {
             return std::make_unique<StdioTransport>();
         } else if (transportType == "http") {
@@ -784,7 +787,7 @@ public:
         return resources;
     }
 
-    JsonValue callTool(const std::string& toolName, const JsonValue& arguments) {
+    JsonValue callTool(const std:& toolName, const JsonValue& arguments) {
         JsonValue params;
         params["name"] = toolName;
         params["arguments"] = arguments;
@@ -792,14 +795,14 @@ public:
         return transport_->sendRequest("tools/call", params);
     }
 
-    JsonValue readResource(const std::string& uri) {
+    JsonValue readResource(const std:& uri) {
         JsonValue params;
         params["uri"] = uri;
 
         return transport_->sendRequest("resources/read", params);
     }
 
-    const std::string& getName() const { return config_.name; }
+    const std:& getName() const { return config_.name; }
 
 private:
     MCPServerConfig config_;

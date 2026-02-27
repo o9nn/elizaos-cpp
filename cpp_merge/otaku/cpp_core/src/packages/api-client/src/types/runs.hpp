@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-using RunStatus = std::string;
+using RunStatus = std:;
 
 struct RunCounts {
     double actions;
@@ -39,7 +39,7 @@ struct RunSummary {
     std::optional<RunCounts> counts;
 };
 
-using RunEventType = std::variant<, std::string>;
+using RunEventType = std::variant<, std:>;
 
 struct RunEvent {
     RunEventType type;
@@ -53,7 +53,7 @@ struct RunDetail {
 
 struct ListRunsParams {
     std::optional<UUID> roomId;
-    std::optional<std::variant<RunStatus, std::string>> status;
+    std::optional<std::variant<RunStatus, std:>> status;
     std::optional<double> limit;
     std::optional<double> from;
     std::optional<double> to;

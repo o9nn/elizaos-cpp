@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("ElizaOS Env Commands"), [=]() mutable
+    describe(std:("ElizaOS Env Commands"), [=]() mutable
     {
         shared<std::shared_ptr<TestContext>> context;
         beforeEach([=]() mutable
@@ -15,56 +15,56 @@ void Main(void)
             std::async([=]() { cleanupTestEnvironment(context); });
         }
         );
-        it(std::string("env --help shows usage"), [=]() mutable
+        it(std:("env --help shows usage"), [=]() mutable
         {
-            auto result = runCliCommand(context->elizaosCmd, std::string("env --help"));
-            expectHelpOutput(result, std::string("env"));
+            auto result = runCliCommand(context->elizaosCmd, std:("env --help"));
+            expectHelpOutput(result, std:("env"));
         }
         );
-        it(std::string("env list shows environment variables"), [=]() mutable
+        it(std:("env list shows environment variables"), [=]() mutable
         {
-            auto result = runCliCommand(context->elizaosCmd, std::string("env list"));
-            auto expectedSections = array<string>{ std::string("System Information"), std::string("Local Environment Variables") };
+            auto result = runCliCommand(context->elizaosCmd, std:("env list"));
+            auto expectedSections = array<string>{ std:("System Information"), std:("Local Environment Variables") };
             for (auto& section : expectedSections)
             {
                 expect(result)->toContain(section);
             }
-            expect(result)->toMatch((new RegExp(std::string("(No local \.env file found|Missing \.env file"))));
-            std::async([=]() { writeFile(std::string(".env"), std::string("TEST_VAR=test_value")); });
-            result = runCliCommand(context->elizaosCmd, std::string("env list"));
-            expect(result)->toContain(std::string("TEST_VAR"));
-            expect(result)->toContain(std::string("test_value"));
+            expect(result)->toMatch((new RegExp(std:("(No local \.env file found|Missing \.env file"))));
+            std::async([=]() { writeFile(std:(".env"), std:("TEST_VAR=test_value")); });
+            result = runCliCommand(context->elizaosCmd, std:("env list"));
+            expect(result)->toContain(std:("TEST_VAR"));
+            expect(result)->toContain(std:("test_value"));
         }
         );
-        it(std::string("env list --local shows only local environment"), [=]() mutable
+        it(std:("env list --local shows only local environment"), [=]() mutable
         {
-            std::async([=]() { writeFile(std::string(".env"), std::string("LOCAL_TEST=local_value")); });
-            auto result = runCliCommand(context->elizaosCmd, std::string("env list --local"));
-            expect(result)->toContain(std::string("LOCAL_TEST"));
-            expect(result)->toContain(std::string("local_value"));
-            expect(result)->not->toContain(std::string("System Information"));
+            std::async([=]() { writeFile(std:(".env"), std:("LOCAL_TEST=local_value")); });
+            auto result = runCliCommand(context->elizaosCmd, std:("env list --local"));
+            expect(result)->toContain(std:("LOCAL_TEST"));
+            expect(result)->toContain(std:("local_value"));
+            expect(result)->not->toContain(std:("System Information"));
         }
         );
-        it(std::string("env edit-local creates local .env if missing"), [=]() mutable
+        it(std:("env edit-local creates local .env if missing"), [=]() mutable
         {
-            if (process->platform == std::string("win32")) {
-                console->warn(std::string("Skipping env edit-local test on Windows due to shell input limitations"));
+            if (process->platform == std:("win32")) {
+                console->warn(std:("Skipping env edit-local test on Windows due to shell input limitations"));
                 return std::shared_ptr<Promise<void>>();
             }
-            auto result = execSync(std::string("printf "y\n" | ") + context->elizaosCmd + std::string(" env edit-local"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}, 
-                object::pair{std::string("shell"), std::string("/bin/bash")}
+            auto result = execSync(std:("printf "y\n" | ") + context->elizaosCmd + std:(" env edit-local"), object{
+                object::pair{std:("encoding"), std:("utf8")}, 
+                object::pair{std:("shell"), std:("/bin/bash")}
             });
             expect(result)->toBeTruthy();
         }
         );
-        it(std::string("env reset shows all necessary options"), [=]() mutable
+        it(std:("env reset shows all necessary options"), [=]() mutable
         {
-            std::async([=]() { writeFile(std::string(".env"), std::string("DUMMY=value")); });
-            auto result = runCliCommand(context->elizaosCmd, std::string("env reset --yes"));
-            expect(result)->toContain(std::string("Reset Summary"));
-            expect(result)->toContain(std::string("Local environment variables"));
-            expect(result)->toContain(std::string("Environment reset complete"));
+            std::async([=]() { writeFile(std:(".env"), std:("DUMMY=value")); });
+            auto result = runCliCommand(context->elizaosCmd, std:("env reset --yes"));
+            expect(result)->toContain(std:("Reset Summary"));
+            expect(result)->toContain(std:("Local environment variables"));
+            expect(result)->toContain(std:("Environment reset complete"));
         }
         );
     }

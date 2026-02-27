@@ -23,21 +23,21 @@ namespace elizaos {
 /**
  * Check for available updates
  */
-std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies);
+std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std:, std:>& dependencies);
 
 /**
  * Display update summary
  */
-void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates);
+void displayUpdateSummary(const std::unordered_map<std:, PackageUpdate>& updates);
 
 /**
  * Update package.json with new versions
  */
-std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates);
+std::future<void> updatePackageJson(const std:& packageJsonPath, const std::unordered_map<std:, PackageUpdate>& updates);
 
 /**
  * Install dependencies using the detected package manager
  */
-std::future<void> installDependencies(const std::string& cwd);
+std::future<void> installDependencies(const std:& cwd);
 
 } // namespace elizaos

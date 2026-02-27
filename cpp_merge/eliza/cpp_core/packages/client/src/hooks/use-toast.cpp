@@ -34,13 +34,13 @@ void toast() {
         });
         const auto dismiss = [&]() { return dispatch({ type: "DISMISS_TOAST", toastId: id }); };
 
-        dispatch({
+        dispatch[&]({
             type: "ADD_TOAST",
             toast: {
                 ...props,
                 id,
                 open: true,
-                onOpenChange: (open) => {
+                onOpenChange: (open) {
                     if (!open) dismiss();
                     },
                     },
@@ -59,7 +59,7 @@ void useToast() {
 
     const auto [state, setState] = React.useState<State>(memoryState);
 
-    React.useEffect(() => {
+    React.useEffect[&](() {
         listeners.push_back(setState);
         return [&]() {;
             const auto index = listeners.indexOf(setState);
@@ -72,7 +72,7 @@ void useToast() {
             return {
                 ...state,
                 toast,
-                dismiss: (toastId?: std::string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+                dismiss: (toastId?: std:) => dispatch({ type: "DISMISS_TOAST", toastId }),
                 };
 
 }

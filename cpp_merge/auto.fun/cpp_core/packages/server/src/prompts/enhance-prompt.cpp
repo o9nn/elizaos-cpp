@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void enhancePrompt(const std::string& userPrompt, const std::any& tokenMetadata) {
+void enhancePrompt(const std:& userPrompt, const std:& tokenMetadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return `Enhance this prompt for image generation by combining it with the token metadata. Create a single, coherent image prompt that incorporates both the user"s ideas and the token"s identity.;

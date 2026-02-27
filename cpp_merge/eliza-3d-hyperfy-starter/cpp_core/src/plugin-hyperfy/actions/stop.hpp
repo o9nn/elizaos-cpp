@@ -22,12 +22,12 @@ namespace elizaos {
       // Optional: Could check if getIsNavigating() or getIsPatrolling() is true
 
         // Should not happen if validate works, but good practice
-        await callback({ text: "Error: Cannot stop movement. Hyperfy connection/controls unavailable." });
+        callback({ text: "Error: Cannot stop movement. Hyperfy connection/controls unavailable." });
 
       // Check for required method
-           await callback({ text: "Error: Stop functionality not available in controls." });
+           callback({ text: "Error: Stop functionality not available in controls." });
 
         // Call the stop navigation method
 
-        await callback({ text: `Error stopping movement: ${error.message}` });
+        callback({ text: "Error stopping movement: " + std::to_string(error.message) + "" });
 } // namespace elizaos

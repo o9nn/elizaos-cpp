@@ -1,33 +1,39 @@
 #include "render-tracker.hpp"
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string summarizeValue(const std::any& value) {
+std: summarizeValue(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null) return "null";
     if (value == undefined) return "undefined";
-    if (typeof value == "function") return `fn:${value.name || "anonymous"}`;
+    if (typeof value == "function") return "fn:" + std::to_string(value.name || "anonymous") + "";
     if (typeof value == "object") {
-        if (Array.isArray(value)) return `array[${value.length}]`;
+        if (Array.isArray(value)) return "array[" + std::to_string(value.size()) + "]";
         const auto keys = Object.keys(value);
-        if (keys.length == 0) return "{}";
-        if (keys.length <= 3) return `{${keys.join(",")}}`;
-        return "{" + std::to_string(keys.slice(0, 3).join(",")) + "...+" + std::to_string(keys.size() - 3) + "}";
+        if (keys.size() == 0) return "{}";
+        if (keys.size() <= 3) return "{" + std::to_string(keys.join(",")) + "}";
+        return "{" + std::to_string(keys.substr(0, 3-0).join(",")) + "...+" + std::to_string(keys.size() - 3) + "}";
     }
     if (typeof value == "string") {
-        return "value.size() > 20 ? " + "\"" + std::to_string(value.slice(0, 20)) + "...\"" + " : " + "\"" + value + "\"";
+        return "value.size() > 20 ? " + "\"" + std::to_string(value.substr(0, 20-0)) + "...\"" + " : " + "\"" + value + "\"";
     }
     return std::to_string(value);
 
 }
 
-std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, std::any>& props) {
+std::unordered_map<std:, std:> getPropsSnapshot(const std::unordered_map<std:, std:>& props) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::string> snapshot = {};
+    const std::unordered_map<std:, std:> snapshot = {};
     for (const int [key, value] of Object.entries(props)) {
         if (key == "children") {
             snapshot[key] = typeof value == "object" ? "ReactNode" : std::to_string(value);
@@ -39,7 +45,7 @@ std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unorder
 
 }
 
-std::vector<std::string> findChanges(const std::unordered_map<std::string, std::string>& prev, const std::unordered_map<std::string, std::string>& curr) {
+std::vector<std::string> findChanges(const std::unordered_map<std:, std:>& prev, const std::unordered_map<std:, std:>& curr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!prev) return ["(first render)"];
@@ -64,12 +70,12 @@ void MyComponent(MyProps props) {
     *
 }
 
-void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state) {
+void trackRender(const std:& componentName, std::optional<std::unordered_map<std:, std:>> props, std::optional<std::unordered_map<std:, std:>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         // Only run in development
-        if (process.env.NODE_ENV != "development") return;
+        if (std::getenv("NODE_ENV") != "development") return;
 
         // Skip ignored components
         if (CONFIG.ignoredComponents.has(componentName)) return;
@@ -145,10 +151,10 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
             std::cerr << "Component:" << componentName << std::endl;
             std::cerr << "Props snapshot:" << propsSnapshot << std::endl;
             std::cerr << "State snapshot:" << stateSnapshot << std::endl;
-            console.error(
+            console.error[&](
             "Render timestamps:",
-            record.timestamps.std::map((ts) => new Date(ts).toISOString()),
-            );
+            record.timestamps.std::map((ts) { return new Date(ts).toISOString()),
+            ); };
             std::cerr << "Time since first render:" << timeSinceFirstRender << "ms" << std::endl;
             std::cerr << "Is initial mount period:" << isInitialMount << std::endl;
 
@@ -174,7 +180,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state) {
+void useRenderTracker(const std:& componentName, std::optional<std::unordered_map<std:, std:>> props, std::optional<std::unordered_map<std:, std:>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     trackRender(componentName, props, state);

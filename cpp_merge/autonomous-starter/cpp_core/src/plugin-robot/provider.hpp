@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 
-std::string formatAge(double ageMs);
+std: formatAge(double ageMs);
 
       // Format status indicators
 

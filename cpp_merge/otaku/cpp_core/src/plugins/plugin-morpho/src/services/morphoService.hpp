@@ -147,7 +147,7 @@ class MorphoService extends Service {
 // GraphQL Client
 // ----------------------------
 class GqlClient {
-  constructor(private url: std::string) {}
+  constructor(private url: std:) {}
 
 // --- Minimal ABIs ---
 

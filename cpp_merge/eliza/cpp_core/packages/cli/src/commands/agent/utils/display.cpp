@@ -1,4 +1,6 @@
 #include "display.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,10 +22,10 @@ std::future<void> listAgents(OptionValues opts) {
                 }));
 
                 if (opts.json) {
-                    std::cout << /* JSON.stringify */ std::string(agentData, nullptr, 2) << std::endl;
+                    std::cout << /* JSON.stringify */ std:(agentData, nullptr, 2) << std::endl;
                     } else {
                         std::cout << "\nAvailable agents:" << std::endl;
-                        if (agentData.length == 0) {
+                        if (agentData.size() == 0) {
                             std::cout << "No agents found" << std::endl;
                             } else {
                                 console.table(agentData);

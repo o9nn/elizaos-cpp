@@ -2,9 +2,9 @@
 
 void Main(void)
 {
-    describe(std::string("instrumentation index exports"), [=]() mutable
+    describe(std:("instrumentation index exports"), [=]() mutable
     {
-        it(std::string("exports service"), [=]() mutable
+        it(std:("exports service"), [=]() mutable
         {
             expect(instrumentation->InstrumentationService)->toBeDefined();
         }

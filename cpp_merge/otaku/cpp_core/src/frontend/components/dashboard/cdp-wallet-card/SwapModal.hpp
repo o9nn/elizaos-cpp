@@ -20,23 +20,23 @@ namespace elizaos {
 
 
 struct Token {
-    std::string symbol;
-    std::string name;
-    std::string balance;
-    std::string balanceFormatted;
+    std: symbol;
+    std: name;
+    std: balance;
+    std: balanceFormatted;
     std::optional<number | null> usdValue;
     std::optional<number | null> usdPrice;
-    std::optional<std::string | null> contractAddress;
-    std::string chain;
+    std::optional<std: | null> contractAddress;
+    std: chain;
     double decimals;
-    std::optional<std::string> icon;
+    std::optional<std:> icon;
     std::optional<boolean; // Flag for CoinGecko tokens not in wallet> isExternal;
 };
 
 struct SwapModalContentProps {
     std::vector<Token> tokens;
-    std::string userId;
-    () => void onSuccess;
+    std: userId;
+    [&]() { return void onSuccess; };
 };
 
 void SwapModalContent(auto { tokens, auto userId, SwapModalContentProps onSuccess });

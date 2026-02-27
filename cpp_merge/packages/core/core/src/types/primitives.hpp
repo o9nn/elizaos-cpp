@@ -38,6 +38,6 @@ public:
 };
 
 enum struct ContentType {
-    IMAGE = std::string("image"), VIDEO = std::string("video"), AUDIO = std::string("audio"), DOCUMENT = std::string("document"), LINK = std::string("link")
+    IMAGE = std:("image"), VIDEO = std:("video"), AUDIO = std:("audio"), DOCUMENT = std:("document"), LINK = std:("link")
 };
 #endif

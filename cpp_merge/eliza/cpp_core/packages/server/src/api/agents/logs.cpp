@@ -1,4 +1,6 @@
 #include "logs.hpp"
+#include <vector>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +13,7 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
         const auto router = express.Router();
 
         // Get Agent Logs
-        router.get("/:agentId/logs", std::async (req, res) => {
+        router.get[&]("/:agentId/logs", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             const auto { roomId, type, count, offset, excludeTypes } = req.query;
             if (!agentId) {
@@ -46,9 +48,9 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
                         ? (excludeTypes[]);
                         : [excludeTypes];
 
-                        filteredLogs = logs.filter((log) => {
+                        filteredLogs = logs.filter[&]((log) {
                             // Check the log type
-                            if (log.type && excludeTypesArray.includes(log.type)) {
+                            if (log.type && excludeTypesArray.count(log.type) > 0) {
                                 return false;
                             }
 
@@ -58,7 +60,7 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
                                 if (
                                 body.modelType &&;
                                 excludeTypesArray.some((excludeType) =>;
-                                body.modelType.toLowerCase().includes(excludeType.toLowerCase());
+                                body.modelType.toLowerCase().count(excludeType.toLowerCase() > 0);
                                 );
                                 ) {
                                     return false;
@@ -83,7 +85,7 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
                         });
 
                         // Delete specific log
-                        router.delete("/:agentId/logs/:logId", std::async (req, res) => {
+                        router.delete[&]("/:agentId/logs/:logId", std::async (req, res) {
                             const auto agentId = validateUuid(req.params.agentId);
                             const auto logId = validateUuid(req.params.logId);
                             if (!agentId || !logId) {

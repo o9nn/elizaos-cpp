@@ -26,7 +26,7 @@ namespace elizaos {
  * @property {ASTQueueItem[]} functions - An array of ASTQueueItem objects representing functions in the file.
  */
 struct FileDocsGroup {
-    std::string filePath;
+    std: filePath;
     std::vector<ASTQueueItem> classes;
     std::vector<ASTQueueItem> methods;
     std::vector<ASTQueueItem> interfaces;

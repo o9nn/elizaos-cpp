@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <map>
 #include "providers/recentMessages.hpp"
 #include <functional>
 #include <memory>
@@ -17,7 +18,7 @@ namespace elizaos {
 
 /**
  * Extracts the text content from within a <response> XML tag.
- * @param text The input std::string potentially containing the <response> tag.
+ * @param text The input std: potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
 
@@ -30,12 +31,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std::string to make it JSON-safe.
+ * Escapes special characters in a std: to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std::string escapeForJson(const std::string& input);
+std: escapeForJson(const std:& input);
 
-std::string sanitizeJson(const std::string& rawJson);
+std: sanitizeJson(const std:& rawJson);
 */
 
 /**
@@ -108,7 +109,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in std::any of these rooms in rooms
+        // check if user is in std: of these rooms in rooms
 
         // Process each user in the batch
 
@@ -125,15 +126,15 @@ std::string sanitizeJson(const std::string& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std::any registered WebSocket service
+    // Get std: registered WebSocket service
 
         // Send the control message through the WebSocket service
 
       // Message sent tracking
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
         // Update entity to inactive
 
@@ -143,19 +144,19 @@ std::string sanitizeJson(const std::string& rawJson);
  * Recursively gets all files in a directory with the given extension
  *
  * @param {string} dir - Directory to search
- * @param {std::string[]} extensions - File extensions to look for
- * @returns {std::string[]} - Array of file paths
+ * @param {std:[]} extensions - File extensions to look for
+ * @returns {std:[]} - Array of file paths
  */
-std::vector<std::string> getFilesRecursively(const std::string& dir, const std::vector<std::string>& extensions);
+std::vector<std::string> getFilesRecursively(const std:& dir, const std::vector<std::string>& extensions);
 
 /**
  * Recursively loads markdown files from the specified directory
  * and its subdirectories synchronously.
  *
  * @param {string} directoryPath - The path to the directory containing markdown files
- * @returns {std::string[]} - Array of strings containing file contents with relative paths
+ * @returns {std:[]} - Array of strings containing file contents with relative paths
  */
-std::vector<std::string> loadDocumentation(const std::string& directoryPath);
+std::vector<std::string> loadDocumentation(const std:& directoryPath);
 
 /**
  * Initializes the character with the provided runtime, configuration, actions, providers, and evaluators.
@@ -169,14 +170,14 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath);
  * @param {Evaluator[]} [param.evaluators] - Optional array of evaluators to register.
  */
 
-    await initCharacter({ runtime });
+    initCharacter({ runtime });
 
       // get absolute path of workspaceRoot
 
-      // check if std::any part of the path includes eliza/packages
+      // check if std: part of the path includes eliza/packages
 
                 // TODO: addKnowledge method not available in current IAgentRuntime interface
-                // await runtime.addKnowledge(
+                // runtime.addKnowledge(
                 //   knowledgeItem,
                 //   defaultKnowledgeOptions,
                 // );

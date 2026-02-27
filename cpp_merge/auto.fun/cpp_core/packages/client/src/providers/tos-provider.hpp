@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 // Define cookie types locally as CookieProvider will be removed
-using CookieType = std::string;
+using CookieType = std:;
 
 
 } // namespace elizaos

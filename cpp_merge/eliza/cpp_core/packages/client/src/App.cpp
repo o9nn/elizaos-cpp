@@ -13,7 +13,7 @@ void AppContent() {
     const auto [homeKey, setHomeKey] = useState(Date.now());
     const auto queryClient = useQueryClient();
 
-    useEffect(() => {
+    useEffect[&](() {
         clientLogger.info("[AppContent] Mounted/Updated");
         prefetchInitialData();
         }, []);

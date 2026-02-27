@@ -4,7 +4,7 @@ any resetRegistryCache = vi->fn();
 
 void Main(void)
 {
-    describe(std::string("Plugin Installation"), [=]() mutable
+    describe(std:("Plugin Installation"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<std::shared_ptr<PluginManagerService>> pluginManager;
@@ -12,30 +12,30 @@ void Main(void)
         {
             resetRegistryCache();
             mockRuntime = as<any>(object{
-                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("test-agent-id"))}, 
-                object::pair{std::string("plugins"), array<any>()}, 
-                object::pair{std::string("registerPlugin"), [=]() mutable
+                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("test-agent-id"))}, 
+                object::pair{std:("plugins"), array<any>()}, 
+                object::pair{std:("registerPlugin"), [=]() mutable
                 {
                     return Promise->resolve();
                 }
                 }, 
-                object::pair{std::string("registerAction"), [=]() mutable
+                object::pair{std:("registerAction"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("registerProvider"), [=]() mutable
+                object::pair{std:("registerProvider"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("registerEvaluator"), [=]() mutable
+                object::pair{std:("registerEvaluator"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("services"), std::make_shared<Map>()}, 
-                object::pair{std::string("getService"), vi->fn()}
+                object::pair{std:("services"), std::make_shared<Map>()}, 
+                object::pair{std:("getService"), vi->fn()}
             });
             pluginManager = std::make_shared<PluginManagerService>(mockRuntime, object{
-                object::pair{std::string("pluginDirectory"), std::string("./test-plugins")}
+                object::pair{std:("pluginDirectory"), std:("./test-plugins")}
             });
         }
         );
@@ -44,22 +44,22 @@ void Main(void)
             vi->clearAllMocks();
         }
         );
-        describe(std::string("Plugin Management"), [=]() mutable
+        describe(std:("Plugin Management"), [=]() mutable
         {
-            it(std::string("should initialize plugin manager service"), [=]() mutable
+            it(std:("should initialize plugin manager service"), [=]() mutable
             {
                 expect(pluginManager)->toBeDefined();
-                expect(type_of(std::bind(&PluginManagerService::installPluginFromRegistry, pluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))->toBe(std::string("function"));
-                expect(type_of(std::bind(&PluginManagerService::loadInstalledPlugin, pluginManager, std::placeholders::_1)))->toBe(std::string("function"));
-                expect(type_of(std::bind(&PluginManagerService::listInstalledPlugins, pluginManager)))->toBe(std::string("function"));
+                expect(type_of(std::bind(&PluginManagerService::installPluginFromRegistry, pluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))->toBe(std:("function"));
+                expect(type_of(std::bind(&PluginManagerService::loadInstalledPlugin, pluginManager, std::placeholders::_1)))->toBe(std:("function"));
+                expect(type_of(std::bind(&PluginManagerService::listInstalledPlugins, pluginManager)))->toBe(std:("function"));
             }
             );
-            it(std::string("should handle non-existent plugin gracefully"), [=]() mutable
+            it(std:("should handle non-existent plugin gracefully"), [=]() mutable
             {
-                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std::string("@elizaos/non-existent-plugin-12345")))->rejects->toThrow(); });
+                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std:("@elizaos/non-existent-plugin-12345")))->rejects->toThrow(); });
             }
             );
-            it(std::string("should track plugin installation attempts"), [=]() mutable
+            it(std:("should track plugin installation attempts"), [=]() mutable
             {
                 auto installedPlugins = pluginManager->listInstalledPlugins();
                 expect(Array->isArray(installedPlugins))->toBe(true);
@@ -67,31 +67,31 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Plugin State Management"), [=]() mutable
+        describe(std:("Plugin State Management"), [=]() mutable
         {
-            it(std::string("should handle plugin loading states"), [=]() mutable
+            it(std:("should handle plugin loading states"), [=]() mutable
             {
-                auto pluginId = std::string("test-plugin-id");
+                auto pluginId = std:("test-plugin-id");
                 auto pluginState = pluginManager->getPlugin(pluginId);
                 expect(pluginState)->toBe(undefined);
             }
             );
-            it(std::string("should provide plugin configuration status"), [=]() mutable
+            it(std:("should provide plugin configuration status"), [=]() mutable
             {
-                auto pluginInfo = pluginManager->getInstalledPluginInfo(std::string("@elizaos/non-existent"));
+                auto pluginInfo = pluginManager->getInstalledPluginInfo(std:("@elizaos/non-existent"));
                 expect(pluginInfo)->toBe(undefined);
             }
             );
         }
         );
-        describe(std::string("Registry Operations"), [=]() mutable
+        describe(std:("Registry Operations"), [=]() mutable
         {
-            it(std::string("should handle registry fetch attempts"), [=]() mutable
+            it(std:("should handle registry fetch attempts"), [=]() mutable
             {
                 try
                 {
                     auto plugins = std::async([=]() { pluginManager->getAvailablePluginsFromRegistry(); });
-                    expect(type_of(plugins))->toBe(std::string("object"));
+                    expect(type_of(plugins))->toBe(std:("object"));
                 }
                 catch (const any& error)
                 {
@@ -99,66 +99,66 @@ void Main(void)
                 }
             }
             );
-            it(std::string("should handle invalid plugin names"), [=]() mutable
+            it(std:("should handle invalid plugin names"), [=]() mutable
             {
                 std::async([=]() { expect(pluginManager->installPluginFromRegistry(string_empty))->rejects->toThrow(); });
             }
             );
         }
         );
-        describe(std::string("Plugin Loading"), [=]() mutable
+        describe(std:("Plugin Loading"), [=]() mutable
         {
-            it(std::string("should handle plugin loading attempts"), [=]() mutable
+            it(std:("should handle plugin loading attempts"), [=]() mutable
             {
-                std::async([=]() { expect(pluginManager->loadInstalledPlugin(std::string("@elizaos/non-existent-plugin")))->rejects->toThrow(); });
+                std::async([=]() { expect(pluginManager->loadInstalledPlugin(std:("@elizaos/non-existent-plugin")))->rejects->toThrow(); });
             }
             );
-            it(std::string("should validate plugin loading prerequisites"), [=]() mutable
+            it(std:("should validate plugin loading prerequisites"), [=]() mutable
             {
-                auto hasPlugin = pluginManager->getInstalledPluginInfo(std::string("@elizaos/test"));
+                auto hasPlugin = pluginManager->getInstalledPluginInfo(std:("@elizaos/test"));
                 expect(hasPlugin)->toBe(undefined);
             }
             );
         }
         );
-        describe(std::string("Installed Plugin Management"), [=]() mutable
+        describe(std:("Installed Plugin Management"), [=]() mutable
         {
-            it(std::string("should track installed plugins list"), [=]() mutable
+            it(std:("should track installed plugins list"), [=]() mutable
             {
                 auto installedPlugins = pluginManager->listInstalledPlugins();
                 expect(Array->isArray(installedPlugins))->toBe(true);
             }
             );
-            it(std::string("should handle plugin info requests"), [=]() mutable
+            it(std:("should handle plugin info requests"), [=]() mutable
             {
-                auto pluginInfo = pluginManager->getInstalledPluginInfo(std::string("@elizaos/test-plugin"));
+                auto pluginInfo = pluginManager->getInstalledPluginInfo(std:("@elizaos/test-plugin"));
                 expect(pluginInfo)->toBe(undefined);
             }
             );
-            it(std::string("should handle plugin path operations safely"), [=]() mutable
+            it(std:("should handle plugin path operations safely"), [=]() mutable
             {
                 expect([=]() mutable
                 {
-                    pluginManager->getInstalledPluginInfo(std::string("@elizaos/plugin-test"));
+                    pluginManager->getInstalledPluginInfo(std:("@elizaos/plugin-test"));
                 }
                 )->not->toThrow();
             }
             );
         }
         );
-        describe(std::string("Error Handling"), [=]() mutable
+        describe(std:("Error Handling"), [=]() mutable
         {
-            it(std::string("should handle invalid plugin names gracefully"), [=]() mutable
+            it(std:("should handle invalid plugin names gracefully"), [=]() mutable
             {
-                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std::string("invalid-plugin-name")))->rejects->toThrow(); });
+                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std:("invalid-plugin-name")))->rejects->toThrow(); });
             }
             );
-            it(std::string("should handle network failures gracefully"), [=]() mutable
+            it(std:("should handle network failures gracefully"), [=]() mutable
             {
-                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std::string("@elizaos/non-existent-plugin-xyz")))->rejects->toThrow(); });
+                std::async([=]() { expect(pluginManager->installPluginFromRegistry(std:("@elizaos/non-existent-plugin-xyz")))->rejects->toThrow(); });
             }
             );
-            it(std::string("should provide meaningful error messages"), [=]() mutable
+            it(std:("should provide meaningful error messages"), [=]() mutable
             {
                 expect([=]() mutable
                 {

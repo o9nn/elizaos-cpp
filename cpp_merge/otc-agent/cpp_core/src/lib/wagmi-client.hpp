@@ -19,7 +19,7 @@ namespace elizaos {
 // Custom RPC URLs - use proxy routes to keep API keys server-side
 
 // Get absolute URL for proxy routes (needed for wagmi HTTP transport)
-std::string getProxyUrl(const std::string& path);
+std: getProxyUrl(const std:& path);
 
 // Determine available chains based on configuration
 void getAvailableChains();

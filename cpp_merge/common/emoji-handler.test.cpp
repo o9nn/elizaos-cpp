@@ -2,17 +2,17 @@
 
 void Main(void)
 {
-    mock->module(std::string("@elizaos/core"), [=]() mutable
+    mock->module(std:("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("logger"), object{
-                object::pair{std::string("warn"), mock()}, 
-                object::pair{std::string("debug"), mock()}
+            object::pair{std:("logger"), object{
+                object::pair{std:("warn"), mock()}, 
+                object::pair{std:("debug"), mock()}
             }}
         });
     }
     );
-    describe(std::string("emoji-handler"), [=]() mutable
+    describe(std:("emoji-handler"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -27,101 +27,101 @@ void Main(void)
             process->env.Delete("DEBUG");
             process->env.Delete("ELIZA_DEBUG");
             configureEmojis(object{
-                object::pair{std::string("enabled"), true}, 
-                object::pair{std::string("forceDisable"), false}
+                object::pair{std:("enabled"), true}, 
+                object::pair{std:("forceDisable"), false}
             });
         }
         );
-        describe(std::string("getEmoji"), [=]() mutable
+        describe(std:("getEmoji"), [=]() mutable
         {
-            it(std::string("should return emoji when supported"), [=]() mutable
+            it(std:("should return emoji when supported"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                expect(getEmoji(std::string("error")))->toBe(std::string("❌"));
-                expect(getEmoji(std::string("warning")))->toBe(std::string("⚠️"));
-                expect(getEmoji(std::string("info")))->toBe(std::string("ℹ️"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->TERM = std:("xterm-256color");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                expect(getEmoji(std:("error")))->toBe(std:("❌"));
+                expect(getEmoji(std:("warning")))->toBe(std:("⚠️"));
+                expect(getEmoji(std:("info")))->toBe(std:("ℹ️"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should return fallback when not supported"), [=]() mutable
+            it(std:("should return fallback when not supported"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("forceDisable"), true}
+                    object::pair{std:("forceDisable"), true}
                 });
-                expect(getEmoji(std::string("success")))->toBe(std::string("[OK]"));
-                expect(getEmoji(std::string("error")))->toBe(std::string("[ERROR]"));
-                expect(getEmoji(std::string("warning")))->toBe(std::string("[WARNING]"));
-                expect(getEmoji(std::string("info")))->toBe(std::string("[INFO]"));
+                expect(getEmoji(std:("success")))->toBe(std:("[OK]"));
+                expect(getEmoji(std:("error")))->toBe(std:("[ERROR]"));
+                expect(getEmoji(std:("warning")))->toBe(std:("[WARNING]"));
+                expect(getEmoji(std:("info")))->toBe(std:("[INFO]"));
             }
             );
-            it(std::string("should return fallback in CI environment"), [=]() mutable
+            it(std:("should return fallback in CI environment"), [=]() mutable
             {
-                process->env->CI = std::string("true");
-                expect(getEmoji(std::string("success")))->toBe(std::string("[OK]"));
-                expect(getEmoji(std::string("error")))->toBe(std::string("[ERROR]"));
+                process->env->CI = std:("true");
+                expect(getEmoji(std:("success")))->toBe(std:("[OK]"));
+                expect(getEmoji(std:("error")))->toBe(std:("[ERROR]"));
             }
             );
-            it(std::string("should return fallback on Windows without modern terminal"), [=]() mutable
-            {
-                auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("win32")}, 
-                    object::pair{std::string("configurable"), true}
-                });
-                expect(getEmoji(std::string("success")))->toBe(std::string("[OK]"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
-                });
-            }
-            );
-            it(std::string("should return emoji on Windows with VS Code terminal"), [=]() mutable
+            it(std:("should return fallback on Windows without modern terminal"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("win32")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("win32")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM_PROGRAM = std::string("vscode");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                expect(getEmoji(std:("success")))->toBe(std:("[OK]"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should handle unknown emoji key"), [=]() mutable
+            it(std:("should return emoji on Windows with VS Code terminal"), [=]() mutable
             {
-                expect(getEmoji(std::string("invalid-key")))->toBe(string_empty);
+                auto originalPlatform = process->platform;
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("win32")}, 
+                    object::pair{std:("configurable"), true}
+                });
+                process->env->TERM_PROGRAM = std:("vscode");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
+                });
+            }
+            );
+            it(std:("should handle unknown emoji key"), [=]() mutable
+            {
+                expect(getEmoji(std:("invalid-key")))->toBe(string_empty);
             }
             );
         }
         );
-        describe(std::string("configureEmojis and getEmojiConfig"), [=]() mutable
+        describe(std:("configureEmojis and getEmojiConfig"), [=]() mutable
         {
-            it(std::string("should update configuration"), [=]() mutable
+            it(std:("should update configuration"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("enabled"), false}
+                    object::pair{std:("enabled"), false}
                 });
                 auto config = getEmojiConfig();
                 expect(config->enabled)->toBe(false);
                 expect(config->forceDisable)->toBe(false);
             }
             );
-            it(std::string("should merge partial configuration"), [=]() mutable
+            it(std:("should merge partial configuration"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("forceDisable"), true}
+                    object::pair{std:("forceDisable"), true}
                 });
                 auto config = getEmojiConfig();
                 expect(config->enabled)->toBe(true);
@@ -130,179 +130,179 @@ void Main(void)
             );
         }
         );
-        describe(std::string("areEmojisEnabled"), [=]() mutable
+        describe(std:("areEmojisEnabled"), [=]() mutable
         {
-            it(std::string("should return true when enabled and supported"), [=]() mutable
+            it(std:("should return true when enabled and supported"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
+                process->env->TERM = std:("xterm-256color");
                 expect(areEmojisEnabled())->toBe(true);
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should return false when disabled"), [=]() mutable
+            it(std:("should return false when disabled"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("enabled"), false}
+                    object::pair{std:("enabled"), false}
                 });
                 expect(areEmojisEnabled())->toBe(false);
             }
             );
-            it(std::string("should return false when force disabled"), [=]() mutable
+            it(std:("should return false when force disabled"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("forceDisable"), true}
+                    object::pair{std:("forceDisable"), true}
                 });
                 expect(areEmojisEnabled())->toBe(false);
             }
             );
-            it(std::string("should return false in CI"), [=]() mutable
+            it(std:("should return false in CI"), [=]() mutable
             {
-                process->env->CI = std::string("true");
+                process->env->CI = std:("true");
                 expect(areEmojisEnabled())->toBe(false);
             }
             );
         }
         );
-        describe(std::string("withEmoji"), [=]() mutable
+        describe(std:("withEmoji"), [=]() mutable
         {
-            it(std::string("should format message with emoji when supported"), [=]() mutable
+            it(std:("should format message with emoji when supported"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
-                expect(withEmoji(std::string("success"), std::string("Test message")))->toBe(std::string("✅ Test message"));
-                expect(withEmoji(std::string("error"), std::string("Error message")))->toBe(std::string("❌ Error message"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->TERM = std:("xterm-256color");
+                expect(withEmoji(std:("success"), std:("Test message")))->toBe(std:("✅ Test message"));
+                expect(withEmoji(std:("error"), std:("Error message")))->toBe(std:("❌ Error message"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should format message with fallback when not supported"), [=]() mutable
+            it(std:("should format message with fallback when not supported"), [=]() mutable
             {
                 configureEmojis(object{
-                    object::pair{std::string("forceDisable"), true}
+                    object::pair{std:("forceDisable"), true}
                 });
-                expect(withEmoji(std::string("success"), std::string("Test message")))->toBe(std::string("[OK] Test message"));
-                expect(withEmoji(std::string("error"), std::string("Error message")))->toBe(std::string("[ERROR] Error message"));
+                expect(withEmoji(std:("success"), std:("Test message")))->toBe(std:("[OK] Test message"));
+                expect(withEmoji(std:("error"), std:("Error message")))->toBe(std:("[ERROR] Error message"));
             }
             );
-            it(std::string("should handle spacing parameter"), [=]() mutable
+            it(std:("should handle spacing parameter"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
-                expect(withEmoji(std::string("bullet"), std::string("Item"), false))->toBe(std::string("•Item"));
-                expect(withEmoji(std::string("bullet"), std::string("Item"), true))->toBe(std::string("• Item"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->TERM = std:("xterm-256color");
+                expect(withEmoji(std:("bullet"), std:("Item"), false))->toBe(std:("•Item"));
+                expect(withEmoji(std:("bullet"), std:("Item"), true))->toBe(std:("• Item"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
         }
         );
-        describe(std::string("emoji utility functions"), [=]() mutable
+        describe(std:("emoji utility functions"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
+                process->env->TERM = std:("xterm-256color");
             }
             );
-            it(std::string("should format success messages"), [=]() mutable
+            it(std:("should format success messages"), [=]() mutable
             {
-                expect(emoji["success"](std::string("Success!")))->toBe(std::string("✅ Success!"));
+                expect(emoji["success"](std:("Success!")))->toBe(std:("✅ Success!"));
             }
             );
-            it(std::string("should format error messages"), [=]() mutable
+            it(std:("should format error messages"), [=]() mutable
             {
-                expect(emoji["error"](std::string("Error!")))->toBe(std::string("❌ Error!"));
+                expect(emoji["error"](std:("Error!")))->toBe(std:("❌ Error!"));
             }
             );
-            it(std::string("should format warning messages"), [=]() mutable
+            it(std:("should format warning messages"), [=]() mutable
             {
-                expect(emoji["warning"](std::string("Warning!")))->toBe(std::string("⚠️ Warning!"));
+                expect(emoji["warning"](std:("Warning!")))->toBe(std:("⚠️ Warning!"));
             }
             );
-            it(std::string("should format info messages"), [=]() mutable
+            it(std:("should format info messages"), [=]() mutable
             {
-                expect(emoji["info"](std::string("Info!")))->toBe(std::string("ℹ️ Info!"));
+                expect(emoji["info"](std:("Info!")))->toBe(std:("ℹ️ Info!"));
             }
             );
-            it(std::string("should format rocket messages"), [=]() mutable
+            it(std:("should format rocket messages"), [=]() mutable
             {
-                expect(emoji["rocket"](std::string("Launch!")))->toBe(std::string("🚀 Launch!"));
+                expect(emoji["rocket"](std:("Launch!")))->toBe(std:("🚀 Launch!"));
             }
             );
-            it(std::string("should format package messages"), [=]() mutable
+            it(std:("should format package messages"), [=]() mutable
             {
-                expect(emoji["package"](std::string("Package!")))->toBe(std::string("📦 Package!"));
+                expect(emoji["package"](std:("Package!")))->toBe(std:("📦 Package!"));
             }
             );
-            it(std::string("should format link messages"), [=]() mutable
+            it(std:("should format link messages"), [=]() mutable
             {
-                expect(emoji["link"](std::string("Link!")))->toBe(std::string("🔗 Link!"));
+                expect(emoji["link"](std:("Link!")))->toBe(std:("🔗 Link!"));
             }
             );
-            it(std::string("should format tip messages"), [=]() mutable
+            it(std:("should format tip messages"), [=]() mutable
             {
-                expect(emoji["tip"](std::string("Tip!")))->toBe(std::string("💡 Tip!"));
+                expect(emoji["tip"](std:("Tip!")))->toBe(std:("💡 Tip!"));
             }
             );
-            it(std::string("should format list messages"), [=]() mutable
+            it(std:("should format list messages"), [=]() mutable
             {
-                expect(emoji["list"](std::string("List!")))->toBe(std::string("📋 List!"));
+                expect(emoji["list"](std:("List!")))->toBe(std:("📋 List!"));
             }
             );
-            it(std::string("should format penguin messages"), [=]() mutable
+            it(std:("should format penguin messages"), [=]() mutable
             {
-                expect(emoji["penguin"](std::string("Linux!")))->toBe(std::string("🐧 Linux!"));
+                expect(emoji["penguin"](std:("Linux!")))->toBe(std:("🐧 Linux!"));
             }
             );
-            it(std::string("should format bullet messages"), [=]() mutable
+            it(std:("should format bullet messages"), [=]() mutable
             {
-                expect(emoji["bullet"](std::string("Item")))->toBe(std::string("• Item"));
+                expect(emoji["bullet"](std:("Item")))->toBe(std:("• Item"));
             }
             );
         }
         );
-        describe(std::string("initializeEmojiSupport"), [=]() mutable
+        describe(std:("initializeEmojiSupport"), [=]() mutable
         {
-            it(std::string("should log emoji support status in debug mode"), [=]() mutable
+            it(std:("should log emoji support status in debug mode"), [=]() mutable
             {
-                process->env->DEBUG = std::string("true");
+                process->env->DEBUG = std:("true");
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("darwin")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("darwin")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
+                process->env->TERM = std:("xterm-256color");
                 initializeEmojiSupport();
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should not log when not in debug mode"), [=]() mutable
+            it(std:("should not log when not in debug mode"), [=]() mutable
             {
                 process->env.Delete("DEBUG");
                 process->env.Delete("ELIZA_DEBUG");
@@ -313,73 +313,73 @@ void Main(void)
             );
         }
         );
-        describe(std::string("platform-specific emoji support"), [=]() mutable
+        describe(std:("platform-specific emoji support"), [=]() mutable
         {
-            it(std::string("should support emojis on Linux with proper terminal"), [=]() mutable
+            it(std:("should support emojis on Linux with proper terminal"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("linux")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("linux")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->TERM = std::string("xterm-256color");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->TERM = std:("xterm-256color");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should support emojis with COLORTERM set"), [=]() mutable
+            it(std:("should support emojis with COLORTERM set"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("linux")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("linux")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->COLORTERM = std::string("truecolor");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->COLORTERM = std:("truecolor");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should detect Windows Terminal support"), [=]() mutable
+            it(std:("should detect Windows Terminal support"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("win32")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("win32")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->WT_SESSION = std::string("some-session-id");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->WT_SESSION = std:("some-session-id");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should detect PowerShell 7+ support"), [=]() mutable
+            it(std:("should detect PowerShell 7+ support"), [=]() mutable
             {
                 auto originalPlatform = process->platform;
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), std::string("win32")}, 
-                    object::pair{std::string("configurable"), true}
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), std:("win32")}, 
+                    object::pair{std:("configurable"), true}
                 });
-                process->env->PSModulePath = std::string("C:\Program Files\PowerShell\7\Modules");
-                process->env->POWERSHELL_TELEMETRY_OPTOUT = std::string("1");
-                expect(getEmoji(std::string("success")))->toBe(std::string("✅"));
-                Object->defineProperty(process, std::string("platform"), object{
-                    object::pair{std::string("value"), originalPlatform}, 
-                    object::pair{std::string("configurable"), true}
+                process->env->PSModulePath = std:("C:\Program Files\PowerShell\7\Modules");
+                process->env->POWERSHELL_TELEMETRY_OPTOUT = std:("1");
+                expect(getEmoji(std:("success")))->toBe(std:("✅"));
+                Object->defineProperty(process, std:("platform"), object{
+                    object::pair{std:("value"), originalPlatform}, 
+                    object::pair{std:("configurable"), true}
                 });
             }
             );
-            it(std::string("should not support emojis in GitHub Actions"), [=]() mutable
+            it(std:("should not support emojis in GitHub Actions"), [=]() mutable
             {
-                process->env->GITHUB_ACTIONS = std::string("true");
-                expect(getEmoji(std::string("success")))->toBe(std::string("[OK]"));
+                process->env->GITHUB_ACTIONS = std:("true");
+                expect(getEmoji(std:("success")))->toBe(std:("[OK]"));
             }
             );
         }

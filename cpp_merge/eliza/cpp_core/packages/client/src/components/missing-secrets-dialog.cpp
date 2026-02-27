@@ -1,4 +1,5 @@
 #include "missing-secrets-dialog.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm, auto onCancel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <AlertDialog open={open} onOpenChange={onOpenChange}>;
     <AlertDialogContent>;
     <AlertDialogHeader>;
@@ -21,7 +22,7 @@ void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm
     properly without these values.;
     </p>;
     <div className="bg-muted rounded-md p-3 space-y-2">;
-    {missingSecrets.std::map((secret) => (;
+    {missingSecrets.std::map((secret) { return (; };
     <div key={secret.name} className="text-sm">;
     <code className="font-mono font-semibold">{secret.name}</code>;
     {secret.plugin && (;

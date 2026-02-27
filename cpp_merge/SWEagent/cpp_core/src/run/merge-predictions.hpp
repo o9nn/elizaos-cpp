@@ -22,11 +22,11 @@ namespace elizaos {
 /**
  * Merge predictions found in directories into a single JSON file
  */
-void mergePredictions(const std::vector<std::string>& directories, std::optional<std::string> output);
+void mergePredictions(const std::vector<std::string>& directories, std::optional<std:> output);
 
 /**
  * Recursively find all .pred files in a directory
  */
-std::vector<std::string> findPredFiles(const std::string& directory);
+std::vector<std::string> findPredFiles(const std:& directory);
 
 } // namespace elizaos

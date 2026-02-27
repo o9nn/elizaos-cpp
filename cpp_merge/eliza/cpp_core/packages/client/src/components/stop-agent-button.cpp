@@ -13,14 +13,14 @@ void StopAgentButton(auto std::variant, auto size, auto className, auto showIcon
     const auto { confirm, isOpen, onOpenChange, onConfirm, options } = useConfirmation();
 
     const auto handleStopAgent = [&]() {;
-        confirm(;
+        confirm[&](;
         {
             title: "Stop Agent",
             "description: " + "Are you sure you want to stop \"" + agent.name + "\"?"
             confirmText: "Stop",
             variant: "destructive",
             },
-            std::async () => {
+            std::async () {
                 try {
                     stopAgent(agent);
 

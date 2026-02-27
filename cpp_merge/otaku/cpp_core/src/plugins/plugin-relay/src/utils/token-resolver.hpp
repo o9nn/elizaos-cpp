@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,23 +19,23 @@ namespace elizaos {
  * Token resolution strategy copied from CDP service resolver.
  */
 struct TokenMetadata {
-    std::string symbol;
-    std::string name;
-    std::string address;
+    std: symbol;
+    std: name;
+    std: address;
     double decimals;
-    std::string network;
+    std: network;
 };
 
 struct CoinGeckoTokenResponse {
-    std::optional<std::string> symbol;
-    std::optional<std::string> name;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
-    std::optional<std::unordered_map<std::string, { decimal_place?: number }>> detail_platforms;
+    std::optional<std:> symbol;
+    std::optional<std:> name;
+    std::optional<std::unordered_map<std:, std:>> platforms;
+    std::optional<std::unordered_map<std:, { decimal_place? }>> detail_platforms;
 
 struct CoinGeckoSearchCoin {
-    std::string id;
-    std::string symbol;
-    std::string name;
+    std: id;
+    std: symbol;
+    std: name;
 };
 
 struct CoinGeckoSearchResponse {
@@ -42,20 +43,20 @@ struct CoinGeckoSearchResponse {
 };
 
 struct CoinGeckoCoinDetailResponse {
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
+    std::optional<std::unordered_map<std:, std:>> platforms;
 };
 
-std::string getPlatformId(const std::string& network);
+std: getPlatformId(const std:& network);
 
-std::string getCacheKey(const std::string& network, const std::string& address);
+std: getCacheKey(const std:& network, const std:& address);
 
-bool isCacheValid(const std::string& key);
+bool isCacheValid(const std:& key);
 
-std::future<TokenMetadata | null> getTokenMetadata(const std::string& address, const std::string& network);
+std::future<TokenMetadata | null> getTokenMetadata(const std:& address, const std:& network);
 
-std::future<std::string | null> resolveTokenSymbol(const std::string& symbol, const std::string& network);
+std::future<std: | null> resolveTokenSymbol(const std:& symbol, const std:& network);
 
-std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network);` | null> {
+std::future<"0x> resolveTokenToAddress(const std:& token, const std:& network);" | null> {
   
   // Handle native gas tokens
   // EXCEPTION: On Polygon, ETH refers to WETH (bridged ETH), not the native gas token
@@ -69,14 +70,14 @@ std::future<`0x> resolveTokenToAddress(const std::string& token, const std::stri
   // POL exists as ERC20 on Ethereum mainnet, but is NOT a native gas token anywhere except Polygon
     // Fall through to normal resolution (will resolve to ERC20 contract address)
 
-std::future<double> getTokenDecimals(const std::string& address, const std::string& network);
+std::future<double> getTokenDecimals(const std:& address, const std:& network);
 
 void clearTokenCache();
 
 void getCacheStats(); {
 
-void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address);
+void addHardcodedTokenAddress(const std:& network, const std:& symbol, const std:& address);
 
-std::unordered_map<std::string, std::string> getHardcodedTokens(const std::string& network);
+std::unordered_map<std:, std:> getHardcodedTokens(const std:& network);
 
 } // namespace elizaos

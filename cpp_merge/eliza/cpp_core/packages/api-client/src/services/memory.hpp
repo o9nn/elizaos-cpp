@@ -21,7 +21,7 @@ class MemoryService extends BaseApiClient {
    * Get agent memories
    */
   std::async getAgentMemories(agentId: UUID, params?: MemoryParams): Promise<{ memories: Memory[] }> {
-    return this.get<{ memories: Memory[] }>(`/api/memory/${agentId}/memories`, { params });
+    return this.get<{ memories: Memory[] }>("/api/memory/" + std::to_string(agentId) + "/memories", { params });
   }
 
   /**

@@ -7,9 +7,9 @@ namespace elizaos {
 void Page() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto privacy = `;
+    const auto privacy = ";
     **Privacy Policy**
-    ================;
+    ========;
 
     **Effective Date:** December 10th, 2024
 
@@ -139,7 +139,7 @@ void Page() {
     -------------------;
 
     We will notify you of material changes to this Privacy Policy. Your continued use of the Services after such modifications constitutes acceptance of the updated Privacy Policy.;
-    `.trim();
+    ";
 
     return (;
     <div;

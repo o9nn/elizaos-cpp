@@ -4,22 +4,22 @@ std::shared_ptr<express::Router> createDebugRouter(std::shared_ptr<AgentServer> 
 {
     auto router = express->Router();
     router->use(requireAuth, requireAdmin);
-    router->get(std::string("/servers"), [=](auto _req, auto res) mutable
+    router->get(std:("/servers"), [=](auto _req, auto res) mutable
     {
         try
         {
             auto servers = std::async([=]() { serverInstance->getServers(); });
             res["json"](object{
-                object::pair{std::string("success"), true}, 
-                object::pair{std::string("servers"), OR((servers), (array<any>()))}, 
-                object::pair{std::string("count"), OR((servers->get_length()), (0))}
+                object::pair{std:("success"), true}, 
+                object::pair{std:("servers"), OR((servers), (array<any>()))}, 
+                object::pair{std:("count"), OR((servers->get_length()), (0))}
             });
         }
         catch (const any& error)
         {
             res["status"](500)["json"](object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("error"), (is<Error>(error)) ? any(error->message) (std:("Unknown error"))}
             });
         }
     }

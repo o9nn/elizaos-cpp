@@ -1,10 +1,14 @@
 #include "validation.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson packageJson) {
+std::future<void> validatePluginRequirements(const std:& cwd, PackageJson packageJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> errors = [];
@@ -12,7 +16,7 @@ std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson
 
     // Check plugin naming convention (this is still a hard error)
     const auto packageName = packageJson.name.split("/").pop() || packageJson.name;
-    if (!packageName.startsWith('plugin-')) {
+    if (!packageName.substr(0, 'plugin-')) {
         errors.push_back(;
         "Plugin name must start with "plugin-". Please update your package name and try again.";
         );
@@ -48,17 +52,17 @@ std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson
             }
 
             // Handle hard errors (must be fixed)
-            if (errors.length > 0) {
+            if (errors.size() > 0) {
                 std::cerr << "Plugin validation failed:" << std::endl;
-                errors.forEach((error) => console.error(`  - ${error}`));
+                errors.forEach[&]((error) { return console.error("  - " + std::to_string(error) + "")); };
                 std::cerr << "\nPlease fix these issues and try publishing again." << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
             // Handle warnings (can be bypassed)
-            if (warnings.length > 0) {
+            if (warnings.size() > 0) {
                 std::cout << "Plugin validation warnings:" << std::endl;
-                warnings.forEach((warning) => console.warn(`  - ${warning}`));
+                warnings.forEach[&]((warning) { return console.warn("  - " + std::to_string(warning) + "")); };
                 std::cout << "Your plugin may get rejected if you submit without addressing these issues." << std::endl;
 
                 const auto proceed = clack.confirm({;
@@ -68,18 +72,18 @@ std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson
 
                     if (clack.isCancel(proceed)) {
                         clack.cancel("Operation cancelled.");
-                        process.exit(0);
+                        std::exit(0);
                     }
 
                     if (!proceed) {
                         std::cout << "Publishing cancelled. Please address the warnings and try again." << std::endl;
-                        process.exit(0);
+                        std::exit(0);
                     }
                 }
 
 }
 
-bool isMaintainer(PackageJson packageJson, const std::string& username) {
+bool isMaintainer(PackageJson packageJson, const std:& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!packageJson.maintainers) {
@@ -91,7 +95,7 @@ bool isMaintainer(PackageJson packageJson, const std::string& username) {
 
 }
 
-void displayRegistryPublicationMessage(std::optional<std::any> opts, bool userIsMaintainer, std::optional<std::string> registryPrUrl) {
+void displayRegistryPublicationMessage(std::optional<std:> opts, bool userIsMaintainer, std::optional<std:> registryPrUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Early returns for clear flow control

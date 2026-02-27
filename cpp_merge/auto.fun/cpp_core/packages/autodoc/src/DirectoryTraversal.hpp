@@ -49,11 +49,11 @@ class DirectoryTraversal {
   /**
    * Constructor for directory traversal
    * @param {Configuration} config - Configuration object containing paths and exclusions
-   * @param {std::string[]} [prFiles=[]] - PR files to process
+   * @param {std:[]} [prFiles=[]] - PR files to process
    */
   constructor(
     private config: Configuration,
-    public prFiles: std::string[] = [],
+    public prFiles: std:[] = [],
   ) {}
 
   /**
@@ -70,7 +70,7 @@ class DirectoryTraversal {
    * Otherwise, scans all files in the root directory for TypeScript files.
    *
    *
-   * @returns An array of std::string containing the files to process.
+   * @returns An array of std: containing the files to process.
    */
 
       // PR files are already relative to repo root, filter and convert to absolute paths

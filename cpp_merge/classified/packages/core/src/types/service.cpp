@@ -14,19 +14,19 @@ Service::Service(std::shared_ptr<IAgentRuntime> runtime) {
         this->serviceName = ctor::serviceName;
     } else {
         auto className = ctor::name;
-        this->serviceName = (className->endsWith(std::string("Service"))) ? className->slice(0, -7) : className;
+        this->serviceName = (className->endsWith(std:("Service"))) ? className->slice(0, -7) : className;
     }
 }
 
 std::shared_ptr<Promise<std::shared_ptr<Service>>> Service::start(std::shared_ptr<IAgentRuntime> _runtime)
 {
-    throw any(std::make_shared<Error>(std::string("Not implemented")));
+    throw any(std::make_shared<Error>(std:("Not implemented")));
     return std::shared_ptr<Promise<std::shared_ptr<Service>>>();
 }
 
 std::shared_ptr<Promise<any>> Service::stop(std::shared_ptr<IAgentRuntime> _runtime)
 {
-    throw any(std::make_shared<Error>(std::string("Not implemented")));
+    throw any(std::make_shared<Error>(std:("Not implemented")));
     return std::shared_ptr<Promise<any>>();
 }
 
@@ -34,39 +34,39 @@ std::shared_ptr<ServiceError> createServiceError(any error, string code)
 {
     if (is<Error>(error)) {
         return object{
-            object::pair{std::string("code"), std::string("code")}, 
-            object::pair{std::string("message"), error->message}, 
-            object::pair{std::string("cause"), error}
+            object::pair{std:("code"), std:("code")}, 
+            object::pair{std:("message"), error->message}, 
+            object::pair{std:("cause"), error}
         };
     }
     return object{
-        object::pair{std::string("code"), std::string("code")}, 
-        object::pair{std::string("message"), String(error)}
+        object::pair{std:("code"), std:("code")}, 
+        object::pair{std:("message"), String(error)}
     };
 };
 
 
 object ServiceType = as<std::shared_ptr<const>>(object{
-    object::pair{std::string("TRANSCRIPTION"), std::string("transcription")}, 
-    object::pair{std::string("VIDEO"), std::string("video")}, 
-    object::pair{std::string("BROWSER"), std::string("browser")}, 
-    object::pair{std::string("PDF"), std::string("pdf")}, 
-    object::pair{std::string("REMOTE_FILES"), std::string("aws_s3")}, 
-    object::pair{std::string("WEB_SEARCH"), std::string("web_search")}, 
-    object::pair{std::string("EMAIL"), std::string("email")}, 
-    object::pair{std::string("TEE"), std::string("tee")}, 
-    object::pair{std::string("TASK"), std::string("task")}, 
-    object::pair{std::string("WALLET"), std::string("wallet")}, 
-    object::pair{std::string("LP_POOL"), std::string("lp_pool")}, 
-    object::pair{std::string("TOKEN_DATA"), std::string("token_data")}, 
-    object::pair{std::string("MESSAGE"), std::string("message")}, 
-    object::pair{std::string("POST"), std::string("post")}, 
-    object::pair{std::string("PLUGIN_MANAGER"), std::string("plugin_manager")}, 
-    object::pair{std::string("PLUGIN_CONFIGURATION"), std::string("plugin_configuration")}, 
-    object::pair{std::string("PLUGIN_USER_INTERACTION"), std::string("plugin_user_interaction")}, 
-    object::pair{std::string("REGISTRY"), std::string("registry")}, 
-    object::pair{std::string("LLM_PROVIDER_MANAGER"), std::string("llm_provider_manager")}, 
-    object::pair{std::string("UNKNOWN"), std::string("unknown")}
+    object::pair{std:("TRANSCRIPTION"), std:("transcription")}, 
+    object::pair{std:("VIDEO"), std:("video")}, 
+    object::pair{std:("BROWSER"), std:("browser")}, 
+    object::pair{std:("PDF"), std:("pdf")}, 
+    object::pair{std:("REMOTE_FILES"), std:("aws_s3")}, 
+    object::pair{std:("WEB_SEARCH"), std:("web_search")}, 
+    object::pair{std:("EMAIL"), std:("email")}, 
+    object::pair{std:("TEE"), std:("tee")}, 
+    object::pair{std:("TASK"), std:("task")}, 
+    object::pair{std:("WALLET"), std:("wallet")}, 
+    object::pair{std:("LP_POOL"), std:("lp_pool")}, 
+    object::pair{std:("TOKEN_DATA"), std:("token_data")}, 
+    object::pair{std:("MESSAGE"), std:("message")}, 
+    object::pair{std:("POST"), std:("post")}, 
+    object::pair{std:("PLUGIN_MANAGER"), std:("plugin_manager")}, 
+    object::pair{std:("PLUGIN_CONFIGURATION"), std:("plugin_configuration")}, 
+    object::pair{std:("PLUGIN_USER_INTERACTION"), std:("plugin_user_interaction")}, 
+    object::pair{std:("REGISTRY"), std:("registry")}, 
+    object::pair{std:("LLM_PROVIDER_MANAGER"), std:("llm_provider_manager")}, 
+    object::pair{std:("UNKNOWN"), std:("unknown")}
 }), satisfies, ServiceTypeRegistry;
 
 void Main(void)

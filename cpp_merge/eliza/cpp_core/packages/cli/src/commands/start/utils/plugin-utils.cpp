@@ -1,10 +1,13 @@
 #include "plugin-utils.hpp"
+#include <future>
+#include <filesystem>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-obj is Plugin isValidPluginShape(const std::any& obj) {
+obj is Plugin isValidPluginShape(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object' || !obj.name) {
@@ -21,11 +24,11 @@ obj is Plugin isValidPluginShape(const std::any& obj) {
 
 }
 
-std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& pluginName) {
+std::future<std::optional<Plugin>> loadAndPreparePlugin(const std:& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto version = getCliInstallTag();
-    auto pluginModule: std::any;
+    auto pluginModule: std:;
     const auto context = detectPluginContext(pluginName);
 
     if (context.isLocalDevelopment) {
@@ -46,7 +49,7 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
                     pluginModule = loadPluginModule(pluginName);
                     if (!pluginModule) {
                         std::cout << "Plugin " + pluginName << "installing..." << std::endl;
-                        installPlugin(pluginName, process.cwd(), version);
+                        installPlugin(pluginName, std::filesystem::current_path().string(), version);
                         pluginModule = loadPluginModule(pluginName);
                     }
                     } catch (error) {
@@ -60,10 +63,8 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
                     return nullptr;
                 }
 
-                const auto expectedFunctionName = pluginNam;
-                .replace(/^@elizaos\/plugin-/, "");
-                .replace(/^@elizaos\//, "");
-                ".replace(/-./g, (match) => match[1].toUpperCase())}Plugin";
+                const auto expectedFunctionName = pluginNam.replace(/^@elizaos\/plugin-/, "").replace(/^@elizaos\//, "");
+                ".replace[&](/-./g, (match) { return match[1].toUpperCase())}Plugin"; };
 
                 const auto exportsToCheck = [;
                 pluginModule[expectedFunctionName],
@@ -82,7 +83,7 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
 
 }
 
-PluginValidation validatePlugin(const std::any& plugin) {
+PluginValidation validatePlugin(const std:& plugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!plugin) {

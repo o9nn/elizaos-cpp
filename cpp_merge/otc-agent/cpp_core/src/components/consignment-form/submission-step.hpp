@@ -15,19 +15,19 @@ namespace elizaos {
 
 
 struct StepState {
-    std::string id;
-    std::string label;
+    std: id;
+    std: label;
     "pending" | "processing" | "complete" | "error" status;
-    std::optional<std::string> statusMessage;
-    std::optional<std::string> errorMessage;
-    std::optional<std::string> txHash;
+    std::optional<std:> statusMessage;
+    std::optional<std:> errorMessage;
+    std::optional<std:> txHash;
     std::optional<bool> canRetry;
 };
 
 struct SubmissionStepProps {
     { formData;
-    std::string tokenId;
-    std::string amount;
+    std: tokenId;
+    std: amount;
     bool isNegotiable;
     double fixedDiscountBps;
     double fixedLockupDays;
@@ -35,25 +35,25 @@ struct SubmissionStepProps {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std::string minDealAmount;
-    std::string maxDealAmount;
+    std: minDealAmount;
+    std: maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std::string consignerAddress;
-    std::string chain;
+    std: consignerAddress;
+    std: chain;
     "evm" | "solana" | null activeFamily;
     double selectedTokenDecimals;
-    std::string selectedTokenSymbol;
-    std::optional<std::string> selectedTokenName;
-    std::optional<std::string> selectedTokenAddress;
-    std::optional<std::string | null> selectedTokenLogoUrl;
-    () => Promise<string> onApproveToken;
-    ( onCreateConsignment;
-    std::optional<(txHash: std::string) => void> onTxSubmitted;
-    (txHash: std::string) => std::string getBlockExplorerUrl;
-    () => void onBack;
+    std: selectedTokenSymbol;
+    std::optional<std:> selectedTokenName;
+    std::optional<std:> selectedTokenAddress;
+    std::optional<std: | null> selectedTokenLogoUrl;
+    [&]() { return Promise<string> onApproveToken; };
+    [&]( onCreateConsignment;
+    std::optional<(txHash: std:) { return void> onTxSubmitted; };
+    [&](txHash: std:) { return std: getBlockExplorerUrl; };
+    [&]() { return void onBack; };
 };
 
 

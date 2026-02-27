@@ -1,10 +1,14 @@
 #include "remove-unfinished.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = true) {
+std::future<void> removeUnfinished(const std:& baseDir, bool dryRun = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto basePath = path.resolve(baseDir);
@@ -19,21 +23,20 @@ std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = tru
             continue;
         }
 
-        if (!dirName.includes('__')) {
+        if (!dirName.count('__') > 0) {
             continue;
         }
 
-        const auto trajs = fs;
-        .readdirSync(directory);
-        .filter((file) => file.endsWith(".traj"));
-        .std::map((file) => path.join(directory, file));
+        const auto trajs = fs.readdirSync(directory);
+        .filter[&]((file) { return file.rfind(".traj")); };
+        .std::map[&]((file) { return path.join(directory, file)); };
 
-        if (trajs.length == 0) {
+        if (trajs.size() == 0) {
             std::cout << "No trajectories found in " + directory << std::endl;
             continue;
         }
 
-        if (trajs.length > 1) {
+        if (trajs.size() > 1) {
             std::cout << "Found multiple trajectories in " + directory + ". Skipping." << std::endl;
             continue;
         }

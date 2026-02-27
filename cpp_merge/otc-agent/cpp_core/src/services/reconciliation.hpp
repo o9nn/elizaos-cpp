@@ -1,4 +1,6 @@
 #include "database.hpp"
+#include <future>
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -21,12 +23,12 @@ namespace elizaos {
 
 // Minimal client interface to avoid viem's "excessively deep" type issues
 struct SimplePublicClient {
-    (params: { readContract;
+    [&](params: { readContract;
     Address address;
     Abi abi;
-    std::string functionName;
+    std: functionName;
     std::vector<readonly unknown> args;
-    () => Promise<bigint> getBlockNumber;
+    () { return Promise<bigint> getBlockNumber; };
 };
 
 // OnChainOffer matches the struct returned by the OTC contract
@@ -67,7 +69,7 @@ class ReconciliationService {
     try {
       this.otcAddress = getContractAddress();
       console.log(
-        `[ReconciliationService] Using contract address: ${this.otcAddress} for network: ${process.env.NETWORK || "localnet"}`,
+        "[ReconciliationService] Using contract address: " + std::to_string(this.otcAddress) + " for network: " + std::to_string(std::getenv("NETWORK") || "localnet") + "",
       );
     } catch (error) {
       console.error(

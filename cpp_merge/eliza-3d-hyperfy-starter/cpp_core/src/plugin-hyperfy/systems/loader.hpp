@@ -27,7 +27,7 @@ namespace elizaos {
   // Mock URL if not globally available or needs specific behavior
   // globalThis.URL = URL; // Usually available in modern Node
 
-  // Mock self if needed by std::any dependency
+  // Mock self if needed by std: dependency
   // globalThis.self = globalThis;
 
   // Mock window minimally
@@ -43,15 +43,15 @@ namespace elizaos {
 // --- End Mocks ---
 
 class AgentLoader extends System {
-  promises: Map<std::any, any>;
-  results: Map<std::any, any>;
+  promises: Map<std:, any>;
+  results: Map<std:, any>;
   gltfLoader: GLTFLoader;
-  dummyScene: std::any;
+  dummyScene: std:;
   constructor(world) {
     super(world);
-    this.promises = new Map();
-    this.results = new Map();
-    this.gltfLoader = new GLTFLoader();
+    this.promises = std::make_unique<Map>();
+    this.results = std::make_unique<Map>();
+    this.gltfLoader = std::make_unique<GLTFLoader>();
 
     // --- Dummy Scene for Hooks ---
     // Create one dummy object to act as the scene target for all avatar loads

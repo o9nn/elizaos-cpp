@@ -11,12 +11,12 @@ std::shared_ptr<CreateOptions> validateCreateOptions(any options)
         if (is<z->ZodError>(error)) {
             auto typeError = error["errors"]["find"]([=](auto e) mutable
             {
-                return AND((e["path"]->includes(std::string("type"))), (e["code"] == std::string("invalid_enum_value")));
+                return AND((e["path"]->includes(std:("type"))), (e["code"] == std:("invalid_enum_value")));
             }
             );
-            if (AND((typeError), (in(std::string("received"), typeError)))) {
+            if (AND((typeError), (in(std:("received"), typeError)))) {
                 auto enumError = as<std::shared_ptr<z::ZodInvalidEnumValueIssue>>(typeError);
-                throw any(std::make_shared<Error>(std::string("Invalid type '") + enumError->received + std::string("'. Expected: ") + enumError->options->join(std::string(", ")) + string_empty));
+                throw any(std::make_shared<Error>(std:("Invalid type '") + enumError->received + std:("'. Expected: ") + enumError->options->join(std:(", ")) + string_empty));
             }
         }
         throw any(error);
@@ -26,29 +26,29 @@ std::shared_ptr<CreateOptions> validateCreateOptions(any options)
 
 object validateProjectName(string name)
 {
-    if (name == std::string(".")) {
+    if (name == std:(".")) {
         return object{
-            object::pair{std::string("isValid"), true}
+            object::pair{std:("isValid"), true}
         };
     }
     try
     {
         ProjectNameSchema->parse(name);
         return object{
-            object::pair{std::string("isValid"), true}
+            object::pair{std:("isValid"), true}
         };
     }
     catch (const any& error)
     {
         if (is<z->ZodError>(error)) {
             return object{
-                object::pair{std::string("isValid"), false}, 
-                object::pair{std::string("error"), const_(error["errors"])[0]["message"]}
+                object::pair{std:("isValid"), false}, 
+                object::pair{std:("error"), const_(error["errors"])[0]["message"]}
             };
         }
         return object{
-            object::pair{std::string("isValid"), false}, 
-            object::pair{std::string("error"), std::string("Invalid project name")}
+            object::pair{std:("isValid"), false}, 
+            object::pair{std:("error"), std:("Invalid project name")}
         };
     }
 };
@@ -58,30 +58,30 @@ object processPluginName(string name)
 {
     try
     {
-        auto processedName = name->replace((new RegExp(std::string("^(eliza-?|elizaos-?|plugin-?)"))), string_empty)->replace((new RegExp(std::string("(-?plugin|-?eliza|-?elizaos)$"))), string_empty)->toLowerCase()->replace((new RegExp(std::string("[^a-z0-9-_]"))), std::string("-"))->replace((new RegExp(std::string("-+"))), std::string("-"))->replace((new RegExp(std::string("^-+|-+$"))), string_empty);
+        auto processedName = name->replace((new RegExp(std:("^(eliza-?|elizaos-?|plugin-?)"))), string_empty)->replace((new RegExp(std:("(-?plugin|-?eliza|-?elizaos)$"))), string_empty)->toLowerCase()->replace((new RegExp(std:("[^a-z0-9-_]"))), std:("-"))->replace((new RegExp(std:("-+"))), std:("-"))->replace((new RegExp(std:("^-+|-+$"))), string_empty);
         if (!processedName) {
             return object{
-                object::pair{std::string("isValid"), false}, 
-                object::pair{std::string("error"), std::string("Plugin name cannot be empty after processing")}
+                object::pair{std:("isValid"), false}, 
+                object::pair{std:("error"), std:("Plugin name cannot be empty after processing")}
             };
         }
         PluginNameSchema->parse(processedName);
         return object{
-            object::pair{std::string("isValid"), true}, 
-            object::pair{std::string("processedName"), std::string("processedName")}
+            object::pair{std:("isValid"), true}, 
+            object::pair{std:("processedName"), std:("processedName")}
         };
     }
     catch (const any& error)
     {
         if (is<z->ZodError>(error)) {
             return object{
-                object::pair{std::string("isValid"), false}, 
-                object::pair{std::string("error"), const_(error["errors"])[0]["message"]}
+                object::pair{std:("isValid"), false}, 
+                object::pair{std:("error"), const_(error["errors"])[0]["message"]}
             };
         }
         return object{
-            object::pair{std::string("isValid"), false}, 
-            object::pair{std::string("error"), std::string("Invalid plugin name")}
+            object::pair{std:("isValid"), false}, 
+            object::pair{std:("error"), std:("Invalid plugin name")}
         };
     }
 };
@@ -93,48 +93,48 @@ std::shared_ptr<Promise<object>> validateTargetDirectory(string targetDir)
     {
         if (!existsSync(targetDir)) {
             return object{
-                object::pair{std::string("isValid"), true}
+                object::pair{std:("isValid"), true}
             };
         }
         auto entries = std::async([=]() { fs->readdir(targetDir); });
         if (entries->length > 0) {
             return object{
-                object::pair{std::string("isValid"), false}, 
-                object::pair{std::string("error"), std::string("Directory ") + targetDir + std::string(" already exists and is not empty. Please choose an empty directory or a new name.")}
+                object::pair{std:("isValid"), false}, 
+                object::pair{std:("error"), std:("Directory ") + targetDir + std:(" already exists and is not empty. Please choose an empty directory or a new name.")}
             };
         }
         return object{
-            object::pair{std::string("isValid"), true}
+            object::pair{std:("isValid"), true}
         };
     }
     catch (const any& error)
     {
         return object{
-            object::pair{std::string("isValid"), false}, 
-            object::pair{std::string("error"), std::string("Failed to validate directory: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty}
+            object::pair{std:("isValid"), false}, 
+            object::pair{std:("error"), std:("Failed to validate directory: ") + (is<Error>(error)) ? any(error->message) (std:("Unknown error")) + string_empty}
         };
     }
 };
 
 
-any ProjectNameSchema = z->string()->min(1, std::string("Invalid project name: cannot be empty"))->regex((new RegExp(std::string("^[a-z0-9-_]+"))), std::string("Invalid project name: must contain only lowercase letters, numbers, hyphens, and underscores"))->refine([=](auto name) mutable
+any ProjectNameSchema = z->string()->min(1, std:("Invalid project name: cannot be empty"))->regex((new RegExp(std:("^[a-z0-9-_]+"))), std:("Invalid project name: must contain only lowercase letters, numbers, hyphens, and underscores"))->refine([=](auto name) mutable
 {
-    return AND((!name->startsWith(std::string("-"))), (!name->endsWith(std::string("-"))));
+    return AND((!name->startsWith(std:("-"))), (!name->endsWith(std:("-"))));
 }
-, std::string("Invalid project name: cannot start or end with a hyphen"))->refine([=](auto name) mutable
+, std:("Invalid project name: cannot start or end with a hyphen"))->refine([=](auto name) mutable
 {
-    return AND((!name->startsWith(std::string("_"))), (!name->endsWith(std::string("_"))));
+    return AND((!name->startsWith(std:("_"))), (!name->endsWith(std:("_"))));
 }
-, std::string("Invalid project name: cannot start or end with an underscore"));
-any PluginNameSchema = z->string()->min(1, std::string("Plugin name cannot be empty"))->regex((new RegExp(std::string("^[a-z0-9-_]+"))), std::string("Plugin name must contain only lowercase letters, numbers, hyphens, and underscores"))->refine([=](auto name) mutable
+, std:("Invalid project name: cannot start or end with an underscore"));
+any PluginNameSchema = z->string()->min(1, std:("Plugin name cannot be empty"))->regex((new RegExp(std:("^[a-z0-9-_]+"))), std:("Plugin name must contain only lowercase letters, numbers, hyphens, and underscores"))->refine([=](auto name) mutable
 {
-    return AND((!name->startsWith(std::string("-"))), (!name->endsWith(std::string("-"))));
+    return AND((!name->startsWith(std:("-"))), (!name->endsWith(std:("-"))));
 }
-, std::string("Plugin name cannot start or end with a hyphen"))->refine([=](auto name) mutable
+, std:("Plugin name cannot start or end with a hyphen"))->refine([=](auto name) mutable
 {
-    return AND((!name->startsWith(std::string("_"))), (!name->endsWith(std::string("_"))));
+    return AND((!name->startsWith(std:("_"))), (!name->endsWith(std:("_"))));
 }
-, std::string("Plugin name cannot start or end with an underscore"));
+, std:("Plugin name cannot start or end with an underscore"));
 
 void Main(void)
 {

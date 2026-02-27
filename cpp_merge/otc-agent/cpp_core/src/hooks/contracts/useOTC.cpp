@@ -1,4 +1,6 @@
 #include "useOTC.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -17,7 +19,7 @@ Address getOtcAddress() {
     // Get address from deployment config (includes env override handling)
     const auto configAddress = deployments.evm.contracts.otc;
     if (configAddress) {
-        if (process.env.NODE_ENV == "development" && !addressLogged) {
+        if (std::getenv("NODE_ENV") == "development" && !addressLogged) {
             std::cout << "[useOTC] OTC address:" << configAddress << "network:" << network << std::endl;
             addressLogged = true;
         }
@@ -43,8 +45,8 @@ void useOTC() {
     openOfferIds: bigint[];
     openOffers: Offer[];
     agent: Address | std::nullopt;
-    isAgent: boolean;
-    isApprover: boolean;
+    isAgent;
+    isApprover;
     usdcAddress: Address | std::nullopt;
     ethBalanceWei?: bigint;
     usdcBalance?: bigint;
@@ -52,40 +54,40 @@ void useOTC() {
     maxTokenPerOrder?: bigint;
     quoteExpirySeconds?: bigint;
     defaultUnlockDelaySeconds?: bigint;
-    emergencyRefundsEnabled?: boolean;
-    isLoading: boolean;
+    emergencyRefundsEnabled?;
+    isLoading;
     error: unknown;
-    claim: (offerId: bigint) => Promise<unknown>;
-    isClaiming: boolean;
-    createOffer: (params: {
+    claim: [&](offerId: bigint) { return Promise<unknown>; };
+    isClaiming;
+    createOffer: [&](params: {
         tokenAmountWei: bigint;
-        discountBps: number;
+        discountBps;
         paymentCurrency: 0 | 1;
         lockupSeconds?: bigint;
-        }) => Promise<unknown>;
-        approveOffer: (offerId: bigint) => Promise<unknown>;
-        cancelOffer: (offerId: bigint) => Promise<unknown>;
-        fulfillOffer: (offerId: bigint, valueWei?: bigint) => Promise<unknown>;
-        approveUsdc: (amount: bigint) => Promise<unknown>;
-        emergencyRefund: (offerId: bigint) => Promise<unknown>;
-        withdrawConsignment: (consignmentId: bigint) => Promise<unknown>;
-        createConsignmentOnChain: (
+        }) { return Promise<unknown>; };
+        approveOffer: [&](offerId: bigint) { return Promise<unknown>; };
+        cancelOffer: [&](offerId: bigint) { return Promise<unknown>; };
+        fulfillOffer: [&](offerId: bigint, valueWei?: bigint) { return Promise<unknown>; };
+        approveUsdc: [&](amount: bigint) { return Promise<unknown>; };
+        emergencyRefund: [&](offerId: bigint) { return Promise<unknown>; };
+        withdrawConsignment: [&](consignmentId: bigint) { return Promise<unknown>; };
+        createConsignmentOnChain: [&](
         params: ConsignmentParams,
-        onTxSubmitted?: (txHash: std::string) => void,
-        ) => Promise<ConsignmentCreationResult>;
-        approveToken: (tokenAddress: Address, amount: bigint) => Promise<unknown>;
-        getTokenAddress: (tokenId: std::string) => Promise<Address>;
-        getRequiredGasDeposit: () => Promise<bigint>;
-        getRequiredPayment: (
+        onTxSubmitted?: (txHash: std:) { return void,
+        ) => Promise<ConsignmentCreationResult>; };
+        approveToken: [&](tokenAddress: Address, amount: bigint) { return Promise<unknown>; };
+        getTokenAddress: [&](tokenId: std:) { return Promise<Address>; };
+        getRequiredGasDeposit: [&]() { return Promise<bigint>; };
+        getRequiredPayment: [&](
         offerId: bigint,
         currency: "ETH" | "USDC",
-        ) => Promise<bigint>;
+        ) { return Promise<bigint>; };
 
 }
 
 Promise<`0x$ writeContractAsync(std::optional<ReadContractConfig> config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    std::string;
+    std:;
 }
 
 } // namespace elizaos

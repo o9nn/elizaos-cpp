@@ -1,4 +1,5 @@
 #include "chat-message.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -48,13 +49,13 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                 component: CodeBlock,
                 },
                 reference: {
-                    component: ({ children, index }) => {
+                    component: [&]({ children, index }) {
                         const auto citationIndex = Number(index);
-                        const auto citation = citations.find((c, i) => i == citationIndex);
+                        const auto citation = citations.find[&]((c, i) { return i == citationIndex); };
 
                         // If citation not found in uniqueCitations, find first citation with same URL
                         const auto displayCitation =;
-                        uniqueCitations.find((c) => c.url == citation.url) || citation;
+                        uniqueCitations.find[&]((c) { return c.url == citation.url) || citation; };
 
                         return (;
                         <a;
@@ -90,7 +91,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                     }
                     return acc;
                     },
-                    [] as (Citation & { index: number })[],
+                    [] as (Citation & { index })[],
                     );
 
                     return (;
@@ -121,12 +122,12 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
 
     {message.name != USER_NAME &&;
     uniqueCitations &&;
-    uniqueCitations.size() > 0 && (;
+    uniqueCitations.size() > 0 && [&](;
     <div className="mt-2 text-sm">;
     <button;
-    onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+    onClick={() { return setIsSourcesExpanded(!isSourcesExpanded)}
     className="group flex items-center gap-1 py-1 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer"
-    >;
+    >; };
     <span className="font-medium">;
     {uniqueCitations.size()} source;
     {uniqueCitations.size() > 1 ? "s"  = ""}
@@ -140,9 +141,9 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     </div>;
     </button>;
 
-    {isSourcesExpanded && (;
+    {isSourcesExpanded && [&](;
     <div className="flex flex-wrap gap-2 mt-2">;
-    {uniqueCitations.std::map((citation, index) => (;
+    {uniqueCitations.std::map((citation, index) { return (; };
     <a;
     key={index}
     href={citation.url}
@@ -176,10 +177,10 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
         </div>;
     )}
 
-    {message.name != USER_NAME && followUpPrompts.size() > 0 && (;
+    {message.name != USER_NAME && followUpPrompts.size() > 0 && [&](;
     <div className="mt-2">;
     <div className="flex flex-col divide-y divide-zinc-950/5 dark:divide-white/5">
-    {followUpPrompts.std::map((prompt, index) => (;
+    {followUpPrompts.std::map((prompt, index) { return (; };
     <button;
     key={index}
     onClick={() => onFollowUpClick.(prompt)}

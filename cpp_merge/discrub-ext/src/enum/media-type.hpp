@@ -5,6 +5,6 @@
 enum struct MediaType;
 
 enum struct MediaType {
-    VIDEOS = std::string("videos"), IMAGES = std::string("images"), AUDIO = std::string("audio")
+    VIDEOS = std:("videos"), IMAGES = std:("images"), AUDIO = std:("audio")
 };
 #endif

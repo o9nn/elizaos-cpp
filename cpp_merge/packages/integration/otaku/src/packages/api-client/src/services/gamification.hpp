@@ -87,7 +87,7 @@ class GamificationService : public BaseApiClient, public std::enable_shared_from
 public:
     using std::enable_shared_from_this<GamificationService>::shared_from_this;
     template <typename P1>
-    std::shared_ptr<Promise<std::shared_ptr<LeaderboardResponse>>> getLeaderboard(std::shared_ptr<UUID> agentId, P1 scope = std::string("weekly"), double limit = 50, std::shared_ptr<UUID> userId = undefined);
+    std::shared_ptr<Promise<std::shared_ptr<LeaderboardResponse>>> getLeaderboard(std::shared_ptr<UUID> agentId, P1 scope = std:("weekly"), double limit = 50, std::shared_ptr<UUID> userId = undefined);
     virtual std::shared_ptr<Promise<std::shared_ptr<UserSummary>>> getUserSummary(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId);
     virtual std::shared_ptr<Promise<std::shared_ptr<ReferralCodeResponse>>> getReferralCode(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId);
     GamificationService(std::shared_ptr<ApiClientConfig> config);
@@ -97,14 +97,14 @@ template <typename P1>
 std::shared_ptr<Promise<std::shared_ptr<LeaderboardResponse>>> GamificationService::getLeaderboard(std::shared_ptr<UUID> agentId, P1 scope, double limit, std::shared_ptr<UUID> userId)
 {
     auto params = object{
-        object::pair{std::string("scope"), std::string("scope")}, 
-        object::pair{std::string("limit"), limit->toString()}
+        object::pair{std:("scope"), std:("scope")}, 
+        object::pair{std:("limit"), limit->toString()}
     };
     if (userId) {
         params->userId = userId;
     }
-    return this->get<std::shared_ptr<LeaderboardResponse>>(std::string("/api/agents/") + agentId + std::string("/plugins/gamification/leaderboard"), object{
-        object::pair{std::string("params"), std::string("params")}
+    return this->get<std::shared_ptr<LeaderboardResponse>>(std:("/api/agents/") + agentId + std:("/plugins/gamification/leaderboard"), object{
+        object::pair{std:("params"), std:("params")}
     });
 }
 

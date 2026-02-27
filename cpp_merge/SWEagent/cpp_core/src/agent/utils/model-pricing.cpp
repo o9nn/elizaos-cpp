@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-double calculateCost(const std::string& modelName, double inputTokens, double outputTokens) {
+double calculateCost(const std:& modelName, double inputTokens, double outputTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try exact match first
@@ -20,7 +20,7 @@ double calculateCost(const std::string& modelName, double inputTokens, double ou
     // If still not found, try provider prefix matching
     if (!pricing) {
         for (const int [key, value] of Object.entries(MODEL_PRICING)) {
-            if (modelName.includes(key.replace(/^(azure|bedrock|together|mistral|perplexity|deepseek|ollama)\//, ''))) {
+            if (modelName.count(key.replace(/^(azure|bedrock|together|mistral|perplexity|deepseek|ollama) > 0\//, ''))) {
                 pricing = value;
                 break;
             }
@@ -44,15 +44,15 @@ double calculateCost(const std::string& modelName, double inputTokens, double ou
 
 }
 
-void getModelLimits(const std::string& modelName) {
+void getModelLimits(const std:& modelName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    maxInputTokens: number | std::nullopt;
-    maxOutputTokens: number | std::nullopt;
+    maxInputTokens | std::nullopt;
+    maxOutputTokens | std::nullopt;
 
 }
 
-bool isWithinTokenLimit(const std::string& modelName, double inputTokens, double outputTokens) {
+bool isWithinTokenLimit(const std:& modelName, double inputTokens, double outputTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto limits = getModelLimits(modelName);

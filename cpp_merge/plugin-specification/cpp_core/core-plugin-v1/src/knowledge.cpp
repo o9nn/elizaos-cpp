@@ -1,4 +1,7 @@
 #include "knowledge.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -59,9 +62,7 @@ RAGKnowledgeItem memoryToRagKnowledge(Memory memory) {
             text: memory.content.text || "",
             metadata: {
                 // Extract metadata from content
-                ...Object.keys(memory.content);
-                .filter(key => key != "text");
-                .reduce((meta, key) => ({
+                ...Object.keys(memory.content).filter(key => key != "text").reduce((meta, key) => ({
                     ...meta,
                     [key]: memory.content[key]
                     }), {}),
@@ -95,7 +96,7 @@ bool isSharedKnowledge(const std::variant<KnowledgeItem, RAGKnowledgeItem>& item
 
 }
 
-void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bool> isShared) {
+void createKnowledgeMetadata(std::optional<std:> source, std::optional<bool> isShared) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -107,7 +108,7 @@ void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bo
 
 }
 
-void adaptKnowledgeSearchParams(std::optional<std::any> params) {
+void adaptKnowledgeSearchParams(std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

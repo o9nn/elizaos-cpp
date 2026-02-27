@@ -21,19 +21,19 @@ namespace elizaos {
  * Bundle configuration
  */
 struct BundleConfig {
-    std::unordered_map<std::string, std::any> tools;
-    std::optional<std::string | null> stateCommand;
+    std::unordered_map<std:, std:> tools;
+    std::optional<std: | null> stateCommand;
 };
 
 /**
  * Tool bundle
  */
 class Bundle {
-  path: std::string;
-  hiddenTools: std::string[];
+  path: std:;
+  hiddenTools: std:[];
   private _config?: BundleConfig;
 
-  constructor(config: { path: std::string; hiddenTools?: std::string[] }) {
+  constructor(config: { path: std:; hiddenTools?: std:[] }) {
     this.path = config.path;
     this.hiddenTools = config.hiddenTools || [];
     this.validateTools();

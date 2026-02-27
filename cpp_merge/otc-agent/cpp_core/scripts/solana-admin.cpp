@@ -1,4 +1,10 @@
 #include "solana-admin.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,7 +21,7 @@ std::future<Keypair> getWallet() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto privateKeyStr = process.env.SOLANA_MAINNET_PRIVATE_KEY;
+        const auto privateKeyStr = std::getenv("SOLANA_MAINNET_PRIVATE_KEY");
         if (!privateKeyStr) {
             throw std::runtime_error("SOLANA_MAINNET_PRIVATE_KEY not std::set in environment");
         }
@@ -32,8 +38,8 @@ std::future<Keypair> getWallet() {
 std::future<anchor::Program> getProgram(Connection connection, Keypair wallet) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto idlPath = path.join(process.cwd(), "solana/otc-program/target/idl/otc.json");
-    const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
+    const auto idlPath = path.join(std::filesystem::current_path().string(), "solana/otc-program/target/idl/otc.json");
+    const auto idl = /* JSON::parse */ fs.readFileSync(idlPath, "utf8");
 
     const auto provider = new anchor.AnchorProvider(;
     connection,
@@ -45,7 +51,7 @@ std::future<anchor::Program> getProgram(Connection connection, Keypair wallet) {
 
 }
 
-std::future<void> createTreasury(const std::string& tokenMintStr) {
+std::future<void> createTreasury(const std:& tokenMintStr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== CREATE DESK TOKEN TREASURY ==\n" << std::endl;
@@ -78,7 +84,7 @@ std::future<void> createTreasury(const std::string& tokenMintStr) {
     tokenMint;
     );
 
-    const auto tx = new Transaction().add(createAtaIx);
+    const auto tx = std::make_unique<Transaction>().add(createAtaIx);
     tx.feePayer = wallet.publicKey;
     tx.recentBlockhash = (connection.getLatestBlockhash()).blockhash;
 
@@ -89,7 +95,7 @@ std::future<void> createTreasury(const std::string& tokenMintStr) {
 
 }
 
-std::future<void> registerToken(const std::string& tokenMintStr, std::optional<double> priceUsd) {
+std::future<void> registerToken(const std:& tokenMintStr, std::optional<double> priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== REGISTER TOKEN ON DESK ==\n" << std::endl;
@@ -129,15 +135,13 @@ std::future<void> registerToken(const std::string& tokenMintStr, std::optional<d
     Array.from(EMPTY_PYTH_FEED),
     SystemProgram.programId,
     POOL_TYPE_NONE;
-    );
-    .accountsStrict({
+    ).accountsStrict({
         desk: DESK,
         payer: wallet.publicKey,
         tokenMint: tokenMint,
         tokenRegistry: tokenRegistryPda,
         systemProgram: SystemProgram.programId,
-        });
-        .rpc();
+        }).rpc();
 
         std::cout << "✅ Token registered" << std::endl;
         std::cout << "Transaction:" << tx << std::endl;
@@ -151,7 +155,7 @@ std::future<void> registerToken(const std::string& tokenMintStr, std::optional<d
 
 }
 
-std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd) {
+std::future<void> setPrice(const std:& tokenMintStr, double priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== SET TOKEN PRICE ==\n" << std::endl;
@@ -176,15 +180,11 @@ std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd) {
     std::cout << "Token Registry:" << tokenRegistryPda.toBase58() << std::endl;
     std::cout << "\nSetting price..." << std::endl;
 
-    const auto tx = (program.Program).methods;
-    .setManualTokenPrice(price8d);
-    .accounts({
+    const auto tx = (program.Program).methods.setManualTokenPrice(price8d).accounts({
         tokenRegistry: tokenRegistryPda,
         desk: DESK,
         owner: wallet.publicKey,
-        });
-        .signers([wallet]);
-        .rpc();
+        }).signers([wallet]).rpc();
 
         std::cout << "✅ Price set" << std::endl;
         std::cout << "Transaction:" << tx << std::endl;
@@ -215,9 +215,9 @@ std::future<void> showStatus() {
     std::cout << "   Lamports:" << deskInfo.lamports / 1e9 << "SOL" << std::endl;
 
     // Try to decode desk state
-    const auto idlPath = path.join(process.cwd(), "solana/otc-program/target/idl/otc.json");
+    const auto idlPath = path.join(std::filesystem::current_path().string(), "solana/otc-program/target/idl/otc.json");
     if (fs.existsSync(idlPath)) {
-        const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
+        const auto idl = /* JSON::parse */ fs.readFileSync(idlPath, "utf8");
         const auto dummyWallet = new anchor.Wallet(Keypair.generate());
         const auto provider = new anchor.AnchorProvider(connection, dummyWallet, { commitment: "confirmed" });
         const auto program = new anchor.Program(idl, provider);
@@ -229,12 +229,12 @@ std::future<void> showStatus() {
             nextOfferId: anchor.BN;
             minUsdAmount8d: anchor.BN;
             maxUsdAmount8d: anchor.BN;
-            isPaused: boolean;
+            isPaused;
             };
 
-            const auto deskAccount = (;
-        program.account as { desk: { fetch: (addr: PublicKey) => Promise<DeskAccount> } }
-        ).desk.fetch(DESK);
+            const auto deskAccount = [&](;
+        program.account as { desk: { fetch: (addr: PublicKey) { return Promise<DeskAccount> } }
+        ).desk.fetch(DESK); };
 
         std::cout << "\n📊 Desk State:" << std::endl;
         std::cout << "   Owner:" << deskAccount.owner.toBase58() << std::endl;
@@ -247,7 +247,7 @@ std::future<void> showStatus() {
     }
 
     // Check wallet balance
-    const auto privateKeyStr = process.env.SOLANA_MAINNET_PRIVATE_KEY;
+    const auto privateKeyStr = std::getenv("SOLANA_MAINNET_PRIVATE_KEY");
     if (privateKeyStr) {
         const auto wallet = getWallet();
         const auto balance = connection.getBalance(wallet.publicKey);
@@ -261,7 +261,7 @@ std::future<void> showStatus() {
 void printUsage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    console.log(`
+    console.log("
     Solana OTC Desk Admin CLI;
 
     Usage:
@@ -284,19 +284,19 @@ void printUsage() {
     SOLANA_MAINNET_RPC           RPC endpoint (default: mainnet-beta)
     NEXT_PUBLIC_SOLANA_DESK      Desk address override;
     NEXT_PUBLIC_SOLANA_PROGRAM_ID Program ID override;
-    `);
+    ");
 
 }
 
 std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto args = process.argv.slice(2);
+    const auto args = std::vector<std::string>().substr(2);
     const auto command = args[0];
 
     if (!command || command == "help" || command == "--help" || command == "-h") {
         printUsage();
-        process.exit(0);
+        std::exit(0);
     }
 
     switch (command) {
@@ -304,7 +304,7 @@ std::future<void> main() {
         if (!args[1]) {
             std::cerr << "Error: TOKEN_MINT required" << std::endl;
             printUsage();
-            process.exit(1);
+            std::exit(1);
         }
         createTreasury(args[1]);
         break;
@@ -313,7 +313,7 @@ std::future<void> main() {
         if (!args[1]) {
             std::cerr << "Error: TOKEN_MINT required" << std::endl;
             printUsage();
-            process.exit(1);
+            std::exit(1);
         }
         registerToken(args[1], args[2] ? parseFloat(args[2]) : std::nullopt);
         break;
@@ -322,7 +322,7 @@ std::future<void> main() {
         if (!args[1] || !args[2]) {
             std::cerr << "Error: TOKEN_MINT and PRICE_USD required" << std::endl;
             printUsage();
-            process.exit(1);
+            std::exit(1);
         }
         setPrice(args[1], parseFloat(args[2]));
         break;
@@ -334,7 +334,7 @@ std::future<void> main() {
         // default:
         std::cerr << "Unknown command:" << command << std::endl;
         printUsage();
-        process.exit(1);
+        std::exit(1);
     }
 
 }

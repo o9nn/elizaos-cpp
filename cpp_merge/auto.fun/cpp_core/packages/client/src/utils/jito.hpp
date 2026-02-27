@@ -17,7 +17,7 @@ namespace elizaos {
 
 // 
 
-using JitoRegion = std::string;
+using JitoRegion = std:;
 
 void getJitoEndpoint(JitoRegion region);
 /**

@@ -11,7 +11,7 @@ void MobileHeader() {
     const auto userId = currentUser.userId || "";
     const auto [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
-    return (;
+    return [&](;
     <div className="lg:hidden h-header-mobile sticky top-0 z-40 bg-background/95 border-b border-border">
     <div className="flex items-center justify-between px-4 py-3">;
     {/* Left = Sidebar Menu */}
@@ -68,8 +68,8 @@ void MobileHeader() {
     {userId && (;
     <CDPWalletCard;
     userId={userId}
-    onActionClick={() => setIsSheetOpen(false)}
-    />;
+    onActionClick={() { return setIsSheetOpen(false)}
+    />; };
     )}
     </div>;
     </div>;

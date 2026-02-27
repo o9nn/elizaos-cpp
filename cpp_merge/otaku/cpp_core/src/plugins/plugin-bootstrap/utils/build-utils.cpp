@@ -1,4 +1,10 @@
 #include "build-utils.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,11 +15,11 @@ void getTimer() {
 
     const auto start = performance.now();
     return {
-        elapsed: () => {
+        elapsed: [&]() {
             const auto end = performance.now();
             return (end - start).toFixed(2);
             },
-            elapsedMs: () => {
+            elapsedMs: [&]() {
                 const auto end = performance.now();
                 return Math.round(end - start);
                 },
@@ -27,7 +33,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
     const auto timer = getTimer();
 
     const auto {;
-        root = process.cwd(),
+        root = std::filesystem::current_path().string(),
         entrypoints = ["src/index.ts"],
         outdir = "dist",
         target = "node",
@@ -42,11 +48,11 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
 
         // Resolve paths relative to root
         const auto resolvedEntrypoints = entrypoints;
-        .filter((entry) => entry && entry.trim() != "") // Filter out empty strings;
-        ".std::map((entry) => (entry.startsWith("./") ? entry : " + "./" + entry
+        .filter[&]((entry) { return entry && entry != "") // Filter out empty strings; };
+        ".std::map[&]((entry) { return (entry.substr(0, "./") ? entry : " + "./" + entry
 
         // Common external packages for Node.js targets
-        const auto nodeExternals =;
+        const auto nodeExternals =; };
         target == "node" || target == "bun";
         ? [;
         "node:*",
@@ -94,7 +100,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
 
         // Filter out empty strings and clean up the external array
         const auto cleanExternals = [...external].filter(;
-        [&](ext) { return ext && !ext.startsWith("//") && ext.trim() != ""; }
+        [&](ext) { return ext && !ext.substr(0, "//") && ext != ""; }
         );
 
         const BuildConfig config = {;
@@ -103,7 +109,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
             target: target == "node" ? "node" : target,
             format,
             // Note: 'splitting' option removed as it's not part of Bun's BuildConfig type
-            // splitting: format === 'esm' && entrypoints.length > 1,
+            // splitting: format == 'esm' && entrypoints.size() > 1,
             sourcemap,
             minify,
             external: [...nodeExternals, ...elizaExternals, ...cleanExternals],
@@ -119,11 +125,11 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
 
 }
 
-std::future<void> copyAssets(const std::vector<std::any>& assets) {
+std::future<void> copyAssets(const std::vector<std::string>& assets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        if (!assets.length) return;
+        if (!assets.size()) return;
 
         const auto timer = getTimer();
         const auto { cp } = import("node:fs/promises");
@@ -131,11 +137,11 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
         std::cout << "Copying assets..." << std::endl;
 
         // Process all assets in parallel
-        const auto copyPromises = assets.std::map(std::async (asset) => {;
+        const auto copyPromises = assets.std::map[&](std::async (asset) {;
             const auto assetTimer = getTimer();
             try {
                 if (existsSync(asset.from)) {
-                    cp(asset.from, asset.to, { recursive: true });
+                    cp(asset.from, asset.to, Config{recursive = true});
                     return {
                         success: true,
                         "message: " + "Copied " + asset.from + " to " + asset.to + " (" + std::to_string(assetTimer.elapsed()) + "ms)"
@@ -165,16 +171,16 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
 
                                 // Process results
                                 auto successCount = 0;
-                                std::vector<std::any> failedAssets = [];
+                                std::vector<std::string> failedAssets = [];
 
-                                results.forEach((result) => {
+                                results.forEach[&]((result) {
                                     if (result.success) {
                                         successCount++;
                                         } else {
                                             std::cout << "   " + result.message << std::endl;
                                             if (result.error) {
                                                 // Check for specific error types
-                                                if (result.error.includes('EACCES') || result.error.includes('EPERM')) {
+                                                if (result.error.count('EACCES') > 0 || result.error.count('EPERM') > 0) {
                                                     std::cerr << "    Permission denied. Try running with elevated privileges." << std::endl;
                                                     } else if (result.(std::find(error.begin(), error.end(), "ENOSPC") != error.end())) {
                                                         std::cerr << "    Insufficient disk space." << std::endl;
@@ -186,14 +192,14 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
 
                                             const auto totalTime = timer.elapsed();
 
-                                            if (failedAssets.length == 0) {
+                                            if (failedAssets.size() == 0) {
                                                 std::cout << " Assets copied (" + totalTime + "ms)" << std::endl;
                                                 } else if (successCount > 0) {
                                                     std::cout << " Copied " + successCount + "/" + assets.size() + " assets (" + totalTime + "ms)" << std::endl;
-                                                    std::cout << "  Failed assets: " + std::to_string(failedAssets.std::map((f) => f.asset.from).join(", ")) << std::endl;
+                                                    std::cout << "  Failed assets: " + std::to_string[&](failedAssets.std::map((f) { return f.asset.from).join(", ")) << std::endl; };
                                                     } else {
-                                                        throw new Error(
-                                                        "Failed to copy all assets. Errors: " + std::to_string(failedAssets.std::map((f) => `${f.asset.from}: ${f.error}`).join("; "))
+                                                        throw new Error[&](
+                                                        "Failed to copy all assets. Errors: " + std::to_string(failedAssets.std::map((f) { return "" + std::to_string(f.asset.from) + ": " + std::to_string(f.error) + "").join("; }; "))
                                                         );
                                                     }
 
@@ -261,7 +267,7 @@ std::future<void> cleanBuild(auto outdir, auto maxRetries) {
                     const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
 
                     // Check for specific error types
-                    if (errorMessage.includes('EACCES') || errorMessage.includes('EPERM')) {
+                    if (errorMessage.count('EACCES') > 0 || errorMessage.count('EPERM') > 0) {
                         std::cerr << " Permission denied while cleaning " + outdir << std::endl;
                         std::cerr << "  Try running with elevated privileges or check file permissions." << std::endl;
                         throw error; // Don't retry permission errors
@@ -277,7 +283,7 @@ std::future<void> cleanBuild(auto outdir, auto maxRetries) {
                                     " Failed to clean " + outdir + " (attempt " + attempt + "/" + maxRetries + "): " + errorMessage
                                     );
                                     std::cout << "  Retrying in " + waitTime + "ms..." << std::endl;
-                                    new Promise((resolve) => setTimeout(resolve, waitTime));
+                                    new Promise[&]((resolve) { return setTimeout(resolve, waitTime)); };
                                 }
                                 } else {
                                     // Unknown error
@@ -308,7 +314,7 @@ std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
         // Clear console and show timestamp for rebuilds
         if (isRebuild) {
             console.clear();
-            const auto timestamp = new Date().toLocaleTimeString();
+            const auto timestamp = std::make_unique<Date>().toLocaleTimeString();
             std::cout << "[" + timestamp + "]  Rebuilding " + packageName + "...\n" << std::endl;
             } else {
                 std::cout << " Building " + packageName + "...\n" << std::endl;
@@ -334,7 +340,7 @@ std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
                     return false;
                 }
 
-                const auto totalSize = result.outputs.reduce((sum, output) => sum + output.size, 0);
+                const auto totalSize = result.outputs.reduce[&]((sum, output) { return sum + output.size, 0); };
                 const auto sizeMB = (totalSize / 1024 / 1024).toFixed(2);
                 console.log(
                 " Built " + result.outputs.size() + " file(s) - " + sizeMB + "MB (" + std::to_string(buildTimer.elapsed()) + "ms)";
@@ -346,7 +352,7 @@ std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
                 // Add TypeScript declarations generation if requested
                 if (buildOptions.generateDts) {
                     postBuildTasks.push_back(;
-                    generateDts("./tsconfig.build.json").catch((err) => {
+                    generateDts("./tsconfig.build.json").catch[&]((err) {
                         std::cerr << " TypeScript declarations generation failed:" << err << std::endl;
                         // Don't throw here, as it's often non-critical
                         return nullptr;
@@ -355,9 +361,9 @@ std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
                     }
 
                     // Add asset copying if specified
-                    if (buildOptions.assets.length) {
+                    if (buildOptions.assets.size()) {
                         postBuildTasks.push_back(;
-                        copyAssets(buildOptions.assets).catch((err) => {
+                        copyAssets(buildOptions.assets).catch[&]((err) {
                             std::cerr << " Asset copying failed:" << err << std::endl;
                             throw err; // Asset copying failure is critical
                             });
@@ -365,7 +371,7 @@ std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
                         }
 
                         // Execute all post-build tasks
-                        if (postBuildTasks.length > 0) {
+                        if (postBuildTasks.size() > 0) {
                             const auto postBuildTimer = getTimer();
                             Promise.all(postBuildTasks);
                             std::cout << " Post-build tasks completed (" + std::to_string(postBuildTimer.elapsed()) + "ms)" << std::endl;
@@ -408,19 +414,19 @@ void createBuildRunner(BuildRunnerOptions options) {
             const auto buildSuccess = build(false);
 
             if (buildSuccess) {
-                const auto srcDir = join(process.cwd(), "src");
+                const auto srcDir = join(std::filesystem::current_path().string(), "src");
 
                 try {
                     // Store the cleanup std::function returned by watchFiles
                     // The watcher stays active throughout the entire session
-                    cleanupWatcher = watchFiles(srcDir, std::async () => {
+                    cleanupWatcher = watchFiles[&](srcDir, std::async () {
                         build(true);
                         std::cout << " Watching src/ directory for changes..." << std::endl;
                         std::cout << " Press Ctrl+C to stop\n" << std::endl;
                         });
                         } catch (error: unknown) {
                             std::cerr << "Failed to start watch mode:" << error << std::endl;
-                            process.exit(1);
+                            std::exit(1);
                         }
                     }
                 }
@@ -444,7 +450,7 @@ void createBuildRunner(BuildRunnerOptions options) {
                             } else {
                                 const auto success = build();
                                 if (!success) {
-                                    process.exit(1);
+                                    std::exit(1);
                                 }
                             }
                             };

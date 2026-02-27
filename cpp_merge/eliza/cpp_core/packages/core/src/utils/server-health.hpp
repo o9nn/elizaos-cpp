@@ -21,12 +21,12 @@ namespace elizaos {
 
 struct ServerHealthOptions {
     double port;
-    std::optional<std::string> endpoint;
+    std::optional<std:> endpoint;
     std::optional<double> maxWaitTime;
     std::optional<double> pollInterval;
     std::optional<double> requestTimeout;
-    std::optional<std::string> host;
-    std::optional<std::string> protocol;
+    std::optional<std:> host;
+    std::optional<std:> protocol;
 };
 
 /**

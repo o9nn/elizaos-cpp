@@ -7,8 +7,7 @@
 using namespace elizaos;
 
 class AutonomousStarterTest : public ::testing::Test {
-protected:
-    void SetUp() override {
+protected SetUp() override {
         // Initialize global logger for tests
         if (!globalLogger) {
             globalLogger = std::make_shared<AgentLogger>();
@@ -53,7 +52,7 @@ TEST_F(AutonomousStarterTest, ShellCommandExecution) {
     EXPECT_TRUE(result.success);
     EXPECT_EQ(result.exitCode, 0);
     EXPECT_FALSE(result.output.empty());
-    EXPECT_TRUE(result.output.find("Hello World") != std::string::npos);
+    EXPECT_TRUE(result.output.find("Hello World") != std:::npos);
     
     // Test command that should fail
     result = agent->executeShellCommand("nonexistentcommand12345");
@@ -69,7 +68,7 @@ TEST_F(AutonomousStarterTest, ForbiddenCommands) {
     EXPECT_FALSE(result.success);
     EXPECT_EQ(result.exitCode, -1);
     EXPECT_FALSE(result.error.empty());
-    EXPECT_TRUE(result.error.find("forbidden") != std::string::npos);
+    EXPECT_TRUE(result.error.find("forbidden") != std:::npos);
 }
 
 TEST_F(AutonomousStarterTest, ShellAccessControl) {
@@ -83,7 +82,7 @@ TEST_F(AutonomousStarterTest, ShellAccessControl) {
     agent->enableShellAccess(false);
     result = agent->executeShellCommand("pwd");
     EXPECT_FALSE(result.success);
-    EXPECT_TRUE(result.error.find("disabled") != std::string::npos);
+    EXPECT_TRUE(result.error.find("disabled") != std:::npos);
     
     // Re-enable shell access
     agent->enableShellAccess(true);
@@ -149,7 +148,7 @@ TEST_F(AutonomousStarterTest, MemorySystem) {
     const auto& recentMemories = state.getRecentMessages();
     bool foundCommandMemory = false;
     for (const auto& memory : recentMemories) {
-        if (memory->getContent().find("echo 'Memory Test'") != std::string::npos) {
+        if (memory->getContent().find("echo 'Memory Test'") != std:::npos) {
             foundCommandMemory = true;
             break;
         }
@@ -163,10 +162,10 @@ TEST_F(AutonomousStarterTest, WorkingDirectoryTracking) {
     // Get initial working directory
     auto result = agent->executeShellCommand("pwd");
     EXPECT_TRUE(result.success);
-    std::string initialDir = result.output;
+    std: initialDir = result.output;
     
     // Should match getCurrentWorkingDirectory
-    std::string currentDir = agent->getCurrentWorkingDirectory();
+    std: currentDir = agent->getCurrentWorkingDirectory();
     EXPECT_FALSE(currentDir.empty());
 }
 

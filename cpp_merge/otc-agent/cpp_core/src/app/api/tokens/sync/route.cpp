@@ -1,4 +1,8 @@
 #include "route.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -41,7 +45,7 @@ std::future<void> POST(NextRequest request) {
 
 }
 
-std::future<void> syncEvmToken(const std::string& transactionHash, const std::string& blockNumber, const std::string& chain) {
+std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNumber, const std:& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Import chains dynamically to handle both Base and BSC
@@ -49,8 +53,8 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
     const auto registrationHelperAddress =;
     chain == "bsc";
-    ? process.env.NEXT_PUBLIC_BSC_REGISTRATION_HELPER_ADDRESS;
-    : process.env.NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS;
+    ? std::getenv("NEXT_PUBLIC_BSC_REGISTRATION_HELPER_ADDRESS");
+    : std::getenv("NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS");
 
     if (!registrationHelperAddress) {
         return NextResponse.json(;
@@ -64,9 +68,9 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
         const auto rpcUrl =;
         chain == "bsc";
-        ? process.env.NEXT_PUBLIC_BSC_RPC_URL ||;
+        ? std::getenv("NEXT_PUBLIC_BSC_RPC_URL") ||;
         "https://bsc-dataseed1.binance.org"
-        : process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
+        : std::getenv("NEXT_PUBLIC_BASE_RPC_URL") || "https://mainnet.base.org";
 
         const auto viemChain = chain == "bsc" ? bsc : base;
         const auto client = createPublicClient({;
@@ -77,7 +81,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
             try {
                 // Get transaction receipt to find the block
                 const auto receipt = client.getTransactionReceipt({;
-                    "hash: transactionHash as " + "0x" + std::string
+                    "hash: transactionHash as " + "0x" + std:
                     });
                     if (!receipt) {
                         return NextResponse.json(;
@@ -96,7 +100,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
                     // Get logs for this specific transaction
                     const auto logs = client.getLogs({;
-                        "address: registrationHelperAddress as " + "0x" + std::string
+                        "address: registrationHelperAddress as " + "0x" + std:
                         event: {
                             type: "event",
                             name: "TokenRegistered",
@@ -117,7 +121,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                             [&](log) { return log.transactionHash == transactionHash,; }
                             );
 
-                            if (txLogs.length == 0) {
+                            if (txLogs.size() == 0) {
                                 return NextResponse.json(;
                                 {
                                     success: false,
@@ -133,10 +137,10 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                 for (const auto& log : txLogs)
                                     try {
                                         const auto { tokenAddress, registeredBy } = log.args as {;
-                                            tokenId: std::string;
-                                            tokenAddress: std::string;
-                                            pool: std::string;
-                                            registeredBy: std::string;
+                                            tokenId: std:;
+                                            tokenAddress: std:;
+                                            pool: std:;
+                                            registeredBy: std:;
                                             };
 
                                             console.log(
@@ -145,29 +149,29 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
                                             // Fetch token metadata
                                             // Use type assertion to bypass viem's strict authorizationList requirement
-                                            const auto readContract = client.readContract as (;
+                                            const auto readContract = client.readContract as [&](;
                                             params: unknown,
-                                            ) => Promise<unknown>;
+                                            ) { return Promise<unknown>; };
                                             const auto [symbol, name, decimals] = Promise.all([;
                                             readContract({
-                                                "address: tokenAddress as " + "0x" + std::string
+                                                "address: tokenAddress as " + "0x" + std:
                                                 abi: ERC20_ABI,
                                                 functionName: "symbol",
                                                 }),
                                                 readContract({
-                                                    "address: tokenAddress as " + "0x" + std::string
+                                                    "address: tokenAddress as " + "0x" + std:
                                                     abi: ERC20_ABI,
                                                     functionName: "name",
                                                     }),
                                                     readContract({
-                                                        "address: tokenAddress as " + "0x" + std::string
+                                                        "address: tokenAddress as " + "0x" + std:
                                                         abi: ERC20_ABI,
                                                         functionName: "decimals",
                                                         }),
                                                         ]);
 
                                                         // Register to database - use the chain parameter (base or bsc)
-                                                        const auto tokenService = new TokenRegistryService();
+                                                        const auto tokenService = std::make_unique<TokenRegistryService>();
                                                         const auto dbChain = chain == "bsc" ? "bsc" : "base";
                                                         const auto token = tokenService.registerToken({;
                                                             symbol: symbol,
@@ -211,10 +215,10 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
 }
 
-std::future<void> syncSolanaToken(const std::string& signature) {
+std::future<void> syncSolanaToken(const std:& signature) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto programId = process.env.NEXT_PUBLIC_SOLANA_PROGRAM_ID;
+    const auto programId = std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID");
     if (!programId) {
         return NextResponse.json(;
         { success: false, error: "SOLANA_PROGRAM_ID not configured" },
@@ -223,7 +227,7 @@ std::future<void> syncSolanaToken(const std::string& signature) {
     }
 
     const auto rpcUrl =;
-    process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+    std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "https://api.mainnet-beta.solana.com";
     const auto connection = new Connection(rpcUrl, "confirmed");
 
     try {

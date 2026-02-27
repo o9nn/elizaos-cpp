@@ -1,4 +1,6 @@
 #include "validation.hpp"
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +13,7 @@ std::future<std::vector<AgentBasic>> getAgents(OptionValues opts) {
         const auto baseUrl = getAgentsBaseUrl(opts);
         const auto response = fetch(baseUrl);
         if (!response.ok) {
-            throw std::runtime_error(`Failed to fetch agents list: ${response.statusText}`);
+            throw std::runtime_error("Failed to fetch agents list: " + std::to_string(response.statusText) + "");
         }
         const auto rawData = response.json();
         const auto validatedData = AgentsListResponseSchema.parse(rawData);
@@ -23,7 +25,7 @@ std::future<std::vector<AgentBasic>> getAgents(OptionValues opts) {
     }
 }
 
-std::future<std::string> resolveAgentId(const std::string& idOrNameOrIndex, OptionValues opts) {
+std::future<std:> resolveAgentId(const std:& idOrNameOrIndex, OptionValues opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -40,7 +42,7 @@ std::future<std::string> resolveAgentId(const std::string& idOrNameOrIndex, Opti
         }
 
         // Try to find agent by ID
-        const auto agentById = agents.find((agent) => agent.id == idOrNameOrIndex);
+        const auto agentById = agents.find[&]((agent) { return agent.id == idOrNameOrIndex); };
 
         if (agentById) {
             return agentById.id;
@@ -55,7 +57,7 @@ std::future<std::string> resolveAgentId(const std::string& idOrNameOrIndex, Opti
         }
 
         // If no agent is found, throw a specific error type that we can catch
-        throw std::runtime_error(`AGENT_NOT_FOUND:${idOrNameOrIndex}`);
+        throw std::runtime_error("AGENT_NOT_FOUND:" + std::to_string(idOrNameOrIndex) + "");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

@@ -1,4 +1,6 @@
 #include "deploy-devnet.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,18 +25,18 @@ std::future<void> main() {
     auto desk: Keypair;
 
     if (fs.existsSync(deskKeypairPath)) {
-        const auto secret = /* JSON.parse */ fs.readFileSync(deskKeypairPath, "utf8");
+        const auto secret = /* JSON::parse */ fs.readFileSync(deskKeypairPath, "utf8");
         desk = Keypair.fromSecretKey(Uint8Array.from(secret));
         std::cout << "🏦 Using existing Desk:" << desk.std::to_string(publicKey) << std::endl;
         } else {
             desk = Keypair.generate();
-            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
             std::cout << "🏦 Created new Desk:" << desk.std::to_string(publicKey) << std::endl;
         }
 
         // 2. Create USDC Mock Mint for Devnet testing
         std::cout << "\n🪙 Creating Devnet USDC Mock..." << std::endl;
-        const auto payer = (provider.wallet).payer || Keypair.fromSecretKey(Buffer.from(/* JSON.parse */ fs.readFileSync(process.env.ANCHOR_WALLET || "./id.json", "utf8")));
+        const auto payer = (provider.wallet).payer || Keypair.fromSecretKey(Buffer.from(/* JSON::parse */ fs.readFileSync(std::getenv("ANCHOR_WALLET") || "./id.json", "utf8")));
 
         const auto usdcMint = createMint(;
         provider.connection,
@@ -49,21 +51,17 @@ std::future<void> main() {
         try {
             std::cout << "\n⚙️  Initializing desk..." << std::endl;
 
-            const auto tx = program.methods;
-            .initDesk(new BN(500_000_000), new BN(1800));
-            .accountsPartial({
+            const auto tx = program.methods.initDesk(new BN(500_000_000), new BN(1800)).accountsPartial({
                 payer: provider.wallet.publicKey,
                 owner: provider.wallet.publicKey,
                 agent: provider.wallet.publicKey,
                 usdcMint: usdcMint,
                 desk: desk.publicKey,
-                });
-                .signers([desk]);
-                .rpc();
+                }).signers([desk]).rpc();
 
                 std::cout << "✅ Desk initialized. Tx:" << tx << std::endl;
                 } catch (e: unknown) {
-                    const auto error = e & { logs?: std::string[] };
+                    const auto error = e & { logs?: std:[] };
                     std::cout << "⚠️  Desk init error (might be already initialized):" << error.message << std::endl;
                     if (error.logs) console.log("Logs:", error.logs);
                 }
@@ -81,10 +79,10 @@ std::future<void> main() {
                     const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/testnet-solana.json");
                     const auto deploymentDir = path.dirname(deploymentPath);
                     if (!fs.existsSync(deploymentDir)) {
-                        fs.mkdirSync(deploymentDir, { recursive: true });
+                        fs.mkdirSync(deploymentDir, Config{recursive = true});
                     }
 
-                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(envData, nullptr, 2));
+                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std:(envData, nullptr, 2));
                     std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 
 }

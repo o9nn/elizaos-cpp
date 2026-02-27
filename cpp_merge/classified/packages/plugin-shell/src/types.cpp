@@ -3,7 +3,7 @@
 namespace @elizaos/core {
 }
 object ShellServiceType = object{
-    object::pair{std::string("SHELL"), as<std::shared_ptr<const>>(std::string("SHELL"))}
+    object::pair{std:("SHELL"), as<std::shared_ptr<const>>(std:("SHELL"))}
 };
 
 void Main(void)

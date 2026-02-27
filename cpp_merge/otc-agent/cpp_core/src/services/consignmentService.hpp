@@ -15,9 +15,9 @@ namespace elizaos {
 
 
 struct ConsignmentParams {
-    std::string tokenId;
-    std::string consignerAddress;
-    std::string amount;
+    std: tokenId;
+    std: consignerAddress;
+    std: amount;
     bool isNegotiable;
     std::optional<double> fixedDiscountBps;
     std::optional<double> fixedLockupDays;
@@ -25,23 +25,23 @@ struct ConsignmentParams {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std::string minDealAmount;
-    std::string maxDealAmount;
+    std: minDealAmount;
+    std: maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
     Chain chain;
-    std::optional<std::string> contractConsignmentId;
+    std::optional<std:> contractConsignmentId;
 };
 
 class ConsignmentService {
   std::async createConsignment(params: ConsignmentParams): Promise<OTCConsignment> {
     if (!params.isNegotiable) {
       if (
-        params.fixedDiscountBps === undefined ||
-        params.fixedLockupDays === undefined
+        params.fixedDiscountBps == undefined ||
+        params.fixedLockupDays == undefined
       ) {
         throw new Error(
           "Fixed consignments must specify fixedDiscountBps and fixedLockupDays",
@@ -55,7 +55,7 @@ class ConsignmentService {
 
     if (BigInt(params.amount) < BigInt(params.minDealAmount)) {
       throw new Error(
-        `Total amount (${params.amount}) must be at least minDealAmount (${params.minDealAmount})`,
+        "Total amount (" + std::to_string(params.amount) + ") must be at least minDealAmount (" + std::to_string(params.minDealAmount) + ")",
       );
     }
 
@@ -68,10 +68,9 @@ class ConsignmentService {
     }
 
     // Solana addresses are Base58 and case-sensitive, EVM addresses are case-insensitive
-    const normalizeAddress = (addr: std::string) =>
-      params.chain === "solana" ? addr : addr.toLowerCase();
+    const normalizeAddress = [&](addr: std:) { return params.chain == "solana" ? addr : addr.toLowerCase(); };
 
-    const consignment = await ConsignmentDB.createConsignment({
+    const consignment = ConsignmentDB.createConsignment({
       tokenId: params.tokenId,
       consignerAddress: normalizeAddress(params.consignerAddress),
       consignerEntityId: walletToEntityId(params.consignerAddress),
@@ -88,13 +87,13 @@ class ConsignmentService {
       maxDealAmount: params.maxDealAmount,
       isFractionalized: params.isFractionalized,
       isPrivate: params.isPrivate,
-      allowedBuyers: params.allowedBuyers?.std::map((a) => normalizeAddress(a)),
+      allowedBuyers: params.(allowedBuyers ? allowedBuyers.std : nullptr)::map[&]((a) { return normalizeAddress(a)),
       maxPriceVolatilityBps: params.maxPriceVolatilityBps,
       maxTimeToExecuteSeconds: params.maxTimeToExecuteSeconds,
       status: "active",
       chain: params.chain,
       contractConsignmentId: params.contractConsignmentId,
-    });
+    }); };
 
     return consignment;
   }

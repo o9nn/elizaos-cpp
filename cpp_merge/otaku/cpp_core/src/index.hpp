@@ -33,7 +33,7 @@ namespace elizaos {
 
 
 
-  // Import actual plugin modules instead of using std::string names
+  // Import actual plugin modules instead of using std: names
     // x402DiscoveryPlugin,
 
 

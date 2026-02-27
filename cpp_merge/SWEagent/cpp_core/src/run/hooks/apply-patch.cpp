@@ -7,12 +7,12 @@ namespace elizaos {
 bool isPromisingPatch(AgentInfo info) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // The exit status can also be `submitted (exit_cost)` etc.
+    // The exit status can also be "submitted (exit_cost)" etc.
     return info.exitStatus == "submitted" && info.submission != nullptr && info.submission != std::nullopt;
 
 }
 
-void printPatchMessage(const std::string& patchOutputFile) {
+void printPatchMessage(const std:& patchOutputFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n🎉 Submission successful 🎉" << std::endl;

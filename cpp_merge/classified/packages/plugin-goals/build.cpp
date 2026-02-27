@@ -1,14 +1,14 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/build.config.h"
 
 std::shared_ptr<BuildConfig> buildConfig = object{
-    object::pair{std::string("entrypoints"), array<string>{ std::string("./src/index.ts") }}, 
-    object::pair{std::string("outdir"), std::string("./dist")}, 
-    object::pair{std::string("target"), std::string("node")}, 
-    object::pair{std::string("format"), std::string("esm")}, 
-    object::pair{std::string("splitting"), false}, 
-    object::pair{std::string("sourcemap"), std::string("external")}, 
-    object::pair{std::string("external"), array<string>{ std::string("fs"), std::string("path"), std::string("http"), std::string("https"), std::string("crypto"), std::string("node:fs"), std::string("node:path"), std::string("node:http"), std::string("node:https"), std::string("node:crypto"), std::string("node:stream"), std::string("node:buffer"), std::string("node:util"), std::string("node:events"), std::string("node:url"), std::string("bun:test"), std::string("dotenv"), std::string("zod"), std::string("@elizaos/core"), std::string("axios") }}, 
-    object::pair{std::string("naming"), std::string("[dir]/[name].[ext]")}
+    object::pair{std:("entrypoints"), array<string>{ std:("./src/index.ts") }}, 
+    object::pair{std:("outdir"), std:("./dist")}, 
+    object::pair{std:("target"), std:("node")}, 
+    object::pair{std:("format"), std:("esm")}, 
+    object::pair{std:("splitting"), false}, 
+    object::pair{std:("sourcemap"), std:("external")}, 
+    object::pair{std:("external"), array<string>{ std:("fs"), std:("path"), std:("http"), std:("https"), std:("crypto"), std:("node:fs"), std:("node:path"), std:("node:http"), std:("node:https"), std:("node:crypto"), std:("node:stream"), std:("node:buffer"), std:("node:util"), std:("node:events"), std:("node:url"), std:("bun:test"), std:("dotenv"), std:("zod"), std:("@elizaos/core"), std:("axios") }}, 
+    object::pair{std:("naming"), std:("[dir]/[name].[ext]")}
 };
 
 void Main(void)

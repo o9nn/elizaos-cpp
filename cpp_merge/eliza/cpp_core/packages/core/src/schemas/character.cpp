@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-CharacterValidationResult validateCharacter(const std::any& data) {
+CharacterValidationResult validateCharacter(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = characterSchema.safeParse(data);
@@ -26,11 +26,11 @@ CharacterValidationResult validateCharacter(const std::any& data) {
 
 }
 
-CharacterValidationResult parseAndValidateCharacter(const std::string& jsonString) {
+CharacterValidationResult parseAndValidateCharacter(const std:& jsonString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto parsed = /* JSON.parse */ jsonString;
+        const auto parsed = /* JSON::parse */ jsonString;
         return validateCharacter(parsed);
         } catch (error) {
             return {
@@ -43,7 +43,7 @@ CharacterValidationResult parseAndValidateCharacter(const std::string& jsonStrin
 
 }
 
-data is Character isValidCharacter(const std::any& data) {
+data is Character isValidCharacter(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return validateCharacter(data).success;

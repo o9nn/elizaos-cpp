@@ -11,16 +11,16 @@ void HowItWorksContent() {
     useMultiWallet(); // Hook used for side effects only;
 
     // Simple wallet connect - just use Privy login
-    const auto handleOpenConsignmentForm = useCallback(() => {;
+    const auto handleOpenConsignmentForm = useCallback[&](() {;
         // navigate to /consign
         router.push_back("/consign");
         }, [router]);
 
-        const auto handleOpenTradingDesk = useCallback(() => {;
+        const auto handleOpenTradingDesk = useCallback[&](() {;
             router.push_back("/");
             }, [router]);
 
-            const auto handleViewDeals = useCallback(() => {;
+            const auto handleViewDeals = useCallback[&](() {;
                 router.push_back("/my-deals");
                 }, [router]);
 

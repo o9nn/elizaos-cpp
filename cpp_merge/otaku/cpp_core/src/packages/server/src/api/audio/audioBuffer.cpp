@@ -1,10 +1,12 @@
 #include "audioBuffer.hpp"
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
+std: getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if this is a WAV file by looking for the RIFF header
@@ -20,12 +22,12 @@ std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
 
     // MP3 files typically start with ID3 tag or directly with an MP3 frame
     // Check for ID3 tag (ID3v2)
-    if (audioBuffer.length >= 3 && audioBuffer.toString('ascii', 0, 3) == 'ID3') {
+    if (audioBuffer.size() >= 3 && audioBuffer.toString('ascii', 0, 3) == 'ID3') {
         return "audio/mpeg";
     }
 
     // Check for MP3 frame header (begins with 0xFF followed by 0xE or 0xF)
-    if (audioBuffer.length >= 2 && audioBuffer[0] == 0xff && (audioBuffer[1] & 0xe0) == 0xe0) {
+    if (audioBuffer.size() >= 2 && audioBuffer[0] == 0xff && (audioBuffer[1] & 0xe0) == 0xe0) {
         return "audio/mpeg";
     }
 
@@ -35,14 +37,14 @@ std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
 }
 
 std::future<std::variant<Buffer>;
-export std::async std::function convertToAudioBuffer(
-  speechResponse: std::any,
+std::async std::function convertToAudioBuffer(
+  speechResponse: std:,
   detectMimeType: true
 ): Promise<AudioProcessingResult>;
-export std::async std::function convertToAudioBuffer(
-  speechResponse: std::any,
-  detectMimeType?: boolean
-): Promise<Buffer, AudioProcessingResult>> convertToAudioBuffer(const std::any& speechResponse) {
+std::async std::function convertToAudioBuffer(
+  speechResponse: std:,
+  detectMimeType?
+): Promise<Buffer, AudioProcessingResult>> convertToAudioBuffer(const std:& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -73,13 +75,12 @@ export std::async std::function convertToAudioBuffer(
                     typeof speechResponse.on == "function");
                     ) {
                         // Handle Node Readable Stream
-                        resultBuffer = new Promise<Buffer>((resolve, reject) => {
+                        resultBuffer = new Promise<Buffer>[&]((resolve, reject) {
                             const std::vector<std::vector<uint8_t>> chunks = [];
-                            speechResponse.on("data", (chunk: std::any) =>
-                            chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
-                            );
-                            speechResponse.on("end", () => resolve(Buffer.concat(chunks)));
-                            speechResponse.on("error", (err: Error) => reject(err));
+                            speechResponse.on[&]("data", (chunk: std:) { return chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+                            ); };
+                            speechResponse.on[&]("end", () { return resolve(Buffer.concat(chunks))); };
+                            speechResponse.on[&]("error", (err: Error) { return reject(err)); };
                             });
                             } else {
                                 throw std::runtime_error('Unexpected response type from TEXT_TO_SPEECH model');

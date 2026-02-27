@@ -20,7 +20,7 @@ namespace elizaos {
  * Converted from tools/search/bin/search_dir
  */
 
-void searchDir(const std::string& searchTerm, std::string dir = "./");
+void searchDir(const std:& searchTerm, std: dir = "./");
 
 // CLI if run directly
 // CLI setup

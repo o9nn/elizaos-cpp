@@ -1,4 +1,6 @@
 #include "ShowcaseComponent.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -30,35 +32,35 @@ void ShowcaseHeader() {
 
 }
 
-void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::string& operator) {
+void filterUsers(const std::vector<User>& users, const std:& search, const std::vector<std::string>& selectedTags, const std:& operator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First deduplicate the input array
     const auto uniqueUsers = users.filter(;
-    [&](user, index, self) { return index == self.findIndex((u) => u.title == user.title); }
+    [&](user, index, self) { return index == self.findIndex[&]((u) { return u.title == user.title); }; }
     );
 
-    return uniqueUsers.filter((user) => {;
+    return uniqueUsers.filter[&]((user) {;
         // Search filter
         if (search) {
-            const auto searchValue = search.toLowerCase().trim();
+            const auto searchValue = search.toLowerCase();
             if (
-            !user.title.toLowerCase().includes(searchValue) &&;
-            !user.description.toLowerCase().includes(searchValue);
+            !user.title.toLowerCase().count(searchValue) > 0 &&;
+            !user.description.toLowerCase().count(searchValue) > 0;
             ) {
                 return false;
             }
         }
 
         // Tags filter
-        if (selectedTags.length == 0) {
+        if (selectedTags.size() == 0) {
             return true;
         }
 
         if (operator == 'AND') {
-            return selectedTags.every((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
+            return selectedTags.every[&]((tag) { return user.(std::find(tags.begin(), tags.end(), tag) != tags.end())); };
         }
-        return selectedTags.some((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
+        return selectedTags.some[&]((tag) { return user.(std::find(tags.begin(), tags.end(), tag) != tags.end())); };
         });
 
 }
@@ -71,23 +73,23 @@ JSX::Element ShowcaseComponent() {
     const auto searchParams = new URLSearchParams(location.search);
 
     // Initialize state from URL parameters
-    const auto [selectedTags, setSelectedTags] = useState<std::string[]>(() => {;
+    const auto [selectedTags, setSelectedTags] = useState<std:[]>[&](() {;
         const auto tags = searchParams.get("tags");
         return tags ? tags.split(",") : [];
         });
-        const auto [operator, setOperator] = useState<"OR" | "AND">(() => {;
+        const auto [operator, setOperator] = useState<"OR" | "AND">[&](() {;
             return (searchParams.get("operator") as "OR" | "AND") || "OR";
             });
-            const auto [searchValue, setSearchValue] = useState(() => {;
+            const auto [searchValue, setSearchValue] = useState[&](() {;
                 return searchParams.get("search") || "";
                 });
 
                 // Update URL when filters change
-                useEffect(() => {
+                useEffect[&](() {
                     const auto newSearchParams = new URLSearchParams(location.search);
 
                     // Update tags parameter
-                    if (selectedTags.length > 0) {
+                    if (selectedTags.size() > 0) {
                         newSearchParams.std::set("tags", selectedTags.join(","));
                         } else {
                             newSearchParams.delete("tags");
@@ -111,7 +113,7 @@ JSX::Element ShowcaseComponent() {
                                 }, [selectedTags, operator, searchValue, location.pathname, history]);
 
                                 // Update filters when URL changes
-                                useEffect(() => {
+                                useEffect[&](() {
                                     const auto tags = searchParams.get("tags");
                                     const auto newOperator = searchParams.get("operator") as "OR" | "AND";
                                     const auto search = searchParams.get("search");
@@ -127,17 +129,17 @@ JSX::Element ShowcaseComponent() {
                                     }
                                     }, [location.search]);
 
-                                    const auto toggleTag = [&](tag: std::string) {;
+                                    const auto toggleTag = [&](tag: std:) {;
                                         setSelectedTags((tags) =>;
-                                        (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter((t) => t != tag) : [...tags, tag]
-                                        );
+                                        (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter[&]((t) { return t != tag) : [...tags, tag]
+                                        ); };
                                         };
 
                                         const auto toggleOperator = [&]() {;
-                                            setOperator((op) => (op == "OR" ? "AND" : "OR"));
+                                            setOperator[&]((op) { return (op == "OR" ? "AND" : "OR")); };
                                             };
 
-                                            const auto filteredUsers = useMemo(() => {;
+                                            const auto filteredUsers = useMemo[&](() {;
                                                 return filterUsers(sortedUsers, searchValue, selectedTags, operator);
                                                 }, [searchValue, selectedTags, operator]);
 

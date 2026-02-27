@@ -1,25 +1,27 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress) {
+bool isLocalDevelopment(const std:& chain, const std:& contractAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // EVM local testnet (Anvil deploys to predictable addresses)
     if (
-    contractAddress.startsWith("0x5FbDB") ||;
-    contractAddress.startsWith("0x5fbdb") ||;
-    contractAddress.startsWith("0xe7f1725") // Common Anvil deploy address;
+    contractAddress.substr(0, "0x5FbDB") ||;
+    contractAddress.substr(0, "0x5fbdb") ||;
+    contractAddress.substr(0, "0xe7f1725") // Common Anvil deploy address;
     ) {
         return true;
     }
 
     // Solana localnet - check if RPC is localhost or no Birdeye key
     if (chain == "solana") {
-        const auto solanaRpc = process.env.NEXT_PUBLIC_SOLANA_RPC || "";
-        const auto hasBirdeyeKey = !!process.env.BIRDEYE_API_KEY;
+        const auto solanaRpc = std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "";
+        const auto hasBirdeyeKey = !!std::getenv("BIRDEYE_API_KEY");
         if (
         (std::find(solanaRpc.begin(), solanaRpc.end(), "127.0.0.1") != solanaRpc.end()) ||;
         (std::find(solanaRpc.begin(), solanaRpc.end(), "localhost") != solanaRpc.end()) ||;
@@ -46,7 +48,7 @@ std::future<void> GET(NextRequest request) {
 
             // Skip external API calls for local development
             if (!isLocalDevelopment(token.chain, token.contractAddress)) {
-                const auto service = new MarketDataService();
+                const auto service = std::make_unique<MarketDataService>();
                 service.refreshTokenData(;
                 tokenId,
                 token.contractAddress,

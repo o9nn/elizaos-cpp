@@ -1,4 +1,5 @@
 #include "admin.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,21 +9,21 @@ void AdminTab() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
+        const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
         const auto location = useLocation();
         const auto [isLoading, setIsLoading] = useState(false);
         const auto [isSaving, setIsSaving] = useState(false);
         const auto [tokenStatus, setTokenStatus] = useState<{;
-            hidden: boolean;
-            featured: boolean;
-            verified: boolean;
+            hidden;
+            featured;
+            verified;
             }>({ hidden: false, featured: false, verified: false });
             const auto [originalData, setOriginalData] = useState<{;
-                website: std::string;
-                twitter: std::string;
-                telegram: std::string;
-                discord: std::string;
-                farcaster: std::string;
+                website: std:;
+                twitter: std:;
+                telegram: std:;
+                discord: std:;
+                farcaster: std:;
                 }>({
                     website: "",
                     twitter: "",
@@ -32,17 +33,17 @@ void AdminTab() {
                     });
                     const auto [selectedAudioFile, setSelectedAudioFile] = useState<File | nullptr>(nullptr);
                     const auto [isUploadingAudio, setIsUploadingAudio] = useState(false);
-                    const auto [existingAudioUrl, setExistingAudioUrl] = useState<std::string | nullptr>(nullptr);
+                    const auto [existingAudioUrl, setExistingAudioUrl] = useState<std: | nullptr>(nullptr);
                     const auto [audioTimestamp, setAudioTimestamp] = useState<number>(Date.now());
                     const auto audioInputRef = useRef<HTMLInputElement>(nullptr);
 
                     // Extract token mint from URL if not found in params
-                    const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
+                    const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
                     nullptr,
                     );
 
                     // Effect to detect token mint from various sources (similar to community tab)
-                    useEffect(() => {
+                    useEffect[&](() {
                         // First try from URL params (most reliable)
                         if (urlTokenMint) {
                             setDetectedTokenMint(urlTokenMint);
@@ -60,10 +61,10 @@ void AdminTab() {
                         const auto mint = detectedTokenMint;
 
                         // Fetch generation settings when mint changes
-                        useEffect(() => {
+                        useEffect[&](() {
                             if (!mint) return;
 
-                            const auto fetchGenerationSettings = std::async () => {;
+                            const auto fetchGenerationSettings = std::async [&]() {;
                                 if (!mint) return;
 
                                 try {
@@ -115,15 +116,15 @@ void AdminTab() {
                                                         };
 
                                                         // Fetch current token data
-                                                        useEffect(() => {
+                                                        useEffect[&](() {
                                                             if (!mint) return;
 
-                                                            const auto fetchTokenData = std::async () => {;
+                                                            const auto fetchTokenData = std::async [&]() {;
                                                                 setIsLoading(true);
                                                                 try {
                                                                     const auto response = "fetch(" + env.apiUrl + "/api/token/" + mint;
                                                                     if (!response.ok) {
-                                                                        throw std::runtime_error(`Failed to fetch token data (${response.status})`);
+                                                                        throw std::runtime_error("Failed to fetch token data (" + std::to_string(response.status) + ")");
                                                                     }
 
                                                                     const auto data = (response.json());
@@ -164,7 +165,7 @@ void AdminTab() {
                                                                                         fetchTokenData();
                                                                                         }, [mint, reset]);
 
-                                                                                        const auto onSubmit = std::async (data: FormData) => {;
+                                                                                        const auto onSubmit = std::async [&](data: FormData) {;
                                                                                             if (!mint) {
                                                                                                 toast.error("No token ID found");
                                                                                                 return;
@@ -174,15 +175,15 @@ void AdminTab() {
 
                                                                                             // --- Link Normalization ---
                                                                                             const auto normalizeUrl = (;
-                                                                                            url: std::string,
-                                                                                            prefix: std::string,
-                                                                                            domain?: std::string,
-                                                                                            ): std::string => {
+                                                                                            url: std:,
+                                                                                            prefix: std:,
+                                                                                            domain?: std:,
+                                                                                            ): std: => {
                                                                                                 if (!url) return "";
                                                                                                 try {
-                                                                                                    url = url.trim();
+                                                                                                    url = url;
                                                                                                     // If it's already a valid URL with the correct domain, ensure https
-                                                                                                    if (url.startsWith("http://") || url.startsWith("https://")) {
+                                                                                                    if (url.substr(0, "http://") || url.substr(0, "https://")) {
                                                                                                         const auto urlObj = new URL(url);
                                                                                                         if (domain && urlObj.hostname.replace(/^www\\./, "") != domain) {
                                                                                                             // Domain mismatch, try to extract path/username
@@ -193,16 +194,16 @@ void AdminTab() {
                                                                                                         return std::to_string(urlObj);
                                                                                                     }
                                                                                                     // Handle cases like domain.com/path directly
-                                                                                                    if (domain && url.startsWith(domain + "/")) {
+                                                                                                    if (domain && url.substr(0, domain + "/")) {
                                                                                                         return "https://" + url;
                                                                                                     }
                                                                                                     // Handle just username/path/code
-                                                                                                    if (!url.includes("/") && !url.includes(".")) {
+                                                                                                    if (!url.count("/") > 0 && !url.count(".") > 0) {
                                                                                                         return prefix + url;
                                                                                                     }
                                                                                                     // If it doesn't seem like a username or valid url, prepend prefix cautiously
                                                                                                     // Assume it's a path/username if no protocol and no clear domain
-                                                                                                    if (!url.startsWith("http") && !url.includes("://")) {
+                                                                                                    if (!url.substr(0, "http") && !url.count("://") > 0) {
                                                                                                         // Basic check for common domain patterns - might need refinement
                                                                                                         const auto domainPattern = /^[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)+/;
                                                                                                         if (!domainPattern.test(url.split("/")[0])) {
@@ -214,7 +215,7 @@ void AdminTab() {
                                                                                                     } catch (e) {
                                                                                                         std::cout << "Could not parse or normalize URL: " + url << e << std::endl;
                                                                                                         // Fallback: attempt basic https prefix if missing
-                                                                                                        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                                                                                                        if (!url.substr(0, "http://") && !url.substr(0, "https://")) {
                                                                                                             return "https://" + url;
                                                                                                         }
                                                                                                     }
@@ -222,9 +223,9 @@ void AdminTab() {
                                                                                                     return url;
                                                                                                     };
 
-                                                                                                    const auto normalizeTwitter = (input: std::string): std::string => {;
+                                                                                                    const auto normalizeTwitter = (input: std:): std: => {;
                                                                                                         if (!input) return "";
-                                                                                                        input = input.trim();
+                                                                                                        input = input;
                                                                                                         const auto twitterUrlMatch = input.match(;
                                                                                                         /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)/,
                                                                                                         );
@@ -263,17 +264,17 @@ void AdminTab() {
 
                                                                                                             try {
                                                                                                                 const auto authToken = localStorage.getItem("authToken");
-                                                                                                                const std::unordered_map<std::string, std::string> headers = {;
+                                                                                                                const std::unordered_map<std:, std:> headers = {;
                                                                                                                     "Content-Type": "application/json",
                                                                                                                     };
 
                                                                                                                     if (authToken) {
-                                                                                                                        "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON.parse */ authToken);
+                                                                                                                        "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON::parse */ authToken);
                                                                                                                     }
 
                                                                                                                     // Create request payload with development override if needed
                                                                                                                     // Use normalized links
-                                                                                                                    const std::unordered_map<std::string, std::any> payload = {;
+                                                                                                                    const std::unordered_map<std:, std:> payload = {;
                                                                                                                         website: normalizedLinks.website,
                                                                                                                         twitter: normalizedLinks.twitter,
                                                                                                                         telegram: normalizedLinks.telegram,
@@ -287,7 +288,7 @@ void AdminTab() {
                                                                                                                         {
                                                                                                                             method: "POST",
                                                                                                                             headers,
-                                                                                                                            body: /* JSON.stringify */ std::string(payload),
+                                                                                                                            body: /* JSON.stringify */ std:(payload),
                                                                                                                             credentials: "include",
                                                                                                                             },
                                                                                                                             );
@@ -299,7 +300,7 @@ void AdminTab() {
                                                                                                                                 {
                                                                                                                                     method: "POST",
                                                                                                                                     headers,
-                                                                                                                                    body: /* JSON.stringify */ std::string(payload),
+                                                                                                                                    body: /* JSON.stringify */ std:(payload),
                                                                                                                                     credentials: "include",
                                                                                                                                     },
                                                                                                                                     );
@@ -308,7 +309,7 @@ void AdminTab() {
                                                                                                                                 if (!response.ok) {
                                                                                                                                     auto errorMessage = "Failed to update token";
                                                                                                                                     try {
-                                                                                                                                        const auto errorData = (response.json()) as { error?: std::string };
+                                                                                                                                        const auto errorData = (response.json()) as { error?: std: };
                                                                                                                                         errorMessage = errorData.error || errorMessage;
                                                                                                                                         } catch (e) {
                                                                                                                                             std::cerr << "Error parsing error response:" << e << std::endl;
@@ -338,14 +339,14 @@ void AdminTab() {
                                                                                                                                             // --- Mutations for Moderator Actions ---
 
                                                                                                                                             // Mutation for toggling hidden status
-                                                                                                                                            const auto toggleHiddenMutation = useMutation({;
-                                                                                                                                                mutationFn: std::async () => {
+                                                                                                                                            const auto toggleHiddenMutation = useMutation[&]({;
+                                                                                                                                                mutationFn: std::async () {
                                                                                                                                                     if (!mint) throw new Error("Mint address not found");
                                                                                                                                                     return "fetcher(" + "/api/admin/tokens/" + mint + "/hidden";
                                                                                                                                                         hidden: !tokenStatus.hidden,
                                                                                                                                                         });
                                                                                                                                                         },
-                                                                                                                                                        onSuccess: () => {
+                                                                                                                                                        onSuccess: [&]() {
                                                                                                                                                             toast.success(;
                                                                                                                                                             "Token " + std::to_string(tokenStatus.hidden ? "unhidden" : "hidden") + " successfully"
                                                                                                                                                             );
@@ -353,7 +354,7 @@ void AdminTab() {
                                                                                                                                                             setTokenStatus((prev) => ({ ...prev, hidden: !prev.hidden }));
                                                                                                                                                             queryClient.invalidateQueries({ queryKey: ["token", mint] }); // Refetch token data in the background
                                                                                                                                                             },
-                                                                                                                                                            onError: (error) => {
+                                                                                                                                                            onError: [&](error) {
                                                                                                                                                                 toast.error(;
                                                                                                                                                                 "Failed to update hidden status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                 );
@@ -361,14 +362,14 @@ void AdminTab() {
                                                                                                                                                                 });
 
                                                                                                                                                                 // Mutation for toggling featured status
-                                                                                                                                                                const auto toggleFeaturedMutation = useMutation({;
-                                                                                                                                                                    mutationFn: std::async () => {
+                                                                                                                                                                const auto toggleFeaturedMutation = useMutation[&]({;
+                                                                                                                                                                    mutationFn: std::async () {
                                                                                                                                                                         if (!mint) throw new Error("Mint address not found");
                                                                                                                                                                         return "fetcher(" + "/api/admin/tokens/" + mint + "/featured";
                                                                                                                                                                             featured: !tokenStatus.featured,
                                                                                                                                                                             });
                                                                                                                                                                             },
-                                                                                                                                                                            onSuccess: () => {
+                                                                                                                                                                            onSuccess: [&]() {
                                                                                                                                                                                 toast.success(;
                                                                                                                                                                                 "Token " + std::to_string(tokenStatus.featured ? "removed from" : "added to") + " featured tokens"
                                                                                                                                                                                 );
@@ -376,7 +377,7 @@ void AdminTab() {
                                                                                                                                                                                 setTokenStatus((prev) => ({ ...prev, featured: !prev.featured }));
                                                                                                                                                                                 queryClient.invalidateQueries({ queryKey: ["token", mint] }); // Refetch token data in the background
                                                                                                                                                                                 },
-                                                                                                                                                                                onError: (error) => {
+                                                                                                                                                                                onError: [&](error) {
                                                                                                                                                                                     toast.error(;
                                                                                                                                                                                     "Failed to update featured status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                                     );
@@ -384,14 +385,14 @@ void AdminTab() {
                                                                                                                                                                                     });
 
                                                                                                                                                                                     // Mutation for toggling verified status
-                                                                                                                                                                                    const auto toggleVerifiedMutation = useMutation({;
-                                                                                                                                                                                        mutationFn: std::async () => {
+                                                                                                                                                                                    const auto toggleVerifiedMutation = useMutation[&]({;
+                                                                                                                                                                                        mutationFn: std::async () {
                                                                                                                                                                                             if (!mint) throw new Error("Mint address not found");
                                                                                                                                                                                             return "fetcher(" + "/api/admin/tokens/" + mint + "/verified";
                                                                                                                                                                                                 verified: !tokenStatus.verified,
                                                                                                                                                                                                 });
                                                                                                                                                                                                 },
-                                                                                                                                                                                                onSuccess: () => {
+                                                                                                                                                                                                onSuccess: [&]() {
                                                                                                                                                                                                     toast.success(;
                                                                                                                                                                                                     "Token " + std::to_string(tokenStatus.verified ? "unverified" : "verified") + " successfully"
                                                                                                                                                                                                     );
@@ -399,7 +400,7 @@ void AdminTab() {
                                                                                                                                                                                                     setTokenStatus((prev) => ({ ...prev, verified: !prev.verified }));
                                                                                                                                                                                                     queryClient.invalidateQueries({ queryKey: ["token", mint] }); // Refetch token data in the background
                                                                                                                                                                                                     },
-                                                                                                                                                                                                    onError: (error) => {
+                                                                                                                                                                                                    onError: [&](error) {
                                                                                                                                                                                                         toast.error(;
                                                                                                                                                                                                         "Failed to update verified status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                                                         );
@@ -418,12 +419,12 @@ void AdminTab() {
                                                                                                                                                                                                         const auto [isTokenOwner, setIsTokenOwner] = useState(false);
 
                                                                                                                                                                                                         // Update the ownership check in useEffect
-                                                                                                                                                                                                        useEffect(() => {
+                                                                                                                                                                                                        useEffect[&](() {
                                                                                                                                                                                                             if (!mint) return;
-                                                                                                                                                                                                            const auto fetchTokenData = std::async () => {;
+                                                                                                                                                                                                            const auto fetchTokenData = std::async [&]() {;
                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                     const auto response = "fetch(" + env.apiUrl + "/api/token/" + mint;
-                                                                                                                                                                                                                    const auto data = (response.json()) as { creator: std::string };
+                                                                                                                                                                                                                    const auto data = (response.json()) as { creator: std: };
                                                                                                                                                                                                                     setIsTokenOwner(data.creator == std::to_string(publicKey));
                                                                                                                                                                                                                     // ... rest of the fetch logic
                                                                                                                                                                                                                     } catch (error) {
@@ -441,7 +442,7 @@ void AdminTab() {
                                                                                                                                                                                                                         if (!file) return;
 
                                                                                                                                                                                                                         // Validate file type
-                                                                                                                                                                                                                        if (!file.type.startsWith("audio/")) {
+                                                                                                                                                                                                                        if (!file.type.substr(0, "audio/")) {
                                                                                                                                                                                                                             toast.error("Please select an audio file");
                                                                                                                                                                                                                             return;
                                                                                                                                                                                                                         }
@@ -457,17 +458,17 @@ void AdminTab() {
                                                                                                                                                                                                                         setSelectedAudioFile(file);
                                                                                                                                                                                                                         };
 
-                                                                                                                                                                                                                        const auto handleAudioUpload = std::async () => {;
+                                                                                                                                                                                                                        const auto handleAudioUpload = std::async [&]() {;
                                                                                                                                                                                                                             if (!mint || !selectedAudioFile) return;
 
                                                                                                                                                                                                                             setIsUploadingAudio(true);
                                                                                                                                                                                                                             try {
-                                                                                                                                                                                                                                const auto formData = new FormData();
+                                                                                                                                                                                                                                const auto formData = std::make_unique<FormData>();
                                                                                                                                                                                                                                 formData.append("audio", selectedAudioFile);
 
                                                                                                                                                                                                                                 const auto authToken = localStorage.getItem("authToken");
-                                                                                                                                                                                                                                const std::unordered_map<std::string, std::string> headers = {;
-                                                                                                                                                                                                                                    "Authorization: " + "Bearer " + std::to_string(/* JSON.parse */ authToken || "{}")
+                                                                                                                                                                                                                                const std::unordered_map<std:, std:> headers = {;
+                                                                                                                                                                                                                                    "Authorization: " + "Bearer " + std::to_string(/* JSON::parse */ authToken || "{}")
                                                                                                                                                                                                                                     };
 
                                                                                                                                                                                                                                     const auto response = fetch(;
@@ -518,7 +519,7 @@ void AdminTab() {
                                                                                                                                                                                                                                         <Controller;
                                                                                                                                                                                                                                     control={control}
                                                                                                                                                                                                                                     name="links.website";
-                                                                                                                                                                                                                                    render={({ field }) => (;
+                                                                                                                                                                                                                                    render={[&]({ field }) { return (; };
                                                                                                                                                                                                                                     <FormInput;
                                                                                                                                                                                                                                     type="text";
                                                                                                                                                                                                                                 {...field}
@@ -534,8 +535,8 @@ void AdminTab() {
                                                                                                                                                                                                                 <Controller;
                                                                                                                                                                                                             control={control}
                                                                                                                                                                                                             name="links.twitter";
-                                                                                                                                                                                                            render={({ field, fieldState: { error } }) => (
-                                                                                                                                                                                                            <div className="flex flex-col gap-1">;
+                                                                                                                                                                                                            render={[&]({ field, fieldState: { error } }) { return (
+                                                                                                                                                                                                            <div className="flex flex-col gap-1">; };
                                                                                                                                                                                                             <FormInput;
                                                                                                                                                                                                             type="text";
                                                                                                                                                                                                         {...field}
@@ -556,11 +557,11 @@ void AdminTab() {
                                                                                                                                                                                 control={control}
                                                                                                                                                                                 name="links.telegram";
                                                                                                                                                                                 rules={{
-                                                                                                                                                                                    validate: (value: std::string) =>
+                                                                                                                                                                                    validate: (value: std:) =>
                                                                                                                                                                                     !value || isFromDomain(value, "t.me") || "Invalid Telegram URL",
                                                                                                                                                                                 }}
-                                                                                                                                                                                render={({ field, fieldState: { error } }) => (
-                                                                                                                                                                                <div className="flex flex-col gap-1">;
+                                                                                                                                                                                render={[&]({ field, fieldState: { error } }) { return (
+                                                                                                                                                                                <div className="flex flex-col gap-1">; };
                                                                                                                                                                                 <FormInput;
                                                                                                                                                                                 type="text";
                                                                                                                                                                             {...field}
@@ -581,13 +582,12 @@ void AdminTab() {
                                                                                                                                                     control={control}
                                                                                                                                                     name="links.discord";
                                                                                                                                                     rules={{
-                                                                                                                                                        validate: (value: std::string) =>
-                                                                                                                                                        !value ||;
+                                                                                                                                                        validate: [&](value: std:) { return !value ||; };
                                                                                                                                                         isFromDomain(value, "discord.gg") ||;
                                                                                                                                                         "Invalid Discord URL",
                                                                                                                                                     }}
-                                                                                                                                                    render={({ field, fieldState: { error } }) => (
-                                                                                                                                                    <div className="flex flex-col gap-1">;
+                                                                                                                                                    render={[&]({ field, fieldState: { error } }) { return (
+                                                                                                                                                    <div className="flex flex-col gap-1">; };
                                                                                                                                                     <FormInput;
                                                                                                                                                     type="text";
                                                                                                                                                 {...field}
@@ -608,13 +608,12 @@ void AdminTab() {
                                                                                                                         control={control}
                                                                                                                         name="links.farcaster";
                                                                                                                         rules={{
-                                                                                                                            validate: (value: std::string) =>
-                                                                                                                            !value ||;
+                                                                                                                            validate: [&](value: std:) { return !value ||; };
                                                                                                                             isFromDomain(value, "warpcast.com") ||;
                                                                                                                             "Invalid Farcaster URL",
                                                                                                                         }}
-                                                                                                                        render={({ field, fieldState: { error } }) => (
-                                                                                                                        <div className="flex flex-col gap-1">;
+                                                                                                                        render={[&]({ field, fieldState: { error } }) { return (
+                                                                                                                        <div className="flex flex-col gap-1">; };
                                                                                                                         <FormInput;
                                                                                                                         type="text";
                                                                                                                     {...field}
@@ -755,9 +754,9 @@ void AdminTab() {
             </div>;
             <button;
             type="button";
-        onClick={() => audioInputRef.current.click()}
+        onClick={[&]() { return audioInputRef.current.click()}
         className="text-sm text-[#03FF24] hover:text-[#03FF24]/80 transition-colors ml-2"
-        >;
+        >; };
         Replace;
         </button>;
         </div>;

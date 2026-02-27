@@ -1,27 +1,30 @@
 #include "index.hpp"
+#include <filesystem>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string expandTildePath(const std::string& filepath) {
+std: expandTildePath(const std:& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filepath) {
         return filepath;
     }
 
-    if (filepath.startsWith('~')) {
+    if (filepath.substr(0, '~')) {
         if (filepath == '~') {
-            return process.cwd();
-            } else if (filepath.startsWith("~/")) {
-                return path.join(process.cwd(), filepath.slice(2));
-                } else if (filepath.startsWith("~~")) {
+            return std::filesystem::current_path().string();
+            } else if (filepath.substr(0, "~/")) {
+                return path.join(std::filesystem::current_path().string(), filepath.substr(2));
+                } else if (filepath.substr(0, "~~")) {
                     // Don't expand ~~
                     return filepath;
                     } else {
                         // Handle ~user/path by expanding it to cwd/user/path
-                        return path.join(process.cwd(), filepath.slice(1));
+                        return path.join(std::filesystem::current_path().string(), filepath.substr(1));
                     }
                 }
 
@@ -29,7 +32,7 @@ std::string expandTildePath(const std::string& filepath) {
 
 }
 
-std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir) {
+std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();
@@ -40,14 +43,14 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     // If explicit dir provided, use it
     if (dir) {
         const auto resolved = expandTildePath(dir);
-        process.env.PGLITE_DATA_DIR = resolved;
+        std::getenv("PGLITE_DATA_DIR") = resolved;
         return resolved;
     }
 
     // If fallbackDir provided, use it as fallback
-    if (fallbackDir && !process.env.PGLITE_DATA_DIR && !process.env.ELIZA_DATABASE_DIR) {
+    if (fallbackDir && !std::getenv("PGLITE_DATA_DIR") && !std::getenv("ELIZA_DATABASE_DIR")) {
         const auto resolved = expandTildePath(fallbackDir);
-        process.env.PGLITE_DATA_DIR = resolved;
+        std::getenv("PGLITE_DATA_DIR") = resolved;
         return resolved;
     }
 
@@ -55,7 +58,7 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     const auto resolved = getDatabaseDir();
 
     // Persist chosen root for the process so child modules see it (backward compat)
-    process.env.PGLITE_DATA_DIR = resolved;
+    std::getenv("PGLITE_DATA_DIR") = resolved;
     return resolved;
 
 }
@@ -63,11 +66,11 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
 bool isWebUIEnabled() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto isProduction = process.env.NODE_ENV == "production";
-    const auto uiEnabledEnv = process.env.ELIZA_UI_ENABLE;
+    const auto isProduction = std::getenv("NODE_ENV") == "production";
+    const auto uiEnabledEnv = std::getenv("ELIZA_UI_ENABLE");
 
     // Treat empty strings as undefined
-    if (uiEnabledEnv != undefined && uiEnabledEnv.trim() != '') {
+    if (uiEnabledEnv != undefined && uiEnabledEnv != '') {
         return parseBooleanFromText(uiEnabledEnv);
     }
 

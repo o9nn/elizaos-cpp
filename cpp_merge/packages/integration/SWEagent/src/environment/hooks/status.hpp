@@ -28,8 +28,8 @@ public:
 template <typename P0>
 void SetStatusEnvironmentHook::onCopyRepoStarted(P0 repo)
 {
-    auto repoName = (in(std::string("repoName"), repo)) ? any(repo["repoName"]) : any(std::string("unknown"));
-    this->update(std::string("Copying repo ") + repoName + string_empty);
+    auto repoName = (in(std:("repoName"), repo)) ? any(repo["repoName"]) (std:("unknown"));
+    this->update(std:("Copying repo ") + repoName + string_empty);
 }
 
 #endif

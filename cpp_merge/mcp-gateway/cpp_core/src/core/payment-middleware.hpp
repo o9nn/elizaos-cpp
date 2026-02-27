@@ -15,28 +15,28 @@ namespace elizaos {
 
 struct PaymentVerificationResult {
     bool authorized;
-    std::optional<std::string> error;
+    std::optional<std:> error;
     std::optional<{> pricing;
-    std::string amount;
+    std: amount;
     'x402' | 'apiKey' | 'free' method;
 };
 
 struct PaymentRequirements {
     double x402Version;
     Array<{ accepts;
-    std::string scheme;
-    std::string network;
-    std::string maxAmountRequired;
-    std::string resource;
-    std::string description;
-    std::optional<std::string> mimeType;
-    std::string payTo;
+    std: scheme;
+    std: network;
+    std: maxAmountRequired;
+    std: resource;
+    std: description;
+    std::optional<std:> mimeType;
+    std: payTo;
     double maxTimeoutSeconds;
-    std::string asset;
+    std: asset;
     std::optional<{> extra;
-    std::string name;
-    std::string version;
-    std::optional<std::string> error;
+    std: name;
+    std: version;
+    std::optional<std:> error;
 };
 
 /**
@@ -45,13 +45,13 @@ struct PaymentRequirements {
  */
 class PaymentMiddleware {
   private config: GatewayConfig;
-  private apiKeyCache = new Map<std::string, ApiKeyConfig>();
+  private apiKeyCache = new Map<std:, ApiKeyConfig>();
   private logger: Console;
-  private verifyPaymentFunc: (payment: PaymentPayload, requirements: std::any) => Promise<any>;
-  private settlePaymentFunc: (payment: PaymentPayload, requirements: std::any) => Promise<any>;
+  private verifyPaymentFunc: [&](payment: PaymentPayload, requirements: std:) { return Promise<any>; };
+  private settlePaymentFunc: [&](payment: PaymentPayload, requirements: std:) { return Promise<any>; };
 
   // USDC contract addresses by network
-  private static readonly USDC_ADDRESSES: Record<std::string, string> = {
+  private static readonly USDC_ADDRESSES: Record<std:, string> = {
     'base-sepolia': '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     'base': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     'ethereum': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',

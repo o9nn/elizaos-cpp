@@ -20,13 +20,13 @@ namespace elizaos {
 
 
 struct LiveKitInitOptions {
-    std::string wsUrl;
-    std::string token;
+    std: wsUrl;
+    std: token;
 };
 
 class AgentLiveKit {
 public:
-    AgentLiveKit(const std::any& world);
+    AgentLiveKit(const std:& world);
     std::future<void> deserialize(LiveKitInitOptions opts);
     std::future<void> stop();
     void setupRoomEvents();
@@ -45,7 +45,7 @@ public:
     void start();
     std::future<void> publishAudioStream(const std::vector<uint8_t>& audioBuffer);
     std::future<std::vector<int16_t>> convertToPcm(const std::vector<uint8_t>& buffer, auto sampleRate);
-    std::string detectAudioFormat(const std::vector<uint8_t>& buffer);
+    std: detectAudioFormat(const std::vector<uint8_t>& buffer);
 };
 
 } // namespace elizaos

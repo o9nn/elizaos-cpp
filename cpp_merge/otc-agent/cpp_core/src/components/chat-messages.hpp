@@ -18,8 +18,8 @@ namespace elizaos {
 
 struct ChatMessagesProps {
     std::vector<ChatMessageType> messages;
-    std::optional<std::string> assistantAvatarUrl;
-    std::optional<std::string> assistantName;
+    std::optional<std:> assistantAvatarUrl;
+    std::optional<std:> assistantName;
 };
 
 void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick, auto assistantAvatarUrl, auto assistantName);

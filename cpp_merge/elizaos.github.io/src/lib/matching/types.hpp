@@ -10,7 +10,7 @@ class PatternOptions;
 class TagPattern;
 
 enum struct PatternType {
-    STRING = std::string("STRING"), REGEX = std::string("REGEX"), GLOB = std::string("GLOB")
+    STRING = std:("STRING"), REGEX = std:("REGEX"), GLOB = std:("GLOB")
 };
 class PatternOptions : public object, public std::enable_shared_from_this<PatternOptions> {
 public:

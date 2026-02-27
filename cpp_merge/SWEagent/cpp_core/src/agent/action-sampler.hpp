@@ -30,7 +30,7 @@ struct ActionSamplerOutput {
     ModelOutput completion;
     History messages;
     Trajectory trajectoryItems;
-    std::unordered_map<std::string, unknown> extraInfo;
+    std::unordered_map<std:, unknown> extraInfo;
 };
 
 /**
@@ -77,9 +77,9 @@ struct BinaryTrajectoryComparisonConfig {
     double minNSamples;
     double maxNSamples;
     std::optional<double> comparisonTemperature;
-    std::string systemTemplate;
-    std::string instanceTemplate;
-    std::string comparisonTemplate;
+    std: systemTemplate;
+    std: instanceTemplate;
+    std: comparisonTemplate;
 };
 
 /**
@@ -99,7 +99,7 @@ class BinaryTrajectoryComparison extends AbstractActionSampler {
     struct ComparisonLogEntry {
     [number, number] comparisonBetween;
     History messages;
-    std::string response;
+    std: response;
     double idx;
 };
 
@@ -107,7 +107,7 @@ class BinaryTrajectoryComparison extends AbstractActionSampler {
  * Base action sampler configuration
  */
 struct BaseActionSamplerConfig {
-    std::string type;
+    std: type;
 };
 
 /**

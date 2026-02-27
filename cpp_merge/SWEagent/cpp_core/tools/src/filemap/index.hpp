@@ -25,7 +25,7 @@ struct ElidedRange {
     double end;
 };
 
-void createFilemap(const std::string& filePath);
+void createFilemap(const std:& filePath);
 
 // CLI if run directly
 

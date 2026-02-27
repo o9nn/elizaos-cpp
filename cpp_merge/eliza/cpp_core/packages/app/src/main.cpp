@@ -9,12 +9,12 @@ void ElizaWrapper() {
     try {
 
         const auto [status, setStatus] = useState<"starting" | "running" | "error">("starting");
-        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std: | nullptr>(nullptr);
         const auto [retryCount, setRetryCount] = useState(0);
         const auto [isServerAccessible, setIsServerAccessible] = useState(false);
 
         // Function to check if server is accessible
-        const auto checkServerAccessibility = std::async () => {;
+        const auto checkServerAccessibility = std::async [&]() {;
             try {
                 fetch("http://localhost:3000", {
                     method: "HEAD",
@@ -27,13 +27,13 @@ void ElizaWrapper() {
                     };
 
                     // Start the Eliza server
-                    useEffect(() => {
-                        const auto startServer = std::async () => {;
+                    useEffect[&](() {
+                        const auto startServer = std::async [&]() {;
                             try {
                                 setStatus("running");
 
                                 // Start polling to check if the server is accessible
-                                const auto checkInterval = setInterval(std::async () => {;
+                                const auto checkInterval = setInterval[&](std::async () {;
                                     const auto isAccessible = checkServerAccessibility();
                                     if (isAccessible) {
                                         setIsServerAccessible(true);
@@ -42,7 +42,7 @@ void ElizaWrapper() {
                                     }, 1000);
 
                                     // Clear interval after 60 seconds to prevent infinite polling
-                                    setTimeout(() => clearInterval(checkInterval), 60000);
+                                    setTimeout[&](() { return clearInterval(checkInterval), 60000); };
                                     } catch (err: unknown) {
                                         std::cerr << "Failed to start Eliza server:" << err << std::endl;
                                         setStatus("error");
@@ -59,7 +59,7 @@ void ElizaWrapper() {
                                     const auto handleRetry = [&]() {;
                                         setStatus("starting");
                                         setError(nullptr);
-                                        setRetryCount((prev) => prev + 1);
+                                        setRetryCount[&]((prev) { return prev + 1); };
                                         };
 
                                         // If the server is running and accessible, show the iframe

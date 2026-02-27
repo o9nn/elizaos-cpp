@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,10 +10,10 @@ void Page() {
     try {
 
         const auto router = useRouter();
-        const auto [userEntity, setUserEntity] = useState<std::string | nullptr>(nullptr);
+        const auto [userEntity, setUserEntity] = useState<std: | nullptr>(nullptr);
 
         // Initialize user entity on client side only to avoid hydration mismatch
-        useEffect(() => {
+        useEffect[&](() {
             if (typeof window != "undefined") {
                 const auto storedEntity = localStorage.getItem("elizaHowUserEntity");
                 if (storedEntity) {
@@ -25,8 +26,8 @@ void Page() {
                 }
                 }, []);
 
-                const auto createNewSession = useCallback(;
-                std::async (initialMessage: std::string) => {
+                const auto createNewSession = useCallback[&](;
+                std::async (initialMessage: std:) {
                     if (!userEntity) {
                         std::cerr << "User entity not available" << std::endl;
                         return;
@@ -42,7 +43,7 @@ void Page() {
                             headers: {
                                 "Content-Type": "application/json",
                                 },
-                                body: JSON.stringify({
+                                body: nlohmann::json().dump({
                                     userId: userEntity,
                                     initialMessage: initialMessage,
                                     }),
@@ -66,17 +67,17 @@ void Page() {
                                     [userEntity, router],
                                     );
 
-                                    const auto handlePromptSelect = [&](prompt: std::string) {;
+                                    const auto handlePromptSelect = [&](prompt: std:) {;
                                         if (userEntity) {
                                             createNewSession(prompt);
                                         }
                                         };
 
-                                        return (;
+                                        return [&](;
                                         <div className="container mx-auto px-4 py-24 max-w-7xl">;
                                         <h1 className="text-3xl font-bold mb-8">Explore</h1>;
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {categories.std::map((category) => (;
+                                        {categories.std::map((category) { return (; };
                                         <div;
                                     key={category.title}
                                     className={clsx([;
@@ -92,7 +93,7 @@ void Page() {
                             </p>;
                             </div>;
                             <div className="space-y-2">;
-                            {category.prompts.std::map((prompt) => (;
+                            {category.prompts.std::map[&]((prompt) { return (; };
                             <button;
                         key={prompt}
                     onClick={() => handlePromptSelect(prompt)}

@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -16,35 +17,35 @@ namespace elizaos {
 
 struct SolanaOracleInfo {
     "pyth" | "jupiter" | "raydium" | "orca" | "pumpswap" type;
-    std::string address;
-    std::optional<std::string; // For Pyth> feedId;
-    std::optional<std::string; // For AMM pools> poolAddress;
+    std: address;
+    std::optional<std:; // For Pyth> feedId;
+    std::optional<std:; // For AMM pools> poolAddress;
     std::optional<double> liquidity;
     bool valid;
-    std::optional<std::string> warning;
+    std::optional<std:> warning;
 };
 
 /**
  * Find price oracle for a Solana token
  * Priority: Pyth > Jupiter > Raydium
  */
-std::future<SolanaOracleInfo | null> findSolanaOracle(const std::string& tokenMint);
+std::future<SolanaOracleInfo | null> findSolanaOracle(const std:& tokenMint);
 
 /**
  * Check if token has a Pyth price feed
  * Pyth is the preferred oracle for Solana
  */
-std::future<SolanaOracleInfo | null> findPythFeed(const std::string& tokenMint);
+std::future<SolanaOracleInfo | null> findPythFeed(const std:& tokenMint);
 
 /**
  * Find Jupiter aggregator pool for token
  */
-std::future<SolanaOracleInfo | null> findJupiterPool(const std::string& tokenMint);
+std::future<SolanaOracleInfo | null> findJupiterPool(const std:& tokenMint);
 
 /**
  * Find Raydium pool for token
  */
-std::future<SolanaOracleInfo | null> findRaydiumPool(const std::string& tokenMint);
+std::future<SolanaOracleInfo | null> findRaydiumPool(const std:& tokenMint);
 
 /**
  * Validate oracle has sufficient data/liquidity
@@ -56,7 +57,7 @@ void validateSolanaOracle(SolanaOracleInfo oracle); {
 /**
  * Format oracle info for display
  */
-std::string formatOracleInfo(SolanaOracleInfo oracle);
+std: formatOracleInfo(SolanaOracleInfo oracle);
 
 /**
  * Get registration cost estimate for Solana

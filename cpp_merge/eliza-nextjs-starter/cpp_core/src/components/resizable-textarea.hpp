@@ -18,7 +18,7 @@ namespace elizaos {
 
         // Basic layout
         // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
-        // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
+        // Background color is moved to control and shadow is removed in dark mode so hide "before" pseudo
         // Focus ring
         // Disabled state
           // Basic layout

@@ -1,4 +1,8 @@
 #include "ai16z-price-agent-sse.hpp"
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +16,7 @@ std::future<void> main() {
 
         try {
             // Setup wallet for x402 payments
-            const auto walletKey = (process.env.WALLET_PRIVATE_KEY || DEFAULT_WALLET_KEY);
+            const auto walletKey = (std::getenv("WALLET_PRIVATE_KEY") || DEFAULT_WALLET_KEY);
             const auto account = privateKeyToAccount(walletKey);
 
             std::cout << "[Agent] Payment wallet configured:" << std::endl;
@@ -29,7 +33,7 @@ std::future<void> main() {
 
             // Create an additional wrapper that ensures 402 responses are handled transparently
             // The MCP SDK throws errors on non-2xx responses, so we need to handle 402 before it sees them
-            const typeof fetch mcpCompatibleFetch = std::async (input, init) => {;
+            const typeof fetch mcpCompatibleFetch = std::async [&](input, init) {;
                 try {
                     const auto response = baseFetch(input, init);
                     return response;
@@ -68,14 +72,14 @@ std::future<void> main() {
 
                         // Initialize Anthropic client with x402 payment support
                         const auto anthropic = new Anthropic({;
-                            apiKey: process.env.ANTHROPIC_API_KEY || "required",
+                            apiKey: std::getenv("ANTHROPIC_API_KEY") || "required",
                             fetch: wrapFetchWithPayment(fetch, account)
                             });
 
                             // Convert MCP tools to Anthropic tool format
                             // Note: Anthropic requires tool names to match ^[a-zA-Z0-9_-]{1,128}$
                             // So we transform "crypto:get_price" to "crypto_get_price"
-                            const std::vector<Anthropic::Tool> tools = availableTools.std::map((tool: { name: std::string; description?: std::string; inputSchema: Record<std::string, unknown> }) => ({;
+                            const std::vector<Anthropic::Tool> tools = availableTools.std::map((tool: { name: std:; description?: std:; inputSchema: Record<std:, unknown> }) => ({;
                                 name: tool.name.replace(/:/g, "_"),
                                 description: tool.description || "",
                                 input_schema: {
@@ -85,7 +89,7 @@ std::future<void> main() {
                                 }));
 
                                 // Create a mapping from transformed names back to original MCP tool names
-                                const auto toolNameMap = new Map<std::string, string>();
+                                const auto toolNameMap = new Map<std:, string>();
                                 for (const auto& tool : availableTools)
                                     toolNameMap.std::set(tool.name.replace(/:/g, "_"), tool.name);
                                 }
@@ -131,7 +135,7 @@ std::future<void> main() {
                                         // Check if we should stop
                                         if (response.stop_reason == 'end_turn') {
                                             // Extract final text response
-                                            const auto textContent = response.content.find((c: { type: std::string; text?: std::string }) => c.type == "text");
+                                            const auto textContent = response.content.find[&]((c: { type: std:; text?: std: }) { return c.type == "text"); };
                                             if (textContent && 'text' in textContent) {
                                                 std::cout << "\n[Agent] Result:\n" << std::endl;
                                                 std::cout << textContent.text << std::endl;
@@ -155,13 +159,13 @@ std::future<void> main() {
                                                         // Call the MCP tool
                                                         const auto result = mcpClient.callTool({;
                                                             name: originalToolName,
-                                                            arguments: block.input<std::string, unknown>
+                                                            arguments: block.input<std:, unknown>
                                                             });
 
                                                             toolResults.push_back({
                                                                 type: "tool_result",
                                                                 tool_use_id: block.id,
-                                                                content: /* JSON.stringify */ std::string(result.content)
+                                                                content: /* JSON.stringify */ std:(result.content)
                                                                 });
                                                                 } catch (toolError) {
                                                                     std::cerr << "[Agent] Tool error:" << toolError << std::endl;
@@ -192,7 +196,7 @@ std::future<void> main() {
 
                                                                 } catch (error) {
                                                                     std::cerr << "[Agent] Error:" << error << std::endl;
-                                                                    process.exit(1);
+                                                                    std::exit(1);
                                                                     } finally {
                                                                         // Ensure cleanup
                                                                         if (mcpClient) {

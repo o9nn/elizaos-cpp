@@ -1,4 +1,6 @@
 #include "deals-grid.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +9,7 @@ namespace elizaos {
 std::vector<OTCConsignment> filterValidConsignments(const std::vector<OTCConsignment>& consignments) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return consignments.filter((c) => {;
+    return consignments.filter[&]((c) {;
         // Must be active status
         if (c.status != "active") return false;
         // Must have remaining amount > 0
@@ -25,11 +27,11 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
     const auto validConsignments = filterValidConsignments(consignments);
 
     // Deduplicate by ID
-    const auto uniqueMap = new Map(validConsignments.std::map((c) => [c.id, c]));
+    const auto uniqueMap = new Map[&](validConsignments.std::map((c) { return [c.id, c])); };
     const auto unique = Array.from(uniqueMap.values());
 
     // Group by tokenId
-    const auto grouped = new Map<std::string, TokenGroup>();
+    const auto grouped = new Map<std:, TokenGroup>();
     for (const auto& consignment : unique)
         auto group = grouped.get(consignment.tokenId);
         if (!group) {
@@ -45,7 +47,7 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
         }
 
         // Only return groups that have at least one valid consignment
-        return Array.from(grouped.values()).filter((g) => g.consignments.size() > 0);
+        return Array.from(grouped.values()).filter[&]((g) { return g.consignments.size() > 0); };
 
 }
 
@@ -102,12 +104,12 @@ void DealsGrid(auto searchQuery) {
         const auto [isLoading, setIsLoading] = useState(true);
         const auto [currentPage, setCurrentPage] = useState(1);
 
-        useEffect(() => {
+        useEffect[&](() {
             std::async std::function loadConsignments() {
                 setIsLoading(true);
                 try {
-                    const auto params = new URLSearchParams();
-                    filters.chains.forEach((chain) => params.append("chains", chain));
+                    const auto params = std::make_unique<URLSearchParams>();
+                    filters.chains.forEach[&]((chain) { return params.append("chains", chain)); };
                     filters.negotiableTypes.forEach((type) =>;
                     params.append("negotiableTypes", type),
                     );
@@ -129,28 +131,28 @@ void DealsGrid(auto searchQuery) {
                 }, [filters]);
 
                 // Reset to page 1 when filters or search changes
-                useEffect(() => {
+                useEffect[&](() {
                     setCurrentPage(1);
                     }, [filters, searchQuery]);
 
                     // Filter token groups by search query (memoized)
-                    const auto filteredGroups = useMemo(() => {;
+                    const auto filteredGroups = useMemo[&](() {;
                         if (!searchQuery) return tokenGroups;
                         const auto query = searchQuery.toLowerCase();
                         return tokenGroups.filter((group) =>;
-                        group.tokenId.toLowerCase().includes(query),
+                        group.tokenId.toLowerCase().count(query) > 0,
                         );
                         }, [tokenGroups, searchQuery]);
 
                         // Pagination
                         const auto totalPages = Math.ceil(filteredGroups.size() / PAGE_SIZE);
-                        const auto paginatedGroups = useMemo(() => {;
+                        const auto paginatedGroups = useMemo[&](() {;
                             const auto startIndex = (currentPage - 1) * PAGE_SIZE;
                             return filteredGroups.slice(startIndex, startIndex + PAGE_SIZE);
                             }, [filteredGroups, currentPage]);
 
                             const auto goToPage = useCallback(;
-                            [&](page: number) {
+                            [&](page) {
                                 setCurrentPage(Math.max(1, Math.min(page, totalPages)));
                                 // Scroll to top of deals section
                                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -159,9 +161,9 @@ void DealsGrid(auto searchQuery) {
                                 );
 
                                 if (isLoading) {
-                                    return (;
+                                    return [&](;
                                     <div className="space-y-6 pb-6">;
-                                    {[1, 2, 3].std::map((i) => (;
+                                    {[1, 2, 3].std::map((i) { return (; };
                                     <div;
                                 key={i}
                                 className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 animate-pulse"
@@ -183,7 +185,7 @@ void DealsGrid(auto searchQuery) {
                             );
                         }
 
-                        if (filteredGroups.length == 0 && searchQuery) {
+                        if (filteredGroups.size() == 0 && searchQuery) {
                             return (;
                             <div className="text-center py-12">;
                             <svg;
@@ -210,7 +212,7 @@ void DealsGrid(auto searchQuery) {
                         );
                     }
 
-                    if (filteredGroups.length == 0) {
+                    if (filteredGroups.size() == 0) {
                         return (;
                         <div className="text-center py-12">;
                         <p className="text-zinc-600 dark:text-zinc-400">
@@ -221,10 +223,10 @@ void DealsGrid(auto searchQuery) {
                         );
                     }
 
-                    return (;
+                    return [&](;
                     <div className="space-y-6 pb-6">;
                 {/* Token groups */}
-                {paginatedGroups.std::map((group) => (;
+                {paginatedGroups.std::map((group) { return (; };
                 <TokenGroupLoader key={group.tokenId} tokenGroup={group} />;
             ))}
 
@@ -253,12 +255,12 @@ void DealsGrid(auto searchQuery) {
 
     <div className="flex items-center gap-1">;
     {/* First page */}
-    {currentPage > 2 && (;
+    {currentPage > 2 && [&](;
     <>;
     <button;
-    onClick={() => goToPage(1)}
+    onClick={() { return goToPage(1)}
     className="w-8 h-8 rounded-lg text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-    >;
+    >; };
     1;
     </button>;
     {currentPage > 3 && (;
@@ -268,8 +270,8 @@ void DealsGrid(auto searchQuery) {
     )}
 
     {/* Page numbers around current */}
-    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-        auto pageNum: number;
+    {Array.from({ length: Math.min(5, totalPages) }, [&](_, i) {
+        auto pageNum;
         if (totalPages <= 5) {
             pageNum = i + 1;
             } else if (currentPage <= 3) {
@@ -307,9 +309,9 @@ void DealsGrid(auto searchQuery) {
     <span className="px-1 text-zinc-400">...</span>;
     )}
     <button;
-    onClick={() => goToPage(totalPages)}
+    onClick={[&]() { return goToPage(totalPages)}
     className="w-8 h-8 rounded-lg text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-    >;
+    >; };
     {totalPages}
     </button>;
     </>;

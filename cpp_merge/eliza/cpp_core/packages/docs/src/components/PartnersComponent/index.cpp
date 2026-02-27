@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,11 +9,11 @@ JSX::Element PartnersComponent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Memoize the sorted partners to prevent recalculation on every render
-    const auto sortedPartners = useMemo(() => {;
-        return [...partners].sort((a, b) => a.title.localeCompare(b.title));
+    const auto sortedPartners = useMemo[&](() {;
+        return [...partners].sort[&]((a, b) { return a.title.localeCompare(b.title)); };
         }, []);
 
-        return (;
+        return [&](;
         <div className={styles.partnersContainer}>;
         <div className={styles.partnersHeader}>;
         <h1>Our Partners</h1>;
@@ -22,7 +23,7 @@ JSX::Element PartnersComponent() {
         </p>;
         </div>;
         <div className={styles.partnersGrid}>;
-        {sortedPartners.std::map((partner) => (;
+        {sortedPartners.std::map((partner) { return (; };
         <PartnerCard key={partner.title} partner={partner} />;
     ))}
     </div>;

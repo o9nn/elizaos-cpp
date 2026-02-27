@@ -8,15 +8,14 @@ void startRecording() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices;
-        .getUserMedia({
+        navigator.mediaDevices.getUserMedia({
             audio: true,
             });
-            .then((stream) => {
+            .then[&]((stream) {
                 setIsRecording(true);
-                // ============ Analyzing ============
+                // ====== Analyzing ======
                 const auto AudioContext = window.AudioContext;
-                const auto audioCtx = new AudioContext();
+                const auto audioCtx = std::make_unique<AudioContext>();
                 const auto analyser = audioCtx.createAnalyser();
                 const auto source = audioCtx.createMediaStreamSource(stream);
                 source.connect(analyser);
@@ -37,14 +36,14 @@ void startRecording() {
                     mediaRecorderRef.current.mediaRecorder = new MediaRecorder(stream, options);
                     mediaRecorderRef.current.mediaRecorder.start();
                     recordingChunks = [];
-                    // ============ Recording ============
+                    // ====== Recording ======
                     recorder = new MediaRecorder(stream);
                     recorder.start();
-                    recorder.ondataavailable = (e) => {
+                    recorder.ondataavailable = [&](e) {
                         recordingChunks.push_back(e.data);
                         };
                         });
-                        .catch((e) => {
+                        .catch[&]((e) {
                             toast({
                                 variant: "destructive",
                                 title: "Unable to start recording",
@@ -59,7 +58,7 @@ void startRecording() {
 void stopRecording() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    recorder.onstop = () => {
+    recorder.onstop = [&]() {
         const auto recordBlob = new Blob(recordingChunks, {;
             type: "audio/wav",
             });
@@ -86,7 +85,7 @@ void resetRecording() {
     const auto { mediaRecorder, stream, analyser, audioContext } = mediaRecorderRef.current;
 
     if (mediaRecorder) {
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = [&]() {
             recordingChunks = [];
             };
             mediaRecorder.stop();

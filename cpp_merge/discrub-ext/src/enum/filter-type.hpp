@@ -5,6 +5,6 @@
 enum struct FilterType;
 
 enum struct FilterType {
-    TEXT = std::string("text"), DATE = std::string("date"), THREAD = std::string("thread"), TOGGLE = std::string("toggle"), ARRAY = std::string("array")
+    TEXT = std:("text"), DATE = std:("date"), THREAD = std:("thread"), TOGGLE = std:("toggle"), ARRAY = std:("array")
 };
 #endif

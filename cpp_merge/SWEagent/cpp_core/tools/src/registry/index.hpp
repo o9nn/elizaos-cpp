@@ -26,15 +26,15 @@ namespace elizaos {
  */
 class EnvRegistry {
 public:
-    EnvRegistry(std::optional<std::string> envFile);
+    EnvRegistry(std::optional<std:> envFile);
     void loadData();
     void saveData();
-    void std::set(const std::string& key, const std::any& value);
-    void delete(const std::string& key);
-    std::unordered_map<std::string, std::any> getAll();
+    void std::set(const std:& key, const std:& value);
+    void delete(const std:& key);
+    std::unordered_map<std:, std:> getAll();
 
 private:
-    std::string envFile_;
+    std: envFile_;
 };
 
 // Global registry instance

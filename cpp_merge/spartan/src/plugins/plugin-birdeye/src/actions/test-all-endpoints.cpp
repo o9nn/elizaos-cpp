@@ -1,294 +1,294 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/actions/test-all-endpoints.h"
 
 any testAllEndpointsAction = as<std::shared_ptr<Action>>(object{
-    object::pair{std::string("name"), std::string("BIRDEYE_TEST_ALL_ENDPOINTS")}, 
-    object::pair{std::string("similes"), array<any>()}, 
-    object::pair{std::string("description"), std::string("Test all Birdeye endpoints with sample data")}, 
-    object::pair{std::string("handler"), [=](auto runtime, auto _message, auto _state, auto _options, auto callback = undefined) mutable
+    object::pair{std:("name"), std:("BIRDEYE_TEST_ALL_ENDPOINTS")}, 
+    object::pair{std:("similes"), array<any>()}, 
+    object::pair{std:("description"), std:("Test all Birdeye endpoints with sample data")}, 
+    object::pair{std:("handler"), [=](auto runtime, auto _message, auto _state, auto _options, auto callback = undefined) mutable
     {
         try
         {
-            elizaLogger->info(std::string("Testing all endpoints"));
+            elizaLogger->info(std:("Testing all endpoints"));
             std::async([=]() { waitFor(1000); });
             auto birdeyeProvider = std::make_shared<BirdeyeProvider>(runtime->cacheManager);
             auto sampleParams = object{
-                object::pair{std::string("token"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("address"), std::string("MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa")}, 
-                object::pair{std::string("network"), std::string("solana")}, 
-                object::pair{std::string("list_address"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("address_type"), std::string("token")}, 
-                object::pair{std::string("type"), std::string("1D")}, 
-                object::pair{std::string("tx_type"), std::string("all")}, 
-                object::pair{std::string("sort_type"), std::string("desc")}, 
-                object::pair{std::string("unixtime"), 1234567890}, 
-                object::pair{std::string("base_address"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("quote_address"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("time_to"), 1672531199}, 
-                object::pair{std::string("meme_platform_enabled"), true}, 
-                object::pair{std::string("time_frame"), std::string("1D")}, 
-                object::pair{std::string("sort_by"), undefined}, 
-                object::pair{std::string("list_addresses"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("wallet"), std::string("MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa")}, 
-                object::pair{std::string("token_address"), std::string("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
-                object::pair{std::string("pair"), std::string("samplePair")}, 
-                object::pair{std::string("before_time"), 1672531199}, 
-                object::pair{std::string("after_time"), 1672331199}
+                object::pair{std:("token"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("address"), std:("MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa")}, 
+                object::pair{std:("network"), std:("solana")}, 
+                object::pair{std:("list_address"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("address_type"), std:("token")}, 
+                object::pair{std:("type"), std:("1D")}, 
+                object::pair{std:("tx_type"), std:("all")}, 
+                object::pair{std:("sort_type"), std:("desc")}, 
+                object::pair{std:("unixtime"), 1234567890}, 
+                object::pair{std:("base_address"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("quote_address"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("time_to"), 1672531199}, 
+                object::pair{std:("meme_platform_enabled"), true}, 
+                object::pair{std:("time_frame"), std:("1D")}, 
+                object::pair{std:("sort_by"), undefined}, 
+                object::pair{std:("list_addresses"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("wallet"), std:("MfDuWeqSHEqTFVYZ7LoexgAK9dxk7cy4DFJWjWMGVWa")}, 
+                object::pair{std:("token_address"), std:("EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm")}, 
+                object::pair{std:("pair"), std:("samplePair")}, 
+                object::pair{std:("before_time"), 1672531199}, 
+                object::pair{std:("after_time"), 1672331199}
             };
-            elizaLogger->info(std::string("fetchDefiSupportedNetworks"));
+            elizaLogger->info(std:("fetchDefiSupportedNetworks"));
             std::async([=]() { birdeyeProvider->fetchDefiSupportedNetworks(); });
-            elizaLogger->success(std::string("fetchDefiSupportedNetworks: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiSupportedNetworks: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPrice"));
+            elizaLogger->info(std:("fetchDefiPrice"));
             std::async([=]() { birdeyeProvider->fetchDefiPrice(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiPrice: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPrice: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPriceMultiple"));
+            elizaLogger->info(std:("fetchDefiPriceMultiple"));
             std::async([=]() { birdeyeProvider->fetchDefiPriceMultiple(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiPriceMultiple: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPriceMultiple: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPriceMultiple_POST"));
+            elizaLogger->info(std:("fetchDefiPriceMultiple_POST"));
             std::async([=]() { birdeyeProvider->fetchDefiPriceMultiple_POST(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiPriceMultiple_POST: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPriceMultiple_POST: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPriceHistorical"));
+            elizaLogger->info(std:("fetchDefiPriceHistorical"));
             std::async([=]() { birdeyeProvider->fetchDefiPriceHistorical(utils::assign(object{
                 , 
-                object::pair{std::string("address_type"), std::string("token")}, 
-                object::pair{std::string("type"), std::string("1D")}
+                object::pair{std:("address_type"), std:("token")}, 
+                object::pair{std:("type"), std:("1D")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiPriceHistorical: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPriceHistorical: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPriceHistoricalByUnixTime"));
+            elizaLogger->info(std:("fetchDefiPriceHistoricalByUnixTime"));
             std::async([=]() { birdeyeProvider->fetchDefiPriceHistoricalByUnixTime(object{
-                object::pair{std::string("address"), sampleParams["token"]}
+                object::pair{std:("address"), sampleParams["token"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiPriceHistoricalByUnixTime: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPriceHistoricalByUnixTime: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiTradesToken"));
+            elizaLogger->info(std:("fetchDefiTradesToken"));
             std::async([=]() { birdeyeProvider->fetchDefiTradesToken(object{
-                object::pair{std::string("address"), sampleParams["token"]}
+                object::pair{std:("address"), sampleParams["token"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiTradesToken: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiTradesToken: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiTradesPair"));
+            elizaLogger->info(std:("fetchDefiTradesPair"));
             std::async([=]() { birdeyeProvider->fetchDefiTradesPair(object{
-                object::pair{std::string("address"), sampleParams["token"]}
+                object::pair{std:("address"), sampleParams["token"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiTradesPair: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiTradesPair: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiTradesTokenSeekByTime"));
+            elizaLogger->info(std:("fetchDefiTradesTokenSeekByTime"));
             std::async([=]() { birdeyeProvider->fetchDefiTradesTokenSeekByTime(object{
-                object::pair{std::string("address"), sampleParams["token"]}, 
-                object::pair{std::string("before_time"), sampleParams["before_time"]}
+                object::pair{std:("address"), sampleParams["token"]}, 
+                object::pair{std:("before_time"), sampleParams["before_time"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiTradesTokenSeekByTime: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiTradesTokenSeekByTime: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiTradesPairSeekByTime"));
+            elizaLogger->info(std:("fetchDefiTradesPairSeekByTime"));
             std::async([=]() { birdeyeProvider->fetchDefiTradesPairSeekByTime(object{
-                object::pair{std::string("address"), sampleParams["token"]}, 
-                object::pair{std::string("after_time"), sampleParams["after_time"]}
+                object::pair{std:("address"), sampleParams["token"]}, 
+                object::pair{std:("after_time"), sampleParams["after_time"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiTradesPairSeekByTime: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiTradesPairSeekByTime: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiOHLCV"));
+            elizaLogger->info(std:("fetchDefiOHLCV"));
             std::async([=]() { birdeyeProvider->fetchDefiOHLCV(utils::assign(object{
                 , 
-                object::pair{std::string("type"), std::string("1D")}
+                object::pair{std:("type"), std:("1D")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiOHLCV: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiOHLCV: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiOHLCVPair"));
+            elizaLogger->info(std:("fetchDefiOHLCVPair"));
             std::async([=]() { birdeyeProvider->fetchDefiOHLCVPair(utils::assign(object{
                 , 
-                object::pair{std::string("type"), std::string("1D")}
+                object::pair{std:("type"), std:("1D")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiOHLCVPair: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiOHLCVPair: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiOHLCVBaseQuote"));
+            elizaLogger->info(std:("fetchDefiOHLCVBaseQuote"));
             std::async([=]() { birdeyeProvider->fetchDefiOHLCVBaseQuote(utils::assign(object{
                 , 
-                object::pair{std::string("type"), std::string("1D")}
+                object::pair{std:("type"), std:("1D")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchDefiOHLCVBaseQuote: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiOHLCVBaseQuote: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchDefiPriceVolume"));
+            elizaLogger->info(std:("fetchDefiPriceVolume"));
             std::async([=]() { birdeyeProvider->fetchDefiPriceVolume(object{
-                object::pair{std::string("address"), sampleParams["token"]}
+                object::pair{std:("address"), sampleParams["token"]}
             }); });
-            elizaLogger->success(std::string("fetchDefiPriceVolume: SUCCESS!"));
+            elizaLogger->success(std:("fetchDefiPriceVolume: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenList"));
+            elizaLogger->info(std:("fetchTokenList"));
             std::async([=]() { birdeyeProvider->fetchTokenList(utils::assign(object{
                 , 
-                object::pair{std::string("sort_by"), std::string("mc")}, 
-                object::pair{std::string("sort_type"), std::string("desc")}
+                object::pair{std:("sort_by"), std:("mc")}, 
+                object::pair{std:("sort_type"), std:("desc")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenList: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenList: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenSecurityByAddress"));
+            elizaLogger->info(std:("fetchTokenSecurityByAddress"));
             std::async([=]() { birdeyeProvider->fetchTokenSecurityByAddress(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenSecurityByAddress: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenSecurityByAddress: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenOverview"));
+            elizaLogger->info(std:("fetchTokenOverview"));
             std::async([=]() { birdeyeProvider->fetchTokenOverview(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenOverview: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenOverview: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenCreationInfo"));
+            elizaLogger->info(std:("fetchTokenCreationInfo"));
             std::async([=]() { birdeyeProvider->fetchTokenCreationInfo(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenCreationInfo: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenCreationInfo: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenTrending"));
+            elizaLogger->info(std:("fetchTokenTrending"));
             std::async([=]() { birdeyeProvider->fetchTokenTrending(utils::assign(object{
                 , 
-                object::pair{std::string("sort_by"), std::string("volume24hUSD")}, 
-                object::pair{std::string("sort_type"), std::string("desc")}
+                object::pair{std:("sort_by"), std:("volume24hUSD")}, 
+                object::pair{std:("sort_type"), std:("desc")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenTrending: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenTrending: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenNewListing"));
+            elizaLogger->info(std:("fetchTokenNewListing"));
             std::async([=]() { birdeyeProvider->fetchTokenNewListing(object{
-                object::pair{std::string("time_to"), ((std::make_shared<Date>()))->getTime()}, 
-                object::pair{std::string("meme_platform_enabled"), true}
+                object::pair{std:("time_to"), ((std::make_shared<Date>()))->getTime()}, 
+                object::pair{std:("meme_platform_enabled"), true}
             }); });
-            elizaLogger->success(std::string("fetchTokenNewListing: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenNewListing: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenTopTraders"));
+            elizaLogger->info(std:("fetchTokenTopTraders"));
             std::async([=]() { birdeyeProvider->fetchTokenTopTraders(utils::assign(object{
                 , 
-                object::pair{std::string("time_frame"), std::string("24h")}, 
-                object::pair{std::string("sort_type"), std::string("asc")}, 
-                object::pair{std::string("sort_by"), std::string("volume")}
+                object::pair{std:("time_frame"), std:("24h")}, 
+                object::pair{std:("sort_type"), std:("asc")}, 
+                object::pair{std:("sort_by"), std:("volume")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenTopTraders: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenTopTraders: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenAllMarketsList"));
+            elizaLogger->info(std:("fetchTokenAllMarketsList"));
             std::async([=]() { birdeyeProvider->fetchTokenAllMarketsList(utils::assign(object{
                 , 
-                object::pair{std::string("time_frame"), std::string("12H")}, 
-                object::pair{std::string("sort_type"), std::string("asc")}, 
-                object::pair{std::string("sort_by"), std::string("volume24h")}
+                object::pair{std:("time_frame"), std:("12H")}, 
+                object::pair{std:("sort_type"), std:("asc")}, 
+                object::pair{std:("sort_by"), std:("volume24h")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenAllMarketsList: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenAllMarketsList: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenMetadataSingle"));
+            elizaLogger->info(std:("fetchTokenMetadataSingle"));
             std::async([=]() { birdeyeProvider->fetchTokenMetadataSingle(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenMetadataSingle: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenMetadataSingle: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenMarketData"));
+            elizaLogger->info(std:("fetchTokenMarketData"));
             std::async([=]() { birdeyeProvider->fetchTokenMarketData(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenMarketData: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenMarketData: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenTradeDataSingle"));
+            elizaLogger->info(std:("fetchTokenTradeDataSingle"));
             std::async([=]() { birdeyeProvider->fetchTokenTradeDataSingle(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenTradeDataSingle: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenTradeDataSingle: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenHolders"));
+            elizaLogger->info(std:("fetchTokenHolders"));
             std::async([=]() { birdeyeProvider->fetchTokenHolders(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenHolders: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenHolders: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTokenMintBurn"));
+            elizaLogger->info(std:("fetchTokenMintBurn"));
             std::async([=]() { birdeyeProvider->fetchTokenMintBurn(utils::assign(object{
                 , 
-                object::pair{std::string("sort_by"), std::string("block_time")}, 
-                object::pair{std::string("sort_type"), std::string("desc")}, 
-                object::pair{std::string("type"), std::string("all")}
+                object::pair{std:("sort_by"), std:("block_time")}, 
+                object::pair{std:("sort_type"), std:("desc")}, 
+                object::pair{std:("type"), std:("all")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTokenMintBurn: SUCCESS!"));
+            elizaLogger->success(std:("fetchTokenMintBurn: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchWalletSupportedNetworks"));
+            elizaLogger->info(std:("fetchWalletSupportedNetworks"));
             std::async([=]() { birdeyeProvider->fetchWalletSupportedNetworks(); });
-            elizaLogger->success(std::string("fetchWalletSupportedNetworks: SUCCESS!"));
+            elizaLogger->success(std:("fetchWalletSupportedNetworks: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchWalletPortfolio"));
+            elizaLogger->info(std:("fetchWalletPortfolio"));
             std::async([=]() { birdeyeProvider->fetchWalletPortfolio(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchWalletPortfolio: SUCCESS!"));
+            elizaLogger->success(std:("fetchWalletPortfolio: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchWalletTokenBalance"));
+            elizaLogger->info(std:("fetchWalletTokenBalance"));
             std::async([=]() { birdeyeProvider->fetchWalletTokenBalance(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchWalletTokenBalance: SUCCESS!"));
+            elizaLogger->success(std:("fetchWalletTokenBalance: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchWalletTransactionHistory"));
+            elizaLogger->info(std:("fetchWalletTransactionHistory"));
             std::async([=]() { birdeyeProvider->fetchWalletTransactionHistory(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchWalletTransactionHistory: SUCCESS!"));
+            elizaLogger->success(std:("fetchWalletTransactionHistory: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchWalletTransactionSimulate_POST"));
+            elizaLogger->info(std:("fetchWalletTransactionSimulate_POST"));
             std::async([=]() { birdeyeProvider->fetchWalletTransactionSimulate_POST(object{
-                object::pair{std::string("from"), sampleParams["token"]}, 
-                object::pair{std::string("to"), sampleParams["token"]}, 
-                object::pair{std::string("data"), JSON->stringify(object{
-                    object::pair{std::string("test"), std::string("ok")}
+                object::pair{std:("from"), sampleParams["token"]}, 
+                object::pair{std:("to"), sampleParams["token"]}, 
+                object::pair{std:("data"), JSON->stringify(object{
+                    object::pair{std:("test"), std:("ok")}
                 })}, 
-                object::pair{std::string("value"), std::string("100000")}
+                object::pair{std:("value"), std:("100000")}
             }); });
-            elizaLogger->success(std::string("fetchWalletTransactionSimulate_POST: SUCCESS!"));
+            elizaLogger->success(std:("fetchWalletTransactionSimulate_POST: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTraderGainersLosers"));
+            elizaLogger->info(std:("fetchTraderGainersLosers"));
             std::async([=]() { birdeyeProvider->fetchTraderGainersLosers(utils::assign(object{
                 , 
-                object::pair{std::string("type"), std::string("today")}, 
-                object::pair{std::string("sort_type"), std::string("asc")}
+                object::pair{std:("type"), std:("today")}, 
+                object::pair{std:("sort_type"), std:("asc")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTraderGainersLosers: SUCCESS!"));
+            elizaLogger->success(std:("fetchTraderGainersLosers: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchTraderTransactionsSeek"));
+            elizaLogger->info(std:("fetchTraderTransactionsSeek"));
             std::async([=]() { birdeyeProvider->fetchTraderTransactionsSeek(utils::assign(object{
                 , 
-                object::pair{std::string("tx_type"), std::string("all")}, 
-                object::pair{std::string("before_time"), undefined}
+                object::pair{std:("tx_type"), std:("all")}, 
+                object::pair{std:("before_time"), undefined}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchTraderTransactionsSeek: SUCCESS!"));
+            elizaLogger->success(std:("fetchTraderTransactionsSeek: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchPairOverviewSingle"));
+            elizaLogger->info(std:("fetchPairOverviewSingle"));
             std::async([=]() { birdeyeProvider->fetchPairOverviewSingle(utils::assign(object{
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchPairOverviewSingle: SUCCESS!"));
+            elizaLogger->success(std:("fetchPairOverviewSingle: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("fetchSearchTokenMarketData"));
+            elizaLogger->info(std:("fetchSearchTokenMarketData"));
             std::async([=]() { birdeyeProvider->fetchSearchTokenMarketData(utils::assign(object{
                 , 
-                object::pair{std::string("sort_type"), std::string("asc")}
+                object::pair{std:("sort_type"), std:("asc")}
             }, sampleParams)); });
-            elizaLogger->success(std::string("fetchSearchTokenMarketData: SUCCESS!"));
+            elizaLogger->success(std:("fetchSearchTokenMarketData: SUCCESS!"));
             std::async([=]() { waitFor(500); });
-            elizaLogger->info(std::string("All endpoints tested successfully"));
+            elizaLogger->info(std:("All endpoints tested successfully"));
             callback(object{
-                object::pair{std::string("text"), std::string("All endpoints tested successfully!")}
+                object::pair{std:("text"), std:("All endpoints tested successfully!")}
             });
             return true;
         }
         catch (const any& error)
         {
-            console->error(std::string("Error in testAllEndpointsAction:"), error["message"]);
+            console->error(std:("Error in testAllEndpointsAction:"), error["message"]);
             callback(object{
-                object::pair{std::string("text"), std::string("Error: ") + error["message"] + string_empty}
+                object::pair{std:("text"), std:("Error: ") + error["message"] + string_empty}
             });
             return false;
         }
     }
     }, 
-    object::pair{std::string("validate"), [=](auto _runtime, auto message) mutable
+    object::pair{std:("validate"), [=](auto _runtime, auto message) mutable
     {
-        return message->content->text->includes(std::string("BIRDEYE_TEST_ALL_ENDPOINTS"));
+        return message->content->text->includes(std:("BIRDEYE_TEST_ALL_ENDPOINTS"));
     }
     }, 
-    object::pair{std::string("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
-        object::pair{std::string("user"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I want you to BIRDEYE_TEST_ALL_ENDPOINTS")}, 
-            object::pair{std::string("action"), std::string("BIRDEYE_TEST_ALL_ENDPOINTS")}
+    object::pair{std:("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
+        object::pair{std:("user"), std:("user")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I want you to BIRDEYE_TEST_ALL_ENDPOINTS")}, 
+            object::pair{std:("action"), std:("BIRDEYE_TEST_ALL_ENDPOINTS")}
         }}
     } } })}
 });

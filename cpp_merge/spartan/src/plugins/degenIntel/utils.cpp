@@ -5,7 +5,7 @@ any acquireService(std::shared_ptr<IAgentRuntime> runtime, any serviceType, stri
     auto service = as<any>(runtime->getService(serviceType));
     while (!service)
     {
-        console->log(asking, std::string("waiting for"), serviceType, std::string("service..."));
+        console->log(asking, std:("waiting for"), serviceType, std:("service..."));
         service = as<any>(runtime->getService(serviceType));
         if (!service) {
             std::async([=]() { std::make_shared<Promise>([=](auto waitResolve) mutable
@@ -14,7 +14,7 @@ any acquireService(std::shared_ptr<IAgentRuntime> runtime, any serviceType, stri
             }
             ); });
         } else {
-            console->log(asking, std::string("Acquired"), serviceType, std::string("service..."));
+            console->log(asking, std:("Acquired"), serviceType, std:("service..."));
         }
     }
     return service;
@@ -44,16 +44,16 @@ any askLlmObject(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Object>
     {
         auto response = std::async([=]() { runtime->useModel(ModelType->TEXT_LARGE, utils::assign(object{
             , 
-            object::pair{std::string("temperature"), 0.2}, 
-            object::pair{std::string("maxTokens"), 4096}, 
-            object::pair{std::string("object"), true}
+            object::pair{std:("temperature"), 0.2}, 
+            object::pair{std:("maxTokens"), 4096}, 
+            object::pair{std:("object"), true}
         }, ask)); });
-        console->log(std::string("trader::utils:askLlmObject - response"), response);
+        console->log(std:("trader::utils:askLlmObject - response"), response);
         responseContent = as<any>(parseJSONObjectFromText(response));
         retries++;
         good = checkRequired(responseContent);
         if (!good) {
-            logger->warn(std::string("*** Missing required fields"), responseContent, std::string("needs"), requiredFields, std::string(", retrying... ***"));
+            logger->warn(std:("*** Missing required fields"), responseContent, std:("needs"), requiredFields, std:(", retrying... ***"));
         }
     }
     return responseContent;

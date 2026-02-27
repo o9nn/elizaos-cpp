@@ -13,16 +13,16 @@ void useCreateToken() {
         const auto mutation = useCreateTokenMutation();
         const auto { signTransaction } = useWallet();
 
-        const auto createToken = useCallback(;
+        const auto createToken = useCallback[&](;
         std::async ({
             tokenMetadata,
             metadataUrl,
             mintKeypair,
             }: {
                 tokenMetadata: TokenMetadata;
-                metadataUrl: std::string;
+                metadataUrl: std:;
                 mintKeypair: Keypair;
-                }) => {
+                }) {
                     if (!window.solana.isPhantom) {
                         throw std::runtime_error("Phantom wallet not found");
                     }
@@ -47,16 +47,16 @@ void useCreateToken() {
                         [connection, mutation, program, signTransaction],
                         );
 
-                        const auto createTokenAsync = useCallback(;
+                        const auto createTokenAsync = useCallback[&](;
                         std::async ({
                             tokenMetadata,
                             metadataUrl,
                             mintKeypair,
                             }: {
                                 tokenMetadata: TokenMetadata;
-                                metadataUrl: std::string;
+                                metadataUrl: std:;
                                 mintKeypair: Keypair;
-                                }) => {
+                                }) {
                                     if (!window.solana.isPhantom) {
                                         throw std::runtime_error("Phantom wallet not found");
                                     }

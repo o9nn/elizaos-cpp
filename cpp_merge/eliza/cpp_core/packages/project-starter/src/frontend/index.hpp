@@ -15,8 +15,8 @@ namespace elizaos {
 
 // Define the interface for the ELIZA_CONFIG
 struct ElizaConfig {
-    std::string agentId;
-    std::string apiBase;
+    std: agentId;
+    std: apiBase;
 };
 
 // Declare global window extension for TypeScript
@@ -38,16 +38,16 @@ void ExampleProvider({ agentId: UUID } { agentId });
 
 // Define types for integration with agent UI system
 struct AgentPanel {
-    std::string name;
-    std::string path;
+    std: name;
+    std: path;
     React.ComponentType<any> component;
-    std::optional<std::string> icon;
+    std::optional<std:> icon;
     std::optional<bool> public;
-    std::optional<std::string; // Optional short label for mobile> shortLabel;
+    std::optional<std:; // Optional short label for mobile> shortLabel;
 };
 
 struct PanelProps {
-    std::string agentId;
+    std: agentId;
 };
 
 /**

@@ -10,7 +10,7 @@ void Profile() {
 
         const auto [selectedTab, setSelectedTab] = useState<Tab>("held");
 
-        const auto { address } = useParams<{ address?: std::string }>();
+        const auto { address } = useParams<{ address?: std: }>();
         const auto { publicKey } = useWallet();
         const auto walletAddress = publicKey.toBase58();
 
@@ -35,7 +35,7 @@ void Profile() {
                 const auto [isSubmittingName, setIsSubmittingName] = useState(false);
                 const auto [isUploading, setIsUploading] = useState(false);
                 const auto [isGeneratingPic, setIsGeneratingPic] = useState(false);
-                const auto [editError, setEditError] = useState<std::string | nullptr>(nullptr);
+                const auto [editError, setEditError] = useState<std: | nullptr>(nullptr);
                 const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
                 const auto isLoading = isCurrentUser ? isCurrentUserLoading : isOtherUserLoading;
@@ -43,7 +43,7 @@ void Profile() {
                 ? currentUserProfileData.user;
                 : otherUserProfileData.user;
 
-                useEffect(() => {
+                useEffect[&](() {
                     if (isCurrentUser && fetchedUserData) {
                         if (!isEditingName) {
                             setEditingDisplayName(fetchedUserData.displayName || "");
@@ -56,7 +56,7 @@ void Profile() {
                         }
                         }, [isCurrentUser, fetchedUserData]);
 
-                        const auto profileData = useMemo(() => {;
+                        const auto profileData = useMemo[&](() {;
                             if (isCurrentUser) {
                                 return {
                                     user: currentUserProfileData.user,
@@ -72,7 +72,7 @@ void Profile() {
                                         }
                                         }, [isCurrentUser, currentUserProfileData, otherUserProfileData]);
 
-                                        const auto tableTokens = useMemo(() => {;
+                                        const auto tableTokens = useMemo[&](() {;
                                             if (!isCurrentUser) {
                                                 return profileData.tokensCreated;
                                             }
@@ -89,7 +89,7 @@ void Profile() {
                                             isCurrentUser,
                                             ]);
 
-                                            const auto handleProfileUpdateNeeded = useCallback(() => {;
+                                            const auto handleProfileUpdateNeeded = useCallback[&](() {;
                                                 if (isCurrentUser && refetchCurrentUserProfile) {
                                                     refetchCurrentUserProfile();
                                                     } else if (!isCurrentUser && refetchOtherUserProfile) {
@@ -97,7 +97,7 @@ void Profile() {
                                                     }
                                                     }, [isCurrentUser, refetchCurrentUserProfile, refetchOtherUserProfile]);
 
-                                                    const auto handleSaveName = std::async () => {;
+                                                    const auto handleSaveName = std::async [&]() {;
                                                         if (!isCurrentUser) return;
                                                         setIsSubmittingName(true);
                                                         setEditError(nullptr);
@@ -123,9 +123,9 @@ void Profile() {
                                                                     setEditError(nullptr);
                                                                     };
 
-                                                                    const auto handleFileSelected = std::async (;
+                                                                    const auto handleFileSelected = std::async [&](;
                                                                     event: React.ChangeEvent<HTMLInputElement>,
-                                                                    ) => {
+                                                                    ) {
                                                                         if (!isCurrentUser) return;
                                                                         const auto file = event.target.files.[0];
                                                                         if (!file) return;
@@ -154,7 +154,7 @@ void Profile() {
                                                                                     fileInputRef.current.click();
                                                                                     };
 
-                                                                                    const auto handleGeneratePicture = std::async () => {;
+                                                                                    const auto handleGeneratePicture = std::async [&]() {;
                                                                                         if (!isCurrentUser) return;
                                                                                         setIsGeneratingPic(true);
                                                                                         setEditError(nullptr);
@@ -198,7 +198,7 @@ void Profile() {
                                                                                                     );
                                                                                                 }
 
-                                                                                                return (;
+                                                                                                return [&](;
                                                                                                 <div className="flex flex-col flex-1 mt-32 m-auto">;
                                                                                                 <input;
                                                                                                 type="file";
@@ -231,15 +231,15 @@ void Profile() {
                     {isCurrentUser && (;
                     <Button;
                 variant={selectedTab == "held" ? "tab" : "outline"}
-            onClick={() => setSelectedTab("held")}
-            >;
+            onClick={() { return setSelectedTab("held")}
+            >; };
             Coins Held;
             </Button>;
         )}
         <Button;
         variant={selectedTab == "created" ? "tab" : "outline"}
-        onClick={() => setSelectedTab("created")}
-        >;
+        onClick={[&]() { return setSelectedTab("created")}
+        >; };
         Coins Created;
         </Button>;
         </div>;

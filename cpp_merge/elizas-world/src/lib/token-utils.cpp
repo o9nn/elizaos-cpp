@@ -5,13 +5,13 @@ Record<string, double> loadCachedScores()
     try
     {
         if (fs->existsSync(SCORES_CACHE_PATH)) {
-            auto data = fs->readFileSync(SCORES_CACHE_PATH, std::string("utf8"));
+            auto data = fs->readFileSync(SCORES_CACHE_PATH, std:("utf8"));
             return JSON->parse(data);
         }
     }
     catch (const any& error)
     {
-        console->warn(std::string("Error loading cached scores:"), error);
+        console->warn(std:("Error loading cached scores:"), error);
     }
     return object{};
 };
@@ -24,14 +24,14 @@ void saveScoresToCache(Record<string, double> scores)
         auto dir = path->dirname(SCORES_CACHE_PATH);
         if (!fs->existsSync(dir)) {
             fs->mkdirSync(dir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             });
         }
         fs->writeFileSync(SCORES_CACHE_PATH, JSON->stringify(scores, nullptr, 2));
     }
     catch (const any& error)
     {
-        console->warn(std::string("Error saving scores to cache:"), error);
+        console->warn(std:("Error saving scores to cache:"), error);
     }
 };
 
@@ -41,13 +41,13 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenBalance>>>> getTokenBalances(
     try
     {
         auto accounts = std::async([=]() { connection->getParsedTokenAccountsByOwner(walletPubkey, object{
-            object::pair{std::string("programId"), TOKEN_PROGRAM_ID}
+            object::pair{std:("programId"), TOKEN_PROGRAM_ID}
         }); });
         return accounts->value->map([=](auto account) mutable
         {
             return (object{
-                object::pair{std::string("mint"), account["account"]->data->parsed->info->mint}, 
-                object::pair{std::string("tokenAmount"), account["account"]->data->parsed->info->tokenAmount}
+                object::pair{std:("mint"), account["account"]->data->parsed->info->mint}, 
+                object::pair{std:("tokenAmount"), account["account"]->data->parsed->info->tokenAmount}
             });
         }
         )->filter([=](auto info) mutable
@@ -58,7 +58,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenBalance>>>> getTokenBalances(
     }
     catch (const any& error)
     {
-        console->error(std::string("Error in getTokenBalances:"), (is<Error>(error)) ? error->message : String(error));
+        console->error(std:("Error in getTokenBalances:"), (is<Error>(error)) ? error->message : String(error));
         return array<any>();
     }
 };
@@ -75,7 +75,7 @@ std::shared_ptr<Promise<std::shared_ptr<DexScreenerResponse>>> fetchDexScreenerD
         );
         if (validAddresses->get_length() == 0) {
             return object{
-                object::pair{std::string("pairs"), array<any>()}
+                object::pair{std:("pairs"), array<any>()}
             };
         }
         auto BATCH_SIZE = 30;
@@ -83,13 +83,13 @@ std::shared_ptr<Promise<std::shared_ptr<DexScreenerResponse>>> fetchDexScreenerD
         for (auto i = 0; i < validAddresses->get_length(); i += BATCH_SIZE)
         {
             auto batchAddresses = validAddresses->slice(i, i + BATCH_SIZE);
-            auto url = std::string("https://api.dexscreener.com/latest/dex/tokens/") + batchAddresses->join(std::string(",")) + string_empty;
+            auto url = std:("https://api.dexscreener.com/latest/dex/tokens/") + batchAddresses->join(std:(",")) + string_empty;
             try
             {
                 auto response = std::async([=]() { axios->get(url, object{
-                    object::pair{std::string("headers"), object{
-                        object::pair{std::string("Cache-Control"), std::string("no-cache")}, 
-                        object::pair{std::string("Pragma"), std::string("no-cache")}
+                    object::pair{std:("headers"), object{
+                        object::pair{std:("Cache-Control"), std:("no-cache")}, 
+                        object::pair{std:("Pragma"), std:("no-cache")}
                     }}
                 }); });
                 if (response->data->pairs) {
@@ -103,18 +103,18 @@ std::shared_ptr<Promise<std::shared_ptr<DexScreenerResponse>>> fetchDexScreenerD
             }
             catch (const any& error)
             {
-                console->error(std::string("Error fetching batch ") + (i / BATCH_SIZE + 1) + std::string(":"), error);
+                console->error(std:("Error fetching batch ") + (i / BATCH_SIZE + 1) + std:(":"), error);
             }
         }
         return object{
-            object::pair{std::string("pairs"), allPairs}
+            object::pair{std:("pairs"), allPairs}
         };
     }
     catch (const any& error)
     {
-        console->error(std::string("Error fetching market data:"), error);
+        console->error(std:("Error fetching market data:"), error);
         return object{
-            object::pair{std::string("pairs"), array<any>()}
+            object::pair{std:("pairs"), array<any>()}
         };
     }
 };
@@ -124,21 +124,21 @@ any fetchTokenAnalysis(string address)
 {
     try
     {
-        auto response = std::async([=]() { axios->get(std::string("https://api.dexscreener.com/latest/dex/pairs/solana/") + address + string_empty); });
+        auto response = std::async([=]() { axios->get(std:("https://api.dexscreener.com/latest/dex/pairs/solana/") + address + string_empty); });
         shared pair = const_(response->data->pairs)[0];
         return object{
-            object::pair{std::string("priceChange24h"), parseFloat(OR((pair->priceChange24h), (std::string("0"))))}, 
-            object::pair{std::string("priceChange7d"), parseFloat(OR((pair->priceChange7d), (std::string("0"))))}, 
-            object::pair{std::string("volumeChange24h"), parseFloat(OR((pair->volumeChange24h), (std::string("0"))))}, 
-            object::pair{std::string("volumeAvg24h"), OR((pair->volume->h24), (0))}, 
-            object::pair{std::string("txCount24h"), OR((pair->txns->h24), (0))}, 
-            object::pair{std::string("holders"), OR((pair->holders), (undefined))}, 
-            object::pair{std::string("timeSeries"), OR((pair->priceUsd->map([=](auto price, auto index) mutable
+            object::pair{std:("priceChange24h"), parseFloat(OR((pair->priceChange24h), (std:("0"))))}, 
+            object::pair{std:("priceChange7d"), parseFloat(OR((pair->priceChange7d), (std:("0"))))}, 
+            object::pair{std:("volumeChange24h"), parseFloat(OR((pair->volumeChange24h), (std:("0"))))}, 
+            object::pair{std:("volumeAvg24h"), OR((pair->volume->h24), (0))}, 
+            object::pair{std:("txCount24h"), OR((pair->txns->h24), (0))}, 
+            object::pair{std:("holders"), OR((pair->holders), (undefined))}, 
+            object::pair{std:("timeSeries"), OR((pair->priceUsd->map([=](auto price, auto index) mutable
             {
                 return (object{
-                    object::pair{std::string("timestamp"), Date->now() - (index * 3600000)}, 
-                    object::pair{std::string("price"), std::string("price")}, 
-                    object::pair{std::string("volume"), pair->volume->h24 / 24}
+                    object::pair{std:("timestamp"), Date->now() - (index * 3600000)}, 
+                    object::pair{std:("price"), std:("price")}, 
+                    object::pair{std:("volume"), pair->volume->h24 / 24}
                 });
             }
             )), (array<any>()))}
@@ -146,7 +146,7 @@ any fetchTokenAnalysis(string address)
     }
     catch (const any& error)
     {
-        console->error(std::string("Error fetching analysis for ") + address + std::string(":"), (is<Error>(error)) ? error->message : String(error));
+        console->error(std:("Error fetching analysis for ") + address + std:(":"), (is<Error>(error)) ? error->message : String(error));
         return nullptr;
     }
 };
@@ -168,9 +168,9 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenHolding>>>> calculateHoldings
         return !!addr;
     }
     );
-    console->log(std::string("Fetching scores for"), tokenAddresses->length, std::string("tokens"));
+    console->log(std:("Fetching scores for"), tokenAddresses->length, std:("tokens"));
     auto scores = std::async([=]() { fetchTokenScores(tokenAddresses); });
-    console->log(std::string("Fetched scores:"), scores);
+    console->log(std:("Fetched scores:"), scores);
     for (auto& pair : marketData->pairs)
     {
         if (OR((!pair->baseToken->address), (seenPairs->has(pair->baseToken->address)))) {
@@ -183,28 +183,28 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenHolding>>>> calculateHoldings
         }
         );
         if (balance) {
-            auto totalSupply = (pair->fdv) ? any(pair->fdv / Number(pair->priceUsd)) : any(undefined);
-            auto percentageOwned = (totalSupply) ? any((balance->tokenAmount->uiAmount / totalSupply) * 100) : any(0);
+            auto totalSupply = (pair->fdv) ? any(pair->fdv / Number(pair->priceUsd)) (undefined);
+            auto percentageOwned = (totalSupply) ? any((balance->tokenAmount->uiAmount / totalSupply) * 100) (0);
             auto usdValue = balance->tokenAmount->uiAmount * Number(pair->priceUsd);
             holdings->push(object{
-                object::pair{std::string("address"), pair->baseToken->address}, 
-                object::pair{std::string("balance"), balance->tokenAmount->uiAmount}, 
-                object::pair{std::string("decimals"), balance->tokenAmount->decimals}, 
-                object::pair{std::string("usdValue"), std::string("usdValue")}, 
-                object::pair{std::string("percentageOwned"), std::string("percentageOwned")}, 
-                object::pair{std::string("firstReceived"), 0}, 
-                object::pair{std::string("marketData"), utils::assign(object{
+                object::pair{std:("address"), pair->baseToken->address}, 
+                object::pair{std:("balance"), balance->tokenAmount->uiAmount}, 
+                object::pair{std:("decimals"), balance->tokenAmount->decimals}, 
+                object::pair{std:("usdValue"), std:("usdValue")}, 
+                object::pair{std:("percentageOwned"), std:("percentageOwned")}, 
+                object::pair{std:("firstReceived"), 0}, 
+                object::pair{std:("marketData"), utils::assign(object{
                     , 
-                    object::pair{std::string("score"), (*const_(scores))[pair->baseToken->address]}
+                    object::pair{std:("score"), (*const_(scores))[pair->baseToken->address]}
                 }, pair)}
             });
         }
     }
-    console->log(std::string("Final holdings with scores:"), holdings->map([=](auto h) mutable
+    console->log(std:("Final holdings with scores:"), holdings->map([=](auto h) mutable
     {
         return (object{
-            object::pair{std::string("address"), h->address}, 
-            object::pair{std::string("score"), h->marketData->score}
+            object::pair{std:("address"), h->address}, 
+            object::pair{std:("score"), h->marketData->score}
         });
     }
     ));
@@ -220,13 +220,13 @@ any getTokenData(std::shared_ptr<Connection> connection)
 {
     try
     {
-        auto walletPubkey = std::make_shared<PublicKey>(std::string("AM84n1iLdxgVTAyENBcLdjXoyvjentTbu5Q6EpKV1PeG"));
+        auto walletPubkey = std::make_shared<PublicKey>(std:("AM84n1iLdxgVTAyENBcLdjXoyvjentTbu5Q6EpKV1PeG"));
         auto balances = std::async([=]() { getTokenBalances(connection, walletPubkey); });
         return balances;
     }
     catch (const any& error)
     {
-        console->error(std::string("Error in getTokenData:"), (is<Error>(error)) ? error->message : String(error));
+        console->error(std:("Error in getTokenData:"), (is<Error>(error)) ? error->message : String(error));
         return array<any>();
     }
 };
@@ -252,16 +252,16 @@ std::shared_ptr<Promise<Record<string, double>>> fetchTokenScores(array<string> 
             auto batchAddresses = uncachedAddresses->slice(i, i + BATCH_SIZE);
             try
             {
-                console->log(std::string("Fetching scores for batch ") + (i / BATCH_SIZE + 1) + std::string(", addresses:"), batchAddresses);
-                auto response = std::async([=]() { axios->post<std::shared_ptr<SolSnifferResponse>>(std::string("https://solsniffer.com/api/v2/tokens"), object{
-                    object::pair{std::string("addresses"), batchAddresses}
+                console->log(std:("Fetching scores for batch ") + (i / BATCH_SIZE + 1) + std:(", addresses:"), batchAddresses);
+                auto response = std::async([=]() { axios->post<std::shared_ptr<SolSnifferResponse>>(std:("https://solsniffer.com/api/v2/tokens"), object{
+                    object::pair{std:("addresses"), batchAddresses}
                 }, object{
-                    object::pair{std::string("headers"), object{
-                        object::pair{std::string("accept"), std::string("application/json")}, 
-                        object::pair{std::string("X-API-KEY"), std::string("891aayu3sa4lbg4m8gu9gtfct3pxcp")}, 
-                        object::pair{std::string("Content-Type"), std::string("application/json")}
+                    object::pair{std:("headers"), object{
+                        object::pair{std:("accept"), std:("application/json")}, 
+                        object::pair{std:("X-API-KEY"), std:("891aayu3sa4lbg4m8gu9gtfct3pxcp")}, 
+                        object::pair{std:("Content-Type"), std:("application/json")}
                     }}, 
-                    object::pair{std::string("timeout"), 10000}
+                    object::pair{std:("timeout"), 10000}
                 }); });
                 if (response->data->data) {
                     response->data->data->forEach([=](auto token) mutable
@@ -272,12 +272,12 @@ std::shared_ptr<Promise<Record<string, double>>> fetchTokenScores(array<string> 
                     }
                     );
                 }
-                console->log(std::string("Batch ") + (i / BATCH_SIZE + 1) + std::string(" results:"), response->data->data->map([=](auto t) mutable
+                console->log(std:("Batch ") + (i / BATCH_SIZE + 1) + std:(" results:"), response->data->data->map([=](auto t) mutable
                 {
                     return (object{
-                        object::pair{std::string("address"), t["address"]}, 
-                        object::pair{std::string("score"), t["tokenData"]->score}, 
-                        object::pair{std::string("error"), t["error"]}
+                        object::pair{std:("address"), t["address"]}, 
+                        object::pair{std:("score"), t["tokenData"]->score}, 
+                        object::pair{std:("error"), t["error"]}
                     });
                 }
                 ));
@@ -291,7 +291,7 @@ std::shared_ptr<Promise<Record<string, double>>> fetchTokenScores(array<string> 
             }
             catch (const any& batchError)
             {
-                console->warn(std::string("Failed to fetch scores for batch ") + (i / BATCH_SIZE + 1) + std::string(":"), (is<Error>(batchError)) ? batchError->message : String(batchError));
+                console->warn(std:("Failed to fetch scores for batch ") + (i / BATCH_SIZE + 1) + std:(":"), (is<Error>(batchError)) ? batchError->message : String(batchError));
                 std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
                 {
                     return setTimeout(resolve, 2000);
@@ -307,18 +307,18 @@ std::shared_ptr<Promise<Record<string, double>>> fetchTokenScores(array<string> 
     }
     catch (const any& error)
     {
-        console->error(std::string("Error in fetchTokenScores:"), (is<Error>(error)) ? error->message : String(error));
+        console->error(std:("Error in fetchTokenScores:"), (is<Error>(error)) ? error->message : String(error));
         return cachedScores;
     }
 };
 
 
 object config = object{
-    object::pair{std::string("apiKey"), OR((process->env->NEXT_PUBLIC_ALCHEMY_API_KEY), (std::string("7CBPP2HmBAKkdbI4gbO7ruEt_wLCyGQ2")))}, 
-    object::pair{std::string("network"), Network->ETH_MAINNET}
+    object::pair{std:("apiKey"), OR((process->env->NEXT_PUBLIC_ALCHEMY_API_KEY), (std:("7CBPP2HmBAKkdbI4gbO7ruEt_wLCyGQ2")))}, 
+    object::pair{std:("network"), Network->ETH_MAINNET}
 };
 any alchemy = std::make_shared<Alchemy>(config);
-any SCORES_CACHE_PATH = path->join(process->cwd(), std::string("data"), std::string("token-scores.json"));
+any SCORES_CACHE_PATH = path->join(process->cwd(), std:("data"), std:("token-scores.json"));
 
 void Main(void)
 {

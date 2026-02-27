@@ -3,23 +3,23 @@
 string generateAuthToken(string userId, string email, string username, boolean isAdmin)
 {
     if (!JWT_SECRET) {
-        throw any(std::make_shared<Error>(std::string("JWT_SECRET not configured")));
+        throw any(std::make_shared<Error>(std:("JWT_SECRET not configured")));
     }
-    auto adminEmails = OR((process->env->ADMIN_EMAILS->split(std::string(","))->map([=](auto e) mutable
+    auto adminEmails = OR((process->env->ADMIN_EMAILS->split(std:(","))->map([=](auto e) mutable
     {
         return e->trim()->toLowerCase();
     }
     )), (array<any>()));
     auto computedIsAdmin = OR((isAdmin), (adminEmails->includes(email->toLowerCase())));
     auto payload = utils::assign(object{
-        object::pair{std::string("userId"), std::string("userId")}, 
-        object::pair{std::string("email"), std::string("email")}, 
-        object::pair{std::string("username"), std::string("username")}
+        object::pair{std:("userId"), std:("userId")}, 
+        object::pair{std:("email"), std:("email")}, 
+        object::pair{std:("username"), std:("username")}
     }, (AND((computedIsAdmin), (object{
-        object::pair{std::string("isAdmin"), true}
+        object::pair{std:("isAdmin"), true}
     }))));
     return jwt->sign(payload, JWT_SECRET, object{
-        object::pair{std::string("expiresIn"), std::string("7d")}
+        object::pair{std:("expiresIn"), std:("7d")}
     });
 };
 
@@ -27,22 +27,22 @@ string generateAuthToken(string userId, string email, string username, boolean i
 any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
     if (!JWT_SECRET) {
-        logger->error(std::string("[Auth] JWT_SECRET not configured - cannot verify tokens"));
+        logger->error(std:("[Auth] JWT_SECRET not configured - cannot verify tokens"));
         return res->status(500)->json(object{
-            object::pair{std::string("success"), false}, 
-            object::pair{std::string("error"), object{
-                object::pair{std::string("code"), std::string("SERVER_MISCONFIGURED")}, 
-                object::pair{std::string("message"), std::string("Authentication system not properly configured")}
+            object::pair{std:("success"), false}, 
+            object::pair{std:("error"), object{
+                object::pair{std:("code"), std:("SERVER_MISCONFIGURED")}, 
+                object::pair{std:("message"), std:("Authentication system not properly configured")}
             }}
         });
     }
     auto authHeader = req->headers->authorization;
-    if (OR((!authHeader), (!authHeader->startsWith(std::string("Bearer "))))) {
+    if (OR((!authHeader), (!authHeader->startsWith(std:("Bearer "))))) {
         return res->status(401)->json(object{
-            object::pair{std::string("success"), false}, 
-            object::pair{std::string("error"), object{
-                object::pair{std::string("code"), std::string("UNAUTHORIZED")}, 
-                object::pair{std::string("message"), std::string("Authentication required. Please provide a valid Bearer token.")}
+            object::pair{std:("success"), false}, 
+            object::pair{std:("error"), object{
+                object::pair{std:("code"), std:("UNAUTHORIZED")}, 
+                object::pair{std:("message"), std:("Authentication required. Please provide a valid Bearer token.")}
             }}
         });
     }
@@ -54,26 +54,26 @@ any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Respo
         req->userEmail = decoded->email;
         req->username = decoded->username;
         req->isAdmin = OR((decoded->isAdmin), (false));
-        logger->debug(std::string("[Auth] Authenticated request from user: ") + decoded->username + std::string(" (") + decoded->userId->substring(0, 8) + std::string("...)") + (req->isAdmin) ? std::string(" [ADMIN]") : string_empty + string_empty);
+        logger->debug(std:("[Auth] Authenticated request from user: ") + decoded->username + std:(" (") + decoded->userId->substring(0, 8) + std:("...)") + (req->isAdmin) ? std:(" [ADMIN]") : string_empty + string_empty);
         next();
     }
     catch (const any& error)
     {
-        logger->warn(std::string("[Auth] Token verification failed: ") + error["message"] + string_empty);
-        if (error["name"] == std::string("TokenExpiredError")) {
+        logger->warn(std:("[Auth] Token verification failed: ") + error["message"] + string_empty);
+        if (error["name"] == std:("TokenExpiredError")) {
             return res->status(401)->json(object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), object{
-                    object::pair{std::string("code"), std::string("TOKEN_EXPIRED")}, 
-                    object::pair{std::string("message"), std::string("Authentication token has expired. Please sign in again.")}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("error"), object{
+                    object::pair{std:("code"), std:("TOKEN_EXPIRED")}, 
+                    object::pair{std:("message"), std:("Authentication token has expired. Please sign in again.")}
                 }}
             });
         }
         return res->status(401)->json(object{
-            object::pair{std::string("success"), false}, 
-            object::pair{std::string("error"), object{
-                object::pair{std::string("code"), std::string("INVALID_TOKEN")}, 
-                object::pair{std::string("message"), std::string("Invalid authentication token.")}
+            object::pair{std:("success"), false}, 
+            object::pair{std:("error"), object{
+                object::pair{std:("code"), std:("INVALID_TOKEN")}, 
+                object::pair{std:("message"), std:("Invalid authentication token.")}
             }}
         });
     }
@@ -86,7 +86,7 @@ any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Next
         return next();
     }
     auto authHeader = req->headers->authorization;
-    if (OR((!authHeader), (!authHeader->startsWith(std::string("Bearer "))))) {
+    if (OR((!authHeader), (!authHeader->startsWith(std:("Bearer "))))) {
         return next();
     }
     auto token = authHeader->substring(7);
@@ -100,7 +100,7 @@ any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Next
     }
     catch (const any& error)
     {
-        logger->debug(std::string("[Auth] Optional auth - invalid token ignored"));
+        logger->debug(std:("[Auth] Optional auth - invalid token ignored"));
     }
     next();
 };
@@ -110,14 +110,14 @@ any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_p
 {
     auto authHeader = req->headers->authorization;
     auto serverAuthToken = process->env->ELIZA_SERVER_AUTH_TOKEN;
-    if (AND((authHeader), (authHeader->startsWith(std::string("Bearer "))))) {
+    if (AND((authHeader), (authHeader->startsWith(std:("Bearer "))))) {
         if (!JWT_SECRET) {
-            logger->error(std::string("[Auth] JWT_SECRET not configured - cannot verify tokens"));
+            logger->error(std:("[Auth] JWT_SECRET not configured - cannot verify tokens"));
             return res->status(500)->json(object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), object{
-                    object::pair{std::string("code"), std::string("SERVER_MISCONFIGURED")}, 
-                    object::pair{std::string("message"), std::string("Authentication system not properly configured")}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("error"), object{
+                    object::pair{std:("code"), std:("SERVER_MISCONFIGURED")}, 
+                    object::pair{std:("message"), std:("Authentication system not properly configured")}
                 }}
             });
         }
@@ -129,25 +129,25 @@ any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_p
             req->userEmail = decoded->email;
             req->username = decoded->username;
             req->isAdmin = OR((decoded->isAdmin), (false));
-            logger->debug(std::string("[Auth] Authenticated via JWT: ") + decoded->username + std::string(" (") + decoded->userId->substring(0, 8) + std::string("...)") + (req->isAdmin) ? std::string(" [ADMIN]") : string_empty + string_empty);
+            logger->debug(std:("[Auth] Authenticated via JWT: ") + decoded->username + std:(" (") + decoded->userId->substring(0, 8) + std:("...)") + (req->isAdmin) ? std:(" [ADMIN]") : string_empty + string_empty);
             return next();
         }
         catch (const any& error)
         {
-            logger->warn(std::string("[Auth] JWT verification failed in requireAuthOrApiKey: ") + error["message"] + string_empty);
+            logger->warn(std:("[Auth] JWT verification failed in requireAuthOrApiKey: ") + error["message"] + string_empty);
         }
     }
-    auto apiKey = OR(((as<any>(const_(req->headers)[std::string("x-api-key")]))), (undefined));
+    auto apiKey = OR(((as<any>(const_(req->headers)[std:("x-api-key")]))), (undefined));
     if (AND((AND((serverAuthToken), (apiKey))), (apiKey == serverAuthToken))) {
         req->isServerAuthenticated = true;
-        logger->debug(std::string("[Auth] Authenticated via X-API-KEY (server)"));
+        logger->debug(std:("[Auth] Authenticated via X-API-KEY (server)"));
         return next();
     }
     return res->status(401)->json(object{
-        object::pair{std::string("success"), false}, 
-        object::pair{std::string("error"), object{
-            object::pair{std::string("code"), std::string("UNAUTHORIZED")}, 
-            object::pair{std::string("message"), std::string("Authentication required (Bearer token or X-API-KEY).")}
+        object::pair{std:("success"), false}, 
+        object::pair{std:("error"), object{
+            object::pair{std:("code"), std:("UNAUTHORIZED")}, 
+            object::pair{std:("message"), std:("Authentication required (Bearer token or X-API-KEY).")}
         }}
     });
 };
@@ -156,12 +156,12 @@ any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_p
 any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
     if (!req->isAdmin) {
-        logger->warn(std::string("[Auth] Non-admin user ") + req->username + std::string(" (") + req->userId->substring(0, 8) + std::string("...) attempted admin operation"));
+        logger->warn(std:("[Auth] Non-admin user ") + req->username + std:(" (") + req->userId->substring(0, 8) + std:("...) attempted admin operation"));
         return res->status(403)->json(object{
-            object::pair{std::string("success"), false}, 
-            object::pair{std::string("error"), object{
-                object::pair{std::string("code"), std::string("FORBIDDEN")}, 
-                object::pair{std::string("message"), std::string("Administrator privileges required for this operation")}
+            object::pair{std:("success"), false}, 
+            object::pair{std:("error"), object{
+                object::pair{std:("code"), std:("FORBIDDEN")}, 
+                object::pair{std:("message"), std:("Administrator privileges required for this operation")}
             }}
         });
     }
@@ -174,7 +174,7 @@ string JWT_SECRET = process->env->JWT_SECRET;
 void Main(void)
 {
     if (!JWT_SECRET) {
-        logger->warn(std::string("[Auth] JWT_SECRET not set - authentication will not work. Set JWT_SECRET environment variable."));
+        logger->warn(std:("[Auth] JWT_SECRET not set - authentication will not work. Set JWT_SECRET environment variable."));
     }
 }
 

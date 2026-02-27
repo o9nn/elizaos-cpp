@@ -1,28 +1,29 @@
 #include "file-utils.hpp"
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string createSecureUploadDir(const std::string& id, const std::string& type) {
+std: createSecureUploadDir(const std:& id, const std:& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         // Additional validation beyond UUID to ensure no path traversal
-        if (id.includes('..') || id.includes('/') || id.includes('\\') || id.includes('\0')) {
-            throw std::runtime_error(`Invalid ${type.slice(0, -1)} ID: contains illegal characters`);
+        if (id.count('..') > 0 || id.count('/') > 0 || id.count('\\') > 0 || id.count('\0') > 0) {
+            throw std::runtime_error("Invalid " + std::to_string(type.slice(0, -1)) + " ID: contains illegal characters");
         }
 
         // Use CLI data directory structure consistently
-        const auto baseUploadDir = path.join(process.cwd(), ".eliza", "data", "uploads");
+        const auto baseUploadDir = path.join(std::filesystem::current_path().string(), ".eliza", "data", "uploads");
         const auto finalDir = path.join(baseUploadDir, type, id);
 
         // Ensure the resolved path is still within the expected directory
         const auto resolvedPath = path.resolve(finalDir);
         const auto expectedBase = path.resolve(baseUploadDir);
 
-        if (!resolvedPath.startsWith(expectedBase)) {
-            throw std::runtime_error(`Invalid ${type.slice(0, -1)} upload path: outside allowed directory`);
+        if (!resolvedPath.substr(0, expectedBase)) {
+            throw std::runtime_error("Invalid " + std::to_string(type.slice(0, -1)) + " upload path: outside allowed directory");
         }
 
         return resolvedPath;
@@ -33,7 +34,7 @@ std::string createSecureUploadDir(const std::string& id, const std::string& type
     }
 }
 
-std::string sanitizeFilename(const std::string& filename) {
+std: sanitizeFilename(const std:& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filename) {
@@ -41,11 +42,9 @@ std::string sanitizeFilename(const std::string& filename) {
     }
 
     // Remove path separators and null bytes
-    const auto sanitized = filename;
-    .replace(/[/\\:*?"<>|]/g, "_")
-    .replace(/\0/g, "");
-    .replace(/\.+/g, ".");
-    .trim();
+    const auto sanitized = filename.replace(/[/\\:*?"<>|]/g, "_")
+    .replace(/\0/g, "").replace(/\.+/g, ".");
+    ;
 
     // Ensure filename isn't empty after sanitization
     if (!sanitized || sanitized == '.') {
@@ -54,7 +53,7 @@ std::string sanitizeFilename(const std::string& filename) {
 
     // Limit filename length
     const auto maxLength = 255;
-    if (sanitized.length > maxLength) {
+    if (sanitized.size() > maxLength) {
         const auto ext = path.extname(sanitized);
         const auto nameWithoutExt = path.basename(sanitized, ext);
         const auto truncatedName = nameWithoutExt.substring(0, maxLength - ext.size() - 1);

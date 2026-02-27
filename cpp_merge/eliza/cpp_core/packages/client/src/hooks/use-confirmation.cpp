@@ -8,9 +8,9 @@ void useConfirmation() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [confirmationState, setConfirmationState] = useState<{;
-        open: boolean;
+        open;
         options: ConfirmationOptions | nullptr;
-        onConfirm: (() => void) | nullptr;
+        onConfirm: [&](() { return void) | nullptr; };
         }>({
             open: false,
             options: nullptr,
@@ -25,7 +25,7 @@ void useConfirmation() {
                     });
                     }, []);
 
-                    const auto handleOpenChange = useCallback((open: boolean) => {;
+                    const auto handleOpenChange = useCallback[&]((open) {;
                         if (!open) {
                             setConfirmationState({
                                 open: false,
@@ -35,7 +35,7 @@ void useConfirmation() {
                             }
                             }, []);
 
-                            const auto handleConfirm = useCallback(() => {;
+                            const auto handleConfirm = useCallback[&](() {;
                                 if (confirmationState.onConfirm) {
                                     confirmationState.onConfirm();
                                 }

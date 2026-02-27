@@ -4,10 +4,10 @@
 
 namespace elizaos {
 
-void extractPred(const std::string& trajPath) {
+void extractPred(const std:& trajPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto data = /* JSON.parse */ fs.readFileSync(trajPath, "utf-8");
+    const auto data = /* JSON::parse */ fs.readFileSync(trajPath, "utf-8");
     const auto predPath = trajPath.replace(/\.traj$/, ".pred");
 
     const auto predData = {;
@@ -16,7 +16,7 @@ void extractPred(const std::string& trajPath) {
         instance_id: path.basename(path.dirname(trajPath)),
         };
 
-        fs.writeFileSync(predPath, /* JSON.stringify */ std::string(predData));
+        fs.writeFileSync(predPath, /* JSON.stringify */ std:(predData));
         std::cout << "Extracted prediction to " + predPath << std::endl;
 
 }

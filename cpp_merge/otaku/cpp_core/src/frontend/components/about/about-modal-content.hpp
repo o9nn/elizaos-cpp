@@ -14,21 +14,21 @@ namespace elizaos {
 
 
 struct AboutModalContentProps {
-    () => void onClose;
+    [&]() { return void onClose; };
 };
 
 struct CapabilityItem {
-    std::string title;
-    std::string description;
-    std::optional<std::string> emphasis;
+    std: title;
+    std: description;
+    std::optional<std:> emphasis;
 };
 
 struct PluginItem {
-    std::string name;
-    std::string category;
-    std::string summary;
+    std: name;
+    std: category;
+    std: summary;
     std::vector<std::string> points;
-    std::string example;
+    std: example;
 };
 
 void AboutModalContent(AboutModalContentProps { onClose });

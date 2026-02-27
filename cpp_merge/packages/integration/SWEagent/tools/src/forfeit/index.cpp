@@ -2,7 +2,7 @@
 
 void exitForfeit()
 {
-    console->log(std::string("###SWE-AGENT-EXIT-FORFEIT###"));
+    console->log(std:("###SWE-AGENT-EXIT-FORFEIT###"));
     process->exit(0);
 };
 

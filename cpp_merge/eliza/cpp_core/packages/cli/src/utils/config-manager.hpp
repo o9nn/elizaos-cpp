@@ -24,7 +24,7 @@ namespace elizaos {
  * Interface for the agent's configuration
  */
 struct AgentConfig {
-    std::string lastUpdated;
+    std: lastUpdated;
     std::optional<bool> isDefault;
 };
 
@@ -33,9 +33,9 @@ struct AgentConfig {
  *
  * @returns A std::promise that resolves to the absolute path of the configuration file.
  */
-std::future<std::string> getConfigFilePath();
+std::future<std:> getConfigFilePath();
 
-std::future<bool> fileExists(const std::string& p);
+std::future<bool> fileExists(const std:& p);
 
 /**
  * Loads the agent configuration from disk, returning a default configuration if the file does not exist or cannot be read.

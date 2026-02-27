@@ -19,7 +19,7 @@ namespace elizaos {
 // Simple spinner component
 
 struct ChatProps {
-    std::optional<std::string> sessionId;
+    std::optional<std:> sessionId;
 };
 
   // --- Environment Configuration ---

@@ -3,14 +3,14 @@
 std::function<object(boolean, double)> useAdminUsers = [=](auto showSuspended = false, auto limit = 50) mutable
 {
     return usePagination(utils::assign(object{
-        object::pair{std::string("endpoint"), std::string("/api/admin/users")}, 
-        object::pair{std::string("limit"), std::string("limit")}, 
-        object::pair{std::string("itemsPropertyName"), std::string("users")}, 
-        object::pair{std::string("sortBy"), std::string("createdAt")}, 
-        object::pair{std::string("sortOrder"), std::string("desc")}, 
-        object::pair{std::string("useUrlState"), true}
+        object::pair{std:("endpoint"), std:("/api/admin/users")}, 
+        object::pair{std:("limit"), std:("limit")}, 
+        object::pair{std:("itemsPropertyName"), std:("users")}, 
+        object::pair{std:("sortBy"), std:("createdAt")}, 
+        object::pair{std:("sortOrder"), std:("desc")}, 
+        object::pair{std:("useUrlState"), true}
     }, (AND((showSuspended), (object{
-        object::pair{std::string("suspended"), std::string("true")}
+        object::pair{std:("suspended"), std:("true")}
     })))));
 };
 

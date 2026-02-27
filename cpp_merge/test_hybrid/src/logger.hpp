@@ -9,7 +9,7 @@ public:
     using std::enable_shared_from_this<Logger>::shared_from_this;
     string prefix;
 
-    Logger(string prefix = std::string("ElizaOS"));
+    Logger(string prefix = std:("ElizaOS"));
     virtual void log(string level, string message);
     virtual void info(string message);
     virtual void warn(string message);

@@ -7,17 +7,17 @@ KnowledgeTestHelper::KnowledgeTestHelper(string agentId) {
 std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFile(string fileName, string content, string fileType)
 {
     auto file = std::make_shared<File>(array<string>{ content }, fileName, object{
-        object::pair{std::string("type"), fileType}
+        object::pair{std:("type"), fileType}
     });
     auto formData = std::make_shared<FormData>();
-    formData->append(std::string("file"), file);
-    formData->append(std::string("agentId"), this->agentId);
+    formData->append(std:("file"), file);
+    formData->append(std:("agentId"), this->agentId);
     return cy->request(object{
-        object::pair{std::string("method"), std::string("POST")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/documents")}, 
-        object::pair{std::string("body"), formData}, 
-        object::pair{std::string("headers"), object{
-            object::pair{std::string("Accept"), std::string("application/json")}
+        object::pair{std:("method"), std:("POST")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/documents")}, 
+        object::pair{std:("body"), formData}, 
+        object::pair{std:("headers"), object{
+            object::pair{std:("Accept"), std:("application/json")}
         }}
     })->then([=](auto response) mutable
     {
@@ -30,14 +30,14 @@ std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTe
 std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFromUrl(string url)
 {
     return cy->request(object{
-        object::pair{std::string("method"), std::string("POST")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/import")}, 
-        object::pair{std::string("body"), object{
-            object::pair{std::string("url"), std::string("url")}, 
-            object::pair{std::string("agentId"), this->agentId}
+        object::pair{std:("method"), std:("POST")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/import")}, 
+        object::pair{std:("body"), object{
+            object::pair{std:("url"), std:("url")}, 
+            object::pair{std:("agentId"), this->agentId}
         }}, 
-        object::pair{std::string("headers"), object{
-            object::pair{std::string("Content-Type"), std::string("application/json")}
+        object::pair{std:("headers"), object{
+            object::pair{std:("Content-Type"), std:("application/json")}
         }}
     })->then([=](auto response) mutable
     {
@@ -50,8 +50,8 @@ std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTe
 std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeDocument>>>> KnowledgeTestHelper::getDocuments()
 {
     return cy->request(object{
-        object::pair{std::string("method"), std::string("GET")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/documents?agentId=") + this->agentId + string_empty}
+        object::pair{std:("method"), std:("GET")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/documents?agentId=") + this->agentId + string_empty}
     })->then([=](auto response) mutable
     {
         expect(response["status"])->to->eq(200);
@@ -64,8 +64,8 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeDocument>>>> K
 std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> KnowledgeTestHelper::getDocumentChunks(string documentId)
 {
     return cy->request(object{
-        object::pair{std::string("method"), std::string("GET")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/chunks/") + documentId + std::string("?agentId=") + this->agentId + string_empty}
+        object::pair{std:("method"), std:("GET")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/chunks/") + documentId + std:("?agentId=") + this->agentId + string_empty}
     })->then([=](auto response) mutable
     {
         expect(response["status"])->to->eq(200);
@@ -78,8 +78,8 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> Know
 std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeSearchResult>>>> KnowledgeTestHelper::search(string query, double count)
 {
     return cy->request(object{
-        object::pair{std::string("method"), std::string("GET")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/search?query=") + encodeURIComponent(query) + std::string("&agentId=") + this->agentId + std::string("&count=") + count + string_empty}
+        object::pair{std:("method"), std:("GET")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/search?query=") + encodeURIComponent(query) + std:("&agentId=") + this->agentId + std:("&count=") + count + string_empty}
     })->then([=](auto response) mutable
     {
         expect(response["status"])->to->eq(200);
@@ -92,8 +92,8 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeSearchResult>>
 std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::deleteDocument(string documentId)
 {
     return cy->request(object{
-        object::pair{std::string("method"), std::string("DELETE")}, 
-        object::pair{std::string("url"), string_empty + this->baseUrl + std::string("/documents/") + documentId + std::string("?agentId=") + this->agentId + string_empty}
+        object::pair{std:("method"), std:("DELETE")}, 
+        object::pair{std:("url"), string_empty + this->baseUrl + std:("/documents/") + documentId + std:("?agentId=") + this->agentId + string_empty}
     })->then([=](auto response) mutable
     {
         expect(response["status"])->to->eq(204);
@@ -109,11 +109,11 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentPr
         return this->getDocumentChunks(documentId)->then([=](auto chunks) mutable
         {
             if (chunks["length"] > 0) {
-                cy->log(std::string("Document ") + documentId + std::string(" processed with ") + chunks["length"] + std::string(" chunks"));
+                cy->log(std:("Document ") + documentId + std:(" processed with ") + chunks["length"] + std:(" chunks"));
                 return any();
             }
             if (Date->now() - startTime > maxWaitTime) {
-                throw any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout after ") + maxWaitTime + std::string("ms")));
+                throw any(std::make_shared<Error>(std:("Document ") + documentId + std:(" processing timeout after ") + maxWaitTime + std:("ms")));
             }
             cy->wait(1000);
             return checkProcessing();
@@ -121,7 +121,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentPr
         )->_catch([=](auto error) mutable
         {
             if (Date->now() - startTime > maxWaitTime) {
-                throw any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout: ") + error["message"] + string_empty));
+                throw any(std::make_shared<Error>(std:("Document ") + documentId + std:(" processing timeout: ") + error["message"] + string_empty));
             }
             cy->wait(1000);
             return checkProcessing();
@@ -156,7 +156,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::cleanupTestDocume
                 {
                     return doc["title"]->includes(name);
                 }
-                )), (doc["title"]->includes(std::string("test-"))))), (doc["title"]->includes(std::string("cypress-"))));
+                )), (doc["title"]->includes(std:("test-"))))), (doc["title"]->includes(std:("cypress-"))));
             }
             );
             auto deletePromises = testDocs["map"]([=](auto doc) mutable
@@ -169,7 +169,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::cleanupTestDocume
                     }
                     )->_catch([=]() mutable
                     {
-                        cy->log(std::string("Failed to delete document ") + doc["id"] + std::string(", continuing..."));
+                        cy->log(std:("Failed to delete document ") + doc["id"] + std:(", continuing..."));
                         resolve();
                     }
                     );
@@ -179,7 +179,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::cleanupTestDocume
             );
             return cy->wrap(Promise->all(deletePromises))->then([=]() mutable
             {
-                cy->log(std::string("Cleaned up ") + testDocs["length"] + std::string(" test documents"));
+                cy->log(std:("Cleaned up ") + testDocs["length"] + std:(" test documents"));
             }
             );
         }
@@ -188,7 +188,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::cleanupTestDocume
         }
         , [=]() mutable
         {
-            cy->log(std::string("Failed to retrieve documents for cleanup, continuing..."));
+            cy->log(std:("Failed to retrieve documents for cleanup, continuing..."));
         }
         );
     }
@@ -197,15 +197,15 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::cleanupTestDocume
 
 std::shared_ptr<Cypress::Chainable<object>> KnowledgeTestHelper::createTestDocuments()
 {
-    auto testTextContent = std::string("This is a comprehensive test document for knowledge base testing. It contains information about artificial intelligence, machine learning, and natural language processing.");
-    shared testUrl = std::string("https://raw.githubusercontent.com/ai16z/eliza/main/README.md");
-    return this->uploadFile(std::string("cypress-test-document.txt"), testTextContent)->then([=](auto textResponse) mutable
+    auto testTextContent = std:("This is a comprehensive test document for knowledge base testing. It contains information about artificial intelligence, machine learning, and natural language processing.");
+    shared testUrl = std:("https://raw.githubusercontent.com/ai16z/eliza/main/README.md");
+    return this->uploadFile(std:("cypress-test-document.txt"), testTextContent)->then([=](auto textResponse) mutable
     {
         return this->uploadFromUrl(testUrl)->then([=](auto urlResponse) mutable
         {
             return object{
-                object::pair{std::string("textDocId"), textResponse["data"]["id"]}, 
-                object::pair{std::string("urlDocId"), urlResponse["data"]["id"]}
+                object::pair{std:("textDocId"), textResponse["data"]["id"]}, 
+                object::pair{std:("urlDocId"), urlResponse["data"]["id"]}
             };
         }
         );
@@ -215,31 +215,31 @@ std::shared_ptr<Cypress::Chainable<object>> KnowledgeTestHelper::createTestDocum
 
 void KnowledgeTestHelper::validateApiResponse(any response, boolean expectedSuccessStatus)
 {
-    expect(response)->to->have->property(std::string("success"), expectedSuccessStatus);
+    expect(response)->to->have->property(std:("success"), expectedSuccessStatus);
     if (expectedSuccessStatus) {
-        expect(response)->to->have->property(std::string("data"));
+        expect(response)->to->have->property(std:("data"));
     } else {
-        expect(response)->to->have->property(std::string("error"));
-        expect(response["error"])->to->have->property(std::string("message"));
+        expect(response)->to->have->property(std:("error"));
+        expect(response["error"])->to->have->property(std:("message"));
     }
 }
 
 std::shared_ptr<Cypress::Chainable<array<string>>> KnowledgeTestHelper::testFileTypes()
 {
     auto testFiles = array<object>{ object{
-        object::pair{std::string("name"), std::string("test.txt")}, 
-        object::pair{std::string("content"), std::string("Plain text content")}, 
-        object::pair{std::string("type"), std::string("text/plain")}
+        object::pair{std:("name"), std:("test.txt")}, 
+        object::pair{std:("content"), std:("Plain text content")}, 
+        object::pair{std:("type"), std:("text/plain")}
     }, object{
-        object::pair{std::string("name"), std::string("test.md")}, 
-        object::pair{std::string("content"), std::string("# Markdown Content\
+        object::pair{std:("name"), std:("test.md")}, 
+        object::pair{std:("content"), std:("# Markdown Content\
 \
 This is a test markdown file.")}, 
-        object::pair{std::string("type"), std::string("text/markdown")}
+        object::pair{std:("type"), std:("text/markdown")}
     }, object{
-        object::pair{std::string("name"), std::string("test.json")}, 
-        object::pair{std::string("content"), std::string("{"key": "value", "test": true}")}, 
-        object::pair{std::string("type"), std::string("application/json")}
+        object::pair{std:("name"), std:("test.json")}, 
+        object::pair{std:("content"), std:("{"key": "value", "test": true}")}, 
+        object::pair{std:("type"), std:("application/json")}
     } };
     auto uploadPromises = testFiles->map([=](auto file) mutable
     {
@@ -260,33 +260,33 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->Commands->add(std::string("knowledgeHelper"), [=](auto agentId = undefined) mutable
+    Cypress->Commands->add(std:("knowledgeHelper"), [=](auto agentId = undefined) mutable
     {
         return cy->wrap(std::make_shared<KnowledgeTestHelper>(agentId));
     }
     );
-    Cypress->Commands->add(std::string("uploadKnowledgeFile"), [=](auto fileName, auto content, auto fileType = undefined) mutable
+    Cypress->Commands->add(std:("uploadKnowledgeFile"), [=](auto fileName, auto content, auto fileType = undefined) mutable
     {
         auto helper = std::make_shared<KnowledgeTestHelper>();
         return helper->uploadFile(fileName, content, fileType);
     }
     );
-    Cypress->Commands->add(std::string("searchKnowledge"), [=](auto query, auto count = undefined) mutable
+    Cypress->Commands->add(std:("searchKnowledge"), [=](auto query, auto count = undefined) mutable
     {
         auto helper = std::make_shared<KnowledgeTestHelper>();
         return helper->search(query, count);
     }
     );
-    Cypress->Commands->add(std::string("deleteKnowledgeDocument"), [=](auto documentId) mutable
+    Cypress->Commands->add(std:("deleteKnowledgeDocument"), [=](auto documentId) mutable
     {
         auto helper = std::make_shared<KnowledgeTestHelper>();
         return helper->deleteDocument(documentId);
     }
     );
-    Cypress->Commands->add(std::string("cleanupKnowledgeTests"), [=]() mutable
+    Cypress->Commands->add(std:("cleanupKnowledgeTests"), [=]() mutable
     {
         auto helper = std::make_shared<KnowledgeTestHelper>();
-        return helper->cleanupTestDocuments(array<string>{ std::string("test-"), std::string("cypress-") });
+        return helper->cleanupTestDocuments(array<string>{ std:("test-"), std:("cypress-") });
     }
     );
 }

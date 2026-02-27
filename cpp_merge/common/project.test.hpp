@@ -10,37 +10,37 @@ class MrTeeProjectTestSuite;
 class MrTeeProjectTestSuite : public TestSuite, public std::enable_shared_from_this<MrTeeProjectTestSuite> {
 public:
     using std::enable_shared_from_this<MrTeeProjectTestSuite>::shared_from_this;
-    string name = std::string("mr-tee-project");
+    string name = std:("mr-tee-project");
 
-    string description = std::string("E2E tests for Mr. TEE project-specific features");
+    string description = std:("E2E tests for Mr. TEE project-specific features");
 
     array<object> tests = array<object>{ object{
-        object::pair{std::string("name"), std::string("Mr. TEE Project runtime environment test")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
+        object::pair{std:("name"), std:("Mr. TEE Project runtime environment test")}, 
+        object::pair{std:("fn"), [=](auto runtime) mutable
         {
             try
             {
                 if (!runtime->character) {
-                    throw any(std::make_shared<Error>(std::string("Character not loaded in runtime")));
+                    throw any(std::make_shared<Error>(std:("Character not loaded in runtime")));
                 }
                 if (runtime->character->name != mrTeeCharacter->name) {
-                    throw any(std::make_shared<Error>(std::string("Expected character name to be ") + mrTeeCharacter->name + std::string(", got ") + runtime->character->name + string_empty));
+                    throw any(std::make_shared<Error>(std:("Expected character name to be ") + mrTeeCharacter->name + std:(", got ") + runtime->character->name + string_empty));
                 }
-                if (!runtime->character->system->includes(std::string("Mr. TEE"))) {
-                    throw any(std::make_shared<Error>(std::string("Character system prompt does not contain "Mr. TEE"")));
+                if (!runtime->character->system->includes(std:("Mr. TEE"))) {
+                    throw any(std::make_shared<Error>(std:("Character system prompt does not contain "Mr. TEE"")));
                 }
                 auto hasTeePlugin = runtime->character->plugins->some([=](auto p) mutable
                 {
-                    return AND((type_of(p) == std::string("string")), (p["includes"](std::string("tee"))));
+                    return AND((type_of(p) == std:("string")), (p["includes"](std:("tee"))));
                 }
                 );
                 if (!hasTeePlugin) {
-                    throw any(std::make_shared<Error>(std::string("Character does not have TEE plugin")));
+                    throw any(std::make_shared<Error>(std:("Character does not have TEE plugin")));
                 }
             }
             catch (const any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Mr. TEE Project runtime environment test failed: ") + error["message"] + string_empty));
+                throw any(std::make_shared<Error>(std:("Mr. TEE Project runtime environment test failed: ") + error["message"] + string_empty));
             }
         }
         }

@@ -1,51 +1,51 @@
 #include "index.hpp"
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string escapeForJson(const std::string& input) {
+std: escapeForJson(const std:& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return input;
-    .replace(/\\/g, "\\\\");
-    .replace(/"/g, "\\"");
-    .replace(/\n/g, "\\n");
+    return input.replace(/\\/g, "\\\\").replace(/"/g, "\\"").replace(/\n/g, "\\n");
     ".replace(/" + "/g, '\\" + "\\" + "\\";
 
 }
 
-std::string sanitizeJson(const std::string& rawJson) {
+std: sanitizeJson(const std:& rawJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
             // Try parsing directly
-            /* JSON.parse */ rawJson;
+            /* JSON::parse */ rawJson;
             return rawJson; // Already valid;
             } catch {
                 // Continue to sanitization
             }
 
             // first, replace all newlines with \n
-            const auto sanitized = rawJson;
-            .replace(/\n/g, "\\n");
+            const auto sanitized = rawJson.replace(/\n/g, "\\n");
 
-            // then, replace all backticks with \\\`
+            // then, replace all backticks with \\\"
             ".replace(/" + "/g, '\\\";
 
             // Regex to find and escape the "text" field
-            const auto fixed = sanitized.replace(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"simple"/, (_match, group) => {;
+            const auto fixed = sanitized.replace(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"simple"/, [&](_match, group) {;
                 const auto escapedText = escapeForJson(group);
                 return "\"text\": \"" + escapedText + "\", \"simple\"";
                 });
 
                 // Validate that the result is actually parseable
                 try {
-                    /* JSON.parse */ fixed;
+                    /* JSON::parse */ fixed;
                     return fixed;
                     } catch (e) {
-                        throw std::runtime_error(`Failed to sanitize JSON: ${e.message}`);
+                        throw std::runtime_error("Failed to sanitize JSON: ${e.message}");
                     }
 
     } catch (const std::exception& e) {
@@ -58,13 +58,13 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return Promise.all(;
-        attachments.std::map(std::async (attachment: Media) => {
+        return Promise.all[&](;
+        attachments.std::map(std::async (attachment: Media) {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);
                 if (!response.ok) {
-                    throw std::runtime_error(`Failed to fetch file: ${attachment.url}`);
+                    throw std::runtime_error("Failed to fetch file: ${attachment.url}");
                 }
                 const auto mediaBuffer = Buffer.from(response.arrayBuffer());
                 const auto mediaType = attachment.contentType || "image/png";
@@ -72,11 +72,11 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             }
             // if (fs.existsSync(attachment.url)) {
             //   // Handle local file paths
-            //   const mediaBuffer = await fs.promises.readFile(path.resolve(attachment.url));
+            //   const mediaBuffer = fs.promises.readFile(path.resolve(attachment.url));
             //   const mediaType = attachment.contentType || 'image/png';
             //   return { data: mediaBuffer, mediaType };
             // }
-            throw std::runtime_error(`File not found: ${attachment.url}. Make sure the path is correct.`);
+            throw std::runtime_error("File not found: ${attachment.url}. Make sure the path is correct.");
             });
             );
 
@@ -90,10 +90,10 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        if (!attachments || attachments.length == 0) {
+        if (!attachments || attachments.size() == 0) {
             return [];
         }
-        logger.debug(`[Bootstrap] Processing ${attachments.length} attachment(s)`);
+        logger.debug("[Bootstrap] Processing ${attachments.size()} attachment(s)");
 
         const std::vector<Media> processedAttachments = [];
 
@@ -106,14 +106,14 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                 const auto url = isRemote ? attachment.url : getLocalServerUrl(attachment.url);
                 // Only process images that don't already have descriptions
                 if (attachment.contentType == ContentType.IMAGE && !attachment.description) {
-                    logger.debug(`[Bootstrap] Generating description for image: ${attachment.url}`);
+                    logger.debug("[Bootstrap] Generating description for image: ${attachment.url}");
 
                     auto imageUrl = url;
 
                     if (!isRemote) {
                         // Only convert local/internal media to base64
                         const auto res = fetch(url);
-                        if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`);
+                        if (!res.ok) throw new Error("Failed to fetch image: ${res.statusText}");
 
                         const auto buffer = res.buffer();
                         const auto contentType = res.headers.get("content-type") || "application/octet-stream";
@@ -159,13 +159,13 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                                         }
                                         } else if (attachment.contentType == ContentType.DOCUMENT && !attachment.text) {
                                             const auto res = fetch(url);
-                                            if (!res.ok) throw new Error(`Failed to fetch document: ${res.statusText}`);
+                                            if (!res.ok) throw new Error("Failed to fetch document: ${res.statusText}");
 
                                             const auto contentType = res.headers.get("content-type") || "";
-                                            const auto isPlainText = contentType.startsWith("text/plain");
+                                            const auto isPlainText = contentType.substr(0, "text/plain");
 
                                             if (isPlainText) {
-                                                logger.debug(`[Bootstrap] Processing plain text document: ${attachment.url}`);
+                                                logger.debug("[Bootstrap] Processing plain text document: ${attachment.url}`);
 
                                                 const auto textContent = res.text();
                                                 processedAttachment.text = textContent;
@@ -195,19 +195,17 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
     }
 }
 
-bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std::string> source) {
+bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std:> source) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!room) return false;
 
-    std::function normalizeEnvList(value: unknown): std::string[] {
+    std::function normalizeEnvList(value: unknown): std:[] {
         if (!value || typeof value != 'string') return [];
 
-        const auto cleaned = value.trim().replace(/^\[|\]$/g, "");
-        return cleaned;
-        .split(",");
-        .std::map((v) => v.trim());
-        .filter(Boolean);
+        const auto cleaned = value.replace(/^\[|\]$/g, "");
+        return cleaned.split(",");
+        .std::map[&]((v) { return v); }.filter(Boolean);
     }
 
     const auto defaultBypassTypes = [;
@@ -224,24 +222,23 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     runtime.getSetting("SHOULD_RESPOND_BYPASS_SOURCES");
     );
 
-    const auto bypassTypes = new Set(;
-    [...defaultBypassTypes.std::map((t) => std::to_string(t)), ...bypassTypesSetting].std::map((s: std::string) =>
-    s.trim().toLowerCase();
+    const auto bypassTypes = new Set[&](;
+    [...defaultBypassTypes.std::map((t) { return std::to_string(t)), ...bypassTypesSetting].std::map[&]((s: std:) { return s.toLowerCase(); }; };
     );
     );
 
-    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].std::map((s: std::string) =>;
-    s.trim().toLowerCase();
+    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].std::map((s: std:) =>;
+    s.toLowerCase();
     );
 
     const auto roomType = room.std::to_string(type).toLowerCase();
     const auto sourceStr = source.toLowerCase() || "";
 
-    return bypassTypes.has(roomType) || bypassSources.some((pattern) => (std::find(sourceStr.begin(), sourceStr.end(), pattern) != sourceStr.end()));
+    return bypassTypes.has(roomType) || bypassSources.some[&]((pattern) { return (std::find(sourceStr.begin(), sourceStr.end(), pattern) != sourceStr.end())); };
 
 }
 
-std::string cleanupPostText(const std::string& text) {
+std: cleanupPostText(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Remove quotes

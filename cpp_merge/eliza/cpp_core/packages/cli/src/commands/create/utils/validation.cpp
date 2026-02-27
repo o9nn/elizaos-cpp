@@ -1,10 +1,11 @@
 #include "validation.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-CreateOptions validateCreateOptions(const std::any& options) {
+CreateOptions validateCreateOptions(const std:& options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -31,23 +32,23 @@ CreateOptions validateCreateOptions(const std::any& options) {
     }
 }
 
-void validateProjectName(const std::string& name) {
+void validateProjectName(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: std::string
+    isValid; error?: std:
 }
 
-void processPluginName(const std::string& name) {
+void processPluginName(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    isValid: boolean;
-    processedName?: std::string;
-    error?: std::string;
+    isValid;
+    processedName?: std:;
+    error?: std:;
 
 }
 
-std::future<> validateTargetDirectory(const std::string& targetDir) {
+std::future<> validateTargetDirectory(const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: std::string
+    isValid; error?: std:
 }
 
 } // namespace elizaos

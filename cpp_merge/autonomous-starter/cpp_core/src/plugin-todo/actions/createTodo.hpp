@@ -20,19 +20,19 @@ namespace elizaos {
 
 // Interface for parsed task data
 struct TodoTaskInput {
-    std::string name;
-    std::optional<std::string> description;
-    std::string taskType;
+    std: name;
+    std::optional<std:> description;
+    std: taskType;
     std::optional<int> priority;
     std::optional<bool> urgent;
-    std::optional<std::string> dueDate;
-    std::optional<std::string> recurring;
+    std::optional<std:> dueDate;
+    std::optional<std:> recurring;
 };
 
 // Interface for choice options
 struct ChoiceOption {
-    std::string name;
-    std::string description;
+    std: name;
+    std: description;
 };
 
 /**

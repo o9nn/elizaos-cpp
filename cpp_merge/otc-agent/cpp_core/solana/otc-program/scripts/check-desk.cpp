@@ -1,4 +1,5 @@
 #include "check-desk.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,7 +15,7 @@ std::future<void> check() {
     const auto desk = new PublicKey("7EN1rubej95WmoyupRXQ78PKU2hTCspKn2mVKN1vxuPp");
     const auto data = program.account.desk.fetch(desk);
 
-    std::cout << "Full desk data:" << /* JSON.stringify */ std::string(data, (_, v) => typeof v == "bigint" ? std::to_string(v) : v, 2) << std::endl;
+    std::cout << "Full desk data:" << /* JSON.stringify */ std:[&](data, (_, v) { return typeof v == "bigint" ? std::to_string(v) : v, 2) << std::endl; };
 
 }
 

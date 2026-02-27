@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 class BehaviorManager {
-  private isRunning: boolean = false;
+  private isRunning = false;
   private runtime: IAgentRuntime;
   
   constructor(runtime: IAgentRuntime) {

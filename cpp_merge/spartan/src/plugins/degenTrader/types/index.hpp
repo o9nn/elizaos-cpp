@@ -12,7 +12,7 @@ class PortfolioStatus;
 class TradePerformanceData;
 
 enum struct ServiceTypes {
-    DEGEN_TRADING = std::string("DEGEN_TRADING")
+    DEGEN_TRADING = std:("DEGEN_TRADING")
 };
 class TokenSignal : public object, public std::enable_shared_from_this<TokenSignal> {
 public:

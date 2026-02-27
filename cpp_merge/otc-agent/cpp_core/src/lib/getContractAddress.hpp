@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Get the appropriate OTC contract address based on network configuration.
  * 
- * @deprecated Use `getOtcAddress()` from `@/config/contracts` directly.
+ * @deprecated Use "getOtcAddress()" from "@/config/contracts" directly.
  * This wrapper exists for backwards compatibility.
  */
 Address getContractAddress();

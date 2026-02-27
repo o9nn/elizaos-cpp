@@ -23,7 +23,7 @@ namespace elizaos {
 
 void ShowcaseHeader();
 
-void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::string& operator);
+void filterUsers(const std::vector<User>& users, const std:& search, const std::vector<std::string>& selectedTags, const std:& operator);
 
 
 } // namespace elizaos

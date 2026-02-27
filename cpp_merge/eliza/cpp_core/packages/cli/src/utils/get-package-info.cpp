@@ -1,10 +1,13 @@
 #include "get-package-info.hpp"
+#include <string>
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> getPackageVersion(const std::string& packageName) {
+std::future<std:> getPackageVersion(const std:& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return UserEnvironment.getInstance().getPackageVersion(packageName);
@@ -27,12 +30,12 @@ std::future<PackageJson> getPackageInfo() {
             const auto fileContent = import("node:fs/promises").then((fs) =>;
             fs.readFile(packageJsonPath, "utf8");
             );
-            return /* JSON.parse */ fileContent;
+            return /* JSON::parse */ fileContent;
             } catch (error) {
                 if (error instanceof Error) {
                     // Check for file not found error (ENOENT)
                     if ((error as NodeJS.ErrnoException).code == 'ENOENT') {
-                        throw std::runtime_error(`Error: Could not find package.json at ${packageJsonPath}`);
+                        throw std::runtime_error("Error: Could not find package.json at " + std::to_string(packageJsonPath) + "");
                     }
                     // Check for JSON parsing error
                     if (error instanceof SyntaxError) {

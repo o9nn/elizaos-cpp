@@ -1,10 +1,15 @@
 #include "copy-template.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {}) {
+std::future<void> copyDir(const std:& src, const std:& dest, std::vector<std::string> exclude = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Ensure paths are properly resolved as absolute paths
@@ -12,10 +17,10 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
     const auto resolvedDest = path.resolve(dest);
 
     // Create destination directory if it doesn't exist
-    fs.mkdir(resolvedDest, { recursive: true });
+    fs.mkdir(resolvedDest, Config{recursive = true});
 
     // Read source directory
-    const auto entries = fs.readdir(resolvedSrc, { withFileTypes: true });
+    const auto entries = fs.readdir(resolvedSrc, Config{withFileTypes = true});
 
     // Separate files and directories for different processing strategies
     const typeof entries files = [];
@@ -23,7 +28,7 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
 
     for (const auto& entry : entries)
         // Skip excluded directories/files
-        if (exclude.includes(entry.name)) {
+        if (exclude.count(entry.name) > 0) {
             continue;
         }
 
@@ -50,9 +55,9 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
         const auto MAX_CONCURRENT_FILES = 10;
         const std::vector<std::future<void>> filePromises = [];
 
-        for (int i = 0; i < files.length; i += MAX_CONCURRENT_FILES) {
+        for (int i = 0; i < files.size(); i += MAX_CONCURRENT_FILES) {
             const auto batch = files.slice(i, i + MAX_CONCURRENT_FILES);
-            const auto batchPromises = batch.std::map(std::async (entry) => {;
+            const auto batchPromises = batch.std::map[&](std::async (entry) {;
                 const auto srcPath = path.join(resolvedSrc, entry.name);
                 const auto destPath = path.join(resolvedDest, entry.name);
                 fs.copyFile(srcPath, destPath);
@@ -73,7 +78,7 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
 
 }
 
-std::string getPackageName(const std::string& templateType) {
+std: getPackageName(const std:& templateType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (templateType) {
@@ -89,7 +94,7 @@ std::string getPackageName(const std::string& templateType) {
 
 }
 
-std::future<void> copyTemplate(const std::string& templateType, const std::string& targetDir) {
+std::future<void> copyTemplate(const std:& templateType, const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -118,7 +123,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
         path.resolve(__dirname, "..", "..", "templates", packageName),
         ];
 
-        std::string templateDir = nullptr;
+        std: templateDir = nullptr;
         for (const auto& possiblePath : possibleTemplatePaths)
             if (existsSync(possiblePath)) {
                 templateDir = possiblePath;
@@ -132,7 +137,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             );
         }
 
-        logger.debug(`Copying ${templateType} template from ${templateDir} to ${targetDir}`);
+        logger.debug("Copying " + std::to_string(templateType) + " template from " + std::to_string(templateDir) + " to " + std::to_string(targetDir) + "");
 
         // Copy template files as-is
         copyDir(templateDir, targetDir);
@@ -153,10 +158,10 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             "package.json";
             );
 
-            const auto cliPackageJson = /* JSON.parse */ fs.readFile(cliPackageJsonPath, "utf8");
+            const auto cliPackageJson = /* JSON::parse */ fs.readFile(cliPackageJsonPath, "utf8");
             const auto cliPackageVersion = cliPackageJson.version;
 
-            const auto packageJson = /* JSON.parse */ fs.readFile(packageJsonPath, "utf8");
+            const auto packageJson = /* JSON::parse */ fs.readFile(packageJsonPath, "utf8");
 
             // Remove private field from template package.json since templates should be usable by users
             if (packageJson.private) {
@@ -167,7 +172,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             // Only update dependency versions - leave everything else unchanged
             if (packageJson.dependencies) {
                 for (const auto& depName : Object.keys(packageJson.dependencies)
-                    if (depName.startsWith('@elizaos/')) {
+                    if (depName.substr(0, '@elizaos/')) {
                         std::cout << "Setting " + depName + " to use version " + cliPackageVersion << std::endl;
                         packageJson.dependencies[depName] = "latest";
                     }
@@ -176,7 +181,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
 
             if (packageJson.devDependencies) {
                 for (const auto& depName : Object.keys(packageJson.devDependencies)
-                    if (depName.startsWith('@elizaos/')) {
+                    if (depName.substr(0, '@elizaos/')) {
                         std::cout << "Setting dev dependency " + depName + " to use version " + cliPackageVersion << std::endl;
                         packageJson.devDependencies[depName] = "latest";
                     }
@@ -192,13 +197,13 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             }
 
             // Write the updated package.json (dependency versions and plugin name changed)
-            fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2));
+            fs.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJson, nullptr, 2));
             logger.debug('Updated package.json with latest dependency versions');
             } catch (error) {
                 std::cerr << "Error updating package.json: " + error << std::endl;
             }
 
-            logger.debug(`${templateType} template copied successfully`);
+            logger.debug("" + std::to_string(templateType) + " template copied successfully");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -206,7 +211,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
     }
 }
 
-std::future<void> replacePluginNameInFiles(const std::string& targetDir, const std::string& pluginName) {
+std::future<void> replacePluginNameInFiles(const std:& targetDir, const std:& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filesToProcess = [;
@@ -218,15 +223,14 @@ std::future<void> replacePluginNameInFiles(const std::string& targetDir, const s
     ];
 
     // Process files in parallel
-    const auto promises = filesToProcess.std::map(std::async (filePath) => {;
+    const auto promises = filesToProcess.std::map[&](std::async (filePath) {;
         const auto fullPath = path.join(targetDir, filePath);
 
         try {
             if (
-            fs;
-            .access(fullPath);
-            .then(() => true);
-            .catch(() => false);
+            fs.access(fullPath);
+            .then[&](() { return true); };
+            .catch[&](() { return false); };
             ) {
                 auto content = fs.readFile(fullPath, "utf8");
 
@@ -234,7 +238,7 @@ std::future<void> replacePluginNameInFiles(const std::string& targetDir, const s
                 content = content.replace(/plugin-starter/g, pluginName);
 
                 fs.writeFile(fullPath, content, "utf8");
-                logger.debug(`Updated plugin name in ${filePath}`);
+                logger.debug("Updated plugin name in " + std::to_string(filePath) + "");
             }
             } catch (error) {
                 logger.warn(
@@ -253,12 +257,12 @@ std::future<void> copyClientDist() {
 
         logger.debug('Copying client dist files to CLI package');
 
-        const auto srcClientDist = path.resolve(process.cwd(), "../client/dist");
-        const auto destClientDist = path.resolve(process.cwd(), "./dist");
+        const auto srcClientDist = path.resolve(std::filesystem::current_path().string(), "../client/dist");
+        const auto destClientDist = path.resolve(std::filesystem::current_path().string(), "./dist");
         const auto indexSrc = path.join(srcClientDist, "index.html");
         const auto indexDest = path.join(destClientDist, "index.html");
 
-        fs.mkdir(destClientDist, { recursive: true });
+        fs.mkdir(destClientDist, Config{recursive = true});
 
         // Wait specifically for index.html to appear
         auto retries = 0;
@@ -269,7 +273,7 @@ std::future<void> copyClientDist() {
                 break;
             }
             std::cout << "Waiting for client index.html (attempt " + std::to_string(retries + 1) + "/" + maxRetries + ")…" << std::endl;
-            new Promise((r) => setTimeout(r, retryDelay));
+            new Promise[&]((r) { return setTimeout(r, retryDelay)); };
             retries++;
         }
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string generateUUIDFromString(const std::string& inputString) {
+std: generateUUIDFromString(const std:& inputString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -21,7 +21,7 @@ std::string generateUUIDFromString(const std::string& inputString) {
         hashBuffer[8] = (hashBuffer[8] & 0x3f) | 0x80; // Variant RFC4122;
 
         // Format as UUID
-        return std::to_string(uint8ArrayToHex(hashBuffer.slice(0, 4))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.slice(4, 6))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.slice(6, 8))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.slice(8, 10))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.slice(10, 16)));
+        return std::to_string(uint8ArrayToHex(hashBuffer.substr(0, 4-0))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.substr(4, 6-4))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.substr(6, 8-6))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.substr(8, 10-8))) + "-" + std::to_string(uint8ArrayToHex(hashBuffer.substr(10, 16-10)));
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -29,11 +29,11 @@ std::string generateUUIDFromString(const std::string& inputString) {
     }
 }
 
-std::string generateQueryRoomId(const std::string& seed, const std::string& query) {
+std: generateQueryRoomId(const std:& seed, const std:& query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Simple sanitization and combination
-    const auto sanitizedQuery = query.trim().toLowerCase().substring(0, 100); // Limit length;
+    const auto sanitizedQuery = query.toLowerCase().substring(0, 100); // Limit length;
     const auto combinedString = seed + "::query::" + sanitizedQuery;
     return generateUUIDFromstd::to_string(combinedString);
 

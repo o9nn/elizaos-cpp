@@ -6,60 +6,60 @@ std::shared_ptr<Promise<std::shared_ptr<TaskCompletion>>> extractTaskCompletion(
     {
         auto tasksText = availableTasks->map([=](auto task) mutable
         {
-            return std::string("ID: ") + task->id + std::string("\
-Name: ") + task->name + std::string("\
-Description: ") + (OR((task->description), (task->name))) + std::string("\
-Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + std::string("\
+            return std:("ID: ") + task->id + std:("\
+Name: ") + task->name + std:("\
+Description: ") + (OR((task->description), (task->name))) + std:("\
+Tags: ") + (OR((task->tags->join(std:(", "))), (std:("none")))) + std:("\
 ");
         }
-        )->join(std::string("\
+        )->join(std:("\
 ---\
 "));
         auto messageHistory = formatMessages(object{
-            object::pair{std::string("messages"), OR((state->data->messages), (array<any>()))}, 
-            object::pair{std::string("entities"), OR((state->data->entities), (array<any>()))}
+            object::pair{std:("messages"), OR((state->data->messages), (array<any>()))}, 
+            object::pair{std:("entities"), OR((state->data->entities), (array<any>()))}
         });
         auto prompt = composePrompt(object{
-            object::pair{std::string("state"), object{
-                object::pair{std::string("text"), OR((message->content->text), (string_empty))}, 
-                object::pair{std::string("availableTasks"), tasksText}, 
-                object::pair{std::string("messageHistory"), std::string("messageHistory")}
+            object::pair{std:("state"), object{
+                object::pair{std:("text"), OR((message->content->text), (string_empty))}, 
+                object::pair{std:("availableTasks"), tasksText}, 
+                object::pair{std:("messageHistory"), std:("messageHistory")}
             }}, 
-            object::pair{std::string("template"), extractCompletionTemplate}
+            object::pair{std:("template"), extractCompletionTemplate}
         });
         auto result = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std::string("prompt"), std::string("prompt")}, 
-            object::pair{std::string("stopSequences"), array<any>()}
+            object::pair{std:("prompt"), std:("prompt")}, 
+            object::pair{std:("stopSequences"), array<any>()}
         }); });
         auto parsedResult = as<any>(parseKeyValueXml(result));
-        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std::string("undefined")))) {
-            logger->error(std::string("Failed to parse valid task completion information from XML"));
+        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std:("undefined")))) {
+            logger->error(std:("Failed to parse valid task completion information from XML"));
             return object{
-                object::pair{std::string("taskId"), string_empty}, 
-                object::pair{std::string("taskName"), string_empty}, 
-                object::pair{std::string("isFound"), false}
+                object::pair{std:("taskId"), string_empty}, 
+                object::pair{std:("taskName"), string_empty}, 
+                object::pair{std:("isFound"), false}
             };
         }
         auto finalResult = object{
-            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskId), (string_empty))))}, 
-            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskName), (string_empty))))}, 
-            object::pair{std::string("isFound"), String(parsedResult->isFound) == std::string("true")}
+            object::pair{std:("taskId"), (parsedResult->taskId == std:("null")) ? any(string_empty) (String(OR((parsedResult->taskId), (string_empty))))}, 
+            object::pair{std:("taskName"), (parsedResult->taskName == std:("null")) ? any(string_empty) (String(OR((parsedResult->taskName), (string_empty))))}, 
+            object::pair{std:("isFound"), String(parsedResult->isFound) == std:("true")}
         };
         return finalResult;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Error extracting task completion information:"), error);
+        logger->error(std:("Error extracting task completion information:"), error);
         return object{
-            object::pair{std::string("taskId"), string_empty}, 
-            object::pair{std::string("taskName"), string_empty}, 
-            object::pair{std::string("isFound"), false}
+            object::pair{std:("taskId"), string_empty}, 
+            object::pair{std:("taskName"), string_empty}, 
+            object::pair{std:("isFound"), false}
         };
     }
 };
 
 
-string extractCompletionTemplate = std::string("\
+string extractCompletionTemplate = std:("\
 # Task: Extract Task Completion Information\
 \
 ## User Message\
@@ -98,92 +98,92 @@ If no matching task was found:\
 </response>\
 ");
 std::shared_ptr<Action> completeTodoAction = object{
-    object::pair{std::string("name"), std::string("COMPLETE_TODO")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("FINISH_TODO"), std::string("DONE_TODO"), std::string("MARK_TODO_DONE"), std::string("TODO_COMPLETE") }}, 
-    object::pair{std::string("description"), std::string("Mark a todo item as completed, including tasks done in the real world. Works with task name or ID. Can be chained with LIST_TODOS to show remaining tasks.")}, 
-    object::pair{std::string("validate"), [=](auto _runtime, auto _message) mutable
+    object::pair{std:("name"), std:("COMPLETE_TODO")}, 
+    object::pair{std:("similes"), array<string>{ std:("FINISH_TODO"), std:("DONE_TODO"), std:("MARK_TODO_DONE"), std:("TODO_COMPLETE") }}, 
+    object::pair{std:("description"), std:("Mark a todo item as completed, including tasks done in the real world. Works with task name or ID. Can be chained with LIST_TODOS to show remaining tasks.")}, 
+    object::pair{std:("validate"), [=](auto _runtime, auto _message) mutable
     {
         return true;
     }
     }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback) mutable
+    object::pair{std:("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback) mutable
     {
-        logger->info(std::string("[completeTodo] Handler invoked"), object{
-            object::pair{std::string("messageContent"), message->content->text}
+        logger->info(std:("[completeTodo] Handler invoked"), object{
+            object::pair{std:("messageContent"), message->content->text}
         });
-        auto dataService = as<std::shared_ptr<TodoService>>(runtime->getService(std::string("todo")));
+        auto dataService = as<std::shared_ptr<TodoService>>(runtime->getService(std:("todo")));
         if (!dataService) {
-            logger->error(std::string("[completeTodo] Todo service not available"));
+            logger->error(std:("[completeTodo] Todo service not available"));
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("Sorry, the todo service is not available right now. Please try again later.")}, 
-                    object::pair{std::string("error"), true}, 
-                    object::pair{std::string("source"), message->content->source}
+                    object::pair{std:("text"), std:("Sorry, the todo service is not available right now. Please try again later.")}, 
+                    object::pair{std:("error"), true}, 
+                    object::pair{std:("source"), message->content->source}
                 }); });
             }
             return object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("values"), object{
-                    object::pair{std::string("error"), std::string("Todo service not available")}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("values"), object{
+                    object::pair{std:("error"), std:("Todo service not available")}
                 }}
             };
         }
         try
         {
             auto availableTasks = std::async([=]() { dataService->getTodos(object{
-                object::pair{std::string("entityId"), message->entityId}, 
-                object::pair{std::string("roomId"), message->roomId}, 
-                object::pair{std::string("isCompleted"), false}
+                object::pair{std:("entityId"), message->entityId}, 
+                object::pair{std:("roomId"), message->roomId}, 
+                object::pair{std:("isCompleted"), false}
             }); });
             if (availableTasks->get_length() == 0) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std::string("text"), std::string("You don't have any incomplete tasks to mark as done. Would you like to create a new task?")}, 
-                        object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO_NO_TASKS") }}, 
-                        object::pair{std::string("source"), message->content->source}
+                        object::pair{std:("text"), std:("You don't have any incomplete tasks to mark as done. Would you like to create a new task?")}, 
+                        object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO_NO_TASKS") }}, 
+                        object::pair{std:("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std::string("success"), false}, 
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                        object::pair{std::string("error"), std::string("No incomplete tasks found")}
+                    object::pair{std:("success"), false}, 
+                    object::pair{std:("data"), object{
+                        object::pair{std:("actionName"), std:("COMPLETE_TODO")}, 
+                        object::pair{std:("error"), std:("No incomplete tasks found")}
                     }}, 
-                    object::pair{std::string("values"), object{
-                        object::pair{std::string("success"), false}, 
-                        object::pair{std::string("hasActiveTasks"), false}
+                    object::pair{std:("values"), object{
+                        object::pair{std:("success"), false}, 
+                        object::pair{std:("hasActiveTasks"), false}
                     }}
                 };
             }
             shared taskCompletion = (options["taskId"]) ? any(object{
-                object::pair{std::string("taskId"), options["taskId"]}, 
-                object::pair{std::string("taskName"), options["taskName"]}, 
-                object::pair{std::string("isFound"), true}
-            }) : any(std::async([=]() { extractTaskCompletion(runtime, message, availableTasks, state); }));
+                object::pair{std:("taskId"), options["taskId"]}, 
+                object::pair{std:("taskName"), options["taskName"]}, 
+                object::pair{std:("isFound"), true}
+            }) (std::async([=]() { extractTaskCompletion(runtime, message, availableTasks, state); }));
             if (!taskCompletion["isFound"]) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std::string("text"), std::string("I couldn't determine which task you're marking as completed. Could you be more specific? Here are your current tasks:\
+                        object::pair{std:("text"), std:("I couldn't determine which task you're marking as completed. Could you be more specific? Here are your current tasks:\
 \
 ") + availableTasks->map([=](auto task) mutable
                         {
-                            return std::string("- ") + task->name + string_empty;
+                            return std:("- ") + task->name + string_empty;
                         }
-                        )->join(std::string("\
+                        )->join(std:("\
 ")) + string_empty}, 
-                        object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO_NOT_FOUND") }}, 
-                        object::pair{std::string("source"), message->content->source}
+                        object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO_NOT_FOUND") }}, 
+                        object::pair{std:("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std::string("success"), false}, 
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                        object::pair{std::string("error"), std::string("Could not identify which task to complete")}
+                    object::pair{std:("success"), false}, 
+                    object::pair{std:("data"), object{
+                        object::pair{std:("actionName"), std:("COMPLETE_TODO")}, 
+                        object::pair{std:("error"), std:("Could not identify which task to complete")}
                     }}, 
-                    object::pair{std::string("values"), object{
-                        object::pair{std::string("success"), false}, 
-                        object::pair{std::string("availableTaskCount"), availableTasks->get_length()}
+                    object::pair{std:("values"), object{
+                        object::pair{std:("success"), false}, 
+                        object::pair{std:("availableTaskCount"), availableTasks->get_length()}
                     }}
                 };
             }
@@ -195,127 +195,127 @@ std::shared_ptr<Action> completeTodoAction = object{
             if (!task) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std::string("text"), std::string("I couldn't find a task matching "") + taskCompletion["taskName"] + std::string("". Please try again with the exact task name.")}, 
-                        object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO_NOT_FOUND") }}, 
-                        object::pair{std::string("source"), message->content->source}
+                        object::pair{std:("text"), std:("I couldn't find a task matching "") + taskCompletion["taskName"] + std:("". Please try again with the exact task name.")}, 
+                        object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO_NOT_FOUND") }}, 
+                        object::pair{std:("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std::string("success"), false}, 
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                        object::pair{std::string("error"), std::string("Task not found: ") + taskCompletion["taskName"] + string_empty}, 
-                        object::pair{std::string("searchedTaskId"), taskCompletion["taskId"]}
+                    object::pair{std:("success"), false}, 
+                    object::pair{std:("data"), object{
+                        object::pair{std:("actionName"), std:("COMPLETE_TODO")}, 
+                        object::pair{std:("error"), std:("Task not found: ") + taskCompletion["taskName"] + string_empty}, 
+                        object::pair{std:("searchedTaskId"), taskCompletion["taskId"]}
                     }}, 
-                    object::pair{std::string("values"), object{
-                        object::pair{std::string("success"), false}
+                    object::pair{std:("values"), object{
+                        object::pair{std:("success"), false}
                     }}
                 };
             }
             std::async([=]() { dataService->updateTodo(task->id, object{
-                object::pair{std::string("isCompleted"), true}, 
-                object::pair{std::string("completedAt"), std::make_shared<Date>()}, 
-                object::pair{std::string("metadata"), utils::assign(object{
+                object::pair{std:("isCompleted"), true}, 
+                object::pair{std:("completedAt"), std::make_shared<Date>()}, 
+                object::pair{std:("metadata"), utils::assign(object{
                     , 
-                    object::pair{std::string("completedAt"), ((std::make_shared<Date>()))->toISOString()}
+                    object::pair{std:("completedAt"), ((std::make_shared<Date>()))->toISOString()}
                 }, task->metadata)}
             }); });
             auto responseText = string_empty;
-            if (task->type == std::string("daily")) {
-                responseText = std::string("✅ Daily task completed: "") + task->name + std::string(""");
-            } else if (task->type == std::string("one-off")) {
-                auto completedOnTime = (task->dueDate) ? any(std::make_shared<Date>() <= task->dueDate) : any(true);
-                auto timeStatus = (completedOnTime) ? std::string("on time") : std::string("late");
+            if (task->type == std:("daily")) {
+                responseText = std:("✅ Daily task completed: "") + task->name + std:(""");
+            } else if (task->type == std:("one-off")) {
+                auto completedOnTime = (task->dueDate) ? any(std::make_shared<Date>() <= task->dueDate) (true);
+                auto timeStatus = (completedOnTime) ? std:("on time") : std:("late");
                 auto priority = OR((task->priority), (4));
-                responseText = std::string("✅ Task completed: "") + task->name + std::string("" (Priority ") + priority + std::string(", ") + timeStatus + std::string(")");
-            } else if (task->type == std::string("aspirational")) {
-                responseText = std::string("🌟 Congratulations on achieving your aspirational goal: "") + task->name + std::string(""!\
+                responseText = std:("✅ Task completed: "") + task->name + std:("" (Priority ") + priority + std:(", ") + timeStatus + std:(")");
+            } else if (task->type == std:("aspirational")) {
+                responseText = std:("🌟 Congratulations on achieving your aspirational goal: "") + task->name + std:(""!\
 \
 This is a significant accomplishment.");
             } else {
-                responseText = std::string("✅ Marked "") + task->name + std::string("" as completed.");
+                responseText = std:("✅ Marked "") + task->name + std:("" as completed.");
             }
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), responseText}, 
-                    object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO") }}, 
-                    object::pair{std::string("source"), message->content->source}
+                    object::pair{std:("text"), responseText}, 
+                    object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO") }}, 
+                    object::pair{std:("source"), message->content->source}
                 }); });
             }
             return object{
-                object::pair{std::string("success"), true}, 
-                object::pair{std::string("data"), object{
-                    object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                    object::pair{std::string("taskId"), task->id}, 
-                    object::pair{std::string("taskName"), task->name}, 
-                    object::pair{std::string("taskType"), task->type}, 
-                    object::pair{std::string("completedAt"), ((std::make_shared<Date>()))->toISOString()}
+                object::pair{std:("success"), true}, 
+                object::pair{std:("data"), object{
+                    object::pair{std:("actionName"), std:("COMPLETE_TODO")}, 
+                    object::pair{std:("taskId"), task->id}, 
+                    object::pair{std:("taskName"), task->name}, 
+                    object::pair{std:("taskType"), task->type}, 
+                    object::pair{std:("completedAt"), ((std::make_shared<Date>()))->toISOString()}
                 }}, 
-                object::pair{std::string("values"), object{
-                    object::pair{std::string("success"), true}, 
-                    object::pair{std::string("taskId"), task->id}, 
-                    object::pair{std::string("taskName"), task->name}, 
-                    object::pair{std::string("taskType"), task->type}
+                object::pair{std:("values"), object{
+                    object::pair{std:("success"), true}, 
+                    object::pair{std:("taskId"), task->id}, 
+                    object::pair{std:("taskName"), task->name}, 
+                    object::pair{std:("taskType"), task->type}
                 }}
             };
         }
         catch (const any& error)
         {
-            logger->error(std::string("Error in completeTodo handler:"), error);
+            logger->error(std:("Error in completeTodo handler:"), error);
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("I encountered an error while completing your task. Please try again.")}, 
-                    object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO_ERROR") }}, 
-                    object::pair{std::string("source"), message->content->source}
+                    object::pair{std:("text"), std:("I encountered an error while completing your task. Please try again.")}, 
+                    object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO_ERROR") }}, 
+                    object::pair{std:("source"), message->content->source}
                 }); });
             }
             return object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("data"), object{
-                    object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                    object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("data"), object{
+                    object::pair{std:("actionName"), std:("COMPLETE_TODO")}, 
+                    object::pair{std:("error"), (is<Error>(error)) ? any(error->message) (std:("Unknown error"))}
                 }}, 
-                object::pair{std::string("values"), object{
-                    object::pair{std::string("success"), false}
+                object::pair{std:("values"), object{
+                    object::pair{std:("success"), false}
                 }}
             };
         }
     }
     }, 
-    object::pair{std::string("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("{{name1}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I completed my taxes")}
+    object::pair{std:("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
+        object::pair{std:("name"), std:("{{name1}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I completed my taxes")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("{{name2}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("✅ Task completed: "Finish taxes" (Priority 2, on time)")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO") }}
+        object::pair{std:("name"), std:("{{name2}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("✅ Task completed: "Finish taxes" (Priority 2, on time)")}, 
+            object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO") }}
         }}
     } }, array<object>{ object{
-        object::pair{std::string("name"), std::string("{{name1}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I did my 50 pushups today")}
+        object::pair{std:("name"), std:("{{name1}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I did my 50 pushups today")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("{{name2}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("✅ Daily task completed: "Do 50 pushups"")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO") }}
+        object::pair{std:("name"), std:("{{name2}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("✅ Daily task completed: "Do 50 pushups"")}, 
+            object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO") }}
         }}
     } }, array<object>{ object{
-        object::pair{std::string("name"), std::string("{{name1}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I read three books this month")}
+        object::pair{std:("name"), std:("{{name1}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I read three books this month")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("{{name2}}")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("🌟 Congratulations on achieving your aspirational goal: "Read more books"!\
+        object::pair{std:("name"), std:("{{name2}}")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("🌟 Congratulations on achieving your aspirational goal: "Read more books"!\
 \
 This is a significant accomplishment.")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO") }}
+            object::pair{std:("actions"), array<string>{ std:("COMPLETE_TODO") }}
         }}
     } } })}
 };

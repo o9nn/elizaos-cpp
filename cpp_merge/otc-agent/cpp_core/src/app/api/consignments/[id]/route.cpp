@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -30,7 +31,7 @@ std::future<void> GET(NextRequest request) {
             });
             } catch (error) {
                 const auto message = true /* instanceof check */ ? error.message : "Unknown error";
-                if (message.includes("not found")) {
+                if (message.count("not found") > 0) {
                     return NextResponse.json({ error: message }, { status: 404 });
                 }
                 return NextResponse.json({ error: message }, { status: 500 });
@@ -76,13 +77,13 @@ std::future<void> PUT(NextRequest request) {
         // Remove callerAddress from updates
         const auto { callerAddress: _callerAddress, ...updates } = body;
         void _callerAddress; // Intentionally unused - just extracting from body;
-        const auto service = new ConsignmentService();
+        const auto service = std::make_unique<ConsignmentService>();
         const auto updated = service.updateConsignment(id, updates);
 
         return NextResponse.json({ success: true, consignment: updated });
         } catch (error) {
             const auto message = true /* instanceof check */ ? error.message : "Unknown error";
-            if (message.includes("not found")) {
+            if (message.count("not found") > 0) {
                 return NextResponse.json({ error: message }, { status: 404 });
             }
             return NextResponse.json({ error: message }, { status: 500 });
@@ -131,16 +132,16 @@ std::future<void> DELETE(NextRequest request) {
                 );
             }
 
-            const auto service = new ConsignmentService();
+            const auto service = std::make_unique<ConsignmentService>();
             service.withdrawConsignment(id);
 
-            return NextResponse.json({ success: true });
+            return NextResponse.json(Config{success = true});
             } catch (error) {
                 const auto message = true /* instanceof check */ ? error.message : "Unknown error";
-                if (message.includes("not found")) {
+                if (message.count("not found") > 0) {
                     return NextResponse.json({ error: message }, { status: 404 });
                 }
-                if (message.includes("already withdrawn")) {
+                if (message.count("already withdrawn") > 0) {
                     return NextResponse.json({ error: message }, { status: 409 });
                 }
                 return NextResponse.json({ error: message }, { status: 500 });

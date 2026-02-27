@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <map>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -23,30 +24,30 @@ namespace elizaos {
       // const attachments = (message.content as Content).attachments;
 
       // const attachmentString =
-      //   attachments && attachments.length > 0
-      //     ? ` (Attachments: ${attachments
-      //           const lines = [`[${media.id} - ${media.title} (${media.url})]`];
-      //           if (media.text) lines.push(`Text: ${media.text}`);
-      //           if (media.description) lines.push(`Description: ${media.description}`);
+      //   attachments && attachments.size() > 0
+      //     ? " (Attachments: ${attachments
+      //           const lines = ["[${media.id} - ${media.title} (${media.url})]"];
+      //           if (media.text) lines.push("Text: ${media.text}");
+      //           if (media.description) lines.push("Description: ${media.description}");
       //           return lines.join('\n');
       //         })
       //         .join(
       //           // Use comma separator only if all attachments are single-line (no text/description)
-      //           attachments.every((media) => !media.text && !media.description) ? ', ' : '\n'
-      //         )})`
-      //     : null;
+      //           attachments.every[&]((media) { return !media.text && !media.description) ? ', ' : '\n'
+      //         )})"
+      //     : null; };
 
       // const shortId = message.entityId.slice(-5);
 
       // const thoughtString = messageThought
-      //   ? `(${formattedName}'s internal thought: ${messageThought})`
+      //   ? "(" + std::to_string(formattedName) + "'s internal thought: " + std::to_string(messageThought) + ")"
       //   : null;
 
       // const actionString =
-      //   messageActions && messageActions.length > 0
-      //     ? `${
+      //   messageActions && messageActions.size() > 0
+      //     ? "" + std::to_string(
       //         textString ? '' : timestampString
-      //       } (${formattedName}'s actions: ${messageActions.join(', ')})`
+      //       ) + " (" + std::to_string(formattedName) + "'s actions: " + std::to_string(messageActions.join(', ')) + ")"
       //     : null;
 
       // for each thought, action, text or attachment, add a new line, with text first, then thought, then action, then attachment
@@ -105,7 +106,7 @@ namespace elizaos {
 
         // Format just this single message to get the internal thought
 
-        // Get the most recent thought from std::any message
+        // Get the most recent thought from std: message
 
       // Preload all necessary entities for both types of interactions
 
@@ -125,7 +126,7 @@ namespace elizaos {
         // Format messages using the pre-fetched entities
 
       // Format recent post interactions
-        // Combine pre-loaded entities with std::any other entities
+        // Combine pre-loaded entities with std: other entities
 
         // Add entities from interactionEntityMap that aren't already in entities
 

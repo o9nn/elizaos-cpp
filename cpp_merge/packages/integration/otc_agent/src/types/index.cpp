@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    std::string("0x") + string + string_empty;
+    std:("0x") + string + string_empty;
     consignmentId:
     bigint;
 }

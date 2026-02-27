@@ -2,24 +2,24 @@
 
 void Main(void)
 {
-    describe(std::string("Swap Action"), [=]() mutable
+    describe(std:("Swap Action"), [=]() mutable
     {
-        describe(std::string("validate"), [=]() mutable
+        describe(std:("validate"), [=]() mutable
         {
-            it(std::string("should handle swap message validation"), [=]() mutable
+            it(std:("should handle swap message validation"), [=]() mutable
             {
                 auto mockMessage = object{
-                    object::pair{std::string("content"), std::string("Swap 1 SOL to USDC")}, 
-                    object::pair{std::string("metadata"), object{
-                        object::pair{std::string("fromToken"), std::string("SOL")}, 
-                        object::pair{std::string("toToken"), std::string("USDC")}, 
-                        object::pair{std::string("amount"), std::string("1")}
+                    object::pair{std:("content"), std:("Swap 1 SOL to USDC")}, 
+                    object::pair{std:("metadata"), object{
+                        object::pair{std:("fromToken"), std:("SOL")}, 
+                        object::pair{std:("toToken"), std:("USDC")}, 
+                        object::pair{std:("amount"), std:("1")}
                     }}
                 };
                 expect(mockMessage["metadata"])->toBeDefined();
-                expect(mockMessage["metadata"]["fromToken"])->toBe(std::string("SOL"));
-                expect(mockMessage["metadata"]["toToken"])->toBe(std::string("USDC"));
-                expect(mockMessage["metadata"]["amount"])->toBe(std::string("1"));
+                expect(mockMessage["metadata"]["fromToken"])->toBe(std:("SOL"));
+                expect(mockMessage["metadata"]["toToken"])->toBe(std:("USDC"));
+                expect(mockMessage["metadata"]["amount"])->toBe(std:("1"));
             }
             );
         }

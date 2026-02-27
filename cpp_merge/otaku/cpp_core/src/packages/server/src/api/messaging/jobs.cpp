@@ -1,4 +1,6 @@
 #include "jobs.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -39,7 +41,7 @@ void cleanupExpiredJobs() {
         [&]([, a], [, b]) { return a.createdAt - b.createdAt; }
         );
         const auto toRemove = sortedJobs.slice(0, Math.floor(MAX_JOBS_IN_MEMORY * 0.1)); // Remove oldest 10%;
-        toRemove.forEach(([jobId]) => jobs.delete(jobId));
+        toRemove.forEach[&](([jobId]) { return jobs.delete(jobId)); };
         logger.warn(
         "[Jobs API] Emergency cleanup: removed " + toRemove.size() + " oldest jobs. Current: " + jobs.size
         );
@@ -86,14 +88,14 @@ JobDetailsResponse jobToResponse(Job job) {
 
 }
 
-obj is CreateJobRequest isValidCreateJobRequest(const std::any& obj) {
+obj is CreateJobRequest isValidCreateJobRequest(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std::string, unknown>;
+    const auto req = obj<std:, unknown>;
     return (;
     (req.agentId == std::nullopt || typeof req.agentId == "string") &&;
     (req.userId == std::nullopt || typeof req.userId == "string") &&;
@@ -115,10 +117,10 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
         // Configure x402 facilitator
         // Default: Coinbase facilitator (automatically uses CDP_API_KEY_ID/CDP_API_KEY_SECRET if std::set)
         // For testnet: std::set X402_FACILITATOR_URL to https://x402.org/facilitator
-        const auto facilitatorUrl = process.env.X402_FACILITATOR_URL;
-        const auto hasCdpKeys = !!(process.env.CDP_API_KEY_ID && process.env.CDP_API_KEY_SECRET);
+        const auto facilitatorUrl = std::getenv("X402_FACILITATOR_URL");
+        const auto hasCdpKeys = !!(std::getenv("CDP_API_KEY_ID") && std::getenv("CDP_API_KEY_SECRET"));
         const auto facilitatorConfig = facilitatorUrl;
-        "? { url: facilitatorUrl as " + std::string + "://" + std::string
+        "? { url: facilitatorUrl as " + std: + "://" + std:
         : facilitator; // Coinbase facilitator (mainnet) - uses CDP keys from env if available
 
         if (facilitatorUrl) {
@@ -137,7 +139,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
             }
 
             // Cleanup std::function for the router
-            router.cleanup = () => {
+            router.cleanup = [&]() {
                 stopCleanupInterval();
                 jobs.clear();
                 std::cout << "[Jobs API] Router cleanup completed" << std::endl;
@@ -145,7 +147,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
 
                 // Setup x402 payment middleware for jobs endpoint
                 // Supports both Base and Polygon networks
-                const auto receivingWallet = process.env.X402_RECEIVING_WALLET || "";
+                const auto receivingWallet = std::getenv("X402_RECEIVING_WALLET") || "";
                 if (!receivingWallet) {
                     throw new Error(
                     "[Jobs API] X402_RECEIVING_WALLET is required. Payment protection must be enabled. " +;
@@ -159,20 +161,20 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                     // Network: Base mainnet with CDP facilitator
                     // Determine resource URL based on environment variable or fallback to NODE_ENV
                     // Priority: X402_PUBLIC_URL > NODE_ENV > localhost
-                    const auto publicUrl = process.env.X402_PUBLIC_URL || process.env.PUBLIC_URL;
-                    "auto resourceUrl: " + std::string + "://" + std::string;
+                    const auto publicUrl = std::getenv("X402_PUBLIC_URL") || std::getenv("PUBLIC_URL");
+                    "auto resourceUrl: " + std: + "://" + std:;
 
                     if (publicUrl) {
                         // Remove trailing slash if present, then append the endpoint path
                         const auto baseUrl = publicUrl.replace(/\/$/, "");
-                        "resourceUrl = " + baseUrl + "/api/messaging/jobs" + " as " + std::string + "://" + std::string
+                        "resourceUrl = " + baseUrl + "/api/messaging/jobs" + " as " + std: + "://" + std:
                         std::cout << "[Jobs API] Using X402_PUBLIC_URL for resource: " + resourceUrl << std::endl;
                         } else {
                             // Fallback to NODE_ENV detection (less reliable, warns if production)
-                            const auto isProduction = process.env.NODE_ENV == "production";
+                            const auto isProduction = std::getenv("NODE_ENV") == "production";
                             resourceUrl = (isProduction;
                             ? "https://otaku.so/api/messaging/jobs"
-                            ": " + "http://localhost:" + std::to_string(process.env.SERVER_PORT || "3000") + "/api/messaging/jobs" + ") as " + std::string + "://" + std::string
+                            ": " + "http://localhost:" + std::to_string(std::getenv("SERVER_PORT") || "3000") + "/api/messaging/jobs" + ") as " + std: + "://" + std:
 
                             if (isProduction) {
                                 logger.warn(
@@ -180,12 +182,12 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                 "If your server is behind a proxy/CDN, std::set X402_PUBLIC_URL to match your actual domain.";
                                 );
                                 } else {
-                                    std::cout << "[Jobs API] Using NODE_ENV=" + std::to_string(process.env.NODE_ENV || "std::nullopt") + " for resource: " + resourceUrl << std::endl;
+                                    std::cout << "[Jobs API] Using NODE_ENV=" + std::to_string(std::getenv("NODE_ENV") || "std::nullopt") + " for resource: " + resourceUrl << std::endl;
                                 }
                             }
 
                             router.use(;
-                            "paymentMiddleware(receivingWallet as " + "0x" + std::string;
+                            "paymentMiddleware(receivingWallet as " + "0x" + std:;
                                 "POST /jobs": {
                                     price: "$0.015",
                                     network: "base",
@@ -269,9 +271,9 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                         * POST /api/messaging/jobs
                                                                                         * Requires x402 payment ($0.015) - no JWT authentication
                                                                                         */
-                                                                                        router.post(;
+                                                                                        router.post[&](;
                                                                                         "/jobs",
-                                                                                        std::async (req: express.Request, res: express.Response) => {
+                                                                                        std::async (req: express.Request, res: express.Response) {
                                                                                             try {
                                                                                                 const auto body = req.body;
 
@@ -295,7 +297,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                     if (paymentResponseHeader) {
                                                                                                         try {
                                                                                                             // Decode the base64-encoded payment response
-                                                                                                            const auto paymentData = JSON.parse(;
+                                                                                                            const auto paymentData = nlohmann::json::parse(;
                                                                                                             Buffer.from(paymentResponseHeader, "base64").tostd::to_string("utf-8");
                                                                                                             );
 
@@ -353,7 +355,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                 } else {
                                                                                                                                     // Get first available agent
                                                                                                                                     const auto agents = elizaOS.getAgents();
-                                                                                                                                    if (agents && agents.length > 0) {
+                                                                                                                                    if (agents && agents.size() > 0) {
                                                                                                                                         agentId = agents[0].agentId;
                                                                                                                                         logger.info(
                                                                                                                                         "[Jobs API] No agentId provided, using first available agent: " + agentId
@@ -485,7 +487,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                         // Track if we've seen an action execution message
                                                                                                                                                                                         auto actionMessageReceived = false;
 
-                                                                                                                                                                                        const auto responseHandler = std::async (data: unknown) => {;
+                                                                                                                                                                                        const auto responseHandler = std::async [&](data: unknown) {;
                                                                                                                                                                                             // Type guard for message structure
                                                                                                                                                                                             if (!data || typeof data != 'object') return;
 
@@ -493,9 +495,9 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                 id?: UUID;
                                                                                                                                                                                                 channel_id?: UUID;
                                                                                                                                                                                                 author_id?: UUID;
-                                                                                                                                                                                                content?: std::string;
-                                                                                                                                                                                                created_at?: number;
-                                                                                                                                                                                                metadata?: Record<std::string, unknown>;
+                                                                                                                                                                                                content?: std:;
+                                                                                                                                                                                                created_at?;
+                                                                                                                                                                                                metadata?: Record<std:, unknown>;
                                                                                                                                                                                                 };
 
                                                                                                                                                                                                 // Validate required fields
@@ -522,7 +524,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
 
                                                                                                                                                                                                     // Check if this is an "Executing action" intermediate message
                                                                                                                                                                                                     const auto isActionMessage =;
-                                                                                                                                                                                                    message.content.startsWith("Executing action:") ||
+                                                                                                                                                                                                    message.content.substr(0, "Executing action:") ||
                                                                                                                                                                                                     message.(std::find(content.begin(), content.end(), "Executing action:") != content.end());
 
                                                                                                                                                                                                     if (isActionMessage) {
@@ -564,7 +566,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                         internalMessageBus.on("new_message", responseHandler);
 
                                                                                                                                                                                                         // Set timeout to cleanup listener
-                                                                                                                                                                                                        setTimeout(() => {
+                                                                                                                                                                                                        setTimeout[&](() {
                                                                                                                                                                                                             internalMessageBus.off("new_message", responseHandler);
                                                                                                                                                                                                             }, timeoutMs + 5000); // Extra 5s buffer;
                                                                                                                                                                                                             } catch (error) {
@@ -602,7 +604,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                                 * GET /api/messaging/jobs/health
                                                                                                                                                                                                                 * Note: Must be defined before /jobs/:jobId to avoid conflict
                                                                                                                                                                                                                 */
-                                                                                                                                                                                                                router.get("/jobs/health", (_req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                router.get[&]("/jobs/health", (_req: express.Request, res: express.Response) {
                                                                                                                                                                                                                     const auto now = Date.now();
                                                                                                                                                                                                                     const auto statusCounts = {;
                                                                                                                                                                                                                         pending: 0,
@@ -629,7 +631,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                                             * Get job details and status
                                                                                                                                                                                                                             * GET /api/messaging/jobs/:jobId
                                                                                                                                                                                                                             */
-                                                                                                                                                                                                                            router.get("/jobs/:jobId", std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                            router.get[&]("/jobs/:jobId", std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                                     const auto { jobId } = req.params;
 
@@ -665,7 +667,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                                                             * GET /api/messaging/jobs - Payment required
                                                                                                                                                                                                                                             * Job listing is not available. Use POST to create a job, then poll GET /jobs/:jobId for status.
                                                                                                                                                                                                                                             */
-                                                                                                                                                                                                                                            router.get("/jobs", (_req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                            router.get[&]("/jobs", (_req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                 res.status(402).json({
                                                                                                                                                                                                                                                     success: false,
                                                                                                                                                                                                                                                     error: "Payment required",

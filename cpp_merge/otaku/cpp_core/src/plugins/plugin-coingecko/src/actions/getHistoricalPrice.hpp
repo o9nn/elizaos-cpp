@@ -19,10 +19,10 @@ namespace elizaos {
 
 
 // Helper std::function to format market cap values
-std::string formatMarketCap(double value);
+std: formatMarketCap(double value);
 
 // Helper std::function to convert natural date to dd-mm-yyyy format
-std::string parseDateToApiFormat(const std::string& dateStr);
+std: parseDateToApiFormat(const std:& dateStr);
 
       // Read parameters from state
 

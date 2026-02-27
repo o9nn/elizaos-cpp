@@ -1,4 +1,5 @@
 #include "eliza.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,31 +13,31 @@ Character getElizaCharacter() {
     "@elizaos/plugin-sql",
 
     // Text-only plugins (no embedding support)
-    ...(process.env.ANTHROPIC_API_KEY ? ["@elizaos/plugin-anthropic"] : []),
-    ...(process.env.OPENROUTER_API_KEY ? ["@elizaos/plugin-openrouter"] : []),
+    ...(std::getenv("ANTHROPIC_API_KEY") ? ["@elizaos/plugin-anthropic"] : []),
+    ...(std::getenv("OPENROUTER_API_KEY") ? ["@elizaos/plugin-openrouter"] : []),
 
     // Embedding-capable plugins last (lowest priority for embedding fallback)
-    ...(process.env.OPENAI_API_KEY ? ["@elizaos/plugin-openai"] : []),
-    ...(process.env.OLLAMA_API_ENDPOINT ? ["@elizaos/plugin-ollama"] : []),
-    ...(process.env.GOOGLE_GENERATIVE_AI_API_KEY ? ["@elizaos/plugin-google-genai"] : []),
-    ...(!process.env.GOOGLE_GENERATIVE_AI_API_KEY &&;
-    !process.env.OLLAMA_API_ENDPOINT &&;
-    !process.env.OPENAI_API_KEY;
+    ...(std::getenv("OPENAI_API_KEY") ? ["@elizaos/plugin-openai"] : []),
+    ...(std::getenv("OLLAMA_API_ENDPOINT") ? ["@elizaos/plugin-ollama"] : []),
+    ...(std::getenv("GOOGLE_GENERATIVE_AI_API_KEY") ? ["@elizaos/plugin-google-genai"] : []),
+    ...(!std::getenv("GOOGLE_GENERATIVE_AI_API_KEY") &&;
+    !std::getenv("OLLAMA_API_ENDPOINT") &&;
+    !std::getenv("OPENAI_API_KEY");
     ? ["@elizaos/plugin-local-ai"];
     : []),
 
     // Platform plugins
-    ...(process.env.DISCORD_API_TOKEN ? ["@elizaos/plugin-discord"] : []),
-    ...(process.env.TWITTER_API_KEY &&;
-    process.env.TWITTER_API_SECRET_KEY &&;
-    process.env.TWITTER_ACCESS_TOKEN &&;
-    process.env.TWITTER_ACCESS_TOKEN_SECRET;
+    ...(std::getenv("DISCORD_API_TOKEN") ? ["@elizaos/plugin-discord"] : []),
+    ...(std::getenv("TWITTER_API_KEY") &&;
+    std::getenv("TWITTER_API_SECRET_KEY") &&;
+    std::getenv("TWITTER_ACCESS_TOKEN") &&;
+    std::getenv("TWITTER_ACCESS_TOKEN_SECRET");
     ? ["@elizaos/plugin-twitter"];
     : []),
-    ...(process.env.TELEGRAM_BOT_TOKEN ? ["@elizaos/plugin-telegram"] : []),
+    ...(std::getenv("TELEGRAM_BOT_TOKEN") ? ["@elizaos/plugin-telegram"] : []),
 
     // Bootstrap plugin
-    ...(!process.env.IGNORE_BOOTSTRAP ? ["@elizaos/plugin-bootstrap"] : []),
+    ...(!std::getenv("IGNORE_BOOTSTRAP") ? ["@elizaos/plugin-bootstrap"] : []),
     ];
 
     return {

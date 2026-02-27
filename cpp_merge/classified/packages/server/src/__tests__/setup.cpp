@@ -1,16 +1,16 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/server/src/__tests__/setup.h"
 
 object originalConsole = object{
-    object::pair{std::string("log"), console->log}, 
-    object::pair{std::string("warn"), console->warn}, 
-    object::pair{std::string("error"), console->error}, 
-    object::pair{std::string("info"), console->info}
+    object::pair{std:("log"), console->log}, 
+    object::pair{std:("warn"), console->warn}, 
+    object::pair{std:("error"), console->error}, 
+    object::pair{std:("info"), console->info}
 };
 
 void Main(void)
 {
-    process->env->NODE_ENV = std::string("test");
-    process->env->LOG_LEVEL = std::string("error");
+    process->env->NODE_ENV = std:("test");
+    process->env->LOG_LEVEL = std:("error");
     beforeAll([=]() mutable
     {
         console->log = [=]() mutable
@@ -25,7 +25,7 @@ void Main(void)
         console->info = [=]() mutable
         {
         };
-        logger->level = std::string("error");
+        logger->level = std:("error");
     }
     );
     afterAll([=]() mutable

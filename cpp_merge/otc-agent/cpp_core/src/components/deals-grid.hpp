@@ -21,11 +21,11 @@ struct DealsGridProps {
     double minMarketCap;
     double maxMarketCap;
     std::vector<std::string> negotiableTypes;
-    std::optional<std::string> searchQuery;
+    std::optional<std:> searchQuery;
 };
 
 struct TokenGroup {
-    std::string tokenId;
+    std: tokenId;
     Token | null token;
     TokenMarketData | null marketData;
     std::vector<OTCConsignment> consignments;

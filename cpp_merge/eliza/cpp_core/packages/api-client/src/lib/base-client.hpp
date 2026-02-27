@@ -16,10 +16,10 @@ namespace elizaos {
 
 class ApiError extends Error {
   constructor(
-    public code: std::string,
-    message: std::string,
-    public details?: std::string,
-    public status?: number
+    public code: std:,
+    message: std:,
+    public details?: std:,
+    public status?
   ) {
     super(message);
     this.name = 'ApiError';
@@ -30,7 +30,7 @@ class ApiError extends Error {
    * Returns a sensible default based on common API patterns
    */
     // For most delete/update operations, return a success indicator
-    // This handles the common case of { success: boolean } return types
+    // This handles the common case of { success } return types
 
     // Handle empty baseUrl for relative URLs
       // Fallback for non-browser environments

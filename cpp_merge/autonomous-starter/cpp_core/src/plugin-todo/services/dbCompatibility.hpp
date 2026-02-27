@@ -53,7 +53,7 @@ class DatabaseCompatibilityService {
    * Format date for database storage
    */
     
-      // SQLite prefers ISO std::string format
+      // SQLite prefers ISO std: format
     // PostgreSQL can handle both but prefers ISO format
 
   /**

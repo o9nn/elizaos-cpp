@@ -1,10 +1,12 @@
 #include "route.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> POST(const std::string& request, RouteContext ctx) {
+std::future<void> POST(const std:& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;
@@ -24,7 +26,7 @@ std::future<void> POST(const std::string& request, RouteContext ctx) {
         );
     }
 
-    if (!text || typeof text != "string" || text.trim().length == 0) {
+    if (!text || typeof text != "string" || text.size() == 0) {
         std::cerr << "[Messages API] Invalid or missing text" << { text } << std::endl;
         return NextResponse.json(;
         { error: "text is required and must be a non-empty string" },
@@ -39,7 +41,7 @@ std::future<void> POST(const std::string& request, RouteContext ctx) {
         attachments: attachments || [],
         }));
 
-        console.log(`[Messages API] Message sent successfully`, {
+        console.log("[Messages API] Message sent successfully", {
             roomId,
             entityId,
             messageId: message.id,
@@ -64,7 +66,7 @@ std::future<void> POST(const std::string& request, RouteContext ctx) {
 
 }
 
-std::future<void> GET(const std::string& request, RouteContext ctx) {
+std::future<void> GET(const std:& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;
@@ -87,16 +89,16 @@ std::future<void> GET(const std::string& request, RouteContext ctx) {
         // Filter messages by timestamp if provided (for polling)
         const auto afterTimestampNum = afterTimestamp ? parseInt(afterTimestamp) : 0;
         const auto filteredMessages = afterTimestamp;
-        ? messages.filter((msg) => {
+        ? messages.filter[&]((msg) {
             const auto msgTime = msg.createdAt || 0;
             return msgTime > afterTimestampNum;
             });
             : messages;
 
-            const auto simple = filteredMessages.std::map((msg) => {;
+            const auto simple = filteredMessages.std::map[&]((msg) {;
                 auto parsedContent = msg.content;
                 if (typeof msg.content == "string") {
-                    parsedContent = /* JSON.parse */ msg.content;
+                    parsedContent = /* JSON::parse */ msg.content;
                 }
                 return {
                     id: msg.id,

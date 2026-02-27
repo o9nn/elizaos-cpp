@@ -2,62 +2,62 @@
 
 void Main(void)
 {
-    describe(std::string("Rules Module"), [=]() mutable
+    describe(std:("Rules Module"), [=]() mutable
     {
-        describe(std::string("PythonValidator"), [=]() mutable
+        describe(std:("PythonValidator"), [=]() mutable
         {
             shared validator = std::make_shared<PythonValidator>();
-            test(std::string("should detect missing type annotations"), [=]() mutable
+            test(std:("should detect missing type annotations"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 def process_data(data):\
     return data * 2\
 ");
-                auto result = validator->validate(code, std::string("test.py"));
+                auto result = validator->validate(code, std:("test.py"));
                 expect(result->valid)->toBe(false);
                 expect(result->violations->some([=](auto v) mutable
                 {
-                    return v->rule == std::string("python-type-annotations");
+                    return v->rule == std:("python-type-annotations");
                 }
                 ))->toBe(true);
             }
             );
-            test(std::string("should detect os.path usage"), [=]() mutable
+            test(std:("should detect os.path usage"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 import os.path\
 \
 def get_file_path(filename: str) -> str:\
     return os.path.join('/tmp', filename)\
 ");
-                auto result = validator->validate(code, std::string("test.py"));
+                auto result = validator->validate(code, std:("test.py"));
                 expect(result->valid)->toBe(false);
                 expect(result->violations->some([=](auto v) mutable
                 {
-                    return v->rule == std::string("use-pathlib");
+                    return v->rule == std:("use-pathlib");
                 }
                 ))->toBe(true);
             }
             );
-            test(std::string("should detect open() without pathlib"), [=]() mutable
+            test(std:("should detect open() without pathlib"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 def read_file(filename: str) -> str:\
     with open(filename, 'r') as f:\
         return f.read()\
 ");
-                auto result = validator->validate(code, std::string("test.py"));
+                auto result = validator->validate(code, std:("test.py"));
                 expect(result->valid)->toBe(false);
                 expect(result->violations->some([=](auto v) mutable
                 {
-                    return v->rule == std::string("use-pathlib");
+                    return v->rule == std:("use-pathlib");
                 }
                 ))->toBe(true);
             }
             );
-            test(std::string("should pass valid Python code"), [=]() mutable
+            test(std:("should pass valid Python code"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 from pathlib import Path\
 from typing import List\
 \
@@ -69,146 +69,146 @@ def read_files(filenames: List[str]) -> List[str]:\
         results.append(content)\
     return results\
 ");
-                auto result = validator->validate(code, std::string("test.py"));
+                auto result = validator->validate(code, std:("test.py"));
                 expect(result->valid)->toBe(true);
                 expect(result->violations->filter([=](auto v) mutable
                 {
-                    return v->severity == std::string("error");
+                    return v->severity == std:("error");
                 }
                 ))->toHaveLength(0);
             }
             );
         }
         );
-        describe(std::string("TypeScriptValidator"), [=]() mutable
+        describe(std:("TypeScriptValidator"), [=]() mutable
         {
             shared validator = std::make_shared<TypeScriptValidator>();
-            test(std::string("should detect any type usage"), [=]() mutable
+            test(std:("should detect any type usage"), [=]() mutable
             {
-                auto code = std::string("\
-function processData(data: any): any {\
+                auto code = std:("\
+function processData(data) {\
     return data;\
 }\
 ");
-                auto result = validator->validate(code, std::string("test.ts"));
+                auto result = validator->validate(code, std:("test.ts"));
                 expect(result->valid)->toBe(false);
                 expect(result->violations->some([=](auto v) mutable
                 {
-                    return v->rule == std::string("explicit-types");
+                    return v->rule == std:("explicit-types");
                 }
                 ))->toBe(true);
             }
             );
-            test(std::string("should detect synchronous fs usage"), [=]() mutable
+            test(std:("should detect synchronous fs usage"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 import * as fs from 'fs';\
 \
-function readFile(path: string): string {\
+function readFile(path) {\
     return fs.readFileSync(path, 'utf-8');\
 }\
 ");
-                auto result = validator->validate(code, std::string("test.ts"));
+                auto result = validator->validate(code, std:("test.ts"));
                 expect(result->violations->some([=](auto v) mutable
                 {
-                    return v->rule == std::string("node-fs-promises");
+                    return v->rule == std:("node-fs-promises");
                 }
                 ))->toBe(true);
             }
             );
-            test(std::string("should pass valid TypeScript code"), [=]() mutable
+            test(std:("should pass valid TypeScript code"), [=]() mutable
             {
-                auto code = std::string("\
+                auto code = std:("\
 import { promises as fs } from 'fs';\
 \
 /**\
  * Read a file asynchronously\
  */\
-async function readFile(path: string): Promise<string> {\
+async function readFile(path): Promise<string> {\
     return fs.readFile(path, 'utf-8');\
 }\
 ");
-                auto result = validator->validate(code, std::string("test.ts"));
+                auto result = validator->validate(code, std:("test.ts"));
                 expect(result->valid)->toBe(true);
                 expect(result->violations->filter([=](auto v) mutable
                 {
-                    return v->severity == std::string("error");
+                    return v->severity == std:("error");
                 }
                 ))->toHaveLength(0);
             }
             );
         }
         );
-        describe(std::string("getValidator"), [=]() mutable
+        describe(std:("getValidator"), [=]() mutable
         {
-            test(std::string("should return PythonValidator for python"), [=]() mutable
+            test(std:("should return PythonValidator for python"), [=]() mutable
             {
-                auto validator = getValidator(std::string("python"));
+                auto validator = getValidator(std:("python"));
                 expect(validator)->toBeInstanceOf(PythonValidator);
             }
             );
-            test(std::string("should return TypeScriptValidator for typescript"), [=]() mutable
+            test(std:("should return TypeScriptValidator for typescript"), [=]() mutable
             {
-                auto validator = getValidator(std::string("typescript"));
+                auto validator = getValidator(std:("typescript"));
                 expect(validator)->toBeInstanceOf(TypeScriptValidator);
             }
             );
         }
         );
-        describe(std::string("getApplicableRules"), [=]() mutable
+        describe(std:("getApplicableRules"), [=]() mutable
         {
-            test(std::string("should return Python rules for .py files"), [=]() mutable
+            test(std:("should return Python rules for .py files"), [=]() mutable
             {
-                auto rules = getApplicableRules(std::string("test.py"));
+                auto rules = getApplicableRules(std:("test.py"));
                 expect(rules)->toEqual(PYTHON_CODING_RULES);
             }
             );
-            test(std::string("should return TypeScript rules for .ts files"), [=]() mutable
+            test(std:("should return TypeScript rules for .ts files"), [=]() mutable
             {
-                auto rules = getApplicableRules(std::string("test.ts"));
+                auto rules = getApplicableRules(std:("test.ts"));
                 expect(rules)->toEqual(TYPESCRIPT_CODING_RULES);
             }
             );
-            test(std::string("should use provided language parameter"), [=]() mutable
+            test(std:("should use provided language parameter"), [=]() mutable
             {
-                auto rules = getApplicableRules(std::string("test.txt"), std::string("python"));
+                auto rules = getApplicableRules(std:("test.txt"), std:("python"));
                 expect(rules)->toEqual(PYTHON_CODING_RULES);
             }
             );
         }
         );
-        describe(std::string("Project Structure"), [=]() mutable
+        describe(std:("Project Structure"), [=]() mutable
         {
-            test(std::string("should have correct main entry points"), [=]() mutable
+            test(std:("should have correct main entry points"), [=]() mutable
             {
                 expect(PROJECT_STRUCTURE->mainEntryPoints)->toHaveLength(2);
-                expect(const_(PROJECT_STRUCTURE->mainEntryPoints)[0]->path)->toBe(std::string("sweagent/run/run_single.py"));
-                expect(const_(PROJECT_STRUCTURE->mainEntryPoints)[1]->path)->toBe(std::string("sweagent/run/run_batch.py"));
+                expect(const_(PROJECT_STRUCTURE->mainEntryPoints)[0]->path)->toBe(std:("sweagent/run/run_single.py"));
+                expect(const_(PROJECT_STRUCTURE->mainEntryPoints)[1]->path)->toBe(std:("sweagent/run/run_batch.py"));
             }
             );
-            test(std::string("should have correct main class"), [=]() mutable
+            test(std:("should have correct main class"), [=]() mutable
             {
-                expect(PROJECT_STRUCTURE->mainClass->name)->toBe(std::string("Agent"));
-                expect(PROJECT_STRUCTURE->mainClass->path)->toBe(std::string("sweagent/agent/agents.py"));
+                expect(PROJECT_STRUCTURE->mainClass->name)->toBe(std:("Agent"));
+                expect(PROJECT_STRUCTURE->mainClass->path)->toBe(std:("sweagent/agent/agents.py"));
             }
             );
-            test(std::string("should have correct execution environment"), [=]() mutable
+            test(std:("should have correct execution environment"), [=]() mutable
             {
-                expect(PROJECT_STRUCTURE->executionEnvironment->type)->toBe(std::string("docker"));
-                expect(PROJECT_STRUCTURE->executionEnvironment->interfaceProject)->toBe(std::string("SWE-ReX"));
+                expect(PROJECT_STRUCTURE->executionEnvironment->type)->toBe(std:("docker"));
+                expect(PROJECT_STRUCTURE->executionEnvironment->interfaceProject)->toBe(std:("SWE-ReX"));
             }
             );
-            test(std::string("should have correct inspectors"), [=]() mutable
+            test(std:("should have correct inspectors"), [=]() mutable
             {
                 expect(PROJECT_STRUCTURE->inspectors)->toHaveLength(2);
                 auto cliInspector = PROJECT_STRUCTURE->inspectors->find([=](auto i) mutable
                 {
-                    return i->type == std::string("cli");
+                    return i->type == std:("cli");
                 }
                 );
                 auto webInspector = PROJECT_STRUCTURE->inspectors->find([=](auto i) mutable
                 {
-                    return i->type == std::string("web");
+                    return i->type == std:("web");
                 }
                 );
                 expect(cliInspector)->toBeDefined();
@@ -217,85 +217,85 @@ async function readFile(path: string): Promise<string> {\
             );
         }
         );
-        describe(std::string("getComponentByPath"), [=]() mutable
+        describe(std:("getComponentByPath"), [=]() mutable
         {
-            test(std::string("should return correct component for main agent"), [=]() mutable
+            test(std:("should return correct component for main agent"), [=]() mutable
             {
-                auto component = getComponentByPath(std::string("sweagent/agent/agents.py"));
+                auto component = getComponentByPath(std:("sweagent/agent/agents.py"));
                 expect(component)->not->toBeNull();
-                expect(component["component"])->toBe(std::string("main-agent"));
+                expect(component["component"])->toBe(std:("main-agent"));
             }
             );
-            test(std::string("should return correct component for entry point"), [=]() mutable
+            test(std:("should return correct component for entry point"), [=]() mutable
             {
-                auto component = getComponentByPath(std::string("sweagent/run/run_single.py"));
+                auto component = getComponentByPath(std:("sweagent/run/run_single.py"));
                 expect(component)->not->toBeNull();
-                expect(component["component"])->toBe(std::string("entry-point"));
+                expect(component["component"])->toBe(std:("entry-point"));
             }
             );
-            test(std::string("should return correct component for tool"), [=]() mutable
+            test(std:("should return correct component for tool"), [=]() mutable
             {
-                auto component = getComponentByPath(std::string("tools/search/search_file"));
+                auto component = getComponentByPath(std:("tools/search/search_file"));
                 expect(component)->not->toBeNull();
-                expect(component["component"])->toBe(std::string("tool"));
+                expect(component["component"])->toBe(std:("tool"));
             }
             );
-            test(std::string("should return null for unknown path"), [=]() mutable
+            test(std:("should return null for unknown path"), [=]() mutable
             {
-                auto component = getComponentByPath(std::string("unknown/path.py"));
+                auto component = getComponentByPath(std:("unknown/path.py"));
                 expect(component)->toBeNull();
             }
             );
         }
         );
-        describe(std::string("exportAllRulesToCursor"), [=]() mutable
+        describe(std:("exportAllRulesToCursor"), [=]() mutable
         {
-            test(std::string("should rules in Cursor format"), [=]() mutable
+            test(std:("should rules in Cursor format"), [=]() mutable
             {
                 auto exported = exportAllRulesToCursor();
-                expect(Object->keys(exported))->toContain(std::string("general.mdc"));
-                expect(Object->keys(exported))->toContain(std::string("project-overview.mdc"));
+                expect(Object->keys(exported))->toContain(std:("general.mdc"));
+                expect(Object->keys(exported))->toContain(std:("project-overview.mdc"));
             }
             );
-            test(std::string("should include frontmatter in exported rules"), [=]() mutable
+            test(std:("should include frontmatter in exported rules"), [=]() mutable
             {
                 auto exported = exportAllRulesToCursor();
-                auto generalRule = (*const_(exported))[std::string("general.mdc")];
-                expect(generalRule)->toContain(std::string("---"));
-                expect(generalRule)->toContain(std::string("alwaysApply: true"));
+                auto generalRule = (*const_(exported))[std:("general.mdc")];
+                expect(generalRule)->toContain(std:("---"));
+                expect(generalRule)->toContain(std:("alwaysApply: true"));
             }
             );
         }
         );
-        describe(std::string("formatValidationResults"), [=]() mutable
+        describe(std:("formatValidationResults"), [=]() mutable
         {
-            test(std::string("should format empty results correctly"), [=]() mutable
+            test(std:("should format empty results correctly"), [=]() mutable
             {
                 auto results = array<std::shared_ptr<ValidationResult>>();
                 auto formatted = formatValidationResults(results);
-                expect(formatted)->toBe(std::string("All files passed validation!"));
+                expect(formatted)->toBe(std:("All files passed validation!"));
             }
             );
-            test(std::string("should format violations correctly"), [=]() mutable
+            test(std:("should format violations correctly"), [=]() mutable
             {
                 auto results = array<object>{ object{
-                    object::pair{std::string("valid"), false}, 
-                    object::pair{std::string("file"), std::string("test.py")}, 
-                    object::pair{std::string("violations"), array<object>{ object{
-                        object::pair{std::string("rule"), std::string("test-rule")}, 
-                        object::pair{std::string("line"), 10}, 
-                        object::pair{std::string("message"), std::string("Test violation")}, 
-                        object::pair{std::string("severity"), as<std::shared_ptr<const>>(std::string("error"))}
+                    object::pair{std:("valid"), false}, 
+                    object::pair{std:("file"), std:("test.py")}, 
+                    object::pair{std:("violations"), array<object>{ object{
+                        object::pair{std:("rule"), std:("test-rule")}, 
+                        object::pair{std:("line"), 10}, 
+                        object::pair{std:("message"), std:("Test violation")}, 
+                        object::pair{std:("severity"), as<std::shared_ptr<const>>(std:("error"))}
                     } }}, 
-                    object::pair{std::string("warnings"), array<string>{ std::string("Test warning") }}
+                    object::pair{std:("warnings"), array<string>{ std:("Test warning") }}
                 } };
                 auto formatted = formatValidationResults(results);
-                expect(formatted)->toContain(std::string("test.py"));
-                expect(formatted)->toContain(std::string("[ERROR:10]"));
-                expect(formatted)->toContain(std::string("test-rule"));
-                expect(formatted)->toContain(std::string("Test violation"));
-                expect(formatted)->toContain(std::string("[WARNING]"));
-                expect(formatted)->toContain(std::string("Test warning"));
+                expect(formatted)->toContain(std:("test.py"));
+                expect(formatted)->toContain(std:("[ERROR:10]"));
+                expect(formatted)->toContain(std:("test-rule"));
+                expect(formatted)->toContain(std:("Test violation"));
+                expect(formatted)->toContain(std:("[WARNING]"));
+                expect(formatted)->toContain(std:("Test warning"));
             }
             );
         }

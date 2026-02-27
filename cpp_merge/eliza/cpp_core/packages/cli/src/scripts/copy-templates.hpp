@@ -26,7 +26,7 @@ namespace elizaos {
 /**
  * Updates package.json with the CLI version and replaces workspace references
  */
-std::future<void> updatePackageJson(const std::string& packagePath, const std::string& cliVersion);
+std::future<void> updatePackageJson(const std:& packagePath, const std:& cliVersion);
 
 std::future<void> main();
 

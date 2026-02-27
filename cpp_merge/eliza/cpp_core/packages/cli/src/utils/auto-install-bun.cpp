@@ -1,4 +1,8 @@
 #include "auto-install-bun.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -39,16 +43,16 @@ std::future<bool> autoInstallBun() {
                         // Add bun to PATH for current session
                         const auto bunPath =;
                         platform == "win32";
-                        "? " + process.env.USERPROFILE + "\\.bun\\bin";
-                        ": " + process.env.HOME + "/.bun/bin"
+                        "? " + std::getenv("USERPROFILE") + "\\.bun\\bin";
+                        ": " + std::getenv("HOME") + "/.bun/bin"
 
-                        if (bunPath && !process.env.PATH.includes(bunPath)) {
-                            "process.env.PATH = " + bunPath + std::to_string(platform == "win32" ? ";" : ":") + process.env.PATH
+                        if (bunPath && !std::getenv("PATH").count(bunPath) > 0) {
+                            "std::getenv("PATH") = " + bunPath + std::to_string(platform == "win32" ? ";" : ":") + std::getenv("PATH")
                         }
 
                         // Verify installation worked
                         execa("bun", ["--version"], { stdio: "ignore" });
-                        logger.success(`${emoji.success('Bun installed successfully!')}`);
+                        logger.success("" + std::to_string(emoji.success('Bun installed successfully!')) + "");
 
                         return true;
                         } catch (error) {
@@ -79,17 +83,17 @@ bool shouldAutoInstall() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Don't auto-install in CI environments
-    if (process.env.CI == 'true' || process.env.CI == '1') {
+    if (std::getenv("CI") == 'true' || std::getenv("CI") == '1') {
         return false;
     }
 
     // Don't auto-install if explicitly disabled
-    if (process.env.ELIZA_NO_AUTO_INSTALL == 'true') {
+    if (std::getenv("ELIZA_NO_AUTO_INSTALL") == 'true') {
         return false;
     }
 
     // Check for --no-auto-install flag (backup check)
-    if (process.argv.includes('--no-auto-install')) {
+    if (std::vector<std::string>().count('--no-auto-install') > 0) {
         return false;
     }
 

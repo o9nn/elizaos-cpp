@@ -7,7 +7,7 @@ class Logger;
 class Logger : public object, public std::enable_shared_from_this<Logger> {
 public:
     using std::enable_shared_from_this<Logger>::shared_from_this;
-    string prefix = std::string("[StagehandServer]");
+    string prefix = std:("[StagehandServer]");
 
     template <typename /* spread: Args */>
     void info(string message, Args... args_);
@@ -22,7 +22,7 @@ template <typename /* spread: Args */>
 void Logger::info(string message, Args... args_)
 {
     array<any> args = array<any>{args_...};
-    console->log(string_empty + this->prefix + std::string(" INFO:"), message, const_(args)[0], const_(args)[1]);
+    console->log(string_empty + this->prefix + std:(" INFO:"), message, const_(args)[0], const_(args)[1]);
 }
 
 template <typename /* spread: Args */>
@@ -30,7 +30,7 @@ void Logger::debug(string message, Args... args_)
 {
     array<any> args = array<any>{args_...};
     if (process->env->DEBUG) {
-        console->log(string_empty + this->prefix + std::string(" DEBUG:"), message, const_(args)[0], const_(args)[1]);
+        console->log(string_empty + this->prefix + std:(" DEBUG:"), message, const_(args)[0], const_(args)[1]);
     }
 }
 
@@ -38,7 +38,7 @@ template <typename /* spread: Args */>
 void Logger::warn(string message, Args... args_)
 {
     array<any> args = array<any>{args_...};
-    console->warn(string_empty + this->prefix + std::string(" WARN:"), message, const_(args)[0], const_(args)[1]);
+    console->warn(string_empty + this->prefix + std:(" WARN:"), message, const_(args)[0], const_(args)[1]);
 }
 
 #endif

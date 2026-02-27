@@ -1,10 +1,11 @@
 #include "authentication.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> getNpmUsername() {
+std::future<std:> getNpmUsername() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     console.info(
@@ -14,7 +15,7 @@ std::future<std::string> getNpmUsername() {
     try {
         // Check if already logged in
         const auto { stdout } = execa("npm", ["whoami"]);
-        const auto currentUser = stdout.trim();
+        const auto currentUser = stdout;
         std::cout << "Found existing NPM login: " + currentUser << std::endl;
 
         // Ask if they want to use this account or login with a different one
@@ -25,7 +26,7 @@ std::future<std::string> getNpmUsername() {
 
             if (clack.isCancel(useExisting)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
 
             if (useExisting) {
@@ -37,7 +38,7 @@ std::future<std::string> getNpmUsername() {
 
                     // Get the new username after login
                     const auto { stdout: newStdout } = execa("npm", ["whoami"]);
-                    const auto newUser = newStdout.trim();
+                    const auto newUser = newStdout;
                     std::cout << "Logged in as: " + newUser << std::endl;
                     return newUser;
                 }
@@ -49,12 +50,12 @@ std::future<std::string> getNpmUsername() {
 
                         // Get username after successful login
                         const auto { stdout } = execa("npm", ["whoami"]);
-                        const auto username = stdout.trim();
+                        const auto username = stdout;
                         std::cout << "Successfully logged in as: " + username << std::endl;
                         return username;
                         } catch (loginError) {
                             std::cerr << "NPM login failed. Registry compliance requires a valid NPM account." << std::endl;
-                            process.exit(1);
+                            std::exit(1);
                         }
                     }
 

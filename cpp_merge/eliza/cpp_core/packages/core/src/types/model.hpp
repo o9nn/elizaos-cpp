@@ -16,29 +16,29 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], std::string>;
+using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], std:>;
 
 /**
  * Defines the recognized types of models that the agent runtime can use.
  * These include models for text generation (small, large, reasoning, completion),
  * text embedding, tokenization (encode/decode), image generation and description,
  * audio transcription, text-to-speech, and generic object generation.
- * This constant is used throughout the system, particularly in `AgentRuntime.useModel`,
- * `AgentRuntime.registerModel`, and in `ModelParamsMap` / `ModelResultMap` to ensure
+ * This constant is used throughout the system, particularly in "AgentRuntime.useModel",
+ * "AgentRuntime.registerModel", and in "ModelParamsMap" / "ModelResultMap" to ensure
  * type safety and clarity when working with different AI models.
  * String values are used for extensibility with custom model types.
  */
 
 /**
  * Parameters for generating text using a language model.
- * This structure is typically passed to `AgentRuntime.useModel` when the `modelType` is one of
- * `ModelType.TEXT_SMALL`, `ModelType.TEXT_LARGE`, `ModelType.TEXT_REASONING_SMALL`,
- * `ModelType.TEXT_REASONING_LARGE`, or `ModelType.TEXT_COMPLETION`.
+ * This structure is typically passed to "AgentRuntime.useModel" when the "modelType" is one of
+ * "ModelType.TEXT_SMALL", "ModelType.TEXT_LARGE", "ModelType.TEXT_REASONING_SMALL",
+ * "ModelType.TEXT_REASONING_LARGE", or "ModelType.TEXT_COMPLETION".
  * It includes essential information like the prompt, model type, and various generation controls.
  */
 using GenerateTextParams = {
-  /** The `AgentRuntime` instance, providing access to models and other services:: */
-  /** The input std::string or prompt that the language model will use to generate text. */
+  /** The "AgentRuntime" instance, providing access to models and other services:: */
+  /** The input std: or prompt that the language model will use to generate text. */
   /** Specifies the type of text generation model to use (e.g., TEXT_LARGE, REASONING_SMALL). */
   /** Optional. The maximum number of tokens to generate in the response. */
   /** Optional. Controls randomness (0.0-1.0). Lower values are more deterministic, higher are more creative. */
@@ -49,7 +49,7 @@ using GenerateTextParams = {
 /**
  * Parameters for detokenizing text, i.e., converting a sequence of numerical tokens back into a string.
  * This is the reverse operation of tokenization.
- * This structure is used with `AgentRuntime.useModel` when the `modelType` is `ModelType.TEXT_TOKENIZER_DECODE`.
+ * This structure is used with "AgentRuntime.useModel" when the "modelType" is "ModelType.TEXT_TOKENIZER_DECODE".
  */
 struct DetokenizeTextParams {
     std::vector<double> tokens;
@@ -152,15 +152,15 @@ struct ModelResultMap {
 };
 
 /**
- * Defines the structure for a model handler registration within the `AgentRuntime`.
+ * Defines the structure for a model handler registration within the "AgentRuntime".
  * Each model (e.g., for text generation, embedding) is associated with a handler std::function,
  * the name of the provider (plugin or system) that registered it, and an std::optional priority.
- * The `priority` (higher is more preferred) helps in selecting which handler to use if multiple
- * handlers are registered for the same model type. The `registrationOrder` (not in type, but used in runtime)
- * serves as a tie-breaker. See `AgentRuntime.registerModel` and `AgentRuntime.getModel`.
+ * The "priority" (higher is more preferred) helps in selecting which handler to use if multiple
+ * handlers are registered for the same model type. The "registrationOrder" (not in type, but used in runtime)
+ * serves as a tie-breaker. See "AgentRuntime.registerModel" and "AgentRuntime.getModel".
  */
 struct ModelHandler {
-    std::string provider;
+    std: provider;
     std::optional<double> priority;
     std::optional<double> registrationOrder;
 };

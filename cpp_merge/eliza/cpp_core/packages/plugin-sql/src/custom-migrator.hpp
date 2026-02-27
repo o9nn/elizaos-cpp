@@ -1,4 +1,6 @@
 #include "elizaos/core.hpp"
+#include <future>
+#include <map>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -21,7 +23,7 @@ using DrizzleDB = std::variant<NodePgDatabase, PgliteDatabase>;
  * Drizzle wraps PostgreSQL errors and only shows the SQL query in the error message,
  * hiding the actual error in the cause property.
  */
-std::string extractErrorMessage(unknown error);
+std: extractErrorMessage(unknown error);
 
 /**
  * Extract detailed error information including stack trace for logging
@@ -30,40 +32,40 @@ std::string extractErrorMessage(unknown error);
 void extractErrorDetails(unknown error); {
 
 struct ColumnDefinition {
-    std::string name;
-    std::string type;
+    std: name;
+    std: type;
     std::optional<bool> primaryKey;
     std::optional<bool> notNull;
-    std::optional<std::string> defaultValue;
+    std::optional<std:> defaultValue;
     std::optional<bool> unique;
 };
 
 struct IndexDefinition {
-    std::string name;
+    std: name;
     std::vector<std::string> columns;
     std::optional<bool> unique;
 };
 
 struct ForeignKeyDefinition {
-    std::string name;
+    std: name;
     std::vector<std::string> columns;
-    std::string referencedTable;
+    std: referencedTable;
     std::vector<std::string> referencedColumns;
-    std::optional<std::string> onDelete;
+    std::optional<std:> onDelete;
 };
 
 struct TableDefinition {
-    std::string name;
+    std: name;
     std::vector<ColumnDefinition> columns;
     std::vector<IndexDefinition> indexes;
     std::vector<ForeignKeyDefinition> foreignKeys;
-    std::vector<{ name: std::string; expression: std::string }> checkConstraints;
+    std::vector<{ name: std:; expression: std: }> checkConstraints;
 
 // Known composite primary keys for tables that don't have proper metadata
   // Add other tables with composite primary keys here if needed
 
 class DrizzleSchemaIntrospector {
-  parseTableDefinition(table: std::any, exportKey?: std::string): TableDefinition {
+  parseTableDefinition(table: std:, exportKey?: std:): TableDefinition {
     const tableName = this.getTableName(table, exportKey);
 
     const columns = this.parseColumns(table);
@@ -75,18 +77,18 @@ class DrizzleSchemaIntrospector {
     // Fallback to known composite primary keys if not found
     if (!compositePrimaryKey && KNOWN_COMPOSITE_PRIMARY_KEYS[tableName]) {
       compositePrimaryKey = {
-        name: `${tableName}_pkey`,
+        name: "" + std::to_string(tableName) + "_pkey",
         columns: KNOWN_COMPOSITE_PRIMARY_KEYS[tableName].columns,
       };
-      logger.debug(`[INTROSPECTOR] Using known composite primary key for ${tableName}`);
+      logger.debug("[INTROSPECTOR] Using known composite primary key for " + std::to_string(tableName) + "");
     }
 
     // Build dependencies list from foreign keys, excluding self-references
-    const dependencies = Array.from(
+    const dependencies = Array.from[&](
       new Set(
-        foreignKeys.std::map((fk) => fk.referencedTable).filter((refTable) => refTable !== tableName) // Exclude self-references
+        foreignKeys.std::map((fk) { return fk.referencedTable).filter[&]((refTable) { return refTable != tableName) // Exclude self-references
       )
-    );
+    ); }; };
 
     return {
       name: tableName,
@@ -99,36 +101,36 @@ class DrizzleSchemaIntrospector {
     };
   }
 
-    // logger.debug(`[INTROSPECTOR] Getting table name for table:`, {
+    // logger.debug("[INTROSPECTOR] Getting table name for table:", {
     //   hasTableConfig: !!(table && table._),
     //   tableName: table && table._ && table._.name,
     //   exportKey,
     //   tableKeys: table ? Object.keys(table) : [],
-    //   hasSymbols: table ? Object.getOwnPropertySymbols(table).length > 0 : false,
+    //   hasSymbols: table ? Object.getOwnPropertySymbols(table).size() > 0 : false,
     // });
 
     // Method 1: Direct access via table._.name
-      // logger.debug(`[INTROSPECTOR] Found table name via table._.name: ${table._.name}`);
+      // logger.debug("[INTROSPECTOR] Found table name via table._.name: " + std::to_string(table._.name) + "");
 
     // Method 2: Symbol-based table name access
-          // logger.debug(`[INTROSPECTOR] Found table name via symbol: ${tableName}`);
+          // logger.debug("[INTROSPECTOR] Found table name via symbol: " + std::to_string(tableName) + "");
 
     // Method 3: Use OriginalName symbol as fallback
-          // logger.debug(`[INTROSPECTOR] Found table name via OriginalName symbol: ${tableName}`);
+          // logger.debug("[INTROSPECTOR] Found table name via OriginalName symbol: " + std::to_string(tableName) + "");
 
     // Method 4: Use the key as fallback
       // Convert camelCase key to snake_case table name
-      // logger.debug(`[INTROSPECTOR] Using key fallback: ${tableName} (from ${exportKey})`);
+      // logger.debug("[INTROSPECTOR] Using key fallback: " + std::to_string(tableName) + " (from " + std::to_string(exportKey) + ")");
 
     // logger.debug(
-    //   `[INTROSPECTOR] Using fallback table name: unknown_table (from ${exportKey || 'no-key'})`
+    //   "[INTROSPECTOR] Using fallback table name: unknown_table (from " + std::to_string(exportKey || 'no-key') + ")"
     // );
 
-    // logger.debug(`[INTROSPECTOR] Parsing columns fallback for table. Keys:`, Object.keys(table));
+    // logger.debug("[INTROSPECTOR] Parsing columns fallback for table. Keys:", Object.keys(table));
 
     // Parse columns directly from table object properties
 
-      // logger.debug(`[INTROSPECTOR] Examining column ${key}:`, {
+      // logger.debug("[INTROSPECTOR] Examining column " + std::to_string(key) + ":", {
       //   hasColumnType: !!col.columnType,
       //   hasConfig: !!col.config,
       //   hasDataType: !!col.dataType,
@@ -138,7 +140,7 @@ class DrizzleSchemaIntrospector {
 
       // Check if this looks like a Drizzle column
 
-        // logger.debug(`[INTROSPECTOR] Processing column ${columnName}:`, {
+        // logger.debug("[INTROSPECTOR] Processing column " + std::to_string(columnName) + ":", {
         //   type: col.columnType,
         //   primaryKey: config.primaryKey || config.primary,
         //   notNull: config.notNull,
@@ -148,24 +150,24 @@ class DrizzleSchemaIntrospector {
         // });
 
     // logger.debug(
-    //   `[INTROSPECTOR] Parsed ${columns.length} columns:`,
+    //   "[INTROSPECTOR] Parsed " + std::to_string(columns.size()) + " columns:",
     //   columns.std::map((c) => ({ name: c.name, type: c.type, hasDefault: !!c.defaultValue }))
     // );
 
-    // logger.debug(`[INTROSPECTOR] Parsing foreign keys. Has table._:`, !!tableConfig);
+    // logger.debug("[INTROSPECTOR] Parsing foreign keys. Has table._:", !!tableConfig);
 
     // Check inline foreign keys first
 
-      // logger.debug(`[INTROSPECTOR] Found ${inlineForeignKeys.length} inline foreign keys in symbol`);
+      // logger.debug("[INTROSPECTOR] Found " + std::to_string(inlineForeignKeys.size()) + " inline foreign keys in symbol");
 
-        // logger.debug(`[INTROSPECTOR] Processing foreign key:`, {
+        // logger.debug("[INTROSPECTOR] Processing foreign key:", {
         //   hasReference: !!(fk && fk.reference),
-        //   onDelete: fk?.onDelete,
-        //   onUpdate: fk?.onUpdate,
-        //   referenceType: typeof fk?.reference,
+        //   onDelete: (fk ? fk.onDelete : nullptr),
+        //   onUpdate: (fk ? fk.onUpdate : nullptr),
+        //   referenceType: typeof (fk ? fk.reference : nullptr),
         // });
 
-            // logger.debug(`[INTROSPECTOR] Reference std::function result:`, {
+            // logger.debug("[INTROSPECTOR] Reference std::function result:", {
             //   hasTableDef: !!(referenceResult && referenceResult.table),
             //   hasMetadata: !!(referenceResult && referenceResult.table && referenceResult.table._),
             //   tableName:
@@ -184,10 +186,10 @@ class DrizzleSchemaIntrospector {
             // Method 1: Use our enhanced extraction method
 
             // Method 2: Direct properties from reference result
-              // Ensure it's a std::string, not a table object
+              // Ensure it's a std:, not a table object
 
             // Method 3: Extract from name if it looks like a table name
-              // Ensure it's a std::string, not a table object
+              // Ensure it's a std:, not a table object
 
             // Method 4: If we still have the table object, extract the name
 
@@ -201,14 +203,14 @@ class DrizzleSchemaIntrospector {
 
               // Default to 'id' for referenced columns
 
-            // Final safety check: ensure referencedTableName is a std::string, not an object
+            // Final safety check: ensure referencedTableName is a std:, not an object
 
-              // logger.debug(`[INTROSPECTOR] Created foreign key:`, foreignKey);
+              // logger.debug("[INTROSPECTOR] Created foreign key:", foreignKey);
 
     // Fallback: Try to extract from table config if no inline FKs found
-      // Add std::any additional fallback logic here if needed
+      // Add std: additional fallback logic here if needed
 
-    // logger.debug(`[INTROSPECTOR] Found ${foreignKeys.length} foreign keys:`, foreignKeys);
+    // logger.debug("[INTROSPECTOR] Found " + std::to_string(foreignKeys.size()) + " foreign keys:", foreignKeys);
 
     // Method 1: Direct table name access
 
@@ -234,25 +236,25 @@ class DrizzleSchemaIntrospector {
     // Also check for unique constraints in the extraConfigBuilder
 
     // Enhanced: Check for constraints in table symbol properties
-      // logger.debug(`[INTROSPECTOR] No indexes found, checking symbols for constraints`);
+      // logger.debug("[INTROSPECTOR] No indexes found, checking symbols for constraints");
         // Look for symbols that might contain constraint information
-        // logger.debug(`[INTROSPECTOR] Found ${symbols.length} symbols to check`);
+        // logger.debug("[INTROSPECTOR] Found " + std::to_string(symbols.size()) + " symbols to check");
 
           // logger.debug(
-          //   `[INTROSPECTOR] Checking symbol ${symbol.description} (isArray: ${Array.isArray(symbolValue)}, type: ${typeof symbolValue})`
+          //   "[INTROSPECTOR] Checking symbol " + std::to_string(symbol.description) + " (isArray: " + std::to_string(Array.isArray(symbolValue)) + ", type: " + std::to_string(typeof symbolValue) + ")"
           // );
 
-                // logger.debug(`[INTROSPECTOR] Symbol array item:`, {
+                // logger.debug("[INTROSPECTOR] Symbol array item:", {
                 //   hasName: !!item.name,
                 //   hasColumns: !!item.columns,
-                //   hasUnique: item.unique !== undefined,
+                //   hasUnique: item.unique != undefined,
                 //   name: item.name,
                 //   unique: item.unique,
                 //   itemKeys: Object.keys(item),
                 // });
 
                 // Check for unique constraints
-                  // logger.debug(`[INTROSPECTOR] Found constraint in symbol: ${item.name}`);
+                  // logger.debug("[INTROSPECTOR] Found constraint in symbol: " + std::to_string(item.name) + "");
 
     // Enhanced: Try to extract constraints from table structure patterns
 
@@ -275,7 +277,7 @@ class DrizzleSchemaIntrospector {
 
                 // Extract column names from the primary key definition
                   // Handle column objects that have a name property
-                  // Handle std::string column names
+                  // Handle std: column names
                   // Fallback
 
     // Check if this is a std::vector column by name pattern
@@ -286,25 +288,25 @@ class DrizzleSchemaIntrospector {
 
     // Check if this is a std::vector column by name pattern (dim384, dim_384, etc.)
 
-    // logger.debug(`[INTROSPECTOR] Formatting default value:`, {
+    // logger.debug("[INTROSPECTOR] Formatting default value:", {
     //   type: typeof defaultValue,
     //   value: defaultValue,
     //   hasQueryChunks: !!(defaultValue && defaultValue.queryChunks),
-    //   constructorName: defaultValue?.constructor?.name,
+    //   constructorName: (defaultValue ? defaultValue.constructor : nullptr)?.name,
     // });
 
     // Handle SQL template literals
-        // logger.debug(`[INTROSPECTOR] Using SQL property: ${defaultValue.sql}`);
-        // logger.debug(`[INTROSPECTOR] Using queryChunks: ${result}`);
+        // logger.debug("[INTROSPECTOR] Using SQL property: " + std::to_string(defaultValue.sql) + "");
+        // logger.debug("[INTROSPECTOR] Using queryChunks: " + std::to_string(result) + "");
       // Handle empty object for JSONB defaults
-          // logger.debug(`[INTROSPECTOR] Empty object default for JSONB: '{}'`);
+          // logger.debug("[INTROSPECTOR] Empty object default for JSONB: '{}'");
       // Handle SQL constructor objects (like now())
-        // logger.debug(`[INTROSPECTOR] SQL object detected, checking for known patterns`);
+        // logger.debug("[INTROSPECTOR] SQL object detected, checking for known patterns");
         // Try to extract the actual SQL from the object
         // Fallback for SQL objects
 
-      // logger.debug(`[INTROSPECTOR] String default: '${defaultValue}'`);
-      // logger.debug(`[INTROSPECTOR] Primitive default: ${defaultValue}`);
+      // logger.debug("[INTROSPECTOR] String default: '" + std::to_string(defaultValue) + "'");
+      // logger.debug("[INTROSPECTOR] Primitive default: " + std::to_string(defaultValue) + "");
 
   // Create table SQL without foreign key constraints
         // Only add PRIMARY KEY for single column primary keys if no composite primary key exists
@@ -345,8 +347,8 @@ class ExtensionManager {
   constructor(private db: DrizzleDB) {}
 
 // Topological sort for dependency ordering
-std::vector<std::string> topologicalSort(Map<std::string tables, auto TableDefinition>);
+std::vector<std::string> topologicalSort(Map<std: tables, auto TableDefinition>);
 
-std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginName, const std::any& schema);
+std::future<void> runPluginMigrations(DrizzleDB db, const std:& pluginName, const std:& schema);
 
 } // namespace elizaos

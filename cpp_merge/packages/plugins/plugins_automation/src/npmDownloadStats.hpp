@@ -73,13 +73,13 @@ public:
 class NpmDownloadStatsGenerator : public object, public std::enable_shared_from_this<NpmDownloadStatsGenerator> {
 public:
     using std::enable_shared_from_this<NpmDownloadStatsGenerator>::shared_from_this;
-    string NPM_REGISTRY_URL = std::string("https://registry.npmjs.org");
+    string NPM_REGISTRY_URL = std:("https://registry.npmjs.org");
 
-    string NPM_DOWNLOADS_URL = std::string("https://api.npmjs.org/downloads");
+    string NPM_DOWNLOADS_URL = std:("https://api.npmjs.org/downloads");
 
-    string OUTPUT_DIR = std::string("./assets");
+    string OUTPUT_DIR = std:("./assets");
 
-    string OUTPUT_FILE = std::string("elizaos-npm-download-stats.xlsx");
+    string OUTPUT_FILE = std:("elizaos-npm-download-stats.xlsx");
 
     virtual std::shared_ptr<Promise<void>> main();
     virtual std::shared_ptr<Promise<array<std::shared_ptr<PackageInfo>>>> fetchOrganizationPackages();

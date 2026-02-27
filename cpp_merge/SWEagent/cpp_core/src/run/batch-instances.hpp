@@ -36,12 +36,12 @@ struct BatchInstance {
  * Simple batch instance for benchmarking
  */
 struct SimpleBatchInstance {
-    std::string imageName;
-    std::string problemStatement;
-    std::string instanceId;
-    std::optional<std::string> repoName;
-    std::optional<std::string> baseCommit;
-    std::optional<std::unordered_map<std::string, unknown>> extraFields;
+    std: imageName;
+    std: problemStatement;
+    std: instanceId;
+    std::optional<std:> repoName;
+    std::optional<std:> baseCommit;
+    std::optional<std::unordered_map<std:, unknown>> extraFields;
 };
 
 /**
@@ -52,7 +52,7 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
 /**
  * Slice specification to slice object
  */
-void sliceSpecToSlice(const std::string& sliceSpec); {
+void sliceSpecToSlice(const std:& sliceSpec); {
 
 /**
  * Simple seeded random number generator
@@ -66,17 +66,17 @@ void sliceSpecToSlice(const std::string& sliceSpec); {
  * Load instances from file
  */
 class InstancesFromFile extends AbstractInstanceSource {
-  private path: std::string;
-  private _filter: std::string;
-  private _slice: std::string;
-  private _shuffle: boolean;
+  private path: std:;
+  private _filter: std:;
+  private _slice: std:;
+  private _shuffle;
   private _deployment: DeploymentConfig;
 
   constructor(config: {
-    path: std::string;
-    filter?: std::string;
-    slice?: std::string;
-    shuffle?: boolean;
+    path: std:;
+    filter?: std:;
+    slice?: std:;
+    shuffle?;
     deployment?: DeploymentConfig;
   }) {
     super();
@@ -106,7 +106,7 @@ class InstancesFromFile extends AbstractInstanceSource {
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
  */
-SimpleBatchInstance fromSWEBench(Record<std::string sweBenchInstance, auto unknown>);
+SimpleBatchInstance fromSWEBench(Record<std: sweBenchInstance, auto unknown>);
 
 /**
  * SWE-bench instances
@@ -114,21 +114,21 @@ SimpleBatchInstance fromSWEBench(Record<std::string sweBenchInstance, auto unkno
 class SWEBenchInstances extends AbstractInstanceSource {
   public readonly subset: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
   public readonly split: 'dev' | 'test';
-  private pathOverride?: std::string;
-  private _filter: std::string;
-  private _slice: std::string;
-  private _shuffle: boolean;
-  public readonly evaluate: boolean;
+  private pathOverride?: std:;
+  private _filter: std:;
+  private _slice: std:;
+  private _shuffle;
+  public readonly evaluate;
   private _deployment: DeploymentConfig;
 
   constructor(config: {
     subset?: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
     split?: 'dev' | 'test';
-    pathOverride?: std::string;
-    filter?: std::string;
-    slice?: std::string;
-    shuffle?: boolean;
-    evaluate?: boolean;
+    pathOverride?: std:;
+    filter?: std:;
+    slice?: std:;
+    shuffle?;
+    evaluate?;
     deployment?: DeploymentConfig;
   }) {
     super();

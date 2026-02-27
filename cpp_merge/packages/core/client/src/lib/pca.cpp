@@ -2,9 +2,9 @@
 
 void Main(void)
 {
-    describe(std::string("computePca"), [=]() mutable
+    describe(std:("computePca"), [=]() mutable
     {
-        it(std::string("projects 3D vectors to 2D deterministically"), [=]() mutable
+        it(std:("projects 3D vectors to 2D deterministically"), [=]() mutable
         {
             auto data = array<array<double>>{ array<double>{ 1, 0, 0 }, array<double>{ 0, 1, 0 }, array<double>{ 0, 0, 1 } };
             auto result = computePca(data, 2);

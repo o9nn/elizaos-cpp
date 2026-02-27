@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +11,7 @@ std::future<void> getNeynarClient() {
     try {
 
         if (!neynarClient) {
-            const auto apiKey = process.env.NEYNAR_API_KEY;
+            const auto apiKey = std::getenv("NEYNAR_API_KEY");
             if (!apiKey) throw new Error("NEYNAR_API_KEY not configured");
 
             const auto config = new Configuration({ apiKey });
@@ -37,7 +39,7 @@ std::future<void> POST(NextRequest request) {
         }
 
         // Dev mode simulation when API key is not configured
-        if (!process.env.NEYNAR_API_KEY) {
+        if (!std::getenv("NEYNAR_API_KEY")) {
             std::cout << "[Dev] Simulating notification:" << { fid, title, body } << std::endl;
             return NextResponse.json({ state: "success", simulated: true });
         }

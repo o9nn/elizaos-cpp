@@ -1,4 +1,6 @@
 #include "registry-publish.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,21 +11,21 @@ std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryR
 
     try {
         const auto indexPath = dryRun;
-        ? path.join(process.cwd(), LOCAL_REGISTRY_PATH, "index.json");
-        : path.join(process.cwd(), "temp-registry", "index.json");
+        ? path.join(std::filesystem::current_path().string(), LOCAL_REGISTRY_PATH, "index.json");
+        : path.join(std::filesystem::current_path().string(), "temp-registry", "index.json");
 
         // Create registry directory if it doesn't exist in dry run
         try {
             fs.access(path.dirname(indexPath));
             } catch {
-                fs.mkdir(path.dirname(indexPath), { recursive: true });
+                fs.mkdir(path.dirname(indexPath), Config{recursive = true});
                 // Create empty index file if it doesn't exist
                 try {
                     fs.access(indexPath);
                     } catch {
                         fs.writeFile(;
                         indexPath,
-                        JSON.stringify(;
+                        nlohmann::json().dump(;
                         {
                             v1: { packages: {} },
                             v2: { packages: {} },
@@ -41,13 +43,13 @@ std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryR
                         indexContent = fs.readFile(indexPath, "utf-8");
                         } catch (error) {
                             // Create default index if it doesn't exist
-                            indexContent = JSON.stringify({
+                            indexContent = nlohmann::json().dump({
                                 v1: { packages: {} },
                                 v2: { packages: {} },
                                 });
                             }
 
-                            const auto index = /* JSON.parse */ indexContent;
+                            const auto index = /* JSON::parse */ indexContent;
 
                             // Update v2 section of index
                             if (!index.v2) {
@@ -82,7 +84,7 @@ std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryR
                                     };
 
                                     // Write updated index
-                                    fs.writeFile(indexPath, /* JSON.stringify */ std::string(index, nullptr, 2));
+                                    fs.writeFile(indexPath, /* JSON.stringify */ std:(index, nullptr, 2));
                                     console.info(
                                     "Registry index " + std::to_string(dryRun ? "(dry run) " : "") + "updated with " + packageMetadata.name + "@" + packageMetadata.version
                                     );
@@ -103,15 +105,15 @@ std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dr
     try {
         // Define paths
         const auto packageDir = dryRun;
-        ? path.join(process.cwd(), LOCAL_REGISTRY_PATH, REGISTRY_PACKAGES_PATH, packageMetadata.name);
-        : path.join(process.cwd(), "temp-registry", REGISTRY_PACKAGES_PATH, packageMetadata.name);
+        ? path.join(std::filesystem::current_path().string(), LOCAL_REGISTRY_PATH, REGISTRY_PACKAGES_PATH, packageMetadata.name);
+        : path.join(std::filesystem::current_path().string(), "temp-registry", REGISTRY_PACKAGES_PATH, packageMetadata.name);
         const auto metadataPath = "path.join(packageDir, " + packageMetadata.version + ".json";
 
         // Create directory if it doesn't exist
-        fs.mkdir(packageDir, { recursive: true });
+        fs.mkdir(packageDir, Config{recursive = true});
 
         // Write metadata file
-        fs.writeFile(metadataPath, /* JSON.stringify */ std::string(packageMetadata, nullptr, 2));
+        fs.writeFile(metadataPath, /* JSON.stringify */ std:(packageMetadata, nullptr, 2));
 
         std::cout << "Package metadata " + std::to_string(dryRun ? "(dry run) " : "") + "saved to " + metadataPath << std::endl;
 

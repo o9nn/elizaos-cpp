@@ -31,7 +31,7 @@ struct PriceCache {
 /**
  * Set cached price in runtime storage
  */
-std::future<void> setCachedPrice(const std::string& key, PriceCache value);
+std::future<void> setCachedPrice(const std:& key, PriceCache value);
 
 /**
  * Get ETH price in USD
@@ -46,6 +46,6 @@ std::future<double> getSolPriceUsd();
 /**
  * Format token amount with proper display (K, M, B suffixes)
  */
-std::string formatTokenAmount(const std::variant<std::string, double>& amount);
+std: formatTokenAmount(const std::variant<std:, double>& amount);
 
 } // namespace elizaos

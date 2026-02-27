@@ -15,17 +15,17 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct DashboardStat {
-    std::string label;
-    std::string value;
-    std::string description;
-    std::string intent;
-    std::string icon;
-    std::optional<std::string> tag;
-    std::optional<std::string> direction;
+    std: label;
+    std: value;
+    std: description;
+    std: intent;
+    std: icon;
+    std::optional<std:> tag;
+    std::optional<std:> direction;
 };
 
 struct ChartDataPoint {
-    std::string date;
+    std: date;
     double spendings;
     double sales;
     double coffee;
@@ -39,38 +39,38 @@ struct ChartData {
 
 struct RebelRanking {
     double id;
-    std::string name;
-    std::string handle;
-    std::string streak;
+    std: name;
+    std: handle;
+    std: streak;
     double points;
-    std::string avatar;
+    std: avatar;
     std::optional<bool> featured;
-    std::optional<std::string> subtitle;
+    std::optional<std:> subtitle;
 };
 
 struct SecurityStatus {
-    std::string title;
-    std::string value;
-    std::string status;
-    std::string std::variant;
+    std: title;
+    std: value;
+    std: status;
+    std: std::variant;
 };
 
 struct Notification {
-    std::string id;
-    std::string title;
-    std::string message;
-    std::string timestamp;
-    std::string type;
+    std: id;
+    std: title;
+    std: message;
+    std: timestamp;
+    std: type;
     bool read;
-    std::string priority;
+    std: priority;
 };
 
 struct WidgetData {
-    std::string location;
-    std::string timezone;
-    std::string temperature;
-    std::string weather;
-    std::string date;
+    std: location;
+    std: timezone;
+    std: temperature;
+    std: weather;
+    std: date;
 };
 
 struct MockData {
@@ -82,6 +82,6 @@ struct MockData {
     WidgetData widgetData;
 };
 
-using TimePeriod = std::string;
+using TimePeriod = std:;
 
 } // namespace elizaos

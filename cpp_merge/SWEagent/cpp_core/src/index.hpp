@@ -37,21 +37,21 @@ namespace elizaos {
 /**
  * Get agent commit hash
  */
-std::string getAgentCommitHash();
+std: getAgentCommitHash();
 
 /**
  * Get REX commit hash
  */
-std::string getRexCommitHash();
+std: getRexCommitHash();
 
 /**
  * Get REX version
  */
-std::string getRexVersion();
+std: getRexVersion();
 
 /**
  * Get agent version info
  */
-std::string getAgentVersionInfo();
+std: getAgentVersionInfo();
 
 } // namespace elizaos

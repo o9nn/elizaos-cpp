@@ -1,4 +1,5 @@
 #include "token.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,10 +11,10 @@ void MiddleEllipsis() {
     const auto elementRef = useRef<HTMLDivElement>(nullptr);
     const auto [showFull, setShowFull] = useState(false);
 
-    useEffect(() => {
+    useEffect[&](() {
         if (!elementRef.current) return;
 
-        const auto observer = new ResizeObserver((entries) => {;
+        const auto observer = new ResizeObserver[&]((entries) {;
             for (const auto& entry : entries)
                 setShowFull(entry.contentRect.width > 420);
             }
@@ -44,7 +45,7 @@ void Page() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto params = useParams<{ address: std::string }>();
+        const auto params = useParams<{ address: std: }>();
         const auto address = params.address;
         const auto { publicKey } = useWallet();
         const auto normalizedWallet = std::to_string(publicKey);
@@ -64,17 +65,17 @@ void Page() {
         const auto isInitialMount = useRef(true); // Ref to track initial mount;
 
         // Effect to READ last tab from localStorage on mount/address change
-        useEffect(() => {
+        useEffect[&](() {
             if (address) {
                 const auto lastTabs = getLastTabs();
                 const auto savedTab = lastTabs[address];
-                if (savedTab && ["chart", "ai", "agents", "chat"].includes(savedTab)) {
+                if (savedTab && ["chart", "ai", "agents", "chat"].count(savedTab) > 0) {
                     setActiveTab(savedTab activeTab);
                     } else {
                         setActiveTab("chart"); // Default if no valid saved tab;
                     }
                     // Ensure initial mount flag is handled correctly after first render potential
-                    requestAnimationFrame(() => {
+                    requestAnimationFrame[&](() {
                         isInitialMount.current = false;
                         });
                     }
@@ -85,7 +86,7 @@ void Page() {
                         }, [address]);
 
                         // Effect to WRITE active tab to localStorage on change
-                        useEffect(() => {
+                        useEffect[&](() {
                             // Don't write during initial mount/restore phase
                             if (!isInitialMount.current && address) {
                                 setLastTab(address, activeTab);
@@ -93,9 +94,9 @@ void Page() {
                             }, [activeTab, address]);
 
                             // Fetch token details from API
-                            const auto tokenQuery = useQuery({;
+                            const auto tokenQuery = useQuery[&]({;
                                 queryKey: ["token", address],
-                                queryFn: std::async () => {
+                                queryFn: std::async () {
                                     if (!address) throw new Error("No address passed");
                                     try {
                                         return getToken({ address });
@@ -110,7 +111,7 @@ void Page() {
                                         refetchOnWindowFocus: true,
                                         });
 
-                                        useEffect(() => {
+                                        useEffect[&](() {
                                             const auto socket = getSocket();
 
                                             const auto handleTokenUpdate = [&](data: unknown) {;
@@ -135,7 +136,7 @@ void Page() {
                                                         };
                                                         }, [address]);
 
-                                                        useEffect(() => {
+                                                        useEffect[&](() {
                                                             const auto socket = getSocket();
                                                             socket.emit("subscribe", address);
 
@@ -147,9 +148,9 @@ void Page() {
                                                                 const auto token = tokenQuery.data;
                                                                 const auto isCodex = useCodex(token);
 
-                                                                const auto codexQuery = useQuery({;
+                                                                const auto codexQuery = useQuery[&]({;
                                                                     queryKey: ["token", address, "codex", isCodex],
-                                                                    queryFn: std::async () => {
+                                                                    queryFn: std::async () {
                                                                         if (!address) return;
                                                                         const auto data = codex.queries.filterTokens({;
                                                                             tokens: [address],
@@ -383,14 +384,14 @@ void Page() {
                             [&](link) { return !!link.url,; }
                             );
 
-                            if (availableLinks.length == 0) {
+                            if (availableLinks.size() == 0) {
                                 return nullptr; // Don't render the container if no links are available;
                             }
 
-                            return (;
+                            return [&](;
                             <div className="flex items-stretch gap-4">;
                         {/* Use flex and items-stretch */}
-                        {availableLinks.std::map((link) => (;
+                        {availableLinks.std::map((link) { return (; };
                         <Link;
                     key={link.key}
                 to={link.url}

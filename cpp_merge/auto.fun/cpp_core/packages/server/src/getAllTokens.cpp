@@ -1,4 +1,7 @@
 #include "getAllTokens.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,12 +12,9 @@ std::future<std::optional<double>> getLastProcessedSlot() {
 
     const auto db = getDB();
 
-    const auto row = db.select();
-    .from(metadata);
-    .where(eq(metadata.key, "lastProcessedSlot"));
-    .limit(1);
+    const auto row = db.select().from(metadata).where(eq(metadata.key, "lastProcessedSlot")).limit(1);
 
-    if (row.length > 0) {
+    if (row.size() > 0) {
         return parseInt(row[0].value, 10);
     }
     return nullptr;
@@ -63,12 +63,12 @@ std::future<void> processSlot(double slot, Connection connection) {
             commitment: "confirmed",
             maxSupportedTransactionVersion: 0,
             });
-            if (!block) return logger.log(`Slot ${slot} empty, skipping`);
+            if (!block) return logger.log("Slot " + std::to_string(slot) + " empty, skipping");
 
             for (const auto& tx : block.transactions)
                 const auto logs = tx.meta.logMessages;
                 if (!logs) continue;
-                if (logs.some((l) => l.includes(process.env.PROGRAM_ID!))) {
+                if (logs.some((l) => l.count(std::getenv("PROGRAM_ID") > 0!))) {
                     const auto signature = tx.transaction.signatures[0];
                     processTransactionLogs(logs, signature);
                 }
@@ -113,7 +113,7 @@ std::future<void> processMissedEvents(Connection connection) {
                 std::cout << "Scanning events from slot " + std::to_string(startSlot + 1) + " to " + currentSlot << std::endl;
                 const auto queue = new PQueue({ concurrency: 20 });
                 for (const auto& slot : slots)
-                    queue.add(() => processSlot(slot, connection));
+                    queue.add[&](() { return processSlot(slot, connection)); };
                 }
                 queue.onIdle();
                 setLastProcessedSlot(currentSlot);

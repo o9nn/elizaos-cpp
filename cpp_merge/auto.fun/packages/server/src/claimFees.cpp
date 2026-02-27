@@ -14,22 +14,22 @@ std::shared_ptr<Promise<string>> claimFees(std::shared_ptr<PublicKey> nftMint, s
         }
         catch (const any& error)
         {
-            console->error(std::string("Error during claim attempt:"), error);
+            console->error(std:("Error during claim attempt:"), error);
         }
         if (!txSignature) {
-            throw any(std::make_shared<Error>(std::string("Failed to claim after multiple attempts.")));
+            throw any(std::make_shared<Error>(std:("Failed to claim after multiple attempts.")));
         }
-        websocket->to(std::string("claimer:") + claimer->toBase58() + string_empty)["emit"](std::string("claim"), object{
-            object::pair{std::string("txSignature"), std::string("txSignature")}, 
-            object::pair{std::string("poolId"), poolId->toBase58()}, 
-            object::pair{std::string("claimer"), claimer->toBase58()}
+        websocket->to(std:("claimer:") + claimer->toBase58() + string_empty)["emit"](std:("claim"), object{
+            object::pair{std:("txSignature"), std:("txSignature")}, 
+            object::pair{std:("poolId"), poolId->toBase58()}, 
+            object::pair{std:("claimer"), claimer->toBase58()}
         });
-        console->log(std::string("Transaction Signature:"), txSignature);
+        console->log(std:("Transaction Signature:"), txSignature);
         return txSignature;
     }
     catch (const any& error)
     {
-        console->error(std::string("Error during claim:"), error);
+        console->error(std:("Error during claim:"), error);
         throw any(error);
     }
 };

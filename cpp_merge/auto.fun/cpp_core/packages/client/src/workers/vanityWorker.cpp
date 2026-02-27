@@ -1,4 +1,5 @@
 #include "vanityWorker.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,9 +10,9 @@ bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<u
 
     // ... (validation logic remains the same)
     try {
-        if (!privateKey || privateKey.length != 32) return false;
-        if (!publicKey || publicKey.length != 32) return false;
-        if (!secretKey || secretKey.length != 64) return false;
+        if (!privateKey || privateKey.size() != 32) return false;
+        if (!publicKey || publicKey.size() != 32) return false;
+        if (!secretKey || secretKey.size() != 64) return false;
 
         // Check if secretKey = privateKey + publicKey
         for (int i = 0; i < 32; i++)
@@ -21,7 +22,7 @@ bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<u
 
         // Re-derive public key from private key and check if it matches
         const auto derivedPublicKey = ed.getPublicKey(privateKey);
-        if (!derivedPublicKey || derivedPublicKey.length != 32) return false;
+        if (!derivedPublicKey || derivedPublicKey.size() != 32) return false;
         for (int i = 0; i < 32; i++)
         if (derivedPublicKey[i] != publicKey[i]) return false;
 

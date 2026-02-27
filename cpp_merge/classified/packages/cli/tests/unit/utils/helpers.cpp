@@ -8,28 +8,28 @@ any consoleSpy = mock([=]() mutable
 
 void Main(void)
 {
-    mock->module(std::string("@elizaos/core"), [=]() mutable
+    mock->module(std:("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("logger"), object{
-                object::pair{std::string("info"), mock()}, 
-                object::pair{std::string("error"), mock()}
+            object::pair{std:("logger"), object{
+                object::pair{std:("info"), mock()}, 
+                object::pair{std:("error"), mock()}
             }}
         });
     }
     );
-    mock->module(std::string("yoctocolors"), [=]() mutable
+    mock->module(std:("yoctocolors"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("default"), object{
-                object::pair{std::string("green"), mock([=](auto text) mutable
+            object::pair{std:("default"), object{
+                object::pair{std:("green"), mock([=](auto text) mutable
                 {
-                    return std::string("[green]") + text + std::string("[/green]");
+                    return std:("[green]") + text + std:("[/green]");
                 }
                 )}, 
-                object::pair{std::string("cyan"), mock([=](auto text) mutable
+                object::pair{std:("cyan"), mock([=](auto text) mutable
                 {
-                    return std::string("[cyan]") + text + std::string("[/cyan]");
+                    return std:("[cyan]") + text + std:("[/cyan]");
                 }
                 )}
             }}
@@ -37,145 +37,145 @@ void Main(void)
     }
     );
     console->log = consoleSpy;
-    describe(std::string("helpers"), [=]() mutable
+    describe(std:("helpers"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
         }
         );
-        describe(std::string("displayAgent"), [=]() mutable
+        describe(std:("displayAgent"), [=]() mutable
         {
-            it(std::string("should display basic agent info"), [=]() mutable
+            it(std:("should display basic agent info"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("username"), std::string("test_agent")}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("username"), std:("test_agent")}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should generate username from name if not provided"), [=]() mutable
+            it(std:("should generate username from name if not provided"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent Name")}
+                    object::pair{std:("name"), std:("Test Agent Name")}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should display bio array"), [=]() mutable
+            it(std:("should display bio array"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("bio"), array<string>{ std::string("Bio line 1"), std::string("Bio line 2") }}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("bio"), array<string>{ std:("Bio line 1"), std:("Bio line 2") }}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should display bio string as array"), [=]() mutable
+            it(std:("should display bio string as array"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("bio"), as<any>(std::string("Single bio line"))}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("bio"), as<any>(std:("Single bio line"))}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should display all array sections"), [=]() mutable
+            it(std:("should display all array sections"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("adjectives"), array<string>{ std::string("smart"), std::string("funny") }}, 
-                    object::pair{std::string("topics"), array<string>{ std::string("AI"), std::string("Tech") }}, 
-                    object::pair{std::string("plugins"), array<string>{ std::string("plugin1"), std::string("plugin2") }}, 
-                    object::pair{std::string("postExamples"), array<string>{ std::string("Example 1"), std::string("Example 2") }}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("adjectives"), array<string>{ std:("smart"), std:("funny") }}, 
+                    object::pair{std:("topics"), array<string>{ std:("AI"), std:("Tech") }}, 
+                    object::pair{std:("plugins"), array<string>{ std:("plugin1"), std:("plugin2") }}, 
+                    object::pair{std:("postExamples"), array<string>{ std:("Example 1"), std:("Example 2") }}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should display style sections"), [=]() mutable
+            it(std:("should display style sections"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("style"), object{
-                        object::pair{std::string("all"), array<string>{ std::string("General style 1"), std::string("General style 2") }}, 
-                        object::pair{std::string("chat"), array<string>{ std::string("Chat style 1") }}, 
-                        object::pair{std::string("post"), array<string>{ std::string("Post style 1") }}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("style"), object{
+                        object::pair{std:("all"), array<string>{ std:("General style 1"), std:("General style 2") }}, 
+                        object::pair{std:("chat"), array<string>{ std:("Chat style 1") }}, 
+                        object::pair{std:("post"), array<string>{ std:("Post style 1") }}
                     }}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should display message examples"), [=]() mutable
+            it(std:("should display message examples"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("messageExamples"), array<array<object>>{ array<object>{ object{
-                        object::pair{std::string("name"), std::string("{{name1}}")}, 
-                        object::pair{std::string("content"), object{
-                            object::pair{std::string("text"), std::string("Hello")}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("messageExamples"), array<array<object>>{ array<object>{ object{
+                        object::pair{std:("name"), std:("{{name1}}")}, 
+                        object::pair{std:("content"), object{
+                            object::pair{std:("text"), std:("Hello")}
                         }}
                     }, object{
-                        object::pair{std::string("name"), std::string("Agent")}, 
-                        object::pair{std::string("content"), object{
-                            object::pair{std::string("text"), std::string("Hi there")}
+                        object::pair{std:("name"), std:("Agent")}, 
+                        object::pair{std:("content"), object{
+                            object::pair{std:("text"), std:("Hi there")}
                         }}
                     } } }}
                 };
                 displayAgent(agent);
             }
             );
-            it(std::string("should use custom title"), [=]() mutable
+            it(std:("should use custom title"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}
+                    object::pair{std:("name"), std:("Test Agent")}
                 };
-                displayAgent(agent, std::string("Custom Title"));
+                displayAgent(agent, std:("Custom Title"));
             }
             );
-            it(std::string("should handle empty sections gracefully"), [=]() mutable
+            it(std:("should handle empty sections gracefully"), [=]() mutable
             {
                 auto agent = object{
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("bio"), array<any>()}, 
-                    object::pair{std::string("topics"), undefined}, 
-                    object::pair{std::string("adjectives"), array<any>()}
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("bio"), array<any>()}, 
+                    object::pair{std:("topics"), undefined}, 
+                    object::pair{std:("adjectives"), array<any>()}
                 };
                 displayAgent(agent);
             }
             );
         }
         );
-        describe(std::string("logHeader"), [=]() mutable
+        describe(std:("logHeader"), [=]() mutable
         {
-            it(std::string("should log header with borders"), [=]() mutable
+            it(std:("should log header with borders"), [=]() mutable
             {
-                logHeader(std::string("Test Header"));
+                logHeader(std:("Test Header"));
             }
             );
-            it(std::string("should add padding around title"), [=]() mutable
+            it(std:("should add padding around title"), [=]() mutable
             {
-                logHeader(std::string("Short"));
+                logHeader(std:("Short"));
             }
             );
-            it(std::string("should create border matching title length"), [=]() mutable
+            it(std:("should create border matching title length"), [=]() mutable
             {
-                logHeader(std::string("A Very Long Title That Should Have A Long Border"));
+                logHeader(std:("A Very Long Title That Should Have A Long Border"));
                 auto greenCalls = colors->green->mock->calls;
                 auto borderCalls = greenCalls->filter([=](auto call) mutable
                 {
-                    return const_(call)[0]->includes(std::string("─"));
+                    return const_(call)[0]->includes(std:("─"));
                 }
                 );
                 expect(borderCalls->length)->toBeGreaterThan(0);
             }
             );
-            it(std::string("should add newline before header"), [=]() mutable
+            it(std:("should add newline before header"), [=]() mutable
             {
-                logHeader(std::string("Test"));
+                logHeader(std:("Test"));
                 auto calls = consoleSpy->mock->calls;
                 expect(calls->some([=](auto call) mutable
                 {
-                    return const_(call)[0]->startsWith(std::string("\
+                    return const_(call)[0]->startsWith(std:("\
 "));
                 }
                 ))->toBe(true);

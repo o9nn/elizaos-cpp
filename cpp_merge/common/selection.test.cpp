@@ -2,50 +2,50 @@
 
 void Main(void)
 {
-    mock->module(std::string("@clack/prompts"), [=]() mutable
+    mock->module(std:("@clack/prompts"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("select"), mock()}, 
-            object::pair{std::string("cancel"), mock()}, 
-            object::pair{std::string("isCancel"), mock()}
+            object::pair{std:("select"), mock()}, 
+            object::pair{std:("cancel"), mock()}, 
+            object::pair{std:("isCancel"), mock()}
         });
     }
     );
-    describe(std::string("selection utilities"), [=]() mutable
+    describe(std:("selection utilities"), [=]() mutable
     {
-        describe(std::string("hasEmbeddingSupport"), [=]() mutable
+        describe(std:("hasEmbeddingSupport"), [=]() mutable
         {
-            it(std::string("should return true for models with embedding support"), [=]() mutable
+            it(std:("should return true for models with embedding support"), [=]() mutable
             {
-                expect(hasEmbeddingSupport(std::string("local")))->toBe(true);
-                expect(hasEmbeddingSupport(std::string("openai")))->toBe(true);
-                expect(hasEmbeddingSupport(std::string("google")))->toBe(true);
+                expect(hasEmbeddingSupport(std:("local")))->toBe(true);
+                expect(hasEmbeddingSupport(std:("openai")))->toBe(true);
+                expect(hasEmbeddingSupport(std:("google")))->toBe(true);
             }
             );
-            it(std::string("should return false for models without embedding support"), [=]() mutable
+            it(std:("should return false for models without embedding support"), [=]() mutable
             {
-                expect(hasEmbeddingSupport(std::string("claude")))->toBe(false);
-                expect(hasEmbeddingSupport(std::string("openrouter")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("claude")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("openrouter")))->toBe(false);
             }
             );
-            it(std::string("should return false for unknown models"), [=]() mutable
+            it(std:("should return false for unknown models"), [=]() mutable
             {
-                expect(hasEmbeddingSupport(std::string("unknown-model")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("unknown-model")))->toBe(false);
                 expect(hasEmbeddingSupport(string_empty))->toBe(false);
             }
             );
-            it(std::string("should be case sensitive"), [=]() mutable
+            it(std:("should be case sensitive"), [=]() mutable
             {
-                expect(hasEmbeddingSupport(std::string("LOCAL")))->toBe(false);
-                expect(hasEmbeddingSupport(std::string("OpenAI")))->toBe(false);
-                expect(hasEmbeddingSupport(std::string("GOOGLE")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("LOCAL")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("OpenAI")))->toBe(false);
+                expect(hasEmbeddingSupport(std:("GOOGLE")))->toBe(false);
             }
             );
         }
         );
-        describe(std::string("getAvailableAIModels"), [=]() mutable
+        describe(std:("getAvailableAIModels"), [=]() mutable
         {
-            it(std::string("should return all available AI models"), [=]() mutable
+            it(std:("should return all available AI models"), [=]() mutable
             {
                 auto models = getAvailableAIModels();
                 expect(models)->toBeInstanceOf(Array);
@@ -55,36 +55,36 @@ void Main(void)
                     return m->value;
                 }
                 );
-                expect(modelValues)->toContain(std::string("local"));
-                expect(modelValues)->toContain(std::string("claude"));
-                expect(modelValues)->toContain(std::string("openai"));
-                expect(modelValues)->toContain(std::string("google"));
-                expect(modelValues)->toContain(std::string("openrouter"));
+                expect(modelValues)->toContain(std:("local"));
+                expect(modelValues)->toContain(std:("claude"));
+                expect(modelValues)->toContain(std:("openai"));
+                expect(modelValues)->toContain(std:("google"));
+                expect(modelValues)->toContain(std:("openrouter"));
             }
             );
-            it(std::string("should have proper structure for each model option"), [=]() mutable
+            it(std:("should have proper structure for each model option"), [=]() mutable
             {
                 auto models = getAvailableAIModels();
                 models->forEach([=](auto model) mutable
                 {
-                    expect(model)->toHaveProperty(std::string("value"));
-                    expect(model)->toHaveProperty(std::string("title"));
-                    expect(model)->toHaveProperty(std::string("description"));
-                    expect(type_of(model->value))->toBe(std::string("string"));
-                    expect(type_of(model->title))->toBe(std::string("string"));
-                    expect(type_of(model->description))->toBe(std::string("string"));
+                    expect(model)->toHaveProperty(std:("value"));
+                    expect(model)->toHaveProperty(std:("title"));
+                    expect(model)->toHaveProperty(std:("description"));
+                    expect(type_of(model->value))->toBe(std:("string"));
+                    expect(type_of(model->title))->toBe(std:("string"));
+                    expect(type_of(model->description))->toBe(std:("string"));
                 }
                 );
             }
             );
         }
         );
-        describe(std::string("AI model selection flow"), [=]() mutable
+        describe(std:("AI model selection flow"), [=]() mutable
         {
-            it(std::string("should identify which models need separate embedding providers"), [=]() mutable
+            it(std:("should identify which models need separate embedding providers"), [=]() mutable
             {
-                auto modelsNeedingEmbeddings = array<string>{ std::string("claude"), std::string("openrouter") };
-                auto modelsWithEmbeddings = array<string>{ std::string("local"), std::string("openai"), std::string("google") };
+                auto modelsNeedingEmbeddings = array<string>{ std:("claude"), std:("openrouter") };
+                auto modelsWithEmbeddings = array<string>{ std:("local"), std:("openai"), std:("google") };
                 modelsNeedingEmbeddings->forEach([=](auto model) mutable
                 {
                     expect(hasEmbeddingSupport(model))->toBe(false);

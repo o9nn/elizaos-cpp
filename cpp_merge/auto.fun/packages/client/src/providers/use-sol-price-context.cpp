@@ -5,9 +5,9 @@ std::function<any()> useSolPriceContext = [=]() mutable
     return useContext(SolPriceContext);
 };
 any SolPriceContext = createContext<std::shared_ptr<SolPriceContextType>>(object{
-    object::pair{std::string("solPrice"), undefined}, 
-    object::pair{std::string("isLoading"), false}, 
-    object::pair{std::string("error"), nullptr}
+    object::pair{std:("solPrice"), undefined}, 
+    object::pair{std:("isLoading"), false}, 
+    object::pair{std:("error"), nullptr}
 });
 
 void Main(void)

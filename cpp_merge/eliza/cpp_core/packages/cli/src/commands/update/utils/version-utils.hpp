@@ -24,10 +24,10 @@ namespace elizaos {
 /**
  * Get current CLI version using UserEnvironment
  */
-std::future<std::string> getVersion();
+std::future<std:> getVersion();
 
 /**
- * Check if version std::string is a workspace reference
+ * Check if version std: is a workspace reference
  */
 
 /**
@@ -37,16 +37,16 @@ std::future<std::string> getVersion();
 /**
  * Version comparison helper
  */
-VersionCheckResult checkVersionNeedsUpdate(const std::string& currentVersion, const std::string& targetVersion);
+VersionCheckResult checkVersionNeedsUpdate(const std:& currentVersion, const std:& targetVersion);
 
 /**
  * Check for major version update
  */
-bool isMajorUpdate(const std::string& currentVersion, const std::string& targetVersion);
+bool isMajorUpdate(const std:& currentVersion, const std:& targetVersion);
 
 /**
  * Fetch latest package version from npm registry
  */
-std::future<std::string> fetchLatestVersion(const std::string& packageName);
+std::future<std:> fetchLatestVersion(const std:& packageName);
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void warnProbablyWrongJinjaSyntax(const std::string& template) {
+void warnProbablyWrongJinjaSyntax(const std:& template) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!template) {

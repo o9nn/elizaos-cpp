@@ -3,8 +3,8 @@
 ToolHandler::ToolHandler(std::shared_ptr<ToolConfig> config) {
     this->config = utils::assign(object{
     }, defaultToolConfig, config);
-    this->logger = getLogger(std::string("tools"));
-    if (type_of(this->config->parseFunction) == std::string("string")) {
+    this->logger = getLogger(std:("tools"));
+    if (type_of(this->config->parseFunction) == std:("string")) {
         this->parser = createParser(this->config->parseFunction);
     } else if (this->config->parseFunction) {
         this->parser = this->config->parseFunction;
@@ -39,14 +39,14 @@ array<std::shared_ptr<Command>> ToolHandler::getCommandsFromBundles()
     }
     if (this->config->enableBashTool) {
         commands->push(std::make_shared<Command>(object{
-            object::pair{std::string("name"), std::string("bash")}, 
-            object::pair{std::string("docstring"), std::string("Execute bash commands")}, 
-            object::pair{std::string("arguments"), array<object>{ object{
-                object::pair{std::string("name"), std::string("command")}, 
-                object::pair{std::string("type"), std::string("string")}, 
-                object::pair{std::string("description"), std::string("The bash command to execute")}, 
-                object::pair{std::string("required"), true}, 
-                object::pair{std::string("argumentFormat"), std::string("{{value}}")}
+            object::pair{std:("name"), std:("bash")}, 
+            object::pair{std:("docstring"), std:("Execute bash commands")}, 
+            object::pair{std:("arguments"), array<object>{ object{
+                object::pair{std:("name"), std:("command")}, 
+                object::pair{std:("type"), std:("string")}, 
+                object::pair{std:("description"), std:("The bash command to execute")}, 
+                object::pair{std:("required"), true}, 
+                object::pair{std:("argumentFormat"), std:("{{value}}")}
             } }}
         }));
     }
@@ -60,7 +60,7 @@ std::shared_ptr<ToolHandler> ToolHandler::fromConfig(std::shared_ptr<ToolConfig>
 
 std::shared_ptr<Promise<void>> ToolHandler::install(std::shared_ptr<SWEEnv> env)
 {
-    this->logger->info(std::string("Installing tools..."));
+    this->logger->info(std:("Installing tools..."));
     if (this->config->bundles) {
         for (auto& bundle : this->config->bundles)
         {
@@ -73,17 +73,17 @@ std::shared_ptr<Promise<void>> ToolHandler::install(std::shared_ptr<SWEEnv> env)
     if (this->config->resetCommands) {
         for (auto& cmd : this->config->resetCommands)
         {
-            auto command = (Array->isArray(cmd)) ? cmd->join(std::string(" ")) : cmd;
+            auto command = (Array->isArray(cmd)) ? cmd->join(std:(" ")) : cmd;
             std::async([=]() { env->communicate(command, this->config->installTimeout); });
         }
     }
-    this->logger->info(std::string("Tools installed successfully"));
+    this->logger->info(std:("Tools installed successfully"));
     return std::shared_ptr<Promise<void>>();
 }
 
 std::shared_ptr<Promise<void>> ToolHandler::uploadBundle(std::shared_ptr<SWEEnv> _env, std::shared_ptr<Bundle> bundle)
 {
-    this->logger->info(std::string("Uploading bundle from ") + bundle->path + string_empty);
+    this->logger->info(std:("Uploading bundle from ") + bundle->path + string_empty);
     return std::shared_ptr<Promise<void>>();
 }
 
@@ -92,7 +92,7 @@ std::shared_ptr<Promise<void>> ToolHandler::reset(std::shared_ptr<SWEEnv> env)
     if (this->config->resetCommands) {
         for (auto& cmd : this->config->resetCommands)
         {
-            auto command = (Array->isArray(cmd)) ? cmd->join(std::string(" ")) : cmd;
+            auto command = (Array->isArray(cmd)) ? cmd->join(std:(" ")) : cmd;
             std::async([=]() { env->communicate(command, this->config->executionTimeout); });
         }
     }
@@ -108,12 +108,12 @@ std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shar
             try
             {
                 auto result = std::async([=]() { env->communicate(cmd, 5); });
-                auto key = const_(cmd->split(std::string(" ")))[0];
+                auto key = const_(cmd->split(std:(" ")))[0];
                 state[key] = result;
             }
             catch (const any& error)
             {
-                this->logger->warning(std::string("Failed to execute state command: ") + cmd + string_empty);
+                this->logger->warning(std:("Failed to execute state command: ") + cmd + string_empty);
             }
         }
     }
@@ -124,11 +124,11 @@ std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shar
                 try
                 {
                     auto result = std::async([=]() { env->communicate(bundle->get_stateCommand(), 5); });
-                    state[std::string("bundle_state")] = result;
+                    state[std:("bundle_state")] = result;
                 }
                 catch (const any& error)
                 {
-                    this->logger->warning(std::string("Failed to execute bundle state command"));
+                    this->logger->warning(std:("Failed to execute bundle state command"));
                 }
             }
         }
@@ -148,7 +148,7 @@ boolean ToolHandler::shouldBlockAction(string action)
             return true;
         }
     }
-    auto firstWord = const_(action->split((new RegExp(std::string("\s")))))[0];
+    auto firstWord = const_(action->split((new RegExp(std:("\s")))))[0];
     if (this->config->filter->blocklistStandalone->includes(firstWord)) {
         return true;
     }
@@ -168,8 +168,8 @@ boolean ToolHandler::shouldBlockAction(string action)
 
 boolean ToolHandler::checkForSubmissionCmd(string observation)
 {
-    auto submitCommand = OR((this->config->submitCommand), (std::string("submit")));
-    return OR((observation->includes(std::string("<") + submitCommand + std::string(">"))), (observation->includes(std::string("</") + submitCommand + std::string(">"))));
+    auto submitCommand = OR((this->config->submitCommand), (std:("submit")));
+    return OR((observation->includes(std:("<") + submitCommand + std:(">"))), (observation->includes(std:("</") + submitCommand + std:(">"))));
 }
 
 string ToolHandler::guardMultilineInput(string action)
@@ -178,7 +178,7 @@ string ToolHandler::guardMultilineInput(string action)
     {
         if (action->startsWith(cmdName)) {
             if (!action->includes(endName)) {
-                this->logger->warning(std::string("Multiline command ") + cmdName + std::string(" missing end marker ") + endName + string_empty);
+                this->logger->warning(std:("Multiline command ") + cmdName + std:(" missing end marker ") + endName + string_empty);
             }
         }
     }
@@ -186,38 +186,38 @@ string ToolHandler::guardMultilineInput(string action)
 }
 
 std::shared_ptr<ToolFilterConfig> defaultToolFilterConfig = object{
-    object::pair{std::string("blocklistErrorTemplate"), std::string("Operation '{{action}}' is not supported by this environment.")}, 
-    object::pair{std::string("blocklist"), array<string>{ std::string("vim"), std::string("vi"), std::string("emacs"), std::string("nano"), std::string("nohup"), std::string("gdb"), std::string("less"), std::string("tail -f"), std::string("python -m venv"), std::string("make") }}, 
-    object::pair{std::string("blocklistStandalone"), array<string>{ std::string("python"), std::string("python3"), std::string("ipython"), std::string("bash"), std::string("sh"), std::string("/bin/bash"), std::string("/bin/sh"), std::string("nohup"), std::string("vi"), std::string("vim"), std::string("emacs"), std::string("nano"), std::string("su") }}, 
-    object::pair{std::string("blockUnlessRegex"), object{
-        object::pair{std::string("git"), std::string("^git\s+(status|diff|log|show)")}
+    object::pair{std:("blocklistErrorTemplate"), std:("Operation '{{action}}' is not supported by this environment.")}, 
+    object::pair{std:("blocklist"), array<string>{ std:("vim"), std:("vi"), std:("emacs"), std:("nano"), std:("nohup"), std:("gdb"), std:("less"), std:("tail -f"), std:("python -m venv"), std:("make") }}, 
+    object::pair{std:("blocklistStandalone"), array<string>{ std:("python"), std:("python3"), std:("ipython"), std:("bash"), std:("sh"), std:("/bin/bash"), std:("/bin/sh"), std:("nohup"), std:("vi"), std:("vim"), std:("emacs"), std:("nano"), std:("su") }}, 
+    object::pair{std:("blockUnlessRegex"), object{
+        object::pair{std:("git"), std:("^git\s+(status|diff|log|show)")}
     }}
 };
 std::shared_ptr<ToolConfig> defaultToolConfig = object{
-    object::pair{std::string("filter"), defaultToolFilterConfig}, 
-    object::pair{std::string("bundles"), array<any>()}, 
-    object::pair{std::string("propagateEnvVariables"), array<any>()}, 
-    object::pair{std::string("envVariables"), object{
-        object::pair{std::string("PAGER"), std::string("cat")}, 
-        object::pair{std::string("MANPAGER"), std::string("cat")}, 
-        object::pair{std::string("LESS"), std::string("-R")}, 
-        object::pair{std::string("PIP_PROGRESS_BAR"), std::string("off")}, 
-        object::pair{std::string("TQDM_DISABLE"), std::string("1")}, 
-        object::pair{std::string("GIT_PAGER"), std::string("cat")}
+    object::pair{std:("filter"), defaultToolFilterConfig}, 
+    object::pair{std:("bundles"), array<any>()}, 
+    object::pair{std:("propagateEnvVariables"), array<any>()}, 
+    object::pair{std:("envVariables"), object{
+        object::pair{std:("PAGER"), std:("cat")}, 
+        object::pair{std:("MANPAGER"), std:("cat")}, 
+        object::pair{std:("LESS"), std:("-R")}, 
+        object::pair{std:("PIP_PROGRESS_BAR"), std:("off")}, 
+        object::pair{std:("TQDM_DISABLE"), std:("1")}, 
+        object::pair{std:("GIT_PAGER"), std:("cat")}
     }}, 
-    object::pair{std::string("registryVariables"), object{}}, 
-    object::pair{std::string("submitCommand"), std::string("submit")}, 
-    object::pair{std::string("parseFunction"), std::make_shared<FunctionCallingParser>()}, 
-    object::pair{std::string("enableBashTool"), true}, 
-    object::pair{std::string("formatErrorTemplate"), string_empty}, 
-    object::pair{std::string("commandDocs"), string_empty}, 
-    object::pair{std::string("multiLineCommandEndings"), object{}}, 
-    object::pair{std::string("submitCommandEndName"), nullptr}, 
-    object::pair{std::string("resetCommands"), array<any>()}, 
-    object::pair{std::string("executionTimeout"), 30}, 
-    object::pair{std::string("installTimeout"), 300}, 
-    object::pair{std::string("totalExecutionTimeout"), 1800}, 
-    object::pair{std::string("maxConsecutiveExecutionTimeouts"), 3}
+    object::pair{std:("registryVariables"), object{}}, 
+    object::pair{std:("submitCommand"), std:("submit")}, 
+    object::pair{std:("parseFunction"), std::make_shared<FunctionCallingParser>()}, 
+    object::pair{std:("enableBashTool"), true}, 
+    object::pair{std:("formatErrorTemplate"), string_empty}, 
+    object::pair{std:("commandDocs"), string_empty}, 
+    object::pair{std:("multiLineCommandEndings"), object{}}, 
+    object::pair{std:("submitCommandEndName"), nullptr}, 
+    object::pair{std:("resetCommands"), array<any>()}, 
+    object::pair{std:("executionTimeout"), 30}, 
+    object::pair{std:("installTimeout"), 300}, 
+    object::pair{std:("totalExecutionTimeout"), 1800}, 
+    object::pair{std:("maxConsecutiveExecutionTimeouts"), 3}
 };
 
 void Main(void)

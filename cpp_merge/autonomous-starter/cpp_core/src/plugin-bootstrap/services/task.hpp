@@ -49,8 +49,8 @@ class TaskService extends Service {
    */
   static std::async start(runtime: IAgentRuntime): Promise<TaskService> {
     const service = new TaskService(runtime);
-    await service.startTimer();
-    // await service.createTestTasks();
+    service.startTimer();
+    // service.createTestTasks();
     return service;
   }
 
@@ -75,7 +75,7 @@ class TaskService extends Service {
   /**
    * Validates an array of Task objects.
    * Skips tasks without IDs or if no worker is found for the task.
-   * If a worker has a `validate` std::function, it will run the validation using the `runtime`, `Memory`, and `State` parameters.
+   * If a worker has a "validate" std::function, it will run the validation using the "runtime", "Memory", and "State" parameters.
    * If the validation fails, the task will be skipped and the error will be logged.
    * @param {Task[]} tasks - An array of Task objects to validate.
    * @returns {Promise<Task[]>} - A Promise that resolves with an array of validated Task objects.

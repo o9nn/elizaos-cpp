@@ -1,10 +1,15 @@
 #include "sessions.hpp"
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double safeParseInt(const std::string& value, double fallback, std::optional<double> min, std::optional<double> max) {
+double safeParseInt(const std:& value, double fallback, std::optional<double> min, std::optional<double> max) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
@@ -34,14 +39,14 @@ double safeParseInt(const std::string& value, double fallback, std::optional<dou
 
 }
 
-obj is Session isValidSession(const std::any& obj) {
+obj is Session isValidSession(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto session = obj<std::string, unknown>;
+    const auto session = obj<std:, unknown>;
 
     return (;
     typeof session.id == "string" &&;
@@ -58,38 +63,38 @@ obj is Session isValidSession(const std::any& obj) {
 
 }
 
-obj is CreateSessionRequest isCreateSessionRequest(const std::any& obj) {
+obj is CreateSessionRequest isCreateSessionRequest(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std::string, unknown>;
+    const auto req = obj<std:, unknown>;
     return typeof req.agentId == "string" && typeof req.userId == "string";
 
 }
 
-obj is SendMessageRequest isSendMessageRequest(const std::any& obj) {
+obj is SendMessageRequest isSendMessageRequest(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std::string, unknown>;
+    const auto req = obj<std:, unknown>;
     return typeof req.content == "string";
 
 }
 
-obj is SessionTimeoutConfig isValidTimeoutConfig(const std::any& obj) {
+obj is SessionTimeoutConfig isValidTimeoutConfig(const std:& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto config = obj<std::string, unknown>;
+    const auto config = obj<std:, unknown>;
     return (;
     (config.timeoutMinutes == std::nullopt ||;
     typeof config.timeoutMinutes == "number" ||;
@@ -275,7 +280,7 @@ bool renewSession(Session session) {
         return false;
     }
 
-    const auto now = new Date();
+    const auto now = std::make_unique<Date>();
     const auto maxDurationMs =;
     (session.timeoutConfig.maxDurationMinutes || DEFAULT_MAX_DURATION_MINUTES) * 60 * 1000;
     const auto timeSinceCreation = now.getTime() - session.createdAt.getTime();
@@ -329,7 +334,7 @@ SessionInfoResponse createSessionInfoResponse(Session session) {
 
 }
 
-void validateMetadata(const std::any& metadata) {
+void validateMetadata(const std:& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -338,8 +343,8 @@ void validateMetadata(const std::any& metadata) {
         }
 
         // Check metadata size
-        const auto metadataStr = /* JSON.stringify */ std::string(metadata);
-        if (metadataStr.length > MAX_METADATA_SIZE) {
+        const auto metadataStr = /* JSON.stringify */ std:(metadata);
+        if (metadataStr.size() > MAX_METADATA_SIZE) {
             throw new InvalidMetadataError(
             "Metadata exceeds maximum size of " + MAX_METADATA_SIZE + " bytes"
             metadata;
@@ -352,7 +357,7 @@ void validateMetadata(const std::any& metadata) {
     }
 }
 
-content is std::string validateContent(const std::any& content) {
+content is std: validateContent(const std:& content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -360,11 +365,11 @@ content is std::string validateContent(const std::any& content) {
             throw new InvalidContentError('Content must be a string', content);
         }
 
-        if (content.length == 0) {
+        if (content.size() == 0) {
             throw new InvalidContentError('Content cannot be empty', content);
         }
 
-        if (content.length > MAX_CONTENT_LENGTH) {
+        if (content.size() > MAX_CONTENT_LENGTH) {
             throw new InvalidContentError(
             "Content exceeds maximum length of " + MAX_CONTENT_LENGTH + " characters"
             content;
@@ -398,7 +403,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
         * Health check - placed before parameterized routes to avoid conflicts
         * GET /api/messaging/sessions/health
         */
-        router.get("/sessions/health", (_req: express.Request, res: express.Response) => {
+        router.get[&]("/sessions/health", (_req: express.Request, res: express.Response) {
             const auto now = Date.now();
             auto activeSessions = 0;
             auto expiringSoon = 0;
@@ -419,13 +424,13 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
             }
 
             const auto response: HealthCheckResponse & {;
-                expiringSoon?: number;
-                invalidSessions?: number;
-                uptime?: number;
+                expiringSoon?;
+                invalidSessions?;
+                uptime?;
                 } = {
                     status: "healthy",
                     activeSessions,
-                    timestamp: new Date().toISOString(),
+                    timestamp: std::make_unique<Date>().toISOString(),
                     expiringSoon,
                     ...(invalidSessions > 0 && { invalidSessions }),
                     uptime: process.uptime(),
@@ -437,10 +442,10 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                     * Create a new messaging session
                     * POST /api/messaging/sessions
                     */
-                    router.post(;
+                    router.post[&](;
                     "/sessions",
                     requireAuthOrApiKey,
-                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
+                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) {
                         const CreateSessionRequest body = req.body;
 
                         // Validate request structure
@@ -505,7 +510,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                         }
 
                                         // Create session with calculated expiration
-                                        const auto now = new Date();
+                                        const auto now = std::make_unique<Date>();
                                         const Session session = {;
                                             id: sessionId,
                                             agentId: body.agentId,
@@ -539,10 +544,10 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                 * Get session details
                                                 * GET /api/messaging/sessions/:sessionId
                                                 */
-                                                router.get(;
+                                                router.get[&](;
                                                 "/sessions/:sessionId",
                                                 requireAuthOrApiKey,
-                                                asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
+                                                asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) {
                                                     const auto { sessionId } = req.params;
                                                     const auto session = sessions.get(sessionId);
 
@@ -565,10 +570,10 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                     * Send a message in a session
                                                     * POST /api/messaging/sessions/:sessionId/messages
                                                     */
-                                                    router.post(;
+                                                    router.post[&](;
                                                     "/sessions/:sessionId/messages",
                                                     requireAuthOrApiKey,
-                                                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
+                                                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) {
                                                         const auto { sessionId } = req.params;
                                                         const SendMessageRequest body = req.body;
 
@@ -609,14 +614,14 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                             }
                                                             } else if (!session.timeoutConfig.autoRenew) {
                                                                 // Just update last activity without renewing
-                                                                session.lastActivity = new Date();
+                                                                session.lastActivity = std::make_unique<Date>();
                                                             }
 
                                                             // Check if we should send a warning
                                                             if (shouldWarnAboutExpiration(session)) {
                                                                 session.warningState = {
                                                                     sent: true,
-                                                                    sentAt: new Date(),
+                                                                    sentAt: std::make_unique<Date>(),
                                                                     };
 
                                                                     std::cout << "[Sessions API] Session " + sessionId << "warning state set" << std::endl;
@@ -687,9 +692,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                 * Get messages from a session
                                                                                                 * GET /api/messaging/sessions/:sessionId/messages
                                                                                                 */
-                                                                                                router.get(;
+                                                                                                router.get[&](;
                                                                                                 "/sessions/:sessionId/messages",
-                                                                                                asyncHandler(std::async (req: express.Request, res: express.Response) => {
+                                                                                                asyncHandler(std::async (req: express.Request, res: express.Response) {
                                                                                                     const auto { sessionId } = req.params;
                                                                                                     // Parse query parameters with proper type handling
                                                                                                     const GetMessagesQuery query = {;
@@ -757,11 +762,10 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                             );
 
                                                                                                             messages = allMessages;
-                                                                                                            .filter((msg) => msg.createdAt > afterDate && msg.createdAt < beforeDate);
-                                                                                                            .slice(0, messageLimit);
+                                                                                                            .filter[&]((msg) { return msg.createdAt > afterDate && msg.createdAt < beforeDate); }.slice(0, messageLimit);
 
-                                                                                                            if (allMessages.length == fetchLimit) {
-                                                                                                                logger.debug(`[Sessions API] Range query hit limit of ${fetchLimit} messages`);
+                                                                                                            if (allMessages.size() == fetchLimit) {
+                                                                                                                logger.debug("[Sessions API] Range query hit limit of " + std::to_string(fetchLimit) + " messages");
                                                                                                             }
                                                                                                             } else if (afterDate) {
                                                                                                                 // Forward pagination: messages newer than a timestamp
@@ -772,14 +776,12 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                 fetchLimit;
                                                                                                                 );
 
-                                                                                                                const auto newerMessages = recentMessages.filter((msg) => msg.createdAt > afterDate);
+                                                                                                                const auto newerMessages = recentMessages.filter[&]((msg) { return msg.createdAt > afterDate); };
 
-                                                                                                                if (newerMessages.length > messageLimit) {
+                                                                                                                if (newerMessages.size() > messageLimit) {
                                                                                                                     // Get the oldest N messages from the newer std::set for continuous pagination
                                                                                                                     messages = newerMessages;
-                                                                                                                    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-                                                                                                                    .slice(0, messageLimit);
-                                                                                                                    .reverse(); // Return in newest-first order;
+                                                                                                                    .sort[&]((a, b) { return a.createdAt.getTime() - b.createdAt.getTime()); }.slice(0, messageLimit).reverse(); // Return in newest-first order;
                                                                                                                     } else {
                                                                                                                         messages = newerMessages;
                                                                                                                     }
@@ -793,11 +795,11 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                     }
 
                                                                                                                     // Transform to simplified format
-                                                                                                                    const std::vector<SimplifiedMessage> simplifiedMessages = messages.std::map((msg) => {;
+                                                                                                                    const std::vector<SimplifiedMessage> simplifiedMessages = messages.std::map[&]((msg) {;
                                                                                                                         ParsedRawMessage rawMessage = {};
                                                                                                                         try {
                                                                                                                             const auto parsedData =;
-                                                                                                                            typeof msg.rawMessage == "string" ? /* JSON.parse */ msg.rawMessage : msg.rawMessage;
+                                                                                                                            typeof msg.rawMessage == "string" ? /* JSON::parse */ msg.rawMessage : msg.rawMessage;
 
                                                                                                                             // Validate parsed data is an object
                                                                                                                             if (parsedData && typeof parsedData == 'object') {
@@ -825,14 +827,14 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                         actions: rawMessage.actions,
                                                                                                                                         };
 
-                                                                                                                                        // Add std::any attachments from transformedMessage.metadata
+                                                                                                                                        // Add std: attachments from transformedMessage.metadata
                                                                                                                                         if (transformedMessage.metadata && typeof transformedMessage.metadata == 'object') {
                                                                                                                                             Object.assign(metadata, transformedMessage.metadata);
                                                                                                                                         }
 
                                                                                                                                         return {
                                                                                                                                             id: msg.id,
-                                                                                                                                            content: typeof msg.content == "string" ? msg.content : /* JSON.stringify */ std::string(msg.content),
+                                                                                                                                            content: typeof msg.content == "string" ? msg.content : /* JSON.stringify */ std:(msg.content),
                                                                                                                                             authorId: msg.authorId,
                                                                                                                                             isAgent: msg.sourceType == "agent_response",
                                                                                                                                             createdAt: msg.createdAt,
@@ -846,8 +848,8 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
 
                                                                                                                                             const auto response: GetMessagesResponse & {;
                                                                                                                                                 cursors?: {
-                                                                                                                                                    before?: number; // Timestamp to use for getting older messages
-                                                                                                                                                    after?: number; // Timestamp to use for getting newer messages
+                                                                                                                                                    before?; // Timestamp to use for getting older messages
+                                                                                                                                                    after?; // Timestamp to use for getting newer messages
                                                                                                                                                     };
                                                                                                                                                     } = {
                                                                                                                                                         messages: simplifiedMessages,
@@ -855,7 +857,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                         };
 
                                                                                                                                                         // Add cursor information if we have messages
-                                                                                                                                                        if (simplifiedMessages.length > 0) {
+                                                                                                                                                        if (simplifiedMessages.size() > 0) {
                                                                                                                                                             response.cursors = {
                                                                                                                                                                 before: oldestMessage.createdAt.getTime(),
                                                                                                                                                                 after: newestMessage.createdAt.getTime(),
@@ -870,9 +872,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                             * Renew a session manually
                                                                                                                                                             * POST /api/messaging/sessions/:sessionId/renew
                                                                                                                                                             */
-                                                                                                                                                            router.post(;
+                                                                                                                                                            router.post[&](;
                                                                                                                                                             "/sessions/:sessionId/renew",
-                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                 const auto { sessionId } = req.params;
                                                                                                                                                                 const auto session = sessions.get(sessionId);
 
@@ -912,9 +914,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                     * Update session timeout configuration
                                                                                                                                                                     * PATCH /api/messaging/sessions/:sessionId/timeout
                                                                                                                                                                     */
-                                                                                                                                                                    router.patch(;
+                                                                                                                                                                    router.patch[&](;
                                                                                                                                                                     "/sessions/:sessionId/timeout",
-                                                                                                                                                                    asyncHandler(std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                    asyncHandler(std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                         const auto { sessionId } = req.params;
                                                                                                                                                                         const SessionTimeoutConfig newConfig = req.body;
 
@@ -974,9 +976,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                         * Keep session alive with heartbeat
                                                                                                                                                                         * POST /api/messaging/sessions/:sessionId/heartbeat
                                                                                                                                                                         */
-                                                                                                                                                                        router.post(;
+                                                                                                                                                                        router.post[&](;
                                                                                                                                                                         "/sessions/:sessionId/heartbeat",
-                                                                                                                                                                        asyncHandler(std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                        asyncHandler(std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                             const auto { sessionId } = req.params;
                                                                                                                                                                             const auto session = sessions.get(sessionId);
 
@@ -991,7 +993,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                             }
 
                                                                                                                                                                             // Update last activity
-                                                                                                                                                                            session.lastActivity = new Date();
+                                                                                                                                                                            session.lastActivity = std::make_unique<Date>();
 
                                                                                                                                                                             // Renew session if auto-renew is enabled
                                                                                                                                                                             if (session.timeoutConfig.autoRenew) {
@@ -1003,7 +1005,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
 
                                                                                                                                                                             // Return updated session info
                                                                                                                                                                             const auto response = createSessionInfoResponse(session);
-                                                                                                                                                                            logger.debug(`[Sessions API] Heartbeat received for session: ${sessionId}`);
+                                                                                                                                                                            logger.debug("[Sessions API] Heartbeat received for session: " + std::to_string(sessionId) + "");
 
                                                                                                                                                                             res.json(response);
                                                                                                                                                                             });
@@ -1013,9 +1015,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                             * Delete a session
                                                                                                                                                                             * DELETE /api/messaging/sessions/:sessionId
                                                                                                                                                                             */
-                                                                                                                                                                            router.delete(;
+                                                                                                                                                                            router.delete[&](;
                                                                                                                                                                             "/sessions/:sessionId",
-                                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                 const auto { sessionId } = req.params;
                                                                                                                                                                                 const auto session = sessions.get(sessionId);
 
@@ -1029,9 +1031,9 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                 // Optionally, you could also delete the channel and messages
                                                                                                                                                                                 // Note: This is commented out to avoid data loss, but could be enabled
                                                                                                                                                                                 // try {
-                                                                                                                                                                                //   await serverInstance.deleteChannel(session.channelId);
+                                                                                                                                                                                //   serverInstance.deleteChannel(session.channelId);
                                                                                                                                                                                 // } catch (error) {
-                                                                                                                                                                                //   logger.warn(`Failed to delete channel for session ${sessionId}:`, error instanceof Error ? error.message : String(error));
+                                                                                                                                                                                //   logger.warn("Failed to delete channel for session " + std::to_string(sessionId) + ":", error instanceof Error ? error.message : String(error));
                                                                                                                                                                                 // }
 
                                                                                                                                                                                 std::cout << "[Sessions API] Deleted session " + sessionId << std::endl;
@@ -1047,13 +1049,13 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                     * List active sessions (admin endpoint)
                                                                                                                                                                                     * GET /api/messaging/sessions
                                                                                                                                                                                     */
-                                                                                                                                                                                    router.get(;
+                                                                                                                                                                                    router.get[&](;
                                                                                                                                                                                     "/sessions",
-                                                                                                                                                                                    asyncHandler(std::async (_req: express.Request, res: express.Response) => {
+                                                                                                                                                                                    asyncHandler(std::async (_req: express.Request, res: express.Response) {
                                                                                                                                                                                         const auto now = Date.now();
                                                                                                                                                                                         const auto activeSessions = Array.from(sessions.values());
-                                                                                                                                                                                        .filter((session) => isValidSession(session) && session.expiresAt.getTime() > now);
-                                                                                                                                                                                        .std::map((session) => createSessionInfoResponse(session));
+                                                                                                                                                                                        .filter[&]((session) { return isValidSession(session) && session.expiresAt.getTime() > now); };
+                                                                                                                                                                                        .std::map[&]((session) { return createSessionInfoResponse(session)); };
 
                                                                                                                                                                                         res.json({
                                                                                                                                                                                             sessions: activeSessions,
@@ -1068,8 +1070,8 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                                 );
 
                                                                                                                                                                                                 // Cleanup old sessions periodically
-                                                                                                                                                                                                const auto cleanupInterval = setInterval(() => {;
-                                                                                                                                                                                                    const auto now = new Date();
+                                                                                                                                                                                                const auto cleanupInterval = setInterval[&](() {;
+                                                                                                                                                                                                    const auto now = std::make_unique<Date>();
                                                                                                                                                                                                     auto cleanedCount = 0;
                                                                                                                                                                                                     auto expiredCount = 0;
                                                                                                                                                                                                     auto warningCount = 0;
@@ -1134,7 +1136,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                                                     activeCleanupIntervals.clear();
 
                                                                                                                                                                                                                     // Optional: Clear session data
-                                                                                                                                                                                                                    if (process.env.CLEAR_SESSIONS_ON_SHUTDOWN == 'true') {
+                                                                                                                                                                                                                    if (std::getenv("CLEAR_SESSIONS_ON_SHUTDOWN") == 'true') {
                                                                                                                                                                                                                         sessions.clear();
                                                                                                                                                                                                                         agentTimeoutConfigs.clear();
                                                                                                                                                                                                                     }

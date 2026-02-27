@@ -18,7 +18,7 @@ namespace elizaos {
  * Interface representing the payload sent when starting an agent.
  */
 struct AgentStartPayload {
-    std::optional<std::string> characterPath;
+    std::optional<std:> characterPath;
 };
 
 

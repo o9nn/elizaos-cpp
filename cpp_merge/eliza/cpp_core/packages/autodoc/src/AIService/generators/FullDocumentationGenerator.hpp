@@ -25,8 +25,8 @@ namespace elizaos {
  * @property {string} answer - The answer to the question.
  */
 struct FAQ {
-    std::string question;
-    std::string answer;
+    std: question;
+    std: answer;
 };
 
 /**
@@ -37,9 +37,9 @@ struct FAQ {
  * @property {string} solution - The solution to the issue.
  */
 struct TroubleshootingIssue {
-    std::string issue;
-    std::string cause;
-    std::string solution;
+    std: issue;
+    std: cause;
+    std: solution;
 };
 
 /**
@@ -74,9 +74,9 @@ class FullDocumentationGenerator {
    * @param {Configuration} configuration - The configuration for the instance.
    */
   constructor(private configuration: Configuration) {
-    this.typeScriptParser = new TypeScriptParser();
-    this.codeFormatter = new CodeFormatter();
-    this.documentOrganizer = new DocumentOrganizer();
+    this.typeScriptParser = std::make_unique<TypeScriptParser>();
+    this.codeFormatter = std::make_unique<CodeFormatter>();
+    this.documentOrganizer = std::make_unique<DocumentOrganizer>();
     this.aiService = new AIService(configuration);
   }
 

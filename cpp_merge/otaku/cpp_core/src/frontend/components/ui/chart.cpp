@@ -1,4 +1,5 @@
 #include "chart.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -54,7 +55,7 @@ void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto na
 
     const auto { config } = useChart();
 
-    if (!payload.length) {
+    if (!payload.size()) {
         return nullptr;
     }
 
@@ -66,7 +67,7 @@ void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto na
     className;
     )}
     >;
-    {payload.std::map((item) => {
+    {payload.std::map[&]((item) {
         const auto key = std::to_string(nameKey || item.dataKey || "value");
         const auto itemConfig = getPayloadConfigFromPayload(config, item, key);
 
@@ -96,7 +97,7 @@ void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto na
 
 }
 
-void getPayloadConfigFromPayload(ChartConfig config, const std::any& payload, const std::string& key) {
+void getPayloadConfigFromPayload(ChartConfig config, const std:& payload, const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof payload != "object" || payload == null) {
@@ -110,7 +111,7 @@ void getPayloadConfigFromPayload(ChartConfig config, const std::any& payload, co
     ? payload.payload;
     : std::nullopt;
 
-    std::string configLabelKey = key;
+    std: configLabelKey = key;
 
     if (
     key in payload &&;

@@ -1,4 +1,5 @@
 #include "image-studio.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,15 +17,15 @@ void ImageStudio() {
         const auto [isGenerating, setIsGenerating] = useState(false);
         const auto [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
 
-        const auto handleGenerate = std::async () => {;
-            if (!prompt.trim()) return
+        const auto handleGenerate = std::async [&]() {;
+            if (!prompt) return
 
             setIsGenerating(true);
             try {
                 const auto response = fetch("/api/generate-image", {;
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
+                    body: nlohmann::json().dump({
                         model,
                         aspectRatio,
                         style,
@@ -44,7 +45,7 @@ void ImageStudio() {
                             }
                         }
 
-                        return (;
+                        return [&](;
                         <div className="flex flex-col gap-6">;
                         <Card>;
                         <CardHeader className="flex items-center justify-between">;
@@ -64,7 +65,7 @@ void ImageStudio() {
                         <SelectValue />;
                         </SelectTrigger>;
                         <SelectContent>;
-                        {MODELS.std::map((m) => (;
+                        {MODELS.std::map((m) { return (; };
                         <SelectItem key={m.id} value={m.id} className="font-mono">;
                     {m.name}
                     </SelectItem>;
@@ -82,7 +83,7 @@ void ImageStudio() {
                 <SelectValue />;
                 </SelectTrigger>;
                 <SelectContent>;
-                {ASPECT_RATIOS.std::map((ar) => (;
+                {ASPECT_RATIOS.std::map[&]((ar) { return (; };
                 <SelectItem key={ar.id} value={ar.id} className="font-mono">;
                 {ar.name} ({ar.value});
                 </SelectItem>;
@@ -100,7 +101,7 @@ void ImageStudio() {
             <SelectValue />;
             </SelectTrigger>;
             <SelectContent>;
-            {STYLES.std::map((s) => (;
+            {STYLES.std::map[&]((s) { return (; };
             <SelectItem key={s.id} value={s.id} className="font-mono">;
         {s.name}
         </SelectItem>;
@@ -133,10 +134,10 @@ void ImageStudio() {
         <Input;
         id="prompt";
         value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Describe the image you want to generate...";
+        onChange={[&](e) { return setPrompt(e.target.value)}
+        placeholder="Describe the image you want to generate..."; };
         className="flex-1 bg-background/50 border-border/50 font-mono placeholder:text-muted-foreground/50"
-        onKeyDown={(e) => {
+        onKeyDown={[&](e) {
             if (e.key == "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleGenerate();
@@ -145,7 +146,7 @@ void ImageStudio() {
         />;
         <Button;
         onClick={handleGenerate}
-        disabled={!prompt.trim() || isGenerating}
+        disabled={!prompt || isGenerating}
         className="shrink-0 bg-primary hover:bg-primary/90"
         >;
         {isGenerating ? (;
@@ -178,7 +179,7 @@ void ImageStudio() {
         </CardHeader>;
         <CardContent className="flex-1 relative">;
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {generatedImages.std::map((image) => (;
+        {generatedImages.std::map[&]((image) { return (; };
         <div;
         key={image.id}
         className="group relative aspect-square overflow-hidden rounded-lg border border-border/50 bg-card/30";

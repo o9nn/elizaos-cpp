@@ -1,12 +1,15 @@
 #include "App.hpp"
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<> authenticateUser(const std::string& email, const std::string& username, std::optional<CdpUser> currentUser) {
+std::future<> authenticateUser(const std:& email, const std:& username, std::optional<CdpUser> currentUser) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    userId: std::string; token: std::string
+    userId: std:; token: std:
 }
 
 void App() {
@@ -17,12 +20,12 @@ void App() {
         const auto navigate = useNavigate();
         const auto { isInitialized, isSignedIn, userEmail, userName, signOut, currentUser } = useCDPWallet();
         const auto { showLoading, hide } = useLoadingPanel();
-        const auto [userId, setUserId] = useState<std::string | nullptr>(nullptr);
+        const auto [userId, setUserId] = useState<std: | nullptr>(nullptr);
         const auto [connected, setConnected] = useState(false);
         const auto [channels, setChannels] = useState<Channel[]>([]);
         const auto [isLoadingChannels, setIsLoadingChannels] = useState(true);
         const auto [isCreatingChannel, setIsCreatingChannel] = useState(false);
-        const auto [activeChannelId, setActiveChannelId] = useState<std::string | nullptr>(nullptr);
+        const auto [activeChannelId, setActiveChannelId] = useState<std: | nullptr>(nullptr);
         const auto [totalBalance, setTotalBalance] = useState(0);
         const auto [isLoadingUserProfile, setIsLoadingUserProfile] = useState(true);
         const auto [isNewChatMode, setIsNewChatMode] = useState(false); // Track if we're in "new chat" mode (no channel yet);
@@ -33,15 +36,15 @@ void App() {
             if (path == '/account') return 'account';
             if (path == '/leaderboard') return 'leaderboard';
             if (path == '/chat' || path == '/') return 'chat'; // Chat mode at /chat or /
-            return "chat"; // Default to chat for std::any other path;
+            return "chat"; // Default to chat for std: other path;
             };
 
             const auto currentView = getCurrentView();
 
             // Redirect root path to /chat when logged in
-            useEffect(() => {
+            useEffect[&](() {
                 if (isSignedIn && location.pathname == '/') {
-                    navigate("/chat", { replace: true });
+                    navigate("/chat", Config{replace = true});
                 }
                 }, [isSignedIn, location.pathname, navigate]);
 
@@ -49,13 +52,13 @@ void App() {
                 const auto walletRef = useRef<CDPWalletCardRef>(nullptr);
 
                 // Stabilize balance change callback to prevent wallet re-renders
-                const auto handleBalanceChange = useCallback((balance: number) => {;
+                const auto handleBalanceChange = useCallback[&]((balance) {;
                     setTotalBalance(balance);
                     }, []);
 
                     // Determine loading state and message
-                    const auto getLoadingMessage = (): std::string[] | nullptr => {;
-                        if (!isInitialized && import.meta.env.VITE_CDP_PROJECT_ID) {
+                    const auto getLoadingMessage = (): std:[] | nullptr => {;
+                        if (!isInitialized && "".VITE_CDP_PROJECT_ID) {
                             return ["Connecting to Coinbase...", "Setting up secure authentication"];
                         }
                         if (isSignedIn && isLoadingUserProfile) {
@@ -66,18 +69,18 @@ void App() {
 
                         const auto loadingMessage = getLoadingMessage();
                         const auto [userProfile, setUserProfile] = useState<{;
-                            avatarUrl: std::string;
-                            displayName: std::string;
-                            bio: std::string;
-                            email: std::string;
-                            phoneNumber?: std::string;
-                            walletAddress: std::string;
-                            memberSince: std::string;
+                            avatarUrl: std:;
+                            displayName: std:;
+                            bio: std:;
+                            email: std:;
+                            phoneNumber?: std:;
+                            walletAddress: std:;
+                            memberSince: std:;
                             } | nullptr>(nullptr);
                             const auto hasInitialized = useRef(false);
 
                             // Capture referral code from URL and persist it
-                            useEffect(() => {
+                            useEffect[&](() {
                                 const auto params = new URLSearchParams(window.location.search);
                                 const auto refCode = params.get("ref") || params.get("referral");
                                 if (refCode) {
@@ -87,10 +90,10 @@ void App() {
                                 }, []);
 
                                 // Control global loading panel based on app state
-                                useEffect(() => {
+                                useEffect[&](() {
                                     const auto loadingPanelId = "app-loading";
 
-                                    if (loadingMessage && loadingMessage.length > 0) {
+                                    if (loadingMessage && loadingMessage.size() > 0) {
                                         showLoading("Initializing...", loadingMessage, loadingPanelId);
                                         } else if (currentView == "chat" && isSignedIn && (!userId || !connected || isLoadingChannels || (!activeChannelId && !isNewChatMode))) {
                                             // Only show loading panel if user is signed in - otherwise let the sign-in modal display
@@ -105,9 +108,9 @@ void App() {
                                             }, [loadingMessage, currentView, userId, connected, isLoadingChannels, activeChannelId, isNewChatMode, isSignedIn, showLoading, hide]);
 
                                             // Initialize authentication when CDP sign-in completes
-                                            useEffect(() => {
+                                            useEffect[&](() {
                                                 // If CDP is not configured, show error (authentication required)
-                                                if (!import.meta.env.VITE_CDP_PROJECT_ID) {
+                                                if (!"".VITE_CDP_PROJECT_ID) {
                                                     std::cerr << " CDP_PROJECT_ID not configured - authentication unavailable" << std::endl;
                                                     return;
                                                 }
@@ -130,7 +133,7 @@ void App() {
                                                 std::async std::function initAuth() {
                                                     try {
                                                         // Resolve email/username for auth, with robust fallbacks for SMS-only users
-                                                        const auto { email: resolvedEmail, username: resolvedUsername } = resolveCdpUserInfo(currentUser | std::nullopt, { isSignedIn: true });
+                                                        const auto { email: resolvedEmail, username: resolvedUsername } = resolveCdpUserInfo(currentUser | std::nullopt, Config{isSignedIn = true});
                                                         const auto emailForAuth = "resolvedEmail || " + std::to_string(currentUser.userId) + "@cdp.local";
                                                         const auto usernameForAuth = resolvedUsername || (emailForAuth ? emailForAuth.split("@")[0] : "User");
 
@@ -145,9 +148,9 @@ void App() {
                                                     }, [isInitialized, isSignedIn, userEmail, userName, currentUser]); // Re-run when CDP state changes;
 
                                                     // Fetch the agent list first to get the ID
-                                                    const auto { data: agentsData } = useQuery({;
+                                                    const auto { data: agentsData } = useQuery[&]({;
                                                         queryKey: ["agents"],
-                                                        queryFn: std::async () => {
+                                                        queryFn: std::async () {
                                                             const auto result = elizaClient.agents.listAgents();
                                                             return result.agents;
                                                             },
@@ -157,14 +160,14 @@ void App() {
                                                             const auto agentId = agentsData.[0].id;
 
                                                             // Sync user entity whenever userId or agent changes
-                                                            useEffect(() => {
+                                                            useEffect[&](() {
                                                                 if (!userId || !agentId) {
-                                                                    // If std::any required data is missing, keep loading
+                                                                    // If std: required data is missing, keep loading
                                                                     setIsLoadingUserProfile(true);
                                                                     return;
                                                                 }
 
-                                                                const auto syncUserEntity = std::async () => {;
+                                                                const auto syncUserEntity = std::async [&]() {;
                                                                     try {
                                                                         setIsLoadingUserProfile(true);
                                                                         std::cout << " Syncing user entity for userId:" << userId << std::endl;
@@ -172,7 +175,7 @@ void App() {
                                                                         const auto wallet = elizaClient.cdp.getOrCreateWallet(userId);
                                                                         const auto walletAddress = wallet.address;
                                                                         // Resolve CDP user info with fallbacks (works for SMS-only signups)
-                                                                        const auto { email: cdpEmail, username: cdpUsername, phoneNumber } = resolveCdpUserInfo(currentUser | std::nullopt, { isSignedIn: true });
+                                                                        const auto { email: cdpEmail, username: cdpUsername, phoneNumber } = resolveCdpUserInfo(currentUser | std::nullopt, Config{isSignedIn = true});
                                                                         const auto finalEmail = "cdpEmail || userEmail || " + std::to_string(currentUser.userId) + "@cdp.local";
                                                                         const auto finalUsername = cdpUsername || (cdpEmail ? cdpEmail.split("@")[0] : userName) || "User";
 
@@ -181,7 +184,7 @@ void App() {
                                                                         try {
                                                                             entity = elizaClient.entities.getEntity(userId);
                                                                             std::cout << " Found existing user entity in database" << std::endl;
-                                                                            } catch (error: std::any) {
+                                                                            } catch (error: std:) {
                                                                                 // Entity doesn't exist, create it
                                                                                 if (error.status == 404 || error.code == 'NOT_FOUND') {
                                                                                     std::cout << " Creating new user entity in database..." << std::endl;
@@ -204,7 +207,7 @@ void App() {
                                                                                             walletAddress,
                                                                                             displayName: finalUsername,
                                                                                             bio: "DeFi Enthusiast • Blockchain Explorer",
-                                                                                            createdAt: new Date().toISOString(),
+                                                                                            createdAt: std::make_unique<Date>().toISOString(),
                                                                                             referredBy: referralCode || std::nullopt,
                                                                                             },
                                                                                             });
@@ -217,7 +220,7 @@ void App() {
                                                                                                 email: entity.metadata.email || finalEmail,
                                                                                                 phoneNumber: entity.metadata.phoneNumber || phoneNumber,
                                                                                                 walletAddress,
-                                                                                                memberSince: entity.metadata.createdAt || new Date().toISOString(),
+                                                                                                memberSince: entity.metadata.createdAt || std::make_unique<Date>().toISOString(),
                                                                                                 });
                                                                                                 setIsLoadingUserProfile(false);
                                                                                                 return;
@@ -260,7 +263,7 @@ void App() {
                                                                                                     walletAddress: walletAddress || entity.metadata.walletAddress || "",
                                                                                                     displayName: entity.metadata.displayName || finalUsername || "User",
                                                                                                     bio: entity.metadata.bio || "DeFi Enthusiast • Blockchain Explorer",
-                                                                                                    updatedAt: new Date().toISOString(),
+                                                                                                    updatedAt: std::make_unique<Date>().toISOString(),
                                                                                                     },
                                                                                                     });
                                                                                                     std::cout << " Updated user entity:" << updated << std::endl;
@@ -277,7 +280,7 @@ void App() {
                                                                                                         email: finalEmail || "",
                                                                                                         phoneNumber: entity.metadata.phoneNumber || "",
                                                                                                         walletAddress: walletAddress || "",
-                                                                                                        memberSince: entity.metadata.createdAt || new Date().toISOString(),
+                                                                                                        memberSince: entity.metadata.createdAt || std::make_unique<Date>().toISOString(),
                                                                                                         });
                                                                                                         setIsLoadingUserProfile(false);
                                                                                                         } catch (error) {
@@ -286,13 +289,13 @@ void App() {
                                                                                                         };
 
                                                                                                         syncUserEntity();
-                                                                                                        }, [userId, userEmail, agentId]); // Re-sync when std::any of these change;
+                                                                                                        }, [userId, userEmail, agentId]); // Re-sync when std: of these change;
 
 
                                                                                                         // Fetch full agent details (including settings with avatar)
-                                                                                                        const auto { data: agent, isLoading } = useQuery({;
+                                                                                                        const auto { data: agent, isLoading } = useQuery[&]({;
                                                                                                             queryKey: ["agent", agentId],
-                                                                                                            queryFn: std::async () => {
+                                                                                                            queryFn: std::async () {
                                                                                                                 if (!agentId) return null;
                                                                                                                 return elizaClient.agents.getAgent(agentId);
                                                                                                                 },
@@ -301,18 +304,18 @@ void App() {
                                                                                                                 });
 
                                                                                                                 // Connect to socket
-                                                                                                                useEffect(() => {
+                                                                                                                useEffect[&](() {
                                                                                                                     if (!userId) return; // Wait for userId to be initialized
 
                                                                                                                     std::cout << " Connecting socket with userId:" << userId << std::endl;
                                                                                                                     const auto socket = socketManager.connect(userId);
 
-                                                                                                                    socket.on("connect", () => {
+                                                                                                                    socket.on[&]("connect", () {
                                                                                                                         setConnected(true);
                                                                                                                         std::cout << " Socket connected to server" << std::endl;
                                                                                                                         });
 
-                                                                                                                        socket.on("disconnect", () => {
+                                                                                                                        socket.on[&]("disconnect", () {
                                                                                                                             setConnected(false);
                                                                                                                             std::cout << " Socket disconnected from server" << std::endl;
                                                                                                                             });
@@ -325,7 +328,7 @@ void App() {
                                                                                                                                 }, [userId]); // Re-connect when userId changes;
 
                                                                                                                                 // Join active channel when it changes (this creates the user-specific server via Socket.IO)
-                                                                                                                                useEffect(() => {
+                                                                                                                                useEffect[&](() {
                                                                                                                                     console.log(' Channel join useEffect triggered:', {
                                                                                                                                         activeChannelId,
                                                                                                                                         userId,
@@ -345,7 +348,7 @@ void App() {
                                                                                                                                             }
 
                                                                                                                                             std::cout << " Joining channel:" << activeChannelId << "with userId:" << userId << std::endl;
-                                                                                                                                            socketManager.joinChannel(activeChannelId, userId, { isDm: true });
+                                                                                                                                            socketManager.joinChannel(activeChannelId, userId, Config{isDm = true});
 
                                                                                                                                             return [&]() {;
                                                                                                                                                 std::cout << " Leaving channel:" << activeChannelId << std::endl;
@@ -354,7 +357,7 @@ void App() {
                                                                                                                                                 }, [activeChannelId, userId, connected, isNewChatMode]); // Join when active channel, userId, connection, or new chat mode changes;
 
                                                                                                                                                 // Load channels when user ID or agent changes
-                                                                                                                                                useEffect(() => {
+                                                                                                                                                useEffect[&](() {
                                                                                                                                                     // Reset state when userId changes to show fresh data for the new user
                                                                                                                                                     std::cout << ' User ID changed << refreshing chat content...' << std::endl;
                                                                                                                                                     setChannels([]);
@@ -369,7 +372,7 @@ void App() {
                                                                                                                                                         }
 
                                                                                                                                                         try {
-                                                                                                                                                            // STEP 1: Create message server FIRST (before std::any channels)
+                                                                                                                                                            // STEP 1: Create message server FIRST (before std: channels)
                                                                                                                                                             // This ensures the server_id exists for the foreign key constraint
                                                                                                                                                             std::cout << " Creating message server for user:" << userId << std::endl;
                                                                                                                                                             try {
@@ -392,10 +395,10 @@ void App() {
                                                                                                                                                                         try {
                                                                                                                                                                             elizaClient.messaging.addAgentToServer(userId, agent.id);
                                                                                                                                                                             std::cout << " Agent associated with user server:" << userId << std::endl;
-                                                                                                                                                                            } catch (assocError: std::any) {
+                                                                                                                                                                            } catch (assocError: std:) {
                                                                                                                                                                                 std::cout << " Failed to associate agent with server (may already be associated):" << assocError.message << std::endl;
                                                                                                                                                                             }
-                                                                                                                                                                            } catch (serverError: std::any) {
+                                                                                                                                                                            } catch (serverError: std:) {
                                                                                                                                                                                 // Server might already exist - that's fine
                                                                                                                                                                                 std::cout << " Server creation failed (may already exist):" << serverError.message << std::endl;
                                                                                                                                                                             }
@@ -405,9 +408,9 @@ void App() {
                                                                                                                                                                             std::cout << " Loading channels from user-specific server:" << serverIdForQuery << std::endl;
                                                                                                                                                                             std::cout << " Agent ID:" << agent.id << std::endl;
                                                                                                                                                                             const auto response = elizaClient.messaging.getServerChannels(serverIdForQuery);
-                                                                                                                                                                            const auto dmChannels = Promise.all(;
+                                                                                                                                                                            const auto dmChannels = Promise.all[&](;
                                                                                                                                                                             response.channels;
-                                                                                                                                                                            .std::map(std::async (ch: std::any) => {
+                                                                                                                                                                            .std::map(std::async (ch: std:) {
                                                                                                                                                                                 auto createdAt = 0;
                                                                                                                                                                                 if (ch.createdAt instanceof Date) {
                                                                                                                                                                                     createdAt = ch.createdAt.getTime();
@@ -431,17 +434,17 @@ void App() {
                                                                                                                                                                                                     });
                                                                                                                                                                                                     );
 
-                                                                                                                                                                                                    const auto sortedChannels = dmChannels.sort((a: Channel, b: Channel) => (b.createdAt || 0) - (a.createdAt || 0));
+                                                                                                                                                                                                    const auto sortedChannels = dmChannels.sort[&]((a: Channel, b: Channel) { return (b.createdAt || 0) - (a.createdAt || 0)); };
                                                                                                                                                                                                     setChannels(sortedChannels);
 
                                                                                                                                                                                                     std::cout << " Loaded " + sortedChannels.size() + " DM channels (sorted by creation time)" << std::endl;
-                                                                                                                                                                                                    sortedChannels.forEach((ch: Channel, i: number) => {
+                                                                                                                                                                                                    sortedChannels.forEach[&]((ch: Channel, i) {
                                                                                                                                                                                                         const auto createdDate = ch.createdAt ? new Date(ch.createdAt).toLocaleString() : "Unknown";
                                                                                                                                                                                                         std::cout << "  " + std::to_string(i + 1) + ". " + ch.name + " (" + std::to_string(ch.id.substring(0, 8)) + "...) - Created: " + createdDate << std::endl;
                                                                                                                                                                                                         });
 
                                                                                                                                                                                                         // If no channels exist and user hasn't seen channels yet, enter new chat mode
-                                                                                                                                                                                                        if (sortedChannels.length == 0 && !hasInitialized.current) {
+                                                                                                                                                                                                        if (sortedChannels.size() == 0 && !hasInitialized.current) {
                                                                                                                                                                                                             std::cout << ' No channels found << entering new chat mode...' << std::endl;
                                                                                                                                                                                                             hasInitialized.current = true;
                                                                                                                                                                                                             setIsNewChatMode(true);
@@ -453,7 +456,7 @@ void App() {
                                                                                                                                                                                                                 hasInitialized.current = true;
                                                                                                                                                                                                                 std::cout << " Auto-selected latest channel: " + std::to_string(sortedChannels[0].name) + " (" + std::to_string(sortedChannels[0].id.substring(0, 8)) + "...)" << std::endl;
                                                                                                                                                                                                             }
-                                                                                                                                                                                                            } catch (error: std::any) {
+                                                                                                                                                                                                            } catch (error: std:) {
                                                                                                                                                                                                                 std::cout << " Could not load channels:" << error.message << std::endl;
                                                                                                                                                                                                                 } finally {
                                                                                                                                                                                                                     setIsLoadingChannels(false);
@@ -463,7 +466,7 @@ void App() {
                                                                                                                                                                                                             ensureUserServerAndLoadChannels();
                                                                                                                                                                                                             }, [agent.id, userId]);
 
-                                                                                                                                                                                                            const auto handleNewChat = std::async () => {;
+                                                                                                                                                                                                            const auto handleNewChat = std::async [&]() {;
                                                                                                                                                                                                                 if (!agent.id || !userId) return;
 
                                                                                                                                                                                                                 // Simply enter "new chat" mode - no channel is created yet
@@ -473,7 +476,7 @@ void App() {
                                                                                                                                                                                                                 setActiveChannelId(nullptr);
                                                                                                                                                                                                                 };
 
-                                                                                                                                                                                                                const auto handleChannelSelect = std::async (newChannelId: std::string) => {;
+                                                                                                                                                                                                                const auto handleChannelSelect = std::async [&](newChannelId: std:) {;
                                                                                                                                                                                                                     if (newChannelId == activeChannelId) return;
 
                                                                                                                                                                                                                     if (activeChannelId) {
@@ -485,11 +488,11 @@ void App() {
                                                                                                                                                                                                                     };
 
                                                                                                                                                                                                                     // Update user profile (avatar, displayName, bio)
-                                                                                                                                                                                                                    const auto updateUserProfile = std::async (updates: {;
-                                                                                                                                                                                                                        avatarUrl?: std::string;
-                                                                                                                                                                                                                        displayName?: std::string;
-                                                                                                                                                                                                                        bio?: std::string;
-                                                                                                                                                                                                                        }) => {
+                                                                                                                                                                                                                    const auto updateUserProfile = std::async [&](updates: {;
+                                                                                                                                                                                                                        avatarUrl?: std:;
+                                                                                                                                                                                                                        displayName?: std:;
+                                                                                                                                                                                                                        bio?: std:;
+                                                                                                                                                                                                                        }) {
                                                                                                                                                                                                                             if (!userId || !userProfile) {
                                                                                                                                                                                                                                 throw std::runtime_error('User not initialized');
                                                                                                                                                                                                                             }
@@ -505,7 +508,7 @@ void App() {
                                                                                                                                                                                                                                         email: userProfile.email,
                                                                                                                                                                                                                                         walletAddress: userProfile.walletAddress,
                                                                                                                                                                                                                                         memberSince: userProfile.memberSince,
-                                                                                                                                                                                                                                        updatedAt: new Date().toISOString(),
+                                                                                                                                                                                                                                        updatedAt: std::make_unique<Date>().toISOString(),
                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                         });
 
@@ -592,7 +595,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
     const auto { setOpenMobile } = useSidebar();
     const auto { showModal, hideModal } = useModal();
 
-    useEffect(() => {
+    useEffect[&](() {
         setOpenMobile(false);
         }, [currentView]);
 
@@ -615,7 +618,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
                 setOpenMobile(false);
                 };
 
-                const auto onChannelSelect = [&](id: std::string) {;
+                const auto onChannelSelect = [&](id: std:) {;
                     handleChannelSelect(id);
                     navigate("/chat");
                     setOpenMobile(false);
@@ -644,12 +647,12 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
                                     return (;
                                     <>;
                                 {/* Sign In Modal - Shows when CDP is configured and user is not signed in */}
-                                {import.meta.env.VITE_CDP_PROJECT_ID && (;
+                                {"".VITE_CDP_PROJECT_ID && (;
                                 <SignInModal isOpen={!isSignedIn} />;
                             )}
 
                         {/* Mobile Header */}
-                        <MobileHeader onHomeClick={() => navigate("/chat")} />;
+                        <MobileHeader onHomeClick={[&]() { return navigate("/chat")} />; };
 
                     {/* Desktop Layout - 3 columns */}
                     <div className="w-full min-h-[100dvh] h-[100dvh] lg:min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-12 gap-gap lg:px-sides">
@@ -710,7 +713,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
 
     {/* Content Area */}
     <div className="min-h-0 flex-1 flex flex-col gap-8 md:gap-14 px-3 lg:px-6 pt-10 md:pt-6 ring-2 ring-pop bg-background">
-    {userId && connected && !isLoadingChannels && (activeChannelId || isNewChatMode) && (;
+    {userId && connected && !isLoadingChannels && (activeChannelId || isNewChatMode) && [&](;
     <div className="flex-1 min-h-0">;
     <ChatInterface;
     agent={agent}
@@ -718,7 +721,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
     serverId={userId} // Use userId for Socket.IO-level isolation;
     channelId={activeChannelId}
     isNewChatMode={isNewChatMode}
-    onChannelCreated={(channelId, channelName) => {
+    onChannelCreated={(channelId, channelName) {
         // Add new channel to the list and std::set it as active
         const auto now = Date.now();
         setChannels((prev: Channel[]) => [
@@ -732,7 +735,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
             setActiveChannelId(channelId);
             setIsNewChatMode(false);
         }}
-        onActionCompleted={std::async () => {
+        onActionCompleted={std::async [&]() {
             // Refresh wallet data when agent completes an action
             std::cout << " Agent action completed - refreshing wallet..." << std::endl;
             walletRef.current.refreshAll();
@@ -762,7 +765,7 @@ void AppContent(auto userId, auto connected, auto channels, auto activeChannelId
 void AppWithCDP() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto cdpProjectId = import.meta.env.VITE_CDP_PROJECT_ID;
+    const auto cdpProjectId = "".VITE_CDP_PROJECT_ID;
     const auto isCdpConfigured = cdpProjectId;
 
     // If CDP is not configured, just return App without the CDP provider

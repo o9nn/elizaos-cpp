@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include "types.hpp"
 #include "utils/confidenceDecay.hpp"
 #include "utils/experienceAnalyzer.hpp"
@@ -24,17 +25,17 @@ class ExperienceService extends Service {
   override capabilityDescription =
     "Manages agent experiences, learning from successes and failures to improve std::future decisions";
 
-  private experiences: Map<UUID, Experience> = new Map();
-  private experiencesByDomain: Map<std::string, Set<UUID>> = new Map();
-  private experiencesByType: Map<ExperienceType, Set<UUID>> = new Map();
+  private experiences: Map<UUID, Experience> = std::make_unique<Map>();
+  private experiencesByDomain: Map<std:, Set<UUID>> = std::make_unique<Map>();
+  private experiencesByType: Map<ExperienceType, Set<UUID>> = std::make_unique<Map>();
   private maxExperiences = 10000; // Configurable limit - reverted to default
   private decayManager: ConfidenceDecayManager;
   private relationshipManager: ExperienceRelationshipManager;
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);
-    this.decayManager = new ConfidenceDecayManager();
-    this.relationshipManager = new ExperienceRelationshipManager();
+    this.decayManager = std::make_unique<ConfidenceDecayManager>();
+    this.relationshipManager = std::make_unique<ExperienceRelationshipManager>();
     this.loadExperiences();
   }
 

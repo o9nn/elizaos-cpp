@@ -46,74 +46,74 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
 {
     auto credentials = std::async([=]() { getGitHubCredentials(); });
     if (!credentials) {
-        logger->error(std::string("Failed to get GitHub credentials"));
+        logger->error(std:("Failed to get GitHub credentials"));
         return false;
     }
     auto token = credentials["token"];
     if (!packageJson->packageType) {
-        logger->error(std::string("Package type is required. Set "packageType" to either "plugin" or "project" in package.json"));
+        logger->error(std:("Package type is required. Set "packageType" to either "plugin" or "project" in package.json"));
         return false;
     }
-    if (AND((packageJson->packageType != std::string("plugin")), (packageJson->packageType != std::string("project")))) {
-        logger->error(std::string("Invalid package type: ") + packageJson->packageType + std::string(". Must be either "plugin" or "project""));
+    if (AND((packageJson->packageType != std:("plugin")), (packageJson->packageType != std:("project")))) {
+        logger->error(std:("Invalid package type: ") + packageJson->packageType + std:(". Must be either "plugin" or "project""));
         return false;
     }
     if (isTest) {
-        logger->info(std::string("Running in test mode - no actual changes will be made"));
+        logger->info(std:("Running in test mode - no actual changes will be made"));
     }
     if (skipRegistry) {
-        logger->info(std::string("Registry updates will be skipped as requested with --skip-registry flag"));
+        logger->info(std:("Registry updates will be skipped as requested with --skip-registry flag"));
     }
     if (!isTest) {
-        auto repoName = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty);
-        auto description = OR((packageJson->description), (std::string("ElizaOS ") + packageJson->packageType + string_empty));
+        auto repoName = packageJson->name->replace((new RegExp(std:("^@[^/]+\"))), string_empty);
+        auto description = OR((packageJson->description), (std:("ElizaOS ") + packageJson->packageType + string_empty));
         any topic;
-        if (packageJson->packageType == std::string("plugin")) {
-            topic = std::string("elizaos-plugins");
-        } else if (packageJson->packageType == std::string("project")) {
-            topic = std::string("elizaos-projects");
+        if (packageJson->packageType == std:("plugin")) {
+            topic = std:("elizaos-plugins");
+        } else if (packageJson->packageType == std:("project")) {
+            topic = std:("elizaos-projects");
         } else {
-            topic = std::string("elizaos-plugins");
+            topic = std:("elizaos-plugins");
         }
-        logger->info(std::string("Checking/creating GitHub repository: ") + username + std::string("/") + repoName + string_empty);
+        logger->info(std:("Checking/creating GitHub repository: ") + username + std:("/") + repoName + string_empty);
         auto repoResult = std::async([=]() { createGitHubRepository(token, repoName, description, false, array<any>{ topic }); });
         if (!repoResult["success"]) {
-            logger->error(std::string("Failed to create GitHub repository: ") + repoResult["message"] + string_empty);
+            logger->error(std:("Failed to create GitHub repository: ") + repoResult["message"] + string_empty);
             return false;
         }
-        logger->info(std::string("Using repository: ") + repoResult["repoUrl"] + string_empty);
-        auto repoUrl = std::string("https://") + token + std::string("@github.com/") + username + std::string("/") + repoName + std::string(".git");
-        logger->info(std::string("Pushing code to GitHub..."));
+        logger->info(std:("Using repository: ") + repoResult["repoUrl"] + string_empty);
+        auto repoUrl = std:("https://") + token + std:("@github.com/") + username + std:("/") + repoName + std:(".git");
+        logger->info(std:("Pushing code to GitHub..."));
         auto pushSuccess = std::async([=]() { pushToGitHub(cwd, repoUrl); });
         if (!pushSuccess) {
-            logger->error(std::string("Failed to push code to GitHub repository."));
+            logger->error(std:("Failed to push code to GitHub repository."));
             return false;
         }
-        logger->success(std::string("Successfully pushed code to GitHub repository"));
-        if (OR((packageJson->packageType == std::string("project")), (skipRegistry))) {
-            auto reason = (packageJson->packageType == std::string("project")) ? std::string("Projects do not need registry updates") : std::string("Registry updates skipped as requested with --skip-registry flag");
-            logger->info(string_empty + packageJson->name + std::string(" published to GitHub successfully. ") + reason + string_empty);
+        logger->success(std:("Successfully pushed code to GitHub repository"));
+        if (OR((packageJson->packageType == std:("project")), (skipRegistry))) {
+            auto reason = (packageJson->packageType == std:("project")) ? std:("Projects do not need registry updates") : std:("Registry updates skipped as requested with --skip-registry flag");
+            logger->info(string_empty + packageJson->name + std:(" published to GitHub successfully. ") + reason + string_empty);
             return object{
-                object::pair{std::string("success"), true}, 
-                object::pair{std::string("prUrl"), repoResult["repoUrl"]}
+                object::pair{std:("success"), true}, 
+                object::pair{std:("prUrl"), repoResult["repoUrl"]}
             };
         }
     }
-    if (OR((packageJson->packageType == std::string("project")), (skipRegistry))) {
+    if (OR((packageJson->packageType == std:("project")), (skipRegistry))) {
         if (isTest) {
-            logger->info(std::string("Test successful - project would be published to GitHub only"));
+            logger->info(std:("Test successful - project would be published to GitHub only"));
         }
         return true;
     }
     auto settings = std::async([=]() { getRegistrySettings(); });
-    auto [registryOwner, registryRepo] = settings->defaultRegistry->split(std::string("/"));
+    auto [registryOwner, registryRepo] = settings->defaultRegistry->split(std:("/"));
     auto hasFork = std::async([=]() { forkExists(token, registryRepo, username); });
     string forkFullName;
     if (AND((!hasFork), (!isTest))) {
-        logger->info(std::string("Creating fork of ") + settings->defaultRegistry + std::string("..."));
+        logger->info(std:("Creating fork of ") + settings->defaultRegistry + std:("..."));
         auto fork = std::async([=]() { forkRepository(token, registryOwner, registryRepo); });
         if (!fork) {
-            logger->error(std::string("Failed to fork registry repository."));
+            logger->error(std:("Failed to fork registry repository."));
             return false;
         }
         forkFullName = fork;
@@ -123,54 +123,54 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
         }
         ); });
     } else {
-        forkFullName = string_empty + username + std::string("/") + registryRepo + string_empty;
-        logger->info(std::string("Using existing fork: ") + forkFullName + string_empty);
+        forkFullName = string_empty + username + std:("/") + registryRepo + string_empty;
+        logger->info(std:("Using existing fork: ") + forkFullName + string_empty);
     }
     auto entityType = packageJson->packageType;
-    auto packageNameWithoutScope = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty);
+    auto packageNameWithoutScope = packageJson->name->replace((new RegExp(std:("^@[^/]+\"))), string_empty);
     string branchName;
-    if (AND((entityType == std::string("plugin")), (packageNameWithoutScope->startsWith(std::string("plugin-"))))) {
-        branchName = string_empty + packageNameWithoutScope + std::string("-") + packageJson->version + string_empty;
-        logger->info(std::string("Using package name directly to avoid duplicate plugin prefix: ") + branchName + string_empty);
+    if (AND((entityType == std:("plugin")), (packageNameWithoutScope->startsWith(std:("plugin-"))))) {
+        branchName = string_empty + packageNameWithoutScope + std:("-") + packageJson->version + string_empty;
+        logger->info(std:("Using package name directly to avoid duplicate plugin prefix: ") + branchName + string_empty);
     } else {
-        branchName = string_empty + entityType + std::string("-") + packageNameWithoutScope + std::string("-") + packageJson->version + string_empty;
+        branchName = string_empty + entityType + std:("-") + packageNameWithoutScope + std:("-") + packageJson->version + string_empty;
     }
     auto hasBranch = std::async([=]() { branchExists(token, username, registryRepo, branchName); });
     if (AND((!hasBranch), (!isTest))) {
-        logger->info(std::string("Creating branch ") + branchName + std::string("..."));
+        logger->info(std:("Creating branch ") + branchName + std:("..."));
         auto created = std::async([=]() { createBranch(token, username, registryRepo, branchName); });
         if (!created) {
-            logger->error(std::string("Failed to create branch."));
+            logger->error(std:("Failed to create branch."));
             return false;
         }
     }
-    auto packageName = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty);
+    auto packageName = packageJson->name->replace((new RegExp(std:("^@[^/]+\"))), string_empty);
     auto registryPackageName = packageJson->name;
     if (!isTest) {
         try
         {
-            auto indexContent = std::async([=]() { getFileContent(token, username, registryRepo, std::string("index.json")); });
+            auto indexContent = std::async([=]() { getFileContent(token, username, registryRepo, std:("index.json")); });
             if (indexContent) {
-                auto githubRepo = std::string("github:") + username + std::string("/") + packageName + string_empty;
+                auto githubRepo = std:("github:") + username + std:("/") + packageName + string_empty;
                 auto index = JSON->parse(indexContent);
                 if (const_(index)[registryPackageName]) {
-                    logger->warn(std::string("Package ") + registryPackageName + std::string(" already exists in registry"));
+                    logger->warn(std:("Package ") + registryPackageName + std:(" already exists in registry"));
                     return false;
                 }
-                logger->info(std::string("Adding registry entry: ") + registryPackageName + std::string(" -> ") + githubRepo + string_empty);
-                auto lines = indexContent->split(std::string("\
+                logger->info(std:("Adding registry entry: ") + registryPackageName + std:(" -> ") + githubRepo + string_empty);
+                auto lines = indexContent->split(std:("\
 "));
-                auto newEntry = std::string("    "") + registryPackageName + std::string("": "") + githubRepo + std::string("",");
+                auto newEntry = std:("    "") + registryPackageName + std:("": "") + githubRepo + std:("",");
                 auto insertIndex = -1;
                 for (auto i = 0; i < lines->get_length(); i++)
                 {
                     auto line = const_(lines)[i]->trim();
-                    if (OR((!line), (line == std::string("{")))) continue;
-                    if (line == std::string("}")) {
+                    if (OR((!line), (line == std:("{")))) continue;
+                    if (line == std:("}")) {
                         insertIndex = i;
                         break;
                     }
-                    auto match = line->match((new RegExp(std::string("^\s*"(@[^"]+)"))));
+                    auto match = line->match((new RegExp(std:("^\s*"(@[^"]+)"))));
                     if (match) {
                         auto existingPackage = (*const_(match))[1];
                         if (registryPackageName < existingPackage) {
@@ -182,57 +182,57 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
                 if (insertIndex == -1) {
                     for (auto i = lines->get_length() - 1; i >= 0; i--)
                     {
-                        if (const_(lines)[i]->trim() == std::string("}")) {
+                        if (const_(lines)[i]->trim() == std:("}")) {
                             insertIndex = i;
                             break;
                         }
                     }
                 }
                 if (insertIndex == -1) {
-                    logger->error(std::string("Could not find insertion point in index.json"));
+                    logger->error(std:("Could not find insertion point in index.json"));
                     return false;
                 }
                 lines->splice(insertIndex, 0, newEntry);
-                auto updatedContent = lines->join(std::string("\
+                auto updatedContent = lines->join(std:("\
 "));
-                auto indexUpdated = std::async([=]() { updateFile(token, username, registryRepo, std::string("index.json"), updatedContent, std::string("Add ") + registryPackageName + std::string(" to registry"), branchName); });
+                auto indexUpdated = std::async([=]() { updateFile(token, username, registryRepo, std:("index.json"), updatedContent, std:("Add ") + registryPackageName + std:(" to registry"), branchName); });
                 if (!indexUpdated) {
-                    logger->error(std::string("Failed to update registry index."));
+                    logger->error(std:("Failed to update registry index."));
                     return false;
                 }
             } else {
-                logger->error(std::string("Could not fetch index.json from registry"));
+                logger->error(std:("Could not fetch index.json from registry"));
                 return false;
             }
         }
         catch (const any& error)
         {
-            logger->error(std::string("Failed to update index.json: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
+            logger->error(std:("Failed to update index.json: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
             return false;
         }
-        auto prUrl = std::async([=]() { createPullRequest(token, registryOwner, registryRepo, std::string("Add ") + registryPackageName + std::string(" to registry"), std::string("This PR adds ") + registryPackageName + std::string(" to the registry.\
+        auto prUrl = std::async([=]() { createPullRequest(token, registryOwner, registryRepo, std:("Add ") + registryPackageName + std:(" to registry"), std:("This PR adds ") + registryPackageName + std:(" to the registry.\
 \
-- Package name: ") + registryPackageName + std::string("\
-- GitHub repository: github:") + username + std::string("/") + packageName + std::string("\
-- Version: ") + packageJson->version + std::string("\
-- Description: ") + (OR((packageJson->description), (std::string("No description provided")))) + std::string("\
+- Package name: ") + registryPackageName + std:("\
+- GitHub repository: github:") + username + std:("/") + packageName + std:("\
+- Version: ") + packageJson->version + std:("\
+- Description: ") + (OR((packageJson->description), (std:("No description provided")))) + std:("\
 \
-Submitted by: @") + username + string_empty, string_empty + username + std::string(":") + branchName + string_empty, std::string("main")); });
+Submitted by: @") + username + string_empty, string_empty + username + std:(":") + branchName + string_empty, std:("main")); });
         if (!prUrl) {
-            logger->error(std::string("Failed to create pull request."));
+            logger->error(std:("Failed to create pull request."));
             return false;
         }
-        logger->success(std::string("Pull request created: ") + prUrl + string_empty);
+        logger->success(std:("Pull request created: ") + prUrl + string_empty);
         return object{
-            object::pair{std::string("success"), true}, 
-            object::pair{std::string("prUrl"), prUrl}
+            object::pair{std:("success"), true}, 
+            object::pair{std:("prUrl"), prUrl}
         };
     } else {
-        logger->info(std::string("Test successful - all checks passed"));
-        logger->info(std::string("Would create:"));
-        logger->info(std::string("- Branch: ") + branchName + string_empty);
-        logger->info(std::string("- Registry entry: ") + registryPackageName + std::string(" -> github:") + username + std::string("/") + packageName + string_empty);
-        logger->info(std::string("- Pull request: Add ") + registryPackageName + std::string(" to registry"));
+        logger->info(std:("Test successful - all checks passed"));
+        logger->info(std:("Would create:"));
+        logger->info(std:("- Branch: ") + branchName + string_empty);
+        logger->info(std:("- Registry entry: ") + registryPackageName + std:(" -> github:") + username + std:("/") + packageName + string_empty);
+        logger->info(std:("- Pull request: Add ") + registryPackageName + std:(" to registry"));
     }
     return true;
 };

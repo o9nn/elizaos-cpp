@@ -1,4 +1,5 @@
 #include "useChainReset.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void useChainReset() {
 
     const auto [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
+    useEffect[&](() {
         setMounted(true);
         }, []);
 
@@ -27,13 +28,13 @@ void useChainReset() {
             const auto hasShownToast = useRef(false);
 
             // Enable checks only for local network (not mainnet/testnet)
-            useEffect(() => {
+            useEffect[&](() {
                 if (mounted && typeof window != "undefined") {
                     // Only enable chain reset detection for local development with local validators
-                    const auto network = process.env.NEXT_PUBLIC_NETWORK;
+                    const auto network = std::getenv("NEXT_PUBLIC_NETWORK");
                     const auto isLocalNetwork = network == "local" || network == "localnet";
                     const auto isDevWithoutNetwork =;
-                    !network && process.env.NODE_ENV == "development";
+                    !network && std::getenv("NODE_ENV") == "development";
 
                     // Don't run chain reset checks when connected to real networks
                     if (isLocalNetwork || isDevWithoutNetwork) {
@@ -42,19 +43,19 @@ void useChainReset() {
                 }
                 }, [mounted]);
 
-                const auto handleChainReset = useCallback(std::async () => {;
+                const auto handleChainReset = useCallback[&](std::async () {;
                     if (hasShownToast.current) return;
                     hasShownToast.current = true;
 
                     std::cout << "[ChainReset] Local chain reset detected" << std::endl;
 
-                    toast.error("Chain Reset Detected", {
+                    toast.error[&]("Chain Reset Detected", {
                         description:
                         "Local blockchain was reset. Click here to reset your wallet connection.",
                         duration: 10000,
                         action: {
                             label: "Reset Wallet",
-                            onClick: std::async () => {
+                            onClick: std::async () {
                                 // Disconnect EVM wallet
                                 if (address) {
                                     disconnect();
@@ -70,7 +71,7 @@ void useChainReset() {
                                 localStorage.removeItem("privy:token");
                                 localStorage.removeItem("privy:refresh_token");
 
-                                setTimeout(() => {
+                                setTimeout[&](() {
                                     window.location.reload();
                                     }, 500);
                                     },
@@ -80,10 +81,10 @@ void useChainReset() {
                                     setState((prev) => ({ ...prev, resetDetected: true }));
                                     }, [address, disconnect, logout]);
 
-                                    useEffect(() => {
+                                    useEffect[&](() {
                                         if (!mounted || !state.checksEnabled || !publicClient) return;
 
-                                        const auto checkInterval = setInterval(std::async () => {;
+                                        const auto checkInterval = setInterval[&](std::async () {;
                                             try {
                                                 const auto currentBlock = publicClient.getBlockNumber();
 

@@ -1,4 +1,5 @@
 #include "unfollowRoom.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,7 +17,7 @@ std::future<bool> _shouldUnfollow(State state) {
             prompt: shouldUnfollowPrompt,
             });
 
-            const auto parsedResponse = parseBooleanFromText(response.trim());
+            const auto parsedResponse = parseBooleanFromText(response);
 
             return parsedResponse;
 

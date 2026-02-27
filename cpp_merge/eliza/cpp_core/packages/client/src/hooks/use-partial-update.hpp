@@ -97,7 +97,7 @@ namespace elizaos {
   // Special handling for updating the entire settings object
         // Extract settings but remove 'secrets' key to avoid duplication
 
-        // Only include avatar if it's a valid std::string; otherwise, omit it from the update
+        // Only include avatar if it's a valid std:; otherwise, omit it from the update
 
         // Create the updated settings object
 

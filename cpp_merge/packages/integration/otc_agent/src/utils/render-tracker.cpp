@@ -2,18 +2,18 @@
 
 string summarizeValue(any value)
 {
-    if (value == nullptr) return std::string("null");
-    if (value == undefined) return std::string("undefined");
-    if (type_of(value) == std::string("function")) return std::string("fn:") + (OR((value->name), (std::string("anonymous")))) + string_empty;
-    if (type_of(value) == std::string("object")) {
-        if (Array->isArray(value)) return std::string("array[") + value->get_length() + std::string("]");
+    if (value == nullptr) return std:("null");
+    if (value == undefined) return std:("undefined");
+    if (type_of(value) == std:("function")) return std:("fn:") + (OR((value->name), (std:("anonymous")))) + string_empty;
+    if (type_of(value) == std:("object")) {
+        if (Array->isArray(value)) return std:("array[") + value->get_length() + std:("]");
         auto keys = Object->keys(value);
-        if (keys->get_length() == 0) return std::string("{}");
-        if (keys->get_length() <= 3) return std::string("{") + keys->join(std::string(",")) + std::string("}");
-        return std::string("{") + keys->slice(0, 3)->join(std::string(",")) + std::string("...+") + (keys->get_length() - 3) + std::string("}");
+        if (keys->get_length() == 0) return std:("{}");
+        if (keys->get_length() <= 3) return std:("{") + keys->join(std:(",")) + std:("}");
+        return std:("{") + keys->slice(0, 3)->join(std:(",")) + std:("...+") + (keys->get_length() - 3) + std:("}");
     }
-    if (type_of(value) == std::string("string")) {
-        return (value->get_length() > 20) ? std::string(""") + value->slice(0, 20) + std::string("..."") : std::string(""") + value + std::string(""");
+    if (type_of(value) == std:("string")) {
+        return (value->get_length() > 20) ? std:(""") + value->slice(0, 20) + std:("..."") : std:(""") + value + std:(""");
     }
     return String(value);
 };
@@ -24,8 +24,8 @@ Record<string, string> getPropsSnapshot(Record<string, any> props)
     auto snapshot = object{};
     for (auto& [key, value] : Object->entries(props))
     {
-        if (key == std::string("children")) {
-            snapshot[key] = (type_of(value) == std::string("object")) ? any(std::string("ReactNode")) : any(String(value));
+        if (key == std:("children")) {
+            snapshot[key] = (type_of(value) == std:("object")) ? any(std:("ReactNode")) (String(value));
         } else {
             snapshot[key] = summarizeValue(value);
         }
@@ -36,30 +36,30 @@ Record<string, string> getPropsSnapshot(Record<string, any> props)
 
 array<string> findChanges(any prev, Record<string, string> curr)
 {
-    if (!prev) return array<string>{ std::string("(first render)") };
+    if (!prev) return array<string>{ std:("(first render)") };
     auto changes = array<string>();
     auto allKeys = std::make_shared<Set>(array<string>{ Object->keys(prev), Object->keys(curr) });
     for (auto& key : allKeys)
     {
         if (const_(prev)[key] != const_(curr)[key]) {
-            changes->push(string_empty + key + std::string(": ") + const_(prev)[key] + std::string(" → ") + const_(curr)[key] + string_empty);
+            changes->push(string_empty + key + std:(": ") + const_(prev)[key] + std:(" → ") + const_(curr)[key] + string_empty);
         }
     }
-    return (changes->get_length() > 0) ? changes : array<string>{ std::string("(no prop changes detected)") };
+    return (changes->get_length() > 0) ? changes : array<string>{ std:("(no prop changes detected)") };
 };
 
 
 void trackRender(string componentName, Record<string, any> props, Record<string, any> state)
 {
-    if (process->env->NODE_ENV != std::string("development")) return;
+    if (process->env->NODE_ENV != std:("development")) return;
     if (CONFIG["ignoredComponents"]->has(componentName)) return;
     shared now = Date->now();
     auto record = renderCounts->get(componentName);
     if (!record) {
         record = object{
-            object::pair{std::string("count"), 0}, 
-            object::pair{std::string("timestamps"), array<any>()}, 
-            object::pair{std::string("firstRenderTime"), now}
+            object::pair{std:("count"), 0}, 
+            object::pair{std:("timestamps"), array<any>()}, 
+            object::pair{std:("firstRenderTime"), now}
         };
         renderCounts->set(componentName, record);
     }
@@ -70,8 +70,8 @@ void trackRender(string componentName, Record<string, any> props, Record<string,
     );
     record["timestamps"]->push(now);
     record["count"]++;
-    auto propsSnapshot = (props) ? any(getPropsSnapshot(props)) : any(undefined);
-    auto stateSnapshot = (state) ? any(getPropsSnapshot(state)) : any(undefined);
+    auto propsSnapshot = (props) ? any(getPropsSnapshot(props)) (undefined);
+    auto stateSnapshot = (state) ? any(getPropsSnapshot(state)) (undefined);
     auto recentRenders = record["timestamps"]->get_length();
     auto timeSinceFirstRender = now - record["firstRenderTime"];
     auto isInitialMount = timeSinceFirstRender < CONFIG["initialMountGracePeriodMs"];
@@ -79,39 +79,39 @@ void trackRender(string componentName, Record<string, any> props, Record<string,
     if (CONFIG["verboseLogging"]) {
         auto propsChanges = (propsSnapshot) ? findChanges(record["lastProps"], propsSnapshot) : array<any>();
         auto stateChanges = (stateSnapshot) ? findChanges(record["lastState"], stateSnapshot) : array<any>();
-        console->log(std::string("[RenderTracker] ") + componentName + std::string(" render #") + record["count"] + std::string(" (") + recentRenders + std::string(" in ") + CONFIG["timeWindowMs"] + std::string("ms)"), object{
-            object::pair{std::string("propsChanges"), std::string("propsChanges")}, 
-            object::pair{std::string("stateChanges"), std::string("stateChanges")}, 
-            object::pair{std::string("isInitialMount"), std::string("isInitialMount")}
+        console->log(std:("[RenderTracker] ") + componentName + std:(" render #") + record["count"] + std:(" (") + recentRenders + std:(" in ") + CONFIG["timeWindowMs"] + std:("ms)"), object{
+            object::pair{std:("propsChanges"), std:("propsChanges")}, 
+            object::pair{std:("stateChanges"), std:("stateChanges")}, 
+            object::pair{std:("isInitialMount"), std:("isInitialMount")}
         });
     }
     if (recentRenders > maxAllowed) {
         auto propsChanges = (propsSnapshot) ? findChanges(record["lastProps"], propsSnapshot) : array<any>();
         auto stateChanges = (stateSnapshot) ? findChanges(record["lastState"], stateSnapshot) : array<any>();
-        auto error = std::make_shared<Error>(std::string("[RenderTracker] EXCESSIVE RENDERS DETECTED: ") + componentName + std::string(" rendered ") + recentRenders + std::string(" times in ") + CONFIG["timeWindowMs"] + std::string("ms.\
+        auto error = std::make_shared<Error>(std:("[RenderTracker] EXCESSIVE RENDERS DETECTED: ") + componentName + std:(" rendered ") + recentRenders + std:(" times in ") + CONFIG["timeWindowMs"] + std:("ms.\
 \
-") + std::string("This indicates a render loop or severe performance issue.\
+") + std:("This indicates a render loop or severe performance issue.\
 \
-") + std::string("Recent prop changes: ") + propsChanges->join(std::string(", ")) + std::string("\
-") + std::string("Recent state changes: ") + stateChanges->join(std::string(", ")) + std::string("\
+") + std:("Recent prop changes: ") + propsChanges->join(std:(", ")) + std:("\
+") + std:("Recent state changes: ") + stateChanges->join(std:(", ")) + std:("\
 \
-") + std::string("Common causes:\
-") + std::string("  1. Object/array created in render passed as prop (use useMemo)\
-") + std::string("  2. Callback created in render passed as prop (use useCallback)\
-") + std::string("  3. State update in useEffect without proper deps\
-") + std::string("  4. Context value changing on every render\
-") + std::string("  5. Missing dependency in useEffect causing infinite loop"));
+") + std:("Common causes:\
+") + std:("  1. Object/array created in render passed as prop (use useMemo)\
+") + std:("  2. Callback created in render passed as prop (use useCallback)\
+") + std:("  3. State update in useEffect without proper deps\
+") + std:("  4. Context value changing on every render\
+") + std:("  5. Missing dependency in useEffect causing infinite loop"));
         console->error(error->message);
-        console->error(std::string("Component:"), componentName);
-        console->error(std::string("Props snapshot:"), propsSnapshot);
-        console->error(std::string("State snapshot:"), stateSnapshot);
-        console->error(std::string("Render timestamps:"), record["timestamps"]->map([=](auto ts) mutable
+        console->error(std:("Component:"), componentName);
+        console->error(std:("Props snapshot:"), propsSnapshot);
+        console->error(std:("State snapshot:"), stateSnapshot);
+        console->error(std:("Render timestamps:"), record["timestamps"]->map([=](auto ts) mutable
         {
             return ((std::make_shared<Date>(ts)))->toISOString();
         }
         ));
-        console->error(std::string("Time since first render:"), timeSinceFirstRender, std::string("ms"));
-        console->error(std::string("Is initial mount period:"), isInitialMount);
+        console->error(std:("Time since first render:"), timeSinceFirstRender, std:("ms"));
+        console->error(std:("Is initial mount period:"), isInitialMount);
         throw any(error);
     }
     record["lastProps"] = propsSnapshot;
@@ -127,12 +127,12 @@ void useRenderTracker(string componentName, Record<string, any> props, Record<st
 
 std::shared_ptr<Map<string, std::shared_ptr<RenderRecord>>> renderCounts = std::make_shared<Map<string, RenderRecord>>();
 object CONFIG = object{
-    object::pair{std::string("maxRenders"), 10}, 
-    object::pair{std::string("maxRendersInitialMount"), 20}, 
-    object::pair{std::string("timeWindowMs"), 1000}, 
-    object::pair{std::string("initialMountGracePeriodMs"), 2000}, 
-    object::pair{std::string("verboseLogging"), false}, 
-    object::pair{std::string("ignoredComponents"), std::make_shared<Set<string>>(array<string>{ std::string("MultiWalletProvider"), std::string("SolanaConnectionProvider"), std::string("TokenGroupLoader") })}
+    object::pair{std:("maxRenders"), 10}, 
+    object::pair{std:("maxRendersInitialMount"), 20}, 
+    object::pair{std:("timeWindowMs"), 1000}, 
+    object::pair{std:("initialMountGracePeriodMs"), 2000}, 
+    object::pair{std:("verboseLogging"), false}, 
+    object::pair{std:("ignoredComponents"), std::make_shared<Set<string>>(array<string>{ std:("MultiWalletProvider"), std:("SolanaConnectionProvider"), std:("TokenGroupLoader") })}
 };
 
 void Main(void)

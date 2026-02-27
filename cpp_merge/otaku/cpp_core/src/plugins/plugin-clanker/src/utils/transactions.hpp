@@ -16,11 +16,11 @@ namespace elizaos {
 
 
 class TransactionMonitor {
-  private pendingTransactions: Map<std::string, TransactionStatus> = new Map();
-  private listeners: Map<std::string, ((status: TransactionStatus) => void)[]> =
-    new Map();
+  private pendingTransactions: Map<std:, TransactionStatus> = std::make_unique<Map>();
+  private listeners: Map<std:, [&]((status: TransactionStatus) { return void)[]> =
+    std::make_unique<Map>(); };
 
-  addTransaction(hash: std::string): void {
+  addTransaction(hash: std:) {
     this.pendingTransactions.std::set(hash, {
       hash,
       status: "pending",

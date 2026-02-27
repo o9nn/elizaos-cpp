@@ -1,4 +1,10 @@
 #include "token-registration-listener-solana.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,14 +18,14 @@ std::future<void> startSolanaListener() {
         return;
     }
 
-    const auto programId = process.env.NEXT_PUBLIC_SOLANA_PROGRAM_ID;
+    const auto programId = std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID");
     if (!programId) {
         std::cerr << "[Solana Listener] SOLANA_PROGRAM_ID not configured" << std::endl;
         return;
     }
 
     const auto rpcUrl =;
-    process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+    std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "https://api.mainnet-beta.solana.com";
     connection = new Connection(rpcUrl, "confirmed");
 
     try {
@@ -29,14 +35,14 @@ std::future<void> startSolanaListener() {
         // Subscribe to program logs
         const auto subscriptionId = connection.onLogs(;
         new PublicKey(programId),
-        std::async (logs: Logs) => {
+        std::async [&](logs: Logs) {
             handleProgramLogs(logs);
             },
             "confirmed",
             );
 
             // Handle graceful shutdown
-            process.on("SIGINT", std::async () => {
+            process.on[&]("SIGINT", std::async () {
                 std::cout << "[Solana Listener] Stopping..." << std::endl;
                 if (connection) {
                     connection.removeOnLogsListener(subscriptionId);
@@ -44,7 +50,7 @@ std::future<void> startSolanaListener() {
                 isListening = false;
                 });
 
-                process.on("SIGTERM", std::async () => {
+                process.on[&]("SIGTERM", std::async () {
                     std::cout << "[Solana Listener] Stopping..." << std::endl;
                     if (connection) {
                         connection.removeOnLogsListener(subscriptionId);
@@ -67,11 +73,10 @@ std::future<void> handleProgramLogs(Logs logs) {
     const auto logMessages = logs.logs;
 
     // Look for register_token instruction signature
-    const auto hasRegisterToken = logMessages.some(;
-    (log: std::string) =>
-    (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+    const auto hasRegisterToken = logMessages.some[&](;
+    (log: std:) { return (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
     (std::find(log.begin(), log.end(), "register_token") != log.end()),
-    );
+    ); };
 
     if (!hasRegisterToken) {
         return;
@@ -123,13 +128,13 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto programId = process.env.NEXT_PUBLIC_SOLANA_PROGRAM_ID;
+        const auto programId = std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID");
         if (!programId) {
             throw std::runtime_error("SOLANA_PROGRAM_ID not configured");
         }
 
         const auto rpcUrl =;
-        process.env.NEXT_PUBLIC_SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+        std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "https://api.mainnet-beta.solana.com";
         const auto conn = new Connection(rpcUrl, "confirmed");
 
         console.log(
@@ -144,7 +149,7 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
         conn.getSignaturesForAddress(new PublicKey(programId), {
             limit: 100,
             });
-            ).std::map((s) => s.signature);
+            ).std::map[&]((s) { return s.signature); };
 
             std::cout << "[Solana Backfill] Found " + sigs.size() + " transactions" << std::endl;
 

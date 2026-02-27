@@ -1,10 +1,12 @@
 #include "plugin-context.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string normalizeForComparison(const std::string& name) {
+std: normalizeForComparison(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalized = normalizePluginName(name)[0] || name;
@@ -12,26 +14,26 @@ std::string normalizeForComparison(const std::string& name) {
 
 }
 
-PluginContext detectPluginContext(const std::string& pluginName) {
+PluginContext detectPluginContext(const std:& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto cwd = process.cwd();
+    const auto cwd = std::filesystem::current_path().string();
 
     // Use existing directory detection to check if we're in a plugin
     const auto directoryInfo = detectDirectoryType(cwd);
 
     if (directoryInfo.type != 'elizaos-plugin' || !directoryInfo.hasPackageJson) {
-        return { isLocalDevelopment: false }
+        return Config{isLocalDevelopment = false}
     }
 
     // Get package info from directory detection result
     const auto packageJsonPath = path.join(cwd, "package.json");
     auto packageInfo: PackageInfo;
     try {
-        packageInfo = /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
+        packageInfo = /* JSON::parse */ readFileSync(packageJsonPath, "utf-8");
         } catch (error) {
-            logger.debug(`Failed to parse package.json: ${error}`);
-            return { isLocalDevelopment: false }
+            logger.debug("Failed to parse package.json: " + std::to_string(error) + "");
+            return Config{isLocalDevelopment = false}
         }
 
         // Check if the requested plugin matches the current package
@@ -51,9 +53,9 @@ PluginContext detectPluginContext(const std::string& pluginName) {
             const auto localPath = path.resolve(cwd, mainEntry);
             const auto needsBuild = !existsSync(localPath);
 
-            logger.debug(`Detected local plugin development: ${pluginName}`);
-            logger.debug(`Expected output: ${localPath}`);
-            logger.debug(`Needs build: ${needsBuild}`);
+            logger.debug("Detected local plugin development: " + std::to_string(pluginName) + "");
+            logger.debug("Expected output: " + std::to_string(localPath) + "");
+            logger.debug("Needs build: " + std::to_string(needsBuild) + "");
 
             return {
                 isLocalDevelopment: true,
@@ -63,7 +65,7 @@ PluginContext detectPluginContext(const std::string& pluginName) {
                 };
             }
 
-            return { isLocalDevelopment: false }
+            return Config{isLocalDevelopment = false}
 
 }
 
@@ -80,7 +82,7 @@ std::future<bool> ensurePluginBuilt(PluginContext context) {
     if (packageInfo.scripts.build) {
         std::cout << 'Plugin not built << attempting to build...' << std::endl;
         try {
-            buildProject(process.cwd(), true);
+            buildProject(std::filesystem::current_path().string(), true);
 
             // Verify the build created the expected output
             if (localPath && existsSync(localPath)) {
@@ -102,7 +104,7 @@ std::future<bool> ensurePluginBuilt(PluginContext context) {
 
 }
 
-void provideLocalPluginGuidance(const std::string& pluginName, PluginContext context) {
+void provideLocalPluginGuidance(const std:& pluginName, PluginContext context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!context.isLocalDevelopment) {

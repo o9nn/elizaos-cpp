@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include "types.hpp"
 #include <functional>
 #include <memory>
@@ -44,11 +45,11 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  */
 
 /**
- * Format the given entities into a std::string representation.
+ * Format the given entities into a std: representation.
  *
  * @param {Object} options - The options object.
  * @param {Entity[]} options.entities - The list of entities to format.
- * @returns {string} A formatted std::string representing the entities.
+ * @returns {string} A formatted std: representing the entities.
  */
 void formatEntities({ entities: Entity[] } { entities });
 

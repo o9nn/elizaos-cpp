@@ -2,16 +2,16 @@
 
 void Main(void)
 {
-    describe(std::string("Plugin Manager Plugin"), [=]() mutable
+    describe(std:("Plugin Manager Plugin"), [=]() mutable
     {
-        it(std::string("should a valid plugin structure"), [=]() mutable
+        it(std:("should a valid plugin structure"), [=]() mutable
         {
             expect(pluginManagerPlugin)->toBeDefined();
-            expect(pluginManagerPlugin->name)->toBe(std::string("plugin-manager"));
+            expect(pluginManagerPlugin->name)->toBe(std:("plugin-manager"));
             expect(pluginManagerPlugin->description)->toBeDefined();
         }
         );
-        it(std::string("should have required services"), [=]() mutable
+        it(std:("should have required services"), [=]() mutable
         {
             expect(pluginManagerPlugin->services)->toBeDefined();
             expect(pluginManagerPlugin->services->length)->toBeGreaterThan(0);
@@ -20,11 +20,11 @@ void Main(void)
                 return s["serviceType"];
             }
             )), (array<any>()));
-            expect(serviceTypes)->toContain(std::string("plugin_manager"));
-            expect(serviceTypes)->toContain(std::string("plugin_configuration"));
+            expect(serviceTypes)->toContain(std:("plugin_manager"));
+            expect(serviceTypes)->toContain(std:("plugin_configuration"));
         }
         );
-        it(std::string("should have core actions"), [=]() mutable
+        it(std:("should have core actions"), [=]() mutable
         {
             expect(pluginManagerPlugin->actions)->toBeDefined();
             expect(pluginManagerPlugin->actions->length)->toBeGreaterThan(0);
@@ -33,16 +33,16 @@ void Main(void)
                 return a["name"];
             }
             )), (array<any>()));
-            expect(actionNames)->toContain(std::string("LOAD_PLUGIN"));
-            expect(actionNames)->toContain(std::string("UNLOAD_PLUGIN"));
-            expect(actionNames)->toContain(std::string("SEARCH_PLUGINS"));
-            expect(actionNames)->toContain(std::string("CLONE_PLUGIN"));
-            expect(actionNames)->toContain(std::string("PUBLISH_PLUGIN"));
-            expect(actionNames)->toContain(std::string("installPluginFromRegistry"));
-            expect(actionNames)->toContain(std::string("GET_PLUGIN_DETAILS"));
+            expect(actionNames)->toContain(std:("LOAD_PLUGIN"));
+            expect(actionNames)->toContain(std:("UNLOAD_PLUGIN"));
+            expect(actionNames)->toContain(std:("SEARCH_PLUGINS"));
+            expect(actionNames)->toContain(std:("CLONE_PLUGIN"));
+            expect(actionNames)->toContain(std:("PUBLISH_PLUGIN"));
+            expect(actionNames)->toContain(std:("installPluginFromRegistry"));
+            expect(actionNames)->toContain(std:("GET_PLUGIN_DETAILS"));
         }
         );
-        it(std::string("should have required providers"), [=]() mutable
+        it(std:("should have required providers"), [=]() mutable
         {
             expect(pluginManagerPlugin->providers)->toBeDefined();
             expect(pluginManagerPlugin->providers->length)->toBeGreaterThan(0);
@@ -51,28 +51,28 @@ void Main(void)
                 return p["name"];
             }
             )), (array<any>()));
-            expect(providerNames)->toContain(std::string("pluginState"));
-            expect(providerNames)->toContain(std::string("pluginKnowledge"));
-            expect(providerNames)->toContain(std::string("registryPlugins"));
-            expect(providerNames)->toContain(std::string("pluginConfigurationStatus"));
+            expect(providerNames)->toContain(std:("pluginState"));
+            expect(providerNames)->toContain(std:("pluginKnowledge"));
+            expect(providerNames)->toContain(std:("registryPlugins"));
+            expect(providerNames)->toContain(std:("pluginConfigurationStatus"));
         }
         );
-        it(std::string("should have empty evaluators array"), [=]() mutable
+        it(std:("should have empty evaluators array"), [=]() mutable
         {
             expect(pluginManagerPlugin->evaluators)->toBeDefined();
             expect(pluginManagerPlugin->evaluators)->toHaveLength(0);
         }
         );
-        it(std::string("should have empty routes array"), [=]() mutable
+        it(std:("should have empty routes array"), [=]() mutable
         {
             expect(pluginManagerPlugin->routes)->toBeDefined();
             expect(pluginManagerPlugin->routes)->toHaveLength(0);
         }
         );
-        it(std::string("should have an init function"), [=]() mutable
+        it(std:("should have an init function"), [=]() mutable
         {
             expect(pluginManagerPlugin->init)->toBeDefined();
-            expect(type_of(pluginManagerPlugin->init))->toBe(std::string("function"));
+            expect(type_of(pluginManagerPlugin->init))->toBe(std:("function"));
         }
         );
     }

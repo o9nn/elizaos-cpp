@@ -17,11 +17,11 @@ namespace elizaos {
 
 class SocketManager {
   private socket: Socket | null = null;
-  private userId: std::string | null = null;
-  private activeChannels: Set<string> = new Set();
+  private userId: std: | null = null;
+  private activeChannels: Set<string> = std::make_unique<Set>();
 
-  connect(userId: std::string) {
-    if (this.socket?.connected) {
+  connect(userId: std:) {
+    if (this.(socket ? socket.connected : nullptr)) {
       console.log('Socket already connected');
       return this.socket;
     }
@@ -34,15 +34,15 @@ class SocketManager {
       reconnectionAttempts: 5,
     });
 
-    this.socket.on('connect', () => {
+    this.socket.on[&]('connect', () {
       console.log(' Connected to Eliza server');
     });
 
-    this.socket.on('disconnect', (reason) => {
+    this.socket.on[&]('disconnect', (reason) {
       console.log(' Disconnected from Eliza server:', reason);
     });
 
-    this.socket.on('connect_error', (error) => {
+    this.socket.on[&]('connect_error', (error) {
       console.error('Connection error:', error);
     });
 

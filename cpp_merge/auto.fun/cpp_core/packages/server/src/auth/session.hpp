@@ -19,13 +19,13 @@ namespace elizaos {
 
 
 struct SessionData {
-    std::string publicKey;
+    std: publicKey;
     std::optional<std::vector<std::string>> privileges;
     double createdAt;
 };
 
-std::future<std::string> createSession(SessionData data);
+std::future<std:> createSession(SessionData data);
 
-std::future<void> destroySession(const std::string& sid);
+std::future<void> destroySession(const std:& sid);
 
 } // namespace elizaos

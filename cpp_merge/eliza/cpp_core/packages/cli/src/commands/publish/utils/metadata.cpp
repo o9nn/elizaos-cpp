@@ -1,10 +1,11 @@
 #include "metadata.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std::string& cliVersion, const std::string& username) {
+std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std:& cliVersion, const std:& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const PackageMetadata metadata = {;
@@ -16,7 +17,7 @@ std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, co
         runtimeVersion: cliVersion, // Compatible CLI/runtime version
         repository: packageJson.repository.url || "",
         maintainers: packageJson.maintainers || [username],
-        publishedAt: new Date().toISOString(),
+        publishedAt: std::make_unique<Date>().toISOString(),
         publishedBy: username,
         dependencies: packageJson.dependencies || {},
         tags: packageJson.keywords || [],
@@ -33,7 +34,7 @@ std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, co
         }
 
         // Ensure appropriate tag is included based on type
-        if (metadata.type == 'plugin' && !metadata.tags.includes('plugin')) {
+        if (metadata.type == 'plugin' && !metadata.tags.count('plugin') > 0) {
             metadata.tags.push_back("plugin");
             } else if (metadata.type == "project" && !metadata.(std::find(tags.begin(), tags.end(), "project") != tags.end())) {
                 metadata.tags.push_back("project");

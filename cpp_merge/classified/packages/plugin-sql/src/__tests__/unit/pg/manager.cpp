@@ -1,17 +1,17 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/__tests__/unit/pg/manager.test.h"
 
 object mockPoolInstance = object{
-    object::pair{std::string("connect"), mock()}, 
-    object::pair{std::string("end"), mock()}, 
-    object::pair{std::string("query"), mock()}
+    object::pair{std:("connect"), mock()}, 
+    object::pair{std:("end"), mock()}, 
+    object::pair{std:("query"), mock()}
 };
 
 void Main(void)
 {
-    mock->module(std::string("pg"), [=]() mutable
+    mock->module(std:("pg"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("Pool"), mock([=]() mutable
+            object::pair{std:("Pool"), mock([=]() mutable
             {
                 return mockPoolInstance;
             }
@@ -19,7 +19,7 @@ void Main(void)
         });
     }
     );
-    describe(std::string("PostgresConnectionManager"), [=]() mutable
+    describe(std:("PostgresConnectionManager"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -28,11 +28,11 @@ void Main(void)
             mockPoolInstance["query"]->mockClear();
         }
         );
-        describe(std::string("constructor"), [=]() mutable
+        describe(std:("constructor"), [=]() mutable
         {
-            it(std::string("should create an instance with connection URL"), [=]() mutable
+            it(std:("should create an instance with connection URL"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 expect(manager)->toBeDefined();
                 expect(manager->getConnection())->toBeDefined();
@@ -41,11 +41,11 @@ void Main(void)
             );
         }
         );
-        describe(std::string("getDatabase"), [=]() mutable
+        describe(std:("getDatabase"), [=]() mutable
         {
-            it(std::string("should return the drizzle database instance"), [=]() mutable
+            it(std:("should return the drizzle database instance"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 auto db = manager->getDatabase();
                 expect(db)->toBeDefined();
@@ -54,11 +54,11 @@ void Main(void)
             );
         }
         );
-        describe(std::string("getConnection"), [=]() mutable
+        describe(std:("getConnection"), [=]() mutable
         {
-            it(std::string("should return the pool instance"), [=]() mutable
+            it(std:("should return the pool instance"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 auto connection = manager->getConnection();
                 expect(connection)->toBeDefined();
@@ -67,17 +67,17 @@ void Main(void)
             );
         }
         );
-        describe(std::string("getClient"), [=]() mutable
+        describe(std:("getClient"), [=]() mutable
         {
-            it(std::string("should return a client from the pool"), [=]() mutable
+            it(std:("should return a client from the pool"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 auto mockClient = object{
-                    object::pair{std::string("query"), mock()->mockResolvedValue(object{
-                        object::pair{std::string("rows"), array<any>()}
+                    object::pair{std:("query"), mock()->mockResolvedValue(object{
+                        object::pair{std:("rows"), array<any>()}
                     })}, 
-                    object::pair{std::string("release"), mock()}
+                    object::pair{std:("release"), mock()}
                 };
                 mockPoolInstance["connect"]->mockResolvedValue(mockClient);
                 auto client = std::async([=]() { manager->getClient(); });
@@ -85,52 +85,52 @@ void Main(void)
                 expect(mockPoolInstance["connect"])->toHaveBeenCalled();
             }
             );
-            it(std::string("should throw error when pool connection fails"), [=]() mutable
+            it(std:("should throw error when pool connection fails"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
-                mockPoolInstance["connect"]->mockRejectedValue(std::make_shared<Error>(std::string("Connection failed")));
-                std::async([=]() { expect(manager->getClient())->rejects->toThrow(std::string("Connection failed")); });
+                mockPoolInstance["connect"]->mockRejectedValue(std::make_shared<Error>(std:("Connection failed")));
+                std::async([=]() { expect(manager->getClient())->rejects->toThrow(std:("Connection failed")); });
             }
             );
         }
         );
-        describe(std::string("testConnection"), [=]() mutable
+        describe(std:("testConnection"), [=]() mutable
         {
-            it(std::string("should return true when connection is successful"), [=]() mutable
+            it(std:("should return true when connection is successful"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 auto mockClient = object{
-                    object::pair{std::string("query"), mock()->mockResolvedValue(object{
-                        object::pair{std::string("rows"), array<any>()}
+                    object::pair{std:("query"), mock()->mockResolvedValue(object{
+                        object::pair{std:("rows"), array<any>()}
                     })}, 
-                    object::pair{std::string("release"), mock()}
+                    object::pair{std:("release"), mock()}
                 };
                 mockPoolInstance["connect"]->mockResolvedValue(mockClient);
                 auto result = std::async([=]() { manager->testConnection(); });
                 expect(result)->toBe(true);
                 expect(mockPoolInstance["connect"])->toHaveBeenCalled();
-                expect(mockClient["query"])->toHaveBeenCalledWith(std::string("SELECT 1"));
+                expect(mockClient["query"])->toHaveBeenCalledWith(std:("SELECT 1"));
                 expect(mockClient["release"])->toHaveBeenCalled();
             }
             );
-            it(std::string("should return false when connection fails"), [=]() mutable
+            it(std:("should return false when connection fails"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
-                mockPoolInstance["connect"]->mockRejectedValue(std::make_shared<Error>(std::string("Connection failed")));
+                mockPoolInstance["connect"]->mockRejectedValue(std::make_shared<Error>(std:("Connection failed")));
                 auto result = std::async([=]() { manager->testConnection(); });
                 expect(result)->toBe(false);
             }
             );
-            it(std::string("should return false when query fails"), [=]() mutable
+            it(std:("should return false when query fails"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 auto mockClient = object{
-                    object::pair{std::string("query"), mock()->mockRejectedValue(std::make_shared<Error>(std::string("Query failed")))}, 
-                    object::pair{std::string("release"), mock()}
+                    object::pair{std:("query"), mock()->mockRejectedValue(std::make_shared<Error>(std:("Query failed")))}, 
+                    object::pair{std:("release"), mock()}
                 };
                 mockPoolInstance["connect"]->mockResolvedValue(mockClient);
                 auto result = std::async([=]() { manager->testConnection(); });
@@ -140,23 +140,23 @@ void Main(void)
             );
         }
         );
-        describe(std::string("close"), [=]() mutable
+        describe(std:("close"), [=]() mutable
         {
-            it(std::string("should end the pool connection"), [=]() mutable
+            it(std:("should end the pool connection"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
                 mockPoolInstance["end"]->mockResolvedValue(undefined);
                 std::async([=]() { manager->close(); });
                 expect(mockPoolInstance["end"])->toHaveBeenCalled();
             }
             );
-            it(std::string("should propagate errors during close"), [=]() mutable
+            it(std:("should propagate errors during close"), [=]() mutable
             {
-                auto connectionUrl = std::string("postgresql://user:pass@localhost:5432/testdb");
+                auto connectionUrl = std:("postgresql://user:pass@localhost:5432/testdb");
                 auto manager = std::make_shared<PostgresConnectionManager>(connectionUrl);
-                mockPoolInstance["end"]->mockRejectedValue(std::make_shared<Error>(std::string("Close failed")));
-                std::async([=]() { expect(manager->close())->rejects->toThrow(std::string("Close failed")); });
+                mockPoolInstance["end"]->mockRejectedValue(std::make_shared<Error>(std:("Close failed")));
+                std::async([=]() { expect(manager->close())->rejects->toThrow(std:("Close failed")); });
             }
             );
         }

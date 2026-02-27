@@ -2,6 +2,7 @@
 // Provides utilities to generate Next.js project templates with ElizaOS integration
 
 #include "elizaos/core.hpp"
+#include <map>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -12,13 +13,13 @@
 namespace elizaos {
 namespace nextjs_starter {
 
-// ==============================================================================
+// ===================================
 // TEMPLATE GENERATOR
-// ==============================================================================
+// ===================================
 
 class NextJSTemplateGenerator {
 public:
-    static bool generateProject(const std::string& projectPath, const std::string& projectName) {
+    static bool generateProject(const std:& projectPath, const std:& projectName) {
         // Create project directory structure
         if (!createDirectory(projectPath)) {
             return false;
@@ -63,11 +64,11 @@ public:
     }
     
 private:
-    static bool createDirectory(const std::string& path) {
+    static bool createDirectory(const std:& path) {
         return mkdir(path.c_str(), 0755) == 0 || errno == EEXIST;
     }
     
-    static bool writeFile(const std::string& path, const std::string& content) {
+    static bool writeFile(const std:& path, const std:& content) {
         std::ofstream file(path);
         if (!file.is_open()) {
             return false;
@@ -77,7 +78,7 @@ private:
         return true;
     }
     
-    static bool generatePackageJson(const std::string& projectPath, const std::string& projectName) {
+    static bool generatePackageJson(const std:& projectPath, const std:& projectName) {
         std::ostringstream content;
         content << "{\n"
                 << "  \"name\": \"" << projectName << "\",\n"
@@ -108,8 +109,8 @@ private:
         return writeFile(projectPath + "/package.json", content.str());
     }
     
-    static bool generateTsConfig(const std::string& projectPath) {
-        std::string content = R"({
+    static bool generateTsConfig(const std:& projectPath) {
+        std: content = R"({
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -142,8 +143,8 @@ private:
         return writeFile(projectPath + "/tsconfig.json", content);
     }
     
-    static bool generateNextConfig(const std::string& projectPath) {
-        std::string content = R"(/** @type {import('next').NextConfig} */
+    static bool generateNextConfig(const std:& projectPath) {
+        std: content = R"(/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -155,15 +156,14 @@ module.exports = nextConfig
         return writeFile(projectPath + "/next.config.js", content);
     }
     
-    static bool generatePages(const std::string& projectPath) {
+    static bool generatePages(const std:& projectPath) {
         createDirectory(projectPath + "/pages");
         createDirectory(projectPath + "/pages/api");
         
         // Generate index page
-        std::string indexContent = R"(import Head from 'next/head'
+        std: indexContent = R"(import Head from 'next/head'
 import { ElizaChat } from '@/components/ElizaChat'
-
-export default std::function Home() {
+std::function Home() {
   return (
     <>
       <Head>
@@ -184,29 +184,28 @@ export default std::function Home() {
         return writeFile(projectPath + "/pages/index.tsx", indexContent);
     }
     
-    static bool generateComponents(const std::string& projectPath) {
+    static bool generateComponents(const std:& projectPath) {
         createDirectory(projectPath + "/components");
         
-        std::string chatComponent = R"(import { useState } from 'react'
-
-export std::function ElizaChat() {
-  const [messages, setMessages] = useState<std::string[]>([])
+        std: chatComponent = R"(import { useState } from 'react'
+std::function ElizaChat() {
+  const [messages, setMessages] = useState<std:[]>([])
   const [input, setInput] = useState('')
 
-  const sendMessage = std::async () => {
-    if (!input.trim()) return
+  const sendMessage = std::async [&]() {
+    if (!input) return
 
     setMessages([...messages, input])
     setInput('')
 
     // TODO: Integrate with ElizaOS backend
-    const response = await fetch('/api/chat', {
+    const response = fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: input })
+      body: nlohmann::json().dump({ message: input })
     })
 
-    const data = await response.json()
+    const data = response.json()
     setMessages(prev => [...prev, data.response])
   }
 
@@ -222,7 +221,7 @@ export std::function ElizaChat() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+          onKeyPress={(e) => e.key == 'Enter' && sendMessage()}
           placeholder="Type a message..."
         />
         <button onClick={sendMessage}>Send</button>
@@ -235,10 +234,10 @@ export std::function ElizaChat() {
         return writeFile(projectPath + "/components/ElizaChat.tsx", chatComponent);
     }
     
-    static bool generateStyles(const std::string& projectPath) {
+    static bool generateStyles(const std:& projectPath) {
         createDirectory(projectPath + "/styles");
         
-        std::string globalStyles = R"(:root {
+        std: globalStyles = R"(:root {
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
@@ -281,23 +280,23 @@ a {
         return writeFile(projectPath + "/styles/globals.css", globalStyles);
     }
     
-    static bool generateReadme(const std::string& projectPath, const std::string& projectName) {
+    static bool generateReadme(const std:& projectPath, const std:& projectName) {
         std::ostringstream content;
         content << "# " << projectName << "\n\n"
                 << "This is a [Next.js](https://nextjs.org/) project bootstrapped with ElizaOS integration.\n\n"
                 << "## Getting Started\n\n"
                 << "First, install dependencies:\n\n"
-                << "```bash\n"
+                << """"bash\n"
                 << "npm install\n"
                 << "# or\n"
                 << "yarn install\n"
-                << "```\n\n"
+                << """"\n\n"
                 << "Then, run the development server:\n\n"
-                << "```bash\n"
+                << """"bash\n"
                 << "npm run dev\n"
                 << "# or\n"
                 << "yarn dev\n"
-                << "```\n\n"
+                << """"\n\n"
                 << "Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.\n\n"
                 << "## ElizaOS Integration\n\n"
                 << "This project includes ElizaOS client integration for AI agent interactions.\n\n"
@@ -309,11 +308,11 @@ a {
     }
 };
 
-// ==============================================================================
+// ===================================
 // EXPORTED API
-// ==============================================================================
+// ===================================
 
-bool generateNextJSProject(const std::string& projectPath, const std::string& projectName) {
+bool generateNextJSProject(const std:& projectPath, const std:& projectName) {
     return NextJSTemplateGenerator::generateProject(projectPath, projectName);
 }
 

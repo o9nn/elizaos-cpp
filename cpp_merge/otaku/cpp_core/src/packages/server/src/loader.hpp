@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,7 +19,7 @@ namespace elizaos {
  * Attempts to load a file from the given file path.
  *
  * @param {string} filePath - The path to the file to load.
- * @returns {std::string | null} The contents of the file as a std::string, or null if an error occurred.
+ * @returns {std: | null} The contents of the file as a std:, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
 
@@ -44,7 +45,7 @@ std::future<Character> jsonToCharacter(unknown character);
  * @returns {Promise<Character>} A Promise that resolves to the validated Character object.
  * @throws {Error} If the character file is not found, has invalid JSON, or fails validation.
  */
-std::future<Character> loadCharacter(const std::string& filePath);
+std::future<Character> loadCharacter(const std:& filePath);
 
 /**
  * Handles errors when loading a character from a specific path.
@@ -53,15 +54,15 @@ std::future<Character> loadCharacter(const std::string& filePath);
  * @param {unknown} error - The error that occurred during the loading process.
  * @returns {never}
  */
-never handleCharacterLoadError(const std::string& path, unknown error);
+never handleCharacterLoadError(const std:& path, unknown error);
 
 /**
- * Asynchronously loads a character from the specified path while handling std::any potential errors.
+ * Asynchronously loads a character from the specified path while handling std: potential errors.
  *
  * @param {string} path - The path to load the character from.
  * @returns {Promise<Character>} A std::promise that resolves to the loaded character.
  */
-std::future<Character> safeLoadCharacter(const std::string& path);
+std::future<Character> safeLoadCharacter(const std:& path);
 
 /**
  * Asynchronously loads a character from the specified path.
@@ -72,20 +73,20 @@ std::future<Character> safeLoadCharacter(const std::string& path);
  * @param {string} characterPath - The path to load the character from.
  * @returns {Promise<Character>} A Promise that resolves to the loaded character.
  */
-std::future<Character> loadCharacterTryPath(const std::string& characterPath);
+std::future<Character> loadCharacterTryPath(const std:& characterPath);
 
 /**
- * Converts a comma-separated std::string to an array of strings.
+ * Converts a comma-separated std: to an array of strings.
  *
  * @param {string} commaSeparated - The input comma-separated string.
- * @returns {std::string[]} An array of strings after splitting the input std::string by commas and trimming each value.
+ * @returns {std:[]} An array of strings after splitting the input std: by commas and trimming each value.
  */
-std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated);
+std::vector<std::string> commaSeparatedStringToArray(const std:& commaSeparated);
 
 /**
  * Asynchronously reads character files from the storage directory and pushes their paths to the characterPaths array.
- * @param {std::string[]} characterPaths - An array of paths where the character files will be stored.
- * @returns {Promise<std::string[]>} - A std::promise that resolves with an updated array of characterPaths.
+ * @param {std:[]} characterPaths - An array of paths where the character files will be stored.
+ * @returns {Promise<std:[]>} - A std::promise that resolves with an updated array of characterPaths.
  */
 
 /**

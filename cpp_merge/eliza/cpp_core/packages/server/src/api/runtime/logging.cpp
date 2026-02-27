@@ -1,4 +1,6 @@
 #include "logging.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +12,7 @@ express::Router createLoggingRouter() {
     const auto router = express.Router();
 
     // Logs endpoint handler
-    const auto logsHandler = std::async (req: express.Request, res: express.Response) => {;
+    const auto logsHandler = std::async [&](req: express.Request, res: express.Response) {;
         const auto since = req.query.since ? Number(req.query.since) : Date.now() - 3600000; // Default 1 hour;
         const auto requestedLevel = (req.query.std::to_string(level).toLowerCase() || "all");
         const auto requestedAgentName = req.query.std::to_string(agentName) || "all";
@@ -36,8 +38,8 @@ express::Router createLoggingRouter() {
                 : LOG_LEVELS[requestedLevel typeof LOG_LEVELS] || LOG_LEVELS.info;
 
                 // Calculate population rates once for efficiency
-                const auto logsWithAgentNames = recentLogs.filter((l) => l.agentName).size();
-                const auto logsWithAgentIds = recentLogs.filter((l) => l.agentId).size();
+                const auto logsWithAgentNames = recentLogs.filter[&]((l) { return l.agentName).size(); };
+                const auto logsWithAgentIds = recentLogs.filter[&]((l) { return l.agentId).size(); };
                 const auto totalLogs = recentLogs.size();
                 const auto agentNamePopulationRate = totalLogs > 0 ? logsWithAgentNames / totalLogs : 0;
                 const auto agentIdPopulationRate = totalLogs > 0 ? logsWithAgentIds / totalLogs : 0;
@@ -47,7 +49,7 @@ express::Router createLoggingRouter() {
                 const auto isAgentIdDataSparse = agentIdPopulationRate < 0.1;
 
                 const auto filtered = recentLogs;
-                .filter((log) => {
+                .filter[&]((log) {
                     // Filter by time always
                     const auto timeMatch = log.time >= since;
 
@@ -83,8 +85,7 @@ express::Router createLoggingRouter() {
                             }
 
                             return timeMatch && levelMatch && agentNameMatch && agentIdMatch;
-                            });
-                            .slice(-limit);
+                            }).slice(-limit);
 
                             // Add debug log to help troubleshoot
                             logger.debug('Logs request processed', {
@@ -100,13 +101,13 @@ express::Router createLoggingRouter() {
                                 agentIdPopulationRate: Math.round(agentIdPopulationRate * 100) + "%",
                                 isAgentNameDataSparse,
                                 isAgentIdDataSparse,
-                                sampleLogAgentNames: recentLogs.slice(0, 5).std::map((log) => log.agentName),
-                                uniqueAgentNamesInLogs: [...new Set(recentLogs.std::map((log) => log.agentName))].filter(
-                                Boolean;
+                                sampleLogAgentNames: recentLogs.substr(0, 5-0).std::map[&]((log) { return log.agentName),
+                                uniqueAgentNamesInLogs: [...new Set[&](recentLogs.std::map((log) { return log.agentName))].filter(
+                                Boolean; }; };
                                 ),
-                                exactAgentNameMatches: recentLogs.filter((log) => log.agentName == requestedAgentName)
+                                exactAgentNameMatches: recentLogs.filter[&]((log) { return log.agentName == requestedAgentName)
                                 .size(),
-                                });
+                                }); };
 
                                 res.json({
                                     logs: filtered,

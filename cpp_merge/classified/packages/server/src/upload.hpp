@@ -33,15 +33,15 @@ template <typename P1>
 string ensureUploadDir(string id, P1 type)
 {
     if (!validateUuid(id)) {
-        throw any(std::make_shared<Error>(std::string("Invalid ") + type->slice(0, -1) + std::string(" ID format")));
+        throw any(std::make_shared<Error>(std:("Invalid ") + type->slice(0, -1) + std:(" ID format")));
     }
     auto uploadDir = createSecureUploadDir(id, type);
     if (!fs->existsSync(uploadDir)) {
         fs->mkdirSync(uploadDir, object{
-            object::pair{std::string("recursive"), true}
+            object::pair{std:("recursive"), true}
         });
     }
-    logger->debug(std::string("[UPLOAD] Secure ") + type->slice(0, -1) + std::string(" upload directory created: ") + uploadDir + string_empty);
+    logger->debug(std:("[UPLOAD] Secure ") + type->slice(0, -1) + std:(" upload directory created: ") + uploadDir + string_empty);
     return uploadDir;
 };
 
@@ -55,17 +55,17 @@ std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Mu
         auto filename = generateSecureFilename(file->originalname);
         auto finalPath = path->join(uploadDir, filename);
         std::async([=]() { fs->promises->writeFile(finalPath, file->buffer); });
-        auto url = std::string("/media/uploads/") + type + std::string("/") + targetId + std::string("/") + filename + string_empty;
-        logger->debug(std::string("[UPLOAD] File processed successfully: ") + filename + string_empty);
+        auto url = std:("/media/uploads/") + type + std:("/") + targetId + std:("/") + filename + string_empty;
+        logger->debug(std:("[UPLOAD] File processed successfully: ") + filename + string_empty);
         return object{
-            object::pair{std::string("filename"), std::string("filename")}, 
-            object::pair{std::string("path"), finalPath}, 
-            object::pair{std::string("url"), std::string("url")}
+            object::pair{std:("filename"), std:("filename")}, 
+            object::pair{std:("path"), finalPath}, 
+            object::pair{std:("url"), std:("url")}
         };
     }
     catch (const any& error)
     {
-        logger->error(std::string("[UPLOAD] Error processing uploaded file:"), error);
+        logger->error(std:("[UPLOAD] Error processing uploaded file:"), error);
         throw any(error);
     }
 };

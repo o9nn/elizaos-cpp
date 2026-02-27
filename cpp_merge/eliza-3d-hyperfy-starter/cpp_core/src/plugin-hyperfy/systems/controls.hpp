@@ -38,7 +38,7 @@ class AgentControls extends System {
 
     // Optional: Log the key press/release
     // if (changed) {
-    //     logger.debug(`[Controls] setKey: ${keyName} = ${isDown}`);
+    //     logger.debug("[Controls] setKey: " + std::to_string(keyName) + " = " + std::to_string(isDown) + "");
     // }
 
   // Reset pressed/released flags at the end of the frame
@@ -69,11 +69,11 @@ class AgentControls extends System {
   
       // Simulate movement
   
-      await tickDelay(CONTROLS_TICK_INTERVAL);
+      tickDelay(CONTROLS_TICK_INTERVAL);
 
     // Determine target quaternion
 
-      await tickDelay(CONTROLS_TICK_INTERVAL);
+      tickDelay(CONTROLS_TICK_INTERVAL);
 
    /**
    * Stops the random walk process.

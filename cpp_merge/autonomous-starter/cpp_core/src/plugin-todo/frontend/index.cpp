@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ void App() {
     const auto { data: worlds, isLoading, error, isSuccess } = useTodos();
     const auto createRoomMutation = useCreateRoom();
 
-    useEffect(() => {
+    useEffect[&](() {
         if (isSuccess) {
             std::cout << "Fetched Worlds Data:" << worlds << std::endl;
         }
@@ -19,10 +20,10 @@ void App() {
         }
         }, [worlds, isSuccess, error]);
 
-        const auto handleAddRoom = [&](worldId: std::string) {;
+        const auto handleAddRoom = [&](worldId: std:) {;
             const auto roomName = prompt("Enter the name for the new room:");
-            if (roomName && roomName.trim()) {
-                createRoomMutation.mutate({ worldId, name: roomName.trim() });
+            if (roomName && roomName) {
+                createRoomMutation.mutate({ worldId, name: roomName });
                 } else if (roomName != nullptr) {
                     alert("Room name cannot be empty.");
                 }
@@ -60,7 +61,7 @@ void App() {
     )}
 
     {worlds &&;
-    worlds.std::map((world) => (;
+    worlds.std::map[&]((world) { return (; };
     <Collapsible;
     key={world.worldId}
     defaultOpen;
@@ -97,7 +98,7 @@ void App() {
     No rooms with tasks in this world yet.;
     </p>;
     )}
-    {world.rooms.std::map((room) => (;
+    {world.rooms.std::map[&]((room) { return (; };
     <Card;
     key={room.roomId}
     className="border shadow-sm ml-2 p-1 bg-card";
@@ -110,10 +111,9 @@ void App() {
     <CardContent className="space-y-1 p-2 pt-1">;
     {room.tasks.filter(;
     [&](task) { return !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),; }
-    ).size() > 0 ? (;
-    room.tasks;
-    .filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
-    .std::map((task) => (;
+    ).size() > 0 ? [&](;
+    room.tasks.filter((task) { return !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end())); };
+    .std::map[&]((task) { return (; };
     <TaskItem key={task.id} task={task} />;
     ));
     ) : (
@@ -127,11 +127,10 @@ void App() {
     <>;
     <Separator className="my-2" />;
     <div className="space-y-1">;
-    {room.tasks;
-    .filter((task) =>;
+    {room.tasks.filter((task) =>;
     task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),
     );
-    .std::map((task) => (;
+    .std::map[&]((task) { return (; };
     <TaskItem key={task.id} task={task} />;
     ))}
     </div>;

@@ -3,7 +3,7 @@
 boolean TypeScriptFileIdentifier::isTypeScriptFile(string file)
 {
     auto extension = path->extname(file);
-    return OR((extension == std::string(".ts")), (extension == std::string(".tsx")));
+    return OR((extension == std:(".ts")), (extension == std:(".tsx")));
 }
 
 array<string> TypeScriptFileIdentifier::getTypeScriptFiles(string directory)

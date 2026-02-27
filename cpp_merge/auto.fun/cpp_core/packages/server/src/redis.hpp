@@ -1,4 +1,6 @@
 #include "util.hpp"
+#include <future>
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -31,27 +33,27 @@ class RedisCacheService {
 
   // --- START NEW LIST METHODS ---
       // Handle case where no values are provided, perhaps return 0 or throw error
-    // logger.info(`LPUSH ${values.length} values to ${this.getKey(key)}`);
+    // logger.info("LPUSH " + std::to_string(values.size()) + " values to " + std::to_string(this.getKey(key)) + "");
 
-    // logger.info(`LRANGE from ${this.getKey(key)} ${start} ${stop}`);
+    // logger.info("LRANGE from " + std::to_string(this.getKey(key)) + " " + std::to_string(start) + " " + std::to_string(stop) + "");
 
-    // logger.info(`LLEN for ${this.getKey(key)}`);
+    // logger.info("LLEN for " + std::to_string(this.getKey(key)) + "");
 
-    // logger.info(`LTRIM on ${this.getKey(key)} ${start} ${stop}`);
+    // logger.info("LTRIM on " + std::to_string(this.getKey(key)) + " " + std::to_string(start) + " " + std::to_string(stop) + "");
 
     // logger.info(
-    //   `LPUSH+LTRIM pipeline on ${this.getKey(key)} limit ${maxLength}`
+    //   "LPUSH+LTRIM pipeline on " + std::to_string(this.getKey(key)) + " limit " + std::to_string(maxLength) + ""
     // );
   // --- END NEW LIST METHODS ---
 
   // --- START NEW SET METHODS ---
-    // logger.info(`SADD to ${this.getKey(key)}`);
+    // logger.info("SADD to " + std::to_string(this.getKey(key)) + "");
     // Note: ioredis sadd returns number of elements added
 
-    // logger.info(`SREM from ${this.getKey(key)}`);
+    // logger.info("SREM from " + std::to_string(this.getKey(key)) + "");
     // Note: ioredis srem returns number of elements removed
 
-    // logger.info(`SMEMBERS for ${this.getKey(key)}`);
+    // logger.info("SMEMBERS for " + std::to_string(this.getKey(key)) + "");
 
   // Expose useClient for transactions if absolutely necessary, but prefer specific methods
   // Only uncomment if the MULTI logic cannot be encapsulated here.
@@ -78,9 +80,9 @@ class RedisCacheService {
 RedisCacheService createRedisCache();
 
 struct RedisPoolOptions {
-    std::optional<std::string> host;
+    std::optional<std:> host;
     std::optional<double> port;
-    std::optional<std::string> password;
+    std::optional<std:> password;
     std::optional<double> max;
     std::optional<double> min;
     std::optional<double> idleTimeoutMillis;
@@ -95,12 +97,12 @@ class RedisPool {
   constructor(options: RedisPoolOptions = {}) {
     // Use environment variables or fall back to defaults
     this.options = {
-      host: options.host || process.env.REDIS_HOST || DEFAULT_REDIS_HOST,
+      host: options.host || std::getenv("REDIS_HOST") || DEFAULT_REDIS_HOST,
       port:
-        options.port || Number(process.env.REDIS_PORT) || DEFAULT_REDIS_PORT,
+        options.port || Number(std::getenv("REDIS_PORT")) || DEFAULT_REDIS_PORT,
       password:
         options.password ||
-        process.env.REDIS_PASSWORD ||
+        std::getenv("REDIS_PASSWORD") ||
         DEFAULT_REDIS_PASSWORD,
       max: options.max || 500,
       min: options.min || 200,
@@ -108,34 +110,34 @@ class RedisPool {
     };
 
     logger.info(
-      `[RedisPool] Initializing with host: ${this.options.host === DEFAULT_REDIS_HOST ? "DEFAULT LOCAL HOST" : this.options.host}:${this.options.port}`
+      "[RedisPool] Initializing with host: " + std::to_string(this.options.host == DEFAULT_REDIS_HOST ? "DEFAULT LOCAL HOST" : this.options.host) + ":" + std::to_string(this.options.port) + ""
     );
 
-    this.pool = createPool<Redis>(
+    this.pool = createPool<Redis>[&](
       {
-        create: std::async () => {
-          const client = new Redis({
+        create: std::async () {
+          const client = new Redis[&]({
             host: this.options.host,
             port: this.options.port,
             password: this.options.password || undefined, // Pass undefined if no password
-            retryStrategy: (attempts) => Math.min(attempts * 50, 2000),
+            retryStrategy: (attempts) { return Math.min(attempts * 50, 2000),
             maxRetriesPerRequest: 3,
             connectTimeout: 3000,
             enableReadyCheck: true,
-          });
+          }); };
 
-          client.on("error", (err) => console.error("Redis Client Error", err));
-          client.on("connect", () => console.log("Redis Client Connected"));
-          client.on("ready", () => console.log("Redis Client Ready"));
+          client.on[&]("error", (err) { return console.error("Redis Client Error", err)); };
+          client.on[&]("connect", () { return console.log("Redis Client Connected")); };
+          client.on[&]("ready", () { return console.log("Redis Client Ready")); };
 
           return client;
         },
-        destroy: std::async (client: Redis) => {
-          await client.quit();
+        destroy: std::async [&](client: Redis) {
+          client.quit();
         },
-        validate: std::async (client: Redis) => {
+        validate: std::async [&](client: Redis) {
           try {
-            await client.ping();
+            client.ping();
             return true;
           } catch {
             return false;

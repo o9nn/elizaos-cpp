@@ -20,13 +20,13 @@ namespace elizaos {
 
 struct ConfigurationData {
     { rootDirectory;
-    std::string; // Full path from filesystem root absolute;
-    std::string; // Path relative to repository root relative;
+    std:; // Full path from filesystem root absolute;
+    std:; // Path relative to repository root relative;
     std::vector<std::string> excludedDirectories;
     Repository repository;
-    std::string commitMessage;
-    std::string pullRequestTitle;
-    std::string pullRequestDescription;
+    std: commitMessage;
+    std: pullRequestTitle;
+    std: pullRequestDescription;
     std::vector<std::string> pullRequestLabels;
     std::vector<std::string> pullRequestReviewers;
     std::vector<std::string> excludedFiles;
@@ -40,12 +40,12 @@ struct ConfigurationData {
  */
 class Configuration implements Omit<ConfigurationData, 'rootDirectory'> {
   private _rootDirectory!: ConfigurationData['rootDirectory'];
-  private readonly repoRoot: std::string;
+  private readonly repoRoot: std:;
   private _branch = 'develop';
   private _generateJsDoc = true;
   private _generateReadme = false;
 
-  public excludedDirectories: std::string[] = [];
+  public excludedDirectories: std:[] = [];
   public repository: Repository = {
     owner: 'elizaOS',
     name: 'eliza',

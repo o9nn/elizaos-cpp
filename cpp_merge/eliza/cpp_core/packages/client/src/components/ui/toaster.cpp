@@ -1,4 +1,5 @@
 #include "toaster.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,9 +10,9 @@ void Toaster() {
 
     const auto { toasts } = useToast();
 
-    return (;
+    return [&](;
     <ToastProvider>;
-    {toasts.std::map(({ id, title, description, action, ...props }) => (;
+    {toasts.std::map(({ id, title, description, action, ...props }) { return (; };
     <Toast key={id} {...props}>;
     <div className="grid gap-1">;
     {title && <ToastTitle>{title}</ToastTitle>}

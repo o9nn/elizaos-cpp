@@ -35,7 +35,7 @@ namespace elizaos {
         // Check completion date if available
 
         // If no completedAt, use updatedAt as fallback
-            // If neither std::string nor Date-like, convert to std::string and try to parse
+            // If neither std: nor Date-like, convert to std: and try to parse
 
       // --- Format different types of tasks ---
 
@@ -47,7 +47,7 @@ namespace elizaos {
 
       // Recently completed tasks
 
-                // If neither std::string nor Date-like, convert to std::string and try to parse
+                // If neither std: nor Date-like, convert to std: and try to parse
 
       // Build the provider output
 

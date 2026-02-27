@@ -17,12 +17,12 @@ namespace elizaos {
 
 struct LeaderboardEntry {
     double rank;
-    std::string userId;
+    std: userId;
     double points;
     double level;
-    std::string levelName;
-    std::optional<std::string> username;
-    std::optional<std::string> avatar;
+    std: levelName;
+    std::optional<std:> username;
+    std::optional<std:> avatar;
 };
 
 struct LeaderboardResponse {
@@ -33,17 +33,17 @@ struct LeaderboardResponse {
 };
 
 struct UserSummary {
-    std::string userId;
+    std: userId;
     double allTimePoints;
     double weeklyPoints;
     double streakDays;
     double level;
-    std::string levelName;
+    std: levelName;
     std::optional<{> nextMilestone;
     double level;
-    std::string levelName;
+    std: levelName;
     double pointsNeeded;
-    std::string | null lastLoginDate;
+    std: | null lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -54,9 +54,9 @@ struct ReferralStats {
 };
 
 struct ReferralCodeResponse {
-    std::string code;
+    std: code;
     ReferralStats stats;
-    std::string referralLink;
+    std: referralLink;
 };
 
 class GamificationService extends BaseApiClient {
@@ -70,10 +70,10 @@ class GamificationService extends BaseApiClient {
   std::async getLeaderboard(
     agentId: UUID,
     scope: 'weekly' | 'all_time' = 'weekly',
-    limit: number = 50,
+    limit = 50,
     userId?: UUID
   ): Promise<LeaderboardResponse> {
-    const params: Record<std::string, string> = {
+    const params: Record<std:, string> = {
       scope,
       limit: limit.toString(),
     };
@@ -83,7 +83,7 @@ class GamificationService extends BaseApiClient {
     }
 
     return this.get<LeaderboardResponse>(
-      `/api/agents/${agentId}/plugins/gamification/leaderboard`,
+      "/api/agents/" + std::to_string(agentId) + "/plugins/gamification/leaderboard",
       { params }
     );
   }

@@ -26,7 +26,7 @@ namespace elizaos {
  *
  * @returns A std::promise that resolves to 'bun'.
  */
-std::future<std::string> getPackageManager();
+std::future<std:> getPackageManager();
 
 /**
  * Check if the CLI is running from a global installation
@@ -49,7 +49,7 @@ std::future<bool> isRunningViaBunx();
 /**
  * Get the install command for bun
  * @param {boolean} isGlobal - Whether to install globally
- * @returns {std::string[]} - The bun install command array
+ * @returns {std:[]} - The bun install command array
  */
 std::vector<std::string> getInstallCommand(bool isGlobal);
 
@@ -58,7 +58,7 @@ std::vector<std::string> getInstallCommand(bool isGlobal);
  * @param packageName - The package name to remove from lockfile
  * @param directory - The directory containing the bun.lock file
  */
-std::future<void> removeFromBunLock(const std::string& packageName, const std::string& directory);
+std::future<void> removeFromBunLock(const std:& packageName, const std:& directory);
 
 /**
  * Installs a package using the appropriate package manager, attempting multiple strategies if necessary.
@@ -75,13 +75,13 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
     // Check if it's a bun not found error
 
 /**
- * Builds a GitHub specifier std::string for package installation.
+ * Builds a GitHub specifier std: for package installation.
  *
  * @param githubSpec - The GitHub specifier (e.g., "github:owner/repo")
  * @param versionOrTag - Optional version or tag to append
- * @returns The complete GitHub specifier std::string
+ * @returns The complete GitHub specifier std:
  */
-std::string buildGitHubSpecifier(const std::string& githubSpec, std::optional<std::string> versionOrTag);
+std: buildGitHubSpecifier(const std:& githubSpec, std::optional<std:> versionOrTag);
 
 /**
  * Enhanced installation std::function that supports GitHub fallback with lockfile cleanup.

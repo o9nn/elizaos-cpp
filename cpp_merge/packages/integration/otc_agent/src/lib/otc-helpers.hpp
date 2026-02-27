@@ -52,23 +52,23 @@ std::shared_ptr<ParsedOffer> parseOfferStruct(P0 offerRaw)
 {
     if (Array->isArray(offerRaw)) {
         return object{
-            object::pair{std::string("consignmentId"), const_(offerRaw)[0]}, 
-            object::pair{std::string("tokenId"), const_(offerRaw)[1]}, 
-            object::pair{std::string("beneficiary"), const_(offerRaw)[2]}, 
-            object::pair{std::string("tokenAmount"), const_(offerRaw)[3]}, 
-            object::pair{std::string("discountBps"), const_(offerRaw)[4]}, 
-            object::pair{std::string("createdAt"), const_(offerRaw)[5]}, 
-            object::pair{std::string("unlockTime"), const_(offerRaw)[6]}, 
-            object::pair{std::string("priceUsdPerToken"), const_(offerRaw)[7]}, 
-            object::pair{std::string("maxPriceDeviation"), const_(offerRaw)[8]}, 
-            object::pair{std::string("ethUsdPrice"), const_(offerRaw)[9]}, 
-            object::pair{std::string("currency"), const_(offerRaw)[10]}, 
-            object::pair{std::string("approved"), const_(offerRaw)[11]}, 
-            object::pair{std::string("paid"), const_(offerRaw)[12]}, 
-            object::pair{std::string("fulfilled"), const_(offerRaw)[13]}, 
-            object::pair{std::string("cancelled"), const_(offerRaw)[14]}, 
-            object::pair{std::string("payer"), const_(offerRaw)[15]}, 
-            object::pair{std::string("amountPaid"), const_(offerRaw)[16]}
+            object::pair{std:("consignmentId"), const_(offerRaw)[0]}, 
+            object::pair{std:("tokenId"), const_(offerRaw)[1]}, 
+            object::pair{std:("beneficiary"), const_(offerRaw)[2]}, 
+            object::pair{std:("tokenAmount"), const_(offerRaw)[3]}, 
+            object::pair{std:("discountBps"), const_(offerRaw)[4]}, 
+            object::pair{std:("createdAt"), const_(offerRaw)[5]}, 
+            object::pair{std:("unlockTime"), const_(offerRaw)[6]}, 
+            object::pair{std:("priceUsdPerToken"), const_(offerRaw)[7]}, 
+            object::pair{std:("maxPriceDeviation"), const_(offerRaw)[8]}, 
+            object::pair{std:("ethUsdPrice"), const_(offerRaw)[9]}, 
+            object::pair{std:("currency"), const_(offerRaw)[10]}, 
+            object::pair{std:("approved"), const_(offerRaw)[11]}, 
+            object::pair{std:("paid"), const_(offerRaw)[12]}, 
+            object::pair{std:("fulfilled"), const_(offerRaw)[13]}, 
+            object::pair{std:("cancelled"), const_(offerRaw)[14]}, 
+            object::pair{std:("payer"), const_(offerRaw)[15]}, 
+            object::pair{std:("amountPaid"), const_(offerRaw)[16]}
         };
     }
     return as<std::shared_ptr<ParsedOffer>>(offerRaw);

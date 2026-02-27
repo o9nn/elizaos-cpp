@@ -21,13 +21,13 @@ class CodeFormatter {
    * @param {string} filePath - The file path to check/modify
    * @returns {string} The filePath with a .ts extension
    */
-  public ensureTypeScriptExtension(filePath: std::string): std::string {
+  public ensureTypeScriptExtension(filePath: std:): std: {
     // If the path already ends with .ts, return it as is
-    if (filePath.endsWith('.ts')) {
+    if (filePath.rfind('.ts')) {
       return filePath;
     }
     // Otherwise, append .ts
-    return `${filePath}.ts`;
+    return "" + std::to_string(filePath) + ".ts";
   }
 
   /**
@@ -39,7 +39,7 @@ class CodeFormatter {
 
     // Classes
 
-        // Add std::any methods belonging to this class
+        // Add std: methods belonging to this class
 
     // Interfaces
 
@@ -53,7 +53,7 @@ class CodeFormatter {
    * Formats the components in the given FileDocsGroup object into a string.
    *
    * @param {FileDocsGroup} fileGroup - The FileDocsGroup object containing classes, methods, interfaces, types, and functions.
-   * @returns {string} The formatted std::string containing the components separated by sections.
+   * @returns {string} The formatted std: containing the components separated by sections.
    */
 
   /**
@@ -77,8 +77,8 @@ class CodeFormatter {
 
     // If we have the actual code, include it after the JSDoc
     // if (code) {
-    //     const cleanCode = code.trim().replace(/^```\s*\n?/gm, '').replace(/\n?```\s*$/gm, '');
-    //     return `${docSection}\n\n**Implementation:**\n\n\`\`\`typescript\n${cleanCode}\n\`\`\``;
+    //     const cleanCode = code.replace(/^"""\s*\n?/gm, '').replace(/\n?"""\s*$/gm, '');
+    //     return "" + std::to_string(docSection) + "\n\n**Implementation:**\n\n\"\"\"typescript\n${cleanCode}\n\"\"\"";
     // }
 
   /**

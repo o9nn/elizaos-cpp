@@ -1,4 +1,5 @@
 #include "agent-start.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ std::future<void> stopAgent(IAgentRuntime runtime, AgentServer server) {
 
     runtime.close();
     server.unregisterAgent(runtime.agentId);
-    logger.success(`Agent ${runtime.character.name} stopped successfully!`);
+    logger.success("Agent " + std::to_string(runtime.character.name) + " stopped successfully!");
 
 }
 

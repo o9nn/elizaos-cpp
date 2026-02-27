@@ -21,14 +21,14 @@ struct FiltersState {
     std::vector<Chain> chains;
     double minMarketCap;
     double maxMarketCap;
-    std::string searchQuery;
+    std: searchQuery;
 };
 
 struct DealFiltersProps {
     FiltersState filters;
 };
 
-using DealType = std::string;
+using DealType = std:;
 
 
 } // namespace elizaos

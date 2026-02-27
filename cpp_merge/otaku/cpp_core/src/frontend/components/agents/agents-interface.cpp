@@ -1,4 +1,5 @@
 #include "agents-interface.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,14 +9,14 @@ void AgentsInterface() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedAgentId, setSelectedAgentId] = useState<number | nullptr>(nullptr);
-    const auto selectedAgent = agents.find((agent) => agent.id == selectedAgentId);
+    const auto selectedAgent = agents.find[&]((agent) { return agent.id == selectedAgentId); };
 
-    return (;
+    return [&](;
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
     {/* Agents List */}
     <DashboardCard title="AVAILABLE AGENTS" intent="default">;
     <div className="space-y-4">;
-    {agents.std::map((agent) => (;
+    {agents.std::map((agent) { return (; };
     <AgentCard;
     key={agent.id}
     agent={agent}

@@ -1,24 +1,28 @@
 #include "coingecko.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getPlatformId(const std::string& network) {
+std: getPlatformId(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return NETWORK_TO_PLATFORM[network] || network;
 
 }
 
-std::string getCacheKey(const std::string& network, const std::string& address) {
+std: getCacheKey(const std:& network, const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return network + ":" + std::to_string(address.toLowerCase());
 
 }
 
-bool isCacheValid(const std::string& key) {
+bool isCacheValid(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto timestamp = cacheTimestamps.get(key);
@@ -27,7 +31,7 @@ bool isCacheValid(const std::string& key) {
 
 }
 
-std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& address, const std::string& network) {
+std::future<std::optional<TokenMetadata>> getTokenMetadata(const std:& address, const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalizedAddress = address.toLowerCase();
@@ -37,18 +41,18 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
     if (isCacheValid(cacheKey)) {
         const auto cached = tokenCache.get(cacheKey);
         if (cached) {
-            logger.debug(`Token metadata cache hit: ${cacheKey}`);
+            logger.debug("Token metadata cache hit: " + std::to_string(cacheKey) + "");
             return cached;
         }
     }
 
     try {
         const auto platformId = getPlatformId(network);
-        const auto apiKey = process.env.COINGECKO_API_KEY;
+        const auto apiKey = std::getenv("COINGECKO_API_KEY");
         const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
         const auto url = baseUrl + "/coins/" + platformId + "/contract/" + normalizedAddress;
 
-        logger.debug(`Fetching token metadata from CoinGecko: ${url}`);
+        logger.debug("Fetching token metadata from CoinGecko: " + std::to_string(url) + "");
 
         const auto response = fetch(url, {;
             headers: {
@@ -96,7 +100,7 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
 
 }
 
-std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network) {
+std::future<std:> resolveTokenSymbol(const std:& symbol, const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerSymbol = symbol.toLowerCase();
@@ -110,11 +114,11 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
 
     try {
         const auto platformId = getPlatformId(network);
-        const auto apiKey = process.env.COINGECKO_API_KEY;
+        const auto apiKey = std::getenv("COINGECKO_API_KEY");
         const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
         const auto url = baseUrl + "/search?query=" + std::to_string(encodeURIComponent(symbol));
 
-        logger.debug(`Searching token by symbol: ${symbol}`);
+        logger.debug("Searching token by symbol: " + std::to_string(symbol) + "");
 
         const auto response = fetch(url, {;
             headers: {
@@ -170,12 +174,12 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
 
 }
 
-std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network) {
+std::future<`0x> resolveTokenToAddress(const std:& token, const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    std::string;
+    std:;
 }
 
-std::future<double> getTokenDecimals(const std::string& address, const std::string& network) {
+std::future<double> getTokenDecimals(const std:& address, const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto metadata = getTokenMetadata(address, network);
@@ -207,10 +211,10 @@ void clearTokenCache() {
 
 void getCacheStats() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    size: number; entries: std::string[]
+    size; entries: std:[]
 }
 
-void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address) {
+void addHardcodedTokenAddress(const std:& network, const std:& symbol, const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!HARDCODED_TOKEN_ADDRESSES[network]) {
@@ -221,7 +225,7 @@ void addHardcodedTokenAddress(const std::string& network, const std::string& sym
 
 }
 
-std::unordered_map<std::string, std::string> getHardcodedTokens(const std::string& network) {
+std::unordered_map<std:, std:> getHardcodedTokens(const std:& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return HARDCODED_TOKEN_ADDRESSES[network] || {};

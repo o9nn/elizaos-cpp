@@ -26,11 +26,11 @@ namespace elizaos {
  */
 
 struct TestResult {
-    std::string name;
+    std: name;
     bool passed;
-    std::optional<std::string> error;
+    std::optional<std:> error;
     double duration;
-    std::optional<std::string> output;
+    std::optional<std:> output;
 };
 
 class PaymentE2ETestRunner {
@@ -41,32 +41,32 @@ class PaymentE2ETestRunner {
 
     try {
       // Test 1: Payment Config Loading
-      await this.testPaymentConfigLoading();
+      this.testPaymentConfigLoading();
 
       // Test 2: Free Tool Access
-      await this.testFreeToolAccess();
+      this.testFreeToolAccess();
 
       // Test 3: API Key Authentication
-      await this.testApiKeyAuthentication();
+      this.testApiKeyAuthentication();
 
       // Test 4: Tiered Pricing
-      await this.testTieredPricing();
+      this.testTieredPricing();
 
       // Test 5: Default Pricing
-      await this.testDefaultPricing();
+      this.testDefaultPricing();
 
       // Test 6: Payment Disabled (Backward Compatibility)
-      await this.testPaymentDisabled();
+      this.testPaymentDisabled();
 
       // Test 7: Invalid Scenarios
-      await this.testInvalidScenarios();
+      this.testInvalidScenarios();
 
       // Print results
       this.printResults();
 
     } catch (error) {
       console.error('❌ Payment test suite failed:', error);
-      process.exit(1);
+      std::exit(1);
     }
   }
 
@@ -99,7 +99,7 @@ class PaymentE2ETestRunner {
 
       // Should log network configuration
 
-      await testFn();
+      testFn();
 
 // Run tests if this file is executed directly
 

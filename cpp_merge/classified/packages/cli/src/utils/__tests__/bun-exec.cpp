@@ -1,19 +1,19 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/__tests__/bun-exec.test.h"
 
 object mockLogger = object{
-    object::pair{std::string("debug"), mock([=]() mutable
+    object::pair{std:("debug"), mock([=]() mutable
     {
     }
     )}, 
-    object::pair{std::string("info"), mock([=]() mutable
+    object::pair{std:("info"), mock([=]() mutable
     {
     }
     )}, 
-    object::pair{std::string("warn"), mock([=]() mutable
+    object::pair{std:("warn"), mock([=]() mutable
     {
     }
     )}, 
-    object::pair{std::string("error"), mock([=]() mutable
+    object::pair{std:("error"), mock([=]() mutable
     {
     }
     )}
@@ -21,14 +21,14 @@ object mockLogger = object{
 
 void Main(void)
 {
-    mock->module(std::string("@elizaos/core"), [=]() mutable
+    mock->module(std:("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("logger"), mockLogger}
+            object::pair{std:("logger"), mockLogger}
         });
     }
     );
-    describe(std::string("bun-exec"), [=]() mutable
+    describe(std:("bun-exec"), [=]() mutable
     {
         shared<any> mockProc;
         shared<> originalSpawn;
@@ -40,17 +40,17 @@ void Main(void)
             mockLogger["warn"]->mockClear();
             mockLogger["error"]->mockClear();
             mockProc = object{
-                object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                 })}, 
-                object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                 })}, 
-                object::pair{std::string("exited"), Promise->resolve(0)}, 
-                object::pair{std::string("exitCode"), nullptr}, 
-                object::pair{std::string("kill"), mock([=]() mutable
+                object::pair{std:("exited"), Promise->resolve(0)}, 
+                object::pair{std:("exitCode"), nullptr}, 
+                object::pair{std:("kill"), mock([=]() mutable
                 {
                 }
                 )}, 
-                object::pair{std::string("killed"), false}
+                object::pair{std:("killed"), false}
             };
             Bun->spawn = mock([=]() mutable
             {
@@ -64,41 +64,41 @@ void Main(void)
             Bun->spawn = originalSpawn;
         }
         );
-        describe(std::string("bunExec"), [=]() mutable
+        describe(std:("bunExec"), [=]() mutable
         {
-            it(std::string("should execute a command successfully"), [=]() mutable
+            it(std:("should execute a command successfully"), [=]() mutable
             {
                 mockProc["exited"]["then"]([=]() mutable
                 {
                     mockProc["exitCode"] = 0;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("hello") }); });
+                auto result = std::async([=]() { bunExec(std:("echo"), array<string>{ std:("hello") }); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), std::string("test output")}, 
-                    object::pair{std::string("stderr"), string_empty}, 
-                    object::pair{std::string("exitCode"), 0}, 
-                    object::pair{std::string("success"), true}
+                    object::pair{std:("stdout"), std:("test output")}, 
+                    object::pair{std:("stderr"), string_empty}, 
+                    object::pair{std:("exitCode"), 0}, 
+                    object::pair{std:("success"), true}
                 });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello") }, object{
-                    object::pair{std::string("cwd"), undefined}, 
-                    object::pair{std::string("env"), process->env}, 
-                    object::pair{std::string("stdout"), std::string("pipe")}, 
-                    object::pair{std::string("stderr"), std::string("pipe")}
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello") }, object{
+                    object::pair{std:("cwd"), undefined}, 
+                    object::pair{std:("env"), process->env}, 
+                    object::pair{std:("stdout"), std:("pipe")}, 
+                    object::pair{std:("stderr"), std:("pipe")}
                 });
             }
             );
-            it(std::string("should handle command failure with non-zero exit code"), [=]() mutable
+            it(std:("should handle command failure with non-zero exit code"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exited"), Promise->resolve(1)->then([=](auto code) mutable
+                    object::pair{std:("exited"), Promise->resolve(1)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 1;
                         return code;
                     }
                     )}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}
                 }, mockProc);
                 Bun->spawn = mock([=]() mutable
@@ -106,27 +106,27 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("false")); });
+                auto result = std::async([=]() { bunExec(std:("false")); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), std::string("test output")}, 
-                    object::pair{std::string("stderr"), std::string("error message")}, 
-                    object::pair{std::string("exitCode"), 1}, 
-                    object::pair{std::string("success"), false}
+                    object::pair{std:("stdout"), std:("test output")}, 
+                    object::pair{std:("stderr"), std:("error message")}, 
+                    object::pair{std:("exitCode"), 1}, 
+                    object::pair{std:("success"), false}
                 });
             }
             );
-            it(std::string("should read stdout and stderr concurrently"), [=]() mutable
+            it(std:("should read stdout and stderr concurrently"), [=]() mutable
             {
                 shared stdoutReadStarted = false;
                 shared stderrReadStarted = false;
                 shared processExited = false;
                 mockProc = object{
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("exited"), std::make_shared<Promise>([=](auto resolve) mutable
+                    object::pair{std:("exited"), std::make_shared<Promise>([=](auto resolve) mutable
                     {
                         setTimeout([=]() mutable
                         {
@@ -137,65 +137,65 @@ void Main(void)
                         , 100);
                     }
                     )}, 
-                    object::pair{std::string("kill"), mock([=]() mutable
+                    object::pair{std:("kill"), mock([=]() mutable
                     {
                     }
                     )}, 
-                    object::pair{std::string("killed"), false}
+                    object::pair{std:("killed"), false}
                 };
                 Bun->spawn = mock([=]() mutable
                 {
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("test-concurrent")); });
+                auto result = std::async([=]() { bunExec(std:("test-concurrent")); });
                 expect(stdoutReadStarted)->toBe(true);
                 expect(stderrReadStarted)->toBe(true);
                 expect(processExited)->toBe(true);
-                expect(result->stdout)->toBe(std::string("stdout data"));
-                expect(result->stderr)->toBe(std::string("stderr data"));
+                expect(result->stdout)->toBe(std:("stdout data"));
+                expect(result->stderr)->toBe(std:("stderr data"));
                 expect(result->exitCode)->toBe(0);
             }
             );
-            it(std::string("should handle custom options"), [=]() mutable
+            it(std:("should handle custom options"), [=]() mutable
             {
                 auto options = object{
-                    object::pair{std::string("cwd"), std::string("/custom/path")}, 
-                    object::pair{std::string("env"), object{
-                        object::pair{std::string("CUSTOM_VAR"), std::string("value")}
+                    object::pair{std:("cwd"), std:("/custom/path")}, 
+                    object::pair{std:("env"), object{
+                        object::pair{std:("CUSTOM_VAR"), std:("value")}
                     }}, 
-                    object::pair{std::string("stdout"), std::string("inherit")}, 
-                    object::pair{std::string("stderr"), std::string("pipe")}
+                    object::pair{std:("stdout"), std:("inherit")}, 
+                    object::pair{std:("stderr"), std:("pipe")}
                 };
-                std::async([=]() { bunExec(std::string("ls"), array<string>{ std::string("-la") }, options); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("ls"), std::string("-la") }, object{
-                    object::pair{std::string("cwd"), std::string("/custom/path")}, 
-                    object::pair{std::string("env"), utils::assign(object{
+                std::async([=]() { bunExec(std:("ls"), array<string>{ std:("-la") }, options); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("ls"), std:("-la") }, object{
+                    object::pair{std:("cwd"), std:("/custom/path")}, 
+                    object::pair{std:("env"), utils::assign(object{
                         , 
-                        object::pair{std::string("CUSTOM_VAR"), std::string("value")}
+                        object::pair{std:("CUSTOM_VAR"), std:("value")}
                     }, process->env)}, 
-                    object::pair{std::string("stdout"), std::string("inherit")}, 
-                    object::pair{std::string("stderr"), std::string("pipe")}
+                    object::pair{std:("stdout"), std:("inherit")}, 
+                    object::pair{std:("stderr"), std:("pipe")}
                 });
             }
             );
-            it(std::string("should handle timeout for entire operation and cleanup process"), [=]() mutable
+            it(std:("should handle timeout for entire operation and cleanup process"), [=]() mutable
             {
                 mockProc = object{
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("exited"), std::make_shared<Promise>([=]() mutable
+                    object::pair{std:("exited"), std::make_shared<Promise>([=]() mutable
                     {
                     }
                     )}, 
-                    object::pair{std::string("kill"), mock([=]() mutable
+                    object::pair{std:("kill"), mock([=]() mutable
                     {
                     }
                     )}, 
-                    object::pair{std::string("killed"), false}
+                    object::pair{std:("killed"), false}
                 };
                 Bun->spawn = mock([=]() mutable
                 {
@@ -204,8 +204,8 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExec(std::string("sleep"), array<string>{ std::string("10") }, object{
-                        object::pair{std::string("timeout"), 100}
+                    std::async([=]() { bunExec(std:("sleep"), array<string>{ std:("10") }, object{
+                        object::pair{std:("timeout"), 100}
                     }); });
                     expect(false)->toBe(true);
                 }
@@ -216,12 +216,12 @@ void Main(void)
                 }
             }
             );
-            it(std::string("should handle abort signal"), [=]() mutable
+            it(std:("should handle abort signal"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("exited"), std::make_shared<Promise>([=](auto resolve) mutable
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("exited"), std::make_shared<Promise>([=](auto resolve) mutable
                     {
                         setTimeout([=]() mutable
                         {
@@ -238,8 +238,8 @@ void Main(void)
                 }
                 );
                 shared controller = std::make_shared<AbortController>();
-                auto execPromise = bunExec(std::string("sleep"), array<string>{ std::string("10") }, object{
-                    object::pair{std::string("signal"), controller->signal}
+                auto execPromise = bunExec(std:("sleep"), array<string>{ std:("10") }, object{
+                    object::pair{std:("signal"), controller->signal}
                 });
                 setTimeout([=]() mutable
                 {
@@ -250,12 +250,12 @@ void Main(void)
                 expect(mockProc["kill"])->toHaveBeenCalled();
             }
             );
-            it(std::string("should not attempt cleanup for already completed processes"), [=]() mutable
+            it(std:("should not attempt cleanup for already completed processes"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("exited"), Promise->resolve(0)->then([=](auto code) mutable
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("exited"), Promise->resolve(0)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 0;
                         return code;
@@ -267,24 +267,24 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("test") }); });
+                std::async([=]() { bunExec(std:("echo"), array<string>{ std:("test") }); });
                 expect(mockProc["kill"])->not->toHaveBeenCalled();
             }
             );
-            it(std::string("should attempt cleanup for processes that are still running after timeout"), [=]() mutable
+            it(std:("should attempt cleanup for processes that are still running after timeout"), [=]() mutable
             {
                 shared killCallCount = 0;
                 mockProc = object{
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("exited"), std::make_shared<Promise>([=]() mutable
+                    object::pair{std:("exited"), std::make_shared<Promise>([=]() mutable
                     {
                     }
                     )}, 
-                    object::pair{std::string("kill"), mock([=]() mutable
+                    object::pair{std:("kill"), mock([=]() mutable
                     {
                         killCallCount++;
                         if (killCallCount == 1) {
@@ -293,7 +293,7 @@ void Main(void)
                         }
                     }
                     )}, 
-                    object::pair{std::string("killed"), false}
+                    object::pair{std:("killed"), false}
                 };
                 Bun->spawn = mock([=]() mutable
                 {
@@ -302,8 +302,8 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExec(std::string("stubborn-process"), array<any>(), object{
-                        object::pair{std::string("timeout"), 50}
+                    std::async([=]() { bunExec(std:("stubborn-process"), array<any>(), object{
+                        object::pair{std:("timeout"), 50}
                     }); });
                 }
                 catch (const any& error)
@@ -313,13 +313,13 @@ void Main(void)
                 expect(mockProc["kill"])->toHaveBeenCalledTimes(2);
             }
             );
-            it(std::string("should handle null stdout/stderr streams"), [=]() mutable
+            it(std:("should handle null stdout/stderr streams"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("stdout"), nullptr}, 
-                    object::pair{std::string("stderr"), nullptr}, 
-                    object::pair{std::string("exited"), Promise->resolve(0)->then([=](auto code) mutable
+                    object::pair{std:("stdout"), nullptr}, 
+                    object::pair{std:("stderr"), nullptr}, 
+                    object::pair{std:("exited"), Promise->resolve(0)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 0;
                         return code;
@@ -331,22 +331,22 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("test") }); });
+                auto result = std::async([=]() { bunExec(std:("echo"), array<string>{ std:("test") }); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), string_empty}, 
-                    object::pair{std::string("stderr"), string_empty}, 
-                    object::pair{std::string("exitCode"), 0}, 
-                    object::pair{std::string("success"), true}
+                    object::pair{std:("stdout"), string_empty}, 
+                    object::pair{std:("stderr"), string_empty}, 
+                    object::pair{std:("exitCode"), 0}, 
+                    object::pair{std:("success"), true}
                 });
             }
             );
-            it(std::string("should handle numeric stdout/stderr (file descriptors)"), [=]() mutable
+            it(std:("should handle numeric stdout/stderr (file descriptors)"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("stdout"), 1}, 
-                    object::pair{std::string("stderr"), 2}, 
-                    object::pair{std::string("exited"), Promise->resolve(0)->then([=](auto code) mutable
+                    object::pair{std:("stdout"), 1}, 
+                    object::pair{std:("stderr"), 2}, 
+                    object::pair{std:("exited"), Promise->resolve(0)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 0;
                         return code;
@@ -358,25 +358,25 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("test") }); });
+                auto result = std::async([=]() { bunExec(std:("echo"), array<string>{ std:("test") }); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), string_empty}, 
-                    object::pair{std::string("stderr"), string_empty}, 
-                    object::pair{std::string("exitCode"), 0}, 
-                    object::pair{std::string("success"), true}
+                    object::pair{std:("stdout"), string_empty}, 
+                    object::pair{std:("stderr"), string_empty}, 
+                    object::pair{std:("exitCode"), 0}, 
+                    object::pair{std:("success"), true}
                 });
             }
             );
-            it(std::string("should handle stream reading errors gracefully"), [=]() mutable
+            it(std:("should handle stream reading errors gracefully"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("exited"), Promise->resolve(0)->then([=](auto code) mutable
+                    object::pair{std:("exited"), Promise->resolve(0)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 0;
                         return code;
@@ -388,19 +388,19 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("test") }); });
+                auto result = std::async([=]() { bunExec(std:("echo"), array<string>{ std:("test") }); });
                 expect(result->exitCode)->toBe(0);
                 expect(result->success)->toBe(true);
                 expect(result->stdout)->toBe(string_empty);
-                expect(result->stderr)->toBe(std::string("stderr output"));
+                expect(result->stderr)->toBe(std:("stderr output"));
             }
             );
-            it(std::string("should clean up process on error"), [=]() mutable
+            it(std:("should clean up process on error"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("exited"), Promise->reject(std::make_shared<Error>(std::string("Process error")))}
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("exited"), Promise->reject(std::make_shared<Error>(std:("Process error")))}
                 }, mockProc);
                 Bun->spawn = mock([=]() mutable
                 {
@@ -409,7 +409,7 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExec(std::string("bad-command")); });
+                    std::async([=]() { bunExec(std:("bad-command")); });
                     expect(false)->toBe(true);
                 }
                 catch (const any& error)
@@ -419,17 +419,17 @@ void Main(void)
                 }
             }
             );
-            it(std::string("should handle cleanup errors gracefully"), [=]() mutable
+            it(std:("should handle cleanup errors gracefully"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("kill"), mock([=]() mutable
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("kill"), mock([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Kill failed")));
+                        throw any(std::make_shared<Error>(std:("Kill failed")));
                     }
                     )}, 
-                    object::pair{std::string("exited"), Promise->reject(std::make_shared<Error>(std::string("Process error")))}
+                    object::pair{std:("exited"), Promise->reject(std::make_shared<Error>(std:("Process error")))}
                 }, mockProc);
                 Bun->spawn = mock([=]() mutable
                 {
@@ -438,32 +438,32 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExec(std::string("bad-command")); });
+                    std::async([=]() { bunExec(std:("bad-command")); });
                     expect(false)->toBe(true);
                 }
                 catch (const any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
-                    expect((as<std::shared_ptr<ProcessExecutionError>>(error))->message)->toContain(std::string("Process error"));
+                    expect((as<std::shared_ptr<ProcessExecutionError>>(error))->message)->toContain(std:("Process error"));
                 }
             }
             );
-            it(std::string("should handle race condition where process exits during cleanup"), [=]() mutable
+            it(std:("should handle race condition where process exits during cleanup"), [=]() mutable
             {
                 mockProc = object{
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("stdout"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("stdout"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}, 
-                    object::pair{std::string("exited"), Promise->reject(std::make_shared<Error>(std::string("Process failed")))}, 
-                    object::pair{std::string("kill"), mock([=]() mutable
+                    object::pair{std:("exited"), Promise->reject(std::make_shared<Error>(std:("Process failed")))}, 
+                    object::pair{std:("kill"), mock([=]() mutable
                     {
                         mockProc["exitCode"] = 1;
-                        throw any(std::make_shared<Error>(std::string("Process not found")));
+                        throw any(std::make_shared<Error>(std:("Process not found")));
                     }
                     )}, 
-                    object::pair{std::string("killed"), false}
+                    object::pair{std:("killed"), false}
                 };
                 Bun->spawn = mock([=]() mutable
                 {
@@ -472,46 +472,46 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExec(std::string("race-condition-test")); });
+                    std::async([=]() { bunExec(std:("race-condition-test")); });
                     expect(false)->toBe(true);
                 }
                 catch (const any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
                     expect(mockProc["kill"])->toHaveBeenCalledTimes(1);
-                    expect(mockLogger["debug"])->toHaveBeenCalledWith(std::string("[bunExec] Process cleanup error (process may have already exited):"), expect->any(Error));
+                    expect(mockLogger["debug"])->toHaveBeenCalledWith(std:("[bunExec] Process cleanup error (process may have already exited):"), expect->any(Error));
                 }
             }
             );
         }
         );
-        describe(std::string("bunExecSimple"), [=]() mutable
+        describe(std:("bunExecSimple"), [=]() mutable
         {
-            it(std::string("should return stdout on success"), [=]() mutable
+            it(std:("should return stdout on success"), [=]() mutable
             {
                 mockProc["exited"]["then"]([=]() mutable
                 {
                     mockProc["exitCode"] = 0;
                 }
                 );
-                auto result = std::async([=]() { bunExecSimple(std::string("echo"), array<string>{ std::string("hello") }); });
+                auto result = std::async([=]() { bunExecSimple(std:("echo"), array<string>{ std:("hello") }); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), std::string("test output")}
+                    object::pair{std:("stdout"), std:("test output")}
                 });
             }
             );
-            it(std::string("should throw ProcessExecutionError on failure"), [=]() mutable
+            it(std:("should throw ProcessExecutionError on failure"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("exited"), Promise->resolve(1)->then([=](auto code) mutable
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("exited"), Promise->resolve(1)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 1;
                         return code;
                     }
                     )}, 
-                    object::pair{std::string("stderr"), std::make_shared<ReadableStream>(object{
+                    object::pair{std:("stderr"), std::make_shared<ReadableStream>(object{
                     })}
                 }, mockProc);
                 Bun->spawn = mock([=]() mutable
@@ -521,7 +521,7 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { bunExecSimple(std::string("false")); });
+                    std::async([=]() { bunExecSimple(std:("false")); });
                     expect(false)->toBe(true);
                 }
                 catch (const any& error)
@@ -530,12 +530,12 @@ void Main(void)
                 }
             }
             );
-            it(std::string("should not throw error when stdio is ignore"), [=]() mutable
+            it(std:("should not throw error when stdio is ignore"), [=]() mutable
             {
                 mockProc = utils::assign(object{
                     , 
-                    object::pair{std::string("exitCode"), nullptr}, 
-                    object::pair{std::string("exited"), Promise->resolve(1)->then([=](auto code) mutable
+                    object::pair{std:("exitCode"), nullptr}, 
+                    object::pair{std:("exited"), Promise->resolve(1)->then([=](auto code) mutable
                     {
                         mockProc["exitCode"] = 1;
                         return code;
@@ -547,79 +547,79 @@ void Main(void)
                     return mockProc;
                 }
                 );
-                auto result = std::async([=]() { bunExecSimple(std::string("false"), array<any>(), object{
-                    object::pair{std::string("stdio"), std::string("ignore")}
+                auto result = std::async([=]() { bunExecSimple(std:("false"), array<any>(), object{
+                    object::pair{std:("stdio"), std:("ignore")}
                 }); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("stdout"), std::string("test output")}
+                    object::pair{std:("stdout"), std:("test output")}
                 });
             }
             );
         }
         );
-        describe(std::string("bunExecInherit"), [=]() mutable
+        describe(std:("bunExecInherit"), [=]() mutable
         {
-            it(std::string("should use inherit stdio"), [=]() mutable
+            it(std:("should use inherit stdio"), [=]() mutable
             {
-                std::async([=]() { bunExecInherit(std::string("echo"), array<string>{ std::string("hello") }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello") }, object{
-                    object::pair{std::string("cwd"), undefined}, 
-                    object::pair{std::string("env"), process->env}, 
-                    object::pair{std::string("stdout"), std::string("inherit")}, 
-                    object::pair{std::string("stderr"), std::string("inherit")}
+                std::async([=]() { bunExecInherit(std:("echo"), array<string>{ std:("hello") }); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello") }, object{
+                    object::pair{std:("cwd"), undefined}, 
+                    object::pair{std:("env"), process->env}, 
+                    object::pair{std:("stdout"), std:("inherit")}, 
+                    object::pair{std:("stderr"), std:("inherit")}
                 });
             }
             );
-            it(std::string("should override stdio option with inherit"), [=]() mutable
+            it(std:("should override stdio option with inherit"), [=]() mutable
             {
-                std::async([=]() { bunExecInherit(std::string("echo"), array<string>{ std::string("hello") }, object{
-                    object::pair{std::string("stdout"), std::string("pipe")}
+                std::async([=]() { bunExecInherit(std:("echo"), array<string>{ std:("hello") }, object{
+                    object::pair{std:("stdout"), std:("pipe")}
                 }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello") }, object{
-                    object::pair{std::string("cwd"), undefined}, 
-                    object::pair{std::string("env"), process->env}, 
-                    object::pair{std::string("stdout"), std::string("inherit")}, 
-                    object::pair{std::string("stderr"), std::string("inherit")}
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello") }, object{
+                    object::pair{std:("cwd"), undefined}, 
+                    object::pair{std:("env"), process->env}, 
+                    object::pair{std:("stdout"), std:("inherit")}, 
+                    object::pair{std:("stderr"), std:("inherit")}
                 });
             }
             );
         }
         );
-        describe(std::string("commandExists"), [=]() mutable
+        describe(std:("commandExists"), [=]() mutable
         {
-            describe(std::string("on Unix systems"), [=]() mutable
+            describe(std:("on Unix systems"), [=]() mutable
             {
                 beforeEach([=]() mutable
                 {
-                    Object->defineProperty(process, std::string("platform"), object{
-                        object::pair{std::string("value"), std::string("linux")}, 
-                        object::pair{std::string("configurable"), true}
+                    Object->defineProperty(process, std:("platform"), object{
+                        object::pair{std:("value"), std:("linux")}, 
+                        object::pair{std:("configurable"), true}
                     });
                 }
                 );
-                it(std::string("should return true when command exists"), [=]() mutable
+                it(std:("should return true when command exists"), [=]() mutable
                 {
                     mockProc["exited"]["then"]([=]() mutable
                     {
                         mockProc["exitCode"] = 0;
                     }
                     );
-                    auto exists = std::async([=]() { commandExists(std::string("node")); });
+                    auto exists = std::async([=]() { commandExists(std:("node")); });
                     expect(exists)->toBe(true);
-                    expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("which"), std::string("node") }, object{
-                        object::pair{std::string("cwd"), undefined}, 
-                        object::pair{std::string("env"), process->env}, 
-                        object::pair{std::string("stdout"), std::string("ignore")}, 
-                        object::pair{std::string("stderr"), std::string("ignore")}
+                    expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("which"), std:("node") }, object{
+                        object::pair{std:("cwd"), undefined}, 
+                        object::pair{std:("env"), process->env}, 
+                        object::pair{std:("stdout"), std:("ignore")}, 
+                        object::pair{std:("stderr"), std:("ignore")}
                     });
                 }
                 );
-                it(std::string("should return false when command does not exist"), [=]() mutable
+                it(std:("should return false when command does not exist"), [=]() mutable
                 {
                     mockProc = utils::assign(object{
                         , 
-                        object::pair{std::string("exitCode"), nullptr}, 
-                        object::pair{std::string("exited"), Promise->resolve(1)->then([=](auto code) mutable
+                        object::pair{std:("exitCode"), nullptr}, 
+                        object::pair{std:("exited"), Promise->resolve(1)->then([=](auto code) mutable
                         {
                             mockProc["exitCode"] = 1;
                             return code;
@@ -631,47 +631,47 @@ void Main(void)
                         return mockProc;
                     }
                     );
-                    auto exists = std::async([=]() { commandExists(std::string("nonexistent")); });
+                    auto exists = std::async([=]() { commandExists(std:("nonexistent")); });
                     expect(exists)->toBe(false);
                 }
                 );
-                it(std::string("should return false on error"), [=]() mutable
+                it(std:("should return false on error"), [=]() mutable
                 {
                     Bun->spawn = mock([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Command failed")));
+                        throw any(std::make_shared<Error>(std:("Command failed")));
                     }
                     );
-                    auto exists = std::async([=]() { commandExists(std::string("bad-command")); });
+                    auto exists = std::async([=]() { commandExists(std:("bad-command")); });
                     expect(exists)->toBe(false);
                 }
                 );
             }
             );
-            describe(std::string("on Windows"), [=]() mutable
+            describe(std:("on Windows"), [=]() mutable
             {
                 beforeEach([=]() mutable
                 {
-                    Object->defineProperty(process, std::string("platform"), object{
-                        object::pair{std::string("value"), std::string("win32")}, 
-                        object::pair{std::string("configurable"), true}
+                    Object->defineProperty(process, std:("platform"), object{
+                        object::pair{std:("value"), std:("win32")}, 
+                        object::pair{std:("configurable"), true}
                     });
                 }
                 );
-                it(std::string("should use where command on Windows"), [=]() mutable
+                it(std:("should use where command on Windows"), [=]() mutable
                 {
                     mockProc["exited"]["then"]([=]() mutable
                     {
                         mockProc["exitCode"] = 0;
                     }
                     );
-                    auto exists = std::async([=]() { commandExists(std::string("node")); });
+                    auto exists = std::async([=]() { commandExists(std:("node")); });
                     expect(exists)->toBe(true);
-                    expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("where"), std::string("node") }, object{
-                        object::pair{std::string("cwd"), undefined}, 
-                        object::pair{std::string("env"), process->env}, 
-                        object::pair{std::string("stdout"), std::string("ignore")}, 
-                        object::pair{std::string("stderr"), std::string("ignore")}
+                    expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("where"), std:("node") }, object{
+                        object::pair{std:("cwd"), undefined}, 
+                        object::pair{std:("env"), process->env}, 
+                        object::pair{std:("stdout"), std:("ignore")}, 
+                        object::pair{std:("stderr"), std:("ignore")}
                     });
                 }
                 );
@@ -679,52 +679,52 @@ void Main(void)
             );
         }
         );
-        describe(std::string("argument escaping"), [=]() mutable
+        describe(std:("argument escaping"), [=]() mutable
         {
-            it(std::string("should handle arguments with spaces"), [=]() mutable
+            it(std:("should handle arguments with spaces"), [=]() mutable
             {
-                std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("hello world"), std::string("test arg") }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello world"), std::string("test arg") }, expect->objectContaining(object{}));
+                std::async([=]() { bunExec(std:("echo"), array<string>{ std:("hello world"), std:("test arg") }); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello world"), std:("test arg") }, expect->objectContaining(object{}));
             }
             );
-            it(std::string("should handle arguments with quotes"), [=]() mutable
+            it(std:("should handle arguments with quotes"), [=]() mutable
             {
-                std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("hello "world""), std::string("test 'arg'") }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello "world""), std::string("test 'arg'") }, expect->objectContaining(object{}));
+                std::async([=]() { bunExec(std:("echo"), array<string>{ std:("hello "world""), std:("test 'arg'") }); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello "world""), std:("test 'arg'") }, expect->objectContaining(object{}));
             }
             );
-            it(std::string("should handle arguments with special characters"), [=]() mutable
+            it(std:("should handle arguments with special characters"), [=]() mutable
             {
-                std::async([=]() { bunExec(std::string("echo"), array<string>{ std::string("hello; rm -rf /"), std::string("test$(whoami)"), std::string("test"id"") }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), std::string("hello; rm -rf /"), std::string("test$(whoami)"), std::string("test"id"") }, expect->objectContaining(object{}));
+                std::async([=]() { bunExec(std:("echo"), array<string>{ std:("hello; rm -rf /"), std:("test$(whoami)"), std:("test"id"") }); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), std:("hello; rm -rf /"), std:("test$(whoami)"), std:("test"id"") }, expect->objectContaining(object{}));
             }
             );
-            it(std::string("should handle empty arguments"), [=]() mutable
+            it(std:("should handle empty arguments"), [=]() mutable
             {
-                std::async([=]() { bunExec(std::string("echo"), array<string>{ string_empty, std::string("test"), string_empty }); });
-                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std::string("echo"), string_empty, std::string("test"), string_empty }, expect->objectContaining(object{}));
+                std::async([=]() { bunExec(std:("echo"), array<string>{ string_empty, std:("test"), string_empty }); });
+                expect(Bun->spawn)->toHaveBeenCalledWith(array<string>{ std:("echo"), string_empty, std:("test"), string_empty }, expect->objectContaining(object{}));
             }
             );
         }
         );
-        describe(std::string("error types"), [=]() mutable
+        describe(std:("error types"), [=]() mutable
         {
-            it(std::string("should create ProcessExecutionError with correct properties"), [=]() mutable
+            it(std:("should create ProcessExecutionError with correct properties"), [=]() mutable
             {
-                auto error = std::make_shared<ProcessExecutionError>(std::string("Test error"), 1, std::string("stderr output"), std::string("test-command"));
-                expect(error->name)->toBe(std::string("ProcessExecutionError"));
-                expect(error->message)->toBe(std::string("Test error"));
+                auto error = std::make_shared<ProcessExecutionError>(std:("Test error"), 1, std:("stderr output"), std:("test-command"));
+                expect(error->name)->toBe(std:("ProcessExecutionError"));
+                expect(error->message)->toBe(std:("Test error"));
                 expect(error->exitCode)->toBe(1);
-                expect(error->stderr)->toBe(std::string("stderr output"));
-                expect(error->command)->toBe(std::string("test-command"));
+                expect(error->stderr)->toBe(std:("stderr output"));
+                expect(error->command)->toBe(std:("test-command"));
             }
             );
-            it(std::string("should create ProcessTimeoutError with correct properties"), [=]() mutable
+            it(std:("should create ProcessTimeoutError with correct properties"), [=]() mutable
             {
-                auto error = std::make_shared<ProcessTimeoutError>(std::string("Timeout error"), std::string("test-command"), 5000);
-                expect(error->name)->toBe(std::string("ProcessTimeoutError"));
-                expect(error->message)->toBe(std::string("Timeout error"));
-                expect(error->command)->toBe(std::string("test-command"));
+                auto error = std::make_shared<ProcessTimeoutError>(std:("Timeout error"), std:("test-command"), 5000);
+                expect(error->name)->toBe(std:("ProcessTimeoutError"));
+                expect(error->message)->toBe(std:("Timeout error"));
+                expect(error->command)->toBe(std:("test-command"));
                 expect(error->timeout)->toBe(5000);
             }
             );

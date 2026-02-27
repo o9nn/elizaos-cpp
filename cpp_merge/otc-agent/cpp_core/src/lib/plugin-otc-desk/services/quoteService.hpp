@@ -17,10 +17,10 @@ namespace elizaos {
 // Single source of truth registered with runtime.getService("QuoteService")
 
 class QuoteService extends Service {
-  static serviceType = "QuoteService" as std::any;
+  static serviceType = "QuoteService" as std:;
   static serviceName = "QuoteService";
 
-  get serviceType(): std::string {
+  get serviceType(): std: {
     return "QuoteService";
   }
 
@@ -51,7 +51,7 @@ class QuoteService extends Service {
 
       // Find quotes with matching entityId that weren't indexed
 
-      // Fix the index in batch if we found std::any
+      // Fix the index in batch if we found std:
 
     // Fetch all quotes in parallel
 

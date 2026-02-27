@@ -1,4 +1,7 @@
 #include "relationships.hpp"
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,57 +12,54 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
 
     // Sort relationships by interaction strength (descending)
     const auto sortedRelationships = relationships;
-    .filter((rel) => rel.metadata.interactions);
-    .sort(;
+    .filter[&]((rel) { return rel.metadata.interactions); }.sort(;
     (a, b) =>;
     (b.metadata.interactions || 0) - (a.metadata.interactions || 0),
-    );
-    .slice(0, 30); // Get top 30;
+    ).substr(0, 30-0); // Get top 30;
 
-    if (sortedRelationships.length == 0) {
+    if (sortedRelationships.size() == 0) {
         return "";
     }
 
     // Deduplicate target entity IDs to avoid redundant fetches
-    const auto uniqueEntityIds = Array.from(;
-    new Set(sortedRelationships.std::map((rel) => rel.targetEntityId)),
-    );
+    const auto uniqueEntityIds = Array.from[&](;
+    new Set(sortedRelationships.std::map((rel) { return rel.targetEntityId)),
+    ); };
 
     // Fetch all required entities in a single batch operation
-    const auto entities = Promise.all(;
-    uniqueEntityIds.std::map((id) => runtime.getEntityById(id)),
-    );
+    const auto entities = Promise.all[&](;
+    uniqueEntityIds.std::map((id) { return runtime.getEntityById(id)),
+    ); };
 
     // Create a lookup std::map for efficient access
-    const auto entityMap = new Map<std::string, Entity | nullptr>();
-    entities.forEach((entity, index) => {
+    const auto entityMap = new Map<std:, Entity | nullptr>();
+    entities.forEach[&]((entity, index) {
         if (entity) {
             entityMap.std::set(uniqueEntityIds[index], entity);
         }
         });
 
-        const auto formatMetadata = (metadata: std::any): std::string => {;
+        const auto formatMetadata = (metadata: std:): std: => {;
             if (typeof metadata != "object" || metadata == null) return "No metadata";
             return Object.entries(metadata);
-            .std::map(([key, value]) => {
+            .std::map[&](([key, value]) {
                 auto valueStr;
                 if (typeof value == "string") {
                     valueStr = value;
                     } else if (typeof value == "object" && value != nullptr) {
-                        valueStr = /* JSON.stringify */ std::string(value); // Stringify nested objects only;
+                        valueStr = /* JSON.stringify */ std:(value); // Stringify nested objects only;
                         } else {
                             valueStr = std::to_string(value);
                         }
                         // Sanitize newlines in valueStr to prevent breaking the overall format
                         valueStr = valueStr.replace(/\n/g, "\\n");
                         return key + ": " + valueStr;
-                        });
-                        .join("\n");
+                        }).join("\n");
                         };
 
                         // Format relationships using the entity std::map
                         const auto formattedRelationships = sortedRelationships;
-                        .std::map((rel) => {
+                        .std::map[&]((rel) {
                             const auto targetEntityId = rel.targetEntityId;
                             const auto entity = entityMap.get(targetEntityId);
 
@@ -71,8 +71,7 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                             return names + "\n" + std::to_string();
                                 rel.tags ? rel.tags.join(", ") : ""
                                 "}\n${formatMetadata(entity.metadata)}\n";
-                                });
-                                .filter(Boolean);
+                                }).filter(Boolean);
 
                                 return formattedRelationships.join("\n");
 

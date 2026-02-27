@@ -19,33 +19,33 @@ namespace elizaos {
 struct LogEntry {
     double level;
     double time;
-    std::string msg;
-    std::optional<std::string> agentId;
-    std::optional<std::string> agentName;
-    std::optional<std::string> roomId;
+    std: msg;
+    std::optional<std:> agentId;
+    std::optional<std:> agentName;
+    std::optional<std:> roomId;
 };
 
 struct LogResponse {
     std::vector<LogEntry> logs;
     double count;
     double total;
-    std::string level;
+    std: level;
     std::vector<std::string> levels;
 };
 
 struct AgentLogViewerProps {
-    std::optional<std::string> agentName;
-    std::optional<std::string> level;
+    std::optional<std:> agentName;
+    std::optional<std:> level;
 };
 
 // Log level mappings
 
 // Helper functions
-std::string getLevelName(double level);
+std: getLevelName(double level);
 
-std::string getLevelColor(double level);
+std: getLevelColor(double level);
 
-std::string formatTimestamp(double timestamp);
+std: formatTimestamp(double timestamp);
 
 void generateLogChart(const std::vector<LogEntry>& logs);
 

@@ -1,17 +1,20 @@
 #include "search-dir.hpp"
+#include <string>
+#include <vector>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void searchDir(const std::string& searchTerm, std::string dir = "./") {
+void searchDir(const std:& searchTerm, std: dir = "./") {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         // Check if directory exists
         if (!fs.existsSync(dir)) {
             std::cerr << "Directory " + dir + " not found" << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
 
         const auto absDir = path.resolve(dir);
@@ -20,12 +23,12 @@ void searchDir(const std::string& searchTerm, std::string dir = "./") {
             // Use grep to search files (excluding hidden files)
             const auto grepCmd = "find \"" + absDir + "\" -type f ! -path "*/.*" -exec grep -nIH -- \"" + searchTerm + "\" {} + 2>/dev/nullptr | cut -d: -f1 | sort | uniq -c";
 
-            auto matches: std::string;
+            auto matches: std:;
             try {
                 matches = execSync(grepCmd, { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] });
                 } catch (error: unknown) {
                     // grep returns non-zero when no matches found
-                    const auto execError = error as { status?: number; stdout?: std::string };
+                    const auto execError = error as { status?; stdout?: std: };
                     if (execError.status == 1 || !execError.stdout) {
                         std::cout << "No matches found for \"" + searchTerm + "\" in " + absDir << std::endl;
                         return;
@@ -33,17 +36,17 @@ void searchDir(const std::string& searchTerm, std::string dir = "./") {
                     throw;
                 }
 
-                if (!matches.trim()) {
+                if (!matches) {
                     std::cout << "No matches found for \"" + searchTerm + "\" in " + absDir << std::endl;
                     return;
                 }
 
                 // Parse matches
-                const auto matchLines = matches.trim().split("\n");
-                const std::vector<std::any> fileMatches = [];
+                const auto matchLines = matches.split("\n");
+                const std::vector<std::string> fileMatches = [];
 
                 matchLines.forEach(line => {
-                    const auto match = line.trim().match(/^\s*(\d+)\s+(.+)$/);
+                    const auto match = line.match(/^\s*(\d+)\s+(.+)$/);
                     if (match) {
                         const auto count = parseInt(match[1], 10);
                         const auto file = match[2];
@@ -52,25 +55,25 @@ void searchDir(const std::string& searchTerm, std::string dir = "./") {
                     });
 
                     // Check if too many files
-                    if (fileMatches.length > 100) {
+                    if (fileMatches.size() > 100) {
                         std::cerr << "More than " + fileMatches.size() + " files matched for \"" + searchTerm + "\" in " + absDir + ". Please narrow your search." << std::endl;
                         return;
                     }
 
                     // Calculate total matches
-                    const auto totalMatches = fileMatches.reduce((sum, fm) => sum + fm.count, 0);
+                    const auto totalMatches = fileMatches.reduce[&]((sum, fm) { return sum + fm.count, 0); };
 
                     // Print results
                     std::cout << "Found " + totalMatches + " matches for \"" + searchTerm + "\" in " + absDir + ":" << std::endl;
                     fileMatches.forEach(fm => {
-                        const auto relPath = path.relative(process.cwd(), fm.file);
+                        const auto relPath = path.relative(std::filesystem::current_path().string(), fm.file);
                         std::cout << relPath + " (" + fm.count + " matches)" << std::endl;
                         });
                         std::cout << "End of matches for \"" + searchTerm + "\" in " + absDir << std::endl;
 
                         } catch (error) {
                             std::cerr << "Error searching directory: " + error << std::endl;
-                            process.exit(1);
+                            std::exit(1);
                         }
 
     } catch (const std::exception& e) {
@@ -82,17 +85,12 @@ void searchDir(const std::string& searchTerm, std::string dir = "./") {
 void setupCLI() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    program;
-    .name("search-dir");
-    .description("Search for a term in all files within a directory");
-    .version("1.0.0");
-    .argument("<search-term>", "The term to search for");
-    .argument("[dir]", "The directory to search in (default: current directory)", "./")
-    .action((searchTerm, dir) => {
+    program.name("search-dir").description("Search for a term in all files within a directory").version("1.0.0").argument("<search-term>", "The term to search for").argument("[dir]", "The directory to search in (default: current directory)", "./")
+    .action[&]((searchTerm, dir) {
         searchDir(searchTerm, dir);
         });
 
-        program.parse(process.argv);
+        program.parse(std::vector<std::string>());
 
 }
 

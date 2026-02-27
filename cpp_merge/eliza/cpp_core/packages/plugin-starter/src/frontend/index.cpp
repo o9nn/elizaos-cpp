@@ -8,9 +8,9 @@ void TimeDisplay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto { data, isLoading, error, refetch } = useQuery<TimeResponse>({;
+        const auto { data, isLoading, error, refetch } = useQuery<TimeResponse>[&]({;
             queryKey: ["currentTime"],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 const auto response = "fetch(" + apiBase + "/api/time";
                 if (!response.ok) {
                     throw std::runtime_error('Failed to fetch time');
@@ -32,7 +32,7 @@ void TimeDisplay() {
                 );
             }
 
-            return (;
+            return [&](;
             <div className="space-y-2" data-testid="time-display">;
             <h2 className="text-lg font-semibold">Current Time</h2>;
             <div className="space-y-1 text-sm">;
@@ -47,9 +47,9 @@ void TimeDisplay() {
         </div>;
         </div>;
         <button;
-        onClick={() => refetch()}
+        onClick={() { return refetch()}
         className="px-3 py-1 text-sm bg-primary text-primary-foreground rounded hover:opacity-90"
-        data-testid="refresh-button";
+        data-testid="refresh-button"; };
         >;
         Refresh;
         </button>;
@@ -70,7 +70,7 @@ void ExampleRoute() {
     const auto apiBase = config.apiBase || "http://localhost:3000";
 
     // Apply dark mode to the root element
-    React.useEffect(() => {
+    React.useEffect[&](() {
         document.documentElement.classList.add("dark");
         }, []);
 

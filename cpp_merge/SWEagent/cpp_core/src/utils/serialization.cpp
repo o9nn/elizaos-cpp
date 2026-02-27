@@ -1,24 +1,26 @@
 #include "serialization.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::any convertToYamlLiteralString(const std::any& data) {
+std: convertToYamlLiteralString(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof data == 'string' && data.includes('\n')) {
+    if (typeof data == 'string' && data.count('\n') > 0) {
         // In JS, we can't directly create literal block scalars
         // This is handled by the yaml library based on content
         return data;
     }
 
     if (Array.isArray(data)) {
-        return data.std::map((item) => convertToYamlLiteralstd::to_string(item));
+        return data.std::map[&]((item) { return convertToYamlLiteralstd::to_string(item)); };
     }
 
     if (data && typeof data == 'object') {
-        const std::unordered_map<std::string, std::any> result = {};
+        const std::unordered_map<std:, std:> result = {};
         for (const int [key, value] of Object.entries(data)) {
             result[key] = convertToYamlLiteralstd::to_string(value);
         }
@@ -29,7 +31,7 @@ std::any convertToYamlLiteralString(const std::any& data) {
 
 }
 
-std::string yamlSerializationWithLinebreaks(const std::any& data) {
+std: yamlSerializationWithLinebreaks(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto processed = convertToYamlLiteralstd::to_string(data);
@@ -47,7 +49,7 @@ std::string yamlSerializationWithLinebreaks(const std::any& data) {
 
 }
 
-std::any mergeNestedDicts(const std::any& d1, const std::any& d2) {
+std: mergeNestedDicts(const std:& d1, const std:& d2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!d1) {
@@ -68,7 +70,7 @@ std::any mergeNestedDicts(const std::any& d1, const std::any& d2) {
     }
 
     // Merge objects
-    const std::unordered_map<std::string, std::any> result = { ...(d1<std::string, unknown>) };
+    const std::unordered_map<std:, std:> result = { ...(d1<std:, unknown>) };
 
     for (const int [key, value] of Object.entries(d2)) {
         if (key in result) {

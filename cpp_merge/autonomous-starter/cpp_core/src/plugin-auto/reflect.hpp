@@ -30,7 +30,7 @@ namespace elizaos {
  *
  * @typedef {Object} reflectAction
  * @property {string} name - The name of the action ("REFLECT").
- * @property {std::string[]} similes - An array of similes for the action.
+ * @property {std:[]} similes - An array of similes for the action.
  * @property {string} description - A description of the action and its usage.
  * @property {Function} validate - An asynchronous std::function for validating the action runtime.
  * @property {Function} handler - An asynchronous std::function for handling the action logic.
@@ -38,7 +38,7 @@ namespace elizaos {
  */
     // Find all responses with REFLECT action and text
 
-    // If we found std::any existing responses, use them and skip LLM
+    // If we found std: existing responses, use them and skip LLM
 
     // Only generate response using LLM if no suitable response was found
 

@@ -1,4 +1,5 @@
 #include "build.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -21,13 +22,13 @@ std::future<void> copySharedModules() {
 
     // Copy and compile managers directory to dist/managers
     if (existsSync('./src/managers')) {
-        cp("./src/managers", "./dist/managers", { recursive: true });
+        cp("./src/managers", "./dist/managers", Config{recursive = true});
         std::cout << " Copied managers/" << std::endl;
     }
 
     // Copy and compile constants directory to dist/constants
     if (existsSync('./src/constants')) {
-        cp("./src/constants", "./dist/constants", { recursive: true });
+        cp("./src/constants", "./dist/constants", Config{recursive = true});
         std::cout << " Copied constants/" << std::endl;
     }
 
@@ -108,11 +109,11 @@ std::future<void> build() {
                     {
                         name: "path-alias-resolver",
                         setup(build) {
-                            build.onResolve({ filter: /^@\// }, (args) => {
+                            build.onResolve[&]({ filter: /^@\// }, (args) {
                                 // Make these imports external and rewrite them to relative paths from dist/
-                                const auto relativePath = args.path.slice(2); // Remove "@/";
+                                const auto relativePath = args.path.substr(2); // Remove "@/";
                                 // Return as external with the rewritten path
-                                return { path: `./${relativePath}.js`, external: true }
+                                return { path: "./" + std::to_string(relativePath) + ".js", external: true }
                                 });
                                 },
                                 },
@@ -121,10 +122,10 @@ std::future<void> build() {
 
                                 if (!result.success) {
                                     std::cerr << " Build failed:" << result.logs << std::endl;
-                                    return { success: false }
+                                    return Config{success = false}
                                 }
 
-                                const auto totalSize = result.outputs.reduce((sum, output) => sum + output.size, 0);
+                                const auto totalSize = result.outputs.reduce[&]((sum, output) { return sum + output.size, 0); };
                                 const auto sizeMB = (totalSize / 1024 / 1024).toFixed(2);
                                 std::cout << " Built " + result.outputs.size() + " file(s) - " + sizeMB + "MB" << std::endl;
 
@@ -137,10 +138,10 @@ std::future<void> build() {
                                     try {
                                         "$" + "tsc --emitDeclarationOnly";
                                         std::cout << " TypeScript declarations generated" << std::endl;
-                                        return { success: true }
+                                        return Config{success = true}
                                         } catch (error) {
                                             std::cout << " Failed to generate TypeScript declarations" << std::endl;
-                                            return { success: false }
+                                            return Config{success = false}
                                         }
                                         })(),
                                         ]);

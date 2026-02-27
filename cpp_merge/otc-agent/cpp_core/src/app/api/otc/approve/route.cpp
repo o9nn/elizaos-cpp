@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <future>
+#include <filesystem>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,12 +19,12 @@ std::future<void> POST(NextRequest request) {
                 } catch {
                     // Fallback to devnet file for local development
                     const auto deployed = path.join(;
-                    process.cwd(),
+                    std::filesystem::current_path().string(),
                     "contracts/ignition/deployments/chain-31337/deployed_addresses.json",
                     );
                     try {
                         const auto raw = fs.readFile(deployed, "utf8");
-                        const auto json = /* JSON.parse */ raw;
+                        const auto json = /* JSON::parse */ raw;
                         const auto addr =;
                         (json["OTCModule#OTC"]) ||;
                         (json["OTCDeskModule#OTC"]) ||;
@@ -41,10 +44,10 @@ std::future<void> POST(NextRequest request) {
                     };
 
                     const auto OTC_ADDRESS = resolveOtcAddress();
-                    const auto RAW_PK = process.env.EVM_PRIVATE_KEY | std::nullopt;
+                    const auto RAW_PK = std::getenv("EVM_PRIVATE_KEY") | std::nullopt;
                     const auto EVM_PRIVATE_KEY =;
                     RAW_PK && /^0x[0-9a-fA-F]{64}$/.test(RAW_PK);
-                    "? (RAW_PK as " + "0x" + std::string;
+                    "? (RAW_PK as " + "0x" + std:;
                     : std::nullopt;
                     if (RAW_PK && !EVM_PRIVATE_KEY) {
                         console.warn(
@@ -54,11 +57,11 @@ std::future<void> POST(NextRequest request) {
 
                     // Parse body
                     const auto contentType = request.headers.get("content-type") || "";
-                    auto offerId: std::string | number | bigint;
-                    auto chainType: std::string | std::nullopt;
-                    auto offerAddress: std::string | std::nullopt;
+                    auto offerId: std: | number | bigint;
+                    auto chainType: std: | std::nullopt;
+                    auto offerAddress: std: | std::nullopt;
 
-                    if (contentType.includes("application/json")) {
+                    if (contentType.count("application/json") > 0) {
                         const auto body = request.json();
                         offerId = body.offerId;
                         chainType = body.chain;
@@ -66,7 +69,7 @@ std::future<void> POST(NextRequest request) {
                         } else if ((std::find(contentType.begin(), contentType.end(), "application/x-www-form-urlencoded") != contentType.end())) {
                             // Use type assertion for FormData as Next.js returns a compatible type
                             const auto form = (request.formData()) as {;
-                                get: (name: std::string) => FormDataEntryValue | nullptr;
+                                get: [&](name: std:) { return FormDataEntryValue | nullptr; };
                                 };
                                 const auto v = form.get("offerId");
                                 if (!v) throw new Error("offerId required in form data");
@@ -93,8 +96,8 @@ std::future<void> POST(NextRequest request) {
                                     const auto { Connection, PublicKey, Keypair } = import("@solana/web3.js");
 
                                     const auto SOLANA_RPC =;
-                                    process.env.NEXT_PUBLIC_SOLANA_RPC || "http://127.0.0.1:8899";
-                                    const auto SOLANA_DESK = process.env.NEXT_PUBLIC_SOLANA_DESK;
+                                    std::getenv("NEXT_PUBLIC_SOLANA_RPC") || "http://127.0.0.1:8899";
+                                    const auto SOLANA_DESK = std::getenv("NEXT_PUBLIC_SOLANA_DESK");
 
                                     if (!SOLANA_DESK) throw new Error("SOLANA_DESK not configured");
 
@@ -102,12 +105,12 @@ std::future<void> POST(NextRequest request) {
 
                                     // Load owner/approver keypair from id.json
                                     const auto idlPath = path.join(;
-                                    process.cwd(),
+                                    std::filesystem::current_path().string(),
                                     "solana/otc-program/target/idl/otc.json",
                                     );
-                                    const auto keypairPath = path.join(process.cwd(), "solana/otc-program/id.json");
-                                    const auto idl = /* JSON.parse */ fs.readFile(idlPath, "utf8");
-                                    const auto keypairData = /* JSON.parse */ fs.readFile(keypairPath, "utf8");
+                                    const auto keypairPath = path.join(std::filesystem::current_path().string(), "solana/otc-program/id.json");
+                                    const auto idl = /* JSON::parse */ fs.readFile(idlPath, "utf8");
+                                    const auto keypairData = /* JSON::parse */ fs.readFile(keypairPath, "utf8");
                                     const auto approverKeypair = Keypair.fromSecretKey(Uint8Array.from(keypairData));
 
                                     // Create provider with the approver keypair
@@ -124,16 +127,16 @@ std::future<void> POST(NextRequest request) {
 
                                     const AnchorWallet wallet = {;
                                         publicKey: approverKeypair.publicKey,
-                                        signTransaction: std::async <T extends Transaction | VersionedTransaction>(
+                                        signTransaction: std::async <T extends Transaction | VersionedTransaction>[&](
                                         tx: T,
-                                        ) => {
+                                        ) {
                                             (tx).partialSign(approverKeypair);
                                             return tx;
                                             },
-                                            signAllTransactions: std::async <T extends Transaction | VersionedTransaction>(
+                                            signAllTransactions: std::async <T extends Transaction | VersionedTransaction>[&](
                                             txs: T[],
-                                            ) => {
-                                                txs.forEach((tx) => (tx).partialSign(approverKeypair));
+                                            ) {
+                                                txs.forEach[&]((tx) { return (tx).partialSign(approverKeypair)); };
                                                 return txs;
                                                 },
                                                 };
@@ -149,15 +152,11 @@ std::future<void> POST(NextRequest request) {
                                                     const auto desk = new PublicKey(SOLANA_DESK);
                                                     const auto offer = new PublicKey(offerAddress);
 
-                                                    const auto approveTx = program.methods;
-                                                    .approveOffer(new anchor.BN(offerId));
-                                                    .accounts({
+                                                    const auto approveTx = program.methods.approveOffer(new anchor.BN(offerId)).accounts({
                                                         desk,
                                                         offer,
                                                         approver: approverKeypair.publicKey,
-                                                        });
-                                                        .signers([approverKeypair]);
-                                                        .rpc();
+                                                        }).signers([approverKeypair]).rpc();
 
                                                         std::cout << "[Approve API] ✅ Solana offer approved:" << approveTx << std::endl;
 
@@ -166,7 +165,7 @@ std::future<void> POST(NextRequest request) {
                                                         type ProgramAccountsFetch = {
                                                             offer: {
                                                                 fetch: (address: SolanaPublicKey) => Promise<{
-                                                                    currency: number;
+                                                                    currency;
                                                                     id: import("@coral-xyz/anchor").BN;
                                                                     tokenMint: SolanaPublicKey;
                                                                     }>;
@@ -193,21 +192,17 @@ std::future<void> POST(NextRequest request) {
                                                                         true,
                                                                         );
 
-                                                                        auto fulfillTx: std::string;
+                                                                        auto fulfillTx: std:;
 
                                                                         if (offerData.currency == 0) {
                                                                             // Pay with SOL
-                                                                            fulfillTx = program.methods;
-                                                                            .fulfillOfferSol(new anchor.BN(offerId));
-                                                                            .accounts({
+                                                                            fulfillTx = program.methods.fulfillOfferSol(new anchor.BN(offerId)).accounts({
                                                                                 desk,
                                                                                 offer,
                                                                                 deskTokenTreasury,
                                                                                 payer: approverKeypair.publicKey,
                                                                                 systemProgram: new PublicKey("11111111111111111111111111111111"),
-                                                                                });
-                                                                                .signers([approverKeypair]);
-                                                                                .rpc();
+                                                                                }).signers([approverKeypair]).rpc();
                                                                                 std::cout << "[Approve API] ✅ Paid with SOL:" << fulfillTx << std::endl;
                                                                                 } else {
                                                                                     // Pay with USDC
@@ -223,9 +218,7 @@ std::future<void> POST(NextRequest request) {
                                                                                     false,
                                                                                     );
 
-                                                                                    fulfillTx = program.methods;
-                                                                                    .fulfillOfferUsdc(new anchor.BN(offerId));
-                                                                                    .accounts({
+                                                                                    fulfillTx = program.methods.fulfillOfferUsdc(new anchor.BN(offerId)).accounts({
                                                                                         desk,
                                                                                         offer,
                                                                                         deskTokenTreasury,
@@ -236,9 +229,7 @@ std::future<void> POST(NextRequest request) {
                                                                                         "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
                                                                                         ),
                                                                                         systemProgram: new PublicKey("11111111111111111111111111111111"),
-                                                                                        });
-                                                                                        .signers([approverKeypair]);
-                                                                                        .rpc();
+                                                                                        }).signers([approverKeypair]).rpc();
                                                                                         std::cout << "[Approve API] ✅ Paid with USDC:" << fulfillTx << std::endl;
                                                                                     }
 
@@ -260,8 +251,8 @@ std::future<void> POST(NextRequest request) {
 
                                                                                     // Resolve approver account: prefer PK; else use testWalletPrivateKey from deployment; else impersonate
                                                                                     auto account: PrivateKeyAccount | Address;
-                                                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
-                                                                                    auto walletClient: std::any; // Using std::any to avoid viem deep type instantiation issues;
+                                                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std:
+                                                                                    auto walletClient: std:; // Using std: to avoid viem deep type instantiation issues;
                                                                                     auto approverAddr: Address;
 
                                                                                     if (EVM_PRIVATE_KEY) {
@@ -274,12 +265,12 @@ std::future<void> POST(NextRequest request) {
                                                                                             approverAddr = account.address;
                                                                                             } else {
                                                                                                 const auto deploymentInfoPath = path.join(;
-                                                                                                process.cwd(),
+                                                                                                std::filesystem::current_path().string(),
                                                                                                 "contracts/deployments/eliza-otc-deployment.json",
                                                                                                 );
                                                                                                 const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                const auto json = /* JSON.parse */ raw;
-                                                                                                const auto testPk = "json.testWalletPrivateKey as " + "0x" + std::string;
+                                                                                                const auto json = /* JSON::parse */ raw;
+                                                                                                const auto testPk = "json.testWalletPrivateKey as " + "0x" + std:;
 
                                                                                                 if (testPk && /^0x[0-9a-fA-F]{64}$/.test(testPk)) {
                                                                                                     account = privateKeyToAccount(testPk);
@@ -301,7 +292,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                             fetch("http://127.0.0.1:8545", {
                                                                                                                 method: "POST",
                                                                                                                 headers: { "Content-Type": "application/json" },
-                                                                                                                body: JSON.stringify({
+                                                                                                                body: nlohmann::json().dump({
                                                                                                                     jsonrpc: "2.0",
                                                                                                                     method: "anvil_impersonateAccount",
                                                                                                                     params: [approverAddr],
@@ -332,17 +323,17 @@ std::future<void> POST(NextRequest request) {
                                                                                                                     if (Number(currentRequired) != 1) {
                                                                                                                         std::cout << "[Approve API] Setting requiredApprovals to 1..." << std::endl;
                                                                                                                         const auto deploymentInfoPath = path.join(;
-                                                                                                                        process.cwd(),
+                                                                                                                        std::filesystem::current_path().string(),
                                                                                                                         "contracts/deployments/eliza-otc-deployment.json",
                                                                                                                         );
                                                                                                                         const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                                        const auto json = /* JSON.parse */ raw;
+                                                                                                                        const auto json = /* JSON::parse */ raw;
                                                                                                                         const auto ownerAddr = json.accounts.owner;
 
                                                                                                                         fetch("http://127.0.0.1:8545", {
                                                                                                                             method: "POST",
                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                            body: JSON.stringify({
+                                                                                                                            body: nlohmann::json().dump({
                                                                                                                                 jsonrpc: "2.0",
                                                                                                                                 method: "anvil_impersonateAccount",
                                                                                                                                 params: [ownerAddr],
@@ -394,7 +385,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                     console.log(
                                                                                                                                                     "[Approve API] Offer " + offerId + " not found yet, waiting... (" + attempt + "/" + maxPollAttempts + ")"
                                                                                                                                                     );
-                                                                                                                                                    new Promise((resolve) => setTimeout(resolve, 2000));
+                                                                                                                                                    new Promise[&]((resolve) { return setTimeout(resolve, 2000)); };
                                                                                                                                                 }
                                                                                                                                             }
 
@@ -425,17 +416,17 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                             });
                                                                                                                                                         }
 
-                                                                                                                                                        // ============ PRICE VALIDATION ============
+                                                                                                                                                        // ====== PRICE VALIDATION ======
                                                                                                                                                         // Validate that the offer price hasn't diverged too much from market price
                                                                                                                                                         // This prevents abuse from stale quotes or manipulated pool prices
                                                                                                                                                         const auto MAX_PRICE_DIVERGENCE_BPS = 1000; // 10% maximum divergence;
 
                                                                                                                                                         // Skip price validation for local development (Anvil has mock prices)
                                                                                                                                                         const auto isLocalNetwork =;
-                                                                                                                                                        process.env.NEXT_PUBLIC_NETWORK == "localhost" ||;
-                                                                                                                                                        process.env.NEXT_PUBLIC_NETWORK == "anvil" ||;
-                                                                                                                                                        process.env.NETWORK == "localhost" ||;
-                                                                                                                                                        process.env.NETWORK == "anvil";
+                                                                                                                                                        std::getenv("NEXT_PUBLIC_NETWORK") == "localhost" ||;
+                                                                                                                                                        std::getenv("NEXT_PUBLIC_NETWORK") == "anvil" ||;
+                                                                                                                                                        std::getenv("NETWORK") == "localhost" ||;
+                                                                                                                                                        std::getenv("NETWORK") == "anvil";
 
                                                                                                                                                         if (isLocalNetwork) {
                                                                                                                                                             std::cout << "[Approve API] Skipping price validation on local network" << std::endl;
@@ -451,8 +442,8 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                                                             // Find the specific token associated with this offer
                                                                                                                                                             // Primary method: Use the on-chain tokenId (keccak256 hash of symbol) to look up token
-                                                                                                                                                            std::string tokenAddress = nullptr;
-                                                                                                                                                            std::string tokenChain = "base";
+                                                                                                                                                            std: tokenAddress = nullptr;
+                                                                                                                                                            std: tokenChain = "base";
 
                                                                                                                                                             // The offer.tokenId is a bytes32 (keccak256 of token symbol)
                                                                                                                                                             if (offer.tokenId) {
@@ -471,10 +462,9 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                 // Fallback: Try to find via quote (if we have a matching quote by beneficiary)
                                                                                                                                                                 if (!tokenAddress) {
                                                                                                                                                                     const auto activeQuotes = QuoteDB.getActiveQuotes();
-                                                                                                                                                                    const auto matchingQuote = activeQuotes.find(;
-                                                                                                                                                                    (q: { beneficiary: std::string }) =>
-                                                                                                                                                                    q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
-                                                                                                                                                                    );
+                                                                                                                                                                    const auto matchingQuote = activeQuotes.find[&](;
+                                                                                                                                                                    (q: { beneficiary: std: }) { return q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
+                                                                                                                                                                    ); };
 
                                                                                                                                                                     if (matchingQuote && "tokenId" in matchingQuote) {
                                                                                                                                                                         const auto token = TokenDB.getToken(matchingQuote.tokenId);
@@ -495,8 +485,8 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                         console.warn(
                                                                                                                                                                         "[Approve API] Could not find token via on-chain tokenId or quote, using fallback",
                                                                                                                                                                         );
-                                                                                                                                                                        const auto tokens = TokenDB.getAllTokens({ isActive: true });
-                                                                                                                                                                        const auto baseToken = tokens.find((t) => t.chain == "base");
+                                                                                                                                                                        const auto tokens = TokenDB.getAllTokens(Config{isActive = true});
+                                                                                                                                                                        const auto baseToken = tokens.find[&]((t) { return t.chain == "base"); };
                                                                                                                                                                         if (baseToken) {
                                                                                                                                                                             tokenAddress = baseToken.contractAddress;
                                                                                                                                                                             tokenChain = "base";
@@ -567,7 +557,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                     priceError,
                                                                                                                                                                                                     );
                                                                                                                                                                                                 }
-                                                                                                                                                                                                // ============ END PRICE VALIDATION ============
+                                                                                                                                                                                                // ====== END PRICE VALIDATION ======
 
                                                                                                                                                                                                 // Approve immediately
                                                                                                                                                                                                 const auto accountAddr = (;
@@ -589,7 +579,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                         });
 
                                                                                                                                                                                                         std::cout << "[Approve API] Sending approval tx..." << std::endl;
-                                                                                                                                                                                                        "const auto txHash: " + "0x" + std::string;
+                                                                                                                                                                                                        "const auto txHash: " + "0x" + std:;
                                                                                                                                                                                                         walletClient.writeContract(approveRequest);
 
                                                                                                                                                                                                         std::cout << "[Approve API] Waiting for confirmation..." << txHash << std::endl;
@@ -611,10 +601,9 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                                                                                                                 if (quoteService && offer.beneficiary) {
                                                                                                                                                                                                                     const auto activeQuotes = quoteService.getActiveQuotes();
-                                                                                                                                                                                                                    const auto matchingQuote = activeQuotes.find(;
-                                                                                                                                                                                                                    (q: QuoteMemory) =>
-                                                                                                                                                                                                                    q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
-                                                                                                                                                                                                                    );
+                                                                                                                                                                                                                    const auto matchingQuote = activeQuotes.find[&](;
+                                                                                                                                                                                                                    (q: QuoteMemory) { return q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
+                                                                                                                                                                                                                    ); };
 
                                                                                                                                                                                                                     if (matchingQuote) {
                                                                                                                                                                                                                         // Calculate financial values from on-chain offer data
@@ -700,11 +689,11 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                 if (!approvedOffer.approved) {
                                                                                                                                                                                                                                     // Load known approver and agent from deployment file
                                                                                                                                                                                                                                     const auto deploymentInfoPath = path.join(;
-                                                                                                                                                                                                                                    process.cwd(),
+                                                                                                                                                                                                                                    std::filesystem::current_path().string(),
                                                                                                                                                                                                                                     "contracts/deployments/eliza-otc-deployment.json",
                                                                                                                                                                                                                                     );
                                                                                                                                                                                                                                     const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                                                                                                                                                    const auto json = /* JSON.parse */ raw;
+                                                                                                                                                                                                                                    const auto json = /* JSON::parse */ raw;
                                                                                                                                                                                                                                     const auto approver = json.accounts.approver;
                                                                                                                                                                                                                                     const auto agentAddr = json.accounts.agent;
                                                                                                                                                                                                                                     const auto candidates = [approver, agentAddr];
@@ -715,7 +704,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                         fetch("http://127.0.0.1:8545", {
                                                                                                                                                                                                                                             method: "POST",
                                                                                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                                                                                            body: JSON.stringify({
+                                                                                                                                                                                                                                            body: nlohmann::json().dump({
                                                                                                                                                                                                                                                 jsonrpc: "2.0",
                                                                                                                                                                                                                                                 method: "anvil_impersonateAccount",
                                                                                                                                                                                                                                                 params: [addr],
@@ -791,7 +780,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                                                 requireApproverToFulfill,
                                                                                                                                                                                                                                                                 );
 
-                                                                                                                                                                                                                                                                "auto fulfillTxHash: " + "0x" + std::string;
+                                                                                                                                                                                                                                                                "auto fulfillTxHash: " + "0x" + std:;
 
                                                                                                                                                                                                                                                                 // If approver-only fulfill is enabled, backend pays immediately after approval
                                                                                                                                                                                                                                                                 if (requireApproverToFulfill && !approvedOffer.paid) {

@@ -16,31 +16,31 @@ namespace elizaos {
 
 
 struct WalletToken {
-    std::string symbol;
-    std::string name;
-    std::string balance;
-    std::string balanceFormatted;
+    std: symbol;
+    std: name;
+    std: balance;
+    std: balanceFormatted;
     double usdValue;
     double usdPrice;
-    std::string | null contractAddress;
-    std::string chain;
+    std: | null contractAddress;
+    std: chain;
     double decimals;
 };
 
 struct WalletNFT {
-    std::string chain;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string name;
-    std::string description;
-    std::string contractName;
-    std::string tokenType;
-    std::optional<std::string> balance;
+    std: chain;
+    std: contractAddress;
+    std: tokenId;
+    std: name;
+    std: description;
+    std: contractName;
+    std: tokenType;
+    std::optional<std:> balance;
     std::optional<std::vector<unknown>> attributes;
 };
 
 struct WalletInfo {
-    std::string address;
+    std: address;
     std::vector<WalletToken> tokens;
     std::vector<WalletNFT> nfts;
     double totalUsdValue;

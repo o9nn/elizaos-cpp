@@ -18,11 +18,11 @@ namespace elizaos {
 
 
 struct AnimatedMarkdownProps {
-    std::string children;
-    std::optional<std::string> className;
-    std::optional<std::string> std::variant;
+    std: children;
+    std::optional<std:> className;
+    std::optional<std:> std::variant;
     std::optional<bool> shouldAnimate;
-    std::optional<std::string> messageId;
+    std::optional<std:> messageId;
 };
 
   // Reset animation state when message changes

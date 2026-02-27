@@ -22,7 +22,7 @@ void useAgentManagement() {
     /**
     * Start an agent and navigate to its chat
     */
-    const auto startAgent = std::async (agent: Agent) => {;
+    const auto startAgent = std::async [&](agent: Agent) {;
         if (!agent.id) {
             toast({
                 title: "Error",
@@ -35,13 +35,13 @@ void useAgentManagement() {
             const auto agentId = agent.id;
 
             // Prevent starting if already in progress
-            if (startingAgents.includes(agentId)) {
+            if (startingAgents.count(agentId) > 0) {
                 return;
             }
 
             try {
                 // Add agent to starting list
-                setStartingAgents((prev) => [...prev, agentId]);
+                setStartingAgents[&]((prev) { return [...prev, agentId]); };
 
                 // Start the agent
                 startAgentMutation.mutateAsync(agentId);
@@ -50,14 +50,14 @@ void useAgentManagement() {
                     // Let the mutation's onError handler show the appropriate toast
                     } finally {
                         // Remove agent from starting list regardless of success/failure
-                        setStartingAgents((prev) => prev.filter((id) => id != agentId));
+                        setStartingAgents[&]((prev) { return prev.filter[&]((id) { return id != agentId)); }; };
                     }
                     };
 
                     /**
                     * Stop an agent
                     */
-                    const auto stopAgent = std::async (agent: Agent) => {;
+                    const auto stopAgent = std::async [&](agent: Agent) {;
                         if (!agent.id) {
                             toast({
                                 title: "Error",
@@ -70,13 +70,13 @@ void useAgentManagement() {
                             const auto agentId = agent.id;
 
                             // Prevent stopping if already in progress
-                            if (stoppingAgents.includes(agentId)) {
+                            if (stoppingAgents.count(agentId) > 0) {
                                 return;
                             }
 
                             try {
                                 // Add agent to stopping list
-                                setStoppingAgents((prev) => [...prev, agentId]);
+                                setStoppingAgents[&]((prev) { return [...prev, agentId]); };
 
                                 // Stop the agent
                                 stopAgentMutation.mutateAsync(agentId);
@@ -90,7 +90,7 @@ void useAgentManagement() {
                                         // Let the mutation's onError handler show the appropriate toast
                                         } finally {
                                             // Remove agent from stopping list regardless of success/failure
-                                            setStoppingAgents((prev) => prev.filter((id) => id != agentId));
+                                            setStoppingAgents[&]((prev) { return prev.filter[&]((id) { return id != agentId)); }; };
                                         }
                                         };
 

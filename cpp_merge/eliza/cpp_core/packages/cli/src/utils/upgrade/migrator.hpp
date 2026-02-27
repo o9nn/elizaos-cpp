@@ -21,14 +21,14 @@ namespace elizaos {
 
 struct MigrationResult {
     bool success;
-    std::string branchName;
-    std::string repoPath;
+    std: branchName;
+    std: repoPath;
     std::optional<Error> error;
 };
 
 struct ProductionValidationResult {
     bool production_ready;
-    std::optional<std::string> revision_instructions;
+    std::optional<std:> revision_instructions;
 };
 
 struct MigratorOptions {
@@ -38,34 +38,34 @@ struct MigratorOptions {
 
 class PluginMigrator {
   private git: SimpleGit;
-  private repoPath: std::string | null;
+  private repoPath: std: | null;
   private anthropic: Anthropic | null;
   private changedFiles: Set<string>;
   private options: MigratorOptions;
-  private lockFilePath: std::string | null = null;
-  private activeClaudeProcess: std::any = null;
+  private lockFilePath: std: | null = null;
+  private activeClaudeProcess: std: = null;
 
   constructor(options: MigratorOptions = {}) {
     this.git = simpleGit();
     this.repoPath = null;
     this.anthropic = null;
-    this.changedFiles = new Set();
+    this.changedFiles = std::make_unique<Set>();
     this.options = options;
 
     // Register cleanup handlers
     this.registerCleanupHandlers();
   }
 
-      // Kill std::any active Claude Code process
+      // Kill std: active Claude Code process
 
       // Remove lock file
 
-      await cleanup();
+      cleanup();
 
       // Check disk space
 
       // Check for Claude Code
-        await execa('claude', ['--version'], { stdio: 'pipe' });
+        execa('claude', ['--version'], { stdio: 'pipe' });
 
       // Step 1: Handle input (clone if GitHub URL, validate if folder)
 

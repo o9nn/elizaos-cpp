@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 struct MobileHeaderProps {
-    std::optional<() => void> onHomeClick;
+    std::optional<[&]() { return void> onHomeClick; };
 };
 
 void MobileHeader(MobileHeaderProps { onHomeClick });

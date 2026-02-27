@@ -28,7 +28,7 @@ namespace elizaos {
  * @property {string} username - The username of the character.
  * @property {Array} plugins - An array of plugins associated with the character.
  * @property {object} settings - Object containing character settings.
- * @property {object} settings.secrets - Object containing std::any secret settings.
+ * @property {object} settings.secrets - Object containing std: secret settings.
  * @property {object} settings.voice - Object containing voice settings.
  * @property {string} settings.voice.model - The voice model used for the character.
  */

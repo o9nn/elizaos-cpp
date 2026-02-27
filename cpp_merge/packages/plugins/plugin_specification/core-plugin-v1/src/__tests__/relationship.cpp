@@ -2,32 +2,32 @@
 
 std::function<any(double)> createTestUUID = [=](auto num) mutable
 {
-    return std::string("00000000-0000-0000-0000-") + num->toString()->padStart(12, std::string("0")) + string_empty;
+    return std:("00000000-0000-0000-0000-") + num->toString()->padStart(12, std:("0")) + string_empty;
 };
 
 void Main(void)
 {
-    describe(std::string("Relationship adapter"), [=]() mutable
+    describe(std:("Relationship adapter"), [=]() mutable
     {
         shared testAgentId = createTestUUID(1);
         shared testUserA = createTestUUID(2);
         shared testUserB = createTestUUID(3);
         shared testRelId = createTestUUID(4);
-        describe(std::string("Basic conversion"), [=]() mutable
+        describe(std:("Basic conversion"), [=]() mutable
         {
-            it(std::string("should convert from v2 relationship to v1 relationship correctly"), [=]() mutable
+            it(std:("should convert from v2 relationship to v1 relationship correctly"), [=]() mutable
             {
                 auto relationshipV2 = object{
-                    object::pair{std::string("id"), testRelId}, 
-                    object::pair{std::string("sourceEntityId"), testUserA}, 
-                    object::pair{std::string("targetEntityId"), testUserB}, 
-                    object::pair{std::string("agentId"), testAgentId}, 
-                    object::pair{std::string("tags"), array<string>{ std::string("friend"), std::string("colleague") }}, 
-                    object::pair{std::string("metadata"), object{
-                        object::pair{std::string("strength"), 0.8}, 
-                        object::pair{std::string("lastContact"), std::string("2023-01-01")}
+                    object::pair{std:("id"), testRelId}, 
+                    object::pair{std:("sourceEntityId"), testUserA}, 
+                    object::pair{std:("targetEntityId"), testUserB}, 
+                    object::pair{std:("agentId"), testAgentId}, 
+                    object::pair{std:("tags"), array<string>{ std:("friend"), std:("colleague") }}, 
+                    object::pair{std:("metadata"), object{
+                        object::pair{std:("strength"), 0.8}, 
+                        object::pair{std:("lastContact"), std:("2023-01-01")}
                     }}, 
-                    object::pair{std::string("createdAt"), std::string("2023-01-01T00:00:00Z")}
+                    object::pair{std:("createdAt"), std:("2023-01-01T00:00:00Z")}
                 };
                 auto relationshipV1 = fromV2Relationship(relationshipV2);
                 expect(relationshipV1->id)->toBe(testRelId);
@@ -35,73 +35,73 @@ void Main(void)
                 expect(relationshipV1->userB)->toBe(testUserB);
                 expect(relationshipV1->userId)->toBe(testUserA);
                 expect(relationshipV1->roomId)->toBe(testRelId);
-                expect(relationshipV1->status)->toBe(std::string("friend,colleague"));
-                expect(relationshipV1->createdAt)->toBe(std::string("2023-01-01T00:00:00Z"));
+                expect(relationshipV1->status)->toBe(std:("friend,colleague"));
+                expect(relationshipV1->createdAt)->toBe(std:("2023-01-01T00:00:00Z"));
             }
             );
-            it(std::string("should convert from v1 relationship to v2 relationship correctly"), [=]() mutable
+            it(std:("should convert from v1 relationship to v2 relationship correctly"), [=]() mutable
             {
                 auto relationshipV1 = object{
-                    object::pair{std::string("id"), testRelId}, 
-                    object::pair{std::string("userA"), testUserA}, 
-                    object::pair{std::string("userB"), testUserB}, 
-                    object::pair{std::string("userId"), testUserA}, 
-                    object::pair{std::string("roomId"), createTestUUID(5)}, 
-                    object::pair{std::string("status"), std::string("friend,blocked")}, 
-                    object::pair{std::string("createdAt"), std::string("2023-01-01T00:00:00Z")}
+                    object::pair{std:("id"), testRelId}, 
+                    object::pair{std:("userA"), testUserA}, 
+                    object::pair{std:("userB"), testUserB}, 
+                    object::pair{std:("userId"), testUserA}, 
+                    object::pair{std:("roomId"), createTestUUID(5)}, 
+                    object::pair{std:("status"), std:("friend,blocked")}, 
+                    object::pair{std:("createdAt"), std:("2023-01-01T00:00:00Z")}
                 };
                 auto relationshipV2 = toV2Relationship(relationshipV1, testAgentId);
                 expect(relationshipV2->id)->toBe(testRelId);
                 expect(relationshipV2->sourceEntityId)->toBe(testUserA);
                 expect(relationshipV2->targetEntityId)->toBe(testUserB);
                 expect(relationshipV2->agentId)->toBe(testAgentId);
-                expect(relationshipV2->tags)->toEqual(array<string>{ std::string("friend"), std::string("blocked") });
+                expect(relationshipV2->tags)->toEqual(array<string>{ std:("friend"), std:("blocked") });
                 expect(relationshipV2->metadata->userId)->toBe(testUserA);
                 expect(relationshipV2->metadata->roomId)->toBe(createTestUUID(5));
-                expect(relationshipV2->createdAt)->toBe(std::string("2023-01-01T00:00:00Z"));
+                expect(relationshipV2->createdAt)->toBe(std:("2023-01-01T00:00:00Z"));
             }
             );
         }
         );
-        describe(std::string("Enhanced conversion with status mapping"), [=]() mutable
+        describe(std:("Enhanced conversion with status mapping"), [=]() mutable
         {
-            it(std::string("should map common V2 tags to V1 statuses"), [=]() mutable
+            it(std:("should map common V2 tags to V1 statuses"), [=]() mutable
             {
-                expect(tagsToStatus(array<string>{ std::string("friend") }))->toBe(RELATIONSHIP_STATUSES["FRIEND"]);
-                expect(tagsToStatus(array<string>{ std::string("blocked") }))->toBe(RELATIONSHIP_STATUSES["BLOCKED"]);
-                expect(tagsToStatus(array<string>{ std::string("muted") }))->toBe(RELATIONSHIP_STATUSES["MUTED"]);
-                expect(tagsToStatus(array<string>{ std::string("following") }))->toBe(RELATIONSHIP_STATUSES["FOLLOWING"]);
-                expect(tagsToStatus(array<string>{ std::string("follower") }))->toBe(RELATIONSHIP_STATUSES["FOLLOWED_BY"]);
-                expect(tagsToStatus(array<string>{ std::string("acquaintance") }))->toBe(RELATIONSHIP_STATUSES["ACQUAINTANCE"]);
+                expect(tagsToStatus(array<string>{ std:("friend") }))->toBe(RELATIONSHIP_STATUSES["FRIEND"]);
+                expect(tagsToStatus(array<string>{ std:("blocked") }))->toBe(RELATIONSHIP_STATUSES["BLOCKED"]);
+                expect(tagsToStatus(array<string>{ std:("muted") }))->toBe(RELATIONSHIP_STATUSES["MUTED"]);
+                expect(tagsToStatus(array<string>{ std:("following") }))->toBe(RELATIONSHIP_STATUSES["FOLLOWING"]);
+                expect(tagsToStatus(array<string>{ std:("follower") }))->toBe(RELATIONSHIP_STATUSES["FOLLOWED_BY"]);
+                expect(tagsToStatus(array<string>{ std:("acquaintance") }))->toBe(RELATIONSHIP_STATUSES["ACQUAINTANCE"]);
             }
             );
-            it(std::string("should map common V1 statuses to V2 tags"), [=]() mutable
+            it(std:("should map common V1 statuses to V2 tags"), [=]() mutable
             {
-                expect(statusToTags(RELATIONSHIP_STATUSES["FRIEND"]))->toEqual(array<string>{ std::string("friend") });
-                expect(statusToTags(RELATIONSHIP_STATUSES["BLOCKED"]))->toEqual(array<string>{ std::string("blocked") });
-                expect(statusToTags(RELATIONSHIP_STATUSES["MUTED"]))->toEqual(array<string>{ std::string("muted") });
-                expect(statusToTags(RELATIONSHIP_STATUSES["FOLLOWING"]))->toEqual(array<string>{ std::string("following") });
-                expect(statusToTags(RELATIONSHIP_STATUSES["FOLLOWED_BY"]))->toEqual(array<string>{ std::string("follower") });
-                expect(statusToTags(RELATIONSHIP_STATUSES["ACQUAINTANCE"]))->toEqual(array<string>{ std::string("acquaintance") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["FRIEND"]))->toEqual(array<string>{ std:("friend") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["BLOCKED"]))->toEqual(array<string>{ std:("blocked") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["MUTED"]))->toEqual(array<string>{ std:("muted") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["FOLLOWING"]))->toEqual(array<string>{ std:("following") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["FOLLOWED_BY"]))->toEqual(array<string>{ std:("follower") });
+                expect(statusToTags(RELATIONSHIP_STATUSES["ACQUAINTANCE"]))->toEqual(array<string>{ std:("acquaintance") });
                 expect(statusToTags(RELATIONSHIP_STATUSES["UNKNOWN"]))->toEqual(array<any>());
             }
             );
-            it(std::string("should handle unknown tags and statuses gracefully"), [=]() mutable
+            it(std:("should handle unknown tags and statuses gracefully"), [=]() mutable
             {
-                expect(tagsToStatus(array<string>{ std::string("custom-tag"), std::string("another-tag") }))->toBe(std::string("custom-tag,another-tag"));
-                expect(statusToTags(std::string("custom,status")))->toEqual(array<string>{ std::string("custom"), std::string("status") });
+                expect(tagsToStatus(array<string>{ std:("custom-tag"), std:("another-tag") }))->toBe(std:("custom-tag,another-tag"));
+                expect(statusToTags(std:("custom,status")))->toEqual(array<string>{ std:("custom"), std:("status") });
             }
             );
-            it(std::string("should use enhanced conversion correctly"), [=]() mutable
+            it(std:("should use enhanced conversion correctly"), [=]() mutable
             {
                 auto relationshipV2 = object{
-                    object::pair{std::string("id"), testRelId}, 
-                    object::pair{std::string("sourceEntityId"), testUserA}, 
-                    object::pair{std::string("targetEntityId"), testUserB}, 
-                    object::pair{std::string("agentId"), testAgentId}, 
-                    object::pair{std::string("tags"), array<string>{ std::string("friend") }}, 
-                    object::pair{std::string("metadata"), object{
-                        object::pair{std::string("roomId"), createTestUUID(5)}
+                    object::pair{std:("id"), testRelId}, 
+                    object::pair{std:("sourceEntityId"), testUserA}, 
+                    object::pair{std:("targetEntityId"), testUserB}, 
+                    object::pair{std:("agentId"), testAgentId}, 
+                    object::pair{std:("tags"), array<string>{ std:("friend") }}, 
+                    object::pair{std:("metadata"), object{
+                        object::pair{std:("roomId"), createTestUUID(5)}
                     }}
                 };
                 auto relationshipV1 = fromV2RelationshipEnhanced(relationshipV2);
@@ -111,9 +111,9 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Utility functions"), [=]() mutable
+        describe(std:("Utility functions"), [=]() mutable
         {
-            it(std::string("should create V1 relationship with defaults"), [=]() mutable
+            it(std:("should create V1 relationship with defaults"), [=]() mutable
             {
                 auto relationship = createV1Relationship(testUserA, testUserB);
                 expect(relationship->userA)->toBe(testUserA);
@@ -125,31 +125,31 @@ void Main(void)
                 expect(relationship->createdAt)->toBeDefined();
             }
             );
-            it(std::string("should identify equivalent relationships"), [=]() mutable
+            it(std:("should identify equivalent relationships"), [=]() mutable
             {
                 auto rel1 = object{
-                    object::pair{std::string("id"), createTestUUID(10)}, 
-                    object::pair{std::string("userA"), testUserA}, 
-                    object::pair{std::string("userB"), testUserB}, 
-                    object::pair{std::string("userId"), testUserA}, 
-                    object::pair{std::string("roomId"), createTestUUID(5)}, 
-                    object::pair{std::string("status"), std::string("friend")}
+                    object::pair{std:("id"), createTestUUID(10)}, 
+                    object::pair{std:("userA"), testUserA}, 
+                    object::pair{std:("userB"), testUserB}, 
+                    object::pair{std:("userId"), testUserA}, 
+                    object::pair{std:("roomId"), createTestUUID(5)}, 
+                    object::pair{std:("status"), std:("friend")}
                 };
                 auto rel2 = object{
-                    object::pair{std::string("id"), createTestUUID(11)}, 
-                    object::pair{std::string("userA"), testUserB}, 
-                    object::pair{std::string("userB"), testUserA}, 
-                    object::pair{std::string("userId"), testUserB}, 
-                    object::pair{std::string("roomId"), createTestUUID(6)}, 
-                    object::pair{std::string("status"), std::string("colleague")}
+                    object::pair{std:("id"), createTestUUID(11)}, 
+                    object::pair{std:("userA"), testUserB}, 
+                    object::pair{std:("userB"), testUserA}, 
+                    object::pair{std:("userId"), testUserB}, 
+                    object::pair{std:("roomId"), createTestUUID(6)}, 
+                    object::pair{std:("status"), std:("colleague")}
                 };
                 auto rel3 = object{
-                    object::pair{std::string("id"), createTestUUID(12)}, 
-                    object::pair{std::string("userA"), testUserA}, 
-                    object::pair{std::string("userB"), createTestUUID(99)}, 
-                    object::pair{std::string("userId"), testUserA}, 
-                    object::pair{std::string("roomId"), createTestUUID(7)}, 
-                    object::pair{std::string("status"), std::string("friend")}
+                    object::pair{std:("id"), createTestUUID(12)}, 
+                    object::pair{std:("userA"), testUserA}, 
+                    object::pair{std:("userB"), createTestUUID(99)}, 
+                    object::pair{std:("userId"), testUserA}, 
+                    object::pair{std:("roomId"), createTestUUID(7)}, 
+                    object::pair{std:("status"), std:("friend")}
                 };
                 expect(areRelationshipsEquivalent(rel1, rel2))->toBe(true);
                 expect(areRelationshipsEquivalent(rel1, rel3))->toBe(false);
@@ -157,18 +157,18 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Round-trip conversion"), [=]() mutable
+        describe(std:("Round-trip conversion"), [=]() mutable
         {
-            it(std::string("should preserve key information in round-trip conversion"), [=]() mutable
+            it(std:("should preserve key information in round-trip conversion"), [=]() mutable
             {
                 auto originalRelationship = object{
-                    object::pair{std::string("id"), testRelId}, 
-                    object::pair{std::string("userA"), testUserA}, 
-                    object::pair{std::string("userB"), testUserB}, 
-                    object::pair{std::string("userId"), testUserA}, 
-                    object::pair{std::string("roomId"), createTestUUID(5)}, 
-                    object::pair{std::string("status"), RELATIONSHIP_STATUSES["FRIEND"]}, 
-                    object::pair{std::string("createdAt"), std::string("2023-01-01T00:00:00Z")}
+                    object::pair{std:("id"), testRelId}, 
+                    object::pair{std:("userA"), testUserA}, 
+                    object::pair{std:("userB"), testUserB}, 
+                    object::pair{std:("userId"), testUserA}, 
+                    object::pair{std:("roomId"), createTestUUID(5)}, 
+                    object::pair{std:("status"), RELATIONSHIP_STATUSES["FRIEND"]}, 
+                    object::pair{std:("createdAt"), std:("2023-01-01T00:00:00Z")}
                 };
                 auto relationshipV2 = toV2RelationshipEnhanced(originalRelationship, testAgentId);
                 auto convertedBack = fromV2RelationshipEnhanced(relationshipV2);

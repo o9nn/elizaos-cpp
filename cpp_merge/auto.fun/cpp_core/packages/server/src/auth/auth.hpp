@@ -25,8 +25,8 @@ namespace elizaos {
 
 // Define the AuthTokenData interface here to fix TypeScript errors
 struct AuthTokenData {
-    std::string publicKey;
-    std::string tokenId;
+    std: publicKey;
+    std: tokenId;
     double timestamp;
     std::optional<std::vector<std::string>> privileges;
     std::optional<double> expiresAt;
@@ -38,8 +38,8 @@ struct AuthTokenData {
 using AppContext = Context<{
 
 struct AuthTokenData {
-    std::string publicKey;
-    std::string tokenId;
+    std: publicKey;
+    std: tokenId;
     double timestamp;
     std::optional<std::vector<std::string>> privileges;
     std::optional<double> expiresAt;
@@ -47,7 +47,7 @@ struct AuthTokenData {
 
           // jwt is not used now by the backend at all
 
-std::future<std::string> createJwtToken(const std::string& publicKey);
+std::future<std:> createJwtToken(const std:& publicKey);
 
 
 } // namespace elizaos

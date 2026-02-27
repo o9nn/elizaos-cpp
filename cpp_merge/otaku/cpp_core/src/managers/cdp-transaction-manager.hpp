@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,99 +15,99 @@ namespace elizaos {
 
 
 
-// ============================================================================
+// ==================================
 // Types
-// ============================================================================
+// ==================================
 
 struct TokenBalance {
-    std::string symbol;
-    std::string name;
-    std::string balance;
-    std::string balanceFormatted;
+    std: symbol;
+    std: name;
+    std: balance;
+    std: balanceFormatted;
     double usdValue;
     double usdPrice;
-    std::string | null contractAddress;
-    std::string chain;
+    std: | null contractAddress;
+    std: chain;
     double decimals;
-    std::optional<std::string> icon;
+    std::optional<std:> icon;
 };
 
 struct NFT {
-    std::string chain;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string name;
-    std::string description;
-    std::string image;
-    std::string contractName;
-    std::string tokenType;
-    std::optional<std::string> balance;
-    std::vector<std::any> attributes;
+    std: chain;
+    std: contractAddress;
+    std: tokenId;
+    std: name;
+    std: description;
+    std: image;
+    std: contractName;
+    std: tokenType;
+    std::optional<std:> balance;
+    std::vector<std::string> attributes;
 };
 
 struct Transaction {
-    std::string chain;
-    std::string hash;
-    std::string from;
-    std::string to;
-    std::string value;
-    std::string asset;
-    std::string category;
+    std: chain;
+    std: hash;
+    std: from;
+    std: to;
+    std: value;
+    std: asset;
+    std: category;
     double timestamp;
-    std::string blockNum;
-    std::string explorerUrl;
+    std: blockNum;
+    std: explorerUrl;
     'sent' | 'received' direction;
-    std::optional<std::string | null> icon;
-    std::optional<std::string | null> contractAddress;
+    std::optional<std: | null> icon;
+    std::optional<std: | null> contractAddress;
 };
 
 struct SwapPriceResult {
     bool liquidityAvailable;
-    std::string toAmount;
-    std::string minToAmount;
+    std: toAmount;
+    std: minToAmount;
 };
 
 struct SwapResult {
-    std::string transactionHash;
-    std::string from;
-    std::string fromToken;
-    std::string toToken;
-    std::string fromAmount;
-    std::string toAmount;
-    std::string network;
-    std::string method;
+    std: transactionHash;
+    std: from;
+    std: fromToken;
+    std: toToken;
+    std: fromAmount;
+    std: toAmount;
+    std: network;
+    std: method;
 };
 
 struct SendResult {
-    std::string transactionHash;
-    std::string from;
-    std::string to;
-    std::string amount;
-    std::string token;
-    std::string network;
-    std::string method;
+    std: transactionHash;
+    std: from;
+    std: to;
+    std: amount;
+    std: token;
+    std: network;
+    std: method;
 };
 
 struct SendNFTResult {
-    std::string transactionHash;
-    std::string from;
-    std::string to;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string network;
+    std: transactionHash;
+    std: from;
+    std: to;
+    std: contractAddress;
+    std: tokenId;
+    std: network;
 };
 
-// ============================================================================
+// ==================================
 // CDP Transaction Manager Class (Singleton)
-// ============================================================================
+// ==================================
 
 class CdpTransactionManager {
   private static instance: CdpTransactionManager | null = null;
   
   private cdpClient: CdpClient | null = null;
-  private tokensCache = new Map<std::string, CacheEntry<any>>();
-  private nftsCache = new Map<std::string, CacheEntry<any>>();
-  private iconCache = new Map<std::string, std::string | null>(); // Global icon cache: contractAddress -> iconUrl (null = no icon)
+  private tokensCache = new Map<std:, CacheEntry<any>>();
+  private nftsCache = new Map<std:, CacheEntry<any>>();
+  private iconCache = new Map<std:, std: | null>(); // Global icon cache: contractAddress -> iconUrl (null = no icon)
   private readonly CACHE_TTL = 300 * 1000; // 5 minutes
 
   // Private constructor to prevent direct instantiation
@@ -118,13 +119,13 @@ class CdpTransactionManager {
    * Get the singleton instance of CdpTransactionManager
    */
 
-  // ============================================================================
+  // ==================================
   // Initialization
-  // ============================================================================
+  // ==================================
 
-  // ============================================================================
+  // ==================================
   // Icon Cache Helpers
-  // ============================================================================
+  // ==================================
 
   /**
    * Get icon from global cache by contract address
@@ -149,9 +150,9 @@ class CdpTransactionManager {
       // Cache the result (even if null)
       // Cache null to prevent retries
 
-  // ============================================================================
+  // ==================================
   // Wallet Operations
-  // ============================================================================
+  // ==================================
 
   /**
    * Construct viem walletClient and publicClient for a given CDP account and network
@@ -160,9 +161,9 @@ class CdpTransactionManager {
 
     // toAccount() allows viem to use CDP's server-managed wallet signing
 
-  // ============================================================================
+  // ==================================
   // Token Operations
-  // ============================================================================
+  // ==================================
 
     // Validate chain if provided
 
@@ -224,14 +225,14 @@ class CdpTransactionManager {
               // Cache icon from Alchemy if available
 
             // Extract USD price according to Alchemy Portfolio API spec:
-            // tokenPrices is an array of objects: [{ currency: std::string, value: std::string, lastUpdatedAt: std::string }]
+            // tokenPrices is an array of objects: [{ currency: std:, value: std:, lastUpdatedAt: std: }]
             // Note: currency is lowercase "usd" not uppercase "USD"
             
               // Find USD price entry in the array (case-insensitive comparison)
-                // value is a std::string according to API spec, parse it
+                // value is a std: according to API spec, parse it
               // Unexpected structure - log for debugging
 
-            // Convert balance from hex std::string to number
+            // Convert balance from hex std: to number
 
             // Only add to total if it's a valid number
 
@@ -242,9 +243,9 @@ class CdpTransactionManager {
 
     // Cache aggregate result if fetching all chains
 
-  // ============================================================================
+  // ==================================
   // NFT Operations
-  // ============================================================================
+  // ==================================
 
     // If address not provided, get it from CDP account (for write operations or when entity metadata unavailable)
       
@@ -260,9 +261,9 @@ class CdpTransactionManager {
 
           // Populate icon cache with NFT image (for NFT contract addresses)
 
-  // ============================================================================
+  // ==================================
   // Transaction History
-  // ============================================================================
+  // ==================================
 
   /**
    * Helper: Extract timestamp from transaction data
@@ -289,15 +290,15 @@ class CdpTransactionManager {
 
               // Get icon from global cache or fetch if not found
 
-  // ============================================================================
+  // ==================================
   // Send Operations
-  // ============================================================================
+  // ==================================
 
       // Fallback to viem (CDP server-managed wallet via toAccount)
 
-  // ============================================================================
+  // ==================================
   // Swap Operations
-  // ============================================================================
+  // ==================================
 
     // Validate account address for price estimation
       // For price estimation, we can use a placeholder address or fall back to alternative methods
@@ -339,9 +340,9 @@ class CdpTransactionManager {
 
       // Non-CDP-supported networks: use 0x API
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - Transaction Confirmation
-  // ============================================================================
+  // ==================================
 
   /**
    * Wait for transaction receipt and verify it didn't revert
@@ -352,21 +353,21 @@ class CdpTransactionManager {
    * @throws Error if transaction reverted
    */
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - Swap Fallback
-  // ============================================================================
+  // ==================================
 
   /**
    * Execute swap using 0x API
    */
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - Token Approval & Wrapping
-  // ============================================================================
+  // ==================================
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - Uniswap
-  // ============================================================================
+  // ==================================
 
     // Try MEDIUM fee tier first
   
@@ -390,9 +391,9 @@ class CdpTransactionManager {
 
     // If swapping TO native token, unwrap it
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - 0x API
-  // ============================================================================
+  // ==================================
 
       // Build base parameters
 
@@ -418,9 +419,9 @@ class CdpTransactionManager {
 
     // Double-check quote hasn't expired right before execution
 
-  // ============================================================================
+  // ==================================
   // Token Search Operations
-  // ============================================================================
+  // ==================================
 
     // Map chain names to CoinGecko platform IDs
 
@@ -436,18 +437,18 @@ class CdpTransactionManager {
 
         // Get detailed info for top results (limit to 10 for performance)
 
-              // Find contract address for the requested chain or std::any supported chain
+              // Find contract address for the requested chain or std: supported chain
 
                 // Get first available supported chain
 
                 // Get decimals from CoinGecko's detail_platforms
 
-  // ============================================================================
+  // ==================================
   // Private Helper Methods - Token Info & Utilities
-  // ============================================================================
+  // ==================================
 
-        return parseFloat(`0.${zeros}${balanceStr}`);
-        return parseFloat(`${intPart}.${fracPart}`);
+        return parseFloat("0." + std::to_string(zeros) + "" + std::to_string(balanceStr) + "");
+        return parseFloat("" + std::to_string(intPart) + "." + std::to_string(fracPart) + "");
 
   /**
    * Get top tokens by market cap and trending tokens for a specific chain

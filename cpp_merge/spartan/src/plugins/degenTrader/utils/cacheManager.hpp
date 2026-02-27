@@ -48,9 +48,9 @@ template <typename T>
 std::shared_ptr<Promise<void>> CacheManager::set(string key, T value, double ttl)
 {
     auto entry = object{
-        object::pair{std::string("value"), std::string("value")}, 
-        object::pair{std::string("timestamp"), Date->now()}, 
-        object::pair{std::string("expiry"), Date->now() + ttl}
+        object::pair{std:("value"), std:("value")}, 
+        object::pair{std:("timestamp"), Date->now()}, 
+        object::pair{std:("expiry"), Date->now() + ttl}
     };
     this->cache->set(key, entry);
     return std::shared_ptr<Promise<void>>();

@@ -1,14 +1,15 @@
 #include "copy-templates.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> updatePackageJson(const std::string& packagePath, const std::string& cliVersion) {
+std::future<void> updatePackageJson(const std:& packagePath, const std:& cliVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageJsonContent = fs.readFile(packagePath, "utf-8");
-    const auto packageData = /* JSON.parse */ packageJsonContent;
+    const auto packageData = /* JSON::parse */ packageJsonContent;
 
     // Use a standard initial version for new packages
     packageData.version = "0.1.0";
@@ -29,7 +30,7 @@ std::future<void> updatePackageJson(const std::string& packagePath, const std::s
         packageData.repository.url = "";
     }
 
-    fs.writeFile(packagePath, /* JSON.stringify */ std::string(packageData, nullptr, 2));
+    fs.writeFile(packagePath, /* JSON.stringify */ std:(packageData, nullptr, 2));
 
 }
 
@@ -50,7 +51,7 @@ std::future<void> main() {
 
             // Get CLI version from package.json
             const auto cliPackageJsonPath = path.resolve(ROOT_DIR, "packages/cli/package.json");
-            const auto cliPackageData = /* JSON.parse */ fs.readFile(cliPackageJsonPath, "utf-8");
+            const auto cliPackageData = /* JSON::parse */ fs.readFile(cliPackageJsonPath, "utf-8");
             const auto cliVersion = cliPackageData.version;
 
             // Define templates to copy
@@ -74,11 +75,11 @@ std::future<void> main() {
 
                         // Copy each template and update its package.json
                         for (const auto& template : templates)
-                            fs.copy(template.src, template.dest, {
-                                filter: (srcPath) => {
+                            fs.copy[&](template.src, template.dest, {
+                                filter: (srcPath) {
                                     const auto baseName = path.basename(srcPath);
                                     if (baseName == 'node_modules' || baseName == '.git') {
-                                        // console.log(`Filtering out: ${srcPath}`); // Log which paths are being filtered
+                                        // console.log("Filtering out: " + std::to_string(srcPath) + ""); // Log which paths are being filtered
                                         return false;
                                     }
                                     return true;
@@ -93,7 +94,7 @@ std::future<void> main() {
                                 std::cout << "Templates have been copied and updated successfully." << std::endl;
                                 } catch (error) {
                                     std::cerr << "Error copying templates:" << error << std::endl;
-                                    process.exit(1);
+                                    std::exit(1);
                                 }
 
 }

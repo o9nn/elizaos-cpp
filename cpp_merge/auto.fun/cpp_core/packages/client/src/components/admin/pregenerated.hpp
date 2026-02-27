@@ -18,13 +18,13 @@ namespace elizaos {
 
 // Interface matching the PreGeneratedToken from the database
 struct PreGeneratedToken {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string description;
-    std::string prompt;
-    std::string image;
-    std::string createdAt;
+    std: id;
+    std: name;
+    std: ticker;
+    std: description;
+    std: prompt;
+    std: image;
+    std: createdAt;
     double used;
 };
 

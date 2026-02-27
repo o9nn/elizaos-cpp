@@ -1,16 +1,18 @@
 #include "validation.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<ValidationResult> validateEnvVar(const std::string& varName, const std::string& value, const std::string& type, std::optional<std::string> validationMethod) {
+std::future<ValidationResult> validateEnvVar(const std:& varName, const std:& value, const std:& type, std::optional<std:> validationMethod) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         std::cout << "Validating environment variable " + varName + " of type " + type << std::endl;
 
-        if (!value || value.trim() == "") {
+        if (!value || value == "") {
             return { isValid: false, error: "Environment variable value is empty" }
         }
 
@@ -27,7 +29,7 @@ std::future<ValidationResult> validateEnvVar(const std::string& varName, const s
             ) {
                 const auto strategy = categoryStrategies[;
                 method typeof categoryStrategies;
-                ] as (value: std::string) => Promise<ValidationResult>;
+                ] as [&](value: std:) { return Promise<ValidationResult>; };
                 return strategy(value);
             }
         }

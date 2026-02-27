@@ -1,10 +1,17 @@
 #include "get-config.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <cstdlib>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isValidPostgresUrl(const std::string& url) {
+bool isValidPostgresUrl(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!url || typeof url != 'string') return false;
@@ -26,18 +33,18 @@ bool isValidPostgresUrl(const std::string& url) {
             /^postgresql:\/\/.*@.*:\d+\/.*$/,
             ];
 
-            return patterns.some((pattern) => pattern.test(url));
+            return patterns.some[&]((pattern) { return pattern.test(url)); };
         }
 
 }
 
-std::future<void> getElizaDirectories(std::optional<std::string> targetProjectDir) {
+std::future<void> getElizaDirectories(std::optional<std:> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto userEnv = UserEnvironment.getInstance();
     const auto paths = userEnv.getPathInfo();
 
-    const auto projectRoot = targetProjectDir || paths.monorepoRoot || process.cwd();
+    const auto projectRoot = targetProjectDir || paths.monorepoRoot || std::filesystem::current_path().string();
     const auto elizaDir = targetProjectDir ? path.resolve(targetProjectDir, ".eliza") : paths.elizaDir;
     const auto envFilePath = targetProjectDir ? path.resolve(targetProjectDir, ".env") : paths.envFilePath;
 
@@ -54,17 +61,17 @@ std::future<void> getElizaDirectories(std::optional<std::string> targetProjectDi
 
 }
 
-std::future<void> ensureDir(const std::string& dirPath) {
+std::future<void> ensureDir(const std:& dirPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!existsSync(dirPath)) {
-        fs.mkdir(dirPath, { recursive: true });
-        logger.debug(`Created directory: ${dirPath}`);
+        fs.mkdir(dirPath, Config{recursive = true});
+        logger.debug("Created directory: " + std::to_string(dirPath) + "");
     }
 
 }
 
-std::future<void> setupEnvFile(const std::string& envFilePath) {
+std::future<void> setupEnvFile(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -79,7 +86,7 @@ std::future<void> setupEnvFile(const std::string& envFilePath) {
                 fs.writeFile(envFilePath, formattedContent, "utf8");
 
                 const auto processEnvCount = Object.keys(process.env).filter(;
-                [&](key) { return process.env[key] && process.env[key]!.trim() != ""; }
+                [&](key) { return process.env[key] && process.env[key]! != ""; }
                 ).size();
 
                 logger.info(
@@ -88,7 +95,7 @@ std::future<void> setupEnvFile(const std::string& envFilePath) {
                 } else {
                     // File exists, check if it's empty
                     const auto content = fs.readFile(envFilePath, "utf8");
-                    const auto trimmedContent = content.trim();
+                    const auto trimmedContent = content;
 
                     if (trimmedContent == '') {
                         // File is empty, write the hybrid merge
@@ -97,14 +104,14 @@ std::future<void> setupEnvFile(const std::string& envFilePath) {
                         fs.writeFile(envFilePath, formattedContent, "utf8");
 
                         const auto processEnvCount = Object.keys(process.env).filter(;
-                        [&](key) { return process.env[key] && process.env[key]!.trim() != ""; }
+                        [&](key) { return process.env[key] && process.env[key]! != ""; }
                         ).size();
 
                         logger.info(
                         "[Config] Populated empty .env file with " + processEnvCount + " variables from process.env merged with example variables at: " + envFilePath
                         );
                         } else {
-                            logger.debug(`[Config] .env file already exists and has content at: ${envFilePath}`);
+                            logger.debug("[Config] .env file already exists and has content at: " + std::to_string(envFilePath) + "");
                         }
                     }
                     } catch (error) {
@@ -121,7 +128,7 @@ std::future<void> setupEnvFile(const std::string& envFilePath) {
     }
 }
 
-std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir) {
+std::future<void> ensureElizaDir(std::optional<std:> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dirs = getElizaDirectories(targetProjectDir);
@@ -132,20 +139,20 @@ std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir) {
     const auto configPath = path.join(dirs.elizaDir, "config.json");
 
     if (!existsSync(registryCachePath)) {
-        fs.writeFile(registryCachePath, /* JSON.stringify */ std::string({}, nullptr, 2), "utf8");
-        logger.debug(`Created registry cache file: ${registryCachePath}`);
+        fs.writeFile(registryCachePath, /* JSON.stringify */ std:({}, nullptr, 2), "utf8");
+        logger.debug("Created registry cache file: " + std::to_string(registryCachePath) + "");
     }
 
     if (!existsSync(configPath)) {
-        fs.writeFile(configPath, /* JSON.stringify */ std::string({ version: "1.0.0" }, nullptr, 2), "utf8");
-        logger.debug(`Created config file: ${configPath}`);
+        fs.writeFile(configPath, /* JSON.stringify */ std:({ version: "1.0.0" }, nullptr, 2), "utf8");
+        logger.debug("Created config file: " + std::to_string(configPath) + "");
     }
 
     return dirs;
 
 }
 
-std::future<void> setupPgLite(const std::string& dbDir, const std::string& envPath, std::optional<std::string> targetProjectDir) {
+std::future<void> setupPgLite(const std:& dbDir, const std:& envPath, std::optional<std:> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -184,7 +191,7 @@ std::future<void> setupPgLite(const std::string& dbDir, const std::string& envPa
     }
 }
 
-std::future<void> storePostgresUrl(const std::string& url, const std::string& envFilePath) {
+std::future<void> storePostgresUrl(const std:& url, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -198,11 +205,11 @@ std::future<void> storePostgresUrl(const std::string& url, const std::string& en
             }
 
             // Remove existing POSTGRES_URL line if present
-            const auto lines = content.split("\n").filter((line) => !line.startsWith("POSTGRES_URL="));
+            const auto lines = content.split("\n").filter[&]((line) { return !line.substr(0, "POSTGRES_URL=")); };
             "lines.push_back(" + "POSTGRES_URL=" + url;
 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
-            process.env.POSTGRES_URL = url;
+            std::getenv("POSTGRES_URL") = url;
 
             logger.success('Postgres URL saved to configuration');
             } catch (error) {
@@ -216,7 +223,7 @@ std::future<void> storePostgresUrl(const std::string& url, const std::string& en
     }
 }
 
-std::future<void> storePgliteDataDir(const std::string& dataDir, const std::string& envFilePath) {
+std::future<void> storePgliteDataDir(const std:& dataDir, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -230,11 +237,11 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
             }
 
             // Remove existing PGLITE_DATA_DIR line if present
-            const auto lines = content.split("\n").filter((line) => !line.startsWith("PGLITE_DATA_DIR="));
+            const auto lines = content.split("\n").filter[&]((line) { return !line.substr(0, "PGLITE_DATA_DIR=")); };
             "lines.push_back(" + "PGLITE_DATA_DIR=" + dataDir;
 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
-            process.env.PGLITE_DATA_DIR = dataDir;
+            std::getenv("PGLITE_DATA_DIR") = dataDir;
 
             logger.success('PGLite data directory saved to configuration');
             } catch (error) {
@@ -248,16 +255,16 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
     }
 }
 
-std::future<std::string> promptAndStorePostgresUrl(const std::string& envFilePath) {
+std::future<std:> promptAndStorePostgresUrl(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     clack.intro("🗄️  PostgreSQL Configuration");
 
-    const auto response = clack.text({;
+    const auto response = clack.text[&]({;
         message: "Enter your Postgres URL:",
         placeholder: "postgresql://user:password@host:port/dbname",
-        validate: (value) => {
-            if (value.trim() == '') return 'Postgres URL cannot be empty';
+        validate: (value) {
+            if (value == '') return 'Postgres URL cannot be empty';
 
             const auto isValid = isValidPostgresUrl(value);
             if (!isValid) {
@@ -289,27 +296,27 @@ std::future<std::string> promptAndStorePostgresUrl(const std::string& envFilePat
 
 }
 
-bool isValidOpenAIKey(const std::string& key) {
+bool isValidOpenAIKey(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
 
     // OpenAI API keys typically start with 'sk-' and are 51 characters long
-    return key.startsWith("sk-") && key.size() >= 20;
+    return key.substr(0, "sk-") && key.size() >= 20;
 
 }
 
-bool isValidAnthropicKey(const std::string& key) {
+bool isValidAnthropicKey(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
 
     // Anthropic API keys typically start with 'sk-ant-'
-    return key.startsWith("sk-ant-") && key.size() >= 20;
+    return key.substr(0, "sk-ant-") && key.size() >= 20;
 
 }
 
-bool isValidGoogleKey(const std::string& key) {
+bool isValidGoogleKey(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
@@ -319,7 +326,7 @@ bool isValidGoogleKey(const std::string& key) {
 
 }
 
-std::future<void> storeOpenAIKey(const std::string& key, const std::string& envFilePath) {
+std::future<void> storeOpenAIKey(const std:& key, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -333,11 +340,11 @@ std::future<void> storeOpenAIKey(const std::string& key, const std::string& envF
             }
 
             // Remove existing OPENAI_API_KEY line if present
-            const auto lines = content.split("\n").filter((line) => !line.startsWith("OPENAI_API_KEY="));
+            const auto lines = content.split("\n").filter[&]((line) { return !line.substr(0, "OPENAI_API_KEY=")); };
             "lines.push_back(" + "OPENAI_API_KEY=" + key;
 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
-            process.env.OPENAI_API_KEY = key;
+            std::getenv("OPENAI_API_KEY") = key;
 
             logger.success('OpenAI API key saved to configuration');
             } catch (error) {
@@ -351,7 +358,7 @@ std::future<void> storeOpenAIKey(const std::string& key, const std::string& envF
     }
 }
 
-std::future<void> storeGoogleKey(const std::string& key, const std::string& envFilePath) {
+std::future<void> storeGoogleKey(const std:& key, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -365,13 +372,12 @@ std::future<void> storeGoogleKey(const std::string& key, const std::string& envF
             }
 
             // Remove existing GOOGLE_GENERATIVE_AI_API_KEY line if present
-            const auto lines = content;
-            .split("\n");
-            .filter((line) => !line.startsWith("GOOGLE_GENERATIVE_AI_API_KEY="));
+            const auto lines = content.split("\n");
+            .filter[&]((line) { return !line.substr(0, "GOOGLE_GENERATIVE_AI_API_KEY=")); };
             "lines.push_back(" + "GOOGLE_GENERATIVE_AI_API_KEY=" + key;
 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
-            process.env.GOOGLE_GENERATIVE_AI_API_KEY = key;
+            std::getenv("GOOGLE_GENERATIVE_AI_API_KEY") = key;
 
             logger.success('Google Generative AI API key saved to configuration');
             } catch (error) {
@@ -385,7 +391,7 @@ std::future<void> storeGoogleKey(const std::string& key, const std::string& envF
     }
 }
 
-std::future<void> storeAnthropicKey(const std::string& key, const std::string& envFilePath) {
+std::future<void> storeAnthropicKey(const std:& key, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -399,11 +405,11 @@ std::future<void> storeAnthropicKey(const std::string& key, const std::string& e
             }
 
             // Remove existing ANTHROPIC_API_KEY line if present
-            const auto lines = content.split("\n").filter((line) => !line.startsWith("ANTHROPIC_API_KEY="));
+            const auto lines = content.split("\n").filter[&]((line) { return !line.substr(0, "ANTHROPIC_API_KEY=")); };
             "lines.push_back(" + "ANTHROPIC_API_KEY=" + key;
 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
-            process.env.ANTHROPIC_API_KEY = key;
+            std::getenv("ANTHROPIC_API_KEY") = key;
 
             logger.success('Anthropic API key saved to configuration');
             } catch (error) {
@@ -417,7 +423,7 @@ std::future<void> storeAnthropicKey(const std::string& key, const std::string& e
     }
 }
 
-std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath) {
+std::future<std:> promptAndStoreOpenAIKey(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -429,13 +435,13 @@ std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath)
             key: "key",
             message: "Enter your OpenAI API key:",
             type: "password",
-            validate: (value) => {
-                if (value.trim() == '') return 'OpenAI API key cannot be empty';
+            validate: [&](value) {
+                if (value == '') return 'OpenAI API key cannot be empty';
                 return std::nullopt;
                 },
                 },
                 ],
-                storeFunction: std::async (results, envPath) => {
+                storeFunction: std::async [&](results, envPath) {
                     const auto isValid = isValidOpenAIKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-...");
@@ -446,12 +452,12 @@ std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath)
                     successMessage: "OpenAI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePath) {
+std::future<std:> promptAndStoreAnthropicKey(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -463,13 +469,13 @@ std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePa
             key: "key",
             message: "Enter your Anthropic API key:",
             type: "password",
-            validate: (value) => {
-                if (value.trim() == '') return 'Anthropic API key cannot be empty';
+            validate: [&](value) {
+                if (value == '') return 'Anthropic API key cannot be empty';
                 return std::nullopt;
                 },
                 },
                 ],
-                storeFunction: std::async (results, envPath) => {
+                storeFunction: std::async [&](results, envPath) {
                     const auto isValid = isValidAnthropicKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-ant-...");
@@ -480,12 +486,12 @@ std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePa
                     successMessage: "Claude integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-bool isValidOllamaEndpoint(const std::string& endpoint) {
+bool isValidOllamaEndpoint(const std:& endpoint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!endpoint || typeof endpoint != 'string') return false;
@@ -499,7 +505,7 @@ bool isValidOllamaEndpoint(const std::string& endpoint) {
 
 }
 
-std::future<void> storeOllamaConfig(const std::any& config, const std::string& envFilePath) {
+std::future<void> storeOllamaConfig(const std:& config, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -513,13 +519,11 @@ std::future<void> storeOllamaConfig(const std::any& config, const std::string& e
             }
 
             // Remove existing Ollama lines if present
-            const auto lines = content;
-            .split("\n");
-            .filter(;
+            const auto lines = content.split("\n").filter(;
             (line) =>;
-            !line.startsWith("OLLAMA_API_ENDPOINT=") &&;
-            !line.startsWith("OLLAMA_MODEL=") &&;
-            !line.startsWith("USE_OLLAMA_TEXT_MODELS=");
+            !line.substr(0, "OLLAMA_API_ENDPOINT=") &&;
+            !line.substr(0, "OLLAMA_MODEL=") &&;
+            !line.substr(0, "USE_OLLAMA_TEXT_MODELS=");
             );
 
             // Add new Ollama configuration
@@ -530,9 +534,9 @@ std::future<void> storeOllamaConfig(const std::any& config, const std::string& e
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
 
             // Update process.env
-            process.env.OLLAMA_API_ENDPOINT = config.endpoint;
-            process.env.OLLAMA_MODEL = config.model;
-            process.env.USE_OLLAMA_TEXT_MODELS = "true";
+            std::getenv("OLLAMA_API_ENDPOINT") = config.endpoint;
+            std::getenv("OLLAMA_MODEL") = config.model;
+            std::getenv("USE_OLLAMA_TEXT_MODELS") = "true";
 
             logger.success('Ollama configuration saved to configuration');
             } catch (error) {
@@ -546,17 +550,17 @@ std::future<void> storeOllamaConfig(const std::any& config, const std::string& e
     }
 }
 
-std::future<> promptAndStoreOllamaEmbeddingConfig(const std::string& envFilePath) {
+std::future<> promptAndStoreOllamaEmbeddingConfig(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: std::string; embeddingModel: std::string
+    endpoint: std:; embeddingModel: std:
 }
 
-std::future<> promptAndStoreOllamaConfig(const std::string& envFilePath) {
+std::future<> promptAndStoreOllamaConfig(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: std::string; model: std::string
+    endpoint: std:; model: std:
 }
 
-std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath) {
+std::future<std:> promptAndStoreGoogleKey(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -568,13 +572,13 @@ std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath)
             key: "key",
             message: "Enter your Google Generative AI API key:",
             type: "password",
-            validate: (value) => {
-                if (value.trim() == '') return 'Google API key cannot be empty';
+            validate: [&](value) {
+                if (value == '') return 'Google API key cannot be empty';
                 return std::nullopt;
                 },
                 },
                 ],
-                storeFunction: std::async (results, envPath) => {
+                storeFunction: std::async [&](results, envPath) {
                     const auto isValid = isValidGoogleKey(results.key);
                     if (!isValid) {
                         clack.log.warn(;
@@ -587,21 +591,21 @@ std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath)
                     successMessage: "Google Generative AI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-bool isValidOpenRouterKey(const std::string& key) {
+bool isValidOpenRouterKey(const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
     // OpenRouter keys typically start with "sk-or-" followed by alphanumeric characters
-    return key.startsWith("sk-or-") && key.size() > 10;
+    return key.substr(0, "sk-or-") && key.size() > 10;
 
 }
 
-std::future<void> storeOpenRouterKey(const std::string& key, const std::string& envFilePath) {
+std::future<void> storeOpenRouterKey(const std:& key, const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -615,7 +619,7 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
             }
 
             // Remove existing OpenRouter API key line if present
-            const auto lines = content.split("\n").filter((line) => !line.startsWith("OPENROUTER_API_KEY="));
+            const auto lines = content.split("\n").filter[&]((line) { return !line.substr(0, "OPENROUTER_API_KEY=")); };
 
             // Add new OpenRouter API key
             "lines.push_back(" + "OPENROUTER_API_KEY=" + key;
@@ -623,7 +627,7 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
             fs.writeFile(envFilePath, lines.join("\n"), "utf8");
 
             // Update process.env
-            process.env.OPENROUTER_API_KEY = key;
+            std::getenv("OPENROUTER_API_KEY") = key;
 
             logger.success('OpenRouter API key saved to configuration');
             } catch (error) {
@@ -637,7 +641,7 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
     }
 }
 
-std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFilePath) {
+std::future<std:> promptAndStoreOpenRouterKey(const std:& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -649,13 +653,13 @@ std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFileP
             key: "key",
             message: "Enter your OpenRouter API key:",
             type: "password",
-            validate: (value) => {
-                if (value.trim() == '') return 'OpenRouter API key cannot be empty';
+            validate: [&](value) {
+                if (value == '') return 'OpenRouter API key cannot be empty';
                 return std::nullopt;
                 },
                 },
                 ],
-                storeFunction: std::async (results, envPath) => {
+                storeFunction: std::async [&](results, envPath) {
                     const auto isValid = isValidOpenRouterKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-or-...");
@@ -666,12 +670,12 @@ std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFileP
                     successMessage: "OpenRouter integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-std::future<std::string> configureDatabaseSettings(auto reconfigure) {
+std::future<std:> configureDatabaseSettings(auto reconfigure) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Set up directories and env file
@@ -680,23 +684,23 @@ std::future<std::string> configureDatabaseSettings(auto reconfigure) {
     loadEnvironment(path.dirname(envFilePath));
 
     // Check if we already have database configuration in env
-    auto postgresUrl = process.env.POSTGRES_URL;
+    auto postgresUrl = std::getenv("POSTGRES_URL");
     const auto pgliteDataDir = resolvePgliteDir(std::nullopt, elizaDbDir);
 
     // Add debug logging
-    logger.debug(`Configuration check - POSTGRES_URL: ${postgresUrl ? 'SET' : 'NOT SET'}`);
-    logger.debug(`Configuration check - PGLITE_DATA_DIR: ${pgliteDataDir ? 'SET' : 'NOT SET'}`);
-    logger.debug(`Configuration check - reconfigure: ${reconfigure}`);
+    logger.debug("Configuration check - POSTGRES_URL: " + std::to_string(postgresUrl ? 'SET' : 'NOT SET') + "");
+    logger.debug("Configuration check - PGLITE_DATA_DIR: " + std::to_string(pgliteDataDir ? 'SET' : 'NOT SET') + "");
+    logger.debug("Configuration check - reconfigure: " + std::to_string(reconfigure) + "");
 
     // BYPASS ADDED: Skip prompts and always use postgres if URL is provided
-    if (process.env.POSTGRES_URL) {
+    if (std::getenv("POSTGRES_URL")) {
         std::cout << "BYPASS: Using postgres URL from environment variable" << std::endl;
-        return process.env.POSTGRES_URL;
+        return std::getenv("POSTGRES_URL");
     }
 
     // If we already have PGLITE_DATA_DIR std::set in env and not reconfiguring, use PGLite
     if (pgliteDataDir && !reconfigure) {
-        logger.debug(`Using existing PGLite configuration: ${pgliteDataDir}`);
+        logger.debug("Using existing PGLite configuration: " + std::to_string(pgliteDataDir) + "");
 
         // Ensure the directory exists
         ensureDir(pgliteDataDir);
@@ -711,7 +715,7 @@ std::future<std::string> configureDatabaseSettings(auto reconfigure) {
 
 }
 
-std::future<void> resolveConfigPaths(const std::string& cwd, RawConfig config) {
+std::future<void> resolveConfigPaths(const std:& cwd, RawConfig config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -733,22 +737,22 @@ std::future<void> resolveConfigPaths(const std::string& cwd, RawConfig config) {
     }
 }
 
-std::unordered_map<std::string, std::string> mergeProcessEnvWithTemplate(const std::string& templateContent) {
+std::unordered_map<std:, std:> mergeProcessEnvWithTemplate(const std:& templateContent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::string> result = {};
+    const std::unordered_map<std:, std:> result = {};
     const auto processedKeys = new Set<string>();
 
     // First, parse the template to get example variables and their structure
     const auto templateLines = templateContent.split("\n");
-    const std::unordered_map<std::string, std::string> templateVars = {};
+    const std::unordered_map<std:, std:> templateVars = {};
 
     for (const auto& line : templateLines)
-        const auto trimmedLine = line.trim();
-        if (trimmedLine && !trimmedLine.startsWith('#') && trimmedLine.includes('=')) {
+        const auto trimmedLine = line;
+        if (trimmedLine && !trimmedLine.substr(0, '#') && trimmedLine.count('=') > 0) {
             const auto equalIndex = trimmedLine.indexOf("=");
-            const auto key = trimmedLine.substring(0, equalIndex).trim();
-            const auto value = trimmedLine.substring(equalIndex + 1).trim();
+            const auto key = trimmedLine.substring(0, equalIndex);
+            const auto value = trimmedLine.substring(equalIndex + 1);
             if (key) {
                 templateVars[key] = value;
             }
@@ -757,7 +761,7 @@ std::unordered_map<std::string, std::string> mergeProcessEnvWithTemplate(const s
 
     // Add all process.env variables that have actual values (prioritized)
     for (const int [key, value] of Object.entries(process.env)) {
-        if (value && value.trim() != '') {
+        if (value && value != '') {
             result[key] = value;
             processedKeys.add(key);
         }
@@ -775,7 +779,7 @@ std::unordered_map<std::string, std::string> mergeProcessEnvWithTemplate(const s
 
 }
 
-std::string formatEnvFileWithTemplate(const std::unordered_map<std::string, std::string>& envVars, const std::string& templateContent) {
+std: formatEnvFileWithTemplate(const std::unordered_map<std:, std:>& envVars, const std:& templateContent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -784,15 +788,15 @@ std::string formatEnvFileWithTemplate(const std::unordered_map<std::string, std:
 
     // First pass: go through template preserving structure and comments
     for (const auto& line : templateLines)
-        const auto trimmedLine = line.trim();
+        const auto trimmedLine = line;
 
-        if (!trimmedLine || trimmedLine.startsWith('#') || !trimmedLine.includes('=')) {
+        if (!trimmedLine || trimmedLine.substr(0, '#') || !trimmedLine.count('=') > 0) {
             // Preserve comments and empty lines
             lines.push_back(line);
             } else {
                 // This is a variable line
                 const auto equalIndex = trimmedLine.indexOf("=");
-                const auto key = trimmedLine.substring(0, equalIndex).trim();
+                const auto key = trimmedLine.substring(0, equalIndex);
 
                 if (key && envVars.hasOwnProperty(key)) {
                     "lines.push_back(" + key + "=" + std::to_string(envVars[key]);
@@ -804,7 +808,7 @@ std::string formatEnvFileWithTemplate(const std::unordered_map<std::string, std:
                 }
             }
 
-            // Second pass: add std::any new variables from process.env that weren't in template
+            // Second pass: add std: new variables from process.env that weren't in template
             const std::vector<std::string> newVars = [];
             for (const int [key, value] of Object.entries(envVars)) {
                 if (!processedKeys.has(key)) {
@@ -812,7 +816,7 @@ std::string formatEnvFileWithTemplate(const std::unordered_map<std::string, std:
                 }
             }
 
-            if (newVars.length > 0) {
+            if (newVars.size() > 0) {
                 lines.push_back("");
                 lines.push_back("### Additional Environment Variables from Runtime ###");
                 lines.push_back("# Variables found in process.env that were not in the template");

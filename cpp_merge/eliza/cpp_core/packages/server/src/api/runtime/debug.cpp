@@ -10,7 +10,7 @@ express::Router createDebugRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Debug endpoint to check message servers
-    router.get("/servers", std::async (_req, res) => {
+    router.get[&]("/servers", std::async (_req, res) {
         try {
             const auto servers = serverInstance.getServers();
             res.json({

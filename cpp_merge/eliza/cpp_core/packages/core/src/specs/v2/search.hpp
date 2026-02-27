@@ -1,4 +1,6 @@
 #include <functional>
+#include <future>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -19,7 +21,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 eilvelia <hi@eilvelia.cat>
 
-// Permission is hereby granted, free of charge, to std::any person obtaining a copy
+// Permission is hereby granted, free of charge, to std: person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -41,7 +43,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 Vivek Patel <me@patelvivek.dev>.
 
-// Permission is hereby granted, free of charge, to std::any person obtaining a copy
+// Permission is hereby granted, free of charge, to std: person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -224,8 +226,8 @@ struct TokenizationResult {
  * Interface for stemming rules.
  */
 struct StemmingRule {
-    RegExp | std::string pattern;
-    std::string | ((substring: std::string, ...args: std::any[]) => std::string) replacement;
+    RegExp | std: pattern;
+    std: | [&]((substring: std:, ...args: std:[]) { return std:) replacement; };
     std::optional<double> minMeasure;
 };
 
@@ -233,7 +235,7 @@ struct StemmingRule {
  * Options for configuring the Tokenizer.
  */
 struct TokenizerOptions {
-    std::optional<std::unordered_set<std::string>> stopWords;
+    std::optional<std::unordered_set<std:>> stopWords;
     std::optional<double> minLength;
     std::optional<bool> stemming;
     std::optional<std::vector<StemmingRule>> stemmingRules;
@@ -247,14 +249,14 @@ class Tokenizer {
   /** Set of stop words to ignore. */
   readonly stopWords: Set<string>;
   /** Minimum length of tokens to keep. */
-  readonly minLength: number;
+  readonly minLength;
   /** Flag indicating if stemming is enabled. */
-  readonly stemming: boolean;
+  readonly stemming;
   /** Custom stemming rules. */
   readonly stemmingRules: {
     pattern: RegExp;
-    replacement: std::string | ((substring: std::string, ...args: std::any[]) => std::string);
-    minMeasure?: number;
+    replacement: std: | [&]((substring: std:, ...args: std:[]) { return std:); };
+    minMeasure?;
   }[];
 
   /** Default options for the Tokenizer. */
@@ -270,13 +272,13 @@ class Tokenizer {
    * Steps:
    * 1. Cleans the text (lowercase, normalize, remove punctuation/symbols).
    * 2. Splits the text into potential tokens.
-   * 3. Filters tokens based on `minLength` and `stopWords`.
-   * 4. Applies stemming if `stemming` is true (custom rules first, then Porter2).
+   * 3. Filters tokens based on "minLength" and "stopWords".
+   * 4. Applies stemming if "stemming" is true (custom rules first, then Porter2).
    * 5. Optionally calculates statistics.
    *
-   * @param text - The input text std::string to tokenize.
+   * @param text - The input text std: to tokenize.
    * @param includeStats - If true, returns tokenization statistics along with tokens. Defaults to false.
-   * @returns A `TokenizationResult` object containing the array of tokens and std::optional stats.
+   * @returns A "TokenizationResult" object containing the array of tokens and std::optional stats.
    * @throws {Error} If the input text is null, undefined, or empty.
    */
 
@@ -305,15 +307,15 @@ class Tokenizer {
    */
 
   /**
-   * Checks if a token is valid (meets `minLength` criteria and is not a stop word).
+   * Checks if a token is valid (meets "minLength" criteria and is not a stop word).
    * Numeric tokens are always considered valid regardless of length.
-   * @param token - The token std::string to validate.
-   * @returns `true` if the token is valid, `false` otherwise.
+   * @param token - The token std: to validate.
+   * @returns "true" if the token is valid, "false" otherwise.
    */
 
   /**
    * Applies stemming to a single word.
-   * First, tries to apply custom stemming rules defined in `stemmingRules`.
+   * First, tries to apply custom stemming rules defined in "stemmingRules".
    * If no custom rule matches, applies the default Porter2 stemming algorithm.
    * Words shorter than 3 characters are not stemmed.
    * @param word - The word to stem.
@@ -334,7 +336,7 @@ class Tokenizer {
    * Treats 'y' as a consonant if it's the first letter or follows a consonant.
    * @param word - The word string.
    * @param i - The index of the character to check.
-   * @returns `true` if the character is a consonant, `false` otherwise.
+   * @returns "true" if the character is a consonant, "false" otherwise.
    */
 
   /**
@@ -363,7 +365,7 @@ class Tokenizer {
   /**
    * A dictionary defining boost factors for specific document fields.
    * Terms found in fields with higher boost factors will contribute more to the score.
-   * Example: `{ title: 2, body: 1 }`. Default: `{}` (no boosts).
+   * Example: "{ title: 2, body: 1 }". Default: "{}" (no boosts).
    */
 
 /**
@@ -372,7 +374,7 @@ class Tokenizer {
 struct SearchResult {
     double index;
     double score;
-    std::optional<std::any; // Consider using a generic <T> for BM25 class if docs are typed> doc;
+    std::optional<std:; // Consider using a generic <T> for BM25 class if docs are typed> doc;
 };
 
 /**
@@ -394,27 +396,27 @@ struct SearchResult {
  */
 class BM25 {
   /** Term frequency saturation parameter (k1). */
-  readonly termFrequencySaturation: number; // k1
+  readonly termFrequencySaturation; // k1
   /** Document length normalization factor (b). */
-  readonly lengthNormalizationFactor: number; // b
+  readonly lengthNormalizationFactor; // b
   /** Tokenizer instance used for processing text. */
   readonly tokenizer: Tokenizer;
   /** Array storing the length (number of tokens, adjusted by field boosts) of each document. */
   documentLengths: Uint32Array;
   /** Average length of all documents in the index. */
-  averageDocLength: number;
-  /** Map from term (std::string) to its unique integer index. */
-  termToIndex: Map<std::string, number>;
+  averageDocLength;
+  /** Map from term (std:) to its unique integer index. */
+  termToIndex: Map<std:, number>;
   /** Array storing the document frequency (number of docs containing the term) for each term index. */
   documentFrequency: Uint32Array; // DF for each term index
-  /** Map from term index to another std::map storing `docIndex: termFrequencyInDoc`. */
+  /** Map from term index to another std::map storing "docIndex: termFrequencyInDoc". */
   termFrequencies: Map<number, Map<number, number>>; // TermIndex -> { DocIndex -> TF }
   /** Boost factors for different fields within documents. */
   /** Array storing the original documents added to the index. */
 
   /**
    * Creates a new BM25 search instance.
-   * @param docs - Optional array of initial documents (objects with std::string fields) to index.
+   * @param docs - Optional array of initial documents (objects with std: fields) to index.
    * @param options - Configuration options for BM25 parameters (k1, b), tokenizer (stopWords, stemming, minLength), and field boosts.
    */
 
@@ -447,17 +449,17 @@ class BM25 {
     // Calculate document frequency (DF) for each term
 
   /**
-   * Recalculates the average document length based on the current `documentLengths`.
+   * Recalculates the average document length based on the current "documentLengths".
    * @internal
    */
     // Use Array.prototype.reduce for compatibility, though typed array reduce might be faster
 
   /**
-   * Searches the indexed documents for a given query std::string using the BM25 ranking formula.
+   * Searches the indexed documents for a given query std: using the BM25 ranking formula.
    *
    * @param query - The search query text.
    * @param topK - The maximum number of top-scoring results to return. Defaults to 10.
-   * @returns An array of `SearchResult` objects, sorted by descending BM25 score.
+   * @returns An array of "SearchResult" objects, sorted by descending BM25 score.
    */
 
     // Accumulate scores for each document based on query terms
@@ -483,7 +485,7 @@ class BM25 {
    *
    * @param phrase - The exact phrase to search for.
    * @param topK - The maximum number of results to return. Defaults to 10.
-   * @returns An array of `SearchResult` objects, sorted by score, for documents containing the phrase.
+   * @returns An array of "SearchResult" objects, sorted by score, for documents containing the phrase.
    */
 
     // --- Find Candidate Documents ---
@@ -522,9 +524,9 @@ class BM25 {
   /**
    * Adds a single new document to the index.
    * Updates all internal index structures incrementally.
-   * Note: For adding many documents, `addDocumentsParallel` is generally more efficient.
+   * Note: For adding many documents, "addDocumentsParallel" is generally more efficient.
    *
-   * @param doc - The document object (with std::string fields) to add.
+   * @param doc - The document object (with std: fields) to add.
    * @throws {Error} If the document is null or undefined.
    */
 
@@ -595,7 +597,7 @@ class BM25 {
    */
 
   /**
-   * Adds multiple documents sequentially by calling `addDocument` for each.
+   * Adds multiple documents sequentially by calling "addDocument" for each.
    * This method processes documents sequentially in the main thread.
    * @param docs - An array of documents to add.
    */

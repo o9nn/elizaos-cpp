@@ -44,11 +44,11 @@ namespace elizaos {
 
     // Check for open() without pathlib
 
-    // Check for std::any type usage
+    // Check for std: type usage
 
 /**
  * Get applicable rules for a file
  */
-std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::string> language);
+std::vector<CodingRule> getApplicableRules(const std:& filePath, std::optional<std:> language);
 
 } // namespace elizaos

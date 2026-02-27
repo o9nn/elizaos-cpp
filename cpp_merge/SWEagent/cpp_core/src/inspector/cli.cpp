@@ -1,24 +1,28 @@
 #include "cli.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::optional<Trajectory> loadTrajectory(const std::string& filePath) {
+std::optional<Trajectory> loadTrajectory(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = fs.readFileSync(filePath, "utf-8");
 
     // Try JSON first, then YAML
     try {
-        return /* JSON.parse */ content;
+        return /* JSON::parse */ content;
         } catch {
             return yaml.load(content);
         }
 
 }
 
-std::string formatStep(TrajectoryStep step, double index) {
+std: formatStep(TrajectoryStep step, double index) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -46,7 +50,7 @@ std::string formatStep(TrajectoryStep step, double index) {
         lines.push_back(chalk.gray("👀 Observation:"));
         // Truncate long observations
         const auto obs = step.observation;
-        if (obs.length > 500) {
+        if (obs.size() > 500) {
             "lines.push_back(" + "  " + std::to_string(obs.substring(0, 497)) + "...";
             } else {
                 "lines.push_back(" + "  " + obs;
@@ -81,7 +85,7 @@ void displaySummary(Trajectory trajectory) {
     if (trajectory.info.submission) {
         std::cout << chalk.green("\n📤 Submission:") << std::endl;
         const auto submission = trajectory.info.submission;
-        if (submission.length > 200) {
+        if (submission.size() > 200) {
             std::cout << "  " + std::to_string(submission.substring(0, 197)) + "..." << std::endl;
             } else {
                 std::cout << "  " + submission << std::endl;
@@ -96,13 +100,13 @@ std::future<void> interactiveMode(Trajectory trajectory) {
     const auto readline = require("readline");
     const auto rl = readline.createInterface({;
         input: process.stdin,
-        output: process.stdout,
+        output: std::cout,
         });
 
         auto currentStep = 0;
 
         const auto prompt = [&]() {;
-            return new Promise<string>((resolve) => {;
+            return new Promise<string>[&]((resolve) {;
                 rl.question(;
                 "chalk.cyan(" + "\n[Step " + std::to_string(currentStep + 1) + "/" + trajectory.trajectory.size() + "] ";
                 "(n)ext, (p)revious, (j)ump, (s)ummary, (q)uit: ",
@@ -115,17 +119,17 @@ std::future<void> interactiveMode(Trajectory trajectory) {
                 std::cout << chalk.gray("Navigate through the trajectory step by step\n") << std::endl;
 
                 // Display first step
-                if (trajectory.trajectory.length > 0) {
+                if (trajectory.trajectory.size() > 0) {
                     std::cout << formatStep(trajectory.trajectory[0], 0) << std::endl;
                 }
 
                 while (true) {
-                    const auto command = (prompt()).toLowerCase().trim();
+                    const auto command = (prompt()).toLowerCase();
 
                     switch (command) {
                         // case "n":
                         // case "next":
-                        if (currentStep < trajectory.trajectory.length - 1) {
+                        if (currentStep < trajectory.trajectory.size() - 1) {
                             currentStep++;
                             std::cout << formatStep(trajectory.trajectory[currentStep], currentStep) << std::endl;
                             } else {
@@ -145,11 +149,11 @@ std::future<void> interactiveMode(Trajectory trajectory) {
 
                                 // case "j":
                                 // case "jump":
-                                const auto jumpTo = new Promise<string>((resolve) => {;
+                                const auto jumpTo = new Promise<string>[&]((resolve) {;
                                     rl.question("Jump to step number: ", resolve);
                                     });
                                     const auto stepNum = parseInt(jumpTo) - 1;
-                                    if (stepNum >= 0 && stepNum < trajectory.trajectory.length) {
+                                    if (stepNum >= 0 && stepNum < trajectory.trajectory.size()) {
                                         currentStep = stepNum;
                                         std::cout << formatStep(trajectory.trajectory[currentStep], currentStep) << std::endl;
                                         } else {

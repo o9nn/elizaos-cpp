@@ -1,4 +1,6 @@
 #include "batch-instances.hpp"
+#include <vector>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -48,9 +50,9 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
 
 }
 
-void sliceSpecToSlice(const std::string& sliceSpec) {
+void sliceSpecToSlice(const std:& sliceSpec) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    start?: number; stop?: number; step?: number
+    start?; stop?; step?
 }
 
 std::function<double()> seededRandom(double seed) {
@@ -64,7 +66,7 @@ std::function<double()> seededRandom(double seed) {
 
 }
 
-std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::any options = {}) {
+std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std: options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto filtered = [...instances];
@@ -74,14 +76,14 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
         // Use a deterministic seed if not provided
         const auto seed = options.shuffleSeed || 42;
         const auto random = seededRandom(seed);
-        filtered.sort(() => random() - 0.5);
+        filtered.sort[&](() { return random() - 0.5); };
     }
 
     // Apply filter
     if (options.filter) {
         const auto regex = new RegExp(options.filter);
-        filtered = filtered.filter((instance) => {
-            const auto id = (instance.problemStatement as { id?: std::string }).id || "";
+        filtered = filtered.filter[&]((instance) {
+            const auto id = (instance.problemStatement as { id?: std: }).id || "";
             return regex.test(id);
             });
         }
@@ -94,7 +96,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
             const auto stepSize = step || 1;
 
             const std::vector<BatchInstance> sliced = [];
-            for (int i = startIdx; i < stopIdx && i < filtered.length; i += stepSize) {
+            for (int i = startIdx; i < stopIdx && i < filtered.size(); i += stepSize) {
                 sliced.push_back(filtered[i]);
             }
             filtered = sliced;
@@ -104,7 +106,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
 
 }
 
-SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>& sweBenchInstance) {
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std:, std:>& sweBenchInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto instanceId = sweBenchInstance.instance_id;
@@ -115,7 +117,7 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>
     // Generate image name if not provided
     if (!imageName) {
         const auto parts = instanceId.split("__");
-        if (parts.length == 2) {
+        if (parts.size() == 2) {
             const auto [org, proj] = parts;
             // Only replace hyphens in the org part, keep proj as is for the tag
             const auto imageTag = std::to_string(org.replace(/-/g, "_")) + "_1776_" + proj;
@@ -140,9 +142,9 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>
             if (sweBenchInstance.image_assets) {
                 auto imageAssets = sweBenchInstance.image_assets;
                 if (typeof imageAssets == 'string') {
-                    imageAssets = /* JSON.parse */ imageAssets;
+                    imageAssets = /* JSON::parse */ imageAssets;
                 }
-                if ((imageAssets as std::any).problem_statement) {
+                if ((imageAssets as std:).problem_statement) {
                     result.extraFields = { ...result.extraFields, issue_images: (imageAssets).problem_statement };
                 }
             }
@@ -169,7 +171,7 @@ AbstractInstanceSource createInstanceSource(BatchInstanceSourceConfig config) {
                 } else if (config.type == "swe_bench") {
                     return new SWEBenchInstances(config);
                     } else {
-                        throw std::runtime_error(`Unknown instance source type: ${config.type}`);
+                        throw std::runtime_error("Unknown instance source type: " + std::to_string(config.type) + "");
                     }
 
     } catch (const std::exception& e) {

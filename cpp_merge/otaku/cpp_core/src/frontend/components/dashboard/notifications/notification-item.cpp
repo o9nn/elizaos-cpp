@@ -7,9 +7,9 @@ namespace elizaos {
 void NotificationItem(auto onMarkAsRead, auto onDelete) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto formatTimestamp = [&](timestamp: std::string) {;
+    const auto formatTimestamp = [&](timestamp: std:) {;
         const auto date = new Date(timestamp);
-        const auto now = new Date();
+        const auto now = std::make_unique<Date>();
         const auto diff = now.getTime() - date.getTime();
         const auto minutes = Math.floor(diff / 60000);
         const auto hours = Math.floor(diff / 3600000);

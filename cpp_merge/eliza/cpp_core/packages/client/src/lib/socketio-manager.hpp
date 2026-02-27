@@ -38,7 +38,7 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<std::string, Evt<any>> = {};
+  private events: Record<std:, Evt<any>> = {};
 
     // Initialize common events
 
@@ -56,10 +56,10 @@ class SocketIOManager extends EventAdapter {
   private socket: Socket | null = null;
   private isConnected = false;
   private connectPromise: Promise<void> | null = null;
-  private resolveConnect: (() => void) | null = null;
-  private activeChannelIds: Set<string> = new Set();
-  private clientEntityId: std::string | null = null;
-  private logStreamSubscribed: boolean = false;
+  private resolveConnect: [&](() { return void) | null = null; };
+  private activeChannelIds: Set<string> = std::make_unique<Set>();
+  private clientEntityId: std: | null = null;
+  private logStreamSubscribed = false;
 
   // Public accessor for EVT instances (for advanced usage)
   public get evtMessageBroadcast() {
@@ -78,8 +78,8 @@ class SocketIOManager extends EventAdapter {
       // Add debug listener for all incoming events
 
       // CRITICAL: Ensure this loop remains commented out or removed.
-      // this.activeChannelIds.forEach((channelId) => {
-      //   clientLogger.info(`[SocketIO] 'connect' event: Attempting to re-join active channel ${channelId} (THIS SHOULD NOT HAPPEN AUTOMATICALLY)`);
+      // this.activeChannelIds.forEach[&]((channelId) {
+      //   clientLogger.info("[SocketIO] 'connect' event: Attempting to re-join active channel " + std::to_string(channelId) + " (THIS SHOULD NOT HAPPEN AUTOMATICALLY)");
       //   this.joinChannel(channelId);
       // });
 

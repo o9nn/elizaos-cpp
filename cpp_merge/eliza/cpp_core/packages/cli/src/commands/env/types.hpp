@@ -37,23 +37,23 @@ struct InteractiveEnvOptions {
 /**
  * Reset operation types
  */
-using ResetTarget = std::string;
-using ResetAction = std::string;
+using ResetTarget = std:;
+using ResetAction = std:;
 
 /**
  * Reset item configuration
  */
 struct ResetItem {
-    std::string title;
+    std: title;
     ResetTarget value;
-    std::optional<std::string> description;
+    std::optional<std:> description;
     std::optional<bool> selected;
 };
 
 /**
  * Environment variable record type
  */
-using EnvVars = std::unordered_map<std::string, std::string>;
+using EnvVars = std::unordered_map<std:, std:>;
 
 /**
  * Reset operation result tracking

@@ -2,94 +2,94 @@
 
 string extractContext(array<std::shared_ptr<Memory>> messages)
 {
-    if (OR((!messages), (messages->get_length() == 0))) return std::string("Unknown context");
+    if (OR((!messages), (messages->get_length() == 0))) return std:("Unknown context");
     auto recentMessages = messages->slice(-3);
     return recentMessages->map([=](auto m) mutable
     {
         return m->content->text;
     }
-    )->filter(Boolean)->join(std::string(" -> "));
+    )->filter(Boolean)->join(std:(" -> "));
 };
 
 
 string extractAction(string text)
 {
-    auto actionPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("trying to (.+?)(?:\.|,|$)"))), (new RegExp(std::string("attempted to (.+?)(?:\.|,|$)"))), (new RegExp(std::string("executed (.+?)(?:\.|,|$)"))), (new RegExp(std::string("ran (.+?)(?:\.|,|$)"))), (new RegExp(std::string("performed (.+?)(?:\.|,|$)"))) };
+    auto actionPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std:("trying to (.+?)(?:\.|,|$)"))), (new RegExp(std:("attempted to (.+?)(?:\.|,|$)"))), (new RegExp(std:("executed (.+?)(?:\.|,|$)"))), (new RegExp(std:("ran (.+?)(?:\.|,|$)"))), (new RegExp(std:("performed (.+?)(?:\.|,|$)"))) };
     for (auto& pattern : actionPatterns)
     {
         auto match = text->match(pattern);
         if (match) return (*const_(match))[1]->trim();
     }
-    return std::string("performed action");
+    return std:("performed action");
 };
 
 
 string extractError(string text)
 {
-    auto errorMatch = text->match((new RegExp(std::string("error:?\s*(.+?)(?:\.|$)"))));
+    auto errorMatch = text->match((new RegExp(std:("error:?\s*(.+?)(?:\.|$)"))));
     if (errorMatch) return (*const_(errorMatch))[1]->trim();
-    auto failedMatch = text->match((new RegExp(std::string("failed:?\s*(.+?)(?:\.|$)"))));
+    auto failedMatch = text->match((new RegExp(std:("failed:?\s*(.+?)(?:\.|$)"))));
     if (failedMatch) return (*const_(failedMatch))[1]->trim();
-    return std::string("encountered error");
+    return std:("encountered error");
 };
 
 
 string extractDiscovery(string text)
 {
-    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("found (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("discovered (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("realized (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("noticed (?:that )?(.+?)(?:\.|,|$)"))) };
+    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std:("found (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std:("discovered (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std:("realized (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std:("noticed (?:that )?(.+?)(?:\.|,|$)"))) };
     for (auto& pattern : patterns)
     {
         auto match = text->match(pattern);
         if (match) return (*const_(match))[1]->trim();
     }
-    return std::string("made a discovery");
+    return std:("made a discovery");
 };
 
 
 string extractLearning(string text, string type)
 {
-    auto learningMatch = text->match((new RegExp(std::string("(?:learned|learning|lesson):?\s*(.+?)(?:\.|$)"))));
+    auto learningMatch = text->match((new RegExp(std:("(?:learned|learning|lesson):?\s*(.+?)(?:\.|$)"))));
     if (learningMatch) return (*const_(learningMatch))[1]->trim();
     static switch_type __switch14928_15422 = {
-        { any(std::string("correction")), 1 },
-        { any(std::string("discovery")), 2 },
-        { any(std::string("success")), 3 }
+        { any(std:("correction")), 1 },
+        { any(std:("discovery")), 2 },
+        { any(std:("success")), 3 }
     };
     switch (__switch14928_15422[type])
     {
     case 1:
-        return std::string("Corrected approach works better than initial attempt");
+        return std:("Corrected approach works better than initial attempt");
     case 2:
         auto discovery = extractDiscovery(text);
-        return (discovery != std::string("made a discovery")) ? any(discovery) : any(std::string("New capability or information discovered"));
+        return (discovery != std:("made a discovery")) ? any(discovery) (std:("New capability or information discovered"));
     case 3:
-        return std::string("This approach successfully completes the task");
+        return std:("This approach successfully completes the task");
     default:
-        return std::string("Experience recorded for future reference");
+        return std:("Experience recorded for future reference");
     }
 };
 
 
 string extractHypothesis(string text)
 {
-    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("i (?:think|believe) (?:that )?(.+?)(?:\.|$)"))), (new RegExp(std::string("hypothesis:?\s*(.+?)(?:\.|$)"))), (new RegExp(std::string("theory:?\s*(.+?)(?:\.|$)"))) };
+    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std:("i (?:think|believe) (?:that )?(.+?)(?:\.|$)"))), (new RegExp(std:("hypothesis:?\s*(.+?)(?:\.|$)"))), (new RegExp(std:("theory:?\s*(.+?)(?:\.|$)"))) };
     for (auto& pattern : patterns)
     {
         auto match = text->match(pattern);
         if (match) return (*const_(match))[1]->trim();
     }
-    return std::string("formed hypothesis");
+    return std:("formed hypothesis");
 };
 
 
 string detectDomain(string text)
 {
     auto domains = object{
-        object::pair{std::string("shell"), array<string>{ std::string("command"), std::string("terminal"), std::string("bash"), std::string("shell"), std::string("execute"), std::string("script") }}, 
-        object::pair{std::string("coding"), array<string>{ std::string("code"), std::string("function"), std::string("variable"), std::string("syntax"), std::string("programming"), std::string("debug") }}, 
-        object::pair{std::string("system"), array<string>{ std::string("file"), std::string("directory"), std::string("process"), std::string("memory"), std::string("cpu"), std::string("system") }}, 
-        object::pair{std::string("network"), array<string>{ std::string("http"), std::string("api"), std::string("request"), std::string("response"), std::string("url"), std::string("network") }}, 
-        object::pair{std::string("data"), array<string>{ std::string("json"), std::string("csv"), std::string("database"), std::string("query"), std::string("data") }}
+        object::pair{std:("shell"), array<string>{ std:("command"), std:("terminal"), std:("bash"), std:("shell"), std:("execute"), std:("script") }}, 
+        object::pair{std:("coding"), array<string>{ std:("code"), std:("function"), std:("variable"), std:("syntax"), std:("programming"), std:("debug") }}, 
+        object::pair{std:("system"), array<string>{ std:("file"), std:("directory"), std:("process"), std:("memory"), std:("cpu"), std:("system") }}, 
+        object::pair{std:("network"), array<string>{ std:("http"), std:("api"), std:("request"), std:("response"), std:("url"), std:("network") }}, 
+        object::pair{std:("data"), array<string>{ std:("json"), std:("csv"), std:("database"), std:("query"), std:("data") }}
     };
     shared lowerText = text->toLowerCase();
     for (auto& [domain, keywords] : Object->entries(domains))
@@ -102,43 +102,43 @@ string detectDomain(string text)
             return domain;
         }
     }
-    return std::string("general");
+    return std:("general");
 };
 
 
 std::shared_ptr<Evaluator> experienceEvaluator = object{
-    object::pair{std::string("name"), std::string("EXPERIENCE_EVALUATOR")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("experience recorder"), std::string("learning evaluator"), std::string("self-reflection") }}, 
-    object::pair{std::string("description"), std::string("Evaluates agent actions and outcomes to record significant experiences and learnings")}, 
-    object::pair{std::string("alwaysRun"), true}, 
-    object::pair{std::string("examples"), array<object>{ object{
-        object::pair{std::string("prompt"), std::string("The agent successfully executed a shell command after initially failing")}, 
-        object::pair{std::string("messages"), array<object>{ object{
-            object::pair{std::string("name"), std::string("Autoliza")}, 
-            object::pair{std::string("content"), object{
-                object::pair{std::string("text"), std::string("Let me try to run this Python script.")}
+    object::pair{std:("name"), std:("EXPERIENCE_EVALUATOR")}, 
+    object::pair{std:("similes"), array<string>{ std:("experience recorder"), std:("learning evaluator"), std:("self-reflection") }}, 
+    object::pair{std:("description"), std:("Evaluates agent actions and outcomes to record significant experiences and learnings")}, 
+    object::pair{std:("alwaysRun"), true}, 
+    object::pair{std:("examples"), array<object>{ object{
+        object::pair{std:("prompt"), std:("The agent successfully executed a shell command after initially failing")}, 
+        object::pair{std:("messages"), array<object>{ object{
+            object::pair{std:("name"), std:("Autoliza")}, 
+            object::pair{std:("content"), object{
+                object::pair{std:("text"), std:("Let me try to run this Python script.")}
             }}
         }, object{
-            object::pair{std::string("name"), std::string("Autoliza")}, 
-            object::pair{std::string("content"), object{
-                object::pair{std::string("text"), std::string("Error: ModuleNotFoundError for pandas. I need to install it first.")}
+            object::pair{std:("name"), std:("Autoliza")}, 
+            object::pair{std:("content"), object{
+                object::pair{std:("text"), std:("Error: ModuleNotFoundError for pandas. I need to install it first.")}
             }}
         }, object{
-            object::pair{std::string("name"), std::string("Autoliza")}, 
-            object::pair{std::string("content"), object{
-                object::pair{std::string("text"), std::string("After installing pandas, the script ran successfully and produced the expected output.")}
+            object::pair{std:("name"), std:("Autoliza")}, 
+            object::pair{std:("content"), object{
+                object::pair{std:("text"), std:("After installing pandas, the script ran successfully and produced the expected output.")}
             }}
         } }}, 
-        object::pair{std::string("outcome"), std::string("Record a CORRECTION experience about needing to install dependencies before running Python scripts")}
+        object::pair{std:("outcome"), std:("Record a CORRECTION experience about needing to install dependencies before running Python scripts")}
     }, object{
-        object::pair{std::string("prompt"), std::string("The agent discovered a new system capability")}, 
-        object::pair{std::string("messages"), array<object>{ object{
-            object::pair{std::string("name"), std::string("Autoliza")}, 
-            object::pair{std::string("content"), object{
-                object::pair{std::string("text"), std::string("I found that the system has jq installed, which is perfect for parsing JSON data.")}
+        object::pair{std:("prompt"), std:("The agent discovered a new system capability")}, 
+        object::pair{std:("messages"), array<object>{ object{
+            object::pair{std:("name"), std:("Autoliza")}, 
+            object::pair{std:("content"), object{
+                object::pair{std:("text"), std:("I found that the system has jq installed, which is perfect for parsing JSON data.")}
             }}
         } }}, 
-        object::pair{std::string("outcome"), std::string("Record a DISCOVERY experience about the availability of jq for JSON processing")}
+        object::pair{std:("outcome"), std:("Record a DISCOVERY experience about the availability of jq for JSON processing")}
     } }}, 
     , 
 };

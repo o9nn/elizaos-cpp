@@ -1,4 +1,6 @@
 #include "entities.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +9,7 @@ namespace elizaos {
 std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memory message, State state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::any rt = runtime;
+    const std: rt = runtime;
     return coreFindEntityByName(rt, message, state);
 
 }

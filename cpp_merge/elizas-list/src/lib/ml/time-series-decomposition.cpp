@@ -2,15 +2,15 @@
 
 TimeSeriesDecomposer::TimeSeriesDecomposer() {
     this->stl = std::make_shared<STL>(object{
-        object::pair{std::string("periodicity"), 24 * 7}, 
-        object::pair{std::string("robustness"), true}, 
-        object::pair{std::string("numberOfInnerLoops"), 2}, 
-        object::pair{std::string("numberOfOuterLoops"), 1}, 
-        object::pair{std::string("seasonalDegree"), 1}, 
-        object::pair{std::string("trendDegree"), 1}, 
-        object::pair{std::string("lowpassDegree"), 1}
+        object::pair{std:("periodicity"), 24 * 7}, 
+        object::pair{std:("robustness"), true}, 
+        object::pair{std:("numberOfInnerLoops"), 2}, 
+        object::pair{std:("numberOfOuterLoops"), 1}, 
+        object::pair{std:("seasonalDegree"), 1}, 
+        object::pair{std:("trendDegree"), 1}, 
+        object::pair{std:("lowpassDegree"), 1}
     });
-    this->wavelet = std::make_shared<WaveletTransform>(std::string("db4"));
+    this->wavelet = std::make_shared<WaveletTransform>(std:("db4"));
 }
 
 std::shared_ptr<Promise<std::shared_ptr<DecompositionResult>>> TimeSeriesDecomposer::decompose(array<double> timeSeries, std::shared_ptr<DecompositionConfig> config)
@@ -20,16 +20,16 @@ std::shared_ptr<Promise<std::shared_ptr<DecompositionResult>>> TimeSeriesDecompo
         auto [stlResult, waveletResult, empiricalResult] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<any>>, std::shared_ptr<Promise<any>>, std::shared_ptr<Promise<any>>>{ this->performSTLDecomposition(timeSeries, config), this->performWaveletDecomposition(timeSeries, config), this->performEMD(timeSeries) }); });
         auto components = this->combineDecompositions(stlResult, waveletResult, empiricalResult);
         return object{
-            object::pair{std::string("components"), std::string("components")}, 
-            object::pair{std::string("analysis"), std::async([=]() { this->analyzeComponents(components); })}, 
-            object::pair{std::string("seasonality"), this->detectSeasonality(components)}, 
-            object::pair{std::string("changepoints"), std::async([=]() { this->detectChangepoints(timeSeries, components); })}, 
-            object::pair{std::string("forecast"), std::async([=]() { this->generateComponentForecasts(components, config); })}
+            object::pair{std:("components"), std:("components")}, 
+            object::pair{std:("analysis"), std::async([=]() { this->analyzeComponents(components); })}, 
+            object::pair{std:("seasonality"), this->detectSeasonality(components)}, 
+            object::pair{std:("changepoints"), std::async([=]() { this->detectChangepoints(timeSeries, components); })}, 
+            object::pair{std:("forecast"), std::async([=]() { this->generateComponentForecasts(components, config); })}
         };
     }
     catch (const any& error)
     {
-        logger["error"](std::string("Error in time series decomposition:"), error);
+        logger["error"](std:("Error in time series decomposition:"), error);
         throw any(error);
     }
 }
@@ -38,11 +38,11 @@ std::shared_ptr<Promise<std::shared_ptr<STLResult>>> TimeSeriesDecomposer::perfo
 {
     auto result = std::async([=]() { this->stl->fit(timeSeries); });
     return object{
-        object::pair{std::string("trend"), result->trend}, 
-        object::pair{std::string("seasonal"), result->seasonal}, 
-        object::pair{std::string("residual"), result->residual}, 
-        object::pair{std::string("robustness"), result->weights}, 
-        object::pair{std::string("diagnostics"), this->calculateSTLDiagnostics(result)}
+        object::pair{std:("trend"), result->trend}, 
+        object::pair{std:("seasonal"), result->seasonal}, 
+        object::pair{std:("residual"), result->residual}, 
+        object::pair{std:("robustness"), result->weights}, 
+        object::pair{std:("diagnostics"), this->calculateSTLDiagnostics(result)}
     };
 }
 
@@ -52,10 +52,10 @@ std::shared_ptr<Promise<std::shared_ptr<WaveletResult>>> TimeSeriesDecomposer::p
     auto coefficients = this->wavelet->transform(timeSeries, levels);
     auto components = this->reconstructWaveletComponents(coefficients, levels);
     return object{
-        object::pair{std::string("components"), std::string("components")}, 
-        object::pair{std::string("coefficients"), std::string("coefficients")}, 
-        object::pair{std::string("energyDistribution"), this->calculateWaveletEnergy(coefficients)}, 
-        object::pair{std::string("significance"), std::async([=]() { this->testWaveletSignificance(components); })}
+        object::pair{std:("components"), std:("components")}, 
+        object::pair{std:("coefficients"), std:("coefficients")}, 
+        object::pair{std:("energyDistribution"), this->calculateWaveletEnergy(coefficients)}, 
+        object::pair{std:("significance"), std::async([=]() { this->testWaveletSignificance(components); })}
     };
 }
 
@@ -63,9 +63,9 @@ std::shared_ptr<Promise<std::shared_ptr<EMDResult>>> TimeSeriesDecomposer::perfo
 {
     auto imfs = std::async([=]() { this->empiricalModeDecomposition(timeSeries); });
     return object{
-        object::pair{std::string("imfs"), std::string("imfs")}, 
-        object::pair{std::string("instantaneousFrequency"), this->calculateInstantaneousFrequency(imfs)}, 
-        object::pair{std::string("hilbertSpectrum"), std::async([=]() { this->computeHilbertSpectrum(imfs); })}
+        object::pair{std:("imfs"), std:("imfs")}, 
+        object::pair{std:("instantaneousFrequency"), this->calculateInstantaneousFrequency(imfs)}, 
+        object::pair{std:("hilbertSpectrum"), std::async([=]() { this->computeHilbertSpectrum(imfs); })}
     };
 }
 
@@ -79,9 +79,9 @@ std::shared_ptr<Promise<std::shared_ptr<ComponentForecasts>>> TimeSeriesDecompos
 {
     auto horizon = OR((config->forecastHorizon), (30));
     return object{
-        object::pair{std::string("trend"), std::async([=]() { this->forecastTrend(components->trend, horizon); })}, 
-        object::pair{std::string("seasonal"), std::async([=]() { this->forecastSeasonal(components->seasonal, horizon); })}, 
-        object::pair{std::string("combined"), std::async([=]() { this->generateCombinedForecast(components, horizon); })}
+        object::pair{std:("trend"), std::async([=]() { this->forecastTrend(components->trend, horizon); })}, 
+        object::pair{std:("seasonal"), std::async([=]() { this->forecastSeasonal(components->seasonal, horizon); })}, 
+        object::pair{std:("combined"), std::async([=]() { this->generateCombinedForecast(components, horizon); })}
     };
 }
 

@@ -14,7 +14,7 @@ std::variant<ScoreRetryLoop, ChooserRetryLoop> getRetryLoopFromConfig(RetryLoopC
             // case "chooser":
             return new ChooserRetryLoop(config, problemStatement);
             // default:
-            throw std::runtime_error(`Unknown retry loop type: ${(config as RetryLoopConfig).type}`);
+            throw std::runtime_error("Unknown retry loop type: " + std::to_string((config as RetryLoopConfig).type) + "");
         }
 
     } catch (const std::exception& e) {

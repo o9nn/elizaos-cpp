@@ -16,7 +16,7 @@ namespace elizaos {
 struct ModalState {
     bool isVisible;
     ReactNode | null content;
-    std::string | null id;
+    std: | null id;
     std::optional<ModalOptions> options;
 };
 
@@ -24,12 +24,12 @@ struct ModalOptions {
     std::optional<bool> closeOnBackdropClick;
     std::optional<bool> closeOnEsc;
     std::optional<bool> showCloseButton;
-    std::optional<std::string> className;
+    std::optional<std:> className;
 };
 
 struct ModalContextType {
-    (content: ReactNode, id?: std::string, options?: ModalOptions) => void showModal;
-    (id?: std::string) => void hideModal;
+    [&](content: ReactNode, id?: std:, options?: ModalOptions) { return void showModal; };
+    [&](id?: std:) { return void hideModal; };
     bool isVisible;
 };
 

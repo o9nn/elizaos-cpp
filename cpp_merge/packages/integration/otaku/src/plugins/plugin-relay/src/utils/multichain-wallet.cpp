@@ -11,16 +11,16 @@ std::shared_ptr<WalletClient> MultiChainWallet::getWalletClient(double chainId)
     if (!this->walletClients->has(chainId)) {
         auto chain = const_(CHAIN_MAP)[chainId];
         if (!chain) {
-            throw any(std::make_shared<Error>(std::string("Unsupported chain ID: ") + chainId + string_empty));
+            throw any(std::make_shared<Error>(std:("Unsupported chain ID: ") + chainId + string_empty));
         }
         auto rpcUrl = const_(DEFAULT_RPC_URLS)[chainId];
         if (!rpcUrl) {
-            throw any(std::make_shared<Error>(std::string("No RPC URL configured for chain ") + chainId + string_empty));
+            throw any(std::make_shared<Error>(std:("No RPC URL configured for chain ") + chainId + string_empty));
         }
         auto client = createWalletClient(object{
-            object::pair{std::string("account"), this->account}, 
-            object::pair{std::string("chain"), std::string("chain")}, 
-            object::pair{std::string("transport"), http(rpcUrl)}
+            object::pair{std:("account"), this->account}, 
+            object::pair{std:("chain"), std:("chain")}, 
+            object::pair{std:("transport"), http(rpcUrl)}
         });
         this->walletClients->set(chainId, client);
     }
@@ -72,15 +72,15 @@ Record<double, std::shared_ptr<Chain>> CHAIN_MAP = object{
     object::pair{linea->id, linea}
 };
 Record<double, string> DEFAULT_RPC_URLS = object{
-    object::pair{mainnet->id, std::string("https://eth.llamarpc.com")}, 
-    object::pair{base->id, std::string("https://mainnet.base.org")}, 
-    object::pair{arbitrum->id, std::string("https://arb1.arbitrum.io/rpc")}, 
-    object::pair{polygon->id, std::string("https://polygon-rpc.com")}, 
-    object::pair{optimism->id, std::string("https://mainnet.optimism.io")}, 
-    object::pair{zora->id, std::string("https://rpc.zora.energy")}, 
-    object::pair{blast->id, std::string("https://rpc.blast.io")}, 
-    object::pair{scroll->id, std::string("https://rpc.scroll.io")}, 
-    object::pair{linea->id, std::string("https://rpc.linea.build")}
+    object::pair{mainnet->id, std:("https://eth.llamarpc.com")}, 
+    object::pair{base->id, std:("https://mainnet.base.org")}, 
+    object::pair{arbitrum->id, std:("https://arb1.arbitrum.io/rpc")}, 
+    object::pair{polygon->id, std:("https://polygon-rpc.com")}, 
+    object::pair{optimism->id, std:("https://mainnet.optimism.io")}, 
+    object::pair{zora->id, std:("https://rpc.zora.energy")}, 
+    object::pair{blast->id, std:("https://rpc.blast.io")}, 
+    object::pair{scroll->id, std:("https://rpc.scroll.io")}, 
+    object::pair{linea->id, std:("https://rpc.linea.build")}
 };
 
 void Main(void)

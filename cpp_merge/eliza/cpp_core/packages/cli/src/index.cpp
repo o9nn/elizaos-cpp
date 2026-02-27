@@ -1,4 +1,8 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,17 +12,17 @@ std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for --no-emoji flag early (before command parsing)
-    if (process.argv.includes('--no-emoji')) {
-        configureEmojis({ forceDisable: true });
+    if (std::vector<std::string>().count('--no-emoji') > 0) {
+        configureEmojis(Config{forceDisable = true});
     }
 
     // Check for --no-auto-install flag early (before command parsing)
-    if (process.argv.includes('--no-auto-install')) {
-        process.env.ELIZA_NO_AUTO_INSTALL = "true";
+    if (std::vector<std::string>().count('--no-auto-install') > 0) {
+        std::getenv("ELIZA_NO_AUTO_INSTALL") = "true";
     }
 
-    // For ESM modules we need to use import.meta.url instead of __dirname
-    const auto __filename = fileURLToPath(import.meta.url);
+    // For ESM modules we need to use "__FILE__" instead of __dirname
+    const auto __filename = fileURLToPath("__FILE__");
     const auto __dirname = dirname(__filename);
 
     // Find package.json relative to the current file
@@ -28,12 +32,12 @@ std::future<void> main() {
     auto version = "0.0.0"; // Fallback version;
     if (!existsSync(packageJsonPath)) {
         } else {
-            const auto packageJson = /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
+            const auto packageJson = /* JSON::parse */ readFileSync(packageJsonPath, "utf-8");
             version = packageJson.version;
         }
 
         // Check for built-in flags that exit early (before preAction hook runs)
-        const auto args = process.argv.slice(2);
+        const auto args = std::vector<std::string>().substr(2);
         const auto isUpdateCommand = (std::find(args.begin(), args.end(), "update") != args.end());
         const auto willShowBanner = args.size() == 0;
 
@@ -45,31 +49,16 @@ std::future<void> main() {
             checkAndShowUpdateNotification(currentVersion);
         }
 
-        const auto program = new Command();
-        .name("elizaos");
-        .version(version, "-v, --version", "output the version number");
-        .option("--no-emoji", "Disable emoji output");
-        .option("--no-auto-install", "Disable automatic Bun installation");
+        const auto program = std::make_unique<Command>().name("elizaos").version(version, "-v, --version", "output the version number").option("--no-emoji", "Disable emoji output").option("--no-auto-install", "Disable automatic Bun installation");
 
         // Add global options but hide them from global help
         // They will still be passed to all commands for backward compatibility
         // Note: Removed --remote-url global option as it conflicts with subcommand options
 
-        program;
-        .addCommand(create);
-        .addCommand(monorepo);
-        .addCommand(plugins);
-        .addCommand(agent);
-        .addCommand(tee);
-        .addCommand(start);
-        .addCommand(update);
-        .addCommand(test);
-        .addCommand(env);
-        .addCommand(dev);
-        .addCommand(publish);
+        program.addCommand(create).addCommand(monorepo).addCommand(plugins).addCommand(agent).addCommand(tee).addCommand(start).addCommand(update).addCommand(test).addCommand(env).addCommand(dev).addCommand(publish);
 
         // if no args are passed, display the banner (it will handle its own update check)
-        if (process.argv.length == 2) {
+        if (std::vector<std::string>().size() == 2) {
             displayBanner(false); // Let banner handle update check and show enhanced notification;
         }
 

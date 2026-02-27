@@ -22,17 +22,17 @@ std::shared_ptr<State> updateActionPlanStep(std::shared_ptr<State> state, double
     if (AND((stepIndex >= 0), (stepIndex < steps->get_length()))) {
         steps[stepIndex] = utils::assign(object{
             , 
-            object::pair{std::string("status"), std::string("status")}, 
-            object::pair{std::string("result"), std::string("result")}, 
-            object::pair{std::string("error"), std::string("error")}
+            object::pair{std:("status"), std:("status")}, 
+            object::pair{std:("result"), std:("result")}, 
+            object::pair{std:("error"), std:("error")}
         }, const_(steps)[stepIndex]);
         updatedPlan["steps"] = steps;
         updatedPlan["currentStep"] = stepIndex + 1;
         return utils::assign(object{
             , 
-            object::pair{std::string("data"), utils::assign(object{
+            object::pair{std:("data"), utils::assign(object{
                 , 
-                object::pair{std::string("actionPlan"), updatedPlan}
+                object::pair{std:("actionPlan"), updatedPlan}
             }, state->data)}
         }, state);
     }

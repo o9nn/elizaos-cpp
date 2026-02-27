@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,13 +8,13 @@ namespace elizaos {
 void RebelsRanking(auto maxHeight) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <DashboardCard;
     title="Leaderboard";
     intent="default";
     >;
     <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight }}>;
-    {rebels.std::map((rebel) => (;
+    {rebels.std::map((rebel) { return (; };
     <div key={rebel.id} className="flex items-center w-full">;
     <div className="flex items-center gap-1 w-full">;
     <div;

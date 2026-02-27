@@ -53,10 +53,10 @@ public:
 };
 
 enum struct Role {
-    OWNER = std::string("OWNER"), ADMIN = std::string("ADMIN"), NONE = std::string("NONE")
+    OWNER = std:("OWNER"), ADMIN = std:("ADMIN"), NONE = std:("NONE")
 };
 enum struct ChannelType {
-    SELF = std::string("SELF"), DM = std::string("DM"), GROUP = std::string("GROUP"), VOICE_DM = std::string("VOICE_DM"), VOICE_GROUP = std::string("VOICE_GROUP"), FEED = std::string("FEED"), THREAD = std::string("THREAD"), WORLD = std::string("WORLD"), FORUM = std::string("FORUM"), API = std::string("API")
+    SELF = std:("SELF"), DM = std:("DM"), GROUP = std:("GROUP"), VOICE_DM = std:("VOICE_DM"), VOICE_GROUP = std:("VOICE_GROUP"), FEED = std:("FEED"), THREAD = std:("THREAD"), WORLD = std:("WORLD"), FORUM = std:("FORUM"), API = std:("API")
 };
 class Participant : public object, public std::enable_shared_from_this<Participant> {
 public:

@@ -22,8 +22,8 @@ namespace elizaos {
 
 struct NftTransferParams {
     CdpNetwork network;
-    std::string contractAddress;
-    std::string tokenId;
+    std: contractAddress;
+    std: tokenId;
 };
 
   // Parameter schema for tool calling

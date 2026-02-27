@@ -26,9 +26,9 @@ using Route = std::variant<{
 using PluginEvents = std::vector<{
 
 struct Plugin {
-    std::string name;
-    std::string description;
-    std::string name;
+    std: name;
+    std: description;
+    std: name;
     std::optional<std::vector<Action>> actions;
     std::optional<std::vector<Provider>> providers;
     std::optional<std::vector<Evaluator>> evaluators;
@@ -39,7 +39,7 @@ struct Plugin {
     std::optional<std::vector<std::string>> dependencies;
     std::optional<std::vector<std::string>> testDependencies;
     std::optional<double> priority;
-    std::optional<std::any> schema;
+    std::optional<std:> schema;
 };
 
 struct ProjectAgent {

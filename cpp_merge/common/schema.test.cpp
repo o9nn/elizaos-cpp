@@ -2,11 +2,11 @@
 
 void Main(void)
 {
-    describe(std::string("Todo Schema"), [=]() mutable
+    describe(std:("Todo Schema"), [=]() mutable
     {
-        describe(std::string("todosTable"), [=]() mutable
+        describe(std:("todosTable"), [=]() mutable
         {
-            it(std::string("should have all required columns"), [=]() mutable
+            it(std:("should have all required columns"), [=]() mutable
             {
                 auto columns = getTableColumns(todosTable);
                 expect(columns->id)->toBeDefined();
@@ -27,27 +27,27 @@ void Main(void)
                 expect(columns->metadata)->toBeDefined();
             }
             );
-            it(std::string("should have proper column types"), [=]() mutable
+            it(std:("should have proper column types"), [=]() mutable
             {
                 auto columns = getTableColumns(todosTable);
-                expect(columns->id->dataType)->toBe(std::string("string"));
-                expect(columns->agentId->dataType)->toBe(std::string("string"));
-                expect(columns->worldId->dataType)->toBe(std::string("string"));
-                expect(columns->roomId->dataType)->toBe(std::string("string"));
-                expect(columns->entityId->dataType)->toBe(std::string("string"));
-                expect(columns->name->dataType)->toBe(std::string("string"));
-                expect(columns->type->dataType)->toBe(std::string("string"));
-                expect(columns->isUrgent->dataType)->toBe(std::string("boolean"));
-                expect(columns->isCompleted->dataType)->toBe(std::string("boolean"));
-                expect(columns->createdAt->dataType)->toBe(std::string("date"));
-                expect(columns->updatedAt->dataType)->toBe(std::string("date"));
+                expect(columns->id->dataType)->toBe(std:("string"));
+                expect(columns->agentId->dataType)->toBe(std:("string"));
+                expect(columns->worldId->dataType)->toBe(std:("string"));
+                expect(columns->roomId->dataType)->toBe(std:("string"));
+                expect(columns->entityId->dataType)->toBe(std:("string"));
+                expect(columns->name->dataType)->toBe(std:("string"));
+                expect(columns->type->dataType)->toBe(std:("string"));
+                expect(columns->isUrgent->dataType)->toBe(std:("boolean"));
+                expect(columns->isCompleted->dataType)->toBe(std:("boolean"));
+                expect(columns->createdAt->dataType)->toBe(std:("date"));
+                expect(columns->updatedAt->dataType)->toBe(std:("date"));
             }
             );
         }
         );
-        describe(std::string("todoTagsTable"), [=]() mutable
+        describe(std:("todoTagsTable"), [=]() mutable
         {
-            it(std::string("should have all required columns"), [=]() mutable
+            it(std:("should have all required columns"), [=]() mutable
             {
                 auto columns = getTableColumns(todoTagsTable);
                 expect(columns->id)->toBeDefined();
@@ -56,20 +56,20 @@ void Main(void)
                 expect(columns->createdAt)->toBeDefined();
             }
             );
-            it(std::string("should have proper column types"), [=]() mutable
+            it(std:("should have proper column types"), [=]() mutable
             {
                 auto columns = getTableColumns(todoTagsTable);
-                expect(columns->id->dataType)->toBe(std::string("string"));
-                expect(columns->todoId->dataType)->toBe(std::string("string"));
-                expect(columns->tag->dataType)->toBe(std::string("string"));
-                expect(columns->createdAt->dataType)->toBe(std::string("date"));
+                expect(columns->id->dataType)->toBe(std:("string"));
+                expect(columns->todoId->dataType)->toBe(std:("string"));
+                expect(columns->tag->dataType)->toBe(std:("string"));
+                expect(columns->createdAt->dataType)->toBe(std:("date"));
             }
             );
         }
         );
-        describe(std::string("todoSchemaExport export"), [=]() mutable
+        describe(std:("todoSchemaExport export"), [=]() mutable
         {
-            it(std::string("should correct schema structure"), [=]() mutable
+            it(std:("should correct schema structure"), [=]() mutable
             {
                 expect(todoSchemaExport)->toBeDefined();
                 expect(todoSchemaExport["todosTable"])->toBeDefined();

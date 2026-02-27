@@ -1,10 +1,12 @@
 #include "session.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> createSession(SessionData data) {
+std::future<std:> createSession(SessionData data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();
@@ -14,16 +16,16 @@ std::future<std::string> createSession(SessionData data) {
 
 }
 
-std::future<std::optional<SessionData>> getSession(const std::string& sid) {
+std::future<std::optional<SessionData>> getSession(const std:& sid) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();
     const auto raw = "redis.get(" + "sid:" + sid;
-    return raw ? (/* JSON.parse */ raw) : nullptr;
+    return raw ? (/* JSON::parse */ raw) : nullptr;
 
 }
 
-std::future<void> destroySession(const std::string& sid) {
+std::future<void> destroySession(const std:& sid) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();

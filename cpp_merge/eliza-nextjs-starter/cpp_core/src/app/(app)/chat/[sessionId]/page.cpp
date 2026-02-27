@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

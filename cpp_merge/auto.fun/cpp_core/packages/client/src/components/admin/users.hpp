@@ -15,11 +15,11 @@ namespace elizaos {
 
 // Type definitions
 struct User {
-    std::string id;
-    std::string address;
-    std::string | null name;
-    std::string createdAt;
-    std::optional<std::string> lastActive;
+    std: id;
+    std: address;
+    std: | null name;
+    std: createdAt;
+    std::optional<std:> lastActive;
     double points;
     double rewardPoints;
     std::optional<bool> suspended;
@@ -30,30 +30,30 @@ struct User {
 };
 
 struct TokenCreated {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string mint;
-    std::string createdAt;
+    std: id;
+    std: name;
+    std: ticker;
+    std: mint;
+    std: createdAt;
 };
 
 struct TokenHeld {
-    std::string mint;
-    std::string name;
-    std::string ticker;
+    std: mint;
+    std: name;
+    std: ticker;
     double balance;
 };
 
 struct Transaction {
-    std::string id;
-    std::string type;
-    std::string token;
-    std::string amount;
-    std::string date;
+    std: id;
+    std: type;
+    std: token;
+    std: amount;
+    std: date;
 };
 
 void AdminUsersList();
 
-void AdminUserDetails({ address: std::string } { address });
+void AdminUserDetails({ address: std: } { address });
 
 } // namespace elizaos

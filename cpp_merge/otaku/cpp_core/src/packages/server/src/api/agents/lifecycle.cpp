@@ -12,7 +12,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
         const auto db = serverInstance.database;
 
         // Start an existing agent - ADMIN ONLY
-        router.post("/:agentId/start", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
+        router.post[&]("/:agentId/start", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -32,7 +32,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                 const auto isActive = !!elizaOS.getAgent(agentId);
 
                 if (isActive) {
-                    logger.debug(`[AGENT START] Agent ${agentId} is already running`);
+                    logger.debug("[AGENT START] Agent " + std::to_string(agentId) + " is already running");
                     return sendSuccess(res, {;
                         id: agentId,
                         name: agent.name,
@@ -48,7 +48,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                         throw std::runtime_error('Failed to start agent');
                     }
 
-                    logger.debug(`[AGENT START] Successfully started agent: ${agent.name}`);
+                    logger.debug("[AGENT START] Successfully started agent: " + std::to_string(agent.name) + "");
                     sendSuccess(res, {
                         id: agentId,
                         name: agent.name,
@@ -70,7 +70,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                         });
 
                         // Stop an existing agent - ADMIN ONLY
-                        router.post("/:agentId/stop", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
+                        router.post[&]("/:agentId/stop", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 logger.debug('[AGENT STOP] Invalid agent ID format');
@@ -84,7 +84,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
 
                             serverInstance.unregisterAgent(agentId);
 
-                            logger.debug(`[AGENT STOP] Successfully stopped agent: ${runtime.character.name} (${agentId})`);
+                            logger.debug("[AGENT STOP] Successfully stopped agent: " + std::to_string(runtime.character.name) + " (" + std::to_string(agentId) + ")");
 
                             sendSuccess(res, {
                                 message: "Agent stopped",

@@ -15,6 +15,6 @@ enum struct TagType;
 
 extern any UserScoreMetricsSchema;
 enum struct TagType {
-    AREA = std::string("AREA"), ROLE = std::string("ROLE"), TECH = std::string("TECH")
+    AREA = std:("AREA"), ROLE = std:("ROLE"), TECH = std:("TECH")
 };
 #endif

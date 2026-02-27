@@ -1,23 +1,25 @@
 #include "xml-parser.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string sanitizeXml(const std::string& xmlString) {
+std: sanitizeXml(const std:& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Remove DOCTYPE declarations which could be used for XXE
     auto sanitized = xmlString.replace(/<!DOCTYPE[^>]*>/gi, "");
 
-    // Remove std::any entity declarations
+    // Remove std: entity declarations
     sanitized = sanitized.replace(/<!ENTITY[^>]*>/gi, "");
 
     // Remove processing instructions except xml declaration
     sanitized = sanitized.replace(/<\?(?!xml)[^>]*\?>/gi, "");
 
     // Remove CDATA sections that might contain malicious content
-    sanitized = sanitized.replace(/<!\[CDATA\[[\s\S]*?\]\]>/gi, (match) => {
+    sanitized = sanitized.replace[&](/<!\[CDATA\[[\s\S]*?\]\]>/gi, (match) {
         // Extract content and escape it
         const auto content = match.slice(9, -3);
         return escapeXml(content);
@@ -27,26 +29,21 @@ std::string sanitizeXml(const std::string& xmlString) {
 
 }
 
-std::string escapeXml(const std::string& unsafe) {
+std: escapeXml(const std:& unsafe) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return unsafe;
-    .replace(/&/g, "&amp;");
-    .replace(/</g, "&lt;");
-    .replace(/>/g, "&gt;");
-    .replace(/"/g, "&quot;");
-    .replace(/'/g, "&#039;");
+    return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
 }
 
-type is "add" isValidOperationType(const std::string& type) {
+type is "add" isValidOperationType(const std:& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return ["add", "modify", "delete"].includes(type);
+    return ["add", "modify", "delete"].count(type) > 0;
 
 }
 
-CharacterDiff parseCharacterDiff(const std::string& xmlString) {
+CharacterDiff parseCharacterDiff(const std:& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -69,22 +66,22 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
 
             if (opsRoot) {
                 // Handle single operation or array of operations
-                const auto processOperation = [&](op: std::any, type: std::string) {;
+                const auto processOperation = [&](op: std:, type: std:) {;
                     if (!isValidOperationType(type)) {
-                        throw std::runtime_error(`Invalid operation type: ${type}`);
+                        throw std::runtime_error("Invalid operation type: " + std::to_string(type) + "");
                     }
 
                     const auto items = Array.isArray(op) ? op : [op];
-                    items.forEach((item: std::any) => {
+                    items.forEach[&]((item: std:) {
                         // Validate path format
                         const auto path = item["@_path"];
                         if (!path || typeof path != "string") {
-                            throw std::runtime_error(`Invalid path in ${type} operation`);
+                            throw std::runtime_error("Invalid path in " + std::to_string(type) + " operation");
                         }
 
                         // Basic path validation - should not contain dangerous patterns
-                        if (path.includes("..") || path.includes("//")) {
-                            throw std::runtime_error(`Dangerous path pattern detected: ${path}`);
+                        if (path.count("..") > 0 || path.count("//") > 0) {
+                            throw std::runtime_error("Dangerous path pattern detected: " + std::to_string(path) + "");
                         }
 
                         const ModificationOperation operation = {;
@@ -102,12 +99,12 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
                             });
                             };
 
-                            // Check for std::any unknown operation types
+                            // Check for std: unknown operation types
                             const auto validOps = ["add", "modify", "delete"];
                             const auto opsKeys = Object.keys(opsRoot);
                             for (const auto& key : opsKeys)
-                                if (!validOps.includes(key)) {
-                                    throw std::runtime_error(`Invalid operation type: ${key}`);
+                                if (!validOps.count(key) > 0) {
+                                    throw std::runtime_error("Invalid operation type: " + std::to_string(key) + "");
                                 }
                             }
 
@@ -121,15 +118,15 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
                         if (
                         !reasoning ||;
                         typeof reasoning != "string" ||;
-                        reasoning.trim().size() == 0;
+                        reasoning.size() == 0;
                         ) {
                             throw std::runtime_error("Missing or empty reasoning in character modification");
                         }
 
                         return {
                             operations,
-                            reasoning: reasoning.trim(),
-                            timestamp: root.timestamp || new Date().toISOString(),
+                            reasoning: reasoning,
+                            timestamp: root.timestamp || std::make_unique<Date>().toISOString(),
                             };
                             } catch (error) {
                                 throw new Error(
@@ -143,12 +140,12 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
     }
 }
 
-std::string buildCharacterDiffXml(CharacterDiff diff) {
+std: buildCharacterDiffXml(CharacterDiff diff) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         // Validate diff before building
-        if (!diff.reasoning || diff.reasoning.trim().length == 0) {
+        if (!diff.reasoning || diff.reasoning.size() == 0) {
             throw std::runtime_error("Reasoning is required for character modifications");
         }
 
@@ -159,7 +156,7 @@ std::string buildCharacterDiffXml(CharacterDiff diff) {
         // Validate each operation has a valid path
         for (const auto& op : diff.operations)
             if (!op.path || typeof op.path != "string") {
-                throw std::runtime_error(`Invalid path in operation: ${JSON.stringify(op)}`);
+                throw std::runtime_error("Invalid path in operation: " + std::to_string(nlohmann::json().dump(op)) + "");
             }
         }
 
@@ -167,21 +164,21 @@ std::string buildCharacterDiffXml(CharacterDiff diff) {
             "character-modification": {
                 operations: {
                     add: diff.operations
-                    .filter((op) => op.type == "add");
+                    .filter[&]((op) { return op.type == "add"); };
                     .std::map((op) => ({
                         "@_path": op.path,
                         "@_type": op.dataType || "string",
                         "#text": op.value,
                         })),
                         modify: diff.operations
-                        .filter((op) => op.type == "modify");
+                        .filter[&]((op) { return op.type == "modify"); };
                         .std::map((op) => ({
                             "@_path": op.path,
                             "@_type": op.dataType || "string",
                             "#text": op.value,
                             })),
                             delete: diff.operations
-                            .filter((op) => op.type == "delete");
+                            .filter[&]((op) { return op.type == "delete"); };
                             .std::map((op) => ({
                                 "@_path": op.path,
                                 })),
@@ -193,9 +190,9 @@ std::string buildCharacterDiffXml(CharacterDiff diff) {
 
                                 // Remove empty operation arrays
                                 const auto ops = xmlObj["character-modification"].operations;
-                                if (ops.add.length == 0) delete ops.add;
-                                if (ops.modify.length == 0) delete ops.modify;
-                                if (ops.delete.length == 0) delete ops.delete;
+                                if (ops.add.size() == 0) delete ops.add;
+                                if (ops.modify.size() == 0) delete ops.modify;
+                                if (ops.delete.size() == 0) delete ops.delete;
 
                                 try {
                                     return builder.build(xmlObj);

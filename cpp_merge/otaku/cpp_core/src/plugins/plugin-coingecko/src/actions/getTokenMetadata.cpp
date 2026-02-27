@@ -1,4 +1,8 @@
 #include "getTokenMetadata.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +24,7 @@ double normalizeConfidence(double confidence) {
 
 }
 
-std::string formatConfidencePercentage(double confidence) {
+std: formatConfidencePercentage(double confidence) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto value = normalizeConfidence(confidence) * 100;
@@ -28,7 +32,7 @@ std::string formatConfidencePercentage(double confidence) {
 
 }
 
-std::string extractAttribute(const std::unordered_map<std::string, std::any>& metadata, const std::string& key) {
+std: extractAttribute(const std::unordered_map<std:, std:>& metadata, const std:& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!metadata) {
@@ -36,8 +40,8 @@ std::string extractAttribute(const std::unordered_map<std::string, std::any>& me
     }
     const auto attributesRaw = (metadata as { attributes?: unknown }).attributes;
     if (attributesRaw && typeof attributesRaw == "object") {
-        const auto value = (attributesRaw<std::string, unknown>)[key];
-        if (typeof value == "string" && value.trim().length > 0) {
+        const auto value = (attributesRaw<std:, unknown>)[key];
+        if (typeof value == "string" && value.size() > 0) {
             return value;
         }
     }
@@ -45,7 +49,7 @@ std::string extractAttribute(const std::unordered_map<std::string, std::any>& me
 
 }
 
-std::string describeCandidate(TokenMetadataCandidate candidate) {
+std: describeCandidate(TokenMetadataCandidate candidate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto symbol = extractAttribute(candidate.metadata, "symbol");
@@ -67,7 +71,7 @@ std::string describeCandidate(TokenMetadataCandidate candidate) {
 
 }
 
-std::string summarizeResolution(TokenMetadataResolution result) {
+std: summarizeResolution(TokenMetadataResolution result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!result.success) {
@@ -76,7 +80,7 @@ std::string summarizeResolution(TokenMetadataResolution result) {
     }
 
     const auto primaryCandidate =;
-    result.candidates.find((candidate) => candidate.metadata) || result.candidates[0];
+    result.candidates.find[&]((candidate) { return candidate.metadata) || result.candidates[0]; };
 
     if (!primaryCandidate) {
         return result.id + ": No matching tokens found";
@@ -87,13 +91,11 @@ std::string summarizeResolution(TokenMetadataResolution result) {
     ];
 
     const auto alternativeCandidates = result.candidates;
-    .filter((candidate) => candidate != primaryCandidate);
-    .slice(0, MAX_ALTERNATIVE_CANDIDATES);
+    .filter[&]((candidate) { return candidate != primaryCandidate); }.slice(0, MAX_ALTERNATIVE_CANDIDATES);
 
-    if (alternativeCandidates.length > 0) {
+    if (alternativeCandidates.size() > 0) {
         const auto alternativesText = alternativeCandidates;
-        ".std::map((candidate) => " + std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")";
-        .join(", ");
+        ".std::map[&]((candidate) { return " + std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")"; }.join(", ");
         "summaryParts.push_back(" + "Alternatives: " + alternativesText
     }
 

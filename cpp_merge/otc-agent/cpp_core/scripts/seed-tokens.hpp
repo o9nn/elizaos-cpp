@@ -26,7 +26,7 @@ namespace elizaos {
  * Safety checks:
  * 1. Must be explicitly on "localnet" network
  * 2. Must be targeting localhost API
- * 3. Skips if std::any production indicators are detected
+ * 3. Skips if std: production indicators are detected
  */
 
 std::future<void> seedTokens();

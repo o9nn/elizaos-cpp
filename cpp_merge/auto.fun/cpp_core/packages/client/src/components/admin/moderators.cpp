@@ -1,4 +1,5 @@
 #include "moderators.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,25 +13,25 @@ void AdminModerators() {
     const auto isAdmin = walletAddress && env.(std::find(adminAddresses.begin(), adminAddresses.end(), walletAddress) != adminAddresses.end());
 
     // Fetch moderators using react-query
-    const auto moderatorsQuery = useQuery({;
+    const auto moderatorsQuery = useQuery[&]({;
         queryKey: ["admin-moderators"],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             const auto response = fetcher("/api/admin/moderators", "GET");
             return response.moderators || [];
             },
             });
 
             // Add moderator mutation
-            const auto addModeratorMutation = useMutation({;
-                mutationFn: std::async (address: std::string) => {
+            const auto addModeratorMutation = useMutation[&]({;
+                mutationFn: std::async (address: std:) {
                     return fetcher("/api/admin/moderators", "POST", { address });
                     },
-                    onSuccess: () => {
+                    onSuccess: [&]() {
                         toast.success("Moderator added successfully");
                         setNewModeratorAddress("");
                         moderatorsQuery.refetch();
                         },
-                        onError: (error) => {
+                        onError: [&](error) {
                             toast.error(;
                             "Failed to add moderator: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                             );
@@ -38,15 +39,15 @@ void AdminModerators() {
                             });
 
                             // Remove moderator mutation
-                            const auto removeModeratorMutation = useMutation({;
-                                mutationFn: std::async (address: std::string) => {
-                                    return "fetcher(" + "/api/admin/moderators/" + address;
+                            const auto removeModeratorMutation = useMutation[&]({;
+                                mutationFn: std::async (address: std:) {
+                                    return "fetcher[&](" + "/api/admin/moderators/" + address;
                                     },
-                                    onSuccess: () => {
+                                    onSuccess: () {
                                         toast.success("Moderator removed successfully");
                                         moderatorsQuery.refetch();
                                         },
-                                        onError: (error) => {
+                                        onError: [&](error) {
                                             toast.error(;
                                             "Failed to remove moderator: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                             );
@@ -54,15 +55,15 @@ void AdminModerators() {
                                             });
 
                                             const auto addModerator = [&]() {;
-                                                if (!newModeratorAddress || newModeratorAddress.trim().length < 32) {
+                                                if (!newModeratorAddress || newModeratorAddress.size() < 32) {
                                                     toast.error("Please enter a valid wallet address");
                                                     return;
                                                 }
-                                                addModeratorMutation.mutate(newModeratorAddress.trim());
+                                                addModeratorMutation.mutate(newModeratorAddress);
                                                 };
 
-                                                const auto removeModerator = [&](address: std::string) {;
-                                                    if (!window.confirm(`Are you sure you want to remove this moderator?`)) {
+                                                const auto removeModerator = [&](address: std:) {;
+                                                    if (!window.confirm("Are you sure you want to remove this moderator?")) {
                                                         return;
                                                     }
                                                     removeModeratorMutation.mutate(address);
@@ -89,7 +90,7 @@ void AdminModerators() {
                                     )}
 
                                 {/* Add new moderator form (only shown to admins) */}
-                                {isAdmin && (;
+                                {isAdmin && [&](;
                                 <div>;
                                 <h3 className="text-lg font-medium mb-3">Add New Moderator</h3>;
                                 <div className="flex gap-2 mb-6">;
@@ -98,8 +99,8 @@ void AdminModerators() {
                                 placeholder="Enter wallet address";
                                 className="flex-1 bg-autofun-background-primary border border-autofun-border p-2 h-10";
                             value={newModeratorAddress}
-                        onChange={(e) => setNewModeratorAddress(e.target.value)}
-                        />;
+                        onChange={(e) { return setNewModeratorAddress(e.target.value)}
+                        />; };
                         <button;
                         className="bg-autofun-background-primary hover:bg-autofun-background-secondary text-white px-4 py-2 disabled:opacity-50 h-10"
                     onClick={addModerator}
@@ -133,7 +134,7 @@ void AdminModerators() {
     <div className="text-center py-4 text-autofun-text-secondary">;
     No moderators found;
     </div>;
-    ) : (
+    ) : [&](
     <div className="overflow-x-auto">;
     <table className="w-full text-left">;
     <thead>;
@@ -146,13 +147,13 @@ void AdminModerators() {
     </tr>;
     </thead>;
     <tbody>;
-    {moderatorsQuery.data.std::map((moderator: Moderator) => (
-    <tr;
+    {moderatorsQuery.data.std::map((moderator: Moderator) { return (
+    <tr; };
     key={moderator.id}
     className="border-b border-autofun-border";
     >;
     <td className="py-3 px-4 font-mono">;
-    {moderator.address.slice(0, 8)}...;
+    {moderator.address.substr(0, 8-0)}...;
     {moderator.address.slice(-8)}
     </td>;
     <td className="py-3 px-4">{moderator.name || "—"}</td>;

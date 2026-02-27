@@ -18,34 +18,34 @@ namespace elizaos {
 
 struct ExportResult {
     bool success;
-    std::optional<std::string> filename;
-    std::optional<std::string> error;
+    std::optional<std:> filename;
+    std::optional<std:> error;
 };
 
 struct ToastFunction {
-    std::string description;
+    std: description;
 };
 
 /**
  * Sanitizes a filename by replacing non-alphanumeric characters with dashes
  * and cleaning up multiple consecutive dashes
  */
-std::string sanitizeFilename(const std::string& name);
+std: sanitizeFilename(const std:& name);
 
 /**
  * Converts an agent to character JSON data, excluding sensitive information
  */
-std::unordered_map<std::string, std::any> agentToCharacterData(Agent agent);
+std::unordered_map<std:, std:> agentToCharacterData(Agent agent);
 
 /**
  * Generates a filename for the exported character
  */
-std::string generateExportFilename(const std::string& agentName);
+std: generateExportFilename(const std:& agentName);
 
 /**
  * Creates and triggers a download of a JSON file
  */
-void downloadJsonFile(const std::any& data, const std::string& filename);
+void downloadJsonFile(const std:& data, const std:& filename);
 
 /**
  * Exports an agent's character data as a JSON file download

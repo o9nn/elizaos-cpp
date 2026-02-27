@@ -18,8 +18,8 @@ namespace elizaos {
 
 
 struct Room {
-    std::string id;
-    std::string name;
+    std: id;
+    std: name;
     ChannelType type;
 };
 

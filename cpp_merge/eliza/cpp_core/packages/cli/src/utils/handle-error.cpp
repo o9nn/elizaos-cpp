@@ -1,10 +1,11 @@
 #include "handle-error.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void handleError(const std::any& error) {
+void handleError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for ENOSPC / "no space left on device" and print in red
@@ -34,7 +35,7 @@ void handleError(const std::any& error) {
                         std::cerr << "Error value:" << error << std::endl;
                     }
                 }
-                process.exit(1);
+                std::exit(1);
 
 }
 
@@ -45,12 +46,12 @@ std::future<void> checkServer(OptionValues opts) {
         try {
             const auto response = "fetch(" + std::to_string(getAgentRuntimeUrl(opts)) + "/api/agents";
             if (!response.ok) {
-                throw std::runtime_error(`Server responded with ${response.status}: ${response.statusText}`);
+                throw std::runtime_error("Server responded with " + std::to_string(response.status) + ": " + std::to_string(response.statusText) + "");
             }
             logger.success('ElizaOS server is running');
             } catch (error) {
                 std::cerr << 'Unable to connect to ElizaOS server << likely not running or not accessible!' << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
     } catch (const std::exception& e) {

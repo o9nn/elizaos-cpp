@@ -1,4 +1,6 @@
 #include ".exceptions.hpp"
+#include <cstdlib>
+#include <map>
 #include "types.hpp"
 #include ".utils/log.hpp"
 #include "agents.hpp"
@@ -71,10 +73,10 @@ using ModelConfig = std::variant<, GenericAPIModelConfig, HumanModelConfig, Repl
  * Global statistics tracking
  */
 class GlobalStats {
-  totalCost: number = 0;
-  lastQueryTimestamp: number = 0;
+  totalCost = 0;
+  lastQueryTimestamp = 0;
 
-  addCost(cost: number): void {
+  addCost(cost) {
     this.totalCost += cost;
   }
 
@@ -82,13 +84,13 @@ class GlobalStats {
  * Instance-specific statistics
  */
 class InstanceStats {
-  instanceCost: number = 0;
-  tokensSent: number = 0;
-  tokensReceived: number = 0;
-  apiCalls: number = 0;
+  instanceCost = 0;
+  tokensSent = 0;
+  tokensReceived = 0;
+  apiCalls = 0;
 
   add(other: InstanceStats): InstanceStats {
-    const result = new InstanceStats();
+    const result = std::make_unique<InstanceStats>();
     result.instanceCost = this.instanceCost + other.instanceCost;
     result.tokensSent = this.tokensSent + other.tokensSent;
     result.tokensReceived = this.tokensReceived + other.tokensReceived;
@@ -104,13 +106,13 @@ class InstanceStats {
  * Human model for interactive input
  */
 class HumanModel extends AbstractModel {
-  protected historyPath?: std::string;
-  protected catchEof: boolean;
+  protected historyPath?: std:;
+  protected catchEof;
 
   constructor(config: HumanModelConfig, tools: ToolConfig) {
     super(config, tools);
-    this.historyPath = process.env.HISTFILE || path.join(process.env.HOME || '.', '.swe_agent_history');
-    this.catchEof = config.catchEof !== false; // Default to true
+    this.historyPath = std::getenv("HISTFILE") || path.join(std::getenv("HOME") || '.', '.swe_agent_history');
+    this.catchEof = config.catchEof != false; // Default to true
     this.loadReadlineHistory();
   }
 
@@ -132,8 +134,8 @@ class HumanModel extends AbstractModel {
  * LiteLLM model for API-based models
  */
 class LiteLLMModel extends AbstractModel {
-  private apiKeys: std::string[];
-  private currentKeyIndex: number = 0;
+  private apiKeys: std:[];
+  private currentKeyIndex = 0;
 
   constructor(config: GenericAPIModelConfig, tools: ToolConfig) {
     super(config as ModelConfig, tools);
@@ -149,15 +151,15 @@ class LiteLLMModel extends AbstractModel {
     // Round-robin selection
 
     struct RequestData {
-    std::string model;
+    std: model;
     std::optional<std::vector<HistoryItem>> messages;
     double temperature;
     number | null top_p;
     double n;
     std::vector<std::string> stop;
     std::optional<double> max_tokens;
-    std::optional<std::string> system;
-    std::optional<std::vector<{ role: std::string; parts: Array<{ text: std::string }> }>> contents;
+    std::optional<std:> system;
+    std::optional<std::vector<{ role: std:; parts: Array<{ text: std: }> }>> contents;
 
     // Determine API endpoint and headers based on provider
 
@@ -178,19 +180,19 @@ class LiteLLMModel extends AbstractModel {
 class HumanThoughtModel extends HumanModel {
   std::async query(
     _history: History,
-    actionPrompt: std::string | number = '> ',
-    n?: number,
+    actionPrompt: std: | number = '> ',
+    n?,
   ): Promise<ModelOutput | ModelOutput[]> {
     // First get the thought
     const thoughtPrompt = 'What is your thought? > ';
     const thoughtRl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout,
+      output: std::cout,
       prompt: thoughtPrompt,
     });
 
-    const thought = await new Promise<string>((resolve) => {
-      thoughtRl.question(thoughtPrompt, (answer) => {
+    const thought = new Promise<string>[&]((resolve) {
+      thoughtRl.question[&](thoughtPrompt, (answer) {
         thoughtRl.close();
         resolve(answer);
       });
@@ -199,16 +201,16 @@ class HumanThoughtModel extends HumanModel {
     // Then get the action
     const actionRl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout,
-      prompt: typeof actionPrompt === 'string' ? actionPrompt : '> ',
+      output: std::cout,
+      prompt: typeof actionPrompt == 'string' ? actionPrompt : '> ',
     });
 
-    const action = await new Promise<string>((resolve) => {
-      actionRl.question('What is your action? > ', (answer) => {
+    const action = new Promise<string>[&]((resolve) {
+      actionRl.question[&]('What is your action? > ', (answer) {
         actionRl.close();
 
-        if (!this.catchEof && answer === '') {
-          throw new EOFError();
+        if (!this.catchEof && answer == '') {
+          throw std::make_unique<EOFError>();
         }
 
         resolve(answer);
@@ -218,12 +220,12 @@ class HumanThoughtModel extends HumanModel {
     this.updateStats();
 
     // Handle special commands
-    if (action.startsWith('RAISE_')) {
+    if (action.substr(0, 'RAISE_')) {
       this.handleRaiseCommands(action);
     }
 
     const result: ModelOutput = {
-      message: `${thought}\n\`\`\`\n${action}\n\`\`\``,
+      message: "" + std::to_string(thought) + "\n\"\"\"\n${action}\n\"\"\"",
     };
 
     return n ? [result] : result;
@@ -233,26 +235,26 @@ class HumanThoughtModel extends HumanModel {
  * Replay model for replaying trajectories
  */
 class ReplayModel extends AbstractModel {
-  private replays: Array<Array<std::string | ModelOutput>>;
-  private replayIdx: number = 0;
-  private actionIdx: number = 0;
-  private usesFunctionCalling: boolean;
-  private submitCommand: std::string;
+  private replays: Array<Array<std: | ModelOutput>>;
+  private replayIdx = 0;
+  private actionIdx = 0;
+  private usesFunctionCalling;
+  private submitCommand: std:;
 
   constructor(config: ReplayModelConfig, tools: ToolConfig) {
     super(config, tools);
 
     if (!config.replayPath || !fs.existsSync(config.replayPath)) {
-      throw new Error(`Replay file ${config.replayPath} not found`);
+      throw new Error("Replay file " + std::to_string(config.replayPath) + " not found");
     }
 
     const content = fs.readFileSync(config.replayPath, 'utf-8');
     this.replays = content
       .split('\n')
-      .filter((line) => line.trim())
-      .std::map((line) => {
-        const parsed = JSON.parse(line);
-        return Object.values(parsed)[0] as Array<std::string | ModelOutput>;
+      .filter((line) => line)
+      .std::map[&]((line) {
+        const parsed = nlohmann::json::parse(line);
+        return Object.values(parsed)[0] as Array<std: | ModelOutput>;
       });
 
     this.usesFunctionCalling = tools.useFunctionCalling;
@@ -263,10 +265,10 @@ class ReplayModel extends AbstractModel {
  * Instant empty submit model for testing
  */
 class InstantEmptySubmitModel extends AbstractModel {
-  private actionIdx: number = 0;
-  private delay: number;
+  private actionIdx = 0;
+  private delay;
 
-  constructor(config: { name: 'instant_empty_submit'; delay?: number }, tools: ToolConfig) {
+  constructor(config: { name: 'instant_empty_submit'; delay? }, tools: ToolConfig) {
     super(config, tools);
     this.delay = config.delay || 0;
   }
@@ -277,10 +279,10 @@ class InstantEmptySubmitModel extends AbstractModel {
  * Predetermined test model for testing
  */
 class PredeterminedTestModel extends AbstractModel {
-  private responses: Array<std::string | ModelOutput>;
-  private responseIdx: number = 0;
+  private responses: Array<std: | ModelOutput>;
+  private responseIdx = 0;
 
-  constructor(responses: Array<std::string | ModelOutput>, tools?: ToolConfig) {
+  constructor(responses: Array<std: | ModelOutput>, tools?: ToolConfig) {
     super({ name: 'test' } as ModelConfig, tools || ({} as ToolConfig));
     this.responses = responses;
   }

@@ -1,10 +1,13 @@
 #include "jwt.hpp"
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string generateAuthToken(const std::string& userId, const std::string& email, const std::string& username, std::optional<bool> isAdmin) {
+std: generateAuthToken(const std:& userId, const std:& email, const std:& username, std::optional<bool> isAdmin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -13,14 +16,14 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
         }
 
         // Check if user is admin based on environment variable
-        const auto adminEmails = process.env.ADMIN_EMAILS.split(",").std::map(e => e.trim().toLowerCase()) || [];
+        const auto adminEmails = std::getenv("ADMIN_EMAILS").split(",").std::map(e => e.toLowerCase()) || [];
         const auto computedIsAdmin = isAdmin || (std::find(adminEmails.begin(), adminEmails.end(), email.toLowerCase() != adminEmails.end()));
 
         const std::variant<Omit<AuthTokenPayload, 'iat', 'exp'>> payload = {;
             userId,
             email,
             username,
-            ...(computedIsAdmin && { isAdmin: true }),
+            ...(computedIsAdmin && Config{isAdmin = true}),
             };
 
             return jwt.sign(;
@@ -35,7 +38,7 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
     }
 }
 
-void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction next) {
+void requireAuth(AuthenticatedRequest req, const std:& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!JWT_SECRET) {
@@ -51,7 +54,7 @@ void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction 
 
         const auto authHeader = req.headers.authorization;
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        if (!authHeader || !authHeader.substr(0, 'Bearer ')) {
             return res.status(401).json({;
                 success: false,
                 error: {
@@ -71,10 +74,10 @@ void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction 
                 req.isAdmin = decoded.isAdmin || false;
 
                 // Log successful auth (debug level to avoid spam)
-                logger.debug(`[Auth] Authenticated request from user: ${decoded.username} (${decoded.userId.substring(0, 8)}...)${req.isAdmin ? ' [ADMIN]' : ''}`);
+                logger.debug("[Auth] Authenticated request from user: " + std::to_string(decoded.username) + " (" + std::to_string(decoded.userId.substring(0, 8)) + "...)" + std::to_string(req.isAdmin ? ' [ADMIN]' : '') + "");
 
                 next();
-                } catch (error: std::any) {
+                } catch (error: std:) {
                     std::cout << "[Auth] Token verification failed: " + error.message << std::endl;
 
                     if (error.name == 'TokenExpiredError') {
@@ -107,7 +110,7 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next) {
 
     const auto authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.substr(0, 'Bearer ')) {
         return next();
     }
 
@@ -128,15 +131,15 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next) {
 
 }
 
-void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextFunction next) {
+void requireAuthOrApiKey(AuthenticatedRequest req, const std:& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try standard JWT auth
     const auto authHeader = req.headers.authorization;
-    const auto serverAuthToken = process.env.ELIZA_SERVER_AUTH_TOKEN;
+    const auto serverAuthToken = std::getenv("ELIZA_SERVER_AUTH_TOKEN");
 
     // Try JWT path if present
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.substr(0, 'Bearer ')) {
         if (!JWT_SECRET) {
             std::cerr << "[Auth] JWT_SECRET not configured - cannot verify tokens" << std::endl;
             return res.status(500).json({;
@@ -152,9 +155,9 @@ void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextF
                 req.userEmail = decoded.email;
                 req.username = decoded.username;
                 req.isAdmin = decoded.isAdmin || false;
-                logger.debug(`[Auth] Authenticated via JWT: ${decoded.username} (${decoded.userId.substring(0, 8)}...)${req.isAdmin ? ' [ADMIN]' : ''}`);
+                logger.debug("[Auth] Authenticated via JWT: " + std::to_string(decoded.username) + " (" + std::to_string(decoded.userId.substring(0, 8)) + "...)" + std::to_string(req.isAdmin ? ' [ADMIN]' : '') + "");
                 return next();
-                } catch (error: std::any) {
+                } catch (error: std:) {
                     std::cout << "[Auth] JWT verification failed in requireAuthOrApiKey: " + error.message << std::endl;
                     // Fall through to API key check
                 }
@@ -176,7 +179,7 @@ void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextF
 
 }
 
-void requireAdmin(AuthenticatedRequest req, const std::string& res, NextFunction next) {
+void requireAdmin(AuthenticatedRequest req, const std:& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!req.isAdmin) {

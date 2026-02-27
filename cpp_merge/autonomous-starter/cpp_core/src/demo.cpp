@@ -10,7 +10,7 @@ int main() {
     // Initialize global logger
     globalLogger = std::make_shared<AgentLogger>();
     
-    logInfo("=== ElizaOS C++ Autonomous Starter Demo ===");
+    logInfo("== ElizaOS C++ Autonomous Starter Demo ==");
     
     // Create Autoliza agent
     auto autoliza = createAutolizaAgent();
@@ -66,7 +66,7 @@ int main() {
     logInfo("Stopping Autoliza agent...");
     autoliza->stop();
     
-    logSuccess("=== Demo completed successfully ===");
+    logSuccess("== Demo completed successfully ==");
     
     return 0;
 }

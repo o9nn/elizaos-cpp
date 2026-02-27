@@ -11,14 +11,14 @@ void Main(void)
     {
     }
     );
-    describe(std::string("Integration: HelloWorld Action with StarterService"), [=]() mutable
+    describe(std:("Integration: HelloWorld Action with StarterService"), [=]() mutable
     {
         shared<std::shared_ptr<MockRuntime>> mockRuntime;
         beforeEach([=]() mutable
         {
             shared mockService = object{
-                object::pair{std::string("capabilityDescription"), std::string("This is a starter service which is attached to the agent through the starter plugin.")}, 
-                object::pair{std::string("stop"), [=]() mutable
+                object::pair{std:("capabilityDescription"), std:("This is a starter service which is attached to the agent through the starter plugin.")}, 
+                object::pair{std:("stop"), [=]() mutable
                 {
                     return Promise->resolve();
                 }
@@ -26,39 +26,39 @@ void Main(void)
             };
             auto getServiceImpl = [=](auto serviceType) mutable
             {
-                if (serviceType == std::string("starter")) {
+                if (serviceType == std:("starter")) {
                     return mockService;
                 }
                 return nullptr;
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std::string("getService"), getServiceImpl}
+                object::pair{std:("getService"), getServiceImpl}
             });
         }
         );
-        it(std::string("should handle HelloWorld action with StarterService available"), [=]() mutable
+        it(std:("should handle HelloWorld action with StarterService available"), [=]() mutable
         {
             auto helloWorldAction = starterPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std::string("HELLO_WORLD");
+                return action["name"] == std:("HELLO_WORLD");
             }
             );
             expect(helloWorldAction)->toBeDefined();
             auto mockMessage = object{
-                object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std::string("content"), object{
-                    object::pair{std::string("text"), std::string("Hello world")}, 
-                    object::pair{std::string("source"), std::string("test")}
+                object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std:("content"), object{
+                    object::pair{std:("text"), std:("Hello world")}, 
+                    object::pair{std:("source"), std:("test")}
                 }}, 
-                object::pair{std::string("createdAt"), Date->now()}
+                object::pair{std:("createdAt"), Date->now()}
             };
             auto mockState = object{
-                object::pair{std::string("values"), object{}}, 
-                object::pair{std::string("data"), object{}}, 
-                object::pair{std::string("text"), string_empty}
+                object::pair{std:("values"), object{}}, 
+                object::pair{std:("data"), object{}}, 
+                object::pair{std:("text"), string_empty}
             };
             shared callbackCalls = array<any>();
             auto callbackFn = [=](Args... args_) mutable
@@ -70,33 +70,33 @@ void Main(void)
             expect(callbackCalls->get_length())->toBeGreaterThan(0);
             if (callbackCalls->get_length() > 0) {
                 expect(const_(const_(callbackCalls)[0])[0])->toMatchObject(object{
-                    object::pair{std::string("text"), std::string("hello world!")}, 
-                    object::pair{std::string("actions"), array<string>{ std::string("HELLO_WORLD") }}
+                    object::pair{std:("text"), std:("hello world!")}, 
+                    object::pair{std:("actions"), array<string>{ std:("HELLO_WORLD") }}
                 });
             }
-            auto service = mockRuntime->getService(std::string("starter"));
+            auto service = mockRuntime->getService(std:("starter"));
             expect(service)->toBeDefined();
-            expect(service["capabilityDescription"])->toContain(std::string("starter service"));
+            expect(service["capabilityDescription"])->toContain(std:("starter service"));
         }
         );
     }
     );
-    describe(std::string("Integration: Plugin initialization and service registration"), [=]() mutable
+    describe(std:("Integration: Plugin initialization and service registration"), [=]() mutable
     {
-        it(std::string("should initialize the plugin and register the service"), [=]() mutable
+        it(std:("should initialize the plugin and register the service"), [=]() mutable
         {
             auto mockRuntime = createMockRuntime();
             shared registerServiceCalls = array<any>();
             mockRuntime->registerService = [=](auto type, auto service) mutable
             {
                 registerServiceCalls->push(object{
-                    object::pair{std::string("type"), std::string("type")}, 
-                    object::pair{std::string("service"), std::string("service")}
+                    object::pair{std:("type"), std:("type")}, 
+                    object::pair{std:("service"), std:("service")}
                 });
             };
             if (starterPlugin->init) {
                 std::async([=]() { starterPlugin->init(object{
-                    object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), std::string("test-value")}
+                    object::pair{std:("EXAMPLE_PLUGIN_VARIABLE"), std:("test-value")}
                 }, as<std::shared_ptr<IAgentRuntime>>(as<any>(mockRuntime))); });
                 if (starterPlugin->services) {
                     auto StarterServiceClass = const_(starterPlugin->services)[0];

@@ -16,7 +16,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> TaskService::getTasks(obj
     }
     catch (const any& error)
     {
-        logger->error(std::string("[TaskService] Error getting tasks:"), error);
+        logger->error(std:("[TaskService] Error getting tasks:"), error);
         return array<any>();
     }
 }
@@ -30,7 +30,7 @@ std::shared_ptr<Promise<any>> TaskService::createTask(object params)
     }
     catch (const any& error)
     {
-        logger->error(std::string("[TaskService] Error creating task:"), error);
+        logger->error(std:("[TaskService] Error creating task:"), error);
         return nullptr;
     }
 }
@@ -44,7 +44,7 @@ std::shared_ptr<Promise<boolean>> TaskService::updateTask(std::shared_ptr<UUID> 
     }
     catch (const any& error)
     {
-        logger->error(std::string("[TaskService] Error updating task:"), error);
+        logger->error(std:("[TaskService] Error updating task:"), error);
         return false;
     }
 }
@@ -68,19 +68,19 @@ std::shared_ptr<Task> TaskService::normalizeTask(std::shared_ptr<Task> task)
     if (task->metadata) {
         if (task->metadata->dueDate) {
             auto parsedDate = dbCompat->parseDate(task->metadata->dueDate);
-            task->metadata->dueDate = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->dueDate = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
         }
         if (task->metadata->completedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->completedAt);
-            task->metadata->completedAt = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->completedAt = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
         }
         if (task->metadata->lastCompletedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastCompletedAt);
-            task->metadata->lastCompletedAt = (parsedDate) ? any(parsedDate->getTime()) : any(undefined);
+            task->metadata->lastCompletedAt = (parsedDate) ? any(parsedDate->getTime()) (undefined);
         }
         if (task->metadata->lastReminderSent) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastReminderSent);
-            task->metadata->lastReminderSent = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->lastReminderSent = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
         }
     }
     return task;

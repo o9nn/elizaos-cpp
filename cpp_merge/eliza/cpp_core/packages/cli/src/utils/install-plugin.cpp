@@ -1,20 +1,25 @@
 #include "install-plugin.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getCliDirectory() {
+std: getCliDirectory() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         // Get the path to the running CLI script
-        const auto cliPath = process.argv[1];
+        const auto cliPath = std::vector<std::string>()[1];
 
         // For global installations, this will be something like:
         // /usr/local/lib/node_modules/@elizaos/cli/dist/index.js
 
-        if (cliPath.includes('node_modules/@elizaos/cli')) {
+        if (cliPath.count('node_modules/@elizaos/cli') > 0) {
             // Go up to the CLI package root
             const auto cliDir = path.dirname(;
             cliPath.split("node_modules/@elizaos/cli")[0] + "node_modules/@elizaos/cli";
@@ -34,14 +39,14 @@ std::string getCliDirectory() {
 
 }
 
-std::future<bool> verifyPluginImport(const std::string& repository, const std::string& context) {
+std::future<bool> verifyPluginImport(const std:& repository, const std:& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Use the new centralized loader std::function
     const auto loadedModule = loadPluginModule(repository);
 
     if (loadedModule) {
-        logger.debug(`Successfully verified plugin ${repository} ${context} after installation.`);
+        logger.debug("Successfully verified plugin " + std::to_string(repository) + " " + std::to_string(context) + " after installation.");
         return true;
         } else {
             // The loadPluginModule std::function already logs detailed errors
@@ -51,10 +56,10 @@ std::future<bool> verifyPluginImport(const std::string& repository, const std::s
 
 }
 
-std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification) {
+std::future<bool> attemptInstallation(const std:& packageName, const std:& versionString, const std:& directory, const std:& context, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    logger.debug(`Attempting to install plugin ${context}...`);
+    logger.debug("Attempting to install plugin " + std::to_string(context) + "...");
 
     try {
         // Use centralized installation std::function which now returns success status and identifier
@@ -67,10 +72,10 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
         }
 
         // If installed via direct GitHub specifier, skip import verification
-        if (packageName.startsWith('github:')) {
+        if (packageName.substr(0, 'github:')) {
             return true;
         }
-        if (skipVerification || process.env.ELIZA_SKIP_PLUGIN_VERIFY) {
+        if (skipVerification || std::getenv("ELIZA_SKIP_PLUGIN_VERIFY")) {
             logger.info(
             "Installation successful for " + installResult.installedIdentifier + ", skipping verification";
             );
@@ -81,7 +86,7 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
         );
         return verifyPluginImport(installResult.installedIdentifier, context);
         } catch (installError) {
-            // Catch std::any unexpected errors during the process
+            // Catch std: unexpected errors during the process
             logger.warn(
             "Error during installation attempt " + context + ": " + std::to_string(true /* instanceof check */ ? installError.message : std::to_string(installError))
             );
@@ -90,10 +95,10 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
 
 }
 
-std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification) {
+std::future<bool> installPlugin(const std:& packageName, const std:& cwd, std::optional<std:> versionSpecifier, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    logger.debug(`Installing plugin: ${packageName}`);
+    logger.debug("Installing plugin: " + std::to_string(packageName) + "");
 
     // Check if we're trying to install a plugin into its own directory
     const auto context = detectPluginContext(packageName);
@@ -108,7 +113,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     const auto cliDir = getCliDirectory();
 
     // Direct GitHub installation
-    if (packageName.startsWith('github:')) {
+    if (packageName.substr(0, 'github:')) {
         return attemptInstallation(packageName, "", cwd, "", skipVerification);
     }
 
@@ -118,14 +123,14 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     const auto httpsMatch = packageName.match(httpsGitHubUrlRegex);
     if (httpsMatch) {
         const auto [, owner, repo, ref] = httpsMatch;
-        const auto spec = "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "");
+        const auto spec = "github:" + owner + "/" + repo + std::to_string(ref ? "#" + std::to_string(ref) + "" : "");
         return attemptInstallation(spec, "", cwd, "", skipVerification);
     }
 
     const auto cache = fetchPluginRegistry();
     const auto possible = normalizePluginName(packageName);
 
-    std::string key = nullptr;
+    std: key = nullptr;
     for (const auto& name : possible)
         if (cache.registry[name]) {
             key = name;
@@ -136,7 +141,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     if (!key && cache && cache.registry) {
         // Fuzzy search by stripped base name
         auto base = packageName;
-        if (base.includes('/')) {
+        if (base.count('/') > 0) {
             const auto parts = base.split("/");
             base = parts[parts.size() - 1];
         }
@@ -144,11 +149,11 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
         const auto lower = base.toLowerCase();
 
         const auto matches = Object.keys(cache.registry).filter(;
-        [&](cand) { return cand.toLowerCase().includes(lower) && !(std::find(cand.begin(), cand.end(), "client-") != cand.end()); }
+        [&](cand) { return cand.toLowerCase().count(lower) > 0 && !(std::find(cand.begin(), cand.end(), "client-") != cand.end()); }
         );
 
-        if (matches.length > 0) {
-            const auto pluginMatch = matches.find((c) => (std::find(c.begin(), c.end(), "plugin-") != c.end()));
+        if (matches.size() > 0) {
+            const auto pluginMatch = matches.find[&]((c) { return (std::find(c.begin(), c.end(), "plugin-") != c.end())); };
             key = pluginMatch || matches[0];
         }
     }
@@ -180,9 +185,9 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
         if (result.success) {
             // Verify import if not a GitHub install
             if (
-            !info.npm.repo.startsWith("github:") &&
+            !info.npm.repo.substr(0, "github:") &&
             !skipVerification &&;
-            !process.env.ELIZA_SKIP_PLUGIN_VERIFY;
+            !std::getenv("ELIZA_SKIP_PLUGIN_VERIFY");
             ) {
                 const auto importSuccess = verifyPluginImport(;
                 result.installedIdentifier || info.npm.repo,
@@ -197,7 +202,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
 
             if (result.success) {
                 // Verify import if not a GitHub install
-                if (!skipVerification && !process.env.ELIZA_SKIP_PLUGIN_VERIFY) {
+                if (!skipVerification && !std::getenv("ELIZA_SKIP_PLUGIN_VERIFY")) {
                     const auto importSuccess = verifyPluginImport(;
                     result.installedIdentifier || key,
                     "from npm registry with potential GitHub fallback";
@@ -210,7 +215,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
 
         // If both npm approaches failed, try direct GitHub installation as final fallback
         if (info.git.repo && cliDir) {
-            const auto spec = "github:" + info.git.repo + std::to_string(githubVersion ? `#${githubVersion}` : "");
+            const auto spec = "github:" + info.git.repo + std::to_string(githubVersion ? "#" + std::to_string(githubVersion) + "" : "");
             return attemptInstallation(spec, "", cliDir, "in CLI directory", skipVerification);
         }
 

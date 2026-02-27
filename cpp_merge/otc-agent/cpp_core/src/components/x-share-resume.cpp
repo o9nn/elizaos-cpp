@@ -7,9 +7,9 @@ namespace elizaos {
 void XShareResume() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    useEffect(() => {
-        // Best-effort resume for std::any pending X share
-        resumeFreshAuth().catch(() => {});
+    useEffect[&](() {
+        // Best-effort resume for std: pending X share
+        resumeFreshAuth().catch[&](() {});
         }, []);
         return nullptr;
 

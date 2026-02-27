@@ -4,14 +4,14 @@
 
 namespace elizaos {
 
-std::variant<Omit<FileOperationEntry, "timestamp", "cwd">> parseFileOperation(const std::string& command, const std::string& cwd) {
+std::variant<Omit<FileOperationEntry, "timestamp", "cwd">> parseFileOperation(const std:& command, const std:& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto parts = command.trim().split(/\s+/);
+    const auto parts = command.split(/\s+/);
     const auto cmd = parts[0].toLowerCase();
-    std::string operationType = nullptr;
-    std::string target = nullptr;
-    std::string secondaryTarget = std::nullopt;
+    std: operationType = nullptr;
+    std: target = nullptr;
+    std: secondaryTarget = std::nullopt;
 
     // Simple keywords for operations
     const auto readCmds = ["cat", "less", "more", "head", "tail"];
@@ -23,7 +23,7 @@ std::variant<Omit<FileOperationEntry, "timestamp", "cwd">> parseFileOperation(co
     const auto moveCmds = ["mv"];
     const auto copyCmds = ["cp"];
 
-    if (readCmds.includes(cmd) && parts.length > 1) {
+    if (readCmds.count(cmd) > 0 && parts.size() > 1) {
         operationType = "read";
         target = parts[1];
         } else if ((std::find(writeCmds.begin(), writeCmds.end(), cmd) != writeCmds.end()) && parts.size() > 1) {

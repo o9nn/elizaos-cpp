@@ -7,27 +7,27 @@ namespace elizaos {
 void Widget() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [currentTime, setCurrentTime] = useState(new Date());
+    const auto [currentTime, setCurrentTime] = useState(std::make_unique<Date>());
     const auto [userTimezone, setUserTimezone] = useState<string>("");
     const auto [utcOffset, setUtcOffset] = useState<string>("");
     const auto [userLocation, setUserLocation] = useState<string>("");
     const auto [temperature, setTemperature] = useState<string>("");
 
-    useEffect(() => {
-        const auto timer = setInterval(() => {;
-            setCurrentTime(new Date());
+    useEffect[&](() {
+        const auto timer = setInterval[&](() {;
+            setCurrentTime(std::make_unique<Date>());
             }, 1000);
 
             return [&]() { return clearInterval(timer); };
             }, []);
 
-            useEffect(() => {
+            useEffect[&](() {
                 // Get user's timezone
                 const auto timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 setUserTimezone(timezone);
 
                 // Calculate UTC offset
-                const auto offsetMinutes = -new Date().getTimezoneOffset();
+                const auto offsetMinutes = -std::make_unique<Date>().getTimezoneOffset();
                 const auto offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
                 const auto offsetMins = Math.abs(offsetMinutes) % 60;
                 const auto sign = offsetMinutes >= 0 ? "+" : "-";
@@ -35,15 +35,15 @@ void Widget() {
                 setUtcOffset(utcOffsetString);
 
                 // Get approximate location from IP address (no permissions needed)
-                const auto fetchLocationAndWeather = std::async () => {;
+                const auto fetchLocationAndWeather = std::async [&]() {;
                     try {
                         // Use IP-based geolocation (free, no API key, no permissions)
                         const auto geoResponse = fetch("https://get.geojs.io/v1/ip/geo.json");
                         const auto geoData = geoResponse.json();
 
                         if (geoData.city || geoData.region) {
-                            const auto city = (geoData.city || "").trim();
-                            const auto region = (geoData.region || "").trim();
+                            const auto city = (geoData.city || "");
+                            const auto region = (geoData.region || "");
 
                             if (city && region) {
                                 // Avoid duplicates like "Belgrade, Belgrade"

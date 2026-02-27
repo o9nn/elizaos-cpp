@@ -7,7 +7,7 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->Commands->add(std::string("mount"), mount);
+    Cypress->Commands->add(std:("mount"), mount);
 }
 
 MAIN

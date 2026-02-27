@@ -17,11 +17,11 @@ namespace elizaos {
  */
 
 struct OTCQuote {
-    std::string quoteId;
-    std::optional<std::string> beneficiary;
-    std::string tokenAmount;
-    std::optional<std::string> tokenAmountFormatted;
-    std::string tokenSymbol;
+    std: quoteId;
+    std::optional<std:> beneficiary;
+    std: tokenAmount;
+    std::optional<std:> tokenAmountFormatted;
+    std: tokenSymbol;
     std::optional<std::variant<"ethereum", "base", "bsc", "solana">> tokenChain;
     std::optional<double> apr;
     double lockupMonths;
@@ -34,60 +34,60 @@ struct OTCQuote {
     double discountPercent;
     std::optional<double> discountUsd;
     std::optional<double> finalPriceUsd;
-    std::string paymentCurrency;
-    std::optional<std::string> paymentAmount;
-    std::optional<std::string> paymentSymbol;
+    std: paymentCurrency;
+    std::optional<std:> paymentAmount;
+    std::optional<std:> paymentSymbol;
     std::optional<double> ethPrice;
-    std::optional<std::string> createdAt;
-    std::optional<std::string> status;
-    std::optional<std::string> message;
-    std::optional<std::string> consignmentId;
+    std::optional<std:> createdAt;
+    std::optional<std:> status;
+    std::optional<std:> message;
+    std::optional<std:> consignmentId;
     std::optional<bool> isFixedPrice;
 };
 
 struct QuoteAccepted {
-    std::string quoteId;
-    std::string offerId;
-    std::string transactionHash;
-    std::string tokenAmount;
-    std::string tokenAmountFormatted;
-    std::string tokenSymbol;
-    std::string tokenName;
-    std::string paidAmount;
-    std::string paymentCurrency;
+    std: quoteId;
+    std: offerId;
+    std: transactionHash;
+    std: tokenAmount;
+    std: tokenAmountFormatted;
+    std: tokenSymbol;
+    std: tokenName;
+    std: paidAmount;
+    std: paymentCurrency;
     double discountBps;
     double discountPercent;
-    std::string totalSaved;
-    std::string finalPrice;
-    std::string status;
-    std::string timestamp;
-    std::string message;
+    std: totalSaved;
+    std: finalPrice;
+    std: status;
+    std: timestamp;
+    std: message;
 };
 
 /**
  * Extract XML from message text
  */
-std::optional<std::string> extractXMLFromMessage(const std::string& messageText);
+std::optional<std:> extractXMLFromMessage(const std:& messageText);
 
 /**
  * Parse quote from XML
  */
-std::optional<OTCQuote> parseOTCQuoteXML(const std::string& xmlString);
+std::optional<OTCQuote> parseOTCQuoteXML(const std:& xmlString);
 
 /**
  * Parse quote accepted XML
  */
-std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std::string& xmlString);
+std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std:& xmlString);
 
 /**
  * Check if message contains a quote
  */
-bool messageContainsQuote(const std::string& messageText);
+bool messageContainsQuote(const std:& messageText);
 
 /**
- * Parse std::any XML type from message
+ * Parse std: XML type from message
  */
-void parseMessageXML(const std::string& messageText); {
+void parseMessageXML(const std:& messageText); {
 
   // Try parsing as quote
 

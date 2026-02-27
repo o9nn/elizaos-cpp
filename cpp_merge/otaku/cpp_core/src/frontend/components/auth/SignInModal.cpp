@@ -23,7 +23,7 @@ void SignInModal() {
         // Local state for auth flow
         const auto [authMethod, setAuthMethod] = useState<AuthMethod>("email");
         const auto [authStep, setAuthStep] = useState<AuthStep>("credentials");
-        const auto [flowId, setFlowId] = useState<std::string | nullptr>(nullptr);
+        const auto [flowId, setFlowId] = useState<std: | nullptr>(nullptr);
 
         // Email auth state
         const auto [email, setEmail] = useState("");
@@ -40,7 +40,7 @@ void SignInModal() {
         const auto [isLoading, setIsLoading] = useState(false);
 
         // Monitor OAuth state - MUST BE CALLED BEFORE ANY RETURN
-        useEffect(() => {
+        useEffect[&](() {
             if (oauthHook.oauthState.status == 'success') {
                 std::cout << " Google OAuth successful!" << std::endl;
                 resetForm();
@@ -65,7 +65,7 @@ void SignInModal() {
                     if (!isOpen) return null;
 
                     // Handle email submission (first step)
-                    const auto handleEmailSubmit = std::async () => {;
+                    const auto handleEmailSubmit = std::async [&]() {;
                         if (!email || isLoading || !emailHook) return;
                         setError("");
                         setIsLoading(true);
@@ -76,9 +76,9 @@ void SignInModal() {
                             setFlowId(result.flowId);
                             setAuthStep("verification");
                             std::cout << " OTP sent to:" << email << std::endl;
-                            } catch (err: std::any) {
+                            } catch (err: std:) {
                                 std::cerr << " CDP email sign in failed:" << err << std::endl;
-                                std::cerr << "Error details:" << /* JSON.stringify */ std::string(err, nullptr, 2) << std::endl;
+                                std::cerr << "Error details:" << /* JSON.stringify */ std:(err, nullptr, 2) << std::endl;
                                 const auto errorMessage = err.message || err.errorMessage || "Failed to send OTP";
                                 setError(errorMessage);
                                 } finally {
@@ -87,7 +87,7 @@ void SignInModal() {
                                 };
 
                                 // Handle SMS submission (first step)
-                                const auto handleSmsSubmit = std::async () => {;
+                                const auto handleSmsSubmit = std::async [&]() {;
                                     if (!phoneNumber || isLoading || !smsHook) return;
                                     setError("");
                                     setIsLoading(true);
@@ -98,7 +98,7 @@ void SignInModal() {
                                         setFlowId(result.flowId);
                                         setAuthStep("verification");
                                         std::cout << " OTP sent to:" << fullPhoneNumber << std::endl;
-                                        } catch (err: std::any) {
+                                        } catch (err: std:) {
                                             std::cerr << " CDP SMS sign in failed:" << err << std::endl;
                                             const auto errorMessage = err.message || err.errorMessage || "Failed to send SMS OTP";
                                             setError(errorMessage);
@@ -108,7 +108,7 @@ void SignInModal() {
                                             };
 
                                             // Handle email OTP verification (second step)
-                                            const auto handleEmailOtpSubmit = std::async () => {;
+                                            const auto handleEmailOtpSubmit = std::async [&]() {;
                                                 if (!flowId || !otp || isLoading || !emailOtpHook) return;
                                                 setError("");
                                                 setIsLoading(true);
@@ -116,7 +116,7 @@ void SignInModal() {
                                                     const auto { user } = emailOtpHook.verifyEmailOTP({ flowId, otp });
                                                     std::cout << " CDP wallet connected via email!" << user.evmAccounts.[0] << std::endl;
                                                     resetForm();
-                                                    } catch (err: std::any) {
+                                                    } catch (err: std:) {
                                                         std::cerr << " CDP email OTP verification failed:" << err << std::endl;
                                                         const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                         setError(errorMessage);
@@ -126,7 +126,7 @@ void SignInModal() {
                                                         };
 
                                                         // Handle SMS OTP verification (second step)
-                                                        const auto handleSmsOtpSubmit = std::async () => {;
+                                                        const auto handleSmsOtpSubmit = std::async [&]() {;
                                                             if (!flowId || !otp || isLoading || !smsOtpHook) return;
                                                             setError("");
                                                             setIsLoading(true);
@@ -134,7 +134,7 @@ void SignInModal() {
                                                                 const auto { user } = smsOtpHook.verifySmsOTP({ flowId, otp });
                                                                 std::cout << " CDP wallet connected via SMS!" << user.evmAccounts.[0] << std::endl;
                                                                 resetForm();
-                                                                } catch (err: std::any) {
+                                                                } catch (err: std:) {
                                                                     std::cerr << " CDP SMS OTP verification failed:" << err << std::endl;
                                                                     const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                                     setError(errorMessage);
@@ -144,7 +144,7 @@ void SignInModal() {
                                                                     };
 
                                                                     // Handle Google OAuth
-                                                                    const auto handleGoogleSignIn = std::async () => {;
+                                                                    const auto handleGoogleSignIn = std::async [&]() {;
                                                                         if (isLoading || !oauthHook) return;
                                                                         setError("");
                                                                         setIsLoading(true);
@@ -152,7 +152,7 @@ void SignInModal() {
                                                                             oauthHook.signInWithOAuth("google");
                                                                             std::cout << " Redirecting to Google OAuth..." << std::endl;
                                                                             // OAuth will redirect, so we don't need to do anything else
-                                                                            } catch (err: std::any) {
+                                                                            } catch (err: std:) {
                                                                                 std::cerr << " CDP Google OAuth failed:" << err << std::endl;
                                                                                 const auto errorMessage = err.message || err.errorMessage || "Failed to start Google sign-in";
                                                                                 setError(errorMessage);
@@ -193,7 +193,7 @@ void SignInModal() {
                                                                         )}
 
                                                                     {/* OTP verification step (for email and SMS) */}
-                                                                    {authStep == "verification" && (authMethod == "email" || authMethod == "sms") && (;
+                                                                    {authStep == "verification" && (authMethod == "email" || authMethod == "sms") && [&](;
                                                                     <div className="space-y-4">;
                                                                     <div className="flex flex-col gap-2">;
                                                                     <label className="text-sm font-medium">;
@@ -202,12 +202,12 @@ void SignInModal() {
                                                                     <Input;
                                                                     type="text";
                                                                 value={otp}
-                                                            onChange={(e) => setOtp(e.target.value)}
-                                                            placeholder="000000";
+                                                            onChange={(e) { return setOtp(e.target.value)}
+                                                            placeholder="000000"; };
                                                             className="font-mono text-center text-lg tracking-wider";
                                                         maxLength={6}
                                                     disabled={isLoading}
-                                                    onKeyDown={(e) => {
+                                                    onKeyDown={[&](e) {
                                                         if (e.key == 'Enter') {
                                                             authMethod == "email" ? handleEmailOtpSubmit() : handleSmsOtpSubmit();
                                                         }
@@ -241,7 +241,7 @@ void SignInModal() {
                         )}
 
                     {/* SMS credentials step */}
-                    {authStep == "credentials" && authMethod == "sms" && (;
+                    {authStep == "credentials" && authMethod == "sms" && [&](;
                     <div className="space-y-4">;
                     <div className="flex flex-col gap-2">;
                     <label className="text-sm font-medium">;
@@ -250,8 +250,8 @@ void SignInModal() {
                     <div className="flex gap-2">;
                     <select;
                 value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-            className="pl-3 pr-8 py-2 bg-background border border-input rounded-md text-sm appearance-none bg-size-[16px] bg-position-[right_0.5rem_center] bg-no-repeat";
+            onChange={(e) { return setCountryCode(e.target.value)}
+            className="pl-3 pr-8 py-2 bg-background border border-input rounded-md text-sm appearance-none bg-size-[16px] bg-position-[right_0.5rem_center] bg-no-repeat"; };
         style={{ backgroundImage: "url(\"data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"%3e%3cpath stroke="%236b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 8l4 4 4-4"/%3e%3c/svg%3e\")" }}
         disabled={isLoading}
         >;
@@ -268,10 +268,10 @@ void SignInModal() {
         <Input;
         type="tel";
         value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
-        placeholder="5551234567";
+        onChange={[&](e) { return setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))}
+        placeholder="5551234567"; };
         disabled={isLoading}
-        onKeyDown={(e) => {
+        onKeyDown={[&](e) {
             if (e.key == 'Enter') {
                 handleSmsSubmit();
             }
@@ -300,7 +300,7 @@ void SignInModal() {
         )}
 
         {/* Main credentials screen - All options visible */}
-        {authStep == "credentials" && authMethod == "email" && (;
+        {authStep == "credentials" && authMethod == "email" && [&](;
         <div className="space-y-4">;
         {/* Email input section */}
         <div className="flex flex-col gap-2">;
@@ -310,10 +310,10 @@ void SignInModal() {
         <Input;
         type="email";
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="name@example.com";
+        onChange={(e) { return setEmail(e.target.value)}
+        placeholder="name@example.com"; };
         disabled={isLoading}
-        onKeyDown={(e) => {
+        onKeyDown={[&](e) {
             if (e.key == 'Enter') {
                 handleEmailSubmit();
             }
@@ -341,8 +341,8 @@ void SignInModal() {
 
         {/* Continue with phone button */}
         <Button;
-        onClick={() => handleMethodChange("sms")}
-        variant="outline";
+        onClick={[&]() { return handleMethodChange("sms")}
+        variant="outline"; };
         className="w-full font-medium";
         disabled={isLoading}
         >;

@@ -1,17 +1,20 @@
 #include "agent-log-viewer.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getLevelName(double level) {
+std: getLevelName(double level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return LOG_LEVEL_NUMBERS[level typeof LOG_LEVEL_NUMBERS] || "UNKNOWN";
 
 }
 
-std::string getLevelColor(double level) {
+std: getLevelColor(double level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (level >= 50) return 'bg-red-600/80'; // ERROR/FATAL - more muted red
@@ -21,7 +24,7 @@ std::string getLevelColor(double level) {
 
 }
 
-std::string formatTimestamp(double timestamp) {
+std: formatTimestamp(double timestamp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto date = new Date(timestamp);
@@ -42,7 +45,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
     // Group logs by hour for the last 24 hours
     const auto now = Date.now();
     const auto hours = 24;
-    const std::unordered_map<std::string, std::any> hourlyData = {};
+    const std::unordered_map<std:, std:> hourlyData = {};
 
     // Initialize all hours
     for (int i = hours - 1; i >= 0; i--) {
@@ -54,7 +57,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
 
     // Count logs by hour - filter logs to last 24 hours only
     const auto twentyFourHoursAgo = now - 24 * 60 * 60 * 1000;
-    logs.forEach((log) => {
+    logs.forEach[&]((log) {
         // Only count logs from the last 24 hours
         if (log.time >= twentyFourHoursAgo) {
             const auto logDate = new Date(log.time);
@@ -82,9 +85,9 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
 void LogChart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto maxValue = Math.max(...data.std::map((d) => d.total), 1);
+    const auto maxValue = Math.max[&](...data.std::map((d) { return d.total), 1); };
 
-    return (;
+    return [&](;
     <div className="mb-6">;
     <div className="flex items-center justify-between mb-4">;
     <div className="flex items-center gap-4">;
@@ -93,8 +96,8 @@ void LogChart() {
     <span className="text-sm text-muted-foreground">;
     Info{" "}
     <span className="font-mono">;
-    {data.reduce((sum, d) => sum + d.info, 0).toLocaleString()}
-    </span>;
+    {data.reduce((sum, d) { return sum + d.info, 0).toLocaleString()}
+    </span>; };
     </span>;
     </div>;
     <div className="flex items-center gap-2">;
@@ -102,8 +105,8 @@ void LogChart() {
     <span className="text-sm text-muted-foreground">;
     Errors{" "}
     <span className="font-mono">;
-    {data.reduce((sum, d) => sum + d.errors, 0).toLocaleString()}
-    </span>;
+    {data.reduce[&]((sum, d) { return sum + d.errors, 0).toLocaleString()}
+    </span>; };
     </span>;
     </div>;
     </div>;
@@ -119,7 +122,7 @@ void LogChart() {
     </div>;
 
     <div className="h-32 flex items-end gap-1 bg-muted/30 rounded p-4">;
-    {data.std::map((point, index) => {
+    {data.std::map[&]((point, index) {
         return (;
         <div key={index} className="flex-1 flex flex-col justify-end">;
         <div;
@@ -216,9 +219,9 @@ void AgentLogViewer() {
         isLoading,
         error,
         refetch,
-        } = useQuery<LogResponse>({
+        } = useQuery<LogResponse>[&]({
             queryKey: ["logs", selectedLevel, selectedAgentName],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 const auto elizaClient = createElizaClient();
                 return elizaClient.system.getGlobalLogs({;
                     level: selectedLevel == "all" ? "" : selectedLevel,
@@ -242,8 +245,8 @@ void AgentLogViewer() {
                         (selectedAgentName == "all" || logEntry.agentName == selectedAgentName);
 
                         if (shouldInclude) {
-                            setWsLogs((prev) => {
-                                const auto newLogs = [logEntry, ...prev].slice(0, 1000); // Keep last 1000 logs;
+                            setWsLogs[&]((prev) {
+                                const auto newLogs = [logEntry, ...prev].substr(0, 1000-0); // Keep last 1000 logs;
                                 return newLogs;
                                 });
                             }
@@ -252,7 +255,7 @@ void AgentLogViewer() {
                             );
 
                             // Setup WebSocket event listeners
-                            useEffect(() => {
+                            useEffect[&](() {
                                 if (isLive && useWebSocket) {
                                     const auto socketManager = SocketIOManager.getInstance();
 
@@ -270,7 +273,7 @@ void AgentLogViewer() {
                                     }, [isLive, useWebSocket, handleLogStream]);
 
                                     // Toggle WebSocket usage when live mode changes
-                                    useEffect(() => {
+                                    useEffect[&](() {
                                         if (isLive) {
                                             // When enabling live mode, try to start WebSocket. Fallback to polling if WebSocket fails
                                             if (SocketIOManager.isConnected()) {
@@ -287,15 +290,13 @@ void AgentLogViewer() {
                                                 }, [isLive]);
 
                                                 // Update WebSocket filters when selectedAgentName or selectedLevel changes
-                                                useEffect(() => {
+                                                useEffect[&](() {
                                                     if (useWebSocket && isLive) {
                                                         const auto socketManager = SocketIOManager.getInstance();
-                                                        socketManager;
-                                                        .updateLogStreamFilters({
+                                                        socketManager.updateLogStreamFilters({
                                                             agentName: selectedAgentName,
                                                             level: selectedLevel,
-                                                            });
-                                                            .catch(console.error);
+                                                            }).catch(console.error);
                                                         }
                                                         }, [selectedAgentName, selectedLevel, useWebSocket, isLive]);
 
@@ -305,7 +306,7 @@ void AgentLogViewer() {
                                                         // Smart fallback: If WebSocket has significantly fewer logs than API, use API logs
                                                         // This handles cases where WebSocket streaming isn't working properly
                                                         auto combinedLogs;
-                                                        if (useWebSocket && isLive && wsLogs.length > 0) {
+                                                        if (useWebSocket && isLive && wsLogs.size() > 0) {
                                                             // If WebSocket has logs, use them
                                                             combinedLogs = wsLogs;
                                                             } else {
@@ -314,13 +315,13 @@ void AgentLogViewer() {
                                                             }
 
                                                             // Sort logs by timestamp in descending order (newest first)
-                                                            const auto logs = combinedLogs.sort((a, b) => b.time - a.time);
+                                                            const auto logs = combinedLogs.sort[&]((a, b) { return b.time - a.time); };
                                                             const auto levels = logResponse.levels || [];
-                                                            const auto agentNames = agents.data.agents.std::map((agent) => agent.name) || [];
+                                                            const auto agentNames = agents.data.agents.std::map[&]((agent) { return agent.name) || []; };
 
                                                             // Filter and search logs
-                                                            const auto filteredLogs = logs.filter((log: LogEntry) => {;
-                                                                if (searchQuery.trim()) {
+                                                            const auto filteredLogs = logs.filter[&]((log: LogEntry) {;
+                                                                if (searchQuery) {
                                                                     const auto query = searchQuery.toLowerCase();
                                                                     const auto searchableText = [;
                                                                     log.msg,
@@ -328,12 +329,9 @@ void AgentLogViewer() {
                                                                     log.roomId,
                                                                     getLevelName(log.level),
                                                                     ...Object.entries(log);
-                                                                    .filter(([key]) => !Number.isNaN(Number(key)));
-                                                                    .std::map(([_, value]) => std::to_string(value)),
-                                                                    ];
-                                                                    .filter(Boolean);
-                                                                    .join(" ");
-                                                                    .toLowerCase();
+                                                                    .filter[&](([key]) { return !Number.isNaN(Number(key))); };
+                                                                    .std::map[&](([_, value]) { return std::to_string(value)),
+                                                                    ]; }.filter(Boolean).join(" ").toLowerCase();
 
                                                                     return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
                                                                 }
@@ -342,7 +340,7 @@ void AgentLogViewer() {
 
                                                                 const auto chartData = generateLogChart(filteredLogs);
 
-                                                                const auto handleClearLogs = std::async () => {;
+                                                                const auto handleClearLogs = std::async [&]() {;
                                                                     if (
                                                                     window.confirm(;
                                                                     "Are you sure you want to permanently delete all system logs? This action cannot be undone.";
@@ -377,7 +375,7 @@ void AgentLogViewer() {
                                                                                     };
 
                                                                                     // Loading state
-                                                                                    if (isLoading && logs.length == 0) {
+                                                                                    if (isLoading && logs.size() == 0) {
                                                                                         return (;
                                                                                         <div className="flex flex-col h-[calc(100vh-100px)] min-h-[400px] w-full">;
                                                                                         <LoadingIndicator />;
@@ -404,8 +402,8 @@ void AgentLogViewer() {
                                                                                     ? "The server does not have the global logs API endpoint configured. You can still view individual agent logs from the agent details pages.";
                                                                                 ": " + "There was an error loading the system logs: " + error.message
                                                                                 </p>;
-                                                                                {!isEndpointNotFound && (;
-                                                                                <Button variant="outline" size="sm" onClick={() => refetch.()}>;
+                                                                                {!isEndpointNotFound && [&](;
+                                                                                <Button variant="outline" size="sm" onClick={() { return refetch.()}>; };
                                                                                 <RefreshCw className="h-4 w-4 mr-2" />;
                                                                                 Try Again;
                                                                                 </Button>;
@@ -428,7 +426,7 @@ void AgentLogViewer() {
                                                                 </SelectTrigger>;
                                                                 <SelectContent>;
                                                                 <SelectItem value="all">ALL</SelectItem>;
-                                                                {levels.std::map((level) => (;
+                                                                {levels.std::map[&]((level) { return (; };
                                                                 <SelectItem key={level} value={level}>;
                                                             {level.toUpperCase()}
                                                             </SelectItem>;
@@ -442,20 +440,20 @@ void AgentLogViewer() {
                                                     <Input;
                                                     placeholder="Full-text log search";
                                                 value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-10 h-9";
+                                            onChange={[&](e) { return setSearchQuery(e.target.value)}
+                                            className="pl-10 h-9"; };
                                             />;
                                             </div>;
 
                                         {/* Agent filter */}
-                                        {agentNames && agentNames.size() > 0 && !agentName && (;
+                                        {agentNames && agentNames.size() > 0 && !agentName && [&](;
                                         <Select value={selectedAgentName} onValueChange={setSelectedAgentName}>;
                                         <SelectTrigger className="w-40 h-9">;
                                         <SelectValue placeholder="Agent" />;
                                         </SelectTrigger>;
                                         <SelectContent>;
                                         <SelectItem value="all">ALL AGENTS</SelectItem>;
-                                        {agentNames.std::map((name) => (;
+                                        {agentNames.std::map((name) { return (; };
                                         <SelectItem key={name} value={name!}>;
                                     {name}
                                     </SelectItem>;
@@ -488,8 +486,8 @@ void AgentLogViewer() {
                 <Button;
             variant={isLive ? "default" : "outline"}
             size="sm";
-        onClick={() => setIsLive(!isLive)}
-        className="h-9 px-3";
+        onClick={[&]() { return setIsLive(!isLive)}
+        className="h-9 px-3"; };
         title={
             isLive;
             ? useWebSocket;
@@ -526,7 +524,7 @@ void AgentLogViewer() {
 
     {/* Table Body */}
     <div className="divide-y max-h-[400px] overflow-y-auto">;
-    {filteredLogs.slice(0, 100).std::map((log, index) => (;
+    {filteredLogs.substr(0, 100-0).std::map[&]((log, index) { return (; };
     <div;
     "key={" + log.time + "-" + log.msg + "-" + index;
     className="grid grid-cols-[200px_1fr] gap-4 px-4 py-3 hover:bg-muted/30 transition-colors"

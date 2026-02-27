@@ -1,4 +1,6 @@
 #include "seed-tokens.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,34 +16,34 @@ std::future<void> seedTokens() {
         dotenv.config({ path: ".env.local" });
     }
 
-    // === SAFETY CHECK 1: Skip if SKIP_SEED is std::set ===
-    if (process.env.SKIP_SEED == "true") {
+    // == SAFETY CHECK 1: Skip if SKIP_SEED is std::set ==
+    if (std::getenv("SKIP_SEED") == "true") {
         std::cout << "\n⏭️  SKIP_SEED=true - skipping token seeding\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
-    // === SAFETY CHECK 2: Only allow localnet ===
-    const auto network = process.env.NETWORK || process.env.NEXT_PUBLIC_NETWORK || "localnet";
+    // == SAFETY CHECK 2: Only allow localnet ==
+    const auto network = std::getenv("NETWORK") || std::getenv("NEXT_PUBLIC_NETWORK") || "localnet";
     if (network != "localnet") {
         std::cout << "\n🛑 BLOCKED: Network is \"" + network << "not \"localnet\"" << std::endl;
         std::cout << "   Token seeding is ONLY allowed for local development." << std::endl;
         std::cout << "   Production tokens must be registered by their actual owners via the UI.\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
-    // === SAFETY CHECK 3: Verify localhost API ===
-    const auto apiUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:4444";
+    // == SAFETY CHECK 3: Verify localhost API ==
+    const auto apiUrl = std::getenv("NEXT_PUBLIC_URL") || "http://localhost:4444";
     const auto isLocalhost = (std::find(apiUrl.begin(), apiUrl.end(), "localhost") != apiUrl.end()) || (std::find(apiUrl.begin(), apiUrl.end(), "127.0.0.1") != apiUrl.end());
 
     if (!isLocalhost) {
         std::cout << "\n🛑 BLOCKED: API URL is \"" + apiUrl << "not localhost" << std::endl;
         std::cout << "   Token seeding is ONLY allowed when targeting localhost." << std::endl;
         std::cout << "   This prevents accidental seeding to production databases.\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
-    // === SAFETY CHECK 4: Block if DATABASE_URL looks like production ===
-    const auto dbUrl = process.env.DATABASE_URL || "";
+    // == SAFETY CHECK 4: Block if DATABASE_URL looks like production ==
+    const auto dbUrl = std::getenv("DATABASE_URL") || "";
     const auto looksLikeProduction =;
     (std::find(dbUrl.begin(), dbUrl.end(), "neon.tech") != dbUrl.end()) ||;
     (std::find(dbUrl.begin(), dbUrl.end(), "supabase") != dbUrl.end()) ||;
@@ -55,7 +57,7 @@ std::future<void> seedTokens() {
     if (looksLikeProduction) {
         std::cout << "\n🛑 BLOCKED: DATABASE_URL appears to be a production database" << std::endl;
         std::cout << "   Token seeding is ONLY allowed for local development.\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
     std::cout << "\n🌱 Seeding LOCAL development marketplace...\n" << std::endl;
@@ -69,13 +71,13 @@ std::future<void> seedTokens() {
     if (!fs.existsSync(evmDeploymentPath)) {
         std::cout << "⚠️  Local contracts not deployed yet << skipping seed" << std::endl;
         std::cout << "   Run "npm run dev" to deploy contracts first\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
     // Wait for local frontend
     auto retries = 5;
     while (retries > 0) {
-        const auto healthCheck = fetch("http://localhost:4444/api/tokens").catch(() => nullptr);
+        const auto healthCheck = fetch("http://localhost:4444/api/tokens").catch[&](() { return nullptr); };
         if (healthCheck && healthCheck.ok) {
             std::cout << "✅ Local frontend is ready" << std::endl;
             break;
@@ -87,13 +89,13 @@ std::future<void> seedTokens() {
 
     if (retries == 0) {
         std::cout << "⚠️  Local frontend not ready << skipping seed\n" << std::endl;
-        process.exit(0);
+        std::exit(0);
     }
 
     // --- EVM Local Seeding (Anvil only) ---
     const auto localEvmPath = "./src/config/deployments/local-evm.json";
     if (fs.existsSync(localEvmPath)) {
-        const auto evmDeployment = /* JSON.parse */ fs.readFileSync(localEvmPath, "utf8");
+        const auto evmDeployment = /* JSON::parse */ fs.readFileSync(localEvmPath, "utf8");
 
         if (!evmDeployment.contracts.elizaToken) {
             std::cout << "⚠️  No local EVM token deployed << skipping EVM seed" << std::endl;
@@ -107,7 +109,7 @@ std::future<void> seedTokens() {
                 fetch("http://localhost:4444/api/tokens", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
+                    body: nlohmann::json().dump({
                         symbol: "TEST",
                         name: "Local Test Token",
                         contractAddress: testTokenAddress,
@@ -116,7 +118,7 @@ std::future<void> seedTokens() {
                         logoUrl: "/tokens/eliza.svg",
                         description: "LOCAL DEV ONLY - Not a real token",
                         }),
-                        }).catch(() => console.log("   Token may already exist"));
+                        }).catch[&](() { return console.log("   Token may already exist")); };
 
                         std::cout << "✅ [Local EVM] Test token registered" << std::endl;
 
@@ -126,7 +128,7 @@ std::future<void> seedTokens() {
                         fetch("http://localhost:4444/api/consignments", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
+                            body: nlohmann::json().dump({
                                 tokenId,
                                 consignerAddress: anvilAccount,
                                 amount: "10000000000000000000000000",
@@ -143,7 +145,7 @@ std::future<void> seedTokens() {
                                 maxTimeToExecuteSeconds: 1800,
                                 chain: "base",
                                 }),
-                                }).catch(() => console.log("   Consignment may already exist"));
+                                }).catch[&](() { return console.log("   Consignment may already exist")); };
 
                                 std::cout << "✅ [Local EVM] Test consignment created" << std::endl;
                             }

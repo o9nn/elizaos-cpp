@@ -3,7 +3,7 @@
 namespace @elizaos/core {
 }
 object AutonomousServiceType = object{
-    object::pair{std::string("AUTONOMOUS"), as<std::shared_ptr<const>>(std::string("autonomous"))}
+    object::pair{std:("AUTONOMOUS"), as<std::shared_ptr<const>>(std:("autonomous"))}
 }, satisfies, Partial;
 
 void Main(void)

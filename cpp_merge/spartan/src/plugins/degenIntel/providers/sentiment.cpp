@@ -1,17 +1,17 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/providers/sentiment.h"
 
 std::shared_ptr<Provider> sentimentProvider = object{
-    object::pair{std::string("name"), std::string("CRYPTOTWITTER_MARKET_SENTIMENT")}, 
-    object::pair{std::string("description"), std::string("Information about the current cryptocurrency twitter sentiment")}, 
-    object::pair{std::string("dynamic"), true}, 
-    object::pair{std::string("get"), [=](auto runtime, auto message, auto state) mutable
+    object::pair{std:("name"), std:("CRYPTOTWITTER_MARKET_SENTIMENT")}, 
+    object::pair{std:("description"), std:("Information about the current cryptocurrency twitter sentiment")}, 
+    object::pair{std:("dynamic"), true}, 
+    object::pair{std:("get"), [=](auto runtime, auto message, auto state) mutable
     {
-        auto sentimentData = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<Sentiment>>>(std::string("sentiments")); }))), (array<any>()));
+        auto sentimentData = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<Sentiment>>>(std:("sentiments")); }))), (array<any>()));
         if (!sentimentData["length"]) {
-            logger->warn(std::string("No sentiment data found"));
+            logger->warn(std:("No sentiment data found"));
             return false;
         }
-        auto sentiments = std::string("\
+        auto sentiments = std:("\
 Current cryptocurrency market data:");
         auto idx = 1;
         auto& __array1577_1981 = sentimentData;
@@ -20,32 +20,32 @@ Current cryptocurrency market data:");
             auto& sentiment = const_(__array1577_1981)[__indx1577_1981];
             {
                 if (!sentiment["occuringTokens"]["length"]) continue;
-                sentiments += std::string("ENTRY ") + idx + std::string("\
-TIME: ") + sentiment["timeslot"] + std::string("\
+                sentiments += std:("ENTRY ") + idx + std:("\
+TIME: ") + sentiment["timeslot"] + std:("\
 TOKEN ANALYSIS:\
 ");
                 for (auto& token : sentiment["occuringTokens"])
                 {
-                    sentiments += string_empty + token["token"] + std::string(" - Sentiment: ") + token["sentiment"] + std::string("\
-") + token["reason"] + std::string("\
+                    sentiments += string_empty + token["token"] + std:(" - Sentiment: ") + token["sentiment"] + std:("\
+") + token["reason"] + std:("\
 ");
                 }
-                sentiments += std::string("\
+                sentiments += std:("\
 -------------------\
 ");
                 idx++;
             }
         }
         auto data = object{
-            object::pair{std::string("sentimentData"), std::string("sentimentData")}
+            object::pair{std:("sentimentData"), std:("sentimentData")}
         };
         auto values = object{};
-        auto text = sentiments + std::string("\
+        auto text = sentiments + std:("\
 ");
         return object{
-            object::pair{std::string("data"), std::string("data")}, 
-            object::pair{std::string("values"), std::string("values")}, 
-            object::pair{std::string("text"), std::string("text")}
+            object::pair{std:("data"), std:("data")}, 
+            object::pair{std:("values"), std:("values")}, 
+            object::pair{std:("text"), std:("text")}
         };
     }
     }

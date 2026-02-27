@@ -1,10 +1,11 @@
 #include "directory-operations.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label) {
+std::future<bool> safeDeleteDirectory(const std:& dir, ResetActionRecord actions, const std:& label) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!existsSync(dir)) {

@@ -1,4 +1,6 @@
 #include ".utils.hpp"
+#include <future>
+#include <map>
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -16,37 +18,37 @@ namespace elizaos {
 
 
 struct CoinGeckoTokenMetadata {
-    std::string id;
-    std::string symbol;
-    std::string name;
-    std::optional<std::string | null> asset_platform_id;
-    std::optional<std::string | null> contract_address;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
-    std::optional<std::unordered_map<std::string, { decimal_place?: number; contract_address?: std::string }>> detail_platforms;
+    std: id;
+    std: symbol;
+    std: name;
+    std::optional<std: | null> asset_platform_id;
+    std::optional<std: | null> contract_address;
+    std::optional<std::unordered_map<std:, std:>> platforms;
+    std::optional<std::unordered_map<std:, { decimal_place?; contract_address?: std: }>> detail_platforms;
 
 struct MarketRow {
-    std::string id;
+    std: id;
     std::optional<number | null> market_cap;
     std::optional<number | null> total_volume;
     std::optional<number | null> market_cap_rank;
 };
 
 struct TokenMetadataCandidate {
-    std::string id;
-    std::string coinId;
+    std: id;
+    std: coinId;
     double confidence;
     number | null marketCap;
     number | null totalVolume;
     number | null marketCapRank;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::optional<std::unordered_map<std:, unknown>> metadata;
 };
 
 struct TokenMetadataResolution {
-    std::string id;
+    std: id;
     bool success;
-    std::optional<std::string> resolvedCoinId;
-    std::optional<std::unordered_map<std::string, unknown>> data;
-    std::optional<std::string> error;
+    std::optional<std:> resolvedCoinId;
+    std::optional<std::unordered_map<std:, unknown>> data;
+    std::optional<std:> error;
     std::vector<TokenMetadataCandidate> candidates;
 };
 
@@ -59,8 +61,8 @@ class CoinGeckoService extends Service {
   static serviceType = "COINGECKO_SERVICE" as const;
   capabilityDescription = "Fetch token metadata from CoinGecko (free or Pro).";
 
-  private proApiKey: std::string | undefined;
-  private coinsCache: Array<{ id: std::string; symbol: std::string; name: std::string }> = [];
+  private proApiKey: std: | undefined;
+  private coinsCache: Array<{ id: std:; symbol: std:; name: std: }> = [];
 
     // Prefer runtime settings, fallback to env
 
@@ -177,9 +179,9 @@ class CoinGeckoService extends Service {
    * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    */
 
-bool isEvmAddress(const std::string& s);
+bool isEvmAddress(const std:& s);
 
-bool isSolanaAddress(const std::string& s);
+bool isSolanaAddress(const std:& s);
 
 
 } // namespace elizaos

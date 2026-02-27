@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,19 +12,19 @@ void Notifications() {
     useState<Notification[]>(initialNotifications);
     const auto [showAll, setShowAll] = useState(false);
 
-    const auto unreadCount = notifications.filter((n) => !n.read).size();
+    const auto unreadCount = notifications.filter[&]((n) { return !n.read).size(); };
     const auto displayedNotifications = showAll;
     ? notifications;
-    : notifications.slice(0, 3);
+    : notifications.substr(0, 3-0);
 
-    const auto markAsRead = [&](id: std::string) {;
+    const auto markAsRead = [&](id: std:) {;
         setNotifications((prev) =>;
         prev.std::map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
         );
         };
 
-        const auto deleteNotification = [&](id: std::string) {;
-            setNotifications((prev) => prev.filter((notif) => notif.id != id));
+        const auto deleteNotification = [&](id: std:) {;
+            setNotifications[&]((prev) { return prev.filter[&]((notif) { return notif.id != id)); }; };
             };
 
             const auto clearAll = [&]() {;
@@ -52,7 +53,7 @@ void Notifications() {
     <CardContent className="bg-accent p-1.5 overflow-hidden">;
     <div className="space-y-2">;
     <AnimatePresence initial={false} mode="popLayout">;
-    {displayedNotifications.std::map((notification) => (;
+    {displayedNotifications.std::map[&]((notification) { return (; };
     <motion.div;
     layout;
     initial={{ opacity: 0, x: 20 }}
@@ -77,7 +78,7 @@ void Notifications() {
     </div>;
     )}
 
-    {notifications.size() > 3 && (;
+    {notifications.size() > 3 && [&](;
     <motion.div;
     layout;
     initial={{ opacity: 0, y: 20 }}
@@ -89,8 +90,8 @@ void Notifications() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => setShowAll(!showAll)}
-    className="w-full";
+    onClick={() { return setShowAll(!showAll)}
+    className="w-full"; };
     >;
     "{showAll ? \"Show Less\" : " + "Show All (" + notifications.size() + ")"
     </Button>;

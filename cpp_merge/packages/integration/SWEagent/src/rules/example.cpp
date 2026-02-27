@@ -2,8 +2,8 @@
 
 void validatePythonExample()
 {
-    console->log(std::string("== Python Validation Example =="));
-    auto pythonCode = std::string("\
+    console->log(std:("== Python Validation Example =="));
+    auto pythonCode = std:("\
 def process_data(data):\
     # This function needs type annotations\
     with open('data.txt') as f:\
@@ -11,18 +11,18 @@ def process_data(data):\
     return content\
 ");
     auto validator = std::make_shared<PythonValidator>();
-    auto result = validator->validate(pythonCode, std::string("example.py"));
-    console->log(std::string("Valid:"), result->valid);
-    console->log(std::string("Violations:"), result->violations);
-    console->log(std::string("Warnings:"), result->warnings);
+    auto result = validator->validate(pythonCode, std:("example.py"));
+    console->log(std:("Valid:"), result->valid);
+    console->log(std:("Violations:"), result->violations);
+    console->log(std:("Warnings:"), result->warnings);
 };
 
 
 void validateTypeScriptExample()
 {
-    console->log(std::string("\
+    console->log(std:("\
 == TypeScript Validation Example =="));
-    auto tsCode = std::string("\
+    auto tsCode = std:("\
 function processData(data: unknown) {\
   const fs = require('fs');\
   const content = fs.readFileSync('data.txt', 'utf-8');\
@@ -30,31 +30,31 @@ function processData(data: unknown) {\
 }\
 ");
     auto validator = std::make_shared<TypeScriptValidator>();
-    auto result = validator->validate(tsCode, std::string("example.ts"));
-    console->log(std::string("Valid:"), result->valid);
-    console->log(std::string("Violations:"), result->violations);
-    console->log(std::string("Warnings:"), result->warnings);
+    auto result = validator->validate(tsCode, std:("example.ts"));
+    console->log(std:("Valid:"), result->valid);
+    console->log(std:("Violations:"), result->violations);
+    console->log(std:("Warnings:"), result->warnings);
 };
 
 
 void projectStructureExample()
 {
-    console->log(std::string("\
+    console->log(std:("\
 == Project Structure Example =="));
-    auto agentInfo = getComponentByPath(std::string("sweagent/agent/agents.py"));
-    console->log(std::string("Agent component:"), agentInfo);
-    console->log(std::string("\
+    auto agentInfo = getComponentByPath(std:("sweagent/agent/agents.py"));
+    console->log(std:("Agent component:"), agentInfo);
+    console->log(std:("\
 Main entry points:"));
     PROJECT_STRUCTURE->mainEntryPoints->forEach([=](auto entry) mutable
     {
-        console->log(std::string("  - ") + entry->path + std::string(": ") + entry->description + string_empty);
+        console->log(std:("  - ") + entry->path + std:(": ") + entry->description + string_empty);
     }
     );
-    console->log(std::string("\
+    console->log(std:("\
 Inspectors:"));
     PROJECT_STRUCTURE->inspectors->forEach([=](auto inspector) mutable
     {
-        console->log(std::string("  - ") + inspector->name + std::string(" (") + inspector->type + std::string("): ") + inspector->path + string_empty);
+        console->log(std:("  - ") + inspector->name + std:(" (") + inspector->type + std:("): ") + inspector->path + string_empty);
     }
     );
 };
@@ -62,21 +62,21 @@ Inspectors:"));
 
 void rulesExample()
 {
-    console->log(std::string("\
+    console->log(std:("\
 == Rules Example =="));
-    console->log(std::string("Python rules:"));
-    auto pythonRules = getApplicableRules(std::string("example.py"));
+    console->log(std:("Python rules:"));
+    auto pythonRules = getApplicableRules(std:("example.py"));
     pythonRules->forEach([=](auto rule) mutable
     {
-        console->log(std::string("  - ") + rule->id + std::string(": ") + rule->rule + string_empty);
+        console->log(std:("  - ") + rule->id + std:(": ") + rule->rule + string_empty);
     }
     );
-    console->log(std::string("\
+    console->log(std:("\
 TypeScript rules:"));
-    auto tsRules = getApplicableRules(std::string("example.ts"));
+    auto tsRules = getApplicableRules(std:("example.ts"));
     tsRules->forEach([=](auto rule) mutable
     {
-        console->log(std::string("  - ") + rule->id + std::string(": ") + rule->rule + string_empty);
+        console->log(std:("  - ") + rule->id + std:(": ") + rule->rule + string_empty);
     }
     );
 };
@@ -84,13 +84,13 @@ TypeScript rules:"));
 
 void exportExample()
 {
-    console->log(std::string("\
+    console->log(std:("\
 == Export Example =="));
     shared cursorRules = exportAllRulesToCursor();
-    console->log(std::string("Exported rules:"));
+    console->log(std:("Exported rules:"));
     Object->keys(cursorRules)->forEach([=](auto filename) mutable
     {
-        console->log(std::string("  - ") + filename + std::string(" (") + (*const_(cursorRules))[filename]->get_length() + std::string(" bytes)"));
+        console->log(std:("  - ") + filename + std:(" (") + (*const_(cursorRules))[filename]->get_length() + std:(" bytes)"));
     }
     );
 };

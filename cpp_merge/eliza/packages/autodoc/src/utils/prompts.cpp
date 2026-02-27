@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/utils/prompts.h"
 
 object PROMPT_TEMPLATES = object{
-    object::pair{std::string("overview"), [=](auto packageJson, auto docs) mutable
+    object::pair{std:("overview"), [=](auto packageJson, auto docs) mutable
     {
-        return std::string("\
-    Using the provided JSDoc as context, create a comprehensive documentation overview, FAQ, and Troubleshooting section for ") + packageJson["name"] + std::string(". Return the response in the following JSON structure:\
+        return std:("\
+    Using the provided JSDoc as context, create a comprehensive documentation overview, FAQ, and Troubleshooting section for ") + packageJson["name"] + std:(". Return the response in the following JSON structure:\
     {\
         "overview": {\
             "purpose": "A comprehensive paragraph explaining the main purpose",\
@@ -33,54 +33,54 @@ object PROMPT_TEMPLATES = object{
     Base your response on the following package and code information:\
 \
     Package Information:\
-    - Name: ") + packageJson["name"] + std::string("\
-    - Description: ") + (OR((packageJson["description"]), (std::string("N/A")))) + std::string("\
+    - Name: ") + packageJson["name"] + std:("\
+    - Description: ") + (OR((packageJson["description"]), (std:("N/A")))) + std:("\
 \
     Code Components:\
-    ") + (docs->classes->get_length() > 0) ? any(std::string("\
+    ") + (docs->classes->get_length() > 0) ? any(std:("\
     Classes:\
     ") + docs->classes->map([=](auto c) mutable
         {
-            return std::string("- ") + c->name + std::string(": ") + c->jsDoc + string_empty;
+            return std:("- ") + c->name + std:(": ") + c->jsDoc + string_empty;
         }
-        )->join(std::string("\
-")) + string_empty) : any(string_empty) + std::string("\
+        )->join(std:("\
+")) + string_empty) (string_empty) + std:("\
 \
-    ") + (docs->interfaces->get_length() > 0) ? any(std::string("\
+    ") + (docs->interfaces->get_length() > 0) ? any(std:("\
     Interfaces:\
     ") + docs->interfaces->map([=](auto i) mutable
         {
-            return std::string("- ") + i->name + std::string(": ") + i->jsDoc + string_empty;
+            return std:("- ") + i->name + std:(": ") + i->jsDoc + string_empty;
         }
-        )->join(std::string("\
-")) + string_empty) : any(string_empty) + std::string("\
+        )->join(std:("\
+")) + string_empty) (string_empty) + std:("\
 \
-    ") + (docs->types->get_length() > 0) ? any(std::string("\
+    ") + (docs->types->get_length() > 0) ? any(std:("\
     Types:\
     ") + docs->types->map([=](auto t) mutable
         {
-            return std::string("- ") + t->name + std::string(": ") + t->jsDoc + string_empty;
+            return std:("- ") + t->name + std:(": ") + t->jsDoc + string_empty;
         }
-        )->join(std::string("\
-")) + string_empty) : any(string_empty) + std::string("\
+        )->join(std:("\
+")) + string_empty) (string_empty) + std:("\
 \
-    ") + (docs->functions->get_length() > 0) ? any(std::string("\
+    ") + (docs->functions->get_length() > 0) ? any(std:("\
     Functions:\
     ") + docs->functions->map([=](auto f) mutable
         {
-            return std::string("- ") + f->name + std::string(": ") + f->jsDoc + string_empty;
+            return std:("- ") + f->name + std:(": ") + f->jsDoc + string_empty;
         }
-        )->join(std::string("\
-")) + string_empty) : any(string_empty) + std::string("\
+        )->join(std:("\
+")) + string_empty) (string_empty) + std:("\
 \
-    ") + (docs->variables->get_length() > 0) ? any(std::string("\
+    ") + (docs->variables->get_length() > 0) ? any(std:("\
     Variables:\
     ") + docs->variables->map([=](auto v) mutable
         {
-            return std::string("- ") + v->name + std::string(": ") + v->jsDoc + string_empty;
+            return std:("- ") + v->name + std:(": ") + v->jsDoc + string_empty;
         }
-        )->join(std::string("\
-")) + string_empty) : any(string_empty) + std::string("\
+        )->join(std:("\
+")) + string_empty) (string_empty) + std:("\
 \
     Based on the above components, generate:\
     1. A comprehensive overview that explains the plugin's purpose and key features\
@@ -130,7 +130,7 @@ object PROMPT_TEMPLATES = object{
     ");
     }
     }, 
-    object::pair{std::string("installation"), std::string("Create installation instructions with the following structure:\
+    object::pair{std:("installation"), std:("Create installation instructions with the following structure:\
 \
 ### Prerequisites\
 [List any prerequisites]\
@@ -144,7 +144,7 @@ object PROMPT_TEMPLATES = object{
 [How to verify successful installation]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("configuration"), std::string("Create configuration documentation with the following structure:\
+    object::pair{std:("configuration"), std:("Create configuration documentation with the following structure:\
 \
 ### Environment Variables\
 [Table or list of all environment variables with descriptions]\
@@ -158,7 +158,7 @@ Format in markdown without adding any additional headers.")},
 [Any important notes about configuration]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("actionDoc"), std::string("Generate documentation for this action with the following structure:\
+    object::pair{std:("actionDoc"), std:("Generate documentation for this action with the following structure:\
 \
 ### [action name]\
 [Brief description of the action]\
@@ -174,7 +174,7 @@ Format in markdown without adding any additional headers.")},
 [Use Examples object in Action code to give a Natural language example replace {{name2}} with "Agent" and {{name1}} with "Anon"]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("providerDoc"), std::string("Generate documentation for this provider with the following structure:\
+    object::pair{std:("providerDoc"), std:("Generate documentation for this provider with the following structure:\
 \
 ### [Provider Name]\
 [Brief description of the provider]\
@@ -183,7 +183,7 @@ Format in markdown without adding any additional headers.")},
 [Textual description of the get() method and its functionality.]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("fileUsageDoc"), std::string("Determine multiple use cases for the provided code, and give examples of how to use the code:\
+    object::pair{std:("fileUsageDoc"), std:("Determine multiple use cases for the provided code, and give examples of how to use the code:\
 \
 ### Common Use Cases\
 1. [First use case with code example]\
@@ -194,7 +194,7 @@ Format in markdown without adding any additional headers.")},
 - [Best practice 2]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("fileApiDoc"), std::string("Generate API reference documentation with the following structure:\
+    object::pair{std:("fileApiDoc"), std:("Generate API reference documentation with the following structure:\
 \
 ### Classes\
 """typescript\
@@ -225,7 +225,7 @@ Create a comprehensive API reference including:\
 6. Examples for complex APIs\
 \
 Format the response in markdown with proper headings and code blocks.")}, 
-    object::pair{std::string("todos"), std::string("Generate TODO documentation with the following structure, DO NOT return the context/code rather a description of the code and how the todo is related to the code, if no todos are provided return "No todos found in the code":\
+    object::pair{std:("todos"), std:("Generate TODO documentation with the following structure, DO NOT return the context/code rather a description of the code and how the todo is related to the code, if no todos are provided return "No todos found in the code":\
 \
 ### Items\
 1. [First TODO item]\
@@ -236,7 +236,7 @@ Format the response in markdown with proper headings and code blocks.")},
    - Type: [bug/feature/enhancement]\
 \
 Format in markdown without adding any additional headers.")}, 
-    object::pair{std::string("troubleshooting"), std::string("Generate troubleshooting guide with the following structure:\
+    object::pair{std:("troubleshooting"), std:("Generate troubleshooting guide with the following structure:\
 \
 ### Common Issues\
 1. [First issue]\

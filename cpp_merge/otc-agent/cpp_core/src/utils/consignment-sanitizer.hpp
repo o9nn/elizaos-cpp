@@ -30,6 +30,6 @@ SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment);
  * Check if a caller is the owner of a consignment.
  * Handles both Solana (case-sensitive) and EVM (case-insensitive) addresses.
  */
-bool isConsignmentOwner(OTCConsignment consignment, const std::string& callerAddress);
+bool isConsignmentOwner(OTCConsignment consignment, const std:& callerAddress);
 
 } // namespace elizaos

@@ -13,17 +13,17 @@ void useAuthentication() {
         disconnect: adapterDisconnect,
         wallet,
         } = useWallet();
-        const auto [authToken, setAuthToken] = useLocalStorage<std::string | nullptr>(;
+        const auto [authToken, setAuthToken] = useLocalStorage<std: | nullptr>(;
         "authToken",
         nullptr,
         );
         // const [isAuthenticating, setIsAuthenticating] = useState(false);
-        const auto [userPrivileges, setUserPrivileges] = useState<std::string[]>([]);
+        const auto [userPrivileges, setUserPrivileges] = useState<std:[]>([]);
         const auto queryClient = useQueryClient();
         const auto isSettingToken = useRef(false);
 
         // Handle storage events from other tabs
-        useEffect(() => {
+        useEffect[&](() {
             const auto handleStorageChange = [&](e: StorageEvent) {;
                 // Skip if this is our own change or if the event is not for authToken
                 if (e.key != "authToken") return;
@@ -37,12 +37,12 @@ void useAuthentication() {
                 if (newToken != authToken) {
                     if (newToken) {
                         try {
-                            const auto parsedToken = /* JSON.parse */ newToken;
+                            const auto parsedToken = /* JSON::parse */ newToken;
                             // Set the flag to prevent recursive events
                             isSettingToken.current = true;
                             setAuthToken(parsedToken);
                             // Clear the flag after a short delay
-                            setTimeout(() => {
+                            setTimeout[&](() {
                                 isSettingToken.current = false;
                                 }, 0);
                                 } catch (e) {
@@ -53,7 +53,7 @@ void useAuthentication() {
                                     isSettingToken.current = true;
                                     setAuthToken(nullptr);
                                     // Clear the flag after a short delay
-                                    setTimeout(() => {
+                                    setTimeout[&](() {
                                         isSettingToken.current = false;
                                         }, 0);
                                     }
@@ -65,7 +65,7 @@ void useAuthentication() {
                                 return [&]() { return window.removeEventListener("storage", handleStorageChange); };
                                 }, [authToken, setAuthToken, queryClient]);
 
-                                const auto getWalletAddress = (): std::string | nullptr => {;
+                                const auto getWalletAddress = (): std: | nullptr => {;
                                     if (authToken && !isTokenExpired(authToken)) {
                                         const auto payload = parseJwt(authToken);
                                         if (payload.sub) {
@@ -80,11 +80,11 @@ void useAuthentication() {
 
                                     const auto currentWalletAddress = getWalletAddress();
 
-                                    const auto authQuery = useQuery<AuthStatus>({;
+                                    const auto authQuery = useQuery<AuthStatus>[&]({;
                                         queryKey: ["auth-status", authToken],
-                                        queryFn: std::async () => {
+                                        queryFn: std::async () {
                                             if (!authToken || isTokenExpired(authToken)) {
-                                                return { authenticated: false }
+                                                return Config{authenticated = false}
                                             }
                                             try {
                                                 const auto response = "fetchWithAuth(" + env.apiUrl + "/api/auth-status";
@@ -105,17 +105,17 @@ void useAuthentication() {
                                                             } else {
                                                                 setAuthToken(nullptr);
                                                                 setUserPrivileges([]);
-                                                                return { authenticated: false }
+                                                                return Config{authenticated = false}
                                                             }
                                                             } else if (response.status == 401 || response.status == 403) {
                                                                 setAuthToken(nullptr);
                                                                 setUserPrivileges([]);
-                                                                return { authenticated: false }
+                                                                return Config{authenticated = false}
                                                             }
-                                                            return { authenticated: false }
+                                                            return Config{authenticated = false}
                                                             } catch (error) {
                                                                 std::cerr << "Error checking auth status:" << error << std::endl;
-                                                                return { authenticated: false }
+                                                                return Config{authenticated = false}
                                                             }
                                                             },
                                                             enabled: !!authToken && !isTokenExpired(authToken),
@@ -124,7 +124,7 @@ void useAuthentication() {
                                                             retry: 1,
                                                             });
 
-                                                            const auto handleSuccessfulAuth = [&](token: std::string) {;
+                                                            const auto handleSuccessfulAuth = [&](token: std:) {;
                                                                 const auto payload = parseJwt(token);
                                                                 const auto tokenWallet = payload.sub;
 
@@ -141,11 +141,11 @@ void useAuthentication() {
                                                                     return;
                                                                 }
 
-                                                                // Set the flag before std::any state changes
+                                                                // Set the flag before std: state changes
                                                                 isSettingToken.current = true;
 
                                                                 // Use a timeout to ensure the flag is cleared after the storage event
-                                                                setTimeout(() => {
+                                                                setTimeout[&](() {
                                                                     isSettingToken.current = false;
                                                                     }, 0);
 
@@ -155,7 +155,7 @@ void useAuthentication() {
                                                                     };
 
                                                                     // Effect to handle wallet connection/disconnection
-                                                                    useEffect(() => {
+                                                                    useEffect[&](() {
                                                                         if (connected && publicKey && authToken) {
                                                                             // Wallet connected, check if token matches
                                                                             const auto payload = parseJwt(authToken);
@@ -173,7 +173,7 @@ void useAuthentication() {
                                                                             }, [connected, publicKey, authToken, setAuthToken, queryClient]);
 
                                                                             // useLocalStorage handles this automatically, but we check expiration
-                                                                            useEffect(() => {
+                                                                            useEffect[&](() {
                                                                                 const auto initialToken = getAuthToken();
                                                                                 if (initialToken && isTokenExpired(initialToken)) {
                                                                                     std::cout << "Initial auth token is expired << clearing." << std::endl;
@@ -189,7 +189,7 @@ void useAuthentication() {
                                                                                     !!authToken &&;
                                                                                     !isTokenExpired(authToken);
 
-                                                                                    const auto signOut = std::async () => {;
+                                                                                    const auto signOut = std::async [&]() {;
                                                                                         const auto tokenToRevoke = authToken;
                                                                                         isSettingToken.current = true;
                                                                                         setAuthToken(nullptr);
@@ -198,7 +198,7 @@ void useAuthentication() {
 
                                                                                         try {
                                                                                             if (tokenToRevoke) {
-                                                                                                const auto headers = new Headers();
+                                                                                                const auto headers = std::make_unique<Headers>();
                                                                                                 "headers.std::set(\"Authorization\", " + "Bearer " + tokenToRevoke;
                                                                                                 "fetch(" + env.apiUrl + "/api/logout";
                                                                                                     method: "POST",

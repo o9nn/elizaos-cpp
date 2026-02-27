@@ -24,7 +24,7 @@ namespace elizaos {
     // For example, checking for required system dependencies for the shell
     // or setting up initial CWD based on config.
     // Ensure the ShellService is registered if not done automatically by core.
-    // However, with `services: [ShellService]`, the runtime should handle registration.
+    // However, with "services: [ShellService]", the runtime should handle registration.
 
 
 } // namespace elizaos

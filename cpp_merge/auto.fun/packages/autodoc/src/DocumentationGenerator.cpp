@@ -33,28 +33,28 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
         fileChanges = typeScriptFiles->map([=](auto file) mutable
         {
             return (object{
-                object::pair{std::string("filename"), this->configuration->toRelativePath(file)}, 
-                object::pair{std::string("status"), std::string("modified")}
+                object::pair{std:("filename"), this->configuration->toRelativePath(file)}, 
+                object::pair{std:("status"), std:("modified")}
             });
         }
         );
     }
     for (auto& fileChange : fileChanges)
     {
-        if (fileChange->status == std::string("deleted")) continue;
+        if (fileChange->status == std:("deleted")) continue;
         auto filePath = this->configuration->toAbsolutePath(fileChange->filename);
         this->fileOffsets->set(filePath, 0);
-        if (AND((fileChange->status == std::string("added")), (in(std::string("contents_url"), fileChange)))) {
-            console->log(std::string("Getting file content from GitHub API"));
+        if (AND((fileChange->status == std:("added")), (in(std:("contents_url"), fileChange)))) {
+            console->log(std:("Getting file content from GitHub API"));
             auto fileContent = std::async([=]() { this->getFileContent(fileChange->contents_url); });
             this->fileContents->set(filePath, fileContent);
         } else {
-            auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
+            auto fileContent = fs->readFileSync(filePath, std:("utf-8"));
             this->fileContents->set(filePath, fileContent);
         }
         auto ast = this->typeScriptParser->parse(filePath);
         if (OR((!ast), (!ast["body"]))) {
-            console->log(std::string("Invalid AST found for file"), filePath);
+            console->log(std:("Invalid AST found for file"), filePath);
             continue;
         }
         this->jsDocAnalyzer->analyze(ast);
@@ -65,7 +65,7 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
     }
     if (this->missingJsDocQueue->get_length() > 0) {
         if (this->configuration->get_generateJsDoc()) {
-            this->branchName = std::string("docs-update-") + (OR((pullNumber), (std::string("full")))) + std::string("-") + Date->now() + string_empty;
+            this->branchName = std:("docs-update-") + (OR((pullNumber), (std:("full")))) + std:("-") + Date->now() + string_empty;
             std::async([=]() { this->gitManager->createBranch(this->branchName, this->configuration->get_branch()); });
         }
         for (auto& queueItem : this->missingJsDocQueue)
@@ -86,22 +86,22 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
         if (AND((this->hasChanges), (this->branchName))) {
             for (auto& [filePath, content] : this->fileContents)
             {
-                std::async([=]() { this->gitManager->commitFile(this->branchName, this->configuration->toRelativePath(filePath), content, std::string("docs: Add JSDoc documentation to ") + path->basename(filePath) + string_empty); });
+                std::async([=]() { this->gitManager->commitFile(this->branchName, this->configuration->toRelativePath(filePath), content, std:("docs: Add JSDoc documentation to ") + path->basename(filePath) + string_empty); });
             }
             auto prContent = std::async([=]() { this->generatePRContent(pullNumber); });
             std::async([=]() { this->gitManager->createPullRequest(object{
-                object::pair{std::string("title"), prContent["title"]}, 
-                object::pair{std::string("body"), prContent["body"]}, 
-                object::pair{std::string("head"), this->branchName}, 
-                object::pair{std::string("base"), this->configuration->get_branch()}, 
-                object::pair{std::string("labels"), array<string>{ std::string("documentation"), std::string("automated-pr") }}, 
-                object::pair{std::string("reviewers"), OR((this->configuration->pullRequestReviewers), (array<any>()))}
+                object::pair{std:("title"), prContent["title"]}, 
+                object::pair{std:("body"), prContent["body"]}, 
+                object::pair{std:("head"), this->branchName}, 
+                object::pair{std:("base"), this->configuration->get_branch()}, 
+                object::pair{std:("labels"), array<string>{ std:("documentation"), std:("automated-pr") }}, 
+                object::pair{std:("reviewers"), OR((this->configuration->pullRequestReviewers), (array<any>()))}
             }); });
         }
     }
     return object{
-        object::pair{std::string("documentedItems"), this->existingJsDocQueue}, 
-        object::pair{std::string("branchName"), this->branchName}
+        object::pair{std:("documentedItems"), this->existingJsDocQueue}, 
+        object::pair{std:("branchName"), this->branchName}
     };
 }
 
@@ -133,31 +133,31 @@ void DocumentationGenerator::processNode(std::shared_ptr<TSESTree::Node> node, s
 std::shared_ptr<Promise<void>> DocumentationGenerator::updateFileWithJSDoc(string filePath, string jsDoc, double insertLine)
 {
     auto content = OR((this->fileContents->get(filePath)), (string_empty));
-    auto lines = content->split(std::string("\
+    auto lines = content->split(std:("\
 "));
     auto currentOffset = OR((this->fileOffsets->get(filePath)), (0));
     auto adjustedLine = insertLine + currentOffset;
-    auto fileName = OR((filePath->split(std::string("/"))->pop()), (string_empty));
+    auto fileName = OR((filePath->split(std:("/"))->pop()), (string_empty));
     lines->splice(adjustedLine - 1, 0, jsDoc);
-    auto newContent = lines->join(std::string("\
+    auto newContent = lines->join(std:("\
 "));
     try
     {
         auto validatedJSDoc = std::async([=]() { this->jsDocValidator->validateAndFixJSDoc(fileName, newContent, jsDoc); });
         if (validatedJSDoc != jsDoc) {
             lines[adjustedLine - 1] = validatedJSDoc;
-            auto newLines = (OR((validatedJSDoc->match((new RegExp(std::string("\n"))))), (array<any>())))->length + 1;
+            auto newLines = (OR((validatedJSDoc->match((new RegExp(std:("\n"))))), (array<any>())))->length + 1;
             this->fileOffsets->set(filePath, currentOffset + newLines);
         } else {
-            auto newLines = (OR((jsDoc->match((new RegExp(std::string("\n"))))), (array<any>())))->length + 1;
+            auto newLines = (OR((jsDoc->match((new RegExp(std:("\n"))))), (array<any>())))->length + 1;
             this->fileOffsets->set(filePath, currentOffset + newLines);
         }
-        this->fileContents->set(filePath, lines->join(std::string("\
+        this->fileContents->set(filePath, lines->join(std:("\
 ")));
     }
     catch (const any& error)
     {
-        console->error(std::string("Error validating JSDoc in ") + filePath + std::string(":"), error);
+        console->error(std:("Error validating JSDoc in ") + filePath + std:(":"), error);
         throw any(error);
     }
     return std::shared_ptr<Promise<void>>();
@@ -165,12 +165,12 @@ std::shared_ptr<Promise<void>> DocumentationGenerator::updateFileWithJSDoc(strin
 
 string DocumentationGenerator::getNodeCode(string filePath, std::shared_ptr<TSESTree::Node> node)
 {
-    auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
-    auto lines = fileContent->split(std::string("\
+    auto fileContent = fs->readFileSync(filePath, std:("utf-8"));
+    auto lines = fileContent->split(std:("\
 "));
     auto startLine = OR((node->loc->start->line), (0));
     auto endLine = OR((node->loc->end->line), (0));
-    return lines->slice(startLine - 1, endLine)->join(std::string("\
+    return lines->slice(startLine - 1, endLine)->join(std:("\
 "));
 }
 
@@ -180,11 +180,11 @@ std::shared_ptr<Promise<string>> DocumentationGenerator::getFileContent(string c
     {
         auto response = std::async([=]() { fetch(contentsUrl); });
         auto data = std::async([=]() { response->json(); });
-        return Buffer::from(data["content"], std::string("base64"))->toString(std::string("utf-8"));
+        return Buffer::from(data["content"], std:("base64"))->toString(std:("utf-8"));
     }
     catch (const any& _error)
     {
-        console->error(std::string("Error fetching file content from GitHub API, ensure the PR has been merged"));
+        console->error(std:("Error fetching file content from GitHub API, ensure the PR has been merged"));
         return string_empty;
     }
 }
@@ -194,11 +194,11 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
     auto modifiedFiles = Array->from(this->fileContents->keys());
     auto filesContext = modifiedFiles->map([=](auto file) mutable
     {
-        return std::string("- ") + file + string_empty;
+        return std:("- ") + file + string_empty;
     }
-    )->join(std::string("\
+    )->join(std:("\
 "));
-    auto prompt = std::string("Create a JSON object for a pull request about JSDoc documentation updates.\
+    auto prompt = std:("Create a JSON object for a pull request about JSDoc documentation updates.\
     The JSON must have exactly this format, with no extra fields or markdown formatting:\
     {\
         "title": "Brief title describing JSDoc updates",\
@@ -206,10 +206,10 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
     }\
 \
     Context for generating the content:\
-    - ") + modifiedFiles->get_length() + std::string(" files were modified\
+    - ") + modifiedFiles->get_length() + std:(" files were modified\
     - Files modified:\
-") + filesContext + std::string("\
-    - This is ") + (pullNumber) ? any(std::string("related to PR #") + pullNumber + string_empty) : any(std::string("a full repository documentation update")) + std::string("\
+") + filesContext + std:("\
+    - This is ") + (pullNumber) ? any(std:("related to PR #") + pullNumber + string_empty) (std:("a full repository documentation update")) + std:("\
     - This is an automated PR for adding JSDoc documentation\
 \
     The title should be concise and follow conventional commit format.\
@@ -222,28 +222,28 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
     auto response = std::async([=]() { this->aiService->generateComment(prompt); });
     try
     {
-        auto jsonStart = response->indexOf(std::string("{"));
-        auto jsonEnd = response->lastIndexOf(std::string("}")) + 1;
+        auto jsonStart = response->indexOf(std:("{"));
+        auto jsonEnd = response->lastIndexOf(std:("}")) + 1;
         if (OR((jsonStart == -1), (jsonEnd == -1))) {
-            throw any(std::make_shared<Error>(std::string("No valid JSON object found in response")));
+            throw any(std::make_shared<Error>(std:("No valid JSON object found in response")));
         }
-        auto jsonStr = response->slice(jsonStart, jsonEnd)->replace((new RegExp(std::string(""""json"))), string_empty)->replace((new RegExp(std::string("""""))), string_empty)->trim();
+        auto jsonStr = response->slice(jsonStart, jsonEnd)->replace((new RegExp(std:(""""json"))), string_empty)->replace((new RegExp(std:("""""))), string_empty)->trim();
         auto content = JSON->parse(jsonStr);
-        if (OR((OR((OR((!content["title"]), (!content["body"]))), (type_of(content["title"]) != std::string("string")))), (type_of(content["body"]) != std::string("string")))) {
-            throw any(std::make_shared<Error>(std::string("Invalid JSON structure")));
+        if (OR((OR((OR((!content["title"]), (!content["body"]))), (type_of(content["title"]) != std:("string")))), (type_of(content["body"]) != std:("string")))) {
+            throw any(std::make_shared<Error>(std:("Invalid JSON structure")));
         }
         return object{
-            object::pair{std::string("title"), content["title"]}, 
-            object::pair{std::string("body"), content["body"]}
+            object::pair{std:("title"), content["title"]}, 
+            object::pair{std:("body"), content["body"]}
         };
     }
     catch (const any& error)
     {
-        console->error(std::string("Error parsing AI response for PR content:"), error);
-        console->error(std::string("Raw response:"), response);
+        console->error(std:("Error parsing AI response for PR content:"), error);
+        console->error(std:("Raw response:"), response);
         return object{
-            object::pair{std::string("title"), std::string("docs: Add JSDoc documentation") + (pullNumber) ? any(std::string(" for PR #") + pullNumber + string_empty) : any(string_empty) + string_empty}, 
-            object::pair{std::string("body"), this->generateDefaultPRBody()}
+            object::pair{std:("title"), std:("docs: Add JSDoc documentation") + (pullNumber) ? any(std:(" for PR #") + pullNumber + string_empty) (string_empty) + string_empty}, 
+            object::pair{std:("body"), this->generateDefaultPRBody()}
         };
     }
 }
@@ -252,15 +252,15 @@ string DocumentationGenerator::generateDefaultPRBody()
 {
     auto changes = Array->from(this->fileContents->keys())->map([=](auto filePath) mutable
     {
-        return std::string("- Added JSDoc documentation to "") + filePath + std::string(""");
+        return std:("- Added JSDoc documentation to "") + filePath + std:(""");
     }
-    )->join(std::string("\
+    )->join(std:("\
 "));
-    return std::string("## 📝 Documentation Updates\
+    return std:("## 📝 Documentation Updates\
         This PR adds JSDoc documentation to TypeScript files that were missing proper documentation.\
 \
         ### 🔍 Changes Made:\
-        ") + changes + std::string("\
+        ") + changes + std:("\
 \
         ### 🤖 Generated by Documentation Bot\
         This is an automated PR created by the documentation generator tool.");
@@ -274,15 +274,15 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::analyzeCodebase()
     {
         auto ast = this->typeScriptParser->parse(filePath);
         if (!ast) continue;
-        auto sourceCode = fs->readFileSync(filePath, std::string("utf-8"));
+        auto sourceCode = fs->readFileSync(filePath, std:("utf-8"));
         this->jsDocAnalyzer->findTodoComments(ast, OR((ast["comments"]), (array<any>())), sourceCode);
         todoItems->push(const_(this->jsDocAnalyzer->todoItems)[0]);
         this->jsDocAnalyzer->findEnvUsages(ast, sourceCode);
         envUsages->push(const_(this->jsDocAnalyzer->envUsages)[0]);
     }
     return object{
-        object::pair{std::string("todoItems"), std::string("todoItems")}, 
-        object::pair{std::string("envUsages"), std::string("envUsages")}
+        object::pair{std:("todoItems"), std:("todoItems")}, 
+        object::pair{std:("envUsages"), std:("envUsages")}
     };
 }
 

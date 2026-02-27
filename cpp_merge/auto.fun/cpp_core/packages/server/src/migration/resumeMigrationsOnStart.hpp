@@ -1,4 +1,6 @@
 #include ".redis.hpp"
+#include <future>
+#include <cstdlib>
 #include ".tokenSupplyHelpers/customWallet.hpp"
 #include <functional>
 #include <memory>
@@ -25,26 +27,26 @@ namespace elizaos {
 // 
 
 // // Parse IDLs
-// const idl: Autofun = JSON.parse(JSON.stringify(idlJson));
-// const raydium_vault_IDL: RaydiumVault = JSON.parse(JSON.stringify(raydiumVaultIdlJson));
+// const idl: Autofun = nlohmann::json::parse(nlohmann::json().dump(idlJson));
+// const raydium_vault_IDL: RaydiumVault = nlohmann::json::parse(nlohmann::json().dump(raydiumVaultIdlJson));
 
 // // Load environment
-// const NETWORK = process.env.NETWORK || 'mainnet';
-// const RPC_URL = NETWORK === 'devnet'
-//    ? process.env.DEVNET_SOLANA_RPC_URL!
-//    : process.env.MAINNET_SOLANA_RPC_URL!;
+// const NETWORK = std::getenv("NETWORK") || 'mainnet';
+// const RPC_URL = NETWORK == 'devnet'
+//    ? std::getenv("DEVNET_SOLANA_RPC_URL")!
+//    : std::getenv("MAINNET_SOLANA_RPC_URL")!;
 
 // std::future<void> createMigrator();
 
-// const CONCURRENCY = Number(process.env.MIGRATION_CONCURRENCY ?? '5');
+// const CONCURRENCY = Number(std::getenv("MIGRATION_CONCURRENCY") || '5');
 
 // std::future<void> resumeTick(TokenMigrator migrator);
 
 // std::future<void> startMigrationCron();
-// if (require.main === module) {
-//    startMigrationCron().catch((err) => {
+// if (require.main == module) {
+//    startMigrationCron().catch[&]((err) {
 //       console.error('Migration cron failed to start:', err);
-//       process.exit(1);
+//       std::exit(1);
 //    });
 // }
 

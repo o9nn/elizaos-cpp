@@ -44,13 +44,13 @@ namespace elizaos {
     // Set MUCH LOWER price on attacker registry
 
       // Create legitimate offer on victim desk
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Create offer on victim desk
 
       // ATTACK: Try to approve using attacker's desk (where attacker is approver)
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Create and approve offer on victim desk
 
@@ -58,18 +58,18 @@ namespace elizaos {
 
       // ATTACK: Try to fulfill using wrong desk
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Approve using correct desk
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // ATTACK: Try to create offer on victim desk but using attacker's cheap price registry
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Create and complete an offer flow to test claim
-      await airdrop(buyer.publicKey, 5 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 5 * LAMPORTS_PER_SOL);
 
       // Reset limits for longer expiry
 
@@ -87,18 +87,18 @@ namespace elizaos {
 
         // Attacker tries to std::set price on victim's registry
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
-      await airdrop(nonApprover.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(nonApprover.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Pause
 
       // Unpause
 
-      await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
 
       // Unpause for other tests
 
-      await airdrop(buyer.publicKey, 5 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 5 * LAMPORTS_PER_SOL);
 
       // 1. Create offer with discount
 
@@ -114,7 +114,7 @@ namespace elizaos {
 
       // Verify buyer received tokens
 
-      await airdrop(buyer.publicKey, 10 * LAMPORTS_PER_SOL);
+      airdrop(buyer.publicKey, 10 * LAMPORTS_PER_SOL);
 
       // 1. Create offer for SOL payment
 

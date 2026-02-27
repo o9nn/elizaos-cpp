@@ -24,7 +24,7 @@ T getTemplateValues(std::shared_ptr<State> state, Partial<T> defaultValues = und
 template <typename P0>
 std::function<string(std::shared_ptr<State>)> createTemplateFunction(P0 template)
 {
-    if (type_of(template) == std::string("string")) {
+    if (type_of(template) == std:("string")) {
         return [=]() mutable
         {
             return template;
@@ -36,7 +36,7 @@ std::function<string(std::shared_ptr<State>)> createTemplateFunction(P0 template
                 return string_empty;
             }
             return template(object{
-                object::pair{std::string("state"), std::string("state")}
+                object::pair{std:("state"), std:("state")}
             });
         };
     }
@@ -50,13 +50,13 @@ string processTemplate(P0 template, std::shared_ptr<State> state)
         return string_empty;
     }
     if (!state) {
-        return (type_of(template) == std::string("string")) ? any(template) : any(string_empty);
+        return (type_of(template) == std:("string")) ? any(template) (string_empty);
     }
-    if (type_of(template) == std::string("string")) {
+    if (type_of(template) == std:("string")) {
         return template;
     } else {
         return template(object{
-            object::pair{std::string("state"), std::string("state")}
+            object::pair{std:("state"), std:("state")}
         });
     }
 };

@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +9,7 @@ namespace elizaos {
 std::future<void> POST(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto heliusKey = process.env.HELIUS_API_KEY;
+    const auto heliusKey = std::getenv("HELIUS_API_KEY");
 
     if (!heliusKey) {
         return NextResponse.json(;
@@ -26,7 +28,7 @@ std::future<void> POST(NextRequest request) {
             headers: {
                 "Content-Type": "application/json",
                 },
-                body: /* JSON.stringify */ std::string(body),
+                body: /* JSON.stringify */ std:(body),
                 },
                 );
 

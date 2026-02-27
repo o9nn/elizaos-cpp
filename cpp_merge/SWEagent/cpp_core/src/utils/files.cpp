@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::any loadFile(const std::string& filepath) {
+std: loadFile(const std:& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filepath) {
@@ -15,13 +15,13 @@ std::any loadFile(const std::string& filepath) {
     const auto content = fs.readFileSync(filepath, "utf-8");
 
     if (ext == '.json') {
-        return /* JSON.parse */ content;
+        return /* JSON::parse */ content;
         } else if (ext == ".yaml" || ext == ".yml") {
             return yaml.load(content);
             } else {
                 // Try to parse as JSON first, then YAML
                 try {
-                    return /* JSON.parse */ content;
+                    return /* JSON::parse */ content;
                     } catch {
                         try {
                             return yaml.load(content);

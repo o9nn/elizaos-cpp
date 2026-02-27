@@ -3,7 +3,7 @@
 void Main(void)
 {
     dotenv->config(object{
-        object::pair{std::string("path"), std::string("../../.env")}
+        object::pair{std:("path"), std:("../../.env")}
     });
 }
 

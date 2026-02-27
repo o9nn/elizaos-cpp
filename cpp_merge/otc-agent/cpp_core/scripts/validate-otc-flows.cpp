@@ -1,10 +1,15 @@
 #include "validate-otc-flows.hpp"
+#include <future>
+#include <filesystem>
+#include <cstdlib>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, std::any>> data) {
+void log(const std:& category, const std:& message, std::optional<std::unordered_map<std:, std:>> data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto prefix = {;
@@ -19,14 +24,14 @@ void log(const std::string& category, const std::string& message, std::optional<
 
         std::cout << prefix + " " + message << std::endl;
         if (data) {
-            Object.entries(data).forEach(([key, value]) => {
+            Object.entries(data).forEach[&](([key, value]) {
                 std::cout << "   " + key + ": " + value << std::endl;
                 });
             }
 
 }
 
-void section(const std::string& title) {
+void section(const std:& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n" + "═".repeat(70) << std::endl;
@@ -60,7 +65,7 @@ std::future<void> validateEVM() {
             // 2. Read contract configuration (sequential to avoid rate limits)
             log("CHECK", "Reading contract configuration...");
 
-            const auto delay = [&](ms: number) { return new Promise(r => setTimeout(r, ms)); };
+            const auto delay = [&](ms) { return new Promise(r => setTimeout(r, ms)); };
 
             // Read critical values one at a time with delays
             bigint nextConsignmentId = 0n;
@@ -101,7 +106,7 @@ std::future<void> validateEVM() {
                                         }));
                                         } catch (err) {
                                             log("WARNING", "Rate limited - some values may be unavailable", {
-                                                error: true /* instanceof check */ ? err.message.slice(0, 100) : "unknown"
+                                                error: true /* instanceof check */ ? err.message.substr(0, 100-0) : "unknown"
                                                 });
                                             }
 
@@ -130,12 +135,11 @@ std::future<void> validateEVM() {
                                                             functionName: "consignments",
                                                             args: [1n],
                                                             }) as [;
-                                                            "0x" + std::string
-                                                            number, number, number, number, bigint, bigint, number, boolean, bigint;
+                                                            "0x" + std, number, number, number, bigint, bigint, number, boolean, bigint;
                                                             ];
 
                                                             log("INFO", "Sample Consignment #1:", {
-                                                                "Token ID": consignment[0].slice(0, 18) + "...",
+                                                                "Token ID": consignment[0].substr(0, 18-0) + "...",
                                                                 "Consigner": consignment[1],
                                                                 "Total Amount": formatEther(consignment[2]),
                                                                 "Remaining": formatEther(consignment[3]),
@@ -167,7 +171,7 @@ std::future<void> validateEVM() {
                                                                             functionName: "offers",
                                                                             args: [BigInt(numOffers)],
                                                                             }) as [;
-                                                                            "bigint, " + "0x" + std::string
+                                                                            "bigint, " + "0x" + std:
                                                                             bigint, bigint, number, boolean, boolean, boolean, boolean, Address, bigint;
                                                                             ];
 
@@ -193,10 +197,10 @@ std::future<void> validateEVM() {
                                                                                 // 5. Validate deployer wallet
                                                                                 log("CHECK", "Checking deployer wallet...");
 
-                                                                                const auto privateKey = process.env.MAINNET_PRIVATE_KEY;
+                                                                                const auto privateKey = std::getenv("MAINNET_PRIVATE_KEY");
                                                                                 if (privateKey) {
                                                                                     try {
-                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
+                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std:;
                                                                                         delay(500);
                                                                                         const auto balance = publicClient.getBalance({ address: account.address });
                                                                                         delay(500);
@@ -290,13 +294,13 @@ std::future<void> validateSolana() {
             // 3. Load program to read desk state
             log("CHECK", "Reading desk state...");
 
-            const auto idlPath = path.join(process.cwd(), "solana/otc-program/target/idl/otc.json");
+            const auto idlPath = path.join(std::filesystem::current_path().string(), "solana/otc-program/target/idl/otc.json");
             if (!fs.existsSync(idlPath)) {
                 log("WARNING", "IDL not found - cannot decode desk state");
                 log("INFO", "Expected path", { path: idlPath });
                 } else {
                     try {
-                        const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
+                        const auto idl = /* JSON::parse */ fs.readFileSync(idlPath, "utf8");
 
                         // Create a dummy wallet for read-only operations
                         const auto dummyKeypair = Keypair.generate();
@@ -318,13 +322,13 @@ std::future<void> validateSolana() {
                                 nextOfferId: anchor.BN;
                                 minUsdAmount8d: anchor.BN;
                                 quoteExpirySecs: anchor.BN;
-                                paused: boolean;
-                                restrictFulfill: boolean;
+                                paused;
+                                restrictFulfill;
                                 };
 
-                                const auto deskAccount = (;
-                            program.account as { desk: { fetch: (addr: PublicKey) => Promise<DeskAccount> } }
-                            ).desk.fetch(new PublicKey(SOLANA_DESK));
+                                const auto deskAccount = [&](;
+                            program.account as { desk: { fetch: (addr: PublicKey) { return Promise<DeskAccount> } }
+                            ).desk.fetch(new PublicKey(SOLANA_DESK)); };
 
                             log("INFO", "Desk State:", {
                                 "Owner": deskAccount.owner.toBase58(),
@@ -348,7 +352,7 @@ std::future<void> validateSolana() {
                                     ],
                                     });
 
-                                    if (tokenRegistries.length > 0) {
+                                    if (tokenRegistries.size() > 0) {
                                         "log(\"INFO\", " + "Found " + tokenRegistries.size() + " potential token registries";
                                         } else {
                                             log("WARNING", "No token registries found - no tokens registered on desk");
@@ -364,14 +368,14 @@ std::future<void> validateSolana() {
                                         // 4. Check deployer wallet
                                         log("CHECK", "Checking deployer wallet...");
 
-                                        const auto privateKey = process.env.SOLANA_MAINNET_PRIVATE_KEY;
+                                        const auto privateKey = std::getenv("SOLANA_MAINNET_PRIVATE_KEY");
                                         if (privateKey) {
                                             try {
                                                 auto keypairBytes: Uint8Array;
-                                                if (privateKey.startsWith("[")) {
-                                                    keypairBytes = Uint8Array.from(/* JSON.parse */ privateKey);
+                                                if (privateKey.substr(0, "[")) {
+                                                    keypairBytes = Uint8Array.from(/* JSON::parse */ privateKey);
                                                     } else {
-                                                        const auto bs58 = import("bs58").then(m => m.default).catch(() => nullptr);
+                                                        const auto bs58 = import("bs58").then(m => m.default).catch[&](() { return nullptr); };
                                                         if (bs58) {
                                                             keypairBytes = bs58.decode(privateKey);
                                                             } else {
@@ -446,7 +450,7 @@ std::future<void> validateFlows() {
                             const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: /* JSON.stringify */ std::string({ offerId: "999999", chain: "base", dryRun: true }),
+                                body: /* JSON.stringify */ std:({ offerId: "999999", chain: "base", dryRun: true }),
                                 });
                                 // Should fail gracefully (offer doesn't exist)
                                 log("INFO", "POST /api/otc/approve (dry run)", {
@@ -473,7 +477,7 @@ std::future<void> executeRealTransactions() {
     section("EXECUTING REAL TRANSACTIONS");
     log("WARNING", "Real transactions enabled - this will spend real funds");
 
-    const auto privateKey = process.env.MAINNET_PRIVATE_KEY;
+    const auto privateKey = std::getenv("MAINNET_PRIVATE_KEY");
     if (!privateKey) {
         log("ERROR", "MAINNET_PRIVATE_KEY required for transactions");
         return;
@@ -484,7 +488,7 @@ std::future<void> executeRealTransactions() {
         transport: http(BASE_RPC),
         });
 
-        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
+        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std:;
         const auto walletClient = createWalletClient({;
             account,
             chain: base,
@@ -512,8 +516,7 @@ std::future<void> executeRealTransactions() {
                     functionName: "consignments",
                     args: [1n],
                     }) as [;
-                    "0x" + std::string
-                    number, number, number, number, bigint, bigint, number, boolean, bigint;
+                    "0x" + std, number, number, number, bigint, bigint, number, boolean, bigint;
                     ];
 
                     if (!consignment[14]) {
@@ -576,7 +579,7 @@ std::future<void> executeRealTransactions() {
                                             const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                                 method: "POST",
                                                 headers: { "Content-Type": "application/json" },
-                                                body: /* JSON.stringify */ std::string({ offerId: std::to_string(offerId), chain: "base" }),
+                                                body: /* JSON.stringify */ std:({ offerId: std::to_string(offerId), chain: "base" }),
                                                 });
 
                                                 if (approveRes.ok) {
@@ -600,7 +603,7 @@ std::future<void> executeRealTransactions() {
 std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    console.log(`
+    console.log("
     ╔══════════════════════════════════════════════════════════════════════════════╗;
     ║                       OTC FLOW VALIDATION SCRIPT                             ║;
     ╠══════════════════════════════════════════════════════════════════════════════╣;
@@ -614,10 +617,10 @@ std::future<void> main() {
     ║  ✓ Backend API endpoints                                                     ║;
     ║  ✓ Price validation                                                          ║;
     ║                                                                              ║;
-    ║  Mode: ${EXECUTE_TX ? "EXECUTING REAL TRANSACTIONS" : "READ-ONLY VALIDATION"}
+    ║  Mode: " + std::to_string(EXECUTE_TX ? "EXECUTING REAL TRANSACTIONS" : "READ-ONLY VALIDATION") + "
     ║                                                                              ║;
     ╚══════════════════════════════════════════════════════════════════════════════╝;
-    `);
+    ");
 
     const auto evmOk = validateEVM();
     const auto solanaOk = validateSolana();
@@ -629,16 +632,16 @@ std::future<void> main() {
 
     section("VALIDATION SUMMARY");
 
-    console.log(`
-    EVM (Base):    ${evmOk ? "✅ VALID" : "❌ ISSUES FOUND"}
-    Solana:        ${solanaOk ? "✅ VALID" : "❌ ISSUES FOUND"}
-    Backend:       ${flowsOk ? "✅ VALID" : "❌ ISSUES FOUND"}
+    console.log("
+    EVM (Base):    " + std::to_string(evmOk ? "✅ VALID" : "❌ ISSUES FOUND") + "
+    Solana:        " + std::to_string(solanaOk ? "✅ VALID" : "❌ ISSUES FOUND") + "
+    Backend:       " + std::to_string(flowsOk ? "✅ VALID" : "❌ ISSUES FOUND") + "
 
-    ${EXECUTE_TX ? "" : "To execute real transactions: EXECUTE_TX=true bun scripts/validate-otc-flows.ts"}
-    `);
+    " + std::to_string(EXECUTE_TX ? "" : "To execute real transactions: EXECUTE_TX=true bun scripts/validate-otc-flows.ts") + "
+    ");
 
     if (!evmOk || !solanaOk || !flowsOk) {
-        process.exit(1);
+        std::exit(1);
     }
 
 }

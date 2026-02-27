@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <future>
 #include <cstdint>
 #include <functional>
 #include <memory>

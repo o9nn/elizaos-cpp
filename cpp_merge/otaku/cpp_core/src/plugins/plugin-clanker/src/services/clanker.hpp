@@ -18,10 +18,10 @@ namespace elizaos {
 
 
 // Utility std::function to sanitize errors by converting BigInt values to strings
-std::any sanitizeError(const std::any& error);
+std: sanitizeError(const std:& error);
 
 // Helper std::function to detect platform from URL
-std::string detectPlatform(const std::string& url);
+std: detectPlatform(const std:& url);
 
 class ClankerService extends Service {
   static serviceType = "clanker";
@@ -37,7 +37,7 @@ class ClankerService extends Service {
 
       // Validate parameters
 
-          // Transform std::string URLs to objects with platform and url
+          // Transform std: URLs to objects with platform and url
 
           // Sanitize error to remove BigInt before logging/throwing
 

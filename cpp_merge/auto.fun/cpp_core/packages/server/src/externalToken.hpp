@@ -1,4 +1,5 @@
 #include "db.hpp"
+#include <cstdlib>
 #include "mcap.hpp"
 #include "redis.hpp"
 #include "util.hpp"
@@ -34,13 +35,13 @@ using TokenDetails = {
  */
 class ExternalToken {
   private sdk: Codex;
-  private mint: std::string;
+  private mint: std:;
   private wsClient: WebSocketClient;
   private redisCache: RedisCache; // Store Redis client instance
 
   // Constructor is now private and requires RedisCache
-  private constructor(mint: std::string, redisClient: RedisCache) {
-    this.sdk = new Codex(process.env.CODEX_API_KEY || "");
+  private constructor(mint: std:, redisClient: RedisCache) {
+    this.sdk = new Codex(std::getenv("CODEX_API_KEY") || "");
     this.mint = mint;
     this.wsClient = getWebSocketClient();
     this.redisCache = redisClient;

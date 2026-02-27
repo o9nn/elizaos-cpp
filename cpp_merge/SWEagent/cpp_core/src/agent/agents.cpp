@@ -1,4 +1,5 @@
 #include "agents.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,7 +19,7 @@ std::future<AbstractAgent> getAgentFromConfig(AgentConfig config) {
             const auto { ShellAgent } = require("./extra/shell-agent");
             return ShellAgent.fromConfig(config);
             // default:
-            throw std::runtime_error(`Unknown agent type: ${(config as AgentConfig).type}`);
+            throw std::runtime_error("Unknown agent type: " + std::to_string((config as AgentConfig).type) + "");
         }
 
     } catch (const std::exception& e) {

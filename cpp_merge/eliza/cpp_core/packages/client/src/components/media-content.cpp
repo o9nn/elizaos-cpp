@@ -249,7 +249,7 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         className="w-full h-full border-0";
         title={title || "PDF Document"}
         onLoad={handleLoad}
-        onError={() => {
+        onError={[&]() {
             // Fallback to direct PDF if Google Viewer fails
             const auto iframe = document.createElement("iframe");
             "iframe.src = " + url + "#toolbar=0&navpanes=0&scrollbar=0";

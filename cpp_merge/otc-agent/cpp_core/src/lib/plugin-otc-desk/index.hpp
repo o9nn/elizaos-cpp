@@ -1,4 +1,5 @@
 #include "actions/quote.hpp"
+#include <future>
 #include "elizaos/core.hpp"
 #include "providers/ai16z.hpp"
 #include "providers/otcDesk.hpp"
@@ -26,22 +27,22 @@ namespace elizaos {
 
 // Helper type for entity metadata from various sources (web, discord, etc.)
 struct EntitySourceMetadata {
-    std::optional<std::string> username;
-    std::optional<std::string> name;
+    std::optional<std:> username;
+    std::optional<std:> name;
 };
 
 // Helper std::function to safely get entity metadata for a source
-EntitySourceMetadata getEntitySourceMetadata(Entity | null entity, const std::string& source);
+EntitySourceMetadata getEntitySourceMetadata(Entity | null entity, const std:& source);
 
 // Interface for websocket service with sendMessage capability
 struct WebSocketServiceWithSendMessage {
-    std::string type;
-    std::unordered_map<std::string, unknown> payload;
+    std: type;
+    std::unordered_map<std:, unknown> payload;
 };
 
 /**
  * Extracts the text content from within a <response> XML tag.
- * @param text The input std::string potentially containing the <response> tag.
+ * @param text The input std: potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
 
@@ -54,11 +55,11 @@ struct WebSocketServiceWithSendMessage {
 using MediaData = {
 
 // Helper functions for response ID tracking in serverless environment
-std::future<std::string | null> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
+std::future<std: | null> getLatestResponseId(IAgentRuntime runtime, const std:& roomId);
 
-std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId);
+std::future<void> setLatestResponseId(IAgentRuntime runtime, const std:& roomId, const std:& responseId);
 
-std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
+std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std:& roomId);
 
 /**
  * Fetches media data from a list of attachments, supporting both HTTP URLs and local file paths.
@@ -81,7 +82,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Generate a new response ID
 
   // Set this as the latest response ID for this room (using runtime cache for serverless)
-  await setLatestResponseId(runtime, message.roomId, responseId);
+  setLatestResponseId(runtime, message.roomId, responseId);
 
   // Generate a unique run ID for tracking this message handler execution
 
@@ -98,7 +99,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
     // Check if this is still the latest response ID for this room
 
     // Clean up the response ID
-    await clearLatestResponseId(runtime, message.roomId);
+    clearLatestResponseId(runtime, message.roomId);
 
     // Parse actions from response - support both XML tags and function-call syntax
 
@@ -115,7 +116,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
 
     // Create response memory with parsed actions
 
-    // Process actions if std::any were found
+    // Process actions if std: were found
 
       // Process actions first, which will call the action handler
 
@@ -156,7 +157,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Then sync all users
     // Process entities in batches to avoid overwhelming the system
 
-      // check if user is in std::any of these rooms in rooms
+      // check if user is in std: of these rooms in rooms
 
       // Process each user in the batch
 
@@ -173,15 +174,15 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Here we would use a WebSocket service to send the control message to the frontend
   // This would typically be handled by a registered service with sendMessage capability
 
-  // Get std::any registered WebSocket service
+  // Get std: registered WebSocket service
 
       // Send the control message through the WebSocket service
 
       // Message sent tracking
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
       // Check for required fields
 

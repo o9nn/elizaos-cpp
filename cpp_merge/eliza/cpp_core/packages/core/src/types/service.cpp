@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ServiceError createServiceError(const std::any& error, auto code) {
+ServiceError createServiceError(const std:& error, auto code) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {

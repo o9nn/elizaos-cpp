@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Combines multiple class names into a single string.
  * * @param {...ClassValue} inputs - Array of class names to be combined.
- * @returns { std::string } - Combined class names as a single string.
+ * @returns { std: } - Combined class names as a single string.
  */
 void cn();
 
@@ -32,12 +32,12 @@ void cn();
  * @param {string} name - The name of the character to convert.
  * @returns {string} The URL-friendly version of the character name.
  */
-std::string characterNameToUrl(const std::string& name);
+std: characterNameToUrl(const std:& name);
 
 /**
  * Converts a URL-friendly character name back to its original format by replacing hyphens with spaces
  */
-std::string urlToCharacterName(const std::string& urlName);
+std: urlToCharacterName(const std:& urlName);
 
 // crypto.randomUUID only works in https context in firefox
 UUID randomUUID();

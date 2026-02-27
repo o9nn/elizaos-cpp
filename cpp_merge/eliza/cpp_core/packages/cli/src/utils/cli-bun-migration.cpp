@@ -1,4 +1,5 @@
 #include "cli-bun-migration.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -44,7 +45,7 @@ std::future<void> removeNpmInstallation() {
 
 }
 
-std::future<void> installCliWithBun(const std::string& version) {
+std::future<void> installCliWithBun(const std:& version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "Installing CLI with bun..." << std::endl;
@@ -52,12 +53,12 @@ std::future<void> installCliWithBun(const std::string& version) {
 
 }
 
-std::future<bool> verifyCliInstallation(const std::string& expectedVersion) {
+std::future<bool> verifyCliInstallation(const std:& expectedVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto { stdout } = execa("elizaos", ["-v"], { stdio: "pipe" });
-        const auto output = stdout.trim();
+        const auto output = stdout;
 
         // Extract version using regex pattern (handles v1.0.6, 1.0.6, etc.)
         const auto versionMatch = output.match(/(\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?)/);
@@ -80,12 +81,12 @@ std::future<bool> verifyCliInstallation(const std::string& expectedVersion) {
 
 }
 
-std::future<void> migrateCliToBun(const std::string& targetVersion) {
+std::future<void> migrateCliToBun(const std:& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         // Step 1: Check bun availability
-        if (!(await isBunAvailable())) {
+        if (!(isBunAvailable())) {
             throw new Error(
             "Bun is not available. Please install bun first: https://bun.sh/docs/installation"
             );
@@ -99,7 +100,7 @@ std::future<void> migrateCliToBun(const std::string& targetVersion) {
 
             // Step 3: Verify bun installation works
             std::cout << "Verifying bun installation..." << std::endl;
-            if (!(await verifyCliInstallation(targetVersion))) {
+            if (!(verifyCliInstallation(targetVersion))) {
                 throw std::runtime_error('Bun installation verification failed');
             }
 

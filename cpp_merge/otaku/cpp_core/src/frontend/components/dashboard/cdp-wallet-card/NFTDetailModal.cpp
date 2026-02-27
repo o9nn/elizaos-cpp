@@ -1,4 +1,6 @@
 #include "NFTDetailModal.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,8 +20,8 @@ void NFTDetailModalContent(auto userId) {
         const auto [error, setError] = useState("");
 
         // Get chain name for display
-        const auto getChainName = [&](chain: std::string) {;
-            const std::unordered_map<std::string, std::string> names = {;
+        const auto getChainName = [&](chain: std:) {;
+            const std::unordered_map<std:, std:> names = {;
                 base: "Base",
                 ethereum: "Ethereum",
                 polygon: "Polygon",
@@ -28,8 +30,8 @@ void NFTDetailModalContent(auto userId) {
                 };
 
                 // Get explorer URL for NFT
-                const auto getExplorerUrl = [&](chain: std::string, address: std::string, tokenId: std::string) {;
-                    const std::unordered_map<std::string, std::string> explorers = {;
+                const auto getExplorerUrl = [&](chain: std:, address: std:, tokenId: std:) {;
+                    const std::unordered_map<std:, std:> explorers = {;
                         base: "https://basescan.org",
                         ethereum: "https://etherscan.io",
                         polygon: "https://polygonscan.com",
@@ -38,8 +40,8 @@ void NFTDetailModalContent(auto userId) {
                         };
 
                         // Get transaction explorer URL
-                        const auto getTxExplorerUrl = [&](hash: std::string, chain: std::string) {;
-                            const std::unordered_map<std::string, std::string> explorers = {;
+                        const auto getTxExplorerUrl = [&](hash: std:, chain: std:) {;
+                            const std::unordered_map<std:, std:> explorers = {;
                                 base: "https://basescan.org",
                                 ethereum: "https://etherscan.io",
                                 polygon: "https://polygonscan.com",
@@ -48,18 +50,18 @@ void NFTDetailModalContent(auto userId) {
                                 };
 
                                 // Handle copy contract address
-                                const auto handleCopyAddress = std::async () => {;
+                                const auto handleCopyAddress = std::async [&]() {;
                                     try {
                                         navigator.clipboard.writeText(nft.contractAddress);
                                         setIsCopied(true);
-                                        setTimeout(() => setIsCopied(false), 2000);
+                                        setTimeout[&](() { return setIsCopied(false), 2000); };
                                         } catch (err) {
                                             std::cerr << "Failed to copy address:" << err << std::endl;
                                         }
                                         };
 
                                         // Handle send NFT
-                                        const auto handleSend = std::async () => {;
+                                        const auto handleSend = std::async [&]() {;
                                             if (!recipientAddress) {
                                                 setError("Please enter a valid recipient address");
                                                 return;
@@ -100,7 +102,7 @@ void NFTDetailModalContent(auto userId) {
                                                         // Show success state
                                                         showSuccess(;
                                                         "NFT Sent Successfully!",
-                                                        "Your " + std::to_string(nft.name || `${nft.contractName} #${nft.tokenId}`) + " has been sent"
+                                                        "Your " + std::to_string(nft.name || "" + std::to_string(nft.contractName) + " #" + std::to_string(nft.tokenId) + "") + " has been sent"
                                                         modalId,
                                                         false // Don't auto-close;
                                                         );
@@ -112,11 +114,11 @@ void NFTDetailModalContent(auto userId) {
 
                                                         // Call success callback after a short delay
                                                         if (onSuccess) {
-                                                            setTimeout(() => {
+                                                            setTimeout[&](() {
                                                                 onSuccess();
                                                                 }, 2000);
                                                             }
-                                                            } catch (err: std::any) {
+                                                            } catch (err: std:) {
                                                                 std::cerr << " NFT send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send NFT";
                                                                 showError("Transaction Failed", errorMessage, modalId);
@@ -136,9 +138,9 @@ void NFTDetailModalContent(auto userId) {
                                                     </div>;
                                                     </div>;
                                                     <button;
-                                                onClick={() => hideModal(modalId)}
+                                                onClick={[&]() { return hideModal(modalId)}
                                                 className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
-                                                >;
+                                                >; };
                                                 <X className="w-6 h-6" />;
                                                 </button>;
                                                 </div>;
@@ -151,17 +153,17 @@ void NFTDetailModalContent(auto userId) {
                                     src={nft.image}
                                 "alt={nft.name || " + "Token #" + nft.tokenId;
                                 className="max-w-full max-h-[250px] rounded-lg object-contain";
-                                onError={(e) => {
+                                onError={[&](e) {
                                     e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E";
                                 }}
                                 />;
                                 </div>;
 
                             {/* Send Section */}
-                            {!showSendForm ? (;
+                            {!showSendForm ? [&](;
                             <Button;
-                        onClick={() => setShowSendForm(true)}
-                        className="w-full";
+                        onClick={() { return setShowSendForm(true)}
+                        className="w-full"; };
                         size="lg";
                         >;
                         <Send className="w-4 h-4 mr-2" />;
@@ -182,20 +184,20 @@ void NFTDetailModalContent(auto userId) {
                 <input;
                 type="text";
             value={recipientAddress}
-        onChange={(e) => setRecipientAddress(e.target.value)}
-        placeholder="0x...";
+        onChange={[&](e) { return setRecipientAddress(e.target.value)}
+        placeholder="0x..."; };
         className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
         />;
         </div>;
 
-        {nft.tokenType == "ERC1155" && (;
+        {nft.tokenType == "ERC1155" && [&](;
         <div className="space-y-2">;
         <label className="text-xs text-muted-foreground">Amount</label>;
         <input;
         type="number";
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        min="1";
+        onChange={(e) { return setAmount(e.target.value)}
+        min="1"; };
         max={nft.balance || "1"}
         className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />;
@@ -204,7 +206,7 @@ void NFTDetailModalContent(auto userId) {
 
         <div className="flex gap-2">;
         <Button;
-        onClick={() => {
+        onClick={[&]() {
             setShowSendForm(false);
             setRecipientAddress("");
             setAmount("1");
@@ -277,8 +279,8 @@ void NFTDetailModalContent(auto userId) {
         )}
         </Button>;
         <Button;
-        onClick={() => window.open(getExplorerUrl(nft.chain, nft.contractAddress, nft.tokenId), "_blank")}
-        variant="ghost";
+        onClick={[&]() { return window.open(getExplorerUrl(nft.chain, nft.contractAddress, nft.tokenId), "_blank")}
+        variant="ghost"; };
         size="sm";
         className="shrink-0";
         title="View on explorer";
@@ -289,11 +291,11 @@ void NFTDetailModalContent(auto userId) {
         </div>;
 
         {/* Attributes */}
-        {nft.attributes && nft.attributes.size() > 0 && (;
+        {nft.attributes && nft.attributes.size() > 0 && [&](;
         <div className="space-y-3">;
         <h3 className="text-sm font-semibold uppercase text-muted-foreground">Attributes</h3>;
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {nft.attributes.std::map((attr, index) => (;
+        {nft.attributes.std::map((attr, index) { return (; };
         <div key={index} className="bg-muted rounded-lg p-2 text-center">;
         <div className="text-xs text-muted-foreground uppercase mb-1">{attr.trait_type}</div>;
         <div className="text-sm font-medium truncate">{attr.value}</div>;

@@ -4,68 +4,68 @@ any relationshipTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any relationshipTestSourceEntityId = as<std::shared_ptr<UUID>>(uuidv4());
 any relationshipTestTargetEntityId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> relationshipTestAgent = object{
-    object::pair{std::string("id"), relationshipTestAgentId}, 
-    object::pair{std::string("name"), std::string("Relationship Test Agent")}, 
-    object::pair{std::string("bio"), std::string("Test agent for relationship integration tests")}, 
-    object::pair{std::string("settings"), object{
-        object::pair{std::string("profile"), object{
-            object::pair{std::string("short_description"), std::string("Test agent for relationship integration tests")}
+    object::pair{std:("id"), relationshipTestAgentId}, 
+    object::pair{std:("name"), std:("Relationship Test Agent")}, 
+    object::pair{std:("bio"), std:("Test agent for relationship integration tests")}, 
+    object::pair{std:("settings"), object{
+        object::pair{std:("profile"), object{
+            object::pair{std:("short_description"), std:("Test agent for relationship integration tests")}
         }}
     }}, 
-    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}
+    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}
 };
 std::shared_ptr<Entity> relationshipTestSourceEntity = object{
-    object::pair{std::string("id"), relationshipTestSourceEntityId}, 
-    object::pair{std::string("names"), array<string>{ std::string("Source Entity") }}, 
-    object::pair{std::string("agentId"), relationshipTestAgentId}, 
-    object::pair{std::string("components"), array<any>()}, 
-    object::pair{std::string("metadata"), object{
-        object::pair{std::string("type"), std::string("user")}
+    object::pair{std:("id"), relationshipTestSourceEntityId}, 
+    object::pair{std:("names"), array<string>{ std:("Source Entity") }}, 
+    object::pair{std:("agentId"), relationshipTestAgentId}, 
+    object::pair{std:("components"), array<any>()}, 
+    object::pair{std:("metadata"), object{
+        object::pair{std:("type"), std:("user")}
     }}
 };
 std::shared_ptr<Entity> relationshipTestTargetEntity = object{
-    object::pair{std::string("id"), relationshipTestTargetEntityId}, 
-    object::pair{std::string("names"), array<string>{ std::string("Target Entity") }}, 
-    object::pair{std::string("agentId"), relationshipTestAgentId}, 
-    object::pair{std::string("components"), array<any>()}, 
-    object::pair{std::string("metadata"), object{
-        object::pair{std::string("type"), std::string("user")}
+    object::pair{std:("id"), relationshipTestTargetEntityId}, 
+    object::pair{std:("names"), array<string>{ std:("Target Entity") }}, 
+    object::pair{std:("agentId"), relationshipTestAgentId}, 
+    object::pair{std:("components"), array<any>()}, 
+    object::pair{std:("metadata"), object{
+        object::pair{std:("type"), std:("user")}
     }}
 };
 array<std::shared_ptr<Relationship>> relationshipTestRelationships = array<std::shared_ptr<Relationship>>{ object{
-    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-    object::pair{std::string("sourceEntityId"), relationshipTestSourceEntityId}, 
-    object::pair{std::string("targetEntityId"), relationshipTestTargetEntityId}, 
-    object::pair{std::string("agentId"), relationshipTestAgentId}, 
-    object::pair{std::string("tags"), array<string>{ std::string("friend") }}, 
-    object::pair{std::string("metadata"), object{
-        object::pair{std::string("type"), std::string("social")}, 
-        object::pair{std::string("strength"), std::string("high")}
+    object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+    object::pair{std:("sourceEntityId"), relationshipTestSourceEntityId}, 
+    object::pair{std:("targetEntityId"), relationshipTestTargetEntityId}, 
+    object::pair{std:("agentId"), relationshipTestAgentId}, 
+    object::pair{std:("tags"), array<string>{ std:("friend") }}, 
+    object::pair{std:("metadata"), object{
+        object::pair{std:("type"), std:("social")}, 
+        object::pair{std:("strength"), std:("high")}
     }}, 
-    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
+    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
 }, object{
-    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-    object::pair{std::string("sourceEntityId"), relationshipTestTargetEntityId}, 
-    object::pair{std::string("targetEntityId"), relationshipTestSourceEntityId}, 
-    object::pair{std::string("agentId"), relationshipTestAgentId}, 
-    object::pair{std::string("tags"), array<string>{ std::string("colleague") }}, 
-    object::pair{std::string("metadata"), object{
-        object::pair{std::string("type"), std::string("professional")}, 
-        object::pair{std::string("strength"), std::string("medium")}
+    object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+    object::pair{std:("sourceEntityId"), relationshipTestTargetEntityId}, 
+    object::pair{std:("targetEntityId"), relationshipTestSourceEntityId}, 
+    object::pair{std:("agentId"), relationshipTestAgentId}, 
+    object::pair{std:("tags"), array<string>{ std:("colleague") }}, 
+    object::pair{std:("metadata"), object{
+        object::pair{std:("type"), std:("professional")}, 
+        object::pair{std:("strength"), std:("medium")}
     }}, 
-    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
+    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
 } };
 std::function<any(any, any, array<string>, std::shared_ptr<Record<string, any>>)> createTestRelationship = [=](auto sourceId, auto targetId, auto tags = array<string>(), auto metadata = object{}) mutable
 {
     return object{
-        object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-        object::pair{std::string("sourceEntityId"), sourceId}, 
-        object::pair{std::string("targetEntityId"), targetId}, 
-        object::pair{std::string("agentId"), relationshipTestAgentId}, 
-        object::pair{std::string("tags"), std::string("tags")}, 
-        object::pair{std::string("metadata"), std::string("metadata")}, 
-        object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
+        object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+        object::pair{std:("sourceEntityId"), sourceId}, 
+        object::pair{std:("targetEntityId"), targetId}, 
+        object::pair{std:("agentId"), relationshipTestAgentId}, 
+        object::pair{std:("tags"), std:("tags")}, 
+        object::pair{std:("metadata"), std:("metadata")}, 
+        object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
     };
 };
 

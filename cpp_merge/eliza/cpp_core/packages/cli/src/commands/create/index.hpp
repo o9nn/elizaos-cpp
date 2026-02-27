@@ -16,11 +16,11 @@ namespace elizaos {
 
 
 
-      // Set non-interactive mode if environment variable is std::set or if -y/--yes flag is present in process.argv
+      // Set non-interactive mode if environment variable is std::set or if -y/--yes flag is present in std::vector<std::string>()
 
       // Validate and parse options
 
-        await displayBanner();
+        displayBanner();
 
       // If no name provided, prompt for type first then name
 
@@ -31,9 +31,9 @@ namespace elizaos {
       // Validate project name for non-agent types
 
       // Handle different project types
-          await createPlugin(projectName!, targetDir, isNonInteractive);
+          createPlugin(projectName!, targetDir, isNonInteractive);
 
-          await createAgent(projectName!, targetDir, isNonInteractive);
+          createAgent(projectName!, targetDir, isNonInteractive);
 
           // TEE projects need database and AI model selection
 

@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -13,6 +14,6 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, { params: Promise<{ offerId: std::string }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ offerId: std: }> } { params });
 
 } // namespace elizaos

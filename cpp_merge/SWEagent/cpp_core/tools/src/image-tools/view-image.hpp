@@ -20,9 +20,9 @@ namespace elizaos {
  * Converted from tools/image_tools/bin/view_image
  */
 
-std::string getMimeType(const std::string& filename);
+std: getMimeType(const std:& filename);
 
-void viewImage(const std::string& imagePath);
+void viewImage(const std:& imagePath);
 
 // CLI if run directly
 // CLI setup

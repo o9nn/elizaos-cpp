@@ -23,7 +23,7 @@ namespace elizaos {
 // ***********************************************
 
 // Example custom command
-// Cypress.Commands.add('login', (email, password) => { ... })
+// Cypress.Commands.add[&]('login', (email, password) { ... })
 
 // Custom command to check if element is in dark mode
 

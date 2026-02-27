@@ -13,7 +13,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
 
         // GET /entities/:entityId - Get entity by ID
         // SECURITY: Users can only get their own entity unless they're admin
-        router.get("/:entityId", requireAuth, std::async (req: AuthenticatedRequest, res) => {
+        router.get[&]("/:entityId", requireAuth, std::async (req: AuthenticatedRequest, res) {
             const auto entityId = validateUuid(req.params.entityId);
             if (!entityId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid entity ID format");
@@ -32,7 +32,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
             try {
                 const auto entities = db.getEntitiesByIds([entityId]);
 
-                if (!entities || entities.length == 0) {
+                if (!entities || entities.size() == 0) {
                     return sendError(res, 404, "NOT_FOUND", "Entity not found");
                 }
 
@@ -54,7 +54,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
 
                 // POST /entities - Create a new entity
                 // SECURITY: Users can only create entities for themselves unless they're admin
-                router.post("/", requireAuth, std::async (req: AuthenticatedRequest, res) => {
+                router.post[&]("/", requireAuth, std::async (req: AuthenticatedRequest, res) {
                     const auto { id, agentId, names, metadata } = req.body;
 
                     if (!id) {
@@ -117,7 +117,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
 
                             // PATCH /entities/:entityId - Update an entity
                             // SECURITY: Users can only update their own entity unless they're admin
-                            router.patch("/:entityId", requireAuth, std::async (req: AuthenticatedRequest, res) => {
+                            router.patch[&]("/:entityId", requireAuth, std::async (req: AuthenticatedRequest, res) {
                                 const auto entityId = validateUuid(req.params.entityId);
                                 if (!entityId) {
                                     return sendError(res, 400, "INVALID_ID", "Invalid entity ID format");
@@ -137,7 +137,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
                                     // First, check if entity exists
                                     const auto existing = db.getEntitiesByIds([entityId]);
 
-                                    if (!existing || existing.length == 0) {
+                                    if (!existing || existing.size() == 0) {
                                         return sendError(res, 404, "NOT_FOUND", "Entity not found");
                                     }
 
@@ -174,7 +174,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
                                         // DELETE /entities/:entityId - Delete an entity
                                         // TODO: Uncomment when deleteEntity is added to DatabaseAdapter interface
                                         /*
-                                        router.delete("/:entityId", std::async (req, res) => {
+                                        router.delete[&]("/:entityId", std::async (req, res) {
                                             const auto entityId = validateUuid(req.params.entityId);
                                             if (!entityId) {
                                                 return sendError(res, 400, "INVALID_ID", "Invalid entity ID format");
@@ -186,7 +186,7 @@ express::Router entitiesRouter(AgentServer serverInstance) {
 
                                             try {
                                                 db.deleteEntity(entityId);
-                                                sendSuccess(res, { success: true });
+                                                sendSuccess(res, Config{success = true});
                                                 } catch (error) {
                                                     logger.error(
                                                     "[ENTITY DELETE] Error deleting entity:",

@@ -1,4 +1,5 @@
 #include "messages.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

@@ -1,4 +1,7 @@
 #include "pluginManagerService.hpp"
+#include <future>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +14,7 @@ void resetRegistryCache() {
 
 }
 
-std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryIndex() {
+std::future<std::unordered_map<std:, RegistryEntry>> getLocalRegistryIndex() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -23,10 +26,10 @@ std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryInde
         try {
             const auto response = fetch(REGISTRY_URL);
             if (!response.ok) {
-                throw std::runtime_error(`Registry fetch failed: ${response.statusText}`);
+                throw std::runtime_error("Registry fetch failed: " + std::to_string(response.statusText) + "");
             }
 
-            const auto data = (response.json())<std::string, RegistryEntry>;
+            const auto data = (response.json())<std:, RegistryEntry>;
 
             // Cache the result
             registryCache = {
@@ -54,12 +57,12 @@ std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryInde
     }
 }
 
-std::future<void> installPlugin(const std::string& pluginName, const std::string& targetDir, std::optional<std::string> version) {
+std::future<void> installPlugin(const std:& pluginName, const std:& targetDir, std::optional<std:> version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         logger.info(
-        "Installing " + pluginName + std::to_string(version ? `@${version}` : "") + " to " + targetDir
+        "Installing " + pluginName + std::to_string(version ? "@" + std::to_string(version) + "" : "") + " to " + targetDir
         );
 
         try {
@@ -71,7 +74,7 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
             const auto entry = registry[pluginName];
 
             if (!entry) {
-                throw std::runtime_error(`Plugin ${pluginName} not found in registry`);
+                throw std::runtime_error("Plugin " + std::to_string(pluginName) + " not found in registry");
             }
 
             // Determine installation method
@@ -93,7 +96,7 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
                         "No installation method available for plugin " + pluginName
                         );
                     }
-                    } catch (error: std::any) {
+                    } catch (error: std:) {
                         std::cerr << "Failed to install plugin " + pluginName + ":" << error << std::endl;
                         throw error; // Re-throw to preserve specific error messages
                     }
@@ -104,7 +107,7 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
     }
 }
 
-std::future<void> installFromNpm(const std::string& packageName, const std::string& version, const std::string& targetDir) {
+std::future<void> installFromNpm(const std:& packageName, const std:& version, const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -121,7 +124,7 @@ std::future<void> installFromNpm(const std::string& packageName, const std::stri
                 stdio: "pipe",
                 },
                 );
-                } catch (error: std::any) {
+                } catch (error: std:) {
                     std::cerr << "Failed to install npm package:" << error << std::endl;
                     throw;
                 }
@@ -132,7 +135,7 @@ std::future<void> installFromNpm(const std::string& packageName, const std::stri
     }
 }
 
-std::future<void> installFromGit(const std::string& gitRepo, const std::string& version, const std::string& targetDir) {
+std::future<void> installFromGit(const std:& gitRepo, const std:& version, const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -171,7 +174,7 @@ std::future<void> installFromGit(const std::string& gitRepo, const std::string& 
                                 // Clean up temp directory
                                 fs.remove(tempDir);
                             }
-                            } catch (error: std::any) {
+                            } catch (error: std:) {
                                 std::cerr << "Failed to install git repository:" << error << std::endl;
                                 throw;
                             }

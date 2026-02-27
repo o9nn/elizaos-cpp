@@ -1,17 +1,18 @@
 #include "action-message-utils.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-ToolPart convertActionMessageToToolPart(const std::any& message) {
+ToolPart convertActionMessageToToolPart(const std:& message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // rawMessage contains the action details from the server
     const auto rawMessage = message.rawMessage || message.metadata || {};
 
     // Map actionStatus to ToolPart state
-    const auto mapActionStatusToState = (status: std::string): ToolPart["state"] => {;
+    const auto mapActionStatusToState = (status: std:): ToolPart["state"] => {;
         switch (status) {
             // case "pending":
             // case "executing":
@@ -34,11 +35,11 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
     const auto actionId = rawMessage.actionId;
 
     // Create input data from available action properties
-    const std::unordered_map<std::string, std::any> inputData = {};
+    const std::unordered_map<std:, std:> inputData = {};
     inputData.input = rawMessage.actionResult.input || {}
 
     // Create output data based on status and content
-    const std::unordered_map<std::string, std::any> outputData = {};
+    const std::unordered_map<std:, std:> outputData = {};
     if (rawMessage.text || message.content) {
         outputData.text = rawMessage.text || message.content;
     }
@@ -60,7 +61,7 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
 
 }
 
-bool isActionMessage(const std::any& message) {
+bool isActionMessage(const std:& message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -1,4 +1,5 @@
 #include "run-batch.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

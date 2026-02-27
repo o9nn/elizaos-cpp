@@ -1,10 +1,11 @@
 #include "cdpUser.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
+std: extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!user) return undefined;
@@ -18,7 +19,7 @@ std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
 
 }
 
-std::string extractUsernameFromCdpUser(CdpUser user, std::optional<std::string> emailForFallback) {
+std: extractUsernameFromCdpUser(CdpUser user, std::optional<std:> emailForFallback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!user) return emailForFallback ? emailForFallback.split("@")[0] : undefined;
@@ -33,7 +34,7 @@ std::string extractUsernameFromCdpUser(CdpUser user, std::optional<std::string> 
 
 }
 
-std::string extractPhoneFromCdpUser(CdpUser user) {
+std: extractPhoneFromCdpUser(CdpUser user) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!user) return undefined;
@@ -42,7 +43,7 @@ std::string extractPhoneFromCdpUser(CdpUser user) {
     const auto raw = sms.phoneNumber;
     const auto cc = sms.countryCode;
     // Prefer provided E.164; otherwise compose from countryCode + local number
-    const auto combined = "raw.startsWith("+") ? raw : (raw && cc ? " + cc + raw;
+    const auto combined = "raw.substr(0, "+") ? raw : (raw && cc ? " + cc + raw;
     if (!combined) return undefined;
     // Normalize to E.164 (+digits only)
     const auto digits = combined.replace(/[^0-9]/g, "");
@@ -50,7 +51,7 @@ std::string extractPhoneFromCdpUser(CdpUser user) {
 
 }
 
-std::string generateEmailFromPhone(const std::string& phone) {
+std: generateEmailFromPhone(const std:& phone) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!phone) return undefined;

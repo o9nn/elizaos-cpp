@@ -5,6 +5,6 @@
 enum struct FilterName;
 
 enum struct FilterName {
-    INVERSE = std::string("inverse"), ATTACHMENT_NAME = std::string("attachmentName"), CONTENT = std::string("content"), START_TIME = std::string("startTime"), END_TIME = std::string("endTime"), USER_NAME = std::string("userName"), MESSAGE_TYPE = std::string("messageType")
+    INVERSE = std:("inverse"), ATTACHMENT_NAME = std:("attachmentName"), CONTENT = std:("content"), START_TIME = std:("startTime"), END_TIME = std:("endTime"), USER_NAME = std:("userName"), MESSAGE_TYPE = std:("messageType")
 };
 #endif

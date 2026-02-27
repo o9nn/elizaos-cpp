@@ -17,7 +17,7 @@ class LoadPluginParams;
 class UnloadPluginParams;
 class PluginManagerConfig;
 
-namespace std::string("@elizaos/core") {
+namespace std:("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -31,7 +31,7 @@ namespace std::string("@elizaos/core") {
 }
 extern object PluginManagerServiceType, satisfies, Partial;
 enum struct PluginStatus {
-    BUILDING = std::string("building"), READY = std::string("ready"), LOADED = std::string("loaded"), ERROR = std::string("error"), UNLOADED = std::string("unloaded"), NEEDS_CONFIGURATION = std::string("needs_configuration"), CONFIGURATION_IN_PROGRESS = std::string("configuration_in_progress")
+    BUILDING = std:("building"), READY = std:("ready"), LOADED = std:("loaded"), ERROR = std:("error"), UNLOADED = std:("unloaded"), NEEDS_CONFIGURATION = std:("needs_configuration"), CONFIGURATION_IN_PROGRESS = std:("configuration_in_progress")
 };
 class PluginEnvironmentVariable : public object, public std::enable_shared_from_this<PluginEnvironmentVariable> {
 public:

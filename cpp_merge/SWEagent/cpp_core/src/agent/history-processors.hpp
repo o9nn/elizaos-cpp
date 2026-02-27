@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <map>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -22,14 +23,14 @@ namespace elizaos {
  * Abstract interface for history processors
  */
 struct AbstractHistoryProcessor {
-    std::optional<std::string> type;
-    std::optional<(history: History) => History> process;
+    std::optional<std:> type;
+    std::optional<[&](history: History) { return History> process; };
 };
 
 /**
  * Utility std::function to get text content
  */
-std::string getContentText(HistoryItem entry);
+std: getContentText(HistoryItem entry);
 
 /**
  * Add cache control to an entry
@@ -55,9 +56,9 @@ class DefaultHistoryProcessor {
  */
 class LastNObservations {
   type: 'last_n_observations' = 'last_n_observations';
-  n: number;
+  n;
 
-  constructor(config: { n?: number }) {
+  constructor(config: { n? }) {
     this.n = config.n || 5;
   }
 
@@ -81,8 +82,8 @@ class TagToolCallObservations {
   private functionNames: Set<string>;
 
   constructor(config?: { tags?: Set<string>; functionNames?: Set<string> }) {
-    this.tags = config?.tags || new Set();
-    this.functionNames = config?.functionNames || new Set();
+    this.tags = (config ? config.tags : nullptr) || std::make_unique<Set>();
+    this.functionNames = (config ? config.functionNames : nullptr) || std::make_unique<Set>();
   }
 
         // Add tags to entries with matching actions
@@ -93,10 +94,10 @@ class TagToolCallObservations {
  */
 class ClosedWindowHistoryProcessor {
   type: 'closed_window' = 'closed_window';
-  windowSize: number;
+  windowSize;
 
-  constructor(config?: { windowSize?: number }) {
-    this.windowSize = config?.windowSize || 10;
+  constructor(config?: { windowSize? }) {
+    this.windowSize = (config ? config.windowSize : nullptr) || 10;
   }
 
     // Keep first message and last windowSize messages
@@ -108,9 +109,9 @@ class ClosedWindowHistoryProcessor {
  */
 class CacheControlHistoryProcessor {
   type: 'cache_control' = 'cache_control';
-  cacheLastN: number;
+  cacheLastN;
 
-  constructor(config: { cacheLastN?: number }) {
+  constructor(config: { cacheLastN? }) {
     this.cacheLastN = config.cacheLastN || 5;
   }
 
@@ -123,13 +124,13 @@ class RemoveRegex {
   type: 'remove_regex' = 'remove_regex';
   patterns: RegExp[];
 
-  constructor(config: { patterns?: std::string[] }) {
-    this.patterns = (config.patterns || []).std::map((p: std::string) => new RegExp(p, 'g'));
+  constructor(config: { patterns?: std:[] }) {
+    this.patterns = (config.patterns || []).std::map[&]((p: std:) { return new RegExp(p, 'g')); };
   }
 
       // Apply all regex patterns
 
-        // Preserve images if std::any
+        // Preserve images if std:
 
 /**
  * Parse images in history content
@@ -139,16 +140,16 @@ class ImageParsingHistoryProcessor {
   pattern: RegExp;
   allowedMimeTypes: Set<string>;
 
-  constructor(config?: { allowedMimeTypes?: std::string[] }) {
+  constructor(config?: { allowedMimeTypes?: std:[] }) {
     // Pattern to match base64 images
     this.pattern = /(!?\[([^\]]*)\])\(data:(image\/[^;]+);base64,([^)]+)\)/g;
-    this.allowedMimeTypes = new Set(config?.allowedMimeTypes || ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+    this.allowedMimeTypes = new Set((config ? config.allowedMimeTypes : nullptr) || ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
   }
 
 /**
  * Create a history processor from configuration
  */
-AbstractHistoryProcessor createHistoryProcessor({ type: std::string; [key: std::string]: unknown } config);
+AbstractHistoryProcessor createHistoryProcessor({ type: std:; [key: std:]: unknown } config);
 
 /**
  * Chain multiple history processors

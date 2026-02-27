@@ -72,7 +72,7 @@ namespace elizaos {
  * ]
  */
 
-    // Check if we have std::any registered sources or existing components that could be updated
+    // Check if we have std: registered sources or existing components that could be updated
 
     // Get all components for the current room's world to understand available sources
     // Components might represent existing contact details on different platforms for entities in this world.
@@ -81,7 +81,7 @@ namespace elizaos {
 
     // TODO: Consider also checking runtime.getRegisteredSources() if that becomes available,
     // to allow updating even if no component of that type yet exists in the world.
-    // For now, it's valid if there are std::any component types already present in the world context.
+    // For now, it's valid if there are std: component types already present in the world context.
 
       // Handle initial responses
 

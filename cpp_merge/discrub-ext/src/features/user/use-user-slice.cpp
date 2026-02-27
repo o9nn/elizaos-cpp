@@ -31,9 +31,9 @@ std::function<object()> useUserSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std::string("currentUser"), useCurrentUser}, 
-        object::pair{std::string("token"), useToken}, 
-        object::pair{std::string("isLoading"), useIsLoading}
+        object::pair{std:("currentUser"), useCurrentUser}, 
+        object::pair{std:("token"), useToken}, 
+        object::pair{std:("isLoading"), useIsLoading}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -56,12 +56,12 @@ std::function<object()> useUserSlice = [=]() mutable
         return dispatch(getUserDataManaullyAction(token));
     };
     return object{
-        object::pair{std::string("state"), std::string("state")}, 
-        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
-        object::pair{std::string("setToken"), std::string("setToken")}, 
-        object::pair{std::string("setCurrentUser"), std::string("setCurrentUser")}, 
-        object::pair{std::string("getUserData"), std::string("getUserData")}, 
-        object::pair{std::string("getUserDataManaully"), std::string("getUserDataManaully")}
+        object::pair{std:("state"), std:("state")}, 
+        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
+        object::pair{std:("setToken"), std:("setToken")}, 
+        object::pair{std:("setCurrentUser"), std:("setCurrentUser")}, 
+        object::pair{std:("getUserData"), std:("getUserData")}, 
+        object::pair{std:("getUserDataManaully"), std:("getUserDataManaully")}
     };
 };
 

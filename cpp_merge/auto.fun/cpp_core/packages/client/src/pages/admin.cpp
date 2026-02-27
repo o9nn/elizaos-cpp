@@ -16,30 +16,30 @@ void Admin() {
     const auto isAdmin = walletAddress && (std::find(adminAddresses.begin(), adminAddresses.end(), walletAddress) != adminAddresses.end());
 
     // Fetch moderator status if not an admin
-    const auto moderatorQuery = useQuery({;
+    const auto moderatorQuery = useQuery[&]({;
         queryKey: ["user-moderator-status", walletAddress],
-        queryFn: std::async () => {
-            if (!walletAddress || isAdmin) return { isModerator: false };
+        queryFn: std::async () {
+            if (!walletAddress || isAdmin) return Config{isModerator = false};
             try {
                 const auto response = fetcher(;
                 "/api/admin/users/" + walletAddress
                 "GET",
                 );
-                return { isModerator: response.user?.isModerator === 1 }
+                return { isModerator: response.(user ? user.isModerator : nullptr) == 1 }
                 } catch (error) {
                     std::cerr << "Error checking moderator status:" << error << std::endl;
-                    return { isModerator: false }
+                    return Config{isModerator = false}
                 }
                 },
                 enabled: !!walletAddress && !isAdmin,
                 });
 
                 // Helper std::function to determine if a link is active
-                const auto isActive = [&](path: std::string) {;
+                const auto isActive = [&](path: std:) {;
                     if (path == "/admin" && currentPath == "/admin") {
                         return true;
                     }
-                    if (path != "/admin" && currentPath.startsWith(path)) {
+                    if (path != "/admin" && currentPath.substr(0, path)) {
                         return true;
                     }
                     return false;

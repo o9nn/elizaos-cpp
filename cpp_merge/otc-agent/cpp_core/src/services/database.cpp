@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string normalizeTokenId(const std::string& tokenId) {
+std: normalizeTokenId(const std:& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto match = tokenId.match(/^token-([a-z]+)-(.+)$/);

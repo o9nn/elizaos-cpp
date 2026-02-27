@@ -2,11 +2,11 @@
 
 void Main(void)
 {
-    describe(std::string("SQL Plugin Test Exclusion"), [=]() mutable
+    describe(std:("SQL Plugin Test Exclusion"), [=]() mutable
     {
-        it(std::string("should not run SQL plugin tests when testing another plugin"), [=]() mutable
+        it(std:("should not run SQL plugin tests when testing another plugin"), [=]() mutable
         {
-            process->env->ELIZA_TESTING_PLUGIN = std::string("true");
+            process->env->ELIZA_TESTING_PLUGIN = std:("true");
             {
                 utils::finally __finally2423_2496([&]() mutable
                 {
@@ -15,28 +15,28 @@ void Main(void)
                 try
                 {
                     auto sqlPlugin = object{
-                        object::pair{std::string("name"), std::string("@elizaos/plugin-sql")}, 
-                        object::pair{std::string("description"), std::string("SQL Plugin")}, 
-                        object::pair{std::string("tests"), array<object>{ object{
-                            object::pair{std::string("name"), std::string("sql_test_suite")}, 
-                            object::pair{std::string("tests"), array<object>{ object{
-                                object::pair{std::string("name"), std::string("sql_test")}, 
-                                object::pair{std::string("fn"), [=]() mutable
+                        object::pair{std:("name"), std:("@elizaos/plugin-sql")}, 
+                        object::pair{std:("description"), std:("SQL Plugin")}, 
+                        object::pair{std:("tests"), array<object>{ object{
+                            object::pair{std:("name"), std:("sql_test_suite")}, 
+                            object::pair{std:("tests"), array<object>{ object{
+                                object::pair{std:("name"), std:("sql_test")}, 
+                                object::pair{std:("fn"), [=]() mutable
                                 {
-                                    throw any(std::make_shared<Error>(std::string("SQL test should not run!")));
+                                    throw any(std::make_shared<Error>(std:("SQL test should not run!")));
                                 }
                                 }
                             } }}
                         } }}
                     };
                     auto myPlugin = object{
-                        object::pair{std::string("name"), std::string("my-plugin")}, 
-                        object::pair{std::string("description"), std::string("My Plugin")}, 
-                        object::pair{std::string("tests"), array<object>{ object{
-                            object::pair{std::string("name"), std::string("my_test_suite")}, 
-                            object::pair{std::string("tests"), array<object>{ object{
-                                object::pair{std::string("name"), std::string("my_test")}, 
-                                object::pair{std::string("fn"), [=]() mutable
+                        object::pair{std:("name"), std:("my-plugin")}, 
+                        object::pair{std:("description"), std:("My Plugin")}, 
+                        object::pair{std:("tests"), array<object>{ object{
+                            object::pair{std:("name"), std:("my_test_suite")}, 
+                            object::pair{std:("tests"), array<object>{ object{
+                                object::pair{std:("name"), std:("my_test")}, 
+                                object::pair{std:("fn"), [=]() mutable
                                 {
                                 }
                                 }
@@ -44,26 +44,26 @@ void Main(void)
                         } }}
                     };
                     auto mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-                        object::pair{std::string("agentId"), std::string("test-agent")}, 
-                        object::pair{std::string("character"), as<std::shared_ptr<Character>>(object{
-                            object::pair{std::string("name"), std::string("test-character")}, 
-                            object::pair{std::string("bio"), std::string("test bio")}
+                        object::pair{std:("agentId"), std:("test-agent")}, 
+                        object::pair{std:("character"), as<std::shared_ptr<Character>>(object{
+                            object::pair{std:("name"), std:("test-character")}, 
+                            object::pair{std:("bio"), std:("test bio")}
                         })}, 
-                        object::pair{std::string("plugins"), array<any>{ sqlPlugin, myPlugin }}
+                        object::pair{std:("plugins"), array<any>{ sqlPlugin, myPlugin }}
                     }));
                     auto projectAgent = as<std::shared_ptr<ProjectAgent>>(object{
-                        object::pair{std::string("character"), as<std::shared_ptr<Character>>(object{
-                            object::pair{std::string("name"), std::string("test-character")}, 
-                            object::pair{std::string("bio"), std::string("test bio")}
+                        object::pair{std:("character"), as<std::shared_ptr<Character>>(object{
+                            object::pair{std:("name"), std:("test-character")}, 
+                            object::pair{std:("bio"), std:("test bio")}
                         })}, 
-                        object::pair{std::string("plugins"), array<any>{ myPlugin }}
+                        object::pair{std:("plugins"), array<any>{ myPlugin }}
                     });
                     auto testRunner = std::make_shared<TestRunner>(mockRuntime, projectAgent);
                     auto results = std::async([=]() { testRunner->runTests(object{
-                        object::pair{std::string("filter"), undefined}, 
-                        object::pair{std::string("skipPlugins"), false}, 
-                        object::pair{std::string("skipProjectTests"), false}, 
-                        object::pair{std::string("skipE2eTests"), true}
+                        object::pair{std:("filter"), undefined}, 
+                        object::pair{std:("skipPlugins"), false}, 
+                        object::pair{std:("skipProjectTests"), false}, 
+                        object::pair{std:("skipE2eTests"), true}
                     }); });
                     expect(results->total)->toBe(1);
                     expect(results->passed)->toBe(1);
@@ -76,51 +76,51 @@ void Main(void)
             }
         }
         );
-        it(std::string("should not run plugin tests when not in direct plugin test mode"), [=]() mutable
+        it(std:("should not run plugin tests when not in direct plugin test mode"), [=]() mutable
         {
             process->env.Delete("ELIZA_TESTING_PLUGIN");
             shared projectTestRan = false;
             auto sqlPlugin = object{
-                object::pair{std::string("name"), std::string("@elizaos/plugin-sql")}, 
-                object::pair{std::string("description"), std::string("SQL Plugin")}, 
-                object::pair{std::string("tests"), array<object>{ object{
-                    object::pair{std::string("name"), std::string("sql_test_suite")}, 
-                    object::pair{std::string("tests"), array<object>{ object{
-                        object::pair{std::string("name"), std::string("sql_test")}, 
-                        object::pair{std::string("fn"), [=]() mutable
+                object::pair{std:("name"), std:("@elizaos/plugin-sql")}, 
+                object::pair{std:("description"), std:("SQL Plugin")}, 
+                object::pair{std:("tests"), array<object>{ object{
+                    object::pair{std:("name"), std:("sql_test_suite")}, 
+                    object::pair{std:("tests"), array<object>{ object{
+                        object::pair{std:("name"), std:("sql_test")}, 
+                        object::pair{std:("fn"), [=]() mutable
                         {
-                            throw any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
+                            throw any(std::make_shared<Error>(std:("Plugin tests should not run!")));
                         }
                         }
                     } }}
                 } }}
             };
             auto myPlugin = object{
-                object::pair{std::string("name"), std::string("my-plugin")}, 
-                object::pair{std::string("description"), std::string("My Plugin")}, 
-                object::pair{std::string("tests"), array<object>{ object{
-                    object::pair{std::string("name"), std::string("my_test_suite")}, 
-                    object::pair{std::string("tests"), array<object>{ object{
-                        object::pair{std::string("name"), std::string("my_test")}, 
-                        object::pair{std::string("fn"), [=]() mutable
+                object::pair{std:("name"), std:("my-plugin")}, 
+                object::pair{std:("description"), std:("My Plugin")}, 
+                object::pair{std:("tests"), array<object>{ object{
+                    object::pair{std:("name"), std:("my_test_suite")}, 
+                    object::pair{std:("tests"), array<object>{ object{
+                        object::pair{std:("name"), std:("my_test")}, 
+                        object::pair{std:("fn"), [=]() mutable
                         {
-                            throw any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
+                            throw any(std::make_shared<Error>(std:("Plugin tests should not run!")));
                         }
                         }
                     } }}
                 } }}
             };
             auto projectAgent = as<std::shared_ptr<ProjectAgent>>(object{
-                object::pair{std::string("character"), as<std::shared_ptr<Character>>(object{
-                    object::pair{std::string("name"), std::string("test-character")}, 
-                    object::pair{std::string("bio"), std::string("test bio")}
+                object::pair{std:("character"), as<std::shared_ptr<Character>>(object{
+                    object::pair{std:("name"), std:("test-character")}, 
+                    object::pair{std:("bio"), std:("test bio")}
                 })}, 
-                object::pair{std::string("plugins"), array<any>{ sqlPlugin, myPlugin }}, 
-                object::pair{std::string("tests"), array<object>{ object{
-                    object::pair{std::string("name"), std::string("project_test_suite")}, 
-                    object::pair{std::string("tests"), array<object>{ object{
-                        object::pair{std::string("name"), std::string("project_test")}, 
-                        object::pair{std::string("fn"), [=]() mutable
+                object::pair{std:("plugins"), array<any>{ sqlPlugin, myPlugin }}, 
+                object::pair{std:("tests"), array<object>{ object{
+                    object::pair{std:("name"), std:("project_test_suite")}, 
+                    object::pair{std:("tests"), array<object>{ object{
+                        object::pair{std:("name"), std:("project_test")}, 
+                        object::pair{std:("fn"), [=]() mutable
                         {
                             projectTestRan = true;
                         }
@@ -129,19 +129,19 @@ void Main(void)
                 } }}
             });
             auto mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-                object::pair{std::string("agentId"), std::string("test-agent")}, 
-                object::pair{std::string("character"), as<std::shared_ptr<Character>>(object{
-                    object::pair{std::string("name"), std::string("test-character")}, 
-                    object::pair{std::string("bio"), std::string("test bio")}
+                object::pair{std:("agentId"), std:("test-agent")}, 
+                object::pair{std:("character"), as<std::shared_ptr<Character>>(object{
+                    object::pair{std:("name"), std:("test-character")}, 
+                    object::pair{std:("bio"), std:("test bio")}
                 })}, 
-                object::pair{std::string("plugins"), array<any>()}
+                object::pair{std:("plugins"), array<any>()}
             }));
             auto testRunner = std::make_shared<TestRunner>(mockRuntime, projectAgent);
             auto results = std::async([=]() { testRunner->runTests(object{
-                object::pair{std::string("filter"), undefined}, 
-                object::pair{std::string("skipPlugins"), false}, 
-                object::pair{std::string("skipProjectTests"), false}, 
-                object::pair{std::string("skipE2eTests"), true}
+                object::pair{std:("filter"), undefined}, 
+                object::pair{std:("skipPlugins"), false}, 
+                object::pair{std:("skipProjectTests"), false}, 
+                object::pair{std:("skipE2eTests"), true}
             }); });
             expect(results->total)->toBe(1);
             expect(results->passed)->toBe(1);

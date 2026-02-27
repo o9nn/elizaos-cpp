@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -25,7 +26,7 @@ void SecurityStatusItem(auto value, auto status, auto std::variant, auto classNa
 void SecurityStatus() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <DashboardCard;
     title="SECURITY STATUS";
     intent="success";
@@ -33,7 +34,7 @@ void SecurityStatus() {
     >;
     <div className="flex flex-col">;
     <div className="max-md:order-1 grid grid-cols:3 md:grid-cols-1 gap-4 py-2 px-1 md:max-w-max">
-    {statuses.std::map((item, index) => (;
+    {statuses.std::map((item, index) { return (; };
     <SecurityStatusItem;
     key={index}
     title={item.title}

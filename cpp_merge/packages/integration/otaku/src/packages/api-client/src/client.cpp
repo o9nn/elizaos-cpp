@@ -22,7 +22,7 @@ void ElizaClient::setAuthToken(string token)
 {
     for (auto& service : this->services)
     {
-        if (AND((service), (type_of(service["setAuthToken"]) == std::string("function")))) {
+        if (AND((service), (type_of(service["setAuthToken"]) == std:("function")))) {
             service["setAuthToken"](token);
         }
     }
@@ -32,7 +32,7 @@ void ElizaClient::clearAuthToken()
 {
     for (auto& service : this->services)
     {
-        if (AND((service), (type_of(service["clearAuthToken"]) == std::string("function")))) {
+        if (AND((service), (type_of(service["clearAuthToken"]) == std:("function")))) {
             service["clearAuthToken"]();
         }
     }

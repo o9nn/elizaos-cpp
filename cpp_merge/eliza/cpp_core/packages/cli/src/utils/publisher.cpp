@@ -1,10 +1,11 @@
 #include "publisher.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<bool> testPublishToNpm(const std::string& cwd) {
+std::future<bool> testPublishToNpm(const std:& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -33,7 +34,7 @@ std::future<bool> testPublishToNpm(const std::string& cwd) {
 
 }
 
-std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string& username) {
+std::future<bool> testPublishToGitHub(PackageJson packageJson, const std:& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -85,7 +86,7 @@ std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string
                 std::cout << "[✓] Fork created" << std::endl;
 
                 // Wait a moment for GitHub to complete the fork
-                new Promise((resolve) => setTimeout(resolve, 3000));
+                new Promise[&]((resolve) { return setTimeout(resolve, 3000)); };
             }
 
             // Test branch creation
@@ -125,7 +126,7 @@ std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string
             username,
             registryRepo,
             testPath,
-            /* JSON.stringify */ std::string({ test: true, timestamp: new Date().toISOString() }),
+            /* JSON.stringify */ std:({ test: true, timestamp: std::make_unique<Date>().toISOString() }),
             "Test file update",
             branchName // Use the test branch instead of main;
             );
@@ -143,7 +144,7 @@ std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string
 
 }
 
-std::future<bool> publishToNpm(const std::string& cwd) {
+std::future<bool> publishToNpm(const std:& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -166,9 +167,9 @@ std::future<bool> publishToNpm(const std::string& cwd) {
 
 }
 
-std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry, auto isTest) {
+std::future<bool> publishToGitHub(const std:& cwd, PackageJson packageJson, const std:& username, auto skipRegistry, auto isTest) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success: boolean; prUrl?: std::string
+    success; prUrl?: std:
 }
 
 } // namespace elizaos

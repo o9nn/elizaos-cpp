@@ -1,10 +1,12 @@
 #include "media-utils.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getFileExtension(const std::string& url) {
+std: getFileExtension(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -18,7 +20,7 @@ std::string getFileExtension(const std::string& url) {
 
 }
 
-bool isImageUrl(const std::string& url) {
+bool isImageUrl(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto extension = getFileExtension(url);
@@ -26,7 +28,7 @@ bool isImageUrl(const std::string& url) {
 
 }
 
-bool isVideoFileUrl(const std::string& url) {
+bool isVideoFileUrl(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto extension = getFileExtension(url);
@@ -34,12 +36,12 @@ bool isVideoFileUrl(const std::string& url) {
 
 }
 
-void getVideoPlatformInfo(const std::string& url) {
+void getVideoPlatformInfo(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platform: std::string; id: std::string; embedUrl: std::string
+    platform: std:; id: std:; embedUrl: std:
 }
 
-std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
+std::vector<MediaInfo> parseMediaFromText(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return [];
@@ -49,7 +51,7 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
     const auto urls = text.match(urlRegex) || [];
 
     return urls;
-    .std::map((url) => {
+    .std::map[&]((url) {
         // Remove trailing punctuation that might be captured
         const auto cleanUrl = url.replace(/[.,!?;)]*$/, "");
 
@@ -84,16 +86,16 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
                         isEmbed: false,
                         };
                         });
-                        .filter((media) => media.type != "unknown");
+                        .filter[&]((media) { return media.type != "unknown"); };
 
 }
 
-std::string removeMediaUrlsFromText(const std::string& text, const std::vector<MediaInfo>& mediaInfos) {
+std: removeMediaUrlsFromText(const std:& text, const std::vector<MediaInfo>& mediaInfos) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto cleanText = text;
 
-    mediaInfos.forEach((media) => {
+    mediaInfos.forEach[&]((media) {
         // For embedded videos, remove the original URL, not the embed URL
         if (media.isEmbed) {
             // Find the original URL that matches this embed
@@ -104,12 +106,12 @@ std::string removeMediaUrlsFromText(const std::string& text, const std::vector<M
                 const auto cleanUrl = url.replace(/[.,!?;)]*$/, "");
                 const auto platformInfo = getVideoPlatformInfo(cleanUrl);
                 if (platformInfo && platformInfo.embedUrl == media.url) {
-                    cleanText = cleanText.replace(url, "").trim();
+                    cleanText = cleanText.replace(url, "");
                     break;
                 }
             }
             } else {
-                cleanText = cleanText.replace(media.url, "").trim();
+                cleanText = cleanText.replace(media.url, "");
             }
             });
 

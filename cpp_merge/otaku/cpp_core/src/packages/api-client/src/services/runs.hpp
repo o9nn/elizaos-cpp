@@ -20,9 +20,9 @@ class RunsService extends BaseApiClient {
   std::async listRuns(
     agentId: UUID,
     params?: ListRunsParams
-  ): Promise<{ runs: RunSummary[]; total: number; hasMore: boolean }> {
-    return this.get<{ runs: RunSummary[]; total: number; hasMore: boolean }>(
-      `/api/agents/${agentId}/runs`,
+  ): Promise<{ runs: RunSummary[]; total; hasMore }> {
+    return this.get<{ runs: RunSummary[]; total; hasMore }>(
+      "/api/agents/" + std::to_string(agentId) + "/runs",
       { params }
     );
   }

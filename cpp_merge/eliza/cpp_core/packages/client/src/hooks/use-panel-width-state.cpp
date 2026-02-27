@@ -13,7 +13,7 @@ void usePanelWidthState() {
     const auto [floatingThreshold, setFloatingThreshold] = useState<number>(DEFAULT_FLOATING_THRESHOLD);
 
     // Load panel sizes from localStorage on mount
-    useEffect(() => {
+    useEffect[&](() {
         try {
             const auto storedMainSize = localStorage.getItem(MAIN_PANEL_WIDTH_KEY);
             const auto storedSidebarSize = localStorage.getItem(SIDEBAR_PANEL_WIDTH_KEY);
@@ -49,7 +49,7 @@ void usePanelWidthState() {
             }, []);
 
             // Resize listener to detect when to switch to floating mode
-            useEffect(() => {
+            useEffect[&](() {
                 const auto checkFloatingMode = [&]() {;
                     const auto shouldFloat = window.innerWidth < floatingThreshold;
                     setIsFloatingMode(shouldFloat);
@@ -67,7 +67,7 @@ void usePanelWidthState() {
                         }, [floatingThreshold]);
 
                         // Update main panel size and persist to localStorage
-                        const auto setMainPanelSizePersistent = useCallback((size: number) => {;
+                        const auto setMainPanelSizePersistent = useCallback[&]((size) {;
                             // Validate size is within reasonable bounds
                             const auto validatedSize = Math.max(20, Math.min(80, size));
                             setMainPanelSize(validatedSize);
@@ -80,7 +80,7 @@ void usePanelWidthState() {
                                 }, []);
 
                                 // Update sidebar panel size and persist to localStorage
-                                const auto setSidebarPanelSizePersistent = useCallback((size: number) => {;
+                                const auto setSidebarPanelSizePersistent = useCallback[&]((size) {;
                                     // Validate size is within reasonable bounds
                                     const auto validatedSize = Math.max(20, Math.min(80, size));
                                     setSidebarPanelSize(validatedSize);
@@ -93,7 +93,7 @@ void usePanelWidthState() {
                                         }, []);
 
                                         // Update floating threshold and persist to localStorage
-                                        const auto setFloatingThresholdPersistent = useCallback((threshold: number) => {;
+                                        const auto setFloatingThresholdPersistent = useCallback[&]((threshold) {;
                                             const auto validatedThreshold = Math.max(320, Math.min(2560, threshold));
                                             setFloatingThreshold(validatedThreshold);
 
@@ -105,12 +105,12 @@ void usePanelWidthState() {
                                                 }, []);
 
                                                 // Manual toggle for floating mode (overrides automatic detection)
-                                                const auto toggleFloatingMode = useCallback(() => {;
-                                                    setIsFloatingMode((prev) => !prev);
+                                                const auto toggleFloatingMode = useCallback[&](() {;
+                                                    setIsFloatingMode[&]((prev) { return !prev); };
                                                     }, []);
 
                                                     // Reset to default sizes
-                                                    const auto resetPanelSizes = useCallback(() => {;
+                                                    const auto resetPanelSizes = useCallback[&](() {;
                                                         setMainPanelSize(DEFAULT_MAIN_PANEL_SIZE);
                                                         setSidebarPanelSize(DEFAULT_SIDEBAR_PANEL_SIZE);
                                                         setFloatingThreshold(DEFAULT_FLOATING_THRESHOLD);

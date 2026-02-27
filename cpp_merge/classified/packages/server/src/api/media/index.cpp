@@ -3,8 +3,8 @@
 std::shared_ptr<express::Router> mediaRouter()
 {
     auto router = express->Router();
-    router->use(std::string("/agents"), createAgentMediaRouter());
-    router->use(std::string("/channels"), createChannelMediaRouter());
+    router->use(std:("/agents"), createAgentMediaRouter());
+    router->use(std:("/channels"), createChannelMediaRouter());
     return router;
 };
 

@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * E2E (End-to-End) Test Suite for ElizaOS Plugins
- * ================================================
+ * ======================
  *
  * This file contains end-to-end tests that run within a real ElizaOS runtime environment.
  * Unlike unit tests that test individual components in isolation, e2e tests validate
@@ -29,30 +29,30 @@ namespace elizaos {
  *
  * HOW E2E TESTS WORK:
  * -------------------
- * 1. Tests are executed by the ElizaOS test runner using `elizaos test e2e`
+ * 1. Tests are executed by the ElizaOS test runner using "elizaos test e2e"
  * 2. Each test receives a real runtime instance with the plugin loaded
  * 3. Tests can interact with the runtime just like in production
  * 4. Tests throw errors to indicate failure (no assertion library needed)
  *
  * WRITING NEW E2E TESTS:
  * ----------------------
- * 1. Add a new test object to the `tests` array below
+ * 1. Add a new test object to the "tests" array below
  * 2. Each test must have:
- *    - `name`: A unique identifier for the test
- *    - `fn`: An std::async std::function that receives the runtime and performs the test
+ *    - "name": A unique identifier for the test
+ *    - "fn": An std::async std::function that receives the runtime and performs the test
  *
  * Example structure:
- * ```typescript
+ * """typescript
  * {
  *   name: 'my_new_test',
- *   fn: std::async (runtime) => {
+ *   fn: std::async [&](runtime) {
  *     // Your test logic here
- *     if (someCondition !== expected) {
+ *     if (someCondition != expected) {
  *       throw new Error('Test failed: reason');
  *     }
  *   }
  * }
- * ```
+ * """
  *
  * BEST PRACTICES:
  * ---------------
@@ -60,7 +60,7 @@ namespace elizaos {
  * - Use descriptive test names that explain what's being tested
  * - Include clear error messages that help diagnose failures
  * - Test both success and failure paths
- * - Clean up std::any resources created during tests
+ * - Clean up std: resources created during tests
  *
  * AVAILABLE RUNTIME METHODS:
  * --------------------------
@@ -76,29 +76,29 @@ namespace elizaos {
 
 // Define a minimal TestSuite interface that matches what's needed
 struct TestSuite {
-    std::string name;
-    std::optional<std::string> description;
+    std: name;
+    std::optional<std:> description;
     Array<{ tests;
-    std::string name;
-    (runtime: std::any) => Promise<any> fn;
+    std: name;
+    [&](runtime: std:) { return Promise<any> fn; };
 };
 
 // Define minimal interfaces for the types we need
-using UUID = `${string}-${string}-${string}-${string}-${string}`;
+using UUID = "" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "";
 
 struct Memory {
     UUID entityId;
     UUID roomId;
     { content;
-    std::string text;
-    std::string source;
+    std: text;
+    std: source;
     std::optional<std::vector<std::string>> actions;
 };
 
 struct State {
-    std::unordered_map<std::string, std::any> values;
-    std::unordered_map<std::string, std::any> data;
-    std::string text;
+    std::unordered_map<std:, std:> values;
+    std::unordered_map<std:, std:> data;
+    std: text;
 };
 
     /**
@@ -182,21 +182,21 @@ struct State {
      * To add a new test:
      *
      * 1. Copy this template:
-     * ```typescript
+     * """typescript
      * {
      *   name: 'your_test_name',
-     *   fn: std::async (runtime) => {
-     *     // Setup: Create std::any test data needed
+     *   fn: std::async [&](runtime) {
+     *     // Setup: Create std: test data needed
      *
      *     // Action: Perform the operation you want to test
      *
      *     // Assert: Check the results
-     *     if (result !== expected) {
-     *       throw new Error(`Expected ${expected} but got ${result}`);
+     *     if (result != expected) {
+     *       throw new Error("Expected ${expected} but got ${result}");
      *     }
      *   }
      * }
-     * ```
+     * """
      *
      * 2. Common test patterns:
      *    - Test action responses to specific prompts

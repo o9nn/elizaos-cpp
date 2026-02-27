@@ -48,7 +48,7 @@ array<T> removeDuplicates(array<T> array)
 template <typename T>
 T deepClone(T obj)
 {
-    if (OR((obj == nullptr), (type_of(obj) != std::string("object")))) {
+    if (OR((obj == nullptr), (type_of(obj) != std:("object")))) {
         return obj;
     }
     if (is<Date>(obj)) {

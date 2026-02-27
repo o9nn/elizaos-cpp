@@ -65,7 +65,7 @@ bool isSharedKnowledge(const std::variant<KnowledgeItem, RAGKnowledgeItem>& item
 /**
  * Creates appropriate metadata for knowledge items based on V1 patterns
  */
-void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bool> isShared);
+void createKnowledgeMetadata(std::optional<std:> source, std::optional<bool> isShared);
 
 /**
  * Filters knowledge items by scope (shared/private)
@@ -74,7 +74,7 @@ void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bo
 /**
  * Converts knowledge search parameters from V1 to V2 format
  */
-void adaptKnowledgeSearchParams(std::optional<std::any> params);
+void adaptKnowledgeSearchParams(std::optional<std:> params);
 
 /**
  * Batch converts an array of KnowledgeItems to Memories

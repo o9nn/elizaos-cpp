@@ -31,7 +31,7 @@ template <typename T>
 std::shared_ptr<Promise<T>> PgliteDatabaseAdapter::withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation)
 {
     if (this->manager->isShuttingDown()) {
-        logger->warn(std::string("Database is shutting down"));
+        logger->warn(std:("Database is shutting down"));
         return as<T>(as<any>(nullptr));
     }
     return operation();

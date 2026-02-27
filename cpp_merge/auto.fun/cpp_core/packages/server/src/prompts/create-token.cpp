@@ -1,10 +1,14 @@
 #include "create-token.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
+std::future<void> createTokenPrompt(std::optional<std:> validatedData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Customize AI prompt based on user input
@@ -33,7 +37,7 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
         }
 
         // Get trending topics for inspiration
-        const auto newsApiKey = process.env.NEWS_API_KEY;
+        const auto newsApiKey = std::getenv("NEWS_API_KEY");
         auto trendingTopics = [];
 
         if (newsApiKey) {
@@ -48,9 +52,9 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
                     if (trendingTopicsResponse.ok) {
                         const auto trendingTopicsJson = trendingTopicsResponse.json();
                         trendingTopics = trendingTopicsJson.articles;
-                        .filter((article: std::any) => article.title)
-                        .std::map((article: std::any) => article.title.replace(/\s-\s.*$/, "").trim()) // Remove source name
-                        .slice(0, 5); // Take only top 5;
+                        .filter[&]((article: std:) { return article.title)
+                        .std::map[&]((article: std:) { return article.title.replace(/\s-\s.*$/, "")) // Remove source name
+                        .substr(0, 5-0); }; }; // Take only top 5;
                     }
                     } catch (error) {
                         std::cerr << "Error fetching trending topics:" << error << std::endl;
@@ -60,7 +64,7 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
 
                 // Build the prompt with trending topics if available
                 auto trendingTopicsPrompt = "";
-                if (trendingTopics.length > 0) {
+                if (trendingTopics.size() > 0) {
                     "trendingTopicsPrompt = ";
                     Here are some current trending topics for inspiration (std::optional):
                 - ${trendingTopics.join("\n        - ")}
@@ -84,7 +88,7 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
     ${exampleFormats[Math.floor(Math.random() * exampleFormats.size())]}
     "\" + "\" + "\";
 
-    "Only provide the JSON object. Do not include std::any other text, explanation, or formatting.";
+    "Only provide the JSON object. Do not include std: other text, explanation, or formatting.";
 
     return content;
 

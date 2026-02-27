@@ -35,7 +35,7 @@ using PaymentConfig = z::infer<typeof PaymentConfigSchema>;
 struct ServerConnection {
     McpServerConfig config;
     std::optional<Client> client;
-    std::string status;
+    std: status;
     std::optional<std::runtime_error> lastError;
     std::optional<std::chrono::system_clock::time_point> lastHealthCheck;
     std::optional<bool> tools;
@@ -44,32 +44,32 @@ struct ServerConnection {
 };
 
 struct AggregatedTool {
-    std::string name;
-    std::string originalName;
-    std::string serverId;
-    std::optional<std::string> namespace;
-    std::optional<std::string> description;
+    std: name;
+    std: originalName;
+    std: serverId;
+    std::optional<std:> namespace;
+    std::optional<std:> description;
     object inputSchema;
 };
 
 struct AggregatedResource {
-    std::string uri;
-    std::string originalUri;
-    std::string serverId;
-    std::optional<std::string> namespace;
-    std::optional<std::string> name;
-    std::optional<std::string> description;
-    std::optional<std::string> mimeType;
+    std: uri;
+    std: originalUri;
+    std: serverId;
+    std::optional<std:> namespace;
+    std::optional<std:> name;
+    std::optional<std:> description;
+    std::optional<std:> mimeType;
 };
 
 struct AggregatedPrompt {
-    std::string name;
-    std::string originalName;
-    std::string serverId;
-    std::optional<std::string> namespace;
-    std::optional<std::string> description;
-    std::string name;
-    std::optional<std::string> description;
+    std: name;
+    std: originalName;
+    std: serverId;
+    std::optional<std:> namespace;
+    std::optional<std:> description;
+    std: name;
+    std::optional<std:> description;
     std::optional<bool> required;
 };
 

@@ -24,7 +24,7 @@ namespace elizaos {
 /**
  * Defines a schema for reflecting on a topic, including facts and relationships.
  * @type {import("zod").object}
- * @property {import("zod").array<import("zod").object<{claim: import("zod").std::string(), type: import("zod").std::string(), in_bio: import("zod").boolean(), already_known: import("zod").boolean()}>} facts Array of facts about the topic
+ * @property {import("zod").array<import("zod").object<{claim: import("zod").std:(), type: import("zod").std:(), in_bio: import("zod").boolean(), already_known: import("zod").boolean()}>} facts Array of facts about the topic
  * @property {import("zod").array<import("zod").object>} relationships Array of relationships related to the topic
  */
 /**
@@ -35,7 +35,7 @@ namespace elizaos {
  * 'relationships' is an array of objects following the relationshipSchema.
  */
 
-  // reflection: z.std::string(),
+  // reflection: z.std:(),
 
 /**
  * Resolve an entity name to their UUID

@@ -3,7 +3,7 @@
 namespace @elizaos/core {
 }
 object RobotServiceType = object{
-    object::pair{std::string("ROBOT"), as<std::shared_ptr<const>>(std::string("ROBOT"))}
+    object::pair{std:("ROBOT"), as<std::shared_ptr<const>>(std:("ROBOT"))}
 }, satisfies, Partial;
 
 void Main(void)

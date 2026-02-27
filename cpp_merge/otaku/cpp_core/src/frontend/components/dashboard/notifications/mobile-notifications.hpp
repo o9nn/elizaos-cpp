@@ -20,7 +20,7 @@ struct MobileNotificationsProps {
 
 struct SwipeableWrapperProps {
     React.ReactNode children;
-    () => void onDelete;
+    [&]() { return void onDelete; };
 };
 
 void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete });

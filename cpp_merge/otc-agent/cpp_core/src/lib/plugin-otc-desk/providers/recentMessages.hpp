@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <map>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -19,12 +20,12 @@ namespace elizaos {
 
 // Helper type for entity metadata from various sources
 struct EntitySourceMetadata {
-    std::optional<std::string> username;
-    std::optional<std::string> name;
+    std::optional<std:> username;
+    std::optional<std:> name;
 };
 
 // Helper std::function to safely get entity metadata
-std::string getEntityUsername(Entity entity);
+std: getEntityUsername(Entity entity);
 
 // Move getRecentInteractions outside the provider
 /**
@@ -105,7 +106,7 @@ std::string getEntityUsername(Entity entity);
       // Format messages using the pre-fetched entities
 
     // Format recent post interactions
-      // Combine pre-loaded entities with std::any other entities
+      // Combine pre-loaded entities with std: other entities
 
       // Add entities from interactionEntityMap that aren't already in entities
 

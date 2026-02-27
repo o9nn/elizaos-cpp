@@ -1,4 +1,5 @@
 #include "start-listeners.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,7 +20,7 @@ std::future<void> main() {
 
     const auto missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
-    if (missingVars.length > 0) {
+    if (missingVars.size() > 0) {
         std::cout << "⚠️  Missing environment variables:" << missingVars << std::endl;
         std::cout << "Some listeners may not start properly.\n" << std::endl;
     }
@@ -49,14 +50,14 @@ std::future<void> main() {
             std::cout << "\n💡 Use Ctrl+C to stop all listeners" << std::endl;
 
             // Keep the process running
-            process.on("SIGINT", () => {
+            process.on[&]("SIGINT", () {
                 std::cout << "\n👋 Shutting down listeners..." << std::endl;
-                process.exit(0);
+                std::exit(0);
                 });
 
-                process.on("SIGTERM", () => {
+                process.on[&]("SIGTERM", () {
                     std::cout << "\n👋 Shutting down listeners..." << std::endl;
-                    process.exit(0);
+                    std::exit(0);
                     });
 
 }

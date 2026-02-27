@@ -1,4 +1,5 @@
 #include "solana-wallet-provider.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,13 +16,13 @@ WalletAdapterNetwork getSolanaNetwork() {
 
 }
 
-std::string getSolanaEndpoint() {
+std: getSolanaEndpoint() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto configUrl = SUPPORTED_CHAINS.solana.rpcUrl;
 
     // If it's a relative path (proxy), construct full URL
-    if (configUrl.startsWith("/")) {
+    if (configUrl.substr(0, "/")) {
         if (typeof window != "undefined") {
             return window.location.origin + configUrl;
         }
@@ -38,16 +39,16 @@ void SolanaWalletProvider() {
 
     useRenderTracker("SolanaWalletProvider");
 
-    const auto network = useMemo(() => getSolanaNetwork(), []);
-    const auto endpoint = useMemo(() => getSolanaEndpoint(), []);
+    const auto network = useMemo[&](() { return getSolanaNetwork(), []); };
+    const auto endpoint = useMemo[&](() { return getSolanaEndpoint(), []); };
     const auto hasLoggedInit = useRef(false);
 
     // Log only once on mount, not on every render
-    useEffect(() => {
+    useEffect[&](() {
         if (hasLoggedInit.current) return;
         hasLoggedInit.current = true;
 
-        if (process.env.NODE_ENV == "development") {
+        if (std::getenv("NODE_ENV") == "development") {
             console.log("[SolanaConnectionProvider] Provider initialized with:", {
                 network,
                 endpoint,

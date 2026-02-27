@@ -27,7 +27,7 @@ namespace elizaos {
  */
 struct StartOptions {
     std::optional<double> port;
-    std::optional<std::string> configDir;
+    std::optional<std:> configDir;
 };
 
 /**
@@ -52,7 +52,7 @@ struct AgentStartOptions {
 struct PluginValidation {
     bool isValid;
     std::optional<Plugin> plugin;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 /**
@@ -60,8 +60,8 @@ struct PluginValidation {
  */
 struct PluginContext {
     bool isLocalDevelopment;
-    std::string name;
-    std::optional<std::string> path;
+    std: name;
+    std::optional<std:> path;
 };
 
 /**
@@ -69,7 +69,7 @@ struct PluginContext {
  */
 struct ServerConfig {
     double port;
-    std::optional<std::string> configDir;
+    std::optional<std:> configDir;
     std::optional<bool> skipBuild;
 };
 

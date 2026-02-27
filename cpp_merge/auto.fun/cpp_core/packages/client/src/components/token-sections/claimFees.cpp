@@ -8,8 +8,8 @@ void ClaimFees() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto { mutate: claimFees, isPending } = useMutation({;
-            mutationFn: std::async () => {
+        const auto { mutate: claimFees, isPending } = useMutation[&]({;
+            mutationFn: std::async () {
                 if (!tokenMint) {
                     throw std::runtime_error("No token found");
                 }
@@ -19,7 +19,7 @@ void ClaimFees() {
                     headers: {
                         "Content-Type": "application/json",
                         },
-                        body: /* JSON.stringify */ std::string({ tokenMint }),
+                        body: /* JSON.stringify */ std:({ tokenMint }),
                         });
 
                         if (!response.ok) {
@@ -28,10 +28,10 @@ void ClaimFees() {
 
                         return response.json();
                         },
-                        onSuccess: () => {
+                        onSuccess: [&]() {
                             toast.success("Fees claimed successfully");
                             },
-                            onError: (error) => {
+                            onError: [&](error) {
                                 std::cerr << "Error claiming fees:" << error << std::endl;
                                 toast.error(;
                                 true /* instanceof check */ ? error.message : "Failed to claim fees",

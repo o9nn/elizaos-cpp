@@ -22,7 +22,7 @@ class PluginUserInteractionService extends Service {
   override capabilityDescription =
     "Manages user interaction dialogs for plugin configuration";
 
-  private activeDialogs: Map<std::string, ConfigurationDialog> = new Map();
+  private activeDialogs: Map<std:, ConfigurationDialog> = std::make_unique<Map>();
   private configService: PluginConfigurationService | null = null;
 
   constructor(runtime: IAgentRuntime) {

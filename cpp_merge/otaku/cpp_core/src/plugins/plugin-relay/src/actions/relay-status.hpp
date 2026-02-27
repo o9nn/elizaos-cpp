@@ -19,9 +19,9 @@ namespace elizaos {
 
 
 struct StatusParams {
-    std::optional<std::string> requestId;
-    std::optional<std::string> txHash;
-    std::optional<std::string> user;
+    std::optional<std:> requestId;
+    std::optional<std:> txHash;
+    std::optional<std:> user;
 };
 
   // Parameter schema for tool calling
@@ -55,13 +55,13 @@ struct StatusParams {
       // Try to capture input params even in failure
         // If we can't get params, just use empty object
 
-std::string formatStatusResponse(const std::vector<RelayStatus>& statuses);
+std: formatStatusResponse(const std::vector<RelayStatus>& statuses);
 
-std::string formatSingleStatus(RelayStatus status);
+std: formatSingleStatus(RelayStatus status);
 
-std::string getStatusIndicator(const std::string& status);
+std: getStatusIndicator(const std:& status);
 
-std::string getChainName(double chainId);
+std: getChainName(double chainId);
 
 
 } // namespace elizaos

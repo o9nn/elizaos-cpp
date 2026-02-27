@@ -1,4 +1,6 @@
 #include "contracts.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,14 +9,14 @@ namespace elizaos {
 NetworkType getCurrentNetwork() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto explicitNetwork = process.env.NEXT_PUBLIC_NETWORK || process.env.NETWORK;
+    const auto explicitNetwork = std::getenv("NEXT_PUBLIC_NETWORK") || std::getenv("NETWORK");
 
     if (explicitNetwork == "mainnet") return "mainnet";
     if (explicitNetwork == "testnet" || explicitNetwork == "sepolia") return "testnet";
     if (explicitNetwork == "local" || explicitNetwork == "localnet" || explicitNetwork == "anvil") return "local";
 
     // Legacy flag support
-    if (process.env.NEXT_PUBLIC_USE_MAINNET == "true") return "mainnet";
+    if (std::getenv("NEXT_PUBLIC_USE_MAINNET") == "true") return "mainnet";
 
     // Default to mainnet for production
     return "mainnet";
@@ -38,17 +40,17 @@ EvmDeployment getEvmConfig(std::optional<NetworkType> network) {
     // Allow env overrides
     return {
         ...config,
-        rpc: process.env.NEXT_PUBLIC_RPC_URL || config.rpc,
+        rpc: std::getenv("NEXT_PUBLIC_RPC_URL") || config.rpc,
         contracts: {
             ...config.contracts,
-            otc: process.env.NEXT_PUBLIC_OTC_ADDRESS ||
-            (net == "mainnet" ? process.env.NEXT_PUBLIC_OTC_ADDRESS_MAINNET : nullptr) ||
+            otc: std::getenv("NEXT_PUBLIC_OTC_ADDRESS") ||
+            (net == "mainnet" ? std::getenv("NEXT_PUBLIC_OTC_ADDRESS_MAINNET") : nullptr) ||
             config.contracts.otc,
-            usdc: process.env.NEXT_PUBLIC_USDC_ADDRESS || config.contracts.usdc,
+            usdc: std::getenv("NEXT_PUBLIC_USDC_ADDRESS") || config.contracts.usdc,
             },
             accounts: {
                 ...config.accounts,
-                approver: process.env.APPROVER_ADDRESS || config.accounts.approver,
+                approver: std::getenv("APPROVER_ADDRESS") || config.accounts.approver,
                 },
                 };
 
@@ -63,19 +65,19 @@ SolanaDeployment getSolanaConfig(std::optional<NetworkType> network) {
     // Allow env overrides
     return {
         ...config,
-        rpc: process.env.NEXT_PUBLIC_SOLANA_RPC ||
-        (net == "mainnet" ? process.env.NEXT_PUBLIC_SOLANA_RPC_MAINNET : nullptr) ||
+        rpc: std::getenv("NEXT_PUBLIC_SOLANA_RPC") ||
+        (net == "mainnet" ? std::getenv("NEXT_PUBLIC_SOLANA_RPC_MAINNET") : nullptr) ||
         config.rpc,
-        programId: process.env.NEXT_PUBLIC_SOLANA_PROGRAM_ID || config.programId,
-        desk: process.env.NEXT_PUBLIC_SOLANA_DESK ||
-        (net == "mainnet" ? process.env.NEXT_PUBLIC_SOLANA_DESK_MAINNET : nullptr) ||
+        programId: std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID") || config.programId,
+        desk: std::getenv("NEXT_PUBLIC_SOLANA_DESK") ||
+        (net == "mainnet" ? std::getenv("NEXT_PUBLIC_SOLANA_DESK_MAINNET") : nullptr) ||
         config.desk,
-        usdcMint: process.env.NEXT_PUBLIC_SOLANA_USDC_MINT || config.usdcMint,
+        usdcMint: std::getenv("NEXT_PUBLIC_SOLANA_USDC_MINT") || config.usdcMint,
         };
 
 }
 
-std::string getOtcAddress(std::optional<NetworkType> network) {
+std: getOtcAddress(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getEvmConfig(network);
@@ -83,7 +85,7 @@ std::string getOtcAddress(std::optional<NetworkType> network) {
 
 }
 
-std::string getSolanaDesk(std::optional<NetworkType> network) {
+std: getSolanaDesk(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getSolanaConfig(network);
@@ -91,7 +93,7 @@ std::string getSolanaDesk(std::optional<NetworkType> network) {
 
 }
 
-std::string getSolanaProgramId(std::optional<NetworkType> network) {
+std: getSolanaProgramId(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getSolanaConfig(network);

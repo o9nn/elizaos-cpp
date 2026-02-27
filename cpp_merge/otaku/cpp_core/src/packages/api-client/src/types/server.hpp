@@ -18,10 +18,10 @@ struct ServerHealth {
     'healthy' | 'degraded' | 'unhealthy' status;
     double uptime;
     Date timestamp;
-    std::optional<std::string> version;
+    std::optional<std:> version;
     std::optional<Record<> checks;
     'pass' | 'fail' status;
-    std::optional<std::string> message;
+    std::optional<std:> message;
 };
 
 struct ServerStatus {
@@ -34,25 +34,25 @@ struct ServerStatus {
     double total;
     double percentage;
     double uptime;
-    std::string version;
+    std: version;
 };
 
 struct ServerDebugInfo {
     { runtime;
     Array<{ agents;
     UUID id;
-    std::string name;
-    std::string status;
+    std: name;
+    std: status;
     double connections;
-    std::any memory;
-    std::unordered_map<std::string, std::string> environment;
+    std: memory;
+    std::unordered_map<std:, std:> environment;
 };
 
 struct LogSubmitParams {
     'debug' | 'info' | 'warn' | 'error' level;
-    std::string message;
-    std::optional<std::string> source;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std: message;
+    std::optional<std:> source;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 

@@ -15,24 +15,24 @@ namespace elizaos {
 
 
 struct TransactionReceipt {
-    std::string status;
-    std::string blockNumber;
-    std::string blockHash;
-    std::string transactionHash;
-    std::string transactionIndex;
-    std::string from;
-    std::string to;
-    std::string | null contractAddress;
-    std::string gasUsed;
-    std::string cumulativeGasUsed;
-    std::string effectiveGasPrice;
+    std: status;
+    std: blockNumber;
+    std: blockHash;
+    std: transactionHash;
+    std: transactionIndex;
+    std: from;
+    std: to;
+    std: | null contractAddress;
+    std: gasUsed;
+    std: cumulativeGasUsed;
+    std: effectiveGasPrice;
     double confirmations;
     bool success;
 };
 
 struct TransactionStatus {
-    std::string isError;
-    std::string errDescription;
+    std: isError;
+    std: errDescription;
 };
 
 // Supported chains with their chain IDs for Etherscan V2 API
@@ -42,9 +42,9 @@ using SupportedChain = keyof typeof CHAIN_IDS;
 class EtherscanService extends Service {
   static serviceType = "ETHERSCAN" as const;
 
-  private apiKey: std::string = "";
-  private baseUrl: std::string = "https://api.etherscan.io/v2/api";
-  private defaultChainId: number = 1; // Ethereum mainnet
+  private apiKey: std: = "";
+  private baseUrl: std: = "https://api.etherscan.io/v2/api";
+  private defaultChainId = 1; // Ethereum mainnet
 
   private readonly defaultFetchOptions: EtherscanFetchOptions = {
     skipStatusCheck: true,
@@ -102,7 +102,7 @@ class EtherscanService extends Service {
 
 struct EtherscanFetchOptions {
     std::optional<bool> expectResult;
-    std::optional<std::string> missingResultMessage;
+    std::optional<std:> missingResultMessage;
     std::optional<bool> skipStatusCheck;
 };
 

@@ -3,16 +3,16 @@
 std::shared_ptr<Promise<array<string>>> findProjectFiles()
 {
     shared files = array<string>();
-    shared extensions = array<string>{ std::string(".py"), std::string(".ts"), std::string(".tsx") };
+    shared extensions = array<string>{ std:(".py"), std:(".ts"), std:(".tsx") };
     auto walk = [=](auto dir) mutable
     {
         auto entries = std::async([=]() { fs::promises::readdir(dir, object{
-            object::pair{std::string("withFileTypes"), true}
+            object::pair{std:("withFileTypes"), true}
         }); });
         for (auto& entry : entries)
         {
             auto fullPath = path->join(dir, entry->name);
-            if (OR((OR((OR((entry->name->startsWith(std::string("."))), (entry->name == std::string("node_modules")))), (entry->name == std::string("dist")))), (entry->name == std::string("build")))) {
+            if (OR((OR((OR((entry->name->startsWith(std:("."))), (entry->name == std:("node_modules")))), (entry->name == std:("dist")))), (entry->name == std:("build")))) {
                 continue;
             }
             if (entry->isDirectory()) {
@@ -49,7 +49,7 @@ std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns)
         }
         catch (const any& error)
         {
-            console->warn(std::string("Warning: Could not resolve pattern: ") + pattern + string_empty);
+            console->warn(std:("Warning: Could not resolve pattern: ") + pattern + string_empty);
         }
     }
     return Array->from(std::make_shared<Set>(resolved));
@@ -59,9 +59,9 @@ std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns)
 std::shared_ptr<Promise<array<string>>> findFilesInDir(string dir)
 {
     auto files = array<string>();
-    auto extensions = array<string>{ std::string(".py"), std::string(".ts"), std::string(".tsx") };
+    auto extensions = array<string>{ std:(".py"), std:(".ts"), std:(".tsx") };
     auto entries = std::async([=]() { fs::promises::readdir(dir, object{
-        object::pair{std::string("withFileTypes"), true}
+        object::pair{std:("withFileTypes"), true}
     }); });
     for (auto& entry : entries)
     {
@@ -81,8 +81,8 @@ any program = std::make_shared<Command>();
 
 void Main(void)
 {
-    program->name(std::string("swe-rules"))->description(std::string("SWE-agent rules validation and management CLI"))->version(std::string("1.0.0"));
-    program->command(std::string("validate"))->description(std::string("Validate files against SWE-agent coding rules"))->argument(std::string("[files...]"), std::string("Files to validate (supports wildcards)"))->option(std::string("-l, --language <lang>"), std::string("Language to validate (python or typescript)"), std::string("auto"))->option(std::string("-s, --strict"), std::string("Exit with error code if validation fails"), false)->option(std::string("-q, --quiet"), std::string("Only show errors, no warnings"), false)->action([=](auto files, auto options) mutable
+    program->name(std:("swe-rules"))->description(std:("SWE-agent rules validation and management CLI"))->version(std:("1.0.0"));
+    program->command(std:("validate"))->description(std:("Validate files against SWE-agent coding rules"))->argument(std:("[files...]"), std:("Files to validate (supports wildcards)"))->option(std:("-l, --language <lang>"), std:("Language to validate (python or typescript)"), std:("auto"))->option(std:("-s, --strict"), std:("Exit with error code if validation fails"), false)->option(std:("-q, --quiet"), std:("Only show errors, no warnings"), false)->action([=](auto files, auto options) mutable
     {
         try
         {
@@ -91,16 +91,16 @@ void Main(void)
             }
             auto resolvedFiles = std::async([=]() { resolveFiles(files); });
             if (resolvedFiles->get_length() == 0) {
-                console->log(std::string("No files found to validate"));
+                console->log(std:("No files found to validate"));
                 process->exit(0);
             }
-            console->log(std::string("Validating ") + resolvedFiles->get_length() + std::string(" file(s)..."));
+            console->log(std:("Validating ") + resolvedFiles->get_length() + std:(" file(s)..."));
             auto results = std::async([=]() { validateFiles(resolvedFiles); });
             auto filteredResults = (options["quiet"]) ? results->map([=](auto r) mutable
             {
                 return (utils::assign(object{
                     , 
-                    object::pair{std::string("warnings"), array<any>()}
+                    object::pair{std:("warnings"), array<any>()}
                 }, r));
             }
             ) : results;
@@ -110,7 +110,7 @@ void Main(void)
             {
                 return r->violations->some([=](auto v) mutable
                 {
-                    return v["severity"] == std::string("error");
+                    return v["severity"] == std:("error");
                 }
                 );
             }
@@ -121,35 +121,35 @@ void Main(void)
         }
         catch (const any& error)
         {
-            console->error(std::string("Validation error:"), error);
+            console->error(std:("Validation error:"), error);
             process->exit(1);
         }
     }
     );
-    program->command(std::string("list-rules"))->description(std::string("List all available validation rules"))->option(std::string("-l, --language <lang>"), std::string("Filter by language (python or typescript)"))->action([=](auto options) mutable
+    program->command(std:("list-rules"))->description(std:("List all available validation rules"))->option(std:("-l, --language <lang>"), std:("Filter by language (python or typescript)"))->action([=](auto options) mutable
     {
-        auto languages = (options["language"]) ? array<string>{ options["language"] } : array<string>{ std::string("python"), std::string("typescript") };
+        auto languages = (options["language"]) ? array<string>{ options["language"] } : array<string>{ std:("python"), std:("typescript") };
         auto& __array2586_3224 = languages;
         for (auto __indx2586_3224 = 0_N; __indx2586_3224 < __array2586_3224->get_length(); __indx2586_3224++)
         {
             auto& lang = const_(__array2586_3224)[__indx2586_3224];
             {
-                console->log(std::string("\
-") + lang->toUpperCase() + std::string(" Rules:"));
-                console->log(std::string("=")->repeat(50));
-                auto rules = getApplicableRules(std::string("dummy.") + ((lang == std::string("python")) ? std::string("py") : std::string("ts")), as<any>(lang));
+                console->log(std:("\
+") + lang->toUpperCase() + std:(" Rules:"));
+                console->log(std:("=")->repeat(50));
+                auto rules = getApplicableRules(std:("dummy.") + ((lang == std:("python")) ? std:("py") : std:("ts")), as<any>(lang));
                 auto& __array2831_3218 = rules;
                 for (auto __indx2831_3218 = 0_N; __indx2831_3218 < __array2831_3218->get_length(); __indx2831_3218++)
                 {
                     auto& rule = const_(__array2831_3218)[__indx2831_3218];
                     {
-                        console->log(std::string("\
-") + rule->id + std::string(":"));
-                        console->log(std::string("  Category: ") + rule->category + string_empty);
-                        console->log(std::string("  Rule: ") + rule->rule + string_empty);
-                        console->log(std::string("  Enforcement: ") + rule->enforcement + string_empty);
+                        console->log(std:("\
+") + rule->id + std:(":"));
+                        console->log(std:("  Category: ") + rule->category + string_empty);
+                        console->log(std:("  Rule: ") + rule->rule + string_empty);
+                        console->log(std:("  Enforcement: ") + rule->enforcement + string_empty);
                         if (AND((rule->alternatives), (rule->alternatives->get_length() > 0))) {
-                            console->log(std::string("  Alternatives: ") + rule->alternatives->join(std::string(", ")) + string_empty);
+                            console->log(std:("  Alternatives: ") + rule->alternatives->join(std:(", ")) + string_empty);
                         }
                     }
                 }
@@ -157,57 +157,57 @@ void Main(void)
         }
     }
     );
-    program->command(std::string("export"))->description(std::string("Export rules to Cursor IDE format"))->option(std::string("-o, --output <dir>"), std::string("Output directory"), std::string(".cursor/rules"))->action([=](auto options) mutable
+    program->command(std:("export"))->description(std:("Export rules to Cursor IDE format"))->option(std:("-o, --output <dir>"), std:("Output directory"), std:(".cursor/rules"))->action([=](auto options) mutable
     {
         try
         {
-            auto outputDir = path->resolve(OR((options["output"]), (std::string(".cursor/rules"))));
+            auto outputDir = path->resolve(OR((options["output"]), (std:(".cursor/rules"))));
             std::async([=]() { fs::promises::mkdir(outputDir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             }); });
             auto rules = exportAllRulesToCursor();
             for (auto& [filename, content] : Object->entries(rules))
             {
                 auto filePath = path->join(outputDir, filename);
-                std::async([=]() { fs::promises::writeFile(filePath, content, std::string("utf-8")); });
-                console->log(std::string("Exported: ") + filePath + string_empty);
+                std::async([=]() { fs::promises::writeFile(filePath, content, std:("utf-8")); });
+                console->log(std:("Exported: ") + filePath + string_empty);
             }
-            console->log(std::string("\
-Successfully exported ") + Object->keys(rules)->get_length() + std::string(" rule file(s) to ") + outputDir + string_empty);
+            console->log(std:("\
+Successfully exported ") + Object->keys(rules)->get_length() + std:(" rule file(s) to ") + outputDir + string_empty);
         }
         catch (const any& error)
         {
-            console->error(std::string("Export error:"), error);
+            console->error(std:("Export error:"), error);
             process->exit(1);
         }
     }
     );
-    program->command(std::string("info"))->description(std::string("Show information about SWE-agent project structure"))->action([=]() mutable
+    program->command(std:("info"))->description(std:("Show information about SWE-agent project structure"))->action([=]() mutable
     {
-        console->log(std::string("\
+        console->log(std:("\
 SWE-agent Project Structure"));
-        console->log(std::string("=")->repeat(50));
-        console->log(std::string("\
+        console->log(std:("=")->repeat(50));
+        console->log(std:("\
 Main Entry Points:"));
-        console->log(std::string("  - sweagent/run/run_single.py: Single agent instances"));
-        console->log(std::string("  - sweagent/run/run_batch.py: Batch processing/benchmarking"));
-        console->log(std::string("\
+        console->log(std:("  - sweagent/run/run_single.py: Single agent instances"));
+        console->log(std:("  - sweagent/run/run_batch.py: Batch processing/benchmarking"));
+        console->log(std:("\
 Core Components:"));
-        console->log(std::string("  - Agent Class: sweagent/agent/agents.py"));
-        console->log(std::string("  - Environment: sweagent/environment/swe_env.py"));
-        console->log(std::string("  - Execution: Sandboxed Docker containers via SWE-ReX"));
-        console->log(std::string("\
+        console->log(std:("  - Agent Class: sweagent/agent/agents.py"));
+        console->log(std:("  - Environment: sweagent/environment/swe_env.py"));
+        console->log(std:("  - Execution: Sandboxed Docker containers via SWE-ReX"));
+        console->log(std:("\
 Tools:"));
-        console->log(std::string("  - Location: tools/ directory"));
-        console->log(std::string("  - Organization: Bundled and deployed to containers"));
-        console->log(std::string("\
+        console->log(std:("  - Location: tools/ directory"));
+        console->log(std:("  - Organization: Bundled and deployed to containers"));
+        console->log(std:("\
 Inspectors:"));
-        console->log(std::string("  - CLI: inspector_cli.py"));
-        console->log(std::string("  - Web: sweagent/inspector/server.py"));
-        console->log(std::string("\
+        console->log(std:("  - CLI: inspector_cli.py"));
+        console->log(std:("  - Web: sweagent/inspector/server.py"));
+        console->log(std:("\
 TypeScript Conversion:"));
-        console->log(std::string("  - Source: src/ directory"));
-        console->log(std::string("  - Status: In progress"));
+        console->log(std:("  - Source: src/ directory"));
+        console->log(std:("  - Status: In progress"));
     }
     );
     program->parse(process->argv);

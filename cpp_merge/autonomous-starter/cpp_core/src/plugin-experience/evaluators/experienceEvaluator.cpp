@@ -1,24 +1,25 @@
 #include "experienceEvaluator.hpp"
+#include <vector>
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string extractContext(const std::vector<Memory>& messages) {
+std: extractContext(const std::vector<Memory>& messages) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!messages || messages.length == 0) return "Unknown context";
+    if (!messages || messages.size() == 0) return "Unknown context";
 
     // Get last 3 messages for context
     const auto recentMessages = messages.slice(-3);
     return recentMessages;
-    .std::map((m) => m.content.text);
-    .filter(Boolean);
-    .join(" -> ");
+    .std::map[&]((m) { return m.content.text); }.filter(Boolean).join(" -> ");
 
 }
 
-std::string extractAction(const std::string& text) {
+std: extractAction(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Common action patterns
@@ -32,27 +33,27 @@ std::string extractAction(const std::string& text) {
 
     for (const auto& pattern : actionPatterns)
         const auto match = text.match(pattern);
-        if (match) return match[1].trim();
+        if (match) return match[1];
     }
 
     return "performed action";
 
 }
 
-std::string extractError(const std::string& text) {
+std: extractError(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto errorMatch = text.match(/error:?\s*(.+?)(?:\.|$)/i);
-    if (errorMatch) return errorMatch[1].trim();
+    if (errorMatch) return errorMatch[1];
 
     const auto failedMatch = text.match(/failed:?\s*(.+?)(?:\.|$)/i);
-    if (failedMatch) return failedMatch[1].trim();
+    if (failedMatch) return failedMatch[1];
 
     return "encountered error";
 
 }
 
-std::string extractDiscovery(const std::string& text) {
+std: extractDiscovery(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -64,21 +65,21 @@ std::string extractDiscovery(const std::string& text) {
 
     for (const auto& pattern : patterns)
         const auto match = text.match(pattern);
-        if (match) return match[1].trim();
+        if (match) return match[1];
     }
 
     return "made a discovery";
 
 }
 
-std::string extractLearning(const std::string& text, const std::string& type) {
+std: extractLearning(const std:& text, const std:& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try to extract explicit learnings
     const auto learningMatch = text.match(;
     /(?:learned|learning|lesson):?\s*(.+?)(?:\.|$)/i,
     );
-    if (learningMatch) return learningMatch[1].trim();
+    if (learningMatch) return learningMatch[1];
 
     // Generate learning based on type
     switch (type) {
@@ -97,7 +98,7 @@ std::string extractLearning(const std::string& text, const std::string& type) {
 
 }
 
-std::string extractHypothesis(const std::string& text) {
+std: extractHypothesis(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -108,14 +109,14 @@ std::string extractHypothesis(const std::string& text) {
 
     for (const auto& pattern : patterns)
         const auto match = text.match(pattern);
-        if (match) return match[1].trim();
+        if (match) return match[1];
     }
 
     return "formed hypothesis";
 
 }
 
-std::string detectDomain(const std::string& text) {
+std: detectDomain(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto domains = {;
@@ -129,7 +130,7 @@ std::string detectDomain(const std::string& text) {
         const auto lowerText = text.toLowerCase();
 
         for (const int [domain, keywords] of Object.entries(domains)) {
-            if (keywords.some((keyword) => lowerText.includes(keyword))) {
+            if (keywords.some((keyword) => lowerText.count(keyword) > 0)) {
                 return domain;
             }
         }

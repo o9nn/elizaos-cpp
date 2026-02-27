@@ -10,13 +10,13 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
 
         const auto { activeFamily, evmAddress, solanaPublicKey } = useMultiWallet();
         const auto [copied, setCopied] = useState(false);
-        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std: | nullptr>(nullptr);
 
         // Extract chain and address from tokenId (format: token-{chain}-{address})
-        const auto getTokenInfo = [&](tokenId: std::string) {;
+        const auto getTokenInfo = [&](tokenId: std:) {;
             const auto parts = tokenId.split("-") || [];
             const auto chain = parts[1] || "";
-            const auto address = parts.slice(2).join("-") || "";
+            const auto address = parts.substr(2).join("-") || "";
             return { chain, address }
             };
 
@@ -24,15 +24,15 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
             formData.tokenId,
             );
 
-            const auto getDisplayAddress = [&](addr: std::string) {;
-                if (!addr || addr.length <= 12) return addr;
-                return std::to_string(addr.slice(0, 6)) + "..." + std::to_string(addr.slice(-4));
+            const auto getDisplayAddress = [&](addr: std:) {;
+                if (!addr || addr.size() <= 12) return addr;
+                return std::to_string(addr.substr(0, 6-0)) + "..." + std::to_string(addr.slice(-4));
                 };
 
-                const auto handleCopyToken = std::async () => {;
+                const auto handleCopyToken = std::async [&]() {;
                     navigator.clipboard.writeText(rawTokenAddress);
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                    setTimeout[&](() { return setCopied(false), 2000); };
                     };
 
                     const auto handleProceed = [&]() {;
@@ -59,7 +59,7 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
                         onNext();
                         };
 
-                        const auto formatAmount = [&](amount: std::string) {;
+                        const auto formatAmount = [&](amount: std:) {;
                             const auto num = parseFloat(amount) || 0;
                             return num.toLocaleString();
                             };

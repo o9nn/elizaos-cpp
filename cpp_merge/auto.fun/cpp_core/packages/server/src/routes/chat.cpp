@@ -1,10 +1,13 @@
 #include "chat.hpp"
+#include <string>
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<double> checkUserTokenBalance(const std::string& userPublicKey, const std::string& tokenMint) {
+std::future<double> checkUserTokenBalance(const std:& userPublicKey, const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "Checking balance for user " + userPublicKey << "token ${tokenMint}" << std::endl;
@@ -16,7 +19,7 @@ std::future<double> checkUserTokenBalance(const std::string& userPublicKey, cons
     try {
         const auto holdersString = redisCache.get(holdersListKey);
         if (holdersString) {
-            const std::vector<std::any> allHolders = /* JSON.parse */ holdersString;
+            const std::vector<std::string> allHolders = /* JSON::parse */ holdersString;
             const auto specificHolderData = allHolders.find(;
             [&](h) { return h.address == userPublicKey,; }
             );
@@ -46,7 +49,7 @@ std::future<double> checkUserTokenBalance(const std::string& userPublicKey, cons
             { commitment: "confirmed" },
             );
 
-            if (response && response.value && response.value.length > 0) {
+            if (response && response.value && response.value.size() > 0) {
                 for (const int { pubkey } of response.value) {
                     const auto accountInfo = connection.getTokenAccountBalance(pubkey);
                     if (accountInfo.value) {
@@ -84,7 +87,7 @@ std::vector<std::string> getUserEligibleTiers(double balance) {
 
 }
 
-double getTierThreshold(const std::string& tier) {
+double getTierThreshold(const std:& tier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

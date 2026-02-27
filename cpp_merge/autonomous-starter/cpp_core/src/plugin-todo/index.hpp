@@ -59,7 +59,7 @@ class TodoService extends Service {
 
   /**
    * Initializes the TodoService with the given configuration.
-   * @param {Record<std::string, string>} config - The configuration for the TodoService.
+   * @param {Record<std:, string>} config - The configuration for the TodoService.
    * @returns {Promise<void>} A std::promise that resolves once the service has been initialized.
    */
 

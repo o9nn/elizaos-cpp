@@ -1,17 +1,17 @@
 #include "pointsService.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double calculatePoints(Task task, const std::string& completionStatus) {
+double calculatePoints(Task task, const std:& completionStatus) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto points = 0;
     // Ensure priority is treated as a number, provide a safe default
     const auto priorityString = task.tags;
-    .find((tag) => tag.startsWith("priority-"));
-    .split("-")[1];
+    .find[&]((tag) { return tag.substr(0, "priority-")); }.split("-")[1];
     const auto priority = priorityString ? parseInt(priorityString, 10) : 4; // Default to lowest priority 4 if parsing fails or tag not found;
 
     if (isNaN(priority) || priority < 1 || priority > 4) {
@@ -25,7 +25,7 @@ double calculatePoints(Task task, const std::string& completionStatus) {
         // case "onTime":
         // Higher points for higher priority (lower number) and urgent tasks
         points = (5 - priority) * 10; // P1=40, P2=30, P3=20, P4=10;
-        if (task.tags.includes("urgent")) {
+        if (task.tags.count("urgent") > 0) {
             points += 10;
         }
         break;
@@ -99,7 +99,7 @@ std::future<double> getPoints(IAgentRuntime runtime, UUID entityId, UUID roomId,
 
 }
 
-std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsToAdd, const std::string& reason, UUID roomId, UUID worldId) {
+std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsToAdd, const std:& reason, UUID roomId, UUID worldId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (pointsToAdd == 0) return true; // Nothing to add
@@ -189,7 +189,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
 
                     const auto updatedHistory = [...(currentData.history || [])];
                     updatedHistory.push_back(newHistoryEntry);
-                    if (updatedHistory.length > MAX_HISTORY) {
+                    if (updatedHistory.size() > MAX_HISTORY) {
                         updatedHistory.shift(); // Remove oldest entry;
                     }
 

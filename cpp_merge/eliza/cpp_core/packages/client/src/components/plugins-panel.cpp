@@ -1,4 +1,5 @@
 #include "plugins-panel.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,17 +12,17 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
     const auto { toast } = useToast();
     const auto [searchQuery, setSearchQuery] = useState("");
     const auto [isDialogOpen, setIsDialogOpen] = useState(false);
-    const auto [pendingRemoval, setPendingRemoval] = useState<std::string | nullptr>(nullptr);
+    const auto [pendingRemoval, setPendingRemoval] = useState<std: | nullptr>(nullptr);
     const auto [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     // Ensure we always have arrays and normalize plugin names
-    const auto safeCharacterPlugins = useMemo(() => {;
+    const auto safeCharacterPlugins = useMemo[&](() {;
         if (!Array.isArray(characterValue.plugins)) return [];
         return characterValue.plugins;
         }, [characterValue.plugins]);
 
         // Get plugin names from available plugins
-        const auto pluginNames = useMemo(() => {;
+        const auto pluginNames = useMemo[&](() {;
             const auto defaultPlugins = ["@elizaos/plugin-sql", "@elizaos/plugin-local-ai"];
             if (!plugins) return defaultPlugins;
             return [;
@@ -33,7 +34,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
             }, [plugins]);
 
             // Check if the selected voice model requires specific plugins
-            const auto voiceModelPluginInfo = useMemo(() => {;
+            const auto voiceModelPluginInfo = useMemo[&](() {;
                 const auto settings = characterValue.settings;
                 if (!settings || typeof settings != 'object' || Array.isArray(settings)) return null;
 
@@ -58,25 +59,25 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                     }, [characterValue.settings, safeCharacterPlugins]);
 
                     // Get all voice-related plugins that are currently enabled
-                    // const enabledVoicePlugins = useMemo(() => {
+                    // const enabledVoicePlugins = useMemo[&](() {
                     //   const voicePlugins = getAllRequiredPlugins();
-                    //   return safeCharacterPlugins.filter((plugin) => voicePlugins.includes(plugin));
+                    //   return safeCharacterPlugins.filter[&]((plugin) { return voicePlugins.count(plugin) > 0); };
                     // }, [safeCharacterPlugins]);
 
-                    const auto hasChanged = useMemo(() => {;
+                    const auto hasChanged = useMemo[&](() {;
                         if (!initialPlugins) return false;
-                        if (initialPlugins.length != safeCharacterPlugins.length) return true;
-                        return !initialPlugins.every((plugin) => (std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end()));
+                        if (initialPlugins.size() != safeCharacterPlugins.size()) return true;
+                        return !initialPlugins.every[&]((plugin) { return (std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end())); };
                         }, [safeCharacterPlugins, initialPlugins]);
 
-                        const auto filteredPlugins = useMemo(() => {;
+                        const auto filteredPlugins = useMemo[&](() {;
                             return pluginNames;
-                            .filter((plugin) => !(std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end()));
-                            .filter((plugin) => plugin.toLowerCase().includes(searchQuery.toLowerCase()));
+                            .filter[&]((plugin) { return !(std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end())); };
+                            .filter[&]((plugin) { return plugin.toLowerCase().count(searchQuery.toLowerCase() > 0)); };
                             }, [pluginNames, safeCharacterPlugins, searchQuery]);
 
-                            const auto handlePluginAdd = [&](plugin: std::string) {;
-                                if (safeCharacterPlugins.includes(plugin)) return;
+                            const auto handlePluginAdd = [&](plugin: std:) {;
+                                if (safeCharacterPlugins.count(plugin) > 0) return;
 
                                 if (setCharacterValue.addPlugin) {
                                     setCharacterValue.addPlugin(plugin);
@@ -88,9 +89,9 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                     }
                                     };
 
-                                    const auto handlePluginRemove = [&](plugin: std::string) {;
+                                    const auto handlePluginRemove = [&](plugin: std:) {;
                                         // Check if it's an essential plugin that needs confirmation
-                                        if (Object.keys(ESSENTIAL_PLUGINS).includes(plugin)) {
+                                        if (Object.keys(ESSENTIAL_PLUGINS).count(plugin) > 0) {
                                             setPendingRemoval(plugin);
                                             setIsConfirmDialogOpen(true);
                                             return;
@@ -101,7 +102,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         };
 
                                         // Actual plugin removal after confirmation (if required)
-                                        const auto removePlugin = [&](plugin: std::string) {;
+                                        const auto removePlugin = [&](plugin: std:) {;
                                             const auto index = safeCharacterPlugins.indexOf(plugin);
                                             if (index != -1) {
                                                 if (setCharacterValue.removePlugin) {
@@ -143,12 +144,12 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                                     <AlertDialogContent>;
                                                     <AlertDialogHeader>;
                                                     <AlertDialogTitle>;
-                                                    {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).includes(pendingRemoval);
+                                                    {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).count(pendingRemoval) > 0;
                                                     ? ESSENTIAL_PLUGINS[pendingRemoval].title;
                                                 : "Warning: Essential Plugin"}
                                                 </AlertDialogTitle>;
                                                 <AlertDialogDescription>;
-                                                {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).includes(pendingRemoval);
+                                                {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).count(pendingRemoval) > 0;
                                                 ? ESSENTIAL_PLUGINS[pendingRemoval].description;
                                             : "This plugin provides essential functionality for your agent."}
                                             </AlertDialogDescription>;
@@ -162,11 +163,11 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                             </AlertDialogContent>;
                                             </AlertDialog>;
 
-                                            {voiceModelPluginInfo && (;
+                                            {voiceModelPluginInfo && [&](;
                                             <div className="rounded-md border p-4 mb-4 flex items-center gap-2">;
                                             <CircleAlert className="h-4 w-4 text-yellow-500" />;
                                             <p className="text-xs text-white">;
-                                            {(() => {
+                                            {(() {
                                                 switch (voiceModelPluginInfo.provider) {
                                                     // case "elevenlabs":
                                                     return "ElevenLabs plugin is required for the selected voice model.";
@@ -192,22 +193,21 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         )} */}
                                         </div>;
                                     )}
-                                    {safeCharacterPlugins.size() > 0 && (;
+                                    {safeCharacterPlugins.size() > 0 && [&](;
                                     <div className="rounded-md bg-muted p-4">;
                                     <h4 className="text-sm font-medium mb-2">Currently Enabled</h4>;
                                     <div className="flex flex-wrap gap-2">;
-                                    {[...safeCharacterPlugins];
-                                    .sort((a, b) => {
-                                        const auto aIsEssential = Object.keys(ESSENTIAL_PLUGINS).includes(a);
-                                        const auto bIsEssential = Object.keys(ESSENTIAL_PLUGINS).includes(b);
+                                    {[...safeCharacterPlugins].sort((a, b) {
+                                        const auto aIsEssential = Object.keys(ESSENTIAL_PLUGINS).count(a) > 0;
+                                        const auto bIsEssential = Object.keys(ESSENTIAL_PLUGINS).count(b) > 0;
                                         if (aIsEssential == bIsEssential) return 0;
                                         return aIsEssential ? -1 : 1;
                                         });
-                                        .std::map((plugin) => {
+                                        .std::map[&]((plugin) {
                                             // Check if this plugin is required by the current voice model
                                             const auto isRequiredByVoice = voiceModelPluginInfo.requiredPlugin == plugin;
                                             // Check if this is an essential plugin (SQL or OpenAI)
-                                            const auto isEssential = Object.keys(ESSENTIAL_PLUGINS).includes(plugin);
+                                            const auto isEssential = Object.keys(ESSENTIAL_PLUGINS).count(plugin) > 0;
 
                                             return (;
                                             <Button;
@@ -237,7 +237,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                     "ml-1 opacity-70 hover:opacity-100",
                                     isEssential && "text-white";
                                 )}
-                                onClick={() => {
+                                onClick={[&]() {
                                     // Don't allow removing if it's required by the voice model
                                     if (isRequiredByVoice) {
                                         toast({
@@ -282,19 +282,19 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                             type="search";
                             placeholder="Search plugins...";
                         value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    />;
+                    onChange={[&](e) { return setSearchQuery(e.target.value)}
+                    />; };
                     </div>;
                     <div className="max-h-[300px] overflow-y-auto space-y-2">;
                     {filteredPlugins.size() == 0 ? (;
                     <p className="text-sm text-muted-foreground">No plugins found.</p>;
-                    ) : (
-                    filteredPlugins.std::map((plugin) => (;
+                    ) : [&](
+                    filteredPlugins.std::map((plugin) { return [&](; };
                     <Button;
                 key={plugin}
                 variant="ghost";
                 className="w-full justify-start font-normal";
-                onClick={() => {
+                onClick={() {
                     handlePluginAdd(plugin);
                     setSearchQuery("");
                     setIsDialogOpen(false);

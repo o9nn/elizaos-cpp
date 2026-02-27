@@ -1,10 +1,15 @@
 #include "settings.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std::string& serverId) {
+std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std:& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -23,7 +28,7 @@ std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime
 
 }
 
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings) {
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -54,17 +59,16 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
 
 }
 
-std::string formatSettingsList(WorldSettings worldSettings) {
+std: formatSettingsList(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settings = Object.entries(worldSettings);
-    .filter(([key]) => !key.startsWith("_")) // Skip internal settings;
-    .std::map(([key, setting]) => {
+    .filter[&](([key]) { return !key.substr(0, "_")) // Skip internal settings; };
+    .std::map[&](([key, setting]) {
         const auto status = setting.value != nullptr ? "Configured" : "Not configured";
         const auto required = setting.required ? "Required" : "Optional";
         return "- " + setting.name + " (" + key + "): " + status + ", " + required;
-        });
-        .join("\n");
+        }).join("\n");
 
         return settings || "No settings available";
 
@@ -73,9 +77,9 @@ std::string formatSettingsList(WorldSettings worldSettings) {
 void categorizeSettings(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    configured: [std::string, Setting][];
-    requiredUnconfigured: [std::string, Setting][];
-    optionalUnconfigured: [std::string, Setting][];
+    configured: [std:, Setting][];
+    requiredUnconfigured: [std:, Setting][];
+    optionalUnconfigured: [std:, Setting][];
 
 }
 
@@ -87,13 +91,11 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
     categorizeSettings(worldSettings);
 
     // Generate a prompt to extract settings from the user's message
-    const auto settingsContext = requiredUnconfigured;
-    .concat(optionalUnconfigured);
-    .std::map(([key, setting]) => {
+    const auto settingsContext = requiredUnconfigured.concat(optionalUnconfigured);
+    .std::map[&](([key, setting]) {
         const auto requiredStr = setting.required ? "Required." : "Optional.";
         return key + ": " + setting.description + " " + requiredStr;
-        });
-        .join("\n");
+        }).join("\n");
 
         const auto basePrompt = "dedent";
         I need to extract settings values from the user's message.;
@@ -138,7 +140,7 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
                         std::function extractValidSettings(obj: unknown, worldSettings: WorldSettings) {
                             const auto extracted = [];
 
-                            std::function traverse(node: unknown): void {
+                            std::function traverse(node: unknown) {
                                 if (Array.isArray(node)) {
                                     for (const auto& item : node)
                                         traverse(item);
@@ -168,9 +170,9 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
 
 }
 
-std::future<> processSettingUpdates(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings, const std::vector<SettingUpdate>& updates) {
+std::future<> processSettingUpdates(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings, const std::vector<SettingUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny: boolean; messages: std::string[]
+    updatedAny; messages: std:[]
 }
 
 std::future<void> handleOnboardingComplete(IAgentRuntime runtime, WorldSettings worldSettings, State state, HandlerCallback callback) {
@@ -218,15 +220,15 @@ std::future<void> generateSuccessResponse(IAgentRuntime runtime, WorldSettings w
         // Check if all required settings are now configured
         const auto { requiredUnconfigured } = categorizeSettings(worldSettings);
 
-        if (requiredUnconfigured.length == 0) {
+        if (requiredUnconfigured.size() == 0) {
             // All required settings are configured, complete settings
             handleOnboardingComplete(runtime, worldSettings, state, callback);
             return;
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        ".std::map(([key, setting]) => " + key + ": " + setting.name
-        .join("\n");
+        ".std::map[&](([key, setting]) { return " + key + ": " + setting.name
+        .join("\n"); };
 
         // Generate success message
         const auto prompt = composePrompt({;
@@ -267,15 +269,15 @@ std::future<void> generateFailureResponse(IAgentRuntime runtime, WorldSettings w
         // Get next required setting
         const auto { requiredUnconfigured } = categorizeSettings(worldSettings);
 
-        if (requiredUnconfigured.length == 0) {
+        if (requiredUnconfigured.size() == 0) {
             // All required settings are configured, complete settings
             handleOnboardingComplete(runtime, worldSettings, state, callback);
             return;
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        ".std::map(([key, setting]) => " + key + ": " + setting.name
-        .join("\n");
+        ".std::map[&](([key, setting]) { return " + key + ": " + setting.name
+        .join("\n"); };
 
         // Generate failure message
         const auto prompt = composePrompt({;

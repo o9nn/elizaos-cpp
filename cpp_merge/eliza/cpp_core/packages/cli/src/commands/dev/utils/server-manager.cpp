@@ -1,4 +1,7 @@
 #include "server-manager.hpp"
+#include <string>
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +11,7 @@ DevServerManager getServerManager() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!serverInstance) {
-        serverInstance = new DevServerManager();
+        serverInstance = std::make_unique<DevServerManager>();
     }
     return serverInstance;
 

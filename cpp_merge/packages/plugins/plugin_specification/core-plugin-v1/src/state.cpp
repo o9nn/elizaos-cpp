@@ -4,11 +4,11 @@ State fromV2State(std::shared_ptr<StateV2> stateV2)
 {
     auto state = utils::assign(object{
         , 
-        object::pair{std::string("text"), stateV2->text}
+        object::pair{std:("text"), stateV2->text}
     }, DEFAULT_STATE, stateV2->values, stateV2->data);
     for (auto& key : keys_(stateV2))
     {
-        if (AND((AND((key != std::string("values")), (key != std::string("data")))), (key != std::string("text")))) {
+        if (AND((AND((key != std:("values")), (key != std:("data")))), (key != std:("text")))) {
             state[key] = const_(stateV2)[key];
         }
     }
@@ -19,13 +19,13 @@ State fromV2State(std::shared_ptr<StateV2> stateV2)
 std::shared_ptr<StateV2> toV2State(State state)
 {
     auto stateV2 = object{
-        object::pair{std::string("values"), object{}}, 
-        object::pair{std::string("data"), object{}}, 
-        object::pair{std::string("text"), OR((state->text), (string_empty))}
+        object::pair{std:("values"), object{}}, 
+        object::pair{std:("data"), object{}}, 
+        object::pair{std:("text"), OR((state->text), (string_empty))}
     };
     for (auto& key : keys_(state))
     {
-        if (key != std::string("text")) {
+        if (key != std:("text")) {
             stateV2[key] = const_(state)[key];
         }
     }
@@ -34,13 +34,13 @@ std::shared_ptr<StateV2> toV2State(State state)
 
 
 Partial<State> DEFAULT_STATE = object{
-    object::pair{std::string("bio"), string_empty}, 
-    object::pair{std::string("lore"), string_empty}, 
-    object::pair{std::string("messageDirections"), string_empty}, 
-    object::pair{std::string("postDirections"), string_empty}, 
-    object::pair{std::string("actors"), string_empty}, 
-    object::pair{std::string("recentMessages"), string_empty}, 
-    object::pair{std::string("recentMessagesData"), array<any>()}
+    object::pair{std:("bio"), string_empty}, 
+    object::pair{std:("lore"), string_empty}, 
+    object::pair{std:("messageDirections"), string_empty}, 
+    object::pair{std:("postDirections"), string_empty}, 
+    object::pair{std:("actors"), string_empty}, 
+    object::pair{std:("recentMessages"), string_empty}, 
+    object::pair{std:("recentMessagesData"), array<any>()}
 };
 
 void Main(void)

@@ -102,15 +102,15 @@ void Header() {
     <Link;
     href="/terms";
     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-    onClick={() => setMobileMenuOpen(false)}
-    >;
+    onClick={[&]() { return setMobileMenuOpen(false)}
+    >; };
     Terms of Service;
     </Link>;
     <Link;
     href="/privacy";
     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-    onClick={() => setMobileMenuOpen(false)}
-    >;
+    onClick={[&]() { return setMobileMenuOpen(false)}
+    >; };
     Privacy Policy;
     </Link>;
     </>;
@@ -118,7 +118,7 @@ void Header() {
     </>;
     );
 
-    return (;
+    return [&](;
     <header className="z-20 bg-transparent">;
     <nav className="px-3 sm:px-4 lg:px-6 w-full" aria-label="Global">
     <div className="flex items-center justify-between py-3 sm:py-4 gap-2 sm:gap-4 flex-nowrap">
@@ -144,8 +144,8 @@ void Header() {
     <button;
     type="button";
     className="lg:hidden -m-2 inline-flex items-center justify-center rounded-md p-2 text-zinc-700 dark:text-zinc-400"
-    onClick={() => setMobileMenuOpen(true)}
-    >;
+    onClick={() { return setMobileMenuOpen(true)}
+    >; };
     <span className="sr-only">Open main menu</span>;
     <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
     </button>;
@@ -154,13 +154,13 @@ void Header() {
     </nav>;
 
     {/* Mobile menu panel */}
-    {mobileMenuOpen && (;
+    {mobileMenuOpen && [&](;
     <div className="lg:hidden fixed inset-0 z-50">
     {/* Backdrop */}
     <div;
     className="fixed inset-0 bg-black/50";
-    onClick={() => setMobileMenuOpen(false)}
-    aria-hidden="true";
+    onClick={() { return setMobileMenuOpen(false)}
+    aria-hidden="true"; };
     />;
 
     {/* Menu panel */}
@@ -184,8 +184,8 @@ void Header() {
     <button;
     type="button";
     className="rounded-md p-2 text-zinc-700 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-    onClick={() => setMobileMenuOpen(false)}
-    >;
+    onClick={[&]() { return setMobileMenuOpen(false)}
+    >; };
     <span className="sr-only">Close menu</span>;
     <XMarkIcon className="h-6 w-6" aria-hidden="true" />;
     </button>;
@@ -234,15 +234,15 @@ void Header() {
     <Link;
     href="/terms";
     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-    onClick={() => setMobileMenuOpen(false)}
-    >;
+    onClick={[&]() { return setMobileMenuOpen(false)}
+    >; };
     Terms of Service;
     </Link>;
     <Link;
     href="/privacy";
     className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-    onClick={() => setMobileMenuOpen(false)}
-    >;
+    onClick={[&]() { return setMobileMenuOpen(false)}
+    >; };
     Privacy Policy;
     </Link>;
     </div>;

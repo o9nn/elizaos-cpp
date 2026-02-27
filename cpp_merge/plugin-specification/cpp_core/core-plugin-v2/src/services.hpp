@@ -23,7 +23,7 @@ namespace elizaos {
  * with automatic type inference
  */
 class ServiceBuilder<TService extends Service = Service> extends coreServiceBuilder {
-  constructor(serviceType: ServiceTypeName | std::string) {
+  constructor(serviceType: ServiceTypeName | std:) {
     //this.serviceType = serviceType;
     this.description = '';
   }

@@ -1,10 +1,12 @@
 #include "admin.hpp"
+#include <vector>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-PgSelect buildAdminTokensBaseQuery(const std::any& db, std::optional<std::any> params) {
+PgSelect buildAdminTokensBaseQuery(const std:& db, std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { hideImported, search, sortBy, maxVolume, maxHolders } = params;
@@ -28,14 +30,14 @@ PgSelect buildAdminTokensBaseQuery(const std::any& db, std::optional<std::any> p
         std::cout << "[Admin Query Build] Adding condition: search LIKE " + search << std::endl;
     }
 
-    if (conditions.length > 0) {
+    if (conditions.size() > 0) {
         query = query.where(and(...conditions.filter((c): c is SQL => !!c)));
     }
     return query;
 
 }
 
-PgSelect buildAdminTokensCountBaseQuery(const std::any& db, std::optional<std::any> params) {
+PgSelect buildAdminTokensCountBaseQuery(const std:& db, std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto query = db.select({ count: count() }).from(tokens).$dynamic();
@@ -58,7 +60,7 @@ PgSelect buildAdminTokensCountBaseQuery(const std::any& db, std::optional<std::a
         std::cout << "[Admin Count Build] Adding condition: search LIKE " + search << std::endl;
     }
 
-    if (conditions.length > 0) {
+    if (conditions.size() > 0) {
         query = query.where(and(...conditions.filter((c): c is SQL => !!c)));
     }
     return query;

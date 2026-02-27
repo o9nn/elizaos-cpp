@@ -7,33 +7,33 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->config(std::string("defaultCommandTimeout"), 15000);
-    Cypress->config(std::string("requestTimeout"), 20000);
-    Cypress->config(std::string("responseTimeout"), 20000);
-    Cypress->config(std::string("pageLoadTimeout"), 30000);
-    Cypress->on(std::string("uncaught:exception"), [=](auto err, auto _runnable) mutable
+    Cypress->config(std:("defaultCommandTimeout"), 15000);
+    Cypress->config(std:("requestTimeout"), 20000);
+    Cypress->config(std:("responseTimeout"), 20000);
+    Cypress->config(std:("pageLoadTimeout"), 30000);
+    Cypress->on(std:("uncaught:exception"), [=](auto err, auto _runnable) mutable
     {
-        if (err["message"]["includes"](std::string("ResizeObserver loop limit exceeded"))) {
+        if (err["message"]["includes"](std:("ResizeObserver loop limit exceeded"))) {
             return false;
         }
-        if (err["message"]["includes"](std::string("Non-Error promise rejection captured"))) {
+        if (err["message"]["includes"](std:("Non-Error promise rejection captured"))) {
             return false;
         }
-        if (err["message"]["includes"](std::string("Script error"))) {
+        if (err["message"]["includes"](std:("Script error"))) {
             return false;
         }
-        console->error(std::string("Uncaught exception:"), err);
+        console->error(std:("Uncaught exception:"), err);
         return false;
     }
     );
     beforeEach([=]() mutable
     {
-        shared authToken = Cypress->env(std::string("ELIZA_SERVER_AUTH_TOKEN"));
+        shared authToken = Cypress->env(std:("ELIZA_SERVER_AUTH_TOKEN"));
         if (authToken) {
-            cy->intercept(std::string("**"), [=](auto req) mutable
+            cy->intercept(std:("**"), [=](auto req) mutable
             {
-                if (AND((req["url"]["includes"](std::string("/api/"))), (req["url"]["includes"](std::string("localhost:7777"))))) {
-                    req["headers"][std::string("X-API-KEY")] = authToken;
+                if (AND((req["url"]["includes"](std:("/api/"))), (req["url"]["includes"](std:("localhost:7777"))))) {
+                    req["headers"][std:("X-API-KEY")] = authToken;
                 }
             }
             );
@@ -47,13 +47,13 @@ void Main(void)
         cy->clearCookies();
         cy->window()->then([=](auto win) mutable
         {
-            win["localStorage"]["setItem"](std::string("testingMode"), std::string("true"));
-            win["localStorage"]["setItem"](std::string("cypressTest"), std::string("true"));
+            win["localStorage"]["setItem"](std:("testingMode"), std:("true"));
+            win["localStorage"]["setItem"](std:("cypressTest"), std:("true"));
         }
         );
-        cy->intercept(std::string("**/*"), [=](auto req) mutable
+        cy->intercept(std:("**/*"), [=](auto req) mutable
         {
-            console->log(std::string("Network request: ") + req["method"] + std::string(" ") + req["url"] + string_empty);
+            console->log(std:("Network request: ") + req["method"] + std:(" ") + req["url"] + string_empty);
             req["_continue"]();
         }
         );
@@ -63,23 +63,23 @@ void Main(void)
     {
         cy->window()->then([=](auto _win) mutable
         {
-            console->log(std::string("Test completed at:"), ((std::make_shared<Date>()))->toISOString());
+            console->log(std:("Test completed at:"), ((std::make_shared<Date>()))->toISOString());
         }
         );
-        cy->screenshot(std::string("test-completed"));
+        cy->screenshot(std:("test-completed"));
     }
     );
     chai->use([=](auto chai, auto utils) mutable
     {
-        utils->addMethod(chai->Assertion->prototype, std::string("containOneOf"), [=](any list) mutable
+        utils->addMethod(chai->Assertion->prototype, std:("containOneOf"), [=](any list) mutable
         {
-            shared obj = utils->flag(shared_from_this(), std::string("object"));
+            shared obj = utils->flag(shared_from_this(), std:("object"));
             auto found = list["some"]([=](auto item) mutable
             {
                 return obj["includes"](item);
             }
             );
-            this["assert"](found, std::string("expected "") + obj + std::string("" to contain one of [") + list["join"](std::string(", ")) + std::string("]"), std::string("expected "") + obj + std::string("" not to contain any of [") + list["join"](std::string(", ")) + std::string("]"));
+            this["assert"](found, std:("expected "") + obj + std:("" to contain one of [") + list["join"](std:(", ")) + std:("]"), std:("expected "") + obj + std:("" not to contain any of [") + list["join"](std:(", ")) + std:("]"));
         }
         );
     }

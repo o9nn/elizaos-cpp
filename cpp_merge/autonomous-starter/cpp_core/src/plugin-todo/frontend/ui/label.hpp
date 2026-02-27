@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Combines multiple class names into a single string.
  * * @param {...ClassValue} inputs - Array of class names to be combined.
- * @returns { std::string } - Combined class names as a single string.
+ * @returns { std: } - Combined class names as a single string.
  */
 void cn();
 

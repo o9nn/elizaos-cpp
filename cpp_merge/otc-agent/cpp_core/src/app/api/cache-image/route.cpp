@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ std::future<void> GET(NextRequest request) {
 
     try {
         // Check if already cached
-        const auto existing = head(blobPath).catch(() => nullptr);
+        const auto existing = head(blobPath).catch[&](() { return nullptr); };
         if (existing) {
             return NextResponse.json({ cachedUrl: existing.url });
         }
@@ -59,7 +60,7 @@ std::future<void> GET(NextRequest request) {
 
 }
 
-std::string getExtensionFromUrl(const std::string& url) {
+std: getExtensionFromUrl(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -67,7 +68,7 @@ std::string getExtensionFromUrl(const std::string& url) {
         const auto match = pathname.match(/\.([a-zA-Z0-9]+)$/);
         if (match) {
             const auto ext = match[1].toLowerCase();
-            if (["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext)) {
+            if (["png", "jpg", "jpeg", "gif", "webp", "svg"].count(ext) > 0) {
                 return ext;
             }
         }

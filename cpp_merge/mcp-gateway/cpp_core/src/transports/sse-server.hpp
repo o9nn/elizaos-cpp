@@ -1,4 +1,5 @@
 #include ".core/payment-middleware.js.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -24,25 +25,25 @@ namespace elizaos {
 
 struct SSEServerOptions {
     double port;
-    std::optional<std::string> host;
-    std::optional<std::string> ssePath;
-    std::optional<std::string> messagePath;
+    std::optional<std:> host;
+    std::optional<std:> ssePath;
+    std::optional<std:> messagePath;
     std::optional<PaymentMiddleware> paymentMiddleware;
 };
 
 struct Session {
-    std::string id;
+    std: id;
     ServerResponse response;
-    std::unordered_map<std::string, std::string> headers;
+    std::unordered_map<std:, std:> headers;
     double lastActivity;
 };
 
 class SSEServerTransport {
   private httpServer: HTTPServer;
-  private sessions = new Map<std::string, Session>();
+  private sessions = new Map<std:, Session>();
   private options: Required<SSEServerOptions>;
   private mcpServer?: Server;
-  private messageHandlers = new Map<std::string, (response: JSONRPCResponse) => void>();
+  private messageHandlers = new Map<std:, [&](response: JSONRPCResponse) { return void>(); };
   private logger: Console;
 
   constructor(options: SSEServerOptions, logger: Console = console) {
@@ -57,7 +58,7 @@ class SSEServerTransport {
     this.httpServer = new HTTPServer(this.handleRequest.bind(this));
 
     // Clean up stale sessions every 60 seconds
-    setInterval(() => this.cleanupStaleSessions(), 60000);
+    setInterval[&](() { return this.cleanupStaleSessions(), 60000); };
   }
 
     // Close all active sessions

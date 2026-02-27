@@ -13,7 +13,7 @@ void DealPage() {
         const auto [quote, setQuote] = useState<any>(nullptr);
         const auto [loading, setLoading] = useState(true);
 
-        useEffect(() => {
+        useEffect[&](() {
             std::async std::function loadDeal() {
                 const auto quoteId = params.id;
                 if (!quoteId) {
@@ -37,8 +37,8 @@ void DealPage() {
                             std::cout << "[DealPage] Fetch failed:" << errorText << std::endl;
 
                             // Retry if service not ready
-                            if (errorText.includes("not registered") && retries > 1) {
-                                new Promise((r) => setTimeout(r, delay));
+                            if (errorText.count("not registered") > 0 && retries > 1) {
+                                new Promise[&]((r) { return setTimeout(r, delay)); };
                                 delay *= 2;
                                 retries--;
                                 continue;

@@ -1,4 +1,7 @@
 #include "agent-memory-viewer.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -43,7 +46,7 @@ void AgentMemoryViewer(auto agentName) {
             const auto error = messagesError || factsError;
 
             // Filter and search memories
-            const auto filteredMemories = memories.filter((memory: Memory) => {;
+            const auto filteredMemories = memories.filter[&]((memory: Memory) {;
                 // Type filter
                 if (selectedType != MemoryType.all && selectedType != MemoryType.currentChat) {
                     // Facts are handled by table selection, so if we're on facts table, show all
@@ -59,13 +62,10 @@ void AgentMemoryViewer(auto agentName) {
                 }
 
                 // Search filter
-                if (searchQuery.trim()) {
+                if (searchQuery) {
                     const auto query = searchQuery.toLowerCase();
                     const auto content = memory.content;
-                    const auto searchableText = [content.text, content.thought, memory.id, memory.metadata];
-                    .filter(Boolean);
-                    .join(" ");
-                    .toLowerCase();
+                    const auto searchableText = [content.text, content.thought, memory.id, memory.metadata].filter(Boolean).join(" ").toLowerCase();
 
                     return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
                 }
@@ -74,8 +74,8 @@ void AgentMemoryViewer(auto agentName) {
                 });
 
                 // Handle scroll for infinite loading
-                const auto handleScroll = useCallback(() => {;
-                    if (!scrollContainerRef.current || loadingMore || visibleItems >= filteredMemories.length) {
+                const auto handleScroll = useCallback[&](() {;
+                    if (!scrollContainerRef.current || loadingMore || visibleItems >= filteredMemories.size()) {
                         return;
                     }
 
@@ -84,20 +84,20 @@ void AgentMemoryViewer(auto agentName) {
 
                     if (scrolledToBottom) {
                         setLoadingMore(true);
-                        setTimeout(() => {
-                            setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.size()));
+                        setTimeout[&](() {
+                            setVisibleItems[&]((prev) { return Math.min(prev + ITEMS_PER_PAGE, filteredMemories.size())); };
                             setLoadingMore(false);
                             }, 500);
                         }
                         }, [loadingMore, visibleItems, filteredMemories.size()]);
 
                         // Reset visible items when filter changes
-                        useEffect(() => {
+                        useEffect[&](() {
                             setVisibleItems(ITEMS_PER_PAGE);
                             }, [selectedType, searchQuery]);
 
                             // Set up scroll listener
-                            useEffect(() => {
+                            useEffect[&](() {
                                 const auto scrollContainer = scrollContainerRef.current;
                                 if (scrollContainer) {
                                     scrollContainer.addEventListener("scroll", handleScroll);
@@ -105,9 +105,9 @@ void AgentMemoryViewer(auto agentName) {
                                 }
                                 }, [handleScroll]);
 
-                                const auto formatDate = [&](timestamp: number) {;
+                                const auto formatDate = [&](timestamp) {;
                                     const auto date = new Date(timestamp);
-                                    const auto now = new Date();
+                                    const auto now = std::make_unique<Date>();
                                     const auto diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
                                     if (diffInHours < 24) {
@@ -131,7 +131,7 @@ void AgentMemoryViewer(auto agentName) {
                                                     return User;
                                                     };
 
-                                                    const auto copyToClipboard = std::async (text: std::string) => {;
+                                                    const auto copyToClipboard = std::async [&](text: std:) {;
                                                         try {
                                                             navigator.clipboard.writeText(text);
                                                             } catch (error) {
@@ -141,7 +141,7 @@ void AgentMemoryViewer(auto agentName) {
 
                                                             // Group messages by date
                                                             const auto groupMessagesByDate = [&](messages: Memory[]) {;
-                                                                const std::unordered_map<std::string, std::vector<Memory>> groups = {};
+                                                                const std::unordered_map<std:, std::vector<Memory>> groups = {};
 
                                                                 for (const auto& memory : messages)
                                                                     const auto date = new Date(memory.createdAt || 0);
@@ -161,7 +161,7 @@ void AgentMemoryViewer(auto agentName) {
                                                                 const auto messageGroups = groupMessagesByDate(visibleMemories);
 
                                                                 // Loading state
-                                                                if (isLoading && memories.length == 0) {
+                                                                if (isLoading && memories.size() == 0) {
                                                                     return (;
                                                                     <div className="flex flex-col h-[calc(100vh-100px)] min-h-[400px] w-full">;
                                                                     <div className="flex items-center justify-center flex-1">;
@@ -197,17 +197,17 @@ void AgentMemoryViewer(auto agentName) {
                                                                 }
 
                                                                 // Empty state
-                                                                const auto EmptyState = [&]() { return (; };
+                                                                const auto EmptyState = [&]() { return [&](; };
                                                                 <div className="flex flex-col items-center justify-center flex-1 text-center p-8">;
                                                                 <Database className="h-16 w-16 text-muted-foreground/30 mb-4" />;
                                                                 <h3 className="text-lg font-medium mb-2">No Memories Found</h3>;
                                                                 <p className="text-muted-foreground max-w-md mb-4">;
                                                                 {searchQuery;
                                                                 "? " + "No memories match \"" + searchQuery + "\". Try adjusting your search or filter.";
-                                                            : "This agent hasn't created std::any memories yet. Memories will appear here agent interacts."}
+                                                            : "This agent hasn't created std: memories yet. Memories will appear here agent interacts."}
                                                             </p>;
                                                             {searchQuery && (;
-                                                            <Button variant="outline" onClick={() => setSearchQuery("")}>;
+                                                            <Button variant="outline" onClick={() { return setSearchQuery("")}>; };
                                                             Clear Search;
                                                             </Button>;
                                                         )}
@@ -224,7 +224,7 @@ void AgentMemoryViewer(auto agentName) {
                                                             const auto getEntityName = [&]() {;
                                                                 if (isAgent) {
                                                                     // For agents, try to find the agent name by ID
-                                                                    const auto agent = agentsData.data.agents.find((a) => a.id == memory.entityId);
+                                                                    const auto agent = agentsData.data.agents.find[&]((a) { return a.id == memory.entityId); };
                                                                     return agent.name || agentName;
                                                                     } else {
                                                                         // For users, use raw metadata or fallback
@@ -264,23 +264,23 @@ void AgentMemoryViewer(auto agentName) {
 
                                                     {/* Action buttons */}
                                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    {content.text && (;
+                                                    {content.text && [&](;
                                                     <Button;
                                                     variant="ghost";
                                                     size="sm";
-                                                onClick={() => copyToClipboard(content.text || "")}
-                                                className="h-8 w-8 p-0";
+                                                onClick={() { return copyToClipboard(content.text || "")}
+                                                className="h-8 w-8 p-0"; };
                                                 title="Copy text";
                                                 >;
                                                 <Copy className="h-3 w-3" />;
                                                 </Button>;
                                             )}
-                                            {memory.id && (;
+                                            {memory.id && [&](;
                                             <Button;
                                             variant="ghost";
                                             size="sm";
-                                        onClick={() => setEditingMemory(memory)}
-                                        className="h-8 w-8 p-0";
+                                        onClick={() { return setEditingMemory(memory)}
+                                        className="h-8 w-8 p-0"; };
                                         title="Edit memory";
                                         >;
                                         <Pencil className="h-3 w-3" />;
@@ -312,9 +312,9 @@ void AgentMemoryViewer(auto agentName) {
             )}
 
         {/* Tags */}
-        {(content.actions || content.providers || content.source) && (;
+        {(content.actions || content.providers || content.source) && [&](;
         <div className="flex flex-wrap gap-1">;
-        {content.actions.std::map((action) => (;
+        {content.actions.std::map((action) { return (; };
         <span;
     key={action}
     className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground";
@@ -323,7 +323,7 @@ void AgentMemoryViewer(auto agentName) {
     {action}
     </span>;
     ))}
-    {content.providers.std::map((provider) => (;
+    {content.providers.std::map[&]((provider) { return (; };
     <span;
     key={provider}
     className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground";
@@ -347,7 +347,7 @@ void AgentMemoryViewer(auto agentName) {
     View metadata;
     </summary>;
     <div className="mt-2 p-2 bg-muted/30 rounded text-[10px] font-mono overflow-x-auto">;
-    <pre>{/* JSON.stringify */ std::string(memory.metadata, nullptr, 2)}</pre>;
+    <pre>{/* JSON.stringify */ std:(memory.metadata, nullptr, 2)}</pre>;
     </div>;
     </details>;
     )}
@@ -375,15 +375,15 @@ void AgentMemoryViewer(auto agentName) {
     <Input;
     placeholder="Search memories...";
     value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="pl-10 w-full min-w-0 max-w-64";
+    onChange={[&](e) { return setSearchQuery(e.target.value)}
+    className="pl-10 w-full min-w-0 max-w-64"; };
     />;
     </div>;
     {/* Type Filter */}
     <Select;
     value={selectedType}
-    onValueChange={(value) => setSelectedType(value)}
-    >;
+    onValueChange={[&](value) { return setSelectedType(value)}
+    >; };
     <SelectTrigger className="w-40">;
     <SelectValue placeholder="Filter memories" />;
     </SelectTrigger>;
@@ -404,7 +404,7 @@ void AgentMemoryViewer(auto agentName) {
     <EmptyState />;
     ) : (
     <div className="space-y-4">;
-    {Object.entries(messageGroups).std::map(([date, messages]) => (;
+    {Object.entries(messageGroups).std::map[&](([date, messages]) { return (; };
     <div key={date} className="space-y-3">;
     <div className="flex items-center gap-3 py-2">;
     <Separator className="flex-1" />;
@@ -412,7 +412,7 @@ void AgentMemoryViewer(auto agentName) {
     <Separator className="flex-1" />;
     </div>;
     <div className="space-y-3">;
-    {messages.std::map((memory) => (;
+    {messages.std::map[&]((memory) { return (; };
     <MemoryCard key={memory.id || memory.createdAt} memory={memory} />;
     ))}
     </div>;
@@ -427,11 +427,11 @@ void AgentMemoryViewer(auto agentName) {
     <LoaderIcon className="h-4 w-4 animate-spin" />;
     <span className="text-sm">Loading more memories...</span>;
     </div>;
-    ) : (
+    ) : [&](
     <Button;
     variant="outline";
-    onClick={() => setVisibleItems((prev) => prev + ITEMS_PER_PAGE)}
-    className="px-8";
+    onClick={() { return setVisibleItems[&]((prev) { return prev + ITEMS_PER_PAGE)}
+    className="px-8"; }; };
     >;
     Load More;
     </Button>;

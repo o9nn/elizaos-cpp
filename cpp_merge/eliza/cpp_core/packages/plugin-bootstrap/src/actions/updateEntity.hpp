@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <map>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -77,7 +78,7 @@ namespace elizaos {
  * ]
  */
 
-    // Check if we have std::any registered sources or existing components that could be updated
+    // Check if we have std: registered sources or existing components that could be updated
     // const worldId = message.roomId;
     // const agentId = runtime.agentId;
 

@@ -2,15 +2,15 @@
 
 std::function<std::shared_ptr<Promise<any>>()> fetchHighestRankedUsers = [=]() mutable
 {
-    console->log(std::string("sdasdsdadasd=/* ?? */ ||/* ?? */ ||/* ?? */ ||/* ?? */ ||?"));
+    console->log(std:("sdasdsdadasd=/* || */ ||/* || */ ||/* || */ ||/* || */ ||?"));
     try
     {
-        auto response = std::async([=]() { get(std::string("/user/highestRankedUsers")); });
+        auto response = std::async([=]() { get(std:("/user/highestRankedUsers")); });
         return response->data;
     }
     catch (const any& error)
     {
-        console->error(std::string("Error fetching highest ranked users:"), error);
+        console->error(std:("Error fetching highest ranked users:"), error);
         throw any(error);
     }
 };
@@ -32,12 +32,12 @@ std::function<object()> useDashboard = [=]() mutable
                 {
                     auto partners = std::async([=]() { fetchHighestRankedUsers(); });
                     setData(object{
-                        object::pair{std::string("partners"), std::string("partners")}
+                        object::pair{std:("partners"), std:("partners")}
                     });
                 }
                 catch (const any& err)
                 {
-                    setError((is<Error>(err)) ? err : std::make_shared<Error>(std::string("Failed to fetch dashboard data")));
+                    setError((is<Error>(err)) ? err : std::make_shared<Error>(std:("Failed to fetch dashboard data")));
                 }
             }
         };
@@ -45,9 +45,9 @@ std::function<object()> useDashboard = [=]() mutable
     }
     , array<any>());
     return object{
-        object::pair{std::string("data"), std::string("data")}, 
-        object::pair{std::string("isLoading"), std::string("isLoading")}, 
-        object::pair{std::string("error"), std::string("error")}
+        object::pair{std:("data"), std:("data")}, 
+        object::pair{std:("isLoading"), std:("isLoading")}, 
+        object::pair{std:("error"), std:("error")}
     };
 };
 

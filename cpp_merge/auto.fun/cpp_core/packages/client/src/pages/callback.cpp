@@ -1,4 +1,5 @@
 #include "callback.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,11 +9,11 @@ void CallbackPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
-        const auto [debugInfo, setDebugInfo] = useState<{ [key: std::string]: std::string }>({});
+        const auto [error, setError] = useState<std: | nullptr>(nullptr);
+        const auto [debugInfo, setDebugInfo] = useState<{ [key: std:]: std: }>({});
 
-        useEffect(() => {
-            const auto processCallback = std::async () => {;
+        useEffect[&](() {
+            const auto processCallback = std::async [&]() {;
                 // Check for OAuth 1.0a callback parameters
                 const auto params = new URLSearchParams(window.location.search);
                 const auto oauthToken = params.get("oauth_token");
@@ -88,7 +89,7 @@ void CallbackPage() {
                                         oauth1TokenSecret: data.oauth1_token_secret,
                                         };
 
-                                        localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
+                                        localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(credentials));
 
                                         // Redirect back to original page
                                         redirectToOrigin();
@@ -145,8 +146,8 @@ void CallbackPage() {
                                                     std::cout << "OAuth 2.0 tokens received << fetching profile..." << std::endl;
 
                                                     // --- Fetch Profile Details ---
-                                                    auto username: std::string | std::nullopt;
-                                                    auto profileImageUrl: std::string | std::nullopt;
+                                                    auto username: std: | std::nullopt;
+                                                    auto profileImageUrl: std: | std::nullopt;
                                                     try {
                                                         const auto profileApiResponse = fetch(;
                                                         env.apiUrl + "/api/share/twitter-user"
@@ -198,9 +199,9 @@ void CallbackPage() {
 
                                                                                 console.log(
                                                                                 "Saving complete credentials to localStorage:",
-                                                                                /* JSON.stringify */ std::string(credentials, nullptr, 2),
+                                                                                /* JSON.stringify */ std:(credentials, nullptr, 2),
                                                                                 );
-                                                                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
+                                                                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(credentials));
                                                                                 redirectToOrigin(); // Redirect after saving complete data;
                                                                                 } else {
                                                                                     console.error(
@@ -210,7 +211,7 @@ void CallbackPage() {
                                                                                     setDebugInfo((prev) => ({
                                                                                         ...prev,
                                                                                         tokenMissing: "true",
-                                                                                        receivedTokenData: /* JSON.stringify */ std::string(tokenData),
+                                                                                        receivedTokenData: /* JSON.stringify */ std:(tokenData),
                                                                                         })); // Add received data to debug;
                                                                                         throw new Error(
                                                                                         "Incomplete token data received (missing access_token, refresh_token, or user_id)",
@@ -267,7 +268,7 @@ void CallbackPage() {
                                                                                         Request Details:
                                                                                         </h3>;
                                                                                         <div className="bg-autofun-background-primary p-2 rounded text-xs font-mono overflow-x-auto">;
-                                                                                        {Object.entries(debugInfo).std::map(([key, value]) => (;
+                                                                                        {Object.entries(debugInfo).std::map[&](([key, value]) { return (; };
                                                                                         <div key={key} className="flex">;
                                                                                         <span className="text-blue-400 w-32">{key}:</span>
                                                                                         <span className="text-gray-300">{value}</span>;

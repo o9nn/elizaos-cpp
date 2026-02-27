@@ -1,4 +1,7 @@
 #include "setup-instructions.hpp"
+#include <string>
+#include <vector>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -32,7 +35,7 @@ PlatformInstructions getBunInstallInstructions() {
 
 }
 
-void displayBasicSteps(const std::string& cdPath) {
+void displayBasicSteps(const std:& cdPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << '\nTo complete the ElizaOS setup << follow these steps:\n' << std::endl;
@@ -72,13 +75,13 @@ void displayBunInstructions() {
     const auto instructions = getBunInstallInstructions();
 
     // Display primary installation commands
-    instructions.commands.forEach((command) => {
+    instructions.commands.forEach[&]((command) {
         std::cout << "   " + command << std::endl;
         });
 
-        // Display alternatives if std::any
+        // Display alternatives if std:
         if (instructions.alternatives) {
-            instructions.alternatives.forEach((alt) => {
+            instructions.alternatives.forEach[&]((alt) {
                 std::cout << "   Alternative: " + alt << std::endl;
                 });
             }
@@ -88,10 +91,10 @@ void displayBunInstructions() {
 
 }
 
-void displayNextSteps(const std::string& targetDir) {
+void displayNextSteps(const std:& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto cdPath = path.relative(process.cwd(), targetDir);
+    const auto cdPath = path.relative(std::filesystem::current_path().string(), targetDir);
 
     displayBasicSteps(cdPath);
     displayPrerequisites();

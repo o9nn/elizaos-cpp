@@ -25,8 +25,8 @@ class DocumentOrganizer {
    * @returns An object containing arrays of ASTQueueItems categorized by nodeType
    */
   public organizeDocumentation(docs: ASTQueueItem[]): OrganizedDocs {
-    return docs.reduce(
-      (acc: OrganizedDocs, doc) => {
+    return docs.reduce[&](
+      (acc: OrganizedDocs, doc) {
         // Use nodeType to determine the category
         switch (doc.nodeType) {
           case 'ClassDeclaration':

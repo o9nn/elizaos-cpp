@@ -1,10 +1,13 @@
 #include "token-selection-step.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isSolanaAddress(const std::string& address) {
+bool isSolanaAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
@@ -12,21 +15,21 @@ bool isSolanaAddress(const std::string& address) {
 
 }
 
-bool isEvmAddress(const std::string& address) {
+bool isEvmAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/i.test(address);
 
 }
 
-bool isContractAddress(const std::string& query) {
+bool isContractAddress(const std:& query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return isSolanaAddress(query) || isEvmAddress(query);
 
 }
 
-std::optional<std::vector<TokenWithBalance>> getTokenCache(const std::string& walletAddress, const std::string& chain) {
+std::optional<std::vector<TokenWithBalance>> getTokenCache(const std:& walletAddress, const std:& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -34,7 +37,7 @@ std::optional<std::vector<TokenWithBalance>> getTokenCache(const std::string& wa
         const auto cached = localStorage.getItem(cacheKey);
         if (!cached) return null;
 
-        const CachedTokens data = /* JSON.parse */ cached;
+        const CachedTokens data = /* JSON::parse */ cached;
         // Check if cache is still valid (15 minutes)
         if (Date.now() - data.cachedAt >= TOKEN_CACHE_TTL_MS) {
             localStorage.removeItem(cacheKey);
@@ -48,7 +51,7 @@ std::optional<std::vector<TokenWithBalance>> getTokenCache(const std::string& wa
 
 }
 
-void setTokenCache(const std::string& walletAddress, const std::string& chain, const std::vector<TokenWithBalance>& tokens) {
+void setTokenCache(const std:& walletAddress, const std:& chain, const std::vector<TokenWithBalance>& tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -59,14 +62,14 @@ void setTokenCache(const std::string& walletAddress, const std::string& chain, c
             chain,
             cachedAt: Date.now(),
             };
-            localStorage.setItem(cacheKey, /* JSON.stringify */ std::string(data));
+            localStorage.setItem(cacheKey, /* JSON.stringify */ std:(data));
             } catch {
                 // Ignore storage errors
             }
 
 }
 
-void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std::string> chain) {
+void clearTokenCache(std::optional<std:> walletAddress, std::optional<std:> chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -75,9 +78,9 @@ void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std
             } else {
                 // Clear all token caches
                 const auto keys = Object.keys(localStorage).filter((k) =>;
-                k.startsWith("token-cache:"),
+                k.substr(0, "token-cache:"),
                 );
-                keys.forEach((k) => localStorage.removeItem(k));
+                keys.forEach[&]((k) { return localStorage.removeItem(k)); };
             }
             } catch {
                 // Ignore
@@ -85,21 +88,21 @@ void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std
 
 }
 
-std::string formatBalance(const std::string& balance, double decimals) {
+std: formatBalance(const std:& balance, double decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = Number(balance) / Math.pow(10, decimals);
-    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(2)}M`;
-    if (num >= 1_000) return `${(num / 1_000).toFixed(2)}K`;
+    if (num >= 1_000_000) return "" + std::to_string((num / 1_000_000).toFixed(2)) + "M";
+    if (num >= 1_000) return "" + std::to_string((num / 1_000).toFixed(2)) + "K";
     return num.toFixed(2);
 
 }
 
-std::string formatUsd(double usd) {
+std: formatUsd(double usd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
-    if (usd >= 1_000) return `$${(usd / 1_000).toFixed(2)}K`;
+    if (usd >= 1_000_000) return "$" + std::to_string((usd / 1_000_000).toFixed(2)) + "M";
+    if (usd >= 1_000) return "$" + std::to_string((usd / 1_000).toFixed(2)) + "K";
     return "$" + std::to_string(usd.toFixed(2));
 
 }
@@ -144,39 +147,39 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                 nullptr,
                 );
                 const auto [isSearchingAddress, setIsSearchingAddress] = useState(false);
-                const auto [addressSearchError, setAddressSearchError] = useState<std::string | nullptr>(;
+                const auto [addressSearchError, setAddressSearchError] = useState<std: | nullptr>(;
                 nullptr,
                 );
-                const auto addressSearchRef = useRef<std::string | nullptr>(nullptr);
+                const auto addressSearchRef = useRef<std: | nullptr>(nullptr);
 
                 const auto { isLoading: loading, hasLoadedOnce } = loadingState;
 
                 // Filter tokens by search query (symbol or name)
-                const auto filteredTokens = useMemo(() => {;
-                    if (!searchQuery.trim()) return tokens;
-                    const auto query = searchQuery.toLowerCase().trim();
+                const auto filteredTokens = useMemo[&](() {;
+                    if (!searchQuery) return tokens;
+                    const auto query = searchQuery.toLowerCase();
                     return tokens.filter(;
                     (t) =>;
-                    t.symbol.toLowerCase().includes(query) ||;
-                    t.name.toLowerCase().includes(query) ||;
-                    t.contractAddress.toLowerCase().includes(query),
+                    t.symbol.toLowerCase().count(query) > 0 ||;
+                    t.name.toLowerCase().count(query) > 0 ||;
+                    t.contractAddress.toLowerCase().count(query) > 0,
                     );
                     }, [tokens, searchQuery]);
 
                     // Detect if we should search by address
-                    const auto searchIsAddress = useMemo(() => {;
-                        const auto trimmed = searchQuery.trim();
+                    const auto searchIsAddress = useMemo[&](() {;
+                        const auto trimmed = searchQuery;
                         return trimmed.size() > 0 && isContractAddress(trimmed);
                         }, [searchQuery]);
 
                         // Check if the searched address is already in wallet
-                        const auto addressFoundInWallet = useMemo(() => {;
+                        const auto addressFoundInWallet = useMemo[&](() {;
                             if (!searchIsAddress) return false;
-                            const auto query = searchQuery.trim().toLowerCase();
-                            return tokens.some((t) => t.contractAddress.toLowerCase() == query);
+                            const auto query = searchQuery.toLowerCase();
+                            return tokens.some[&]((t) { return t.contractAddress.toLowerCase() == query); };
                             }, [searchIsAddress, searchQuery, tokens]);
 
-                            const auto handleConnect = useCallback(() => {;
+                            const auto handleConnect = useCallback[&](() {;
                                 if (privyAuthenticated) {
                                     connectWallet();
                                     } else {
@@ -191,8 +194,8 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                         }, [chainId]);
 
                                         // Look up token by contract address when not found in wallet
-                                        useEffect(() => {
-                                            const auto trimmed = searchQuery.trim();
+                                        useEffect[&](() {
+                                            const auto trimmed = searchQuery;
 
                                             // Clear if not a valid address or found in wallet
                                             if (!searchIsAddress || addressFoundInWallet) {
@@ -213,7 +216,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                             : getEvmChainName();
 
                                             // Debounce the lookup
-                                            const auto timeoutId = setTimeout(std::async () => {;
+                                            const auto timeoutId = setTimeout[&](std::async () {;
                                                 addressSearchRef.current = trimmed;
                                                 setIsSearchingAddress(true);
                                                 setAddressSearchError(nullptr);
@@ -266,12 +269,12 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                 ]);
 
                                                                 // Track previous wallet to detect disconnects
-                                                                const auto prevWalletRef = useRef<std::string | nullptr>(nullptr);
+                                                                const auto prevWalletRef = useRef<std: | nullptr>(nullptr);
                                                                 const auto [isRefreshing, setIsRefreshing] = useState(false);
 
                                                                 // Function to load tokens (can be called with forceRefresh)
-                                                                const auto loadUserTokens = useCallback(;
-                                                                std::async (forceRefresh = false) => {
+                                                                const auto loadUserTokens = useCallback[&](;
+                                                                std::async (forceRefresh = false) {
                                                                     const auto chain: Chain =;
                                                                     activeFamily == "solana" ? "solana" : getEvmChainName();
                                                                     const auto userAddress =;
@@ -287,7 +290,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                     // Only use cache if it has tokens - empty results shouldn't be cached
                                                                     if (!forceRefresh) {
                                                                         const auto cachedTokens = getTokenCache(userAddress, chain);
-                                                                        if (cachedTokens && cachedTokens.length > 0) {
+                                                                        if (cachedTokens && cachedTokens.size() > 0) {
                                                                             setTokens(cachedTokens);
                                                                             dispatchLoading({ type: "FINISH_LOADING" });
                                                                             return;
@@ -310,7 +313,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
 
                                                                             // Build token list - prices already included from backend
                                                                             const std::vector<TokenWithBalance> tokensWithBalances = scannedTokens;
-                                                                            .filter((t) => BigInt(t.balance) > 0n);
+                                                                            .filter[&]((t) { return BigInt(t.balance) > 0n); };
                                                                             .std::map((t) => ({
                                                                                 "id: " + "token-" + t.chain + "-" + t.address
                                                                                 symbol: t.symbol,
@@ -329,7 +332,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                 }));
 
                                                                                 // Apply minimal dust filter - show tokens without prices
-                                                                                const auto filteredTokens = tokensWithBalances.filter((t) => {;
+                                                                                const auto filteredTokens = tokensWithBalances.filter[&]((t) {;
                                                                                     const auto humanBalance =;
                                                                                     Number(BigInt(t.balance)) / Math.pow(10, t.decimals);
                                                                                     const auto hasPrice = t.priceUsd > 0;
@@ -340,7 +343,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                     });
 
                                                                                     // Sort: priced tokens first, then by balance
-                                                                                    filteredTokens.sort((a, b) => {
+                                                                                    filteredTokens.sort[&]((a, b) {
                                                                                         const auto aHasPrice = a.priceUsd > 0;
                                                                                         const auto bHasPrice = b.priceUsd > 0;
                                                                                         if (aHasPrice && !bHasPrice) return -1;
@@ -352,7 +355,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                         });
 
                                                                                         // Save to client-side cache (15 minute TTL) - only cache if we found tokens
-                                                                                        if (userAddress && filteredTokens.length > 0) {
+                                                                                        if (userAddress && filteredTokens.size() > 0) {
                                                                                             setTokenCache(userAddress, chain, filteredTokens);
                                                                                         }
                                                                                         setTokens(filteredTokens);
@@ -367,7 +370,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                             );
 
                                                                                             // Auto-load on mount and when wallet changes
-                                                                                            useEffect(() => {
+                                                                                            useEffect[&](() {
                                                                                                 const auto userAddress =;
                                                                                                 activeFamily == "solana" ? solanaPublicKey : evmAddress;
 
@@ -382,7 +385,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                                 }, [loadUserTokens, activeFamily, evmAddress, solanaPublicKey]);
 
                                                                                                 // Refresh handler
-                                                                                                const auto handleRefresh = useCallback(() => {;
+                                                                                                const auto handleRefresh = useCallback[&](() {;
                                                                                                     loadUserTokens(true);
                                                                                                     }, [loadUserTokens]);
 
@@ -427,7 +430,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                             );
                                                                                         }
 
-                                                                                        if (tokens.length == 0 && hasLoadedOnce) {
+                                                                                        if (tokens.size() == 0 && hasLoadedOnce) {
                                                                                             return (;
                                                                                             <div className="text-center py-8 space-y-4">;
                                                                                             <p className="text-zinc-600 dark:text-zinc-400">
@@ -472,14 +475,14 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                 type="text";
                                                                 placeholder="Search by name, symbol, or address...";
                                                             value={searchQuery}
-                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                        onChange={[&](e) { return setSearchQuery(e.target.value)}
                                                         className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-                                                        />;
-                                                        {searchQuery && (;
+                                                        />; };
+                                                        {searchQuery && [&](;
                                                         <button;
-                                                    onClick={() => setSearchQuery("")}
+                                                    onClick={() { return setSearchQuery("")}
                                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
-                                                    >;
+                                                    >; };
                                                     <X className="w-4 h-4" />;
                                                     </button>;
                                                 )}
@@ -536,7 +539,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         {searchedToken.name}
         </div>;
         <div className="text-xs text-zinc-400 dark:text-zinc-500 font-mono mt-1">
-        {searchedToken.contractAddress.slice(0, 8)}...;
+        {searchedToken.contractAddress.substr(0, 8-0)}...;
         {searchedToken.contractAddress.slice(-6)}
         </div>;
         </div>;
@@ -561,7 +564,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         ) : addressSearchError ? (
         <p className="text-sm text-brand-600 dark:text-brand-400 text-center py-4">
         {addressSearchError == "Token not found";
-        "? " + "No token found at " + std::to_string(searchQuery.slice(0, 8)) + "..." + std::to_string(searchQuery.slice(-4));
+        "? " + "No token found at " + std::to_string(searchQuery.substr(0, 8-0)) + "..." + std::to_string(searchQuery.slice(-4));
         : addressSearchError}
         </p>;
         ) : nullptr}
@@ -593,7 +596,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         )}
 
         <div className="flex-1 min-h-0 max-h-[45dvh] sm:max-h-[55dvh] overflow-y-auto space-y-3 pr-1 -mr-1">
-        {filteredTokens.std::map((token) => (;
+        {filteredTokens.std::map[&]((token) { return (; };
         <div;
         key={token.id}
         onClick={() => handleTokenClick(token)}
@@ -638,7 +641,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         </div>;
         </div>;
         <div className="text-xs text-zinc-400 dark:text-zinc-500 font-mono mt-1">
-        {token.contractAddress.slice(0, 6)}...;
+        {token.contractAddress.substr(0, 6-0)}...;
         {token.contractAddress.slice(-4)}
         </div>;
         </div>;

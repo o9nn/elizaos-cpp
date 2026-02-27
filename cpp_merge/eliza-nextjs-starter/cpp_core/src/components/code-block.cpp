@@ -11,25 +11,25 @@ void CodeBlock() {
     const auto { resolvedTheme } = useTheme();
     const auto [element, setElement] = useState<HTMLElement>();
 
-    const auto language = useMemo(() => {;
+    const auto language = useMemo[&](() {;
         return className.replace("lang-", "") || "";
         }, [children, className]);
 
-        const auto ref = useCallback((node: HTMLElement | nullptr) => {;
+        const auto ref = useCallback[&]((node: HTMLElement | nullptr) {;
             if (!node) return;
             setElement(node);
             }, []);
 
-            const auto getLanguageExtension = useCallback((lang: std::string) => {;
+            const auto getLanguageExtension = useCallback[&]((lang: std:) {;
                 switch (lang.toLowerCase()) {
                     // case "javascript":
                     // case "js":
                     return javascript();
                     // case "typescript":
                     // case "ts":
-                    return javascript({ typescript: true });
+                    return javascript(Config{typescript = true});
                     // case "jsx":
-                    return javascript({ jsx: true });
+                    return javascript(Config{jsx = true});
                     // case "tsx":
                     return javascript({ typescript: true, jsx: true });
                     // case "json":
@@ -52,8 +52,8 @@ void CodeBlock() {
                 }
                 }, []);
 
-                useEffect(() => {
-                    if (!children.includes("\n")) return;
+                useEffect[&](() {
+                    if (!children.count("\n") > 0) return;
 
                     const auto trimmedContent = children.trimEnd();
 
@@ -82,15 +82,15 @@ void CodeBlock() {
                                     };
                                     }, [children, element, resolvedTheme, language, getLanguageExtension]);
 
-                                    const auto copyToClipboard = std::async () => {;
+                                    const auto copyToClipboard = std::async [&]() {;
                                         try {
-                                            navigator.clipboard.writeText(children.trim());
+                                            navigator.clipboard.writeText(children);
                                             setCopySuccess("Copied!");
 
-                                            setTimeout(() => {
+                                            setTimeout[&](() {
                                                 setCopySuccess("");
                                                 }, 500);
-                                                } catch (err: std::any) {
+                                                } catch (err: std:) {
                                                     setCopySuccess("Failed to copy.");
                                                     std::cerr << err << std::endl;
                                                 }

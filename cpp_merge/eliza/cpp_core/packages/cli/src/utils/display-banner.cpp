@@ -1,14 +1,15 @@
 #include "display-banner.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getVersion() {
+std: getVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // For ESM modules we need to use import.meta.url instead of __dirname
-    const auto __filename = fileURLToPath(import.meta.url);
+    // For ESM modules we need to use "__FILE__" instead of __dirname
+    const auto __filename = fileURLToPath("__FILE__");
     const auto __dirname = dirname(__filename);
 
     // Find package.json relative to the current file
@@ -20,7 +21,7 @@ std::string getVersion() {
         std::cerr << "Warning: package.json not found at " + packageJsonPath << std::endl;
         } else {
             try {
-                const auto packageJson = /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
+                const auto packageJson = /* JSON::parse */ readFileSync(packageJsonPath, "utf-8");
                 version = packageJson.version || "0.0.0";
                 } catch (error) {
                     std::cerr << "Error reading or parsing package.json at " + packageJsonPath + ":" << error << std::endl;
@@ -30,16 +31,16 @@ std::string getVersion() {
 
 }
 
-std::string getCliInstallTag() {
+std: getCliInstallTag() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto version = getVersion();
-    if (version.includes('-alpha')) {
+    if (version.count('-alpha') > 0) {
         return "alpha";
         } else if ((std::find(version.begin(), version.end(), "beta") != version.end())) {
             return "beta";
         }
-        return ""; // Return empty std::string for stable or non-tagged versions (implies latest);
+        return ""; // Return empty std: for stable or non-tagged versions (implies latest);
 
 }
 
@@ -56,7 +57,7 @@ void isUtf8Locale() {
 
 }
 
-std::future<std::string> getLatestCliVersion(const std::string& currentVersion) {
+std::future<std:> getLatestCliVersion(const std:& currentVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -67,7 +68,7 @@ std::future<std::string> getLatestCliVersion(const std::string& currentVersion) 
 
         // Get the time data for all published versions to find the most recent
         const auto { stdout } = execa("npm", ["view", "@elizaos/cli", "time", "--json"]);
-        const auto timeData = /* JSON.parse */ stdout;
+        const auto timeData = /* JSON::parse */ stdout;
 
         // Remove metadata entries like 'created' and 'modified'
         delete timeData.created;
@@ -102,7 +103,7 @@ std::future<std::string> getLatestCliVersion(const std::string& currentVersion) 
 
 }
 
-void showUpdateNotification(const std::string& currentVersion, const std::string& latestVersion) {
+void showUpdateNotification(const std:& currentVersion, const std:& latestVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto blue = "\x1b[38;5;27m"; // Blue border to match ASCII art;
@@ -118,17 +119,17 @@ void showUpdateNotification(const std::string& currentVersion, const std::string
     std::cout << "" << std::endl;
     std::cout << border << std::endl;
     console.log(
-    blue + "│" + orange + " " + bold + "Update available:" + reset + orange + " " + currentVersion + " → " + green + bold + latestVersion + reset + orange + std::to_string(" ".repeat(width - 2 - ` Update available: ${currentVersion} → ${latestVersion}`.size())) + blue + "│" + reset
+    blue + "│" + orange + " " + bold + "Update available:" + reset + orange + " " + currentVersion + " → " + green + bold + latestVersion + reset + orange + std::to_string(" ".repeat(width - 2 - " Update available: " + std::to_string(currentVersion) + " → " + std::to_string(latestVersion) + "".size())) + blue + "│" + reset
     );
     console.log(
-    blue + "│" + orange + " Run " + green + bold + "bun i -g @elizaos/cli@latest" + reset + orange + " to get the latest features" + std::to_string(" ".repeat(width - 2 - ` Run bun i -g @elizaos/cli@latest to get the latest features`.size())) + blue + "│" + reset;
+    blue + "│" + orange + " Run " + green + bold + "bun i -g @elizaos/cli@latest" + reset + orange + " to get the latest features" + std::to_string(" ".repeat(width - 2 - " Run bun i -g @elizaos/cli@latest to get the latest features".size())) + blue + "│" + reset;
     );
     std::cout << border << std::endl;
     std::cout << "" << std::endl;
 
 }
 
-std::future<bool> checkAndShowUpdateNotification(const std::string& currentVersion) {
+std::future<bool> checkAndShowUpdateNotification(const std:& currentVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -163,54 +164,54 @@ std::future<void> displayBanner(bool skipUpdateCheck = false) {
     const auto version = getVersion();
 
     // if version includes "alpha" then use orange
-    if (version.includes('alpha')) {
+    if (version.count('alpha') > 0) {
         versionColor = orange;
     }
     const auto banners = [;
     //     // Banner 2
-    //     `
-    // ${b}          ###                                  ${w}  # ###       #######  ${r}
-    // ${b}         ###    #                            / ${w} /###     /       ###  ${r}
-    // ${b}          ##   ###                          /  ${w}/  ###   /         ##  ${r}
-    // ${b}          ##    #                          / ${w} ##   ###  ##        #   ${r}
-    // ${b}          ##                              /  ${w}###    ###  ###          ${r}
-    // ${b}   /##    ##  ###    ######      /###    ${w}##   ##     ## ## ###        ${r}
-    // ${b}  / ###   ##   ###  /#######    / ###  / ${w}##   ##     ##  ### ###      ${r}
-    // ${b} /   ###  ##    ## /      ##   /   ###/  ${w}##   ##     ##    ### ###    ${r}
-    // ${b}##    ### ##    ##        /   ##    ##   ${w}##   ##     ##      ### /##  ${r}
-    // ${b}########  ##    ##       /    ##    ##   ${w}##   ##     ##        #/ /## ${r}
-    // ${b}#######   ##    ##      ###   ##    ##   ${w} ##  ##     ##         #/ ## ${r}
-    // ${b}##        ##    ##       ###  ##    ##   ${w}  ## #      /           # /  ${r}
-    // ${b}####    / ##    ##        ### ##    /#   ${w}   ###     /  /##        /   ${r}
-    // ${b} ######/  ### / ### /      ##  ####/ ##  ${w}    ######/  /  ########/    ${r}
-    // ${b}  #####    ##/   ##/       ##   ###   ## ${w}      ###   /     #####      ${r}
-    // ${b}                           /             ${w}            |                ${r}
-    // ${b}                          /              ${w}             \)              ${r}
-    // ${b}                         /               ${w}                             ${r}
-    // ${b}                        /                ${w}                             ${r}
-    // `,
+    //     "
+    // " + std::to_string(b) + "          ###                                  " + std::to_string(w) + "  # ###       #######  " + std::to_string(r) + "
+    // " + std::to_string(b) + "         ###    #                            / " + std::to_string(w) + " /###     /       ###  " + std::to_string(r) + "
+    // " + std::to_string(b) + "          ##   ###                          /  " + std::to_string(w) + "/  ###   /         ##  " + std::to_string(r) + "
+    // " + std::to_string(b) + "          ##    #                          / " + std::to_string(w) + " ##   ###  ##        #   " + std::to_string(r) + "
+    // " + std::to_string(b) + "          ##                              /  " + std::to_string(w) + "###    ###  ###          " + std::to_string(r) + "
+    // " + std::to_string(b) + "   /##    ##  ###    ######      /###    " + std::to_string(w) + "##   ##     ## ## ###        " + std::to_string(r) + "
+    // " + std::to_string(b) + "  / ###   ##   ###  /#######    / ###  / " + std::to_string(w) + "##   ##     ##  ### ###      " + std::to_string(r) + "
+    // " + std::to_string(b) + " /   ###  ##    ## /      ##   /   ###/  " + std::to_string(w) + "##   ##     ##    ### ###    " + std::to_string(r) + "
+    // " + std::to_string(b) + "##    ### ##    ##        /   ##    ##   " + std::to_string(w) + "##   ##     ##      ### /##  " + std::to_string(r) + "
+    // " + std::to_string(b) + "########  ##    ##       /    ##    ##   " + std::to_string(w) + "##   ##     ##        #/ /## " + std::to_string(r) + "
+    // " + std::to_string(b) + "#######   ##    ##      ###   ##    ##   " + std::to_string(w) + " ##  ##     ##         #/ ## " + std::to_string(r) + "
+    // " + std::to_string(b) + "##        ##    ##       ###  ##    ##   " + std::to_string(w) + "  ## #      /           # /  " + std::to_string(r) + "
+    // " + std::to_string(b) + "####    / ##    ##        ### ##    /#   " + std::to_string(w) + "   ###     /  /##        /   " + std::to_string(r) + "
+    // " + std::to_string(b) + " ######/  ### / ### /      ##  ####/ ##  " + std::to_string(w) + "    ######/  /  ########/    " + std::to_string(r) + "
+    // " + std::to_string(b) + "  #####    ##/   ##/       ##   ###   ## " + std::to_string(w) + "      ###   /     #####      " + std::to_string(r) + "
+    // " + std::to_string(b) + "                           /             " + std::to_string(w) + "            |                " + std::to_string(r) + "
+    // " + std::to_string(b) + "                          /              " + std::to_string(w) + "             \)              " + std::to_string(r) + "
+    // " + std::to_string(b) + "                         /               " + std::to_string(w) + "                             " + std::to_string(r) + "
+    // " + std::to_string(b) + "                        /                " + std::to_string(w) + "                             " + std::to_string(r) + "
+    // ",
 
     //     // Banner 3
-    //     `
-    // ${b}      :::::::::::::      ::::::::::::::::::::    ::: ${w}    ::::::::  :::::::: ${r}
-    // ${b}     :+:       :+:          :+:         :+:   :+: :+:${w}  :+:    :+::+:    :+: ${r}
-    // ${b}    +:+       +:+          +:+        +:+   +:+   +:+${w} +:+    +:++:+         ${r}
-    // ${b}   +#++:++#  +#+          +#+       +#+   +#++:++#++:${w}+#+    +:++#++:++#++   ${r}
-    // ${b}  +#+       +#+          +#+      +#+    +#+     +#+${w}+#+    +#+       +#+    ${r}
-    // ${b} #+#       #+#          #+#     #+#     #+#     #+##${w}+#    #+##+#    #+#     ${r}
-    // ${b}##########################################     #### ${w}#######  ########       ${r}`,
+    //     "
+    // " + std::to_string(b) + "      :::::::::::::      ::::::::::::::::::::    ::: " + std::to_string(w) + "    ::::::::  :::::::: " + std::to_string(r) + "
+    // " + std::to_string(b) + "     :+:       :+:          :+:         :+:   :+: :+:" + std::to_string(w) + "  :+:    :+::+:    :+: " + std::to_string(r) + "
+    // " + std::to_string(b) + "    +:+       +:+          +:+        +:+   +:+   +:+" + std::to_string(w) + " +:+    +:++:+         " + std::to_string(r) + "
+    // " + std::to_string(b) + "   +#++:++#  +#+          +#+       +#+   +#++:++#++:" + std::to_string(w) + "+#+    +:++#++:++#++   " + std::to_string(r) + "
+    // " + std::to_string(b) + "  +#+       +#+          +#+      +#+    +#+     +#+" + std::to_string(w) + "+#+    +#+       +#+    " + std::to_string(r) + "
+    // " + std::to_string(b) + " #+#       #+#          #+#     #+#     #+#     #+##" + std::to_string(w) + "+#    #+##+#    #+#     " + std::to_string(r) + "
+    // " + std::to_string(b) + "##########################################     #### " + std::to_string(w) + "#######  ########       " + std::to_string(r) + "",
 
-    `;
-    ${b}⠀⠀⠀⠀⠀⠀⠀⠀⢀⣐⣿⣿⢰⡀⠀⠀⠀${w} ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${w}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${r}
-    ${b}⠀⠀⠀⠀⠀⢀⣴⠤⠾⠛⠛⣿⣶⣇⠀⠀⡆${w} ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${w}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${r}
-    ${b}⢰⣋⡳⡄⠀⢨⣭⡀⠀⡤⠀⣀⣝⢿⣶⣿⡅${w} ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${w}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${r}
-    ${b}⢸⣯⠀⣇⠀⣼⣿⣿⣆⢷⣴⣿⣿⡏⣛⡉⠀${w} ⢸⣿⣿⣿⣿⣿⣿⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⣾⣿⣿⣧⠀⠀⠀${w}⢸⠟⢀⣴⣿⣿⣿⣿⣦⡀⣠⣾⣿⣿⣿⣿⣦⡙⢿${r}
-    ${b}⠀⠙⢷⣮⢸⣿⣿⣿⣿⣷⣯⣟⣏⣼⣷⣅⠾${w} ⢸⣿⣇⣀⣀⣀⠀⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⣠⣿⣿⠟⠁⠀⠀⣼⣿⡟⣿⣿⣆⠀⠀${w}⠀⠀⣿⣿⠋⠀⠈⠻⣿⡇⣿⣿⣅⣀⣀⡛⠛⠃⠀${r}
-    ${b}⠀⠀⠀⠁⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⠀${w} ⢸⣿⡿⠿⠿⠿⠀⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⣠⣾⣿⠟⠁⠀⠀⠀⣰⣿⣿⣁⣸⣿⣿⡄⠀${w}⠀⠀⣿⣿ ⠀⠀ ⣿⣿⢈⣛⠿⠿⠿⣿⣷⡄⠀${r}
-    ${b}⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣉⡟⠀⠀${w} ⢸⣿⣧⣤⣤⣤⣤⢸⣿⣿⣦⣤⣤⣤⡄⣿⣿⡇⣾⣿⣿⣧⣤⣤⣤⡄⢰⣿⣿⠟⠛⠛⠻⣿⣿⡄${w}⢠⡀⠻⣿⣿⣦⣴⣿⣿⠇⢿⣿⣦⣤⣤⣿⣿⠇⣠${r}
-    ${b}⠀⠀⠀⠀⢰⡈⠛⠿⣿⣿⣿⣿⣿⠋⠀  ${w} ⠘⠛⠛⠛⠛⠛⠛⠈⠛⠛⠛⠛⠛⠛⠃⠛⠛⠃⠛⠛⠛⠛⠛⠛⠛⠃⠛⠛⠃⠀⠀⠀⠀⠙⠛⠃${w}⠘⠛⠀⠈⠛⠛⠛⠛⠁⠀⠀⠙⠛⠛⠛⠛⠁⠚⠛${r}
-    ${b}⠀⠀⠀⠀⢸⣿⡦⠀⠀⠉⠛⠿⠃⠀⠀⠀ ${w} ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${w}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀${r}
-    `,
+    ";
+    " + std::to_string(b) + "⠀⠀⠀⠀⠀⠀⠀⠀⢀⣐⣿⣿⢰⡀⠀⠀⠀" + std::to_string(w) + " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(w) + "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠀⠀⠀⠀⢀⣴⠤⠾⠛⠛⣿⣶⣇⠀⠀⡆" + std::to_string(w) + " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(w) + "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(r) + "
+    " + std::to_string(b) + "⢰⣋⡳⡄⠀⢨⣭⡀⠀⡤⠀⣀⣝⢿⣶⣿⡅" + std::to_string(w) + " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(w) + "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(r) + "
+    " + std::to_string(b) + "⢸⣯⠀⣇⠀⣼⣿⣿⣆⢷⣴⣿⣿⡏⣛⡉⠀" + std::to_string(w) + " ⢸⣿⣿⣿⣿⣿⣿⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⣾⣿⣿⣧⠀⠀⠀" + std::to_string(w) + "⢸⠟⢀⣴⣿⣿⣿⣿⣦⡀⣠⣾⣿⣿⣿⣿⣦⡙⢿" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠙⢷⣮⢸⣿⣿⣿⣿⣷⣯⣟⣏⣼⣷⣅⠾" + std::to_string(w) + " ⢸⣿⣇⣀⣀⣀⠀⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⠀⠀⣠⣿⣿⠟⠁⠀⠀⣼⣿⡟⣿⣿⣆⠀⠀" + std::to_string(w) + "⠀⠀⣿⣿⠋⠀⠈⠻⣿⡇⣿⣿⣅⣀⣀⡛⠛⠃⠀" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠀⠀⠁⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋⠀" + std::to_string(w) + " ⢸⣿⡿⠿⠿⠿⠀⢸⣿⣿⠀⠀⠀⠀⠀⣿⣿⡇⠀⣠⣾⣿⠟⠁⠀⠀⠀⣰⣿⣿⣁⣸⣿⣿⡄⠀" + std::to_string(w) + "⠀⠀⣿⣿ ⠀⠀ ⣿⣿⢈⣛⠿⠿⠿⣿⣷⡄⠀" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣉⡟⠀⠀" + std::to_string(w) + " ⢸⣿⣧⣤⣤⣤⣤⢸⣿⣿⣦⣤⣤⣤⡄⣿⣿⡇⣾⣿⣿⣧⣤⣤⣤⡄⢰⣿⣿⠟⠛⠛⠻⣿⣿⡄" + std::to_string(w) + "⢠⡀⠻⣿⣿⣦⣴⣿⣿⠇⢿⣿⣦⣤⣤⣿⣿⠇⣠" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠀⠀⠀⢰⡈⠛⠿⣿⣿⣿⣿⣿⠋⠀  " + std::to_string(w) + " ⠘⠛⠛⠛⠛⠛⠛⠈⠛⠛⠛⠛⠛⠛⠃⠛⠛⠃⠛⠛⠛⠛⠛⠛⠛⠃⠛⠛⠃⠀⠀⠀⠀⠙⠛⠃" + std::to_string(w) + "⠘⠛⠀⠈⠛⠛⠛⠛⠁⠀⠀⠙⠛⠛⠛⠛⠁⠚⠛" + std::to_string(r) + "
+    " + std::to_string(b) + "⠀⠀⠀⠀⢸⣿⡦⠀⠀⠉⠛⠿⠃⠀⠀⠀ " + std::to_string(w) + " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(w) + "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀" + std::to_string(r) + "
+    ",
     ];
 
     // Randomly select and log one banner

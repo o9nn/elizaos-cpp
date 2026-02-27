@@ -1,4 +1,7 @@
 #include "index.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -25,7 +28,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
         // Standard multi-step loop (wallet already exists)
         while (iterationCount < maxIterations) {
             iterationCount++;
-            runtime.logger.debug(`[MultiStep] Starting iteration ${iterationCount}/${maxIterations}`);
+            runtime.logger.debug("[MultiStep] Starting iteration " + std::to_string(iterationCount) + "/" + std::to_string(maxIterations) + "");
 
             accumulatedState = runtime.composeState(message, [;
             "RECENT_MESSAGES",
@@ -49,8 +52,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                     // Retry logic for parsing failures
                     const auto maxParseRetries = parseInt(runtime.getSetting("MULTISTEP_PARSE_RETRIES") || "5");
-                    std::string stepResultRaw = "";
-                    std::any parsedStep = nullptr;
+                    std: stepResultRaw = "";
+                    std: parsedStep = nullptr;
 
                     for (int parseAttempt = 1; parseAttempt <= maxParseRetries; parseAttempt++) {
                         try {
@@ -72,7 +75,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                     if (parseAttempt < maxParseRetries) {
                                         // Small delay before retry
-                                        new Promise((resolve) => setTimeout(resolve, 1000));
+                                        new Promise[&]((resolve) { return setTimeout(resolve, 1000)); };
                                     }
                                 }
                                 } catch (error) {
@@ -82,7 +85,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                     if (parseAttempt >= maxParseRetries) {
                                         throw;
                                     }
-                                    new Promise((resolve) => setTimeout(resolve, 1000));
+                                    new Promise[&]((resolve) { return setTimeout(resolve, 1000)); };
                                 }
                             }
 
@@ -103,7 +106,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                 // If no action to execute, check if we should finish
                                 if (!action) {
                                     if (isFinish == 'true' || isFinish == true) {
-                                        runtime.logger.info(`[MultiStep] Task marked as complete at iteration ${iterationCount}`);
+                                        runtime.logger.info("[MultiStep] Task marked as complete at iteration " + std::to_string(iterationCount) + "");
                                         if (callback) {
                                             callback({
                                                 text: "",
@@ -121,27 +124,27 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                         try {
                                             // ensure workingMemory exists on accumulatedState
-                                            if (!accumulatedState.data) accumulatedState.data = {} as std::any;
-                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as std::any;
+                                            if (!accumulatedState.data) accumulatedState.data = {} as std:;
+                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as std:;
 
                                             // Parse and store parameters if provided
                                             auto actionParams = {};
                                             if (parameters) {
                                                 if (typeof parameters == 'string') {
                                                     try {
-                                                        actionParams = /* JSON.parse */ parameters;
-                                                        runtime.logger.debug(`[MultiStep] Parsed parameters: ${JSON.stringify(actionParams)}`);
+                                                        actionParams = /* JSON::parse */ parameters;
+                                                        runtime.logger.debug("[MultiStep] Parsed parameters: " + std::to_string(nlohmann::json().dump(actionParams)) + "");
                                                         } catch (e) {
-                                                            runtime.logger.warn(`[MultiStep] Failed to parse parameters JSON: ${parameters}`);
+                                                            runtime.logger.warn("[MultiStep] Failed to parse parameters JSON: " + std::to_string(parameters) + "");
                                                         }
                                                         } else if (typeof parameters == "object") {
                                                             actionParams = parameters;
-                                                            runtime.logger.debug(`[MultiStep] Using parameters object: ${JSON.stringify(actionParams)}`);
+                                                            runtime.logger.debug("[MultiStep] Using parameters object: " + std::to_string(nlohmann::json().dump(actionParams)) + "");
                                                         }
                                                     }
 
                                                     // Store parameters in state for action to consume
-                                                    if (action && Object.keys(actionParams).length > 0) {
+                                                    if (action && Object.keys(actionParams).size() > 0) {
                                                         accumulatedState.data.actionParams = actionParams;
 
                                                         // Also support action-specific namespaces for backwards compatibility
@@ -154,7 +157,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                             };
 
                                                             runtime.logger.info(
-                                                            "[MultiStep] Stored parameters for " + action + ": " + std::to_string(/* JSON.stringify */ std::string(actionParams))
+                                                            "[MultiStep] Stored parameters for " + action + ": " + std::to_string(/* JSON.stringify */ std:(actionParams))
                                                             );
                                                         }
 
@@ -176,7 +179,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                                     },
                                                                     ],
                                                                     accumulatedState,
-                                                                    std::async () => {
+                                                                    std::async [&]() {
                                                                         return [];
                                                                     }
                                                                     );
@@ -195,7 +198,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                                         });
 
                                                                         // Refresh state after action execution to keep prompts and action results in sync
-                                                                        runtime.logger.debug(`[MultiStep] Refreshing state after action ${action}`);
+                                                                        runtime.logger.debug("[MultiStep] Refreshing state after action " + std::to_string(action) + "");
                                                                         accumulatedState = refreshStateAfterAction(;
                                                                         runtime,
                                                                         message,
@@ -214,7 +217,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                                                         // After executing actions, check if we should finish
                                                                         if (isFinish == 'true' || isFinish == true) {
-                                                                            runtime.logger.info(`[MultiStep] Task marked as complete at iteration ${iterationCount} after executing action`);
+                                                                            runtime.logger.info("[MultiStep] Task marked as complete at iteration " + std::to_string(iterationCount) + " after executing action");
                                                                             if (callback) {
                                                                                 callback({
                                                                                     text: "",
@@ -239,8 +242,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                                                             // Retry logic for summary parsing failures
                                                                             const auto maxSummaryRetries = parseInt(runtime.getSetting("MULTISTEP_SUMMARY_PARSE_RETRIES") || "5");
-                                                                            std::string finalOutput = "";
-                                                                            std::any summary = nullptr;
+                                                                            std: finalOutput = "";
+                                                                            std: summary = nullptr;
 
                                                                             for (int summaryAttempt = 1; summaryAttempt <= maxSummaryRetries; summaryAttempt++) {
                                                                                 try {
@@ -262,7 +265,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                                                                             if (summaryAttempt < maxSummaryRetries) {
                                                                                                 // Small delay before retry
-                                                                                                new Promise((resolve) => setTimeout(resolve, 1000));
+                                                                                                new Promise[&]((resolve) { return setTimeout(resolve, 1000)); };
                                                                                             }
                                                                                         }
                                                                                         } catch (error) {
@@ -273,7 +276,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                                                                 runtime.logger.warn('[MultiStep] Failed to generate summary after all retries, using fallback');
                                                                                                 break;
                                                                                             }
-                                                                                            new Promise((resolve) => setTimeout(resolve, 1000));
+                                                                                            new Promise[&]((resolve) { return setTimeout(resolve, 1000)); };
                                                                                         }
                                                                                     }
 

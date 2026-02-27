@@ -1,10 +1,13 @@
 #include "oracle-finder-solana.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std::string& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try Pyth first (most reliable)
@@ -29,7 +32,7 @@ std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std::string&
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std::string& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Pyth API for price feed
@@ -43,7 +46,7 @@ std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std::string& tok
 
     const auto data = response.json();
 
-    if (data && data.length > 0) {
+    if (data && data.size() > 0) {
         const auto feed = data[0];
         return {
             type: "pyth",
@@ -59,7 +62,7 @@ std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std::string& tok
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std::string& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Jupiter API for available routes
@@ -73,7 +76,7 @@ std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std::string& 
 
     const auto data = response.json();
 
-    if (data && data.routePlan && data.routePlan.length > 0) {
+    if (data && data.routePlan && data.routePlan.size() > 0) {
         // Extract pool address from route
         const auto firstRoute = data.routePlan[0];
 
@@ -89,7 +92,7 @@ std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std::string& 
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std:& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Raydium API for pools (RPC connection not needed for API calls)
@@ -100,10 +103,10 @@ std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& 
     }
 
     interface RaydiumPool {
-        baseMint: std::string;
-        quoteMint: std::string;
-        ammId: std::string;
-        liquidity?: std::string;
+        baseMint: std:;
+        quoteMint: std:;
+        ammId: std:;
+        liquidity?: std:;
     }
     const std::vector<RaydiumPool> pools = response.json();
 
@@ -143,12 +146,12 @@ std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& 
 void validateSolanaOracle(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    valid: boolean;
-    message: std::string;
+    valid;
+    message: std:;
 
 }
 
-std::string formatOracleInfo(SolanaOracleInfo oracle) {
+std: formatOracleInfo(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tvl = oracle.liquidity;
@@ -175,12 +178,12 @@ std::string formatOracleInfo(SolanaOracleInfo oracle) {
 void getSolanaRegistrationCost() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    sol: number;
-    usd: number;
+    sol;
+    usd;
     breakdown: {
-        accountCreation: number;
-        programExecution: number;
-        infrastructure: number;
+        accountCreation;
+        programExecution;
+        infrastructure;
         };
 
 }

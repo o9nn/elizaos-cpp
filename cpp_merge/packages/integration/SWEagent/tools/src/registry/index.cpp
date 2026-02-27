@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/registry/index.h"
 
 EnvRegistry::EnvRegistry(string envFile) {
-    this->envFile = OR((OR((envFile), (process->env->SWE_AGENT_ENV_FILE))), (path->join(os::homedir(), std::string(".swe-agent-env"))));
+    this->envFile = OR((OR((envFile), (process->env->SWE_AGENT_ENV_FILE))), (path->join(os::homedir(), std:(".swe-agent-env"))));
     this->loadData();
 }
 
@@ -10,12 +10,12 @@ void EnvRegistry::loadData()
     if (fs::existsSync(this->envFile)) {
         try
         {
-            auto content = fs::readFileSync(this->envFile, std::string("utf-8"));
+            auto content = fs::readFileSync(this->envFile, std:("utf-8"));
             this->data = JSON->parse(content);
         }
         catch (const any& error)
         {
-            console->error(std::string("Error reading registry file: ") + error + string_empty);
+            console->error(std:("Error reading registry file: ") + error + string_empty);
             this->data = object{};
         }
     } else {
@@ -30,14 +30,14 @@ void EnvRegistry::saveData()
         auto dir = path->dirname(this->envFile);
         if (!fs::existsSync(dir)) {
             fs::mkdirSync(dir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             });
         }
         fs::writeFileSync(this->envFile, JSON->stringify(this->data, nullptr, 2));
     }
     catch (const any& error)
     {
-        console->error(std::string("Error writing registry file: ") + error + string_empty);
+        console->error(std:("Error writing registry file: ") + error + string_empty);
     }
 }
 
@@ -72,26 +72,26 @@ Record<string, any> EnvRegistry::getAll()
 
 void setupCLI()
 {
-    program->name(std::string("registry"))->description(std::string("Environment registry management"))->version(std::string("1.0.0"));
-    program->command(std::string("get <key>"))->description(std::string("Get a value from the registry"))->option(std::string("-d, --default <value>"), std::string("Default value if key not found"))->action([=](auto key, auto options) mutable
+    program->name(std:("registry"))->description(std:("Environment registry management"))->version(std:("1.0.0"));
+    program->command(std:("get <key>"))->description(std:("Get a value from the registry"))->option(std:("-d, --default <value>"), std:("Default value if key not found"))->action([=](auto key, auto options) mutable
     {
         auto value = registry->get(key, OR((options["default"]), (string_empty)));
         console->log(value);
     }
     );
-    program->command(std::string("set <key> <value>"))->description(std::string("Set a value in the registry"))->action([=](auto key, auto value) mutable
+    program->command(std:("set <key> <value>"))->description(std:("Set a value in the registry"))->action([=](auto key, auto value) mutable
     {
         registry->set(key, value);
-        console->log(std::string("Set ") + key + std::string(" = ") + value + string_empty);
+        console->log(std:("Set ") + key + std:(" = ") + value + string_empty);
     }
     );
-    program->command(std::string("delete <key>"))->description(std::string("Delete a key from the registry"))->action([=](auto key) mutable
+    program->command(std:("delete <key>"))->description(std:("Delete a key from the registry"))->action([=](auto key) mutable
     {
         registry->delete(key);
-        console->log(std::string("Deleted ") + key + string_empty);
+        console->log(std:("Deleted ") + key + string_empty);
     }
     );
-    program->command(std::string("list"))->description(std::string("List all registry entries"))->action([=]() mutable
+    program->command(std:("list"))->description(std:("List all registry entries"))->action([=]() mutable
     {
         auto all = registry->getAll();
         console->log(JSON->stringify(all, nullptr, 2));
@@ -105,7 +105,7 @@ std::shared_ptr<EnvRegistry> registry = std::make_shared<EnvRegistry>();
 
 void Main(void)
 {
-    if (OR((require->main == module), (require->main->filename->endsWith(std::string("/bin/registry"))))) {
+    if (OR((require->main == module), (require->main->filename->endsWith(std:("/bin/registry"))))) {
         setupCLI();
     }
 }

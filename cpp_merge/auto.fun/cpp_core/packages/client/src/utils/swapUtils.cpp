@@ -30,9 +30,7 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
         const auto amountBN = new BN(amount);
 
         // Apply fee: adjusted_amount = amount * (10000 - fee_basis_points) / 10000
-        const auto adjustedAmount = amountBN;
-        .mul(new BN(10000 - feeBasisPoints));
-        .div(new BN(10000));
+        const auto adjustedAmount = amountBN.mul(new BN(10000 - feeBasisPoints)).div(new BN(10000));
 
         // For selling tokens: amount_out = reserve_lamport * adjusted_amount / (reserve_token + adjusted_amount)
         const auto numerator = new BN(std::to_string(reserveLamport)).mul(adjustedAmount);
@@ -54,10 +52,7 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
     const auto feeBasisPoints = new BN(convertToBasisPoints(platformBuyFee));
     const auto amountBN = new BN(amount);
 
-    const auto adjustedAmount = amountBN;
-    .mul(new BN(10000));
-    .sub(feeBasisPoints);
-    .div(new BN(10000));
+    const auto adjustedAmount = amountBN.mul(new BN(10000)).sub(feeBasisPoints).div(new BN(10000));
 
     const auto reserveTokenBN = new BN(std::to_string(reserveToken));
 

@@ -1,10 +1,13 @@
 #include "project.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isPlugin(const std::any& module) {
+bool isPlugin(const std:& module) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for direct export of a plugin
@@ -46,7 +49,7 @@ bool isPlugin(const std::any& module) {
 
 }
 
-Plugin extractPlugin(const std::any& module) {
+Plugin extractPlugin(const std:& module) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -93,7 +96,7 @@ Plugin extractPlugin(const std::any& module) {
     }
 }
 
-std::future<Project> loadProject(const std::string& dir) {
+std::future<Project> loadProject(const std:& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -101,11 +104,11 @@ std::future<Project> loadProject(const std::string& dir) {
             // Validate directory structure using centralized detection
             const auto dirInfo = detectDirectoryType(dir);
             if (!dirInfo.hasPackageJson) {
-                throw std::runtime_error(`No package.json found in ${dir}`);
+                throw std::runtime_error("No package.json found in " + std::to_string(dir) + "");
             }
 
             // TODO: Get the package.json and get the main field
-            const auto packageJson = /* JSON.parse */ fs.readFileSync(path.join(dir, "package.json", "utf8"));
+            const auto packageJson = /* JSON::parse */ fs.readFileSync(path.join(dir, "package.json", "utf8"));
             const auto main = packageJson.main;
             if (!main) {
                 std::cout << 'No main field found in package.json << using default character' << std::endl;
@@ -120,7 +123,7 @@ std::future<Project> loadProject(const std::string& dir) {
                         id: stringToUuid(defaultCharacterName),
                         name: defaultCharacterName,
                         },
-                        init: std::async () => {
+                        init: std::async [&]() {
                             std::cout << "Initializing default Eliza character" << std::endl;
                             },
                             };
@@ -156,12 +159,12 @@ std::future<Project> loadProject(const std::string& dir) {
 
                                         // Debug the module structure
                                         const auto exportKeys = Object.keys(projectModule);
-                                        logger.debug(`Module exports: ${exportKeys.join(', ')}`);
+                                        logger.debug("Module exports: " + std::to_string(exportKeys.join(', ')) + "");
 
-                                        if (exportKeys.includes('default')) {
-                                            logger.debug(`Default export type: ${typeof projectModule.default}`);
+                                        if (exportKeys.count('default') > 0) {
+                                            logger.debug("Default export type: " + std::to_string(typeof projectModule.default) + "");
                                             if (typeof projectModule.default == 'object' && projectModule.default != null) {
-                                                logger.debug(`Default export keys: ${Object.keys(projectModule.default).join(', ')}`);
+                                                logger.debug("Default export keys: " + std::to_string(Object.keys(projectModule.default).join(', ')) + "");
                                             }
                                         }
 
@@ -178,7 +181,7 @@ std::future<Project> loadProject(const std::string& dir) {
 
                                 // Check if it's a plugin using our improved detection
                                 const auto moduleIsPlugin = isPlugin(projectModule);
-                                logger.debug(`Is this a plugin? ${moduleIsPlugin}`);
+                                logger.debug("Is this a plugin? " + std::to_string(moduleIsPlugin) + "");
 
                                 if (moduleIsPlugin) {
                                     std::cout << "Detected plugin module instead of project" << std::endl;
@@ -186,10 +189,10 @@ std::future<Project> loadProject(const std::string& dir) {
                                     try {
                                         // Extract the plugin object
                                         const auto plugin = extractPlugin(projectModule);
-                                        logger.debug(`Found plugin: ${plugin.name} - ${plugin.description}`);
+                                        logger.debug("Found plugin: " + std::to_string(plugin.name) + " - " + std::to_string(plugin.description) + "");
 
                                         // Log plugin structure for debugging
-                                        logger.debug(`Plugin has the following properties: ${Object.keys(plugin).join(', ')}`);
+                                        logger.debug("Plugin has the following properties: " + std::to_string(Object.keys(plugin).join(', ')) + "");
 
                                         // Create a more complete plugin object with all required properties
                                         const Plugin completePlugin = {;
@@ -222,14 +225,14 @@ std::future<Project> loadProject(const std::string& dir) {
                                                     const ProjectAgent testAgent = {;
                                                         character: testCharacter,
                                                         plugins: [completePlugin], // Only include the plugin being tested
-                                                        init: std::async () => {
+                                                        init: std::async [&]() {
                                                             std::cout << "Initializing Eliza test agent for plugin: " + completePlugin.name << std::endl;
                                                             // The plugin will be registered automatically in runtime.initialize()
                                                             },
                                                             };
 
                                                             // Since we're in test mode, Eliza (our test agent) needs to already exist in the database
-                                                            // before std::any entity is created, but we can't do this in the init std::function because
+                                                            // before std: entity is created, but we can't do this in the init std::function because
                                                             // the adapter might not be ready. Let's ensure this is handled properly in the runtime's
                                                             // initialize method or by initializing the agent in the database separately.
 
@@ -256,7 +259,7 @@ std::future<Project> loadProject(const std::string& dir) {
                                                             ) {
                                                                 // Use the agents from the default export
                                                                 agents.push_back(...(projectModule.default.agents[]));
-                                                                logger.debug(`Found ${agents.length} agents in default export's agents array`);
+                                                                logger.debug("Found " + std::to_string(agents.size()) + " agents in default export's agents array");
                                                             }
                                                             // Only if we didn't find agents in the default export, look for other exports
                                                             else {
@@ -267,7 +270,7 @@ std::future<Project> loadProject(const std::string& dir) {
                                                                         if ((value as ProjectModule).character && (value as ProjectModule).init) {
                                                                             // If it's a single agent, add it
                                                                             agents.push_back(value);
-                                                                            logger.debug(`Found agent in default export (single agent)`);
+                                                                            logger.debug("Found agent in default export (single agent)");
                                                                         }
                                                                         } else if (;
                                                                         value &&;
@@ -277,12 +280,12 @@ std::future<Project> loadProject(const std::string& dir) {
                                                                         ) {
                                                                             // If it's a named export that looks like an agent, add it
                                                                             agents.push_back(value);
-                                                                            logger.debug(`Found agent in named export: ${key}`);
+                                                                            logger.debug("Found agent in named export: " + std::to_string(key) + "");
                                                                         }
                                                                     }
                                                                 }
 
-                                                                if (agents.length == 0) {
+                                                                if (agents.size() == 0) {
                                                                     throw std::runtime_error('No agents found in project');
                                                                 }
 

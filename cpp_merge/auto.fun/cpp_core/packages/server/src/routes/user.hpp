@@ -32,11 +32,11 @@ namespace elizaos {
  // Ensure logger is imported and correct path for getRpcUrl
 
 // --- Random Name Generation (Using Library) ---
-std::string generateRandomName();
+std: generateRandomName();
 // --- End Random Name Generation ---
 
 // --- Helper: Ensure User Profile ---
-std::future<User> ensureUserProfile(const std::string& address);
+std::future<User> ensureUserProfile(const std:& address);
 // --- End Helper ---
 
     // Ensure your auth middleware populates this structure
@@ -72,7 +72,7 @@ std::future<User> ensureUserProfile(const std::string& address);
 
         // Ensure profile exists before attempting update
 
-        // Validate Display Name (Allow clearing by setting to null or empty std::string)
+        // Validate Display Name (Allow clearing by setting to null or empty std:)
                  // Allow clearing the display name - std::set to null in DB
                  // If you want to re-generate random on clear, handle that elsewhere
         

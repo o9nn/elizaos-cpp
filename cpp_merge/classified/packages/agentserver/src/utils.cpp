@@ -2,10 +2,10 @@
 
 string expandTildePath(string filepath)
 {
-    if (OR((!filepath), (type_of(filepath) != std::string("string")))) {
+    if (OR((!filepath), (type_of(filepath) != std:("string")))) {
         return filepath;
     }
-    if (filepath->startsWith(std::string("~"))) {
+    if (filepath->startsWith(std:("~"))) {
         return path->join(process->cwd(), filepath->slice(1));
     }
     return filepath;
@@ -17,10 +17,10 @@ string resolvePgliteDir(string dir, string fallbackDir)
     if (AND((dir), (dir->trim()))) {
         return expandTildePath(dir);
     }
-    auto envFile = std::string(".env");
+    auto envFile = std:(".env");
     if (fs->existsSync(envFile)) {
         dotenv->config(object{
-            object::pair{std::string("path"), envFile}
+            object::pair{std:("path"), envFile}
         });
     }
     auto envDir = process->env->PGLITE_DIR;
@@ -30,7 +30,7 @@ string resolvePgliteDir(string dir, string fallbackDir)
     if (fallbackDir) {
         return expandTildePath(fallbackDir);
     }
-    return expandTildePath(std::string("~/eliza/data"));
+    return expandTildePath(std:("~/eliza/data"));
 };
 
 

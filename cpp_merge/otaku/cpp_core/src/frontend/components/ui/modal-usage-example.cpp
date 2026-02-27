@@ -11,13 +11,13 @@ void ExampleSimpleModal() {
     const auto modalId = "simple-modal";
 
     const auto handleOpenModal = [&]() {;
-        showModal(;
+        showModal[&](;
         <div className="space-y-4">;
         <h3 className="text-lg font-semibold">Simple Modal Example</h3>;
         <p className="text-muted-foreground">;
         This is a simple modal without using createPortal!;
         </p>;
-        <Button onClick={() => hideModal(modalId)}>;
+        <Button onClick={() { return hideModal(modalId)}>; };
         Close;
         </Button>;
         </div>,
@@ -56,7 +56,7 @@ void ExampleFormModal() {
                 hideModal(modalId);
                 };
 
-                return (;
+                return [&](;
                 <div className="space-y-4">;
                 <div className="flex items-center justify-between">;
                 <h3 className="text-lg font-semibold">Form Example</h3>;
@@ -68,8 +68,8 @@ void ExampleFormModal() {
                 type="text";
                 placeholder="Enter your name";
             value={name}
-        onChange={(e) => setName(e.target.value)}
-        />;
+        onChange={(e) { return setName(e.target.value)}
+        />; };
         </div>;
 
         <div className="space-y-2">;
@@ -78,14 +78,14 @@ void ExampleFormModal() {
         type="email";
         placeholder="Enter your email";
     value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    />;
+    onChange={[&](e) { return setEmail(e.target.value)}
+    />; };
     </div>;
 
     <div className="flex gap-2">;
     <Button;
-    onClick={() => hideModal(modalId)}
-    variant="outline";
+    onClick={[&]() { return hideModal(modalId)}
+    variant="outline"; };
     className="flex-1";
     >;
     Cancel;
@@ -128,7 +128,7 @@ void ExampleConfirmationModal() {
     const auto modalId = "confirm-modal";
 
     const auto handleDeleteAction = [&]() {;
-        showModal(;
+        showModal[&](;
         <div className="space-y-4">;
         <h3 className="text-lg font-semibold text-destructive">;
         Confirm Delete;
@@ -138,14 +138,14 @@ void ExampleConfirmationModal() {
         </p>;
         <div className="flex gap-2">;
         <Button;
-    onClick={() => hideModal(modalId)}
-    variant="outline";
+    onClick={() { return hideModal(modalId)}
+    variant="outline"; };
     className="flex-1";
     >;
     Cancel;
     </Button>;
     <Button;
-    onClick={() => {
+    onClick={[&]() {
         std::cout << "Item deleted!" << std::endl;
         hideModal(modalId);
     }}
@@ -180,13 +180,13 @@ void ExampleCustomStyledModal() {
     const auto modalId = "custom-modal";
 
     const auto handleOpenCustomModal = [&]() {;
-        showModal(;
+        showModal[&](;
         <div className="space-y-4">;
         <h3 className="text-lg font-semibold">Custom Styled Modal</h3>;
         <p className="text-muted-foreground">;
         This modal has custom width and styling!;
         </p>;
-        <Button onClick={() => hideModal(modalId)}>;
+        <Button onClick={() { return hideModal(modalId)}>; };
         Close;
         </Button>;
         </div>,
@@ -227,7 +227,7 @@ void MyComponent() {
 
     *   const { showModal } = useModal();
     *
-    *   const handleOpenSendModal = () => {
+    *   const handleOpenSendModal = [&]() {
     *     showModal(
     *       <SendModalContent
     *         tokens={tokens}
@@ -235,7 +235,7 @@ void MyComponent() {
     *         onSuccess={handleSuccess}
     *       />,
     *       'send-modal',
-    *       { closeOnBackdropClick: true }
+    *       Config{closeOnBackdropClick = true}
     *     );
     *   };
     *

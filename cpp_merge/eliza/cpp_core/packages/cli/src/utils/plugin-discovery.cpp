@@ -1,4 +1,6 @@
 #include "plugin-discovery.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,7 +16,7 @@ std::future<std::optional<CachedRegistry>> fetchPluginRegistry() {
             );
             if (!resp.ok) {
                 std::cerr << "Failed to fetch plugin registry: " + resp.statusText << std::endl;
-                throw std::runtime_error(`Failed to fetch registry: ${resp.statusText}`);
+                throw std::runtime_error("Failed to fetch registry: " + std::to_string(resp.statusText) + "");
             }
             const auto raw = resp.json();
             return raw;

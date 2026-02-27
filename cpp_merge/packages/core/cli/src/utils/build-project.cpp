@@ -3,72 +3,72 @@
 void buildProject(string cwd, boolean isPlugin)
 {
     if (process->env->ELIZA_TEST_MODE) {
-        console->info(std::string("Skipping build in test mode"));
+        console->info(std:("Skipping build in test mode"));
         return std::shared_ptr<Promise<void>>();
     }
-    logger->info(std::string("Building ") + (isPlugin) ? std::string("plugin") : std::string("project") + std::string(" in ") + cwd + std::string("..."));
+    logger->info(std:("Building ") + (isPlugin) ? std:("plugin") : std:("project") + std:(" in ") + cwd + std:("..."));
     if (!fs->existsSync(cwd)) {
-        throw any(std::make_shared<Error>(std::string("Project directory ") + cwd + std::string(" does not exist.")));
+        throw any(std::make_shared<Error>(std:("Project directory ") + cwd + std:(" does not exist.")));
     }
     auto dirInfo = detectDirectoryType(cwd);
     if (!dirInfo->hasPackageJson) {
-        logger->warn(std::string("package.json not found in ") + cwd + std::string(". Cannot determine build method."));
-        throw any(std::make_shared<Error>(std::string("Project directory ") + cwd + std::string(" does not have package.json.")));
+        logger->warn(std:("package.json not found in ") + cwd + std:(". Cannot determine build method."));
+        throw any(std::make_shared<Error>(std:("Project directory ") + cwd + std:(" does not have package.json.")));
     }
-    auto packageJsonPath = path->join(cwd, std::string("package.json"));
-    auto distPath = path->join(cwd, std::string("dist"));
+    auto packageJsonPath = path->join(cwd, std:("package.json"));
+    auto distPath = path->join(cwd, std:("dist"));
     if (fs->existsSync(distPath)) {
         std::async([=]() { fs->promises->rm(distPath, object{
-            object::pair{std::string("recursive"), true}, 
-            object::pair{std::string("force"), true}
+            object::pair{std:("recursive"), true}, 
+            object::pair{std:("force"), true}
         }); });
-        logger->debug(std::string("Cleaned previous build artifacts from ") + distPath + string_empty);
+        logger->debug(std:("Cleaned previous build artifacts from ") + distPath + string_empty);
     }
     auto directoryInfo = detectDirectoryType(cwd);
     if (directoryInfo->monorepoRoot) {
-        logger->debug(std::string("Detected monorepo structure, skipping install"));
+        logger->debug(std:("Detected monorepo structure, skipping install"));
     }
     try
     {
-        auto packageJson = JSON->parse(fs->readFileSync(packageJsonPath, std::string("utf8")));
+        auto packageJson = JSON->parse(fs->readFileSync(packageJsonPath, std:("utf8")));
         if (packageJson["scripts"]["build"]) {
-            logger->debug(std::string("Using build script from package.json with bun"));
+            logger->debug(std:("Using build script from package.json with bun"));
             try
             {
-                logger->debug(std::string("Building with bun..."));
-                std::async([=]() { runBunCommand(array<string>{ std::string("run"), std::string("build") }, cwd); });
-                logger->info(std::string("Build completed successfully"));
+                logger->debug(std:("Building with bun..."));
+                std::async([=]() { runBunCommand(array<string>{ std:("run"), std:("build") }, cwd); });
+                logger->info(std:("Build completed successfully"));
                 return std::shared_ptr<Promise<void>>();
             }
             catch (const any& buildError)
             {
-                logger->debug(std::string("Bun build failed: ") + buildError + string_empty);
-                throw any(std::make_shared<Error>(std::string("Failed to build using bun: ") + buildError + string_empty));
+                logger->debug(std:("Bun build failed: ") + buildError + string_empty);
+                throw any(std::make_shared<Error>(std:("Failed to build using bun: ") + buildError + string_empty));
             }
         }
-        logger->warn(std::string("No build script found in ") + packageJsonPath + std::string(". Attempting common build commands."));
-        auto tsconfigPath = path->join(cwd, std::string("tsconfig.json"));
+        logger->warn(std:("No build script found in ") + packageJsonPath + std:(". Attempting common build commands."));
+        auto tsconfigPath = path->join(cwd, std:("tsconfig.json"));
         if (fs->existsSync(tsconfigPath)) {
             try
             {
-                logger->debug(std::string("Found tsconfig.json, attempting to build with bunx tsc..."));
-                std::async([=]() { execa(std::string("bunx"), array<string>{ std::string("tsc"), std::string("--build") }, object{
-                    object::pair{std::string("cwd"), std::string("cwd")}, 
-                    object::pair{std::string("stdio"), std::string("inherit")}
+                logger->debug(std:("Found tsconfig.json, attempting to build with bunx tsc..."));
+                std::async([=]() { execa(std:("bunx"), array<string>{ std:("tsc"), std:("--build") }, object{
+                    object::pair{std:("cwd"), std:("cwd")}, 
+                    object::pair{std:("stdio"), std:("inherit")}
                 }); });
-                logger->info(std::string("Build completed successfully"));
+                logger->info(std:("Build completed successfully"));
                 return std::shared_ptr<Promise<void>>();
             }
             catch (const any& tscError)
             {
-                logger->debug(std::string("bunx tsc build failed: ") + tscError + string_empty);
+                logger->debug(std:("bunx tsc build failed: ") + tscError + string_empty);
             }
         }
-        throw any(std::make_shared<Error>(std::string("Could not determine how to build the project")));
+        throw any(std::make_shared<Error>(std:("Could not determine how to build the project")));
     }
     catch (const any& error)
     {
-        logger->error(std::string("Failed to build ") + (isPlugin) ? std::string("plugin") : std::string("project") + std::string(": ") + error + string_empty);
+        logger->error(std:("Failed to build ") + (isPlugin) ? std:("plugin") : std:("project") + std:(": ") + error + string_empty);
         throw any(error);
     }
 };

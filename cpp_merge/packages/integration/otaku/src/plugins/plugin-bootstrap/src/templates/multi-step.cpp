@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/multi-step.h"
 
-string multiStepDecisionTemplate = std::string("<task>\
+string multiStepDecisionTemplate = std:("<task>\
 Determine the next step the assistant should take in this conversation to help the user reach their goal.\
 </task>\
 {{system}}\
@@ -11,9 +11,9 @@ Determine the next step the assistant should take in this conversation to help t
 ---\
 # Current Execution Context\
 **Current Step**: {{iterationCount}} of {{maxIterations}} maximum iterations\
-**Actions Completed in THIS Execution Round**: {{traceActionResult.length}}\
-{{#if traceActionResult.length}}\
- You have ALREADY taken {{traceActionResult.length}} action(s) in this execution round. Review them carefully before deciding next steps.\
+**Actions Completed in THIS Execution Round**: {{traceActionResult.size()}}\
+{{#if traceActionResult.size()}}\
+ You have ALREADY taken {{traceActionResult.size()}} action(s) in this execution round. Review them carefully before deciding next steps.\
 {{else}}\
  This is your FIRST decision step - no actions have been taken yet in this round.\
 {{/if}}\
@@ -65,7 +65,7 @@ Determine the next step the assistant should take in this conversation to help t
 {{actionsWithParams}}\
 ---\
 # Actions Completed in This Round\
-{{#if traceActionResult.length}}\
+{{#if traceActionResult.size()}}\
 You have executed the following actions in THIS multi-step execution round:\
 {{actionResults}}\
  **IMPORTANT**: These are actions YOU took in this execution, not from earlier in the conversation.\
@@ -105,7 +105,7 @@ No actions have been executed yet in this round. This is your first decision ste
 ---\
 <keys>\
 "thought" \
-START WITH: "Step {{iterationCount}}/{{maxIterations}}. Actions taken this round: {{traceActionResult.length}}."\
+START WITH: "Step {{iterationCount}}/{{maxIterations}}. Actions taken this round: {{traceActionResult.size()}}."\
 THEN: Quote the latest user request.\
 THEN: Classify request type (Specific/Exploratory/Multi-step).\
 THEN: If actions > 0, state "I have already completed: [list actions with brief result summary]. Evaluating if more complementary actions would add value."\
@@ -119,7 +119,7 @@ THEN: Explain your decision:\
 </keys>\
  CRITICAL CHECKS:\
 - What step am I on? ({{iterationCount}}/{{maxIterations}})\
-- How many actions have I taken THIS round? ({{traceActionResult.length}})\
+- How many actions have I taken THIS round? ({{traceActionResult.size()}})\
 - What TYPE of request is this? (Specific/Exploratory/Multi-step)\
 - If > 0 actions: Have I adequately addressed the request?\
 - Am I about to execute the EXACT SAME action with EXACT SAME parameters?  If YES, STOP\
@@ -128,7 +128,7 @@ THEN: Explain your decision:\
 YOUR FINAL OUTPUT MUST BE IN THIS XML FORMAT:\
 <output>\
 <response>\
-  <thought>Step {{iterationCount}}/{{maxIterations}}. Actions taken this round: {{traceActionResult.length}}. [Your reasoning]</thought>\
+  <thought>Step {{iterationCount}}/{{maxIterations}}. Actions taken this round: {{traceActionResult.size()}}. [Your reasoning]</thought>\
   <action>ACTION_NAME or ""</action>\
   <parameters>\
     {\
@@ -139,7 +139,7 @@ YOUR FINAL OUTPUT MUST BE IN THIS XML FORMAT:\
   <isFinish>true | false</isFinish>\
 </response>\
 </output>");
-string multiStepSummaryTemplate = std::string("<task>\
+string multiStepSummaryTemplate = std:("<task>\
 Generate a final, user-facing response based on what the assistant accomplished and the results obtained.\
 </task>\
 \

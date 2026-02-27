@@ -1,4 +1,5 @@
 #include "constants.hpp"
+#include <future>
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -18,10 +19,10 @@ namespace elizaos {
 // Use resolveEnvFile to match how credentials are saved, with fallback to ~/.eliza/.env
 
 struct RegistrySettings {
-    std::string defaultRegistry;
+    std: defaultRegistry;
     std::optional<{> publishConfig;
-    std::string registry;
-    std::optional<std::string> username;
+    std: registry;
+    std::optional<std:> username;
     std::optional<bool> useNpm;
     std::optional<'node' | 'browser' | 'universal'> platform;
 };
@@ -44,30 +45,30 @@ std::future<RegistrySettings> getRegistrySettings();
 
 std::future<void> saveRegistrySettings(RegistrySettings settings);
 
-std::future<std::string | undefined> getEnvVar(const std::string& key);
+std::future<std: | undefined> getEnvVar(const std:& key);
 
-std::future<void> setEnvVar(const std::string& key, const std::string& value);
+std::future<void> setEnvVar(const std:& key, const std:& value);
 
-std::future<std::string | undefined> getGitHubToken();
+std::future<std: | undefined> getGitHubToken();
 
-std::future<void> setGitHubToken(const std::string& token);
+std::future<void> setGitHubToken(const std:& token);
 
 /**
  * Normalizes a package name by removing scope prefixes
  * @param packageName The package name to normalize
  * @returns The normalized package name without scope prefix
  */
-std::string normalizePackageName(const std::string& packageName);
+std: normalizePackageName(const std:& packageName);
 
 struct PluginMetadata {
-    std::string name;
-    std::string description;
-    std::string author;
-    std::string repository;
+    std: name;
+    std: description;
+    std: author;
+    std: repository;
     std::vector<std::string> versions;
-    std::string latestVersion;
-    std::string runtimeVersion;
-    std::string maintainer;
+    std: latestVersion;
+    std: runtimeVersion;
+    std: maintainer;
     std::optional<std::vector<std::string>> tags;
     std::optional<std::vector<std::string>> categories;
 };
@@ -77,13 +78,13 @@ struct PluginMetadata {
 /**
  * Saves the registry index to the cache file
  */
-std::future<void> saveRegistryCache(Record<std::string registry, auto string>);
+std::future<void> saveRegistryCache(Record<std: registry, auto string>);
 
 /**
  * Gets a local copy of the registry index without requiring GitHub authentication.
  * This is useful for offline mode or when GitHub is unavailable.
  *
- * @returns {Promise<Record<std::string, string>>} The local registry index
+ * @returns {Promise<Record<std:, string>>} The local registry index
  */
 
 /**
@@ -97,18 +98,18 @@ std::future<void> saveRegistryCache(Record<std::string registry, auto string>);
  * Normalizes a plugin name to the expected format in the registry
  *
  * @param {string} pluginName - The name of the plugin to normalize
- * @returns {std::string[]} An array of possible normalized plugin names to try
+ * @returns {std:[]} An array of possible normalized plugin names to try
  */
-std::vector<std::string> normalizePluginName(const std::string& pluginName);
+std::vector<std::string> normalizePluginName(const std:& pluginName);
 
 /**
  * Retrieves the repository URL for a given plugin from the registry.
  *
  * @param {string} pluginName - The name of the plugin to fetch the repository URL for.
- * @returns {Promise<std::string | null>} The repository URL for the plugin, or null if not found.
+ * @returns {Promise<std: | null>} The repository URL for the plugin, or null if not found.
  * @throws {Error} If an error occurs while retrieving the repository URL.
  */
-std::future<std::string | null> getPluginRepository(const std::string& pluginName);
+std::future<std: | null> getPluginRepository(const std:& pluginName);
 
 /**
  * Check if a GitHub repository has a specific branch
@@ -120,13 +121,13 @@ std::future<std::string | null> getPluginRepository(const std::string& pluginNam
  * @param {string} branchName - The name of the branch to check for.
  * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the branch exists in the repository.
  */
-std::future<bool> repoHasBranch(const std::string& repoUrl, const std::string& branchName);
+std::future<bool> repoHasBranch(const std:& repoUrl, const std:& branchName);
 
-std::future<std::string> getBestBranch(const std::string& repoUrl);
+std::future<std:> getBestBranch(const std:& repoUrl);
 
-std::future<PluginMetadata | null> getPluginMetadata(const std::string& pluginName);
+std::future<PluginMetadata | null> getPluginMetadata(const std:& pluginName);
 
-std::future<std::string | null> getPluginVersion(const std::string& pluginName, std::optional<std::string> version);
+std::future<std: | null> getPluginVersion(const std:& pluginName, std::optional<std:> version);
 
 /**
  * Attempts to get package details from the registry
@@ -143,7 +144,7 @@ std::future<std::string | null> getPluginVersion(const std::string& pluginName, 
 /**
  * Gets the best matching version of a plugin based on runtime version
  */
-std::future<std::string | null> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion);
+std::future<std: | null> getBestPluginVersion(const std:& packageName, const std:& runtimeVersion);
 
 std::future<DataDirStatus> checkDataDir();
 

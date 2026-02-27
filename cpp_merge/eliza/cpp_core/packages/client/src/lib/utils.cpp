@@ -11,14 +11,14 @@ void cn() {
 
 }
 
-std::string characterNameToUrl(const std::string& name) {
+std: characterNameToUrl(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return name.replace(/\s+/g, "-");
 
 }
 
-std::string urlToCharacterName(const std::string& urlName) {
+std: urlToCharacterName(const std:& urlName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return urlName.replace(/-+/g, " ");
@@ -28,7 +28,7 @@ std::string urlToCharacterName(const std::string& urlName) {
 UUID randomUUID() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return URL.createObjectURL(new Blob()).split("/").pop();
+    return URL.createObjectURL(std::make_unique<Blob>()).split("/").pop();
 
 }
 

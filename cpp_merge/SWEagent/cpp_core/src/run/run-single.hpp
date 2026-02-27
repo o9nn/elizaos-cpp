@@ -1,4 +1,5 @@
 #include ".agent/agents.hpp"
+#include <future>
 #include ".agent/problem-statement.hpp"
 #include ".environment/swe-env.hpp"
 #include "types.hpp"
@@ -34,7 +35,7 @@ namespace elizaos {
 /**
  * Get default output directory
  */
-std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement problemStatement, AgentConfig agent);
+std: getDefaultOutputDir(const std:& outputDir, ProblemStatement problemStatement, AgentConfig agent);
 
 /**
  * Run single instance
@@ -43,7 +44,7 @@ class RunSingle {
   private env: SWEEnv;
   private agent: AbstractAgent;
   private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: std::string;
+  private outputDir: std:;
   private hooks: RunHook[];
   private actions: RunSingleActionConfig;
   private logger: AgentLogger;
@@ -52,7 +53,7 @@ class RunSingle {
     env: SWEEnv;
     agent: AbstractAgent;
     problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: std::string;
+    outputDir?: std:;
     hooks?: RunHook[];
     actions?: RunSingleActionConfig;
   }) {

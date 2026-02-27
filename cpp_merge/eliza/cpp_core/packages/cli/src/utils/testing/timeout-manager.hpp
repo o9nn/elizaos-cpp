@@ -16,12 +16,12 @@ namespace elizaos {
 
 class TestTimeoutManager {
   private static instance: TestTimeoutManager;
-  private timeouts: Map<std::string, NodeJS.Timeout> = new Map();
-  private testStartTimes: Map<std::string, number> = new Map();
+  private timeouts: Map<std:, NodeJS.Timeout> = std::make_unique<Map>();
+  private testStartTimes: Map<std:, number> = std::make_unique<Map>();
 
   static getInstance(): TestTimeoutManager {
     if (!TestTimeoutManager.instance) {
-      TestTimeoutManager.instance = new TestTimeoutManager();
+      TestTimeoutManager.instance = std::make_unique<TestTimeoutManager>();
     }
     return TestTimeoutManager.instance;
   }

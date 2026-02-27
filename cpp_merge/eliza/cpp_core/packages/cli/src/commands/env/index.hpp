@@ -21,16 +21,16 @@ namespace elizaos {
 // Create command for managing environment variables
 
 // List subcommand
-      await handleListCommand(options);
+      handleListCommand(options);
 
 // Edit local subcommand
-      await editEnvVars(options);
+      editEnvVars(options);
 
 // Reset subcommand
-      await resetEnv(options);
+      resetEnv(options);
 
 // Interactive mode
-      await showMainMenu(options);
+      showMainMenu(options);
 
 // Default command (show help if no subcommand provided)
   // Show available subcommands

@@ -1,4 +1,8 @@
 #include "settings.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,12 +27,12 @@ Setting createSettingFromConfig() {
 
 }
 
-std::string getSalt() {
+std: getSalt() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto secretSalt =;
     (typeof process != "std::nullopt";
-    ? process.env.SECRET_SALT;
+    ? std::getenv("SECRET_SALT");
     : (import.meta).env.SECRET_SALT) || "secretsalt";
 
     if (!secretSalt) {
@@ -37,12 +41,12 @@ std::string getSalt() {
 
     const auto salt = secretSalt;
 
-    logger.debug(`Generated salt with length: ${salt.length} (truncated for security)`);
+    logger.debug("Generated salt with length: " + std::to_string(salt.size()) + " (truncated for security)");
     return salt;
 
 }
 
-std::string encryptStringValue(const std::string& value, const std::string& salt) {
+std: encryptStringValue(const std:& value, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if value is undefined or null
@@ -57,28 +61,28 @@ std::string encryptStringValue(const std::string& value, const std::string& salt
     }
 
     if (typeof value != 'string') {
-        logger.debug(`Value is not a std::string (type: ${typeof value}), returning as is`);
+        logger.debug("Value is not a std: (type: " + std::to_string(typeof value) + "), returning as is");
         return value;
     }
 
     // Check if value is already encrypted (has the format "iv:encrypted")
     const auto parts = value.split(":");
-    if (parts.length == 2) {
+    if (parts.size() == 2) {
         try {
             // Try to parse the first part as hex to see if it's already encrypted
             const auto possibleIv = Buffer.from(parts[0], "hex");
-            if (possibleIv.length == 16) {
+            if (possibleIv.size() == 16) {
                 // Value is likely already encrypted, return as is
                 logger.debug('Value appears to be already encrypted, skipping re-encryption');
                 return value;
             }
             } catch (e) {
-                // Not a valid hex std::string, proceed with encryption
+                // Not a valid hex std:, proceed with encryption
             }
         }
 
         // Create key and iv from the salt
-        const auto key = crypto.createHash("sha256").update(salt).digest().slice(0, 32);
+        const auto key = crypto.createHash("sha256").update(salt).digest().substr(0, 32-0);
         const auto iv = crypto.randomBytes(16);
 
         // Encrypt the value
@@ -91,7 +95,7 @@ std::string encryptStringValue(const std::string& value, const std::string& salt
 
 }
 
-std::string decryptStringValue(const std::string& value, const std::string& salt) {
+std: decryptStringValue(const std:& value, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -106,13 +110,13 @@ std::string decryptStringValue(const std::string& value, const std::string& salt
             return value;
         }
         if (typeof value != 'string') {
-            logger.debug(`Value is not a std::string (type: ${typeof value}), returning as is`);
+            logger.debug("Value is not a std: (type: " + std::to_string(typeof value) + "), returning as is");
             return value;
         }
 
         // Split the IV and encrypted value
         const auto parts = value.split(":");
-        if (parts.length != 2) {
+        if (parts.size() != 2) {
             /*
             logger.debug(
             "Invalid encrypted value format - expected "iv:encrypted", returning original value"
@@ -125,15 +129,15 @@ std::string decryptStringValue(const std::string& value, const std::string& salt
         const auto encrypted = parts[1];
 
         // Verify IV length
-        if (iv.length != 16) {
-            if (iv.length) {
-                logger.debug(`Invalid IV length (${iv.length}) - expected 16 bytes`);
+        if (iv.size() != 16) {
+            if (iv.size()) {
+                logger.debug("Invalid IV length (" + std::to_string(iv.size()) + ") - expected 16 bytes");
             }
             return value; // Return the original value without decryption;
         }
 
         // Create key from the salt
-        const auto key = crypto.createHash("sha256").update(salt).digest().slice(0, 32);
+        const auto key = crypto.createHash("sha256").update(salt).digest().substr(0, 32-0);
 
         // Decrypt the value
         const auto decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
@@ -149,12 +153,12 @@ std::string decryptStringValue(const std::string& value, const std::string& salt
 
 }
 
-Setting saltSettingValue(Setting setting, const std::string& salt) {
+Setting saltSettingValue(Setting setting, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settingCopy = { ...setting };
 
-    // Only encrypt std::string values in secret settings
+    // Only encrypt std: values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = encryptStringValue(setting.value, salt);
     }
@@ -163,12 +167,12 @@ Setting saltSettingValue(Setting setting, const std::string& salt) {
 
 }
 
-Setting unsaltSettingValue(Setting setting, const std::string& salt) {
+Setting unsaltSettingValue(Setting setting, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settingCopy = { ...setting };
 
-    // Only decrypt std::string values in secret settings
+    // Only decrypt std: values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = decryptStringValue(setting.value, salt);
     }
@@ -177,7 +181,7 @@ Setting unsaltSettingValue(Setting setting, const std::string& salt) {
 
 }
 
-WorldSettings saltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
+WorldSettings saltWorldSettings(WorldSettings worldSettings, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const WorldSettings saltedSettings = {};
@@ -190,7 +194,7 @@ WorldSettings saltWorldSettings(WorldSettings worldSettings, const std::string& 
 
 }
 
-WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
+WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const WorldSettings unsaltedSettings = {};
@@ -203,7 +207,7 @@ WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std::string
 
 }
 
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings) {
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto worldId = createUniqueUuid(runtime, serverId);
@@ -233,7 +237,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
 
 }
 
-std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std::string& serverId) {
+std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std:& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto worldId = createUniqueUuid(runtime, serverId);
@@ -293,7 +297,7 @@ Character encryptedCharacter(Character character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a deep copy to avoid modifying the original
-    const auto encryptedChar = /* JSON.parse */ /* JSON.stringify */ std::string(character);
+    const auto encryptedChar = /* JSON::parse */ /* JSON.stringify */ std:(character);
     const auto salt = getSalt();
 
     // Encrypt character.settings.secrets if it exists
@@ -314,7 +318,7 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a deep copy to avoid modifying the original
-    const auto decryptedChar = /* JSON.parse */ /* JSON.stringify */ std::string(character);
+    const auto decryptedChar = /* JSON::parse */ /* JSON.stringify */ std:(character);
     const auto salt = getSalt();
 
     // Decrypt character.settings.secrets if it exists
@@ -331,10 +335,10 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime) {
 
 }
 
-std::unordered_map<std::string, std::any> encryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt) {
+std::unordered_map<std:, std:> encryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::any> result = {};
+    const std::unordered_map<std:, std:> result = {};
 
     for (const int [key, value] of Object.entries(obj)) {
         if (typeof value == 'string' && value) {
@@ -348,10 +352,10 @@ std::unordered_map<std::string, std::any> encryptObjectValues(const std::unorder
 
 }
 
-std::unordered_map<std::string, std::any> decryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt) {
+std::unordered_map<std:, std:> decryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::any> result = {};
+    const std::unordered_map<std:, std:> result = {};
 
     for (const int [key, value] of Object.entries(obj)) {
         if (typeof value == 'string' && value) {

@@ -2,300 +2,300 @@
 
 void Main(void)
 {
-    describe(std::string("AutoCoder Runtime Integration"), [=]() mutable
+    describe(std:("AutoCoder Runtime Integration"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> runtime;
         shared<string> testDbPath;
         beforeAll([=]() mutable
         {
-            testDbPath = std::string(":memory:");
+            testDbPath = std:(":memory:");
             process->env->DATABASE_PATH = testDbPath;
-            process->env->FORCE_BUNSQLITE = std::string("true");
-            process->env->ELIZA_TEST_MODE = std::string("true");
-            process->env->SECRET_SALT = std::string("test-salt-for-runtime-integration");
+            process->env->FORCE_BUNSQLITE = std:("true");
+            process->env->ELIZA_TEST_MODE = std:("true");
+            process->env->SECRET_SALT = std:("test-salt-for-runtime-integration");
             auto character = object{
-                object::pair{std::string("name"), std::string("AutoCoder Test Agent")}, 
-                object::pair{std::string("bio"), array<string>{ std::string("An agent for testing code generation capabilities") }}, 
-                object::pair{std::string("system"), std::string("You are a helpful code generation assistant.")}, 
-                object::pair{std::string("settings"), utils::assign(object{
+                object::pair{std:("name"), std:("AutoCoder Test Agent")}, 
+                object::pair{std:("bio"), array<string>{ std:("An agent for testing code generation capabilities") }}, 
+                object::pair{std:("system"), std:("You are a helpful code generation assistant.")}, 
+                object::pair{std:("settings"), utils::assign(object{
                 }, (AND((process->env->ANTHROPIC_API_KEY), (object{
-                    object::pair{std::string("ANTHROPIC_API_KEY"), process->env->ANTHROPIC_API_KEY}
+                    object::pair{std:("ANTHROPIC_API_KEY"), process->env->ANTHROPIC_API_KEY}
                 }))), (AND((process->env->E2B_API_KEY), (object{
-                    object::pair{std::string("E2B_API_KEY"), process->env->E2B_API_KEY}
+                    object::pair{std:("E2B_API_KEY"), process->env->E2B_API_KEY}
                 }))), (AND((process->env->GITHUB_TOKEN), (object{
-                    object::pair{std::string("GITHUB_TOKEN"), process->env->GITHUB_TOKEN}
+                    object::pair{std:("GITHUB_TOKEN"), process->env->GITHUB_TOKEN}
                 }))))}
             };
             runtime = std::make_shared<AgentRuntime>(object{
-                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                object::pair{std::string("character"), std::string("character")}
+                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                object::pair{std:("character"), std:("character")}
             });
             (as<any>(runtime))["adapter"] = object{
-                object::pair{std::string("query"), [=]() mutable
+                object::pair{std:("query"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("execute"), [=]() mutable
+                object::pair{std:("execute"), [=]() mutable
                 {
                     return (object{
-                        object::pair{std::string("rows"), array<any>()}
+                        object::pair{std:("rows"), array<any>()}
                     });
                 }
                 }, 
-                object::pair{std::string("initialized"), true}, 
-                object::pair{std::string("init"), [=]() mutable
+                object::pair{std:("initialized"), true}, 
+                object::pair{std:("init"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("close"), [=]() mutable
+                object::pair{std:("close"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("createTable"), [=]() mutable
+                object::pair{std:("createTable"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("insertRow"), [=]() mutable
+                object::pair{std:("insertRow"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("updateRow"), [=]() mutable
+                object::pair{std:("updateRow"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("deleteRow"), [=]() mutable
+                object::pair{std:("deleteRow"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getRow"), [=]() mutable
+                object::pair{std:("getRow"), [=]() mutable
                 {
                     return nullptr;
                 }
                 }, 
-                object::pair{std::string("getRows"), [=]() mutable
+                object::pair{std:("getRows"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("getAgents"), [=]() mutable
+                object::pair{std:("getAgents"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("createAgent"), [=](auto agent) mutable
+                object::pair{std:("createAgent"), [=](auto agent) mutable
                 {
                     return agent;
                 }
                 }, 
-                object::pair{std::string("updateAgent"), [=](auto id, auto updates) mutable
+                object::pair{std:("updateAgent"), [=](auto id, auto updates) mutable
                 {
                     return (utils::assign(object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     }, updates));
                 }
                 }, 
-                object::pair{std::string("deleteAgent"), [=](auto id) mutable
+                object::pair{std:("deleteAgent"), [=](auto id) mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getAgent"), [=](auto id) mutable
+                object::pair{std:("getAgent"), [=](auto id) mutable
                 {
                     return (object{
-                        object::pair{std::string("id"), std::string("id")}, 
-                        object::pair{std::string("name"), std::string("Test Agent")}
+                        object::pair{std:("id"), std:("id")}, 
+                        object::pair{std:("name"), std:("Test Agent")}
                     });
                 }
                 }, 
-                object::pair{std::string("getRooms"), [=]() mutable
+                object::pair{std:("getRooms"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("getRoomsByIds"), [=](auto ids) mutable
+                object::pair{std:("getRoomsByIds"), [=](auto ids) mutable
                 {
                     return ids->map([=](auto id) mutable
                     {
                         return (object{
-                            object::pair{std::string("id"), std::string("id")}
+                            object::pair{std:("id"), std:("id")}
                         });
                     }
                     );
                 }
                 }, 
-                object::pair{std::string("createRoom"), [=](auto room) mutable
+                object::pair{std:("createRoom"), [=](auto room) mutable
                 {
                     return room;
                 }
                 }, 
-                object::pair{std::string("updateRoom"), [=](auto id, auto updates) mutable
+                object::pair{std:("updateRoom"), [=](auto id, auto updates) mutable
                 {
                     return (utils::assign(object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     }, updates));
                 }
                 }, 
-                object::pair{std::string("deleteRoom"), [=](auto id) mutable
+                object::pair{std:("deleteRoom"), [=](auto id) mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getRoom"), [=](auto id) mutable
+                object::pair{std:("getRoom"), [=](auto id) mutable
                 {
                     return (object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     });
                 }
                 }, 
-                object::pair{std::string("getParticipants"), [=]() mutable
+                object::pair{std:("getParticipants"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("getParticipantsByIds"), [=](auto ids) mutable
+                object::pair{std:("getParticipantsByIds"), [=](auto ids) mutable
                 {
                     return ids->map([=](auto id) mutable
                     {
                         return (object{
-                            object::pair{std::string("id"), std::string("id")}
+                            object::pair{std:("id"), std:("id")}
                         });
                     }
                     );
                 }
                 }, 
-                object::pair{std::string("getParticipantsForRoom"), [=](auto roomId) mutable
+                object::pair{std:("getParticipantsForRoom"), [=](auto roomId) mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("addParticipantsToRoom"), [=](auto participantIds, auto roomId) mutable
+                object::pair{std:("addParticipantsToRoom"), [=](auto participantIds, auto roomId) mutable
                 {
                     return true;
                 }
                 }, 
-                object::pair{std::string("addParticipantsRoom"), [=](auto participantIds, auto roomId) mutable
+                object::pair{std:("addParticipantsRoom"), [=](auto participantIds, auto roomId) mutable
                 {
                     return true;
                 }
                 }, 
-                object::pair{std::string("createParticipant"), [=](auto participant) mutable
+                object::pair{std:("createParticipant"), [=](auto participant) mutable
                 {
                     return participant;
                 }
                 }, 
-                object::pair{std::string("updateParticipant"), [=](auto id, auto updates) mutable
+                object::pair{std:("updateParticipant"), [=](auto id, auto updates) mutable
                 {
                     return (utils::assign(object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     }, updates));
                 }
                 }, 
-                object::pair{std::string("deleteParticipant"), [=](auto id) mutable
+                object::pair{std:("deleteParticipant"), [=](auto id) mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getParticipant"), [=](auto id) mutable
+                object::pair{std:("getParticipant"), [=](auto id) mutable
                 {
                     return (object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     });
                 }
                 }, 
-                object::pair{std::string("getMemories"), [=]() mutable
+                object::pair{std:("getMemories"), [=]() mutable
                 {
                     return array<any>();
                 }
                 }, 
-                object::pair{std::string("getMemoriesByIds"), [=](auto ids) mutable
+                object::pair{std:("getMemoriesByIds"), [=](auto ids) mutable
                 {
                     return ids->map([=](auto id) mutable
                     {
                         return (object{
-                            object::pair{std::string("id"), std::string("id")}
+                            object::pair{std:("id"), std:("id")}
                         });
                     }
                     );
                 }
                 }, 
-                object::pair{std::string("createMemory"), [=](auto memory) mutable
+                object::pair{std:("createMemory"), [=](auto memory) mutable
                 {
                     return memory;
                 }
                 }, 
-                object::pair{std::string("updateMemory"), [=](auto id, auto updates) mutable
+                object::pair{std:("updateMemory"), [=](auto id, auto updates) mutable
                 {
                     return (utils::assign(object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     }, updates));
                 }
                 }, 
-                object::pair{std::string("deleteMemory"), [=](auto id) mutable
+                object::pair{std:("deleteMemory"), [=](auto id) mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getMemory"), [=](auto id) mutable
+                object::pair{std:("getMemory"), [=](auto id) mutable
                 {
                     return (object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     });
                 }
                 }, 
-                object::pair{std::string("getEntitiesByIds"), [=](auto ids) mutable
+                object::pair{std:("getEntitiesByIds"), [=](auto ids) mutable
                 {
                     return ids->map([=](auto id) mutable
                     {
                         return (object{
-                            object::pair{std::string("id"), std::string("id")}
+                            object::pair{std:("id"), std:("id")}
                         });
                     }
                     );
                 }
                 }, 
-                object::pair{std::string("createEntity"), [=](auto entity) mutable
+                object::pair{std:("createEntity"), [=](auto entity) mutable
                 {
                     return entity;
                 }
                 }, 
-                object::pair{std::string("updateEntity"), [=](auto id, auto updates) mutable
+                object::pair{std:("updateEntity"), [=](auto id, auto updates) mutable
                 {
                     return (utils::assign(object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     }, updates));
                 }
                 }, 
-                object::pair{std::string("deleteEntity"), [=](auto id) mutable
+                object::pair{std:("deleteEntity"), [=](auto id) mutable
                 {
                 }
                 }, 
-                object::pair{std::string("getEntity"), [=](auto id) mutable
+                object::pair{std:("getEntity"), [=](auto id) mutable
                 {
                     return (object{
-                        object::pair{std::string("id"), std::string("id")}
+                        object::pair{std:("id"), std:("id")}
                     });
                 }
                 }, 
-                object::pair{std::string("updateWorld"), [=](auto world) mutable
+                object::pair{std:("updateWorld"), [=](auto world) mutable
                 {
                     return world;
                 }
                 }
             };
             (as<any>(runtime))["modelHandlers"] = object{
-                object::pair{std::string("TEXT_LARGE"), object{
-                    object::pair{std::string("generate"), [=](auto prompt) mutable
+                object::pair{std:("TEXT_LARGE"), object{
+                    object::pair{std:("generate"), [=](auto prompt) mutable
                     {
                         return object{
-                            object::pair{std::string("text"), std::string("Mock generated code for: ") + prompt->substring(0, 50) + string_empty}, 
-                            object::pair{std::string("success"), true}
+                            object::pair{std:("text"), std:("Mock generated code for: ") + prompt->substring(0, 50) + string_empty}, 
+                            object::pair{std:("success"), true}
                         };
                     }
                     }
                 }}, 
-                object::pair{std::string("TEXT"), object{
-                    object::pair{std::string("generate"), [=](auto prompt) mutable
+                object::pair{std:("TEXT"), object{
+                    object::pair{std:("generate"), [=](auto prompt) mutable
                     {
                         return object{
-                            object::pair{std::string("text"), std::string("Mock response: ") + prompt->substring(0, 50) + string_empty}, 
-                            object::pair{std::string("success"), true}
+                            object::pair{std:("text"), std:("Mock response: ") + prompt->substring(0, 50) + string_empty}, 
+                            object::pair{std:("success"), true}
                         };
                     }
                     }
@@ -306,22 +306,22 @@ void Main(void)
             try
             {
                 std::async([=]() { runtime->initialize(); });
-                elizaLogger->info(std::string("Runtime initialized successfully"));
+                elizaLogger->info(std:("Runtime initialized successfully"));
             }
             catch (const any& error)
             {
-                elizaLogger->warn(std::string("Runtime initialization failed:"), error);
+                elizaLogger->warn(std:("Runtime initialization failed:"), error);
             }
         }
         );
         afterAll([=]() mutable
         {
             if (runtime) {
-                auto services = array<string>{ std::string("code-generation"), std::string("forms"), std::string("e2b"), std::string("github"), std::string("secrets-manager") };
+                auto services = array<string>{ std:("code-generation"), std:("forms"), std:("e2b"), std:("github"), std:("secrets-manager") };
                 for (auto& serviceName : services)
                 {
                     auto service = runtime->getService(serviceName);
-                    if (AND((service), (type_of((as<any>(service))["stop"]) == std::string("function")))) {
+                    if (AND((service), (type_of((as<any>(service))["stop"]) == std:("function")))) {
                         try
                         {
                             std::async([=]() { (as<any>(service))["stop"](); });
@@ -334,28 +334,28 @@ void Main(void)
             }
         }
         );
-        describe(std::string("Plugin Registration"), [=]() mutable
+        describe(std:("Plugin Registration"), [=]() mutable
         {
-            it(std::string("should register the autocoder plugin correctly"), [=]() mutable
+            it(std:("should register the autocoder plugin correctly"), [=]() mutable
             {
                 if (!runtime) {
-                    console->log(std::string("Runtime not initialized, skipping test"));
+                    console->log(std:("Runtime not initialized, skipping test"));
                     return;
                 }
                 auto actions = OR((runtime->actions), (array<any>()));
                 auto providers = OR((runtime->providers), (array<any>()));
                 auto hasGenerateCodeAction = actions["some"]([=](auto a) mutable
                 {
-                    return a["name"] == std::string("GENERATE_CODE");
+                    return a["name"] == std:("GENERATE_CODE");
                 }
                 );
                 auto hasCreateProjectAction = actions["some"]([=](auto a) mutable
                 {
-                    return a["name"] == std::string("CREATE_PROJECT");
+                    return a["name"] == std:("CREATE_PROJECT");
                 }
                 );
                 if (actions["length"] == 0) {
-                    console->log(std::string("No actions registered - initialization may have failed"));
+                    console->log(std:("No actions registered - initialization may have failed"));
                     expect(true)->toBe(true);
                     return;
                 }
@@ -363,23 +363,23 @@ void Main(void)
                 expect(hasCreateProjectAction)->toBe(true);
                 auto hasProjectsProvider = providers["some"]([=](auto p) mutable
                 {
-                    return p["name"] == std::string("PROJECTS");
+                    return p["name"] == std:("PROJECTS");
                 }
                 );
-                console->log(std::string("Note: Provider registration test skipped - providers not directly exposed in test environment"));
+                console->log(std:("Note: Provider registration test skipped - providers not directly exposed in test environment"));
                 expect(true)->toBe(true);
             }
             );
-            it(std::string("should have all required dependencies available"), [=]() mutable
+            it(std:("should have all required dependencies available"), [=]() mutable
             {
                 if (!runtime) {
-                    console->log(std::string("Runtime not initialized, skipping test"));
+                    console->log(std:("Runtime not initialized, skipping test"));
                     return;
                 }
-                auto codeGenService = runtime->getService(std::string("code-generation"));
-                auto formsService = runtime->getService(std::string("forms"));
+                auto codeGenService = runtime->getService(std:("code-generation"));
+                auto formsService = runtime->getService(std:("forms"));
                 if (!formsService) {
-                    console->log(std::string("Forms service not available - initialization may have failed"));
+                    console->log(std:("Forms service not available - initialization may have failed"));
                     expect(true)->toBe(true);
                     return;
                 }
@@ -388,68 +388,68 @@ void Main(void)
             );
         }
         );
-        describe(std::string("CodeGenerationService"), [=]() mutable
+        describe(std:("CodeGenerationService"), [=]() mutable
         {
-            it(std::string("should start and provide correct capability description"), [=]() mutable
+            it(std:("should start and provide correct capability description"), [=]() mutable
             {
-                auto service = as<std::shared_ptr<CodeGenerationService>>(runtime->getService(std::string("code-generation")));
+                auto service = as<std::shared_ptr<CodeGenerationService>>(runtime->getService(std:("code-generation")));
                 if (service) {
-                    expect(service->get_capabilityDescription())->toContain(std::string("Generates complete ElizaOS projects"));
+                    expect(service->get_capabilityDescription())->toContain(std:("Generates complete ElizaOS projects"));
                 } else {
-                    console->log(std::string("Code generation service not available - API keys might be missing"));
+                    console->log(std:("Code generation service not available - API keys might be missing"));
                     expect(true)->toBe(true);
                 }
             }
             );
-            it(std::string("should generate code for a simple request"), [=]() mutable
+            it(std:("should generate code for a simple request"), [=]() mutable
             {
-                console->log(std::string("Skipping E2B sandbox test - requires real E2B API"));
+                console->log(std:("Skipping E2B sandbox test - requires real E2B API"));
                 expect(true)->toBe(true);
             }
             , 10000);
         }
         );
-        describe(std::string("Generate Code Action"), [=]() mutable
+        describe(std:("Generate Code Action"), [=]() mutable
         {
-            it(std::string("should validate correctly with proper services"), [=]() mutable
+            it(std:("should validate correctly with proper services"), [=]() mutable
             {
                 auto message = object{
-                    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("agentId"), runtime->agentId}, 
-                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("Generate a simple plugin")}
+                    object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("agentId"), runtime->agentId}, 
+                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("Generate a simple plugin")}
                     }}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("createdAt"), Date->now()}
                 };
                 auto isValid = std::async([=]() { generateCodeAction->validate(runtime, message); });
-                auto hasServices = AND((runtime->getService(std::string("code-generation"))), (runtime->getService(std::string("forms"))));
+                auto hasServices = AND((runtime->getService(std:("code-generation"))), (runtime->getService(std:("forms"))));
                 expect(isValid)->toBe(!!hasServices);
             }
             );
-            it(std::string("should execute code generation action"), [=]() mutable
+            it(std:("should execute code generation action"), [=]() mutable
             {
-                auto codeGenService = runtime->getService(std::string("code-generation"));
+                auto codeGenService = runtime->getService(std:("code-generation"));
                 if (!codeGenService) {
-                    console->log(std::string("Skipping test - code generation service not available"));
+                    console->log(std:("Skipping test - code generation service not available"));
                     return std::shared_ptr<Promise<void>>();
                 }
                 auto message = object{
-                    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("agentId"), runtime->agentId}, 
-                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("Generate a calculator plugin")}
+                    object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("agentId"), runtime->agentId}, 
+                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("Generate a calculator plugin")}
                     }}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("createdAt"), Date->now()}
                 };
                 auto state = object{
-                    object::pair{std::string("projectId"), std::string("test-project-id")}, 
-                    object::pair{std::string("values"), object{}}, 
-                    object::pair{std::string("data"), object{}}, 
-                    object::pair{std::string("text"), string_empty}
+                    object::pair{std:("projectId"), std:("test-project-id")}, 
+                    object::pair{std:("values"), object{}}, 
+                    object::pair{std:("data"), object{}}, 
+                    object::pair{std:("text"), string_empty}
                 };
                 auto options = object{};
                 shared callbackCalled = false;
@@ -467,24 +467,24 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Projects Provider"), [=]() mutable
+        describe(std:("Projects Provider"), [=]() mutable
         {
-            it(std::string("should provide project information"), [=]() mutable
+            it(std:("should provide project information"), [=]() mutable
             {
                 auto memory = object{
-                    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("agentId"), runtime->agentId}, 
-                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("test")}
+                    object::pair{std:("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("agentId"), runtime->agentId}, 
+                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("test")}
                     }}, 
-                    object::pair{std::string("createdAt"), Date->now()}
+                    object::pair{std:("createdAt"), Date->now()}
                 };
                 auto state = object{
-                    object::pair{std::string("values"), object{}}, 
-                    object::pair{std::string("data"), object{}}, 
-                    object::pair{std::string("text"), string_empty}
+                    object::pair{std:("values"), object{}}, 
+                    object::pair{std:("data"), object{}}, 
+                    object::pair{std:("text"), string_empty}
                 };
                 auto result = std::async([=]() { projectsProvider->get(runtime, memory, state); });
                 expect(result)->toBeDefined();
@@ -494,26 +494,26 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Forms Integration"), [=]() mutable
+        describe(std:("Forms Integration"), [=]() mutable
         {
-            it(std::string("should create forms for interactive code generation"), [=]() mutable
+            it(std:("should create forms for interactive code generation"), [=]() mutable
             {
-                auto formsService = runtime->getService(std::string("forms"));
+                auto formsService = runtime->getService(std:("forms"));
                 if (!formsService) {
-                    console->log(std::string("Skipping test - forms service not available"));
+                    console->log(std:("Skipping test - forms service not available"));
                     return std::shared_ptr<Promise<void>>();
                 }
                 expect(formsService)->toBeDefined();
                 auto form = std::async([=]() { (as<any>(formsService))["createForm"](object{
-                    object::pair{std::string("name"), std::string("code-project")}, 
-                    object::pair{std::string("description"), std::string("Code generation project form")}, 
-                    object::pair{std::string("steps"), array<object>{ object{
-                        object::pair{std::string("name"), std::string("project-info")}, 
-                        object::pair{std::string("fields"), array<object>{ object{
-                            object::pair{std::string("name"), std::string("projectName")}, 
-                            object::pair{std::string("type"), std::string("text")}, 
-                            object::pair{std::string("label"), std::string("Project Name")}, 
-                            object::pair{std::string("required"), true}
+                    object::pair{std:("name"), std:("code-project")}, 
+                    object::pair{std:("description"), std:("Code generation project form")}, 
+                    object::pair{std:("steps"), array<object>{ object{
+                        object::pair{std:("name"), std:("project-info")}, 
+                        object::pair{std:("fields"), array<object>{ object{
+                            object::pair{std:("name"), std:("projectName")}, 
+                            object::pair{std:("type"), std:("text")}, 
+                            object::pair{std:("label"), std:("Project Name")}, 
+                            object::pair{std:("required"), true}
                         } }}
                     } }}
                 }); });
@@ -523,13 +523,13 @@ void Main(void)
             );
         }
         );
-        describe(std::string("GitHub Integration"), [=]() mutable
+        describe(std:("GitHub Integration"), [=]() mutable
         {
-            it(std::string("should interact with GitHub service"), [=]() mutable
+            it(std:("should interact with GitHub service"), [=]() mutable
             {
-                auto githubService = runtime->getService(std::string("github"));
+                auto githubService = runtime->getService(std:("github"));
                 if (OR((!githubService), (!process->env->GITHUB_TOKEN))) {
-                    console->log(std::string("Skipping test - GitHub service not available or no token"));
+                    console->log(std:("Skipping test - GitHub service not available or no token"));
                     return std::shared_ptr<Promise<void>>();
                 }
                 expect(githubService)->toBeDefined();
@@ -539,21 +539,21 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Security and Validation"), [=]() mutable
+        describe(std:("Security and Validation"), [=]() mutable
         {
-            it(std::string("should validate generated code for security issues"), [=]() mutable
+            it(std:("should validate generated code for security issues"), [=]() mutable
             {
-                console->log(std::string("Skipping security validation test - requires real E2B API"));
+                console->log(std:("Skipping security validation test - requires real E2B API"));
                 expect(true)->toBe(true);
             }
             , 10000);
         }
         );
-        describe(std::string("End-to-End Workflow"), [=]() mutable
+        describe(std:("End-to-End Workflow"), [=]() mutable
         {
-            it(std::string("should complete full code generation workflow"), [=]() mutable
+            it(std:("should complete full code generation workflow"), [=]() mutable
             {
-                console->log(std::string("Skipping E2E workflow test - requires real E2B API"));
+                console->log(std:("Skipping E2E workflow test - requires real E2B API"));
                 expect(true)->toBe(true);
             }
             , 10000);

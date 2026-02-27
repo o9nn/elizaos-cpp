@@ -13,14 +13,14 @@ void GroupNew() {
     // const { data: agentsData, isLoading: isLoadingAgents } = useAgentsWithDetails(); // GroupPanel fetches its own agents
     // const [selectedServerId, setSelectedServerId] = useState<UUID | null>(null); // GroupPanel will use DEFAULT_SERVER_ID
 
-    // useEffect(() => {
+    // useEffect[&](() {
     //   // Use the first available server or create one if needed
-    //   if (serversData?.data?.servers && serversData.data.servers.length > 0) {
+    //   if ((serversData ? serversData.data : nullptr)?.servers && serversData.data.servers.size() > 0) {
     //     setSelectedServerId(serversData.data.servers[0].id);
     //   }
     // }, [serversData]);
 
-    // const handleOpenChange = (open: boolean) => {
+    // const handleOpenChange = [&](open) {
     //   setOpen(open);
     //   if (!open) {
     //     // Navigate back to home when dialog is closed
@@ -43,7 +43,7 @@ void GroupNew() {
     <div className="pt-4 md:pt-8">
     <GroupPanel;
     // agents={agents} // Removed prop
-    onClose={() => navigate(-1)} // Navigate back on close;
+    onClose={[&]() { return navigate(-1)} // Navigate back on close; };
     // channelId is undefined, so it's in "create" mode
     />;
     </div>;

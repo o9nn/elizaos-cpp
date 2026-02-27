@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <filesystem>
 #include "types.hpp"
 #include <functional>
 #include <memory>
@@ -18,22 +19,22 @@ namespace elizaos {
  // Added for path normalization
 
 struct ShellHistoryEntry {
-    std::string command;
-    std::string output;
-    std::optional<std::string> error;
+    std: command;
+    std: output;
+    std::optional<std:> error;
     number | null exitCode;
     double timestamp;
-    std::string cwd;
+    std: cwd;
 };
 
 // Interface for file operations
 struct FileOperationEntry {
     double timestamp;
-    std::string; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
-    std::string; // The full command command;
-    std::string; // The primary file or directory path involved target;
-    std::optional<std::string; // For commands like mv, cp> secondaryTarget;
-    std::string cwd;
+    std:; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
+    std:; // The full command command;
+    std:; // The primary file or directory path involved target;
+    std::optional<std:; // For commands like mv, cp> secondaryTarget;
+    std: cwd;
 };
 
 // Heuristic to identify file operation types and targets
@@ -49,7 +50,7 @@ class ShellService extends Service {
   private maxHistoryLength = 100; // Store the last 100 commands
   private maxFileOperationHistoryLength = 10; // Store last 10 file operations
 
-  private currentWorkingDirectory: std::string = process.cwd();
+  private currentWorkingDirectory: std: = std::filesystem::current_path().string();
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);

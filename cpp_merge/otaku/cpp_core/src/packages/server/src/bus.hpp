@@ -30,10 +30,10 @@ namespace elizaos {
  * unintended multiple executions of the same handler.
  */
 class InternalMessageBus extends EventTarget {
-  private _maxListeners: number = 50; // Kept for API compatibility, see setMaxListeners()
-  private handlers = new Map<std::string, Map<(data: unknown) => void, EventListener>>();
+  private _maxListeners = 50; // Kept for API compatibility, see setMaxListeners()
+  private handlers = new Map<std:, Map<[&](data: unknown) { return void, EventListener>>(); };
 
-  emit(event: std::string, data: unknown): boolean {
+  emit(event: std:, data: unknown) {
     return this.dispatchEvent(new CustomEvent(event, { detail: data }));
   }
 

@@ -37,7 +37,7 @@ std::shared_ptr<Promise<void>> createTestPluginStructure(string pluginName);
 std::shared_ptr<Promise<void>> createTestAgent(string agentName);
 
 extern object assertions;
-std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTime = TEST_TIMEOUTS["SERVER_STARTUP"], string endpoint = std::string("/api/agents"));
+std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTime = TEST_TIMEOUTS["SERVER_STARTUP"], string endpoint = std:("/api/agents"));
 
 std::shared_ptr<Promise<void>> killProcessOnPort(double port);
 

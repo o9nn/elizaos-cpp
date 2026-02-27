@@ -20,13 +20,13 @@ namespace elizaos {
 // ***********************************************
 
 // Example custom command
-// Cypress.Commands.add('login', (email, password) => { ... })
+// Cypress.Commands.add[&]('login', (email, password) { ... })
 
 // Extend Window interface
   struct Window {
     std::optional<{> ELIZA_CONFIG;
-    std::string agentId;
-    std::string apiBase;
+    std: agentId;
+    std: apiBase;
 };
 
 // Custom command to check if element is in dark mode

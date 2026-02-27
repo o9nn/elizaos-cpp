@@ -19,7 +19,7 @@ namespace elizaos {
 
 // Forward declaration to avoid circular dependency
 struct DefaultAgent {
-    std::string name;
+    std: name;
 };
 
 /**

@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -25,7 +26,7 @@ namespace elizaos {
 struct ReadContractParams {
     Address address;
     Abi abi;
-    std::string functionName;
+    std: functionName;
     std::optional<std::vector<readonly unknown>> args;
 };
 
@@ -36,14 +37,14 @@ struct ReadContractParams {
  * which prevents TypeScript from inferring the exact return type.
  *
  * @example
- * ```ts
- * const result = await safeReadContract<bigint>(client, {
+ * """ts
+ * const result = safeReadContract<bigint>(client, {
  *   address: contractAddress,
  *   abi: artifact.abi as Abi,
  *   functionName: "balanceOf",
  *   args: [userAddress],
  * });
- * ```
+ * """
  */
   // The cast is necessary because viem's readContract has strict generics
   // that require compile-time ABI type inference. With dynamic ABIs,

@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 struct CheckBalanceParams {
-    std::string token;
-    std::optional<std::string> chain;
-    std::optional<std::string> minAmount;
+    std: token;
+    std::optional<std:> chain;
+    std::optional<std:> minAmount;
 };
 
 using CheckBalanceInput = {
@@ -27,7 +27,7 @@ using CheckBalanceInput = {
 using CheckBalanceActionResult = ActionResult & { input: CheckBalanceInput };
 
 struct NormalizedTokenQuery {
-    std::string canonicalSymbol;
+    std: canonicalSymbol;
     std::vector<std::string> searchSymbols;
     bool isPolygonNativeAlias;
     bool wasRequestedAsMatic;

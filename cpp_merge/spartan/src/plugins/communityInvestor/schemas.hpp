@@ -21,9 +21,9 @@ extern any transactionSchema;
 extern any recommenderMetricsSchema;
 extern any positionSchema;
 extern any tokenRecommendationSchema;
-TokenPerformance transformTokenPerformance(any dbToken, string chain = std::string("unknown"));
+TokenPerformance transformTokenPerformance(any dbToken, string chain = std:("unknown"));
 
-std::shared_ptr<Transaction> transformTransaction(any dbTx, string positionId = std::string("unknown"), string chain = std::string("unknown"));
+std::shared_ptr<Transaction> transformTransaction(any dbTx, string positionId = std:("unknown"), string chain = std:("unknown"));
 
 Position transformPosition(any dbPos);
 

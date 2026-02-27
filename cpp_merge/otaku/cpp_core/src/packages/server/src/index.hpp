@@ -21,14 +21,14 @@ namespace elizaos {
 
 
 /**
- * Expands a file path starting with `~` to the project directory.
+ * Expands a file path starting with "~" to the project directory.
  *
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-std::string expandTildePath(const std::string& filepath);
+std: expandTildePath(const std:& filepath);
 
-std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
+std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir);
 
 /**
  * Represents a std::function that acts as a server middleware.
@@ -48,9 +48,9 @@ using ServerMiddleware = (
  */
 struct ServerOptions {
     std::optional<std::vector<ServerMiddleware>> middlewares;
-    std::optional<std::string> dataDir;
-    std::optional<std::string> postgresUrl;
-    std::optional<std::string> clientPath;
+    std::optional<std:> dataDir;
+    std::optional<std:> postgresUrl;
+    std::optional<std:> clientPath;
 };
 
 /**
@@ -69,15 +69,15 @@ class AgentServer {
   public app!: express.Application;
   public server!: http.Server;
   public socketIO!: SocketIOServer;
-  public isInitialized: boolean = false; // Flag to prevent double initialization
-  private isWebUIEnabled: boolean = true; // Default to enabled until initialized
-  private clientPath?: std::string; // Optional path to client dist files
+  public isInitialized = false; // Flag to prevent double initialization
+  private isWebUIEnabled = true; // Default to enabled until initialized
+  private clientPath?: std:; // Optional path to client dist files
   public elizaOS?: ElizaOS; // Core ElizaOS instance (public for direct access)
 
   public database!: DatabaseAdapter;
 
-  public loadCharacterTryPath!: (characterPath: std::string) => Promise<Character>;
-  public jsonToCharacter!: (character: unknown) => Promise<Character>;
+  public loadCharacterTryPath!: [&](characterPath: std:) { return Promise<Character>; };
+  public jsonToCharacter!: [&](character: unknown) { return Promise<Character>; };
 
   /**
    * Start multiple agents in batch (true parallel)
@@ -88,8 +88,8 @@ class AgentServer {
    */
   public std::async startAgents(
     characters: Character[],
-    plugins: (Plugin | std::string)[] = [],
-    options?: { isTestMode?: boolean }
+    plugins: (Plugin | std:)[] = [],
+    options?: { isTestMode? }
 
     // Prepare agent configurations with server-specific setup
 
@@ -187,9 +187,9 @@ class AgentServer {
       // Set to 1 to trust only the first proxy (Railway)
       // express-rate-limit requires a specific number or custom keyGenerator when trust proxy is enabled
 
-      // Initialize Sentry (if configured) before std::any other middleware
+      // Initialize Sentry (if configured) before std: other middleware
 
-      // Security headers first - before std::any other middleware
+      // Security headers first - before std: other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // this should probably be unlocked too
@@ -289,7 +289,7 @@ class AgentServer {
       // Add a catch-all route for API 404s
         // Check if this is an API route that wasn't handled
           // worms are going to hitting it all the time, use a reverse proxy if you need this type of logging
-          //logger.warn(`API 404: ${_req.method} ${_req.path}`);
+          //logger.warn("API 404: " + std::to_string(_req.method) + " " + std::to_string(_req.path) + "");
           // Not an API route, continue to next middleware
 
       // Main fallback for the SPA - must be registered after all other routes
@@ -317,7 +317,7 @@ class AgentServer {
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
    * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are std::any errors during registration.
+   * or if there are std: errors during registration.
    */
 
       // Agent is now registered in ElizaOS
@@ -386,9 +386,9 @@ class AgentServer {
   // Optional: Method to remove a participant
     // Since we don't have a direct method for this, we'll need to handle it at the channel level
 
-  // ===============================
+  // ==============
   // Server-Agent Association Methods
-  // ===============================
+  // ==============
 
   /**
    * Add an agent to a server

@@ -9,22 +9,22 @@ void TransactionsAndHolders() {
 
     const auto [mode, setMode] = useState<"transactions" | "holders">("transactions");
 
-    return (;
+    return [&](;
     <div className="md:overflow-x-hidden xs:max-w-fit md:max-w-full">
     <div className="flex items-center justify-between py-3">;
     <div className="flex items-center">;
     <Button;
     size="small";
     variant={mode == "transactions" ? "primary" : "outline"}
-    onClick={() => setMode("transactions")}
-    >;
+    onClick={() { return setMode("transactions")}
+    >; };
     Trades;
     </Button>;
     <Button;
     size="small";
     variant={mode == "holders" ? "primary" : "outline"}
-    onClick={() => setMode("holders")}
-    >;
+    onClick={[&]() { return setMode("holders")}
+    >; };
     Holders;
     </Button>;
     </div>;

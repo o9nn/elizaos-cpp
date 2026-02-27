@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("Backup and Restore"), [=]() mutable
+    describe(std:("Backup and Restore"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -10,174 +10,174 @@ void Main(void)
             cy->waitForGameLoad();
         }
         );
-        describe(std::string("Backup Settings UI"), [=]() mutable
+        describe(std:("Backup Settings UI"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->get(std::string("[data-testid="config-content"]"))->should(std::string("be.visible"));
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->get(std:("[data-testid="config-content"]"))->should(std:("be.visible"));
             }
             );
-            it(std::string("should display backup settings section"), [=]() mutable
+            it(std:("should display backup settings section"), [=]() mutable
             {
-                cy->contains(std::string("◎ BACKUP & RESTORE"))->should(std::string("be.visible"));
-                cy->contains(std::string("Automatic Backup Settings"))->should(std::string("be.visible"));
-                cy->contains(std::string("Available Backups"))->should(std::string("be.visible"));
+                cy->contains(std:("◎ BACKUP & RESTORE"))->should(std:("be.visible"));
+                cy->contains(std:("Automatic Backup Settings"))->should(std:("be.visible"));
+                cy->contains(std:("Available Backups"))->should(std:("be.visible"));
             }
             );
-            it(std::string("should show backup configuration options"), [=]() mutable
+            it(std:("should show backup configuration options"), [=]() mutable
             {
-                cy->contains(std::string("Enable automatic backups"))->should(std::string("be.visible"));
-                cy->contains(std::string("Backup interval (hours)"))->should(std::string("be.visible"));
-                cy->contains(std::string("Keep last"))->should(std::string("be.visible"));
-                cy->get(std::string("input[type="checkbox"]"))->first()->should(std::string("be.checked"));
-                cy->get(std::string("input[type="number"]"))->first()->should(std::string("have.value"), std::string("4"));
-                cy->get(std::string("input[type="number"]"))->eq(1)->should(std::string("have.value"), std::string("5"));
+                cy->contains(std:("Enable automatic backups"))->should(std:("be.visible"));
+                cy->contains(std:("Backup interval (hours)"))->should(std:("be.visible"));
+                cy->contains(std:("Keep last"))->should(std:("be.visible"));
+                cy->get(std:("input[type="checkbox"]"))->first()->should(std:("be.checked"));
+                cy->get(std:("input[type="number"]"))->first()->should(std:("have.value"), std:("4"));
+                cy->get(std:("input[type="number"]"))->eq(1)->should(std:("have.value"), std:("5"));
             }
             );
-            it(std::string("should update backup configuration"), [=]() mutable
+            it(std:("should update backup configuration"), [=]() mutable
             {
-                cy->get(std::string("input[type="checkbox"]"))->first()->uncheck();
-                cy->get(std::string("input[type="number"]"))->first()->clear()->type(std::string("6"));
-                cy->get(std::string("input[type="number"]"))->eq(1)->clear()->type(std::string("10"));
-                cy->contains(std::string("button"), std::string("Save Settings"))->click();
+                cy->get(std:("input[type="checkbox"]"))->first()->uncheck();
+                cy->get(std:("input[type="number"]"))->first()->clear()->type(std:("6"));
+                cy->get(std:("input[type="number"]"))->eq(1)->clear()->type(std:("10"));
+                cy->contains(std:("button"), std:("Save Settings"))->click();
             }
             );
         }
         );
-        describe(std::string("Manual Backup Creation"), [=]() mutable
+        describe(std:("Manual Backup Creation"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
             }
             );
-            it(std::string("should create a manual backup"), [=]() mutable
+            it(std:("should create a manual backup"), [=]() mutable
             {
-                cy->contains(std::string("button"), std::string("💾 Create Backup"))->click();
-                cy->contains(std::string("Create Manual Backup"))->should(std::string("be.visible"));
-                cy->get(std::string("textarea"))->type(std::string("Test backup for E2E tests"));
-                cy->contains(std::string("button"), std::string("Create Backup"))->click();
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("button"), std:("💾 Create Backup"))->click();
+                cy->contains(std:("Create Manual Backup"))->should(std:("be.visible"));
+                cy->get(std:("textarea"))->type(std:("Test backup for E2E tests"));
+                cy->contains(std:("button"), std:("Create Backup"))->click();
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->contains(std::string("manual"))->should(std::string("be.visible"));
-                    cy->contains(std::string("Test backup for E2E tests"))->should(std::string("be.visible"));
+                    cy->contains(std:("manual"))->should(std:("be.visible"));
+                    cy->contains(std:("Test backup for E2E tests"))->should(std:("be.visible"));
                 }
                 );
             }
             );
-            it(std::string("should handle backup creation errors gracefully"), [=]() mutable
+            it(std:("should handle backup creation errors gracefully"), [=]() mutable
             {
-                cy->contains(std::string("button"), std::string("💾 Create Backup"))->should(std::string("exist"));
+                cy->contains(std:("button"), std:("💾 Create Backup"))->should(std:("exist"));
             }
             );
         }
         );
-        describe(std::string("Backup List Management"), [=]() mutable
+        describe(std:("Backup List Management"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->contains(std::string("button"), std::string("💾 Create Backup"))->click();
-                cy->get(std::string("textarea"))->type(std::string("Test backup"));
-                cy->contains(std::string("button"), std::string("Create Backup"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->contains(std:("button"), std:("💾 Create Backup"))->click();
+                cy->get(std:("textarea"))->type(std:("Test backup"));
+                cy->contains(std:("button"), std:("Create Backup"))->click();
                 cy->wait(1000);
             }
             );
-            it(std::string("should display backup list with correct information"), [=]() mutable
+            it(std:("should display backup list with correct information"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->contains(std::string("✋"))->should(std::string("be.visible"));
-                    cy->contains(std::string("manual"))->should(std::string("be.visible"));
-                    cy->contains(std::string("Test backup"))->should(std::string("be.visible"));
-                    cy->contains((new RegExp(std::string("\d+\s*(B|KB|MB|GB"))))->should(std::string("be.visible"));
-                    cy->contains((new RegExp(std::string("\d{1,2}\/\d{1,2}\/\d{4"))))->should(std::string("be.visible"));
+                    cy->contains(std:("✋"))->should(std:("be.visible"));
+                    cy->contains(std:("manual"))->should(std:("be.visible"));
+                    cy->contains(std:("Test backup"))->should(std:("be.visible"));
+                    cy->contains((new RegExp(std:("\d+\s*(B|KB|MB|GB"))))->should(std:("be.visible"));
+                    cy->contains((new RegExp(std:("\d{1,2}\/\d{1,2}\/\d{4"))))->should(std:("be.visible"));
                 }
                 );
             }
             );
-            it(std::string("should delete a backup"), [=]() mutable
+            it(std:("should delete a backup"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->get(std::string("button[title="Delete"]"))->first()->click();
+                    cy->get(std:("button[title="Delete"]"))->first()->click();
                 }
                 );
-                cy->on(std::string("window:confirm"), [=]() mutable
+                cy->on(std:("window:confirm"), [=]() mutable
                 {
                     return true;
                 }
                 );
                 cy->wait(1000);
-                cy->contains(std::string("Test backup"))->should(std::string("not.exist"));
+                cy->contains(std:("Test backup"))->should(std:("not.exist"));
             }
             );
-            it(std::string("should a backup"), [=]() mutable
+            it(std:("should a backup"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->get(std::string("button[title="Export"]"))->first()->click();
+                    cy->get(std:("button[title="Export"]"))->first()->click();
                 }
                 );
             }
             );
         }
         );
-        describe(std::string("Backup Restore"), [=]() mutable
+        describe(std:("Backup Restore"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->contains(std::string("button"), std::string("💾 Create Backup"))->click();
-                cy->get(std::string("textarea"))->type(std::string("Backup to restore"));
-                cy->contains(std::string("button"), std::string("Create Backup"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->contains(std:("button"), std:("💾 Create Backup"))->click();
+                cy->get(std:("textarea"))->type(std:("Backup to restore"));
+                cy->contains(std:("button"), std:("Create Backup"))->click();
                 cy->wait(1000);
             }
             );
-            it(std::string("should show restore dialog with options"), [=]() mutable
+            it(std:("should show restore dialog with options"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->get(std::string("button[title="Restore"]"))->first()->click();
+                    cy->get(std:("button[title="Restore"]"))->first()->click();
                 }
                 );
-                cy->contains(std::string("⚠️ Restore Backup"))->should(std::string("be.visible"));
-                cy->contains(std::string("This operation is DESTRUCTIVE"))->should(std::string("be.visible"));
-                cy->contains(std::string("Database (conversations, settings)"))->should(std::string("be.visible"));
-                cy->contains(std::string("Agent State (memory, context)"))->should(std::string("be.visible"));
-                cy->contains(std::string("Knowledge Base"))->should(std::string("be.visible"));
-                cy->contains(std::string("Logs (optional)"))->should(std::string("be.visible"));
-                cy->get(std::string("input[type="checkbox"]"))->eq(0)->should(std::string("be.checked"));
-                cy->get(std::string("input[type="checkbox"]"))->eq(1)->should(std::string("be.checked"));
-                cy->get(std::string("input[type="checkbox"]"))->eq(2)->should(std::string("be.checked"));
-                cy->get(std::string("input[type="checkbox"]"))->eq(3)->should(std::string("not.be.checked"));
+                cy->contains(std:("⚠️ Restore Backup"))->should(std:("be.visible"));
+                cy->contains(std:("This operation is DESTRUCTIVE"))->should(std:("be.visible"));
+                cy->contains(std:("Database (conversations, settings)"))->should(std:("be.visible"));
+                cy->contains(std:("Agent State (memory, context)"))->should(std:("be.visible"));
+                cy->contains(std:("Knowledge Base"))->should(std:("be.visible"));
+                cy->contains(std:("Logs (optional)"))->should(std:("be.visible"));
+                cy->get(std:("input[type="checkbox"]"))->eq(0)->should(std:("be.checked"));
+                cy->get(std:("input[type="checkbox"]"))->eq(1)->should(std:("be.checked"));
+                cy->get(std:("input[type="checkbox"]"))->eq(2)->should(std:("be.checked"));
+                cy->get(std:("input[type="checkbox"]"))->eq(3)->should(std:("not.be.checked"));
             }
             );
-            it(std::string("should cancel restore operation"), [=]() mutable
+            it(std:("should cancel restore operation"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->get(std::string("button[title="Restore"]"))->first()->click();
+                    cy->get(std:("button[title="Restore"]"))->first()->click();
                 }
                 );
-                cy->contains(std::string("button"), std::string("Cancel"))->click();
-                cy->contains(std::string("⚠️ Restore Backup"))->should(std::string("not.exist"));
+                cy->contains(std:("button"), std:("Cancel"))->click();
+                cy->contains(std:("⚠️ Restore Backup"))->should(std:("not.exist"));
             }
             );
-            it(std::string("should warn before restore"), [=]() mutable
+            it(std:("should warn before restore"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->get(std::string("button[title="Restore"]"))->first()->click();
+                    cy->get(std:("button[title="Restore"]"))->first()->click();
                 }
                 );
-                cy->get(std::string("input[type="checkbox"]"))->eq(2)->uncheck();
-                cy->contains(std::string("button"), std::string("Restore Backup"))->click();
-                cy->on(std::string("window:confirm"), [=](auto message) mutable
+                cy->get(std:("input[type="checkbox"]"))->eq(2)->uncheck();
+                cy->contains(std:("button"), std:("Restore Backup"))->click();
+                cy->on(std:("window:confirm"), [=](auto message) mutable
                 {
-                    expect(message)->to->include(std::string("WARNING"));
-                    expect(message)->to->include(std::string("DESTRUCTIVE"));
+                    expect(message)->to->include(std:("WARNING"));
+                    expect(message)->to->include(std:("DESTRUCTIVE"));
                     return false;
                 }
                 );
@@ -185,86 +185,86 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Import/Export Integration"), [=]() mutable
+        describe(std:("Import/Export Integration"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
             }
             );
-            it(std::string("should show import button"), [=]() mutable
+            it(std:("should show import button"), [=]() mutable
             {
-                cy->contains(std::string("button"), std::string("📥 Import"))->should(std::string("be.visible"));
+                cy->contains(std:("button"), std:("📥 Import"))->should(std:("be.visible"));
             }
             );
-            it(std::string("should handle import action"), [=]() mutable
+            it(std:("should handle import action"), [=]() mutable
             {
-                cy->contains(std::string("button"), std::string("📥 Import"))->click();
+                cy->contains(std:("button"), std:("📥 Import"))->click();
             }
             );
         }
         );
-        describe(std::string("Auto-backup Functionality"), [=]() mutable
+        describe(std:("Auto-backup Functionality"), [=]() mutable
         {
-            it(std::string("should show auto-backup indicator when enabled"), [=]() mutable
+            it(std:("should show auto-backup indicator when enabled"), [=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->get(std::string("input[type="checkbox"]"))->first()->should(std::string("be.checked"));
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->get(std:("input[type="checkbox"]"))->first()->should(std:("be.checked"));
             }
             );
         }
         );
-        describe(std::string("Backup Components Display"), [=]() mutable
+        describe(std:("Backup Components Display"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->contains(std::string("button"), std::string("💾 Create Backup"))->click();
-                cy->get(std::string("textarea"))->type(std::string("Component test backup"));
-                cy->contains(std::string("button"), std::string("Create Backup"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->contains(std:("button"), std:("💾 Create Backup"))->click();
+                cy->get(std:("textarea"))->type(std:("Component test backup"));
+                cy->contains(std:("button"), std:("Create Backup"))->click();
                 cy->wait(1000);
             }
             );
-            it(std::string("should show backup type icons correctly"), [=]() mutable
+            it(std:("should show backup type icons correctly"), [=]() mutable
             {
-                cy->contains(std::string("Available Backups"))->parent()->within([=]() mutable
+                cy->contains(std:("Available Backups"))->parent()->within([=]() mutable
                 {
-                    cy->contains(std::string("✋"))->should(std::string("be.visible"));
+                    cy->contains(std:("✋"))->should(std:("be.visible"));
                 }
                 );
             }
             );
         }
         );
-        describe(std::string("Error Handling"), [=]() mutable
+        describe(std:("Error Handling"), [=]() mutable
         {
-            it(std::string("should handle network errors gracefully"), [=]() mutable
+            it(std:("should handle network errors gracefully"), [=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
-                cy->contains(std::string("◎ BACKUP & RESTORE"))->should(std::string("be.visible"));
+                cy->get(std:("[data-testid="config-tab"]"))->click();
+                cy->contains(std:("◎ BACKUP & RESTORE"))->should(std:("be.visible"));
             }
             );
         }
         );
-        describe(std::string("Accessibility"), [=]() mutable
+        describe(std:("Accessibility"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
-                cy->get(std::string("[data-testid="config-tab"]"))->click();
+                cy->get(std:("[data-testid="config-tab"]"))->click();
             }
             );
-            it(std::string("should have proper labels for form controls"), [=]() mutable
+            it(std:("should have proper labels for form controls"), [=]() mutable
             {
-                cy->contains(std::string("label"), std::string("Enable automatic backups"))->should(std::string("be.visible"));
-                cy->contains(std::string("label"), std::string("Backup interval (hours)"))->should(std::string("be.visible"));
-                cy->contains(std::string("label"), std::string("Keep last"))->should(std::string("be.visible"));
+                cy->contains(std:("label"), std:("Enable automatic backups"))->should(std:("be.visible"));
+                cy->contains(std:("label"), std:("Backup interval (hours)"))->should(std:("be.visible"));
+                cy->contains(std:("label"), std:("Keep last"))->should(std:("be.visible"));
             }
             );
-            it(std::string("should have descriptive button titles"), [=]() mutable
+            it(std:("should have descriptive button titles"), [=]() mutable
             {
-                cy->get(std::string("button[title="Restore"]"))->should(std::string("exist"));
-                cy->get(std::string("button[title="Export"]"))->should(std::string("exist"));
-                cy->get(std::string("button[title="Delete"]"))->should(std::string("exist"));
+                cy->get(std:("button[title="Restore"]"))->should(std:("exist"));
+                cy->get(std:("button[title="Export"]"))->should(std:("exist"));
+                cy->get(std:("button[title="Delete"]"))->should(std:("exist"));
             }
             );
         }

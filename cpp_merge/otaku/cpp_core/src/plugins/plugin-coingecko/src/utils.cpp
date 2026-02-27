@@ -1,10 +1,15 @@
 #include "utils.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::optional<std::any>> safeReadJson(const std::string& res) {
+std::future<std::optional<std:>> safeReadJson(const std:& res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -17,13 +22,13 @@ std::future<std::optional<std::any>> safeReadJson(const std::string& res) {
 
 std::future<std::vector> fetchCoinsList(std::optional<AbortSignal> signal) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    id: std::string; symbol: std::string; name: std::string
+    id: std:; symbol: std:; name: std:
 }
 
 std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::string>& ids) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (ids.length <= 1) return ids;
+    if (ids.size() <= 1) return ids;
     const auto params = new URLSearchParams({;
         vs_currency: "usd",
         ids: ids.join(","),
@@ -33,8 +38,8 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
         locale: "en",
         });
         const auto url = "https://api.coingecko.com/api/v3/coins/markets?" + std::to_string(std::to_string(params));
-        const auto controller = new AbortController();
-        const auto timeout = setTimeout(() => controller.abort(), 10000);
+        const auto controller = std::make_unique<AbortController>();
+        const auto timeout = setTimeout[&](() { return controller.abort(), 10000); };
         try {
             const auto r = fetch(url, {;
                 method: "GET",
@@ -47,14 +52,13 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
                     clearTimeout(timeout);
                     if (!r.ok) return ids;
                     const auto rows = (r.json())<{;
-                        id: std::string;
-                        market_cap?: number | nullptr;
-                        total_volume?: number | nullptr;
-                        market_cap_rank?: number | nullptr;
+                        id: std:;
+                        market_cap? | nullptr;
+                        total_volume? | nullptr;
+                        market_cap_rank? | nullptr;
                         }>;
-                        return rows;
-                        .slice();
-                        .sort((a, b) => {
+                        return rows.slice();
+                        .sort[&]((a, b) {
                             const auto volA = typeof a.total_volume == "number" ? a.total_volume : 0;
                             const auto volB = typeof b.total_volume == "number" ? b.total_volume : 0;
                             if (volB != volA) return volB - volA;
@@ -65,7 +69,7 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
                             const auto rankB = typeof b.market_cap_rank == "number" && b.market_cap_rank > 0 ? b.market_cap_rank : 10_000_000;
                             return rankA - rankB;
                             });
-                            .std::map((row) => row.id);
+                            .std::map[&]((row) { return row.id); };
                             } catch (e) {
                                 clearTimeout(timeout);
                                 std::cout << "[CoinGecko:rankIdsByMarkets] fetch failed: " + std::to_string(true /* instanceof check */ ? e.message : std::to_string(e)) << std::endl;
@@ -74,15 +78,15 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
 
 }
 
-std::optional<double> usd(const std::any& obj, const std::vector<std::string>& path) {
+std::optional<double> usd(const std:& obj, const std::vector<std::string>& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        std::any curr = obj;
+        std: curr = obj;
         for (const auto& key : path)
         if (curr == null) return null;
         if (typeof curr == "number") return curr;
-        if (typeof curr == "string" && curr.trim() != "") return Number(curr);
+        if (typeof curr == "string" && curr != "") return Number(curr);
         return nullptr;
         } catch {
             return nullptr;
@@ -90,12 +94,12 @@ std::optional<double> usd(const std::any& obj, const std::vector<std::string>& p
 
 }
 
-void choosePlatform(const std::any& data, std::optional<std::string> preferredPlatform) {
+void choosePlatform(const std:& data, std::optional<std:> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platformKey: std::string | nullptr; address: std::string | nullptr; decimals: number | nullptr
+    platformKey: std: | nullptr; address: std: | nullptr; decimals | nullptr
 }
 
-std::string platformToNet(std::optional<std::string> p) {
+std: platformToNet(std::optional<std:> p) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (p) {
@@ -117,10 +121,10 @@ std::string platformToNet(std::optional<std::string> p) {
 
 }
 
-std::any formatCoinMetadata(const std::string& requestId, const std::any& data, std::optional<std::string> preferredPlatform) {
+std: formatCoinMetadata(const std:& requestId, const std:& data, std::optional<std:> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::any md = data.market_data || {};
+    const std: md = data.market_data || {};
     const auto image = data.image || {};
     const auto { platformKey, address, decimals } = choosePlatform(data, preferredPlatform);
     const auto netCode = platformToNet(platformKey);
@@ -149,7 +153,7 @@ std::any formatCoinMetadata(const std::string& requestId, const std::any& data, 
                 },
                 relationships: {
                     top_pools: {
-                        data: []<{ id: std::string; type: std::string }>,
+                        data: []<{ id: std:; type: std: }>,
                         },
                         },
                         market_data: {

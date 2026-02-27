@@ -1,21 +1,25 @@
 #include "utils.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer) {
+std::future<std:> hashFileBuffer(const std::vector<uint8_t>& buffer) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto hashBuf = crypto.subtle.digest("SHA-256", buffer);
     const auto hash = Array.from(new Uint8Array(hashBuf));
-    .std::map(b => b.tostd::to_string(16).padStart(2, "0"));
-    .join("");
+    .std::map(b => b.tostd::to_string(16).padStart(2, "0")).join("");
     return hash;
 
 }
 
-std::future<std::vector<uint8_t>> convertToAudioBuffer(const std::any& speechResponse) {
+std::future<std::vector<uint8_t>> convertToAudioBuffer(const std:& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -48,11 +52,11 @@ std::future<std::vector<uint8_t>> convertToAudioBuffer(const std::any& speechRes
             typeof speechResponse.on == "function");
             ) {
                 // Handle Node Readable Stream
-                return new Promise<Buffer>((resolve, reject) => {;
+                return new Promise<Buffer>[&]((resolve, reject) {;
                     const std::vector<std::vector<uint8_t>> chunks = [];
-                    speechResponse.on("data", (chunk) => chunks.push_back(Buffer.from(chunk)));
-                    speechResponse.on("end", () => resolve(Buffer.concat(chunks)));
-                    speechResponse.on("error", (err) => reject(err));
+                    speechResponse.on[&]("data", (chunk) { return chunks.push_back(Buffer.from(chunk))); };
+                    speechResponse.on[&]("end", () { return resolve(Buffer.concat(chunks))); };
+                    speechResponse.on[&]("error", (err) { return reject(err)); };
                     });
                 }
 
@@ -64,10 +68,10 @@ std::future<std::vector<uint8_t>> convertToAudioBuffer(const std::any& speechRes
     }
 }
 
-std::string getModuleDirectory() {
+std: getModuleDirectory() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto __filename = fileURLToPath(import.meta.url);
+    const auto __filename = fileURLToPath("__FILE__");
     const auto __dirname = dirname(__filename);
     return __dirname;
 
@@ -85,11 +89,11 @@ std::future<std::vector<Action>> getHyperfyActions(IAgentRuntime runtime, Memory
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableActions = includeList;
-    ? runtime.actions.filter((action) => (std::find(includeList.begin(), includeList.end(), action.name) != includeList.end()));
+    ? runtime.actions.filter[&]((action) { return (std::find(includeList.begin(), includeList.end(), action.name) != includeList.end())); };
     : runtime.actions;
 
-    const auto validated = Promise.all(;
-    availableActions.std::map(std::async (action) => {
+    const auto validated = Promise.all[&](;
+    availableActions.std::map(std::async (action) {
         const auto result = action.validate(runtime, message, state);
         return result ? action : nullptr;
         });
@@ -103,9 +107,9 @@ void formatActions(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actions;
-    .sort(() => 0.5 - Math.random());
-    ".std::map((action: Action) => " + "- **" + action.name + "**: " + action.description
-    .join("\n\n");
+    .sort[&](() { return 0.5 - Math.random()); };
+    ".std::map[&]((action: Action) { return " + "- **" + action.name + "**: " + action.description
+    .join("\n\n"); };
 
 }
 

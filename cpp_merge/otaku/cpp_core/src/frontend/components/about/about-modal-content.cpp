@@ -1,4 +1,5 @@
 #include "about-modal-content.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -71,7 +72,7 @@ void AboutModalContent() {
     Capabilities;
     </div>;
     <div className="grid gap-3 md:grid-cols-2">
-    {capabilityItems.std::map((item) => (;
+    {capabilityItems.std::map[&]((item) { return (; };
     <div;
     key={item.title}
     className="group rounded-lg border border-border/60 bg-background/80 p-4 transition-colors hover:bg-accent/30"
@@ -98,7 +99,7 @@ void AboutModalContent() {
     Core Plugins;
     </div>;
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-    {pluginItems.std::map((plugin) => (;
+    {pluginItems.std::map[&]((plugin) { return (; };
     <div;
     key={plugin.name}
     className="flex h-full flex-col rounded-lg border border-border/60 bg-background/60 p-4";
@@ -114,7 +115,7 @@ void AboutModalContent() {
     </div>;
     <p className="mt-3 text-sm text-muted-foreground">{plugin.summary}</p>;
     <ul className="mt-3 space-y-2 text-sm text-foreground/90">;
-    {plugin.points.std::map((point) => (;
+    {plugin.points.std::map[&]((point) { return (; };
     <li key={point} className="flex gap-2">;
     <span className="mt-1 inline-block size-1.5 rounded-full bg-primary/80" />;
     <span>{point}</span>;

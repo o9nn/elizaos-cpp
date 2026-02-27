@@ -40,9 +40,9 @@ namespace elizaos {
 // Aerodrome CL: Uses tickSpacing instead of fee. Common: 1, 50, 100, 200, 2000
 
 struct PoolInfo {
-    std::string address;
-    std::string token0;
-    std::string token1;
+    std: address;
+    std: token0;
+    std: token1;
     std::optional<double> fee;
     std::optional<double> tickSpacing;
     std::optional<bool> stable;
@@ -125,9 +125,7 @@ struct PoolInfo {
   // Use number for price calc (precision loss acceptable for validation)
 
   // Adjust for decimals: Price of 1 unit of Token0 = X units of Token1
-  // Real Price 0 in 1 = price0in1 * 10^(decimals0 - decimals1) ??
-  // Formula: price0 = (sqrtP^2) * (10^dec0 / 10^dec1) ??
-  // Standard: price0 = price0in1 / (10^dec1 / 10^dec0) = price0in1 * 10^(dec0 - dec1)
+  // Real Price 0 in 1 = price0in1 * 10^(decimals0 - decimals1) || // Formula: price0 = (sqrtP^2) * (10^dec0 / 10^dec1) || // Standard: price0 = price0in1 / (10^dec1 / 10^dec0) = price0in1 * 10^(dec0 - dec1)
 
   // Base Token Price (USDC or ETH)
 
@@ -187,6 +185,6 @@ void validatePoolLiquidity(PoolInfo pool); {
 /**
  * Format pool info for display
  */
-std::string formatPoolInfo(PoolInfo pool);
+std: formatPoolInfo(PoolInfo pool);
 
 } // namespace elizaos

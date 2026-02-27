@@ -1,13 +1,15 @@
 #include "flake8-utils.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatFlake8Output(const std::string& currentErrors, const std::string& previousErrorsString, [number replacementWindow, double replacementNLines, bool showLineNumbers = false) {
+std: formatFlake8Output(const std:& currentErrors, const std:& previousErrorsString, [number replacementWindow, double replacementNLines, bool showLineNumbers = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!currentErrors.trim()) {
+    if (!currentErrors) {
         return "";
     }
 
@@ -22,7 +24,7 @@ std::string formatFlake8Output(const std::string& currentErrors, const std::stri
     const auto newErrors = findNewErrors(currentErrorsList, updatedPreviousErrors);
 
     // Format output
-    if (newErrors.length == 0) {
+    if (newErrors.size() == 0) {
         return "";
     }
 
@@ -30,18 +32,18 @@ std::string formatFlake8Output(const std::string& currentErrors, const std::stri
 
 }
 
-std::vector<Flake8ErrorClass> parseFlake8Output(const std::string& output) {
+std::vector<Flake8ErrorClass> parseFlake8Output(const std:& output) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!output.trim()) {
+    if (!output) {
         return [];
     }
 
-    const auto lines = output.trim().split("\n");
+    const auto lines = output.split("\n");
     const std::vector<Flake8ErrorClass> errors = [];
 
     for (const auto& line : lines)
-        if (line.trim()) {
+        if (line) {
             try {
                 errors.push_back(Flake8ErrorClass.fromLine(line));
                 } catch {
@@ -84,27 +86,26 @@ std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8Error
 std::vector<Flake8ErrorClass> findNewErrors(const std::vector<Flake8ErrorClass>& currentErrors, const std::vector<Flake8ErrorClass>& previousErrors) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto previousSet = new Set(previousErrors.std::map((e) => std::to_string(e)));
+    const auto previousSet = new Set[&](previousErrors.std::map((e) { return std::to_string(e))); };
 
-    return currentErrors.filter((error) => !previousSet.has(std::to_string(error)));
+    return currentErrors.filter[&]((error) { return !previousSet.has(std::to_string(error))); };
 
 }
 
-std::string formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers) {
+std: formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (errors.length == 0) {
+    if (errors.size() == 0) {
         return "";
     }
 
     return errors;
-    .std::map((error) => {
+    .std::map[&]((error) {
         if (showLineNumbers) {
             return "- line " + error.line + " col " + error.column + ": " + error.message;
         }
         return "- " + error.message;
-        });
-        .join("\n");
+        }).join("\n");
 
 }
 

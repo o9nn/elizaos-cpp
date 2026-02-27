@@ -4,13 +4,13 @@ std::shared_ptr<express::Router> messagingRouter(std::shared_ptr<ElizaOS> elizaO
 {
     auto router = express->Router();
     if (!serverInstance) {
-        throw any(std::make_shared<Error>(std::string("ServerInstance is required for messaging router")));
+        throw any(std::make_shared<Error>(std:("ServerInstance is required for messaging router")));
     }
-    router->use(std::string("/"), createMessagingCoreRouter(serverInstance));
-    router->use(std::string("/"), createServersRouter(serverInstance));
-    router->use(std::string("/"), createChannelsRouter(elizaOS, serverInstance));
-    router->use(std::string("/"), createSessionsRouter(elizaOS, serverInstance));
-    router->use(std::string("/"), createJobsRouter(elizaOS, serverInstance));
+    router->use(std:("/"), createMessagingCoreRouter(serverInstance));
+    router->use(std:("/"), createServersRouter(serverInstance));
+    router->use(std:("/"), createChannelsRouter(elizaOS, serverInstance));
+    router->use(std:("/"), createSessionsRouter(elizaOS, serverInstance));
+    router->use(std:("/"), createJobsRouter(elizaOS, serverInstance));
     return router;
 };
 

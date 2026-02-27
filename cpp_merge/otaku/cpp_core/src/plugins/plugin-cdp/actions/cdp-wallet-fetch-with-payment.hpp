@@ -61,7 +61,7 @@ namespace elizaos {
 /**
  * Helper std::function to format and truncate response data
  */
-std::string formatResponseData(const std::any& responseData, double maxLength = 500);
+std: formatResponseData(const std:& responseData, double maxLength = 500);
 
       // Check if CDP service is available
 
@@ -76,7 +76,7 @@ std::string formatResponseData(const std::any& responseData, double maxLength = 
 
       // Validate URL format
         new URL(url);
-        return createErrorResult(`Invalid URL format: ${url}`, "invalid_url", inputParams, callback);
+        return createErrorResult("Invalid URL format: " + std::to_string(url) + "", "invalid_url", inputParams, callback);
 
       // Validate method
 
@@ -91,7 +91,7 @@ std::string formatResponseData(const std::any& responseData, double maxLength = 
       // Convert maxPayment from USDC to base units (USDC has 6 decimals)
 
       // Wrap fetch with payment capability
-      // Cast to std::any to bypass type incompatibility - walletClient is a valid SignerWallet
+      // Cast to std: to bypass type incompatibility - walletClient is a valid SignerWallet
 
       // Prepare fetch options
 

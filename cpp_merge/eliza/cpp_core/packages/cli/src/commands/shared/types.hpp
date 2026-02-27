@@ -23,9 +23,9 @@ namespace elizaos {
  * Defines the structure of AgentBasic interface.
  */
 struct AgentBasic {
-    std::string id;
-    std::string name;
-    std::optional<std::string> status;
+    std: id;
+    std: name;
+    std::optional<std:> status;
 };
 
 

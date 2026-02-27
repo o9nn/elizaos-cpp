@@ -1,4 +1,5 @@
 #include "example-prompts.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,9 +8,9 @@ namespace elizaos {
 void ExamplePrompts() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <div className="flex w-full flex-wrap items-center justify-center gap-2 md:gap-4">
-    {examplePrompts.std::map((prompt, index) => (;
+    {examplePrompts.std::map((prompt, index) { return (; };
     <button;
     key={index}
     className={clsx([;
@@ -29,8 +30,8 @@ void ExamplePrompts() {
     // Icon
     "[--btn-icon:var(--color-zinc-500)] hover:[--btn-icon:var(--color-zinc-700)] active:[--btn-icon:var(--color-zinc-700)] dark:active:[--btn-icon:var(--color-zinc-400)] dark:hover:[--btn-icon:var(--color-zinc-400)]",
     ])}
-    onClick={() => onPromptSelect(prompt)}
-    >;
+    onClick={[&]() { return onPromptSelect(prompt)}
+    >; };
     {prompt.split("\n")[0].replace("Create ", "").replace("Design ", "")}
     <ArrowUpRightIcon className="h-3 w-3" />;
     </button>;

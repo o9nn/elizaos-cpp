@@ -2,14 +2,14 @@
 
 void Main(void)
 {
-    describe(std::string("SPA Routing Fix"), [=]() mutable
+    describe(std:("SPA Routing Fix"), [=]() mutable
     {
         shared<string> tempDir;
         beforeEach([=]() mutable
         {
-            tempDir = path->join(os->tmpdir(), std::string("eliza-spa-test-") + Date->now() + string_empty);
+            tempDir = path->join(os->tmpdir(), std:("eliza-spa-test-") + Date->now() + string_empty);
             mkdirSync(tempDir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             });
         }
         );
@@ -17,71 +17,71 @@ void Main(void)
         {
             if (existsSync(tempDir)) {
                 rmSync(tempDir, object{
-                    object::pair{std::string("recursive"), true}, 
-                    object::pair{std::string("force"), true}
+                    object::pair{std:("recursive"), true}, 
+                    object::pair{std:("force"), true}
                 });
             }
         }
         );
-        describe(std::string("Client Path Resolution"), [=]() mutable
+        describe(std:("Client Path Resolution"), [=]() mutable
         {
-            it(std::string("should find index.html when explicitly provided via options"), [=]() mutable
+            it(std:("should find index.html when explicitly provided via options"), [=]() mutable
             {
-                auto clientPath = path->join(tempDir, std::string("dist"));
+                auto clientPath = path->join(tempDir, std:("dist"));
                 mkdirSync(clientPath, object{
-                    object::pair{std::string("recursive"), true}
+                    object::pair{std:("recursive"), true}
                 });
-                writeFileSync(path->join(clientPath, std::string("index.html")), std::string("<html></html>"));
-                expect(existsSync(path->join(clientPath, std::string("index.html"))))->toBe(true);
+                writeFileSync(path->join(clientPath, std:("index.html")), std:("<html></html>"));
+                expect(existsSync(path->join(clientPath, std:("index.html"))))->toBe(true);
             }
             );
-            it(std::string("should handle missing index.html gracefully"), [=]() mutable
+            it(std:("should handle missing index.html gracefully"), [=]() mutable
             {
-                auto clientPath = path->join(tempDir, std::string("dist"));
+                auto clientPath = path->join(tempDir, std:("dist"));
                 mkdirSync(clientPath, object{
-                    object::pair{std::string("recursive"), true}
+                    object::pair{std:("recursive"), true}
                 });
-                expect(existsSync(path->join(clientPath, std::string("index.html"))))->toBe(false);
+                expect(existsSync(path->join(clientPath, std:("index.html"))))->toBe(false);
             }
             );
-            it(std::string("should resolve absolute paths correctly"), [=]() mutable
+            it(std:("should resolve absolute paths correctly"), [=]() mutable
             {
-                auto clientPath = path->join(tempDir, std::string("dist"));
-                auto indexPath = path->join(clientPath, std::string("index.html"));
+                auto clientPath = path->join(tempDir, std:("dist"));
+                auto indexPath = path->join(clientPath, std:("index.html"));
                 expect(path->isAbsolute(indexPath))->toBe(true);
             }
             );
         }
         );
-        describe(std::string("CLI Path Resolution"), [=]() mutable
+        describe(std:("CLI Path Resolution"), [=]() mutable
         {
-            it(std::string("should calculate correct dist path from nested directory"), [=]() mutable
+            it(std:("should calculate correct dist path from nested directory"), [=]() mutable
             {
-                auto cliRoot = path->join(tempDir, std::string("cli"));
-                auto commandsDir = path->join(cliRoot, std::string("dist"), std::string("commands"), std::string("start"), std::string("actions"));
+                auto cliRoot = path->join(tempDir, std:("cli"));
+                auto commandsDir = path->join(cliRoot, std:("dist"), std:("commands"), std:("start"), std:("actions"));
                 mkdirSync(commandsDir, object{
-                    object::pair{std::string("recursive"), true}
+                    object::pair{std:("recursive"), true}
                 });
-                writeFileSync(path->join(cliRoot, std::string("dist"), std::string("index.html")), std::string("<html></html>"));
-                auto resolvedPath = path->resolve(commandsDir, std::string("../../../"));
-                expect(resolvedPath)->toBe(path->join(cliRoot, std::string("dist")));
-                expect(existsSync(path->join(resolvedPath, std::string("index.html"))))->toBe(true);
+                writeFileSync(path->join(cliRoot, std:("dist"), std:("index.html")), std:("<html></html>"));
+                auto resolvedPath = path->resolve(commandsDir, std:("../../../"));
+                expect(resolvedPath)->toBe(path->join(cliRoot, std:("dist")));
+                expect(existsSync(path->join(resolvedPath, std:("index.html"))))->toBe(true);
             }
             );
-            it(std::string("should find package.json and resolve dist directory"), [=]() mutable
+            it(std:("should find package.json and resolve dist directory"), [=]() mutable
             {
-                auto pkgRoot = path->join(tempDir, std::string("node_modules"), std::string("@elizaos"), std::string("cli"));
-                auto distDir = path->join(pkgRoot, std::string("dist"));
+                auto pkgRoot = path->join(tempDir, std:("node_modules"), std:("@elizaos"), std:("cli"));
+                auto distDir = path->join(pkgRoot, std:("dist"));
                 mkdirSync(distDir, object{
-                    object::pair{std::string("recursive"), true}
+                    object::pair{std:("recursive"), true}
                 });
-                writeFileSync(path->join(pkgRoot, std::string("package.json")), JSON->stringify(object{
-                    object::pair{std::string("name"), std::string("@elizaos/cli")}, 
-                    object::pair{std::string("version"), std::string("1.0.0")}
+                writeFileSync(path->join(pkgRoot, std:("package.json")), JSON->stringify(object{
+                    object::pair{std:("name"), std:("@elizaos/cli")}, 
+                    object::pair{std:("version"), std:("1.0.0")}
                 }));
-                writeFileSync(path->join(distDir, std::string("index.html")), std::string("<html></html>"));
-                expect(existsSync(path->join(pkgRoot, std::string("package.json"))))->toBe(true);
-                expect(existsSync(path->join(distDir, std::string("index.html"))))->toBe(true);
+                writeFileSync(path->join(distDir, std:("index.html")), std:("<html></html>"));
+                expect(existsSync(path->join(pkgRoot, std:("package.json"))))->toBe(true);
+                expect(existsSync(path->join(distDir, std:("index.html"))))->toBe(true);
             }
             );
         }

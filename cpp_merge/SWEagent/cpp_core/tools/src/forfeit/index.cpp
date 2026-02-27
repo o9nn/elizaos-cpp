@@ -8,7 +8,7 @@ void exitForfeit() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "###SWE-AGENT-EXIT-FORFEIT###" << std::endl;
-    process.exit(0);
+    std::exit(0);
 
 }
 

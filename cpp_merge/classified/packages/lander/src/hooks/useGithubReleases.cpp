@@ -9,7 +9,7 @@ std::function<object()> useGithubReleases = [=]() mutable
     auto [error, setError] = useState<any>(nullptr);
     shared formatFileSize = [=](auto bytes) mutable
     {
-        auto units = array<string>{ std::string("B"), std::string("KB"), std::string("MB"), std::string("GB") };
+        auto units = array<string>{ std:("B"), std:("KB"), std:("MB"), std:("GB") };
         auto size = bytes;
         auto unitIndex = 0;
         while (AND((size >= 1024), (unitIndex < units->get_length() - 1)))
@@ -17,7 +17,7 @@ std::function<object()> useGithubReleases = [=]() mutable
             size /= 1024;
             unitIndex++;
         }
-        return string_empty + size->toFixed(1) + std::string(" ") + const_(units)[unitIndex] + string_empty;
+        return string_empty + size->toFixed(1) + std:(" ") + const_(units)[unitIndex] + string_empty;
     };
     shared parseDownloadLinks = [=](auto assets) mutable
     {
@@ -25,41 +25,41 @@ std::function<object()> useGithubReleases = [=]() mutable
         assets->forEach([=](auto asset) mutable
         {
             auto filename = asset->name->toLowerCase();
-            if (filename->includes(std::string(".dmg"))) {
+            if (filename->includes(std:(".dmg"))) {
                 links->push(object{
-                    object::pair{std::string("platform"), std::string("macOS")}, 
-                    object::pair{std::string("architecture"), (filename->includes(std::string("universal"))) ? any(std::string("universal")) : any((filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64"))}, 
-                    object::pair{std::string("filename"), asset->name}, 
-                    object::pair{std::string("size"), formatFileSize(asset->size)}, 
-                    object::pair{std::string("downloadUrl"), asset->browser_download_url}, 
-                    object::pair{std::string("type"), std::string("dmg")}
+                    object::pair{std:("platform"), std:("macOS")}, 
+                    object::pair{std:("architecture"), (filename->includes(std:("universal"))) ? any(std:("universal")) ((filename->includes(std:("arm64"))) ? std:("arm64") : std:("x64"))}, 
+                    object::pair{std:("filename"), asset->name}, 
+                    object::pair{std:("size"), formatFileSize(asset->size)}, 
+                    object::pair{std:("downloadUrl"), asset->browser_download_url}, 
+                    object::pair{std:("type"), std:("dmg")}
                 });
-            } else if (OR((filename->includes(std::string(".exe"))), (filename->includes(std::string(".msi"))))) {
+            } else if (OR((filename->includes(std:(".exe"))), (filename->includes(std:(".msi"))))) {
                 links->push(object{
-                    object::pair{std::string("platform"), std::string("Windows")}, 
-                    object::pair{std::string("architecture"), (filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64")}, 
-                    object::pair{std::string("filename"), asset->name}, 
-                    object::pair{std::string("size"), formatFileSize(asset->size)}, 
-                    object::pair{std::string("downloadUrl"), asset->browser_download_url}, 
-                    object::pair{std::string("type"), std::string("installer")}
+                    object::pair{std:("platform"), std:("Windows")}, 
+                    object::pair{std:("architecture"), (filename->includes(std:("arm64"))) ? std:("arm64") : std:("x64")}, 
+                    object::pair{std:("filename"), asset->name}, 
+                    object::pair{std:("size"), formatFileSize(asset->size)}, 
+                    object::pair{std:("downloadUrl"), asset->browser_download_url}, 
+                    object::pair{std:("type"), std:("installer")}
                 });
-            } else if (filename->includes(std::string(".appimage"))) {
+            } else if (filename->includes(std:(".appimage"))) {
                 links->push(object{
-                    object::pair{std::string("platform"), std::string("Linux")}, 
-                    object::pair{std::string("architecture"), (filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64")}, 
-                    object::pair{std::string("filename"), asset->name}, 
-                    object::pair{std::string("size"), formatFileSize(asset->size)}, 
-                    object::pair{std::string("downloadUrl"), asset->browser_download_url}, 
-                    object::pair{std::string("type"), std::string("appimage")}
+                    object::pair{std:("platform"), std:("Linux")}, 
+                    object::pair{std:("architecture"), (filename->includes(std:("arm64"))) ? std:("arm64") : std:("x64")}, 
+                    object::pair{std:("filename"), asset->name}, 
+                    object::pair{std:("size"), formatFileSize(asset->size)}, 
+                    object::pair{std:("downloadUrl"), asset->browser_download_url}, 
+                    object::pair{std:("type"), std:("appimage")}
                 });
-            } else if (filename->includes(std::string(".deb"))) {
+            } else if (filename->includes(std:(".deb"))) {
                 links->push(object{
-                    object::pair{std::string("platform"), std::string("Linux")}, 
-                    object::pair{std::string("architecture"), (filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64")}, 
-                    object::pair{std::string("filename"), asset->name}, 
-                    object::pair{std::string("size"), formatFileSize(asset->size)}, 
-                    object::pair{std::string("downloadUrl"), asset->browser_download_url}, 
-                    object::pair{std::string("type"), std::string("deb")}
+                    object::pair{std:("platform"), std:("Linux")}, 
+                    object::pair{std:("architecture"), (filename->includes(std:("arm64"))) ? std:("arm64") : std:("x64")}, 
+                    object::pair{std:("filename"), asset->name}, 
+                    object::pair{std:("size"), formatFileSize(asset->size)}, 
+                    object::pair{std:("downloadUrl"), asset->browser_download_url}, 
+                    object::pair{std:("type"), std:("deb")}
                 });
             }
         }
@@ -79,7 +79,7 @@ std::function<object()> useGithubReleases = [=]() mutable
             {
                 auto response = std::async([=]() { fetch(getApiReleasesUrl()); });
                 if (!response->ok) {
-                    throw any(std::make_shared<Error>(std::string("GitHub API error: ") + response->status + string_empty));
+                    throw any(std::make_shared<Error>(std:("GitHub API error: ") + response->status + string_empty));
                 }
                 auto data = std::async([=]() { response->json(); });
                 auto latestStable = data->find([=](auto release) mutable
@@ -95,7 +95,7 @@ std::function<object()> useGithubReleases = [=]() mutable
             }
             catch (const any& err)
             {
-                setError((is<Error>(err)) ? any(err->message) : any(std::string("Failed to fetch releases")));
+                setError((is<Error>(err)) ? any(err->message) (std:("Failed to fetch releases")));
             }
         }
     };
@@ -109,12 +109,12 @@ std::function<object()> useGithubReleases = [=]() mutable
     }
     , array<any>());
     return object{
-        object::pair{std::string("releases"), std::string("releases")}, 
-        object::pair{std::string("latestRelease"), std::string("latestRelease")}, 
-        object::pair{std::string("downloadLinks"), std::string("downloadLinks")}, 
-        object::pair{std::string("loading"), std::string("loading")}, 
-        object::pair{std::string("error"), std::string("error")}, 
-        object::pair{std::string("refetch"), std::string("refetch")}
+        object::pair{std:("releases"), std:("releases")}, 
+        object::pair{std:("latestRelease"), std:("latestRelease")}, 
+        object::pair{std:("downloadLinks"), std:("downloadLinks")}, 
+        object::pair{std:("loading"), std:("loading")}, 
+        object::pair{std:("error"), std:("error")}, 
+        object::pair{std:("refetch"), std:("refetch")}
     };
 };
 

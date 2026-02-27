@@ -1,11 +1,11 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/build-project.test.h"
 
 object mockLogger = object{
-    object::pair{std::string("info"), mock()}, 
-    object::pair{std::string("success"), mock()}, 
-    object::pair{std::string("error"), mock()}, 
-    object::pair{std::string("warn"), mock()}, 
-    object::pair{std::string("debug"), mock()}
+    object::pair{std:("info"), mock()}, 
+    object::pair{std:("success"), mock()}, 
+    object::pair{std:("error"), mock()}, 
+    object::pair{std:("warn"), mock()}, 
+    object::pair{std:("debug"), mock()}
 };
 any mockBunExec = mock();
 any mockRunBunWithSpinner = mock();
@@ -16,49 +16,49 @@ any mockDetectDirectoryType = mock();
 
 void Main(void)
 {
-    mock->module(std::string("@elizaos/core"), [=]() mutable
+    mock->module(std:("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("logger"), mockLogger}
+            object::pair{std:("logger"), mockLogger}
         });
     }
     );
-    mock->module(std::string("../../../src/utils/bun-exec"), [=]() mutable
+    mock->module(std:("../../../src/utils/bun-exec"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("bunExec"), mockBunExec}
+            object::pair{std:("bunExec"), mockBunExec}
         });
     }
     );
-    mock->module(std::string("../../../src/utils/spinner-utils"), [=]() mutable
+    mock->module(std:("../../../src/utils/spinner-utils"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("runBunWithSpinner"), mockRunBunWithSpinner}
+            object::pair{std:("runBunWithSpinner"), mockRunBunWithSpinner}
         });
     }
     );
-    mock->module(std::string("node:fs"), [=]() mutable
+    mock->module(std:("node:fs"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("existsSync"), mockExistsSync}, 
-            object::pair{std::string("readFileSync"), mockReadFileSync}, 
-            object::pair{std::string("promises"), object{
-                object::pair{std::string("rm"), mockRm}
+            object::pair{std:("existsSync"), mockExistsSync}, 
+            object::pair{std:("readFileSync"), mockReadFileSync}, 
+            object::pair{std:("promises"), object{
+                object::pair{std:("rm"), mockRm}
             }}
         });
     }
     );
-    mock->module(std::string("../../../src/utils/directory-detection"), [=]() mutable
+    mock->module(std:("../../../src/utils/directory-detection"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("detectDirectoryType"), mockDetectDirectoryType}
+            object::pair{std:("detectDirectoryType"), mockDetectDirectoryType}
         });
     }
     );
-    describe(std::string("buildProject"), [=]() mutable
+    describe(std:("buildProject"), [=]() mutable
     {
-        shared testProjectPath = std::string("/test/project");
-        shared testPluginPath = std::string("/test/plugin");
+        shared testProjectPath = std:("/test/project");
+        shared testPluginPath = std:("/test/plugin");
         beforeEach([=]() mutable
         {
             mockLogger["info"]->mockClear();
@@ -74,19 +74,19 @@ void Main(void)
             mockDetectDirectoryType->mockClear();
             mockExistsSync->mockReturnValue(true);
             mockDetectDirectoryType->mockReturnValue(object{
-                object::pair{std::string("type"), std::string("elizaos-project")}, 
-                object::pair{std::string("hasPackageJson"), true}, 
-                object::pair{std::string("hasElizaOSDependencies"), true}, 
-                object::pair{std::string("elizaPackageCount"), 1}
+                object::pair{std:("type"), std:("elizaos-project")}, 
+                object::pair{std:("hasPackageJson"), true}, 
+                object::pair{std:("hasElizaOSDependencies"), true}, 
+                object::pair{std:("elizaPackageCount"), 1}
             });
             mockReadFileSync->mockReturnValue(JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-project")}, 
-                object::pair{std::string("scripts"), object{
-                    object::pair{std::string("build"), std::string("bun run build")}
+                object::pair{std:("name"), std:("test-project")}, 
+                object::pair{std:("scripts"), object{
+                    object::pair{std:("build"), std:("bun run build")}
                 }}
             }));
             mockRunBunWithSpinner->mockResolvedValue(object{
-                object::pair{std::string("success"), true}
+                object::pair{std:("success"), true}
             });
             mockRm->mockResolvedValue(undefined);
         }
@@ -95,124 +95,124 @@ void Main(void)
         {
         }
         );
-        it(std::string("should log correct messages and call runBunWithSpinner for project build"), [=]() mutable
+        it(std:("should log correct messages and call runBunWithSpinner for project build"), [=]() mutable
         {
             std::async([=]() { buildProject(testProjectPath); });
-            expect(mockRunBunWithSpinner)->toHaveBeenCalledWith(array<string>{ std::string("run"), std::string("build") }, testProjectPath, expect->objectContaining(object{
-                object::pair{std::string("spinnerText"), std::string("Building project...")}, 
-                object::pair{std::string("successText"), expect->stringContaining(std::string("Project built successfully"))}, 
-                object::pair{std::string("errorText"), std::string("Failed to build project")}
+            expect(mockRunBunWithSpinner)->toHaveBeenCalledWith(array<string>{ std:("run"), std:("build") }, testProjectPath, expect->objectContaining(object{
+                object::pair{std:("spinnerText"), std:("Building project...")}, 
+                object::pair{std:("successText"), expect->stringContaining(std:("Project built successfully"))}, 
+                object::pair{std:("errorText"), std:("Failed to build project")}
             }));
         }
         );
-        it(std::string("should log correct messages and call runBunWithSpinner for plugin build"), [=]() mutable
+        it(std:("should log correct messages and call runBunWithSpinner for plugin build"), [=]() mutable
         {
             std::async([=]() { buildProject(testPluginPath, true); });
-            expect(mockRunBunWithSpinner)->toHaveBeenCalledWith(array<string>{ std::string("run"), std::string("build") }, testPluginPath, expect->objectContaining(object{
-                object::pair{std::string("spinnerText"), std::string("Building plugin...")}, 
-                object::pair{std::string("successText"), expect->stringContaining(std::string("Plugin built successfully"))}, 
-                object::pair{std::string("errorText"), std::string("Failed to build plugin")}
+            expect(mockRunBunWithSpinner)->toHaveBeenCalledWith(array<string>{ std:("run"), std:("build") }, testPluginPath, expect->objectContaining(object{
+                object::pair{std:("spinnerText"), std:("Building plugin...")}, 
+                object::pair{std:("successText"), expect->stringContaining(std:("Plugin built successfully"))}, 
+                object::pair{std:("errorText"), std:("Failed to build plugin")}
             }));
         }
         );
-        it(std::string("should clean dist directory before building"), [=]() mutable
+        it(std:("should clean dist directory before building"), [=]() mutable
         {
             mockExistsSync->mockImplementation([=](auto path) mutable
             {
-                return OR((String(path)->includes(std::string("dist"))), (!String(path)->includes(std::string("tsconfig.json"))));
+                return OR((String(path)->includes(std:("dist"))), (!String(path)->includes(std:("tsconfig.json"))));
             }
             );
             std::async([=]() { buildProject(testProjectPath); });
-            expect(mockRm)->toHaveBeenCalledWith(expect->stringContaining(std::string("dist")), object{
-                object::pair{std::string("recursive"), true}, 
-                object::pair{std::string("force"), true}
+            expect(mockRm)->toHaveBeenCalledWith(expect->stringContaining(std:("dist")), object{
+                object::pair{std:("recursive"), true}, 
+                object::pair{std:("force"), true}
             });
         }
         );
-        it(std::string("should fallback to tsc when no build script exists"), [=]() mutable
+        it(std:("should fallback to tsc when no build script exists"), [=]() mutable
         {
             mockReadFileSync->mockReturnValue(JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-project")}
+                object::pair{std:("name"), std:("test-project")}
             }));
             mockExistsSync->mockImplementation([=](auto path) mutable
             {
                 auto pathStr = String(path);
-                if (pathStr->includes(std::string("tsconfig.json"))) return true;
-                return !pathStr->includes(std::string("dist"));
+                if (pathStr->includes(std:("tsconfig.json"))) return true;
+                return !pathStr->includes(std:("dist"));
             }
             );
             mockBunExec->mockResolvedValue(object{
-                object::pair{std::string("success"), true}, 
-                object::pair{std::string("stdout"), string_empty}, 
-                object::pair{std::string("stderr"), string_empty}, 
-                object::pair{std::string("exitCode"), 0}
+                object::pair{std:("success"), true}, 
+                object::pair{std:("stdout"), string_empty}, 
+                object::pair{std:("stderr"), string_empty}, 
+                object::pair{std:("exitCode"), 0}
             });
             std::async([=]() { buildProject(testProjectPath); });
-            expect(mockBunExec)->toHaveBeenCalledWith(std::string("bunx"), array<string>{ std::string("tsc"), std::string("--build") }, expect->objectContaining(object{
-                object::pair{std::string("cwd"), testProjectPath}
+            expect(mockBunExec)->toHaveBeenCalledWith(std:("bunx"), array<string>{ std:("tsc"), std:("--build") }, expect->objectContaining(object{
+                object::pair{std:("cwd"), testProjectPath}
             }));
         }
         );
-        it(std::string("should throw error when directory does not exist"), [=]() mutable
+        it(std:("should throw error when directory does not exist"), [=]() mutable
         {
             mockExistsSync->mockReturnValue(false);
-            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std::string("Project directory ") + testProjectPath + std::string(" does not exist.")); });
+            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std:("Project directory ") + testProjectPath + std:(" does not exist.")); });
         }
         );
-        it(std::string("should throw error when package.json does not exist"), [=]() mutable
+        it(std:("should throw error when package.json does not exist"), [=]() mutable
         {
             mockDetectDirectoryType->mockReturnValue(object{
-                object::pair{std::string("type"), std::string("elizaos-project")}, 
-                object::pair{std::string("hasPackageJson"), false}, 
-                object::pair{std::string("hasElizaOSDependencies"), true}, 
-                object::pair{std::string("elizaPackageCount"), 1}
+                object::pair{std:("type"), std:("elizaos-project")}, 
+                object::pair{std:("hasPackageJson"), false}, 
+                object::pair{std:("hasElizaOSDependencies"), true}, 
+                object::pair{std:("elizaPackageCount"), 1}
             });
-            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std::string("Project directory ") + testProjectPath + std::string(" does not have package.json.")); });
+            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std:("Project directory ") + testProjectPath + std:(" does not have package.json.")); });
         }
         );
-        it(std::string("should handle build errors and log them correctly"), [=]() mutable
+        it(std:("should handle build errors and log them correctly"), [=]() mutable
         {
-            auto buildError = std::make_shared<Error>(std::string("Build failed"));
+            auto buildError = std::make_shared<Error>(std:("Build failed"));
             mockRunBunWithSpinner->mockResolvedValue(object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), buildError}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("error"), buildError}
             });
-            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std::string("Build failed")); });
+            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std:("Build failed")); });
         }
         );
-        it(std::string("should throw error when no build method can be determined"), [=]() mutable
+        it(std:("should throw error when no build method can be determined"), [=]() mutable
         {
             mockReadFileSync->mockReturnValue(JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-project")}
+                object::pair{std:("name"), std:("test-project")}
             }));
             mockExistsSync->mockImplementation([=](auto path) mutable
             {
                 auto pathStr = String(path);
-                return AND((!pathStr->includes(std::string("tsconfig.json"))), (!pathStr->includes(std::string("dist"))));
+                return AND((!pathStr->includes(std:("tsconfig.json"))), (!pathStr->includes(std:("dist"))));
             }
             );
-            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std::string("Could not determine how to build the project")); });
+            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std:("Could not determine how to build the project")); });
         }
         );
-        it(std::string("should handle tsc build failure"), [=]() mutable
+        it(std:("should handle tsc build failure"), [=]() mutable
         {
             mockReadFileSync->mockReturnValue(JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-project")}
+                object::pair{std:("name"), std:("test-project")}
             }));
             mockExistsSync->mockImplementation([=](auto path) mutable
             {
                 auto pathStr = String(path);
-                if (pathStr->includes(std::string("tsconfig.json"))) return true;
-                return !pathStr->includes(std::string("dist"));
+                if (pathStr->includes(std:("tsconfig.json"))) return true;
+                return !pathStr->includes(std:("dist"));
             }
             );
             mockBunExec->mockResolvedValue(object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("stdout"), string_empty}, 
-                object::pair{std::string("stderr"), std::string("tsc error")}, 
-                object::pair{std::string("exitCode"), 1}
+                object::pair{std:("success"), false}, 
+                object::pair{std:("stdout"), string_empty}, 
+                object::pair{std:("stderr"), std:("tsc error")}, 
+                object::pair{std:("exitCode"), 1}
             });
-            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std::string("bunx tsc build failed: tsc error")); });
+            std::async([=]() { expect(buildProject(testProjectPath))->rejects->toThrow(std:("bunx tsc build failed: tsc error")); });
         }
         );
     }

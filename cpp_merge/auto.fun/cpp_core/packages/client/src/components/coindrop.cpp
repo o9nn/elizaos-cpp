@@ -1,4 +1,5 @@
 #include "coindrop.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
@@ -104,7 +105,7 @@ void handleCollisions(CANNON::ContactEvent event) {
         // Get impact velocity (how hard the collision was)
         const auto impactVelocity = event.contact.getImpactVelocityAlongNormal();
 
-        // Add larger random spin on std::any collision, like in the dice code
+        // Add larger random spin on std: collision, like in the dice code
         const auto randomX = (Math.random() - 0.5) * 15; // Increased from 5*intensity;
         const auto randomY = (Math.random() - 0.5) * 15;
         const auto randomZ = (Math.random() - 0.5) * 15;
@@ -168,7 +169,7 @@ void startCoinCreation() {
     const auto batchInterval = 1000 / batchesPerSecond;
 
     // Set up interval for creating coins
-    coinCreationIntervalRef.current = window.setInterval(() => {
+    coinCreationIntervalRef.current = window.setInterval[&](() {
         // Check if we've reached the max
         if (coinCountRef.current >= MAX_COINS) {
             if (coinCreationIntervalRef.current != null) {
@@ -207,7 +208,7 @@ void animate(auto time) {
 
     // Always update visuals even when physics is paused
     // Update coin positions and rotations
-    for (int i = 0; i < coinBodiesRef.current.length; i++) {
+    for (int i = 0; i < coinBodiesRef.current.size(); i++) {
         const auto coinBody = coinBodiesRef.current[i];
         const auto index = coinBody.userData.index;
 

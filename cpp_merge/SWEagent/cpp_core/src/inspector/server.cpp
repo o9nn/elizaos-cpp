@@ -1,4 +1,6 @@
 #include "server.hpp"
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -39,7 +41,7 @@ TrajectoryContent appendExit(TrajectoryContent content) {
         return content;
     }
 
-    if (exitStatus.startsWith('submitted')) {
+    if (exitStatus.substr(0, 'submitted')) {
         if (content.info.submission) {
             content.trajectory.push_back({
                 thought: "Submitting solution",
@@ -107,7 +109,7 @@ TrajectoryContent addModelStats(TrajectoryContent content) {
 
 }
 
-std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
+std::optional<TrajectoryContent> getTrajectory(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -116,7 +118,7 @@ std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
 
         // Try parsing as JSON first, then YAML
         try {
-            content = /* JSON.parse */ fileContent;
+            content = /* JSON::parse */ fileContent;
             } catch {
                 content = yaml.load(fileContent);
             }
@@ -145,7 +147,7 @@ std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
 
 }
 
-void startInspectorServer(std::optional<std::any> options) {
+void startInspectorServer(std::optional<std:> options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto app = express();
@@ -155,24 +157,23 @@ void startInspectorServer(std::optional<std::any> options) {
 
     // Ensure trajectory directory exists
     if (!fs.existsSync(trajectoryDir)) {
-        fs.mkdirSync(trajectoryDir, { recursive: true });
+        fs.mkdirSync(trajectoryDir, Config{recursive = true});
     }
 
     // Serve static files (HTML, CSS, JS)
     app.use(express.static(staticDir));
 
     // API endpoint to list trajectory files
-    app.get("/api/trajectories", (_req, res) => {
+    app.get[&]("/api/trajectories", (_req, res) {
         try {
-            const auto files = fs;
-            .readdirSync(trajectoryDir);
-            .filter((file) => file.endsWith(".traj") || file.endsWith(".yaml") || file.endsWith(".json"));
+            const auto files = fs.readdirSync(trajectoryDir);
+            .filter[&]((file) { return file.rfind(".traj") || file.rfind(".yaml") || file.rfind(".json")); };
             .std::map((file) => ({
                 name: file,
                 path: path.join(trajectoryDir, file),
                 modified: fs.statSync(path.join(trajectoryDir, file)).mtime,
                 }));
-                .sort((a, b) => b.modified.getTime() - a.modified.getTime());
+                .sort[&]((a, b) { return b.modified.getTime() - a.modified.getTime()); };
 
                 res.json(files);
                 } catch (error) {
@@ -182,7 +183,7 @@ void startInspectorServer(std::optional<std::any> options) {
                 });
 
                 // API endpoint to get a specific trajectory
-                app.get("/api/trajectory/:filename", (req, res) => {
+                app.get[&]("/api/trajectory/:filename", (req, res) {
                     const auto filename = req.params.filename;
                     const auto filePath = path.join(trajectoryDir, filename);
 
@@ -200,15 +201,14 @@ void startInspectorServer(std::optional<std::any> options) {
                     });
 
                     // API endpoint to get trajectory statistics
-                    app.get("/api/stats", (_req, res) => {
+                    app.get[&]("/api/stats", (_req, res) {
                         try {
-                            const auto files = fs;
-                            .readdirSync(trajectoryDir);
-                            .filter((file) => file.endsWith(".traj") || file.endsWith(".yaml") || file.endsWith(".json"));
+                            const auto files = fs.readdirSync(trajectoryDir);
+                            .filter[&]((file) { return file.rfind(".traj") || file.rfind(".yaml") || file.rfind(".json")); };
 
                             const auto stats = {;
                                 totalTrajectories: files.size(),
-                                recentTrajectories: files.slice(0, 10).std::map((file) => {
+                                recentTrajectories: files.substr(0, 10-0).std::map[&]((file) {
                                     const auto trajectory = getTrajectory(path.join(trajectoryDir, file));
                                     return {
                                         file,
@@ -227,7 +227,7 @@ void startInspectorServer(std::optional<std::any> options) {
                                         });
 
                                         // Start the server
-                                        app.listen(port, () => {
+                                        app.listen[&](port, () {
                                             std::cout << "Inspector server running at http://localhost:" + port << std::endl;
                                             std::cout << "Serving trajectories from: " + trajectoryDir << std::endl;
                                             std::cout << "Static files from: " + staticDir << std::endl;

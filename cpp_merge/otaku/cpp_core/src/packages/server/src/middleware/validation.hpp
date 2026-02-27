@@ -36,7 +36,7 @@ namespace elizaos {
     // Use enhanced validation for channel IDs
 
       // Log security event for invalid IDs
-      return sendError(res, 400, 'INVALID_ID', `Invalid ${paramName} format`);
+      return sendError(res, 400, 'INVALID_ID', "Invalid " + std::to_string(paramName) + " format");
 
     // Add validated UUID to request params
 

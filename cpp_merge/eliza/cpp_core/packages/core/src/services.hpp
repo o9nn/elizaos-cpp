@@ -22,12 +22,12 @@ namespace elizaos {
  * with automatic type inference
  */
 class ServiceBuilder<TService extends Service = Service> {
-  protected serviceType: ServiceTypeName | std::string;
-  protected startFn: (runtime: IAgentRuntime) => Promise<TService>;
-  protected stopFn?: () => Promise<void>;
-  protected description: std::string;
+  protected serviceType: ServiceTypeName | std:;
+  protected startFn: [&](runtime: IAgentRuntime) { return Promise<TService>; };
+  protected stopFn?: [&]() { return Promise<void>; };
+  protected description: std:;
 
-  constructor(serviceType: ServiceTypeName | std::string) {
+  constructor(serviceType: ServiceTypeName | std:) {
     this.serviceType = serviceType;
     this.description = '';
   }

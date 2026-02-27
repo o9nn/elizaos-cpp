@@ -5,11 +5,11 @@ any CacheManager::get(string key)
     try
     {
         auto cached = std::async([=]() { redis->get(key); });
-        return (cached) ? any(JSON->parse(cached)) : any(nullptr);
+        return (cached) ? any(JSON->parse(cached)) (nullptr);
     }
     catch (const any& error)
     {
-        console->error(std::string("Cache get error:"), error);
+        console->error(std:("Cache get error:"), error);
         return nullptr;
     }
 }
@@ -22,11 +22,11 @@ void CacheManager::set(string key, any data, double ttl)
     }
     catch (const any& error)
     {
-        console->error(std::string("Cache set error:"), error);
+        console->error(std:("Cache set error:"), error);
     }
 }
 
-any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
+any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std:("redis://localhost:6379"))));
 
 void Main(void)
 {

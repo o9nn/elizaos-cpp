@@ -1,10 +1,12 @@
 #include "MyDealsContent.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatDate(bigint tsSeconds) {
+std: formatDate(bigint tsSeconds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto d = new Date(Number(tsSeconds) * 1000);
@@ -16,18 +18,18 @@ std::string formatDate(bigint tsSeconds) {
 
 }
 
-std::string formatTokenAmount(bigint amount) {
+std: formatTokenAmount(bigint amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Amount is already in human-readable form (not wei)
     const auto num = Number(amount);
-    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(2)}M`;
-    if (num >= 1_000) return `${(num / 1_000).toFixed(2)}K`;
+    if (num >= 1_000_000) return "" + std::to_string((num / 1_000_000).toFixed(2)) + "M";
+    if (num >= 1_000) return "" + std::to_string((num / 1_000).toFixed(2)) + "K";
     return num.toLocalestd::to_string(std::nullopt, { maximumFractionDigits: 2 });
 
 }
 
-std::string getLockupLabel(bigint createdAt, bigint unlockTime) {
+std: getLockupLabel(bigint createdAt, bigint unlockTime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto seconds = Math.max(0, Number(unlockTime) - Number(createdAt));
@@ -36,7 +38,7 @@ std::string getLockupLabel(bigint createdAt, bigint unlockTime) {
 
 }
 
-OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std::string& walletAddress) {
+OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std:& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto createdTs = deal.createdAt;
@@ -82,7 +84,7 @@ OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std::string& wallet
 
 }
 
-OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std::string& walletAddress) {
+OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std:& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto createdTs = deal.createdAt;
@@ -126,7 +128,7 @@ OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std::string& walletAdd
 
 }
 
-std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI>& dbDeals, const std::vector<OfferWithQuoteId>& contractOffers, const std::string& walletAddress) {
+std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI>& dbDeals, const std::vector<OfferWithQuoteId>& contractOffers, const std:& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<OfferWithQuoteId> result = [];
@@ -137,7 +139,7 @@ std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI
         if (deal.status != "executed" && deal.status != "approved") continue;
 
         const auto contractOffer = deal.offerId;
-        ? contractOffers.find((o) => o.std::to_string(id) == deal.offerId);
+        ? contractOffers.find[&]((o) { return o.std::to_string(id) == deal.offerId); };
         : std::nullopt;
 
         if (contractOffer) {
@@ -149,7 +151,7 @@ std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI
         }
 
         // Add contract offers not in database
-        const auto contractOnlyOffers = contractOffers.filter((o) => {;
+        const auto contractOnlyOffers = contractOffers.filter[&]((o) {;
             const auto offerId = o.std::to_string(id);
             if (processedOfferIds.has(offerId)) return false;
             return (;
@@ -183,7 +185,7 @@ void MyDealsContent() {
         } = useMultiWallet();
         const auto { login, ready: privyReady } = usePrivy();
 
-        const auto handleConnect = useCallback(() => {;
+        const auto handleConnect = useCallback[&](() {;
             if (privyAuthenticated) {
                 connectWallet();
                 } else {
@@ -191,14 +193,14 @@ void MyDealsContent() {
                 }
                 }, [privyAuthenticated, connectWallet, login]);
 
-                const auto handleDisconnect = useCallback(std::async () => {;
+                const auto handleDisconnect = useCallback[&](std::async () {;
                     disconnect();
                     }, [disconnect]);
 
                     const auto currentAddress =;
                     activeFamily == "solana" ? solanaPublicKey : evmAddress;
                     const auto displayAddress = currentAddress;
-                    "? " + std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
+                    "? " + std::to_string(currentAddress.substr(0, 6-0)) + "..." + std::to_string(currentAddress.slice(-4));
                     : nullptr;
 
                     const auto {;
@@ -212,7 +214,7 @@ void MyDealsContent() {
                         const auto [refunding, setRefunding] = useState<bigint | nullptr>(nullptr);
                         const auto [refundStatus, setRefundStatus] = useState<{;
                             type: "success" | "error" | "info";
-                            message: std::string;
+                            message: std:;
                             } | nullptr>(nullptr);
                             const auto [solanaDeals, setSolanaDeals] = useState<DealFromAPI[]>([]);
                             const auto [evmDeals, setEvmDeals] = useState<DealFromAPI[]>([]);
@@ -220,7 +222,7 @@ void MyDealsContent() {
                             const auto [isLoadingDeals, setIsLoadingDeals] = useState(true);
                             const auto [showWithdrawnListings, setShowWithdrawnListings] = useState(false);
 
-                            const auto refreshDeals = useCallback(std::async () => {;
+                            const auto refreshDeals = useCallback[&](std::async () {;
                                 setIsLoadingDeals(true);
                                 const auto walletAddr =;
                                 activeFamily == "solana" ? solanaPublicKey : evmAddress.toLowerCase();
@@ -264,12 +266,12 @@ void MyDealsContent() {
                                             // Only fetch when wallet address changes, not when callback reference changes
                                             const auto walletAddr =;
                                             activeFamily == "solana" ? solanaPublicKey : evmAddress.toLowerCase();
-                                            useEffect(() => {
+                                            useEffect[&](() {
                                                 refreshDeals();
                                                 // eslint-disable-next-line react-hooks/exhaustive-deps
                                                 }, [walletAddr]);
 
-                                                const auto purchases = useMemo(() => {;
+                                                const auto purchases = useMemo[&](() {;
                                                     if (activeFamily == "solana") {
                                                         const auto walletAddress = std::to_string(solanaPublicKey) || "";
                                                         return solanaDeals.std::map((deal) =>;
@@ -286,29 +288,29 @@ void MyDealsContent() {
                                                     evmAddress,
                                                     ]);
 
-                                                    const auto sortedPurchases = useMemo(() => {;
+                                                    const auto sortedPurchases = useMemo[&](() {;
                                                         const auto list = [...purchases];
-                                                        list.sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+                                                        list.sort[&]((a, b) { return Number(b.createdAt) - Number(a.createdAt)); };
                                                         return list;
                                                         }, [purchases]);
 
-                                                        const auto filteredListings = useMemo(() => {;
+                                                        const auto filteredListings = useMemo[&](() {;
                                                             if (showWithdrawnListings) return myListings;
-                                                            return myListings.filter((c) => c.status != "withdrawn");
+                                                            return myListings.filter[&]((c) { return c.status != "withdrawn"); };
                                                             }, [myListings, showWithdrawnListings]);
 
                                                             const auto withdrawnCount = useMemo(;
-                                                            [&]() { return myListings.filter((c) => c.status == "withdrawn").size(),; }
+                                                            [&]() { return myListings.filter[&]((c) { return c.status == "withdrawn").size(),; }; }
                                                             [myListings],
                                                             );
 
                                                             // Resume pending share if coming back from OAuth 1.0a
                                                             const auto hasResumedAuth = useRef(false);
-                                                            useEffect(() => {
+                                                            useEffect[&](() {
                                                                 if (hasResumedAuth.current) return;
                                                                 hasResumedAuth.current = true;
 
-                                                                resumeFreshAuth().catch((err) => {
+                                                                resumeFreshAuth().catch[&]((err) {
                                                                     std::cerr << "[MyDeals] Failed to resume fresh auth:" << err << std::endl;
                                                                     });
                                                                     }, []);
@@ -391,9 +393,9 @@ void MyDealsContent() {
                                 >;
                                 <p className="text-sm">{refundStatus.message}</p>;
                                 <button;
-                            onClick={() => setRefundStatus(nullptr)}
+                            onClick={[&]() { return setRefundStatus(nullptr)}
                             className="text-xs underline mt-1 opacity-70 hover:opacity-100"
-                            >;
+                            >; };
                             Dismiss;
                             </button>;
                             </div>;
@@ -440,7 +442,7 @@ void MyDealsContent() {
             )}
             </div>;
             <div className="space-y-3">;
-            {filteredListings.std::map((consignment) => (;
+            {filteredListings.std::map[&]((consignment) { return (; };
             <ConsignmentRow;
         key={consignment.id}
     consignment={consignment}
@@ -462,7 +464,7 @@ void MyDealsContent() {
     </span>;
     </h2>;
     <div className="space-y-3">;
-    {sortedPurchases.std::map((o, index) => {
+    {sortedPurchases.std::map[&]((o, index) {
         const auto now = Math.floor(Date.now() / 1000);
         const auto matured = Number(o.unlockTime) <= now;
         const auto discountPct = Number(o.discountBps || 0n) / 100;
@@ -470,7 +472,7 @@ void MyDealsContent() {
         const auto uniqueKey =;
         "o.quoteId || o.std::to_string(id) || " + "deal-" + index;
 
-        return (;
+        return [&](;
         <div;
     key={uniqueKey}
     className="rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 space-y-3 overflow-hidden"
@@ -482,13 +484,13 @@ void MyDealsContent() {
     src={o.tokenLogoUrl}
     alt={o.tokenSymbol || "Token"}
     className="w-8 h-8 rounded-full flex-shrink-0";
-    onError={(e) => {
+    onError={(e) {
         e.currentTarget.style.display = "none";
     }}
     />;
     ) : (
     <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
-    {o.tokenSymbol.slice(0, 2) || "TK"}
+    {o.tokenSymbol.substr(0, 2-0) || "TK"}
     </div>;
     )}
     <div className="min-w-0">;
@@ -550,7 +552,7 @@ void MyDealsContent() {
     <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
     <Button;
     color="zinc";
-    onClick={std::async () => {
+    onClick={std::async [&]() {
         if (o.quoteId) {
             "window.location.href = " + "/deal/" + o.quoteId;
             return;
@@ -569,11 +571,11 @@ void MyDealsContent() {
     >;
     View;
     </Button>;
-    {matured && (;
+    {matured && [&](;
     <Button;
     color="brand";
     disabled={isClaiming}
-    onClick={std::async () => {
+    onClick={std::async () {
         claim(o.id);
     }}
     className="!px-3 !py-1.5 !text-sm";
@@ -581,11 +583,11 @@ void MyDealsContent() {
     {isClaiming ? "Claiming…"  = "Claim"}
     </Button>;
     )}
-    {emergencyRefundsEnabled && !matured && (;
+    {emergencyRefundsEnabled && !matured && [&](;
     <Button;
     color="red";
     disabled={refunding == o.id}
-    onClick={std::async () => {
+    onClick={std::async () {
         setRefundStatus(nullptr);
         const auto createdAt = Number(o.createdAt);
         const auto now = Math.floor(Date.now() / 1000);

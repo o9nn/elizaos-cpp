@@ -1,4 +1,5 @@
 #include "run-replay.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

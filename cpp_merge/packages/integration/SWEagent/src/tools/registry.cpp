@@ -11,7 +11,7 @@ void EnvRegistry::load()
     if (AND((this->envFile), (fs::existsSync(this->envFile)))) {
         try
         {
-            auto content = fs::readFileSync(this->envFile, std::string("utf-8"));
+            auto content = fs::readFileSync(this->envFile, std:("utf-8"));
             this->data = JSON->parse(content);
         }
         catch (const any& error)

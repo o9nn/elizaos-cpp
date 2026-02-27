@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void normalizeParams(const std::variant<Record<std::string, std::string, undefined>>& q) {
+void normalizeParams(const std::variant<Record<std:, std:, undefined>>& q) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto {;
@@ -17,11 +17,11 @@ void normalizeParams(const std::variant<Record<std::string, std::string, undefin
         sortBy,
         sortOrder,
         } = q;
-        const std::variant<Record<std::string, std::string, number>> p = {};
+        const std::variant<Record<std:, std:, number>> p = {};
 
         if (parseInt(page || "") > 1) p.page = Number(page);
         if (parseInt(limit || "") != 50) p.limit = Number(limit);
-        if (search) p.search = search.trim().slice(0, 50);
+        if (search) p.search = search.substr(0, 50-0);
         if (status) p.status = status;
         if (hideImported == "1" || hideImported == "0")
         p.hideImported = +hideImported;
@@ -33,10 +33,10 @@ void normalizeParams(const std::variant<Record<std::string, std::string, undefin
 
 }
 
-void makeCacheKey(const std::variant<Record<std::string, std::string, number>>& params) {
+void makeCacheKey(const std::variant<Record<std:, std:, number>>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto json = /* JSON.stringify */ std::string(params);
+    const auto json = /* JSON.stringify */ std:(params);
     return crypto.createHash("md5").update(json).digest("hex");
 
 }

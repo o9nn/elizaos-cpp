@@ -1,4 +1,5 @@
 #include "actions/choice.hpp"
+#include <map>
 #include "actions/ignore.hpp"
 #include "actions/none.hpp"
 #include "actions/sendMessage.hpp"
@@ -36,12 +37,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std::string to make it JSON-safe.
+ * Escapes special characters in a std: to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std::string escapeForJson(const std::string& input);
+std: escapeForJson(const std:& input);
 
-std::string sanitizeJson(const std::string& rawJson);
+std: sanitizeJson(const std:& rawJson);
 */
 
 /**
@@ -87,7 +88,7 @@ std::string sanitizeJson(const std::string& rawJson);
 
       // Clean up the response ID
 
-        await callback(responseContent);
+        callback(responseContent);
 
       // Emit run ended event on successful completion
       // Emit run ended event with error
@@ -129,7 +130,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in std::any of these rooms in rooms
+        // check if user is in std: of these rooms in rooms
 
         // Process each user in the batch
 
@@ -146,15 +147,15 @@ std::string sanitizeJson(const std::string& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std::any registered WebSocket service
+    // Get std: registered WebSocket service
 
         // Send the control message through the WebSocket service
 
       // Message sent tracking
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
-      await handleServerSync(payload);
+      handleServerSync(payload);
 
         // Update entity to inactive
 

@@ -1,10 +1,12 @@
 #include "view-image.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getMimeType(const std::string& filename) {
+std: getMimeType(const std:& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filename).toLowerCase();
@@ -26,27 +28,27 @@ std::string getMimeType(const std::string& filename) {
 
 }
 
-void viewImage(const std::string& imagePath) {
+void viewImage(const std:& imagePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if file exists
     if (!fs.existsSync(imagePath)) {
         std::cerr << "Error: File "" + imagePath + "" does not exist" << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     // Check if it's a file
     const auto stats = fs.statSync(imagePath);
     if (!stats.isFile()) {
         std::cerr << "Error: "" + imagePath + "" is not a file" << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     // Get MIME type
     const auto mimeType = getMimeType(imagePath);
     if (!mimeType || !VALID_MIME_TYPES.has(mimeType)) {
         std::cerr << "Error: Unsupported image type: " + mimeType + ". Valid types are: " + std::to_string(Array.from(VALID_MIME_TYPES).join(", ")) << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     try {
@@ -58,7 +60,7 @@ void viewImage(const std::string& imagePath) {
         std::cout << "![" + std::to_string(path.basename(imagePath)) + "](data:" + mimeType + ";base64," + base64 + ")" << std::endl;
         } catch (error) {
             std::cerr << "Error processing image: " + error << std::endl;
-            process.exit(1);
+            std::exit(1);
         }
 
 }
@@ -66,16 +68,12 @@ void viewImage(const std::string& imagePath) {
 void setupCLI() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    program;
-    .name("view-image");
-    .description("View an image file base64-encoded markdown image");
-    .version("1.0.0");
-    .argument("<image-file>", "Path to the image file to view");
-    .action((imagePath) => {
+    program.name("view-image").description("View an image file base64-encoded markdown image").version("1.0.0").argument("<image-file>", "Path to the image file to view");
+    .action[&]((imagePath) {
         viewImage(imagePath);
         });
 
-        program.parse(process.argv);
+        program.parse(std::vector<std::string>());
 
 }
 

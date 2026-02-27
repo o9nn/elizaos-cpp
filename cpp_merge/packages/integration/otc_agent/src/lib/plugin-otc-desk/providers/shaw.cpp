@@ -1,14 +1,14 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/plugin-otc-desk/providers/shaw.h"
 
 std::shared_ptr<Provider> tokenProvider = object{
-    object::pair{std::string("name"), std::string("SHAW_INFO")}, 
-    object::pair{std::string("description"), std::string("[OPTIONAL] Historical information about Shaw Walters - use only when user specifically asks about Shaw or the platform's origins")}, 
-    object::pair{std::string("position"), 99}, 
-    object::pair{std::string("dynamic"), true}, 
-    object::pair{std::string("get"), [=]() mutable
+    object::pair{std:("name"), std:("SHAW_INFO")}, 
+    object::pair{std:("description"), std:("[OPTIONAL] Historical information about Shaw Walters - use only when user specifically asks about Shaw or the platform's origins")}, 
+    object::pair{std:("position"), 99}, 
+    object::pair{std:("dynamic"), true}, 
+    object::pair{std:("get"), [=]() mutable
     {
-        console->log(std::string("GET SHAW PROVIDER"));
-        auto text = std::string("Shaw Walters (known as @shawmakesmagic) is a programmer, entrepreneur, and AI innovator based in San Francisco. He is recognized as the founder and lead developer of ai16z (now elizaOS)—a pioneering open-source platform for autonomous AI agents in Web3 environments.\
+        console->log(std:("GET SHAW PROVIDER"));
+        auto text = std:("Shaw Walters (known as @shawmakesmagic) is a programmer, entrepreneur, and AI innovator based in San Francisco. He is recognized as the founder and lead developer of ai16z (now elizaOS)—a pioneering open-source platform for autonomous AI agents in Web3 environments.\
 \
 Key Contributions:\
 \
@@ -28,7 +28,7 @@ Social Media Suspension\
 In June 2025, both Shaw’s X (formerly Twitter) account (@shawmakesmagic) and the official elizaOS account were suspended—apparently due to policy violations related to automated AI activity or scraping on the platform\
 ");
         return object{
-            object::pair{std::string("text"), std::string("text")}
+            object::pair{std:("text"), std:("text")}
         };
     }
     }

@@ -8,18 +8,18 @@ any initializeClients(std::shared_ptr<Character> character, std::shared_ptr<IAge
         return str["toLowerCase"]();
     }
     )), (array<any>()));
-    if (clientTypes["includes"](std::string("auto"))) {
+    if (clientTypes["includes"](std:("auto"))) {
         auto autoClient = std::async([=]() { AutoClientInterface->start(runtime); });
         if (autoClient) clients->push(autoClient);
     }
-    if (clientTypes["includes"](std::string("discord"))) {
+    if (clientTypes["includes"](std:("discord"))) {
         clients->push(std::async([=]() { DiscordClientInterface->start(runtime); }));
     }
-    if (clientTypes["includes"](std::string("telegram"))) {
+    if (clientTypes["includes"](std:("telegram"))) {
         auto telegramClient = std::async([=]() { TelegramClientInterface->start(runtime); });
         if (telegramClient) clients->push(telegramClient);
     }
-    if (clientTypes["includes"](std::string("twitter"))) {
+    if (clientTypes["includes"](std:("twitter"))) {
         auto twitterClients = std::async([=]() { TwitterClientInterface->start(runtime); });
         clients->push(twitterClients);
     }

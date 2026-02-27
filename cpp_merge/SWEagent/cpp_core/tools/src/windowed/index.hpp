@@ -1,4 +1,5 @@
 #include ".registry.hpp"
+#include <cstdlib>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -19,7 +20,7 @@ namespace elizaos {
  */
 
 struct WindowState {
-    std::optional<std::string> currentFile;
+    std::optional<std:> currentFile;
     double firstLine;
     double windowSize;
     std::optional<std::vector<std::string>> fileContent;
@@ -27,11 +28,11 @@ struct WindowState {
 
 class WindowedEditor {
   private state: WindowState;
-  private stateFile: std::string;
+  private stateFile: std:;
 
   constructor() {
     // Use ROOT environment variable or temp directory for state file
-    const rootDir = process.env.ROOT || process.env.TMPDIR || '/tmp';
+    const rootDir = std::getenv("ROOT") || std::getenv("TMPDIR") || '/tmp';
     this.stateFile = path.join(rootDir, 'window_state.json');
     this.state = this.loadState();
   }

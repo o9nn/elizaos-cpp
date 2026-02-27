@@ -34,8 +34,8 @@ class ShellAgent extends DefaultAgent {
     tools: ToolHandler;
     historyProcessors: AbstractHistoryProcessor[];
     model: AbstractModel;
-    maxRequeries?: number;
-    name?: std::string;
+    maxRequeries?;
+    name?: std:;
   }) {
     super(config);
   }

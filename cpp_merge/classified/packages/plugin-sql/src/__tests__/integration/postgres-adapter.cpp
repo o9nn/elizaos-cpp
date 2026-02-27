@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("PostgreSQL Adapter Integration Tests"), [=]() mutable
+    describe(std:("PostgreSQL Adapter Integration Tests"), [=]() mutable
     {
         shared<std::shared_ptr<PgliteDatabaseAdapter>> adapter;
         shared<std::shared_ptr<PGliteClientManager>> manager;
@@ -19,9 +19,9 @@ void Main(void)
             auto db = adapter->getDatabase();
             std::async([=]() { migrationService->initializeWithDatabase(db); });
             migrationService->discoverAndRegisterPluginSchemas(array<object>{ object{
-                object::pair{std::string("name"), std::string("@elizaos/plugin-sql")}, 
-                object::pair{std::string("description"), std::string("SQL plugin")}, 
-                object::pair{std::string("schema"), std::string("schema")}
+                object::pair{std:("name"), std:("@elizaos/plugin-sql")}, 
+                object::pair{std:("description"), std:("SQL plugin")}, 
+                object::pair{std:("schema"), std:("schema")}
             } });
             std::async([=]() { migrationService->runAllPluginMigrations(); });
             cleanup = [=]() mutable
@@ -37,27 +37,27 @@ void Main(void)
             }
         }
         );
-        describe(std::string("Connection Management"), [=]() mutable
+        describe(std:("Connection Management"), [=]() mutable
         {
-            it(std::string("should initialize successfully"), [=]() mutable
+            it(std:("should initialize successfully"), [=]() mutable
             {
                 auto isReady = std::async([=]() { adapter->isReady(); });
                 expect(isReady)->toBe(true);
             }
             );
-            it(std::string("should get database connection"), [=]() mutable
+            it(std:("should get database connection"), [=]() mutable
             {
                 auto connection = std::async([=]() { adapter->getConnection(); });
                 expect(connection)->toBeDefined();
             }
             );
-            it(std::string("should close connection gracefully"), [=]() mutable
+            it(std:("should close connection gracefully"), [=]() mutable
             {
                 std::async([=]() { adapter->close(); });
                 expect(true)->toBe(true);
             }
             );
-            it(std::string("should handle isReady when adapter is closed"), [=]() mutable
+            it(std:("should handle isReady when adapter is closed"), [=]() mutable
             {
                 std::async([=]() { adapter->close(); });
                 auto isReady = std::async([=]() { adapter->isReady(); });
@@ -66,107 +66,107 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Database Operations"), [=]() mutable
+        describe(std:("Database Operations"), [=]() mutable
         {
-            it(std::string("should perform withDatabase operation"), [=]() mutable
+            it(std:("should perform withDatabase operation"), [=]() mutable
             {
                 auto result = std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                 {
-                    return std::string("success");
+                    return std:("success");
                 }
                 ); });
-                expect(result)->toBe(std::string("success"));
+                expect(result)->toBe(std:("success"));
             }
             );
-            it(std::string("should handle withDatabase errors"), [=]() mutable
+            it(std:("should handle withDatabase errors"), [=]() mutable
             {
                 auto errorCaught = false;
                 try
                 {
                     std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Test error")));
+                        throw any(std::make_shared<Error>(std:("Test error")));
                     }
                     ); });
                 }
                 catch (const any& error)
                 {
                     errorCaught = true;
-                    expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std::string("Test error"));
+                    expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std:("Test error"));
                 }
                 expect(errorCaught)->toBe(true);
             }
             );
-            it(std::string("should handle database operations"), [=]() mutable
+            it(std:("should handle database operations"), [=]() mutable
             {
                 auto result = std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                 {
                     return object{
-                        object::pair{std::string("status"), std::string("ok")}
+                        object::pair{std:("status"), std:("ok")}
                     };
                 }
                 ); });
                 expect(result)->toEqual(object{
-                    object::pair{std::string("status"), std::string("ok")}
+                    object::pair{std:("status"), std:("ok")}
                 });
             }
             );
-            it(std::string("should propagate errors from database operations"), [=]() mutable
+            it(std:("should propagate errors from database operations"), [=]() mutable
             {
                 auto errorCaught = false;
                 try
                 {
                     std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Database operation failed")));
+                        throw any(std::make_shared<Error>(std:("Database operation failed")));
                     }
                     ); });
                 }
                 catch (const any& error)
                 {
                     errorCaught = true;
-                    expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std::string("Database operation failed"));
+                    expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std:("Database operation failed"));
                 }
                 expect(errorCaught)->toBe(true);
             }
             );
         }
         );
-        describe(std::string("Manager Operations"), [=]() mutable
+        describe(std:("Manager Operations"), [=]() mutable
         {
-            it(std::string("should get connection instance"), [=]() mutable
+            it(std:("should get connection instance"), [=]() mutable
             {
                 auto connection = manager->getConnection();
                 expect(connection)->toBeDefined();
             }
             );
-            it(std::string("should check if shutting down"), [=]() mutable
+            it(std:("should check if shutting down"), [=]() mutable
             {
                 auto isShuttingDown = manager->isShuttingDown();
                 expect(isShuttingDown)->toBe(false);
             }
             );
-            it(std::string("should handle close operation"), [=]() mutable
+            it(std:("should handle close operation"), [=]() mutable
             {
                 std::async([=]() { manager->close(); });
                 auto isShuttingDown = manager->isShuttingDown();
                 expect(isShuttingDown)->toBe(true);
             }
             );
-            it(std::string("should test connection through adapter"), [=]() mutable
+            it(std:("should test connection through adapter"), [=]() mutable
             {
                 auto isReady = std::async([=]() { adapter->isReady(); });
                 expect(isReady)->toBe(true);
             }
             );
-            it(std::string("should handle connection errors"), [=]() mutable
+            it(std:("should handle connection errors"), [=]() mutable
             {
                 std::async([=]() { adapter->close(); });
                 auto isReady = std::async([=]() { adapter->isReady(); });
                 expect(isReady)->toBe(false);
             }
             );
-            it(std::string("should handle query failures"), [=]() mutable
+            it(std:("should handle query failures"), [=]() mutable
             {
                 auto mockClient = std::make_shared<PGlite>();
                 auto mockManager = std::make_shared<PGliteClientManager>(as<any>(mockClient));
@@ -178,58 +178,58 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Agent Operations"), [=]() mutable
+        describe(std:("Agent Operations"), [=]() mutable
         {
-            it(std::string("should create an agent"), [=]() mutable
+            it(std:("should create an agent"), [=]() mutable
             {
                 auto result = std::async([=]() { adapter->createAgent(as<any>(object{
-                    object::pair{std::string("id"), agentId}, 
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("bio"), std::string("Test agent bio")}
+                    object::pair{std:("id"), agentId}, 
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("bio"), std:("Test agent bio")}
                 })); });
                 expect(result)->toBe(true);
             }
             );
-            it(std::string("should retrieve an agent"), [=]() mutable
+            it(std:("should retrieve an agent"), [=]() mutable
             {
                 std::async([=]() { adapter->createAgent(as<any>(object{
-                    object::pair{std::string("id"), agentId}, 
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("bio"), std::string("Test agent bio")}
+                    object::pair{std:("id"), agentId}, 
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("bio"), std:("Test agent bio")}
                 })); });
                 auto agent = std::async([=]() { adapter->getAgent(agentId); });
                 expect(agent)->toBeDefined();
-                expect(agent["name"])->toBe(std::string("Test Agent"));
+                expect(agent["name"])->toBe(std:("Test Agent"));
             }
             );
-            it(std::string("should update an agent"), [=]() mutable
+            it(std:("should update an agent"), [=]() mutable
             {
                 std::async([=]() { adapter->createAgent(as<any>(object{
-                    object::pair{std::string("id"), agentId}, 
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("bio"), std::string("Test agent bio")}
+                    object::pair{std:("id"), agentId}, 
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("bio"), std:("Test agent bio")}
                 })); });
                 std::async([=]() { adapter->updateAgent(agentId, object{
-                    object::pair{std::string("name"), std::string("Updated Agent")}
+                    object::pair{std:("name"), std:("Updated Agent")}
                 }); });
                 auto agent = std::async([=]() { adapter->getAgent(agentId); });
-                expect(agent["name"])->toBe(std::string("Updated Agent"));
+                expect(agent["name"])->toBe(std:("Updated Agent"));
             }
             );
-            it(std::string("should delete an agent"), [=]() mutable
+            it(std:("should delete an agent"), [=]() mutable
             {
                 std::async([=]() { adapter->createAgent(as<any>(object{
-                    object::pair{std::string("id"), agentId}, 
-                    object::pair{std::string("name"), std::string("Test Agent")}, 
-                    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
-                    object::pair{std::string("bio"), std::string("Test agent bio")}
+                    object::pair{std:("id"), agentId}, 
+                    object::pair{std:("name"), std:("Test Agent")}, 
+                    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}, 
+                    object::pair{std:("bio"), std:("Test agent bio")}
                 })); });
                 auto deleted = std::async([=]() { adapter->deleteAgent(agentId); });
                 expect(deleted)->toBe(true);

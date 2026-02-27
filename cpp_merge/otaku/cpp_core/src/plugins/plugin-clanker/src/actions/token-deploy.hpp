@@ -24,7 +24,7 @@ namespace elizaos {
 
 
 // Utility std::function to safely serialize objects with BigInt values
-std::any safeStringify(const std::any& obj);
+std: safeStringify(const std:& obj);
 
       // Check if services are available
 

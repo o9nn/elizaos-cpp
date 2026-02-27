@@ -1,4 +1,5 @@
 #include ".constants.hpp"
+#include <future>
 #include ".services/GamificationService.hpp"
 #include ".services/ReferralService.hpp"
 #include ".utils/contentQuality.hpp"
@@ -46,11 +47,11 @@ std::future<void> recordAccountCreationPoints(EntityPayload payload);
       // Award specific action points
 
       // Only award generic 10 points if no specific handler processed this action
-        await recordAgentActionPoints(payload);
+        recordAgentActionPoints(payload);
 
-        await recordChatPoints(payload);
+        recordChatPoints(payload);
 
-      await recordAccountCreationPoints(payload);
+      recordAccountCreationPoints(payload);
 
 
 } // namespace elizaos

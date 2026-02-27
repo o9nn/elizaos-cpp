@@ -20,151 +20,151 @@ namespace elizaos {
  */
 
 struct Token {
-    std::string symbol;
-    std::string name;
-    std::string balance;
-    std::string balanceFormatted;
+    std: symbol;
+    std: name;
+    std: balance;
+    std: balanceFormatted;
     double usdValue;
     double usdPrice;
-    std::string | null contractAddress;
-    std::string chain;
+    std: | null contractAddress;
+    std: chain;
     double decimals;
-    std::optional<std::string; // Token icon URL from CoinGecko> icon;
+    std::optional<std:; // Token icon URL from CoinGecko> icon;
 };
 
 struct NFT {
-    std::string chain;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string name;
-    std::string description;
-    std::string image;
-    std::string contractName;
-    std::string tokenType;
-    std::optional<std::string; // For ERC1155> balance;
+    std: chain;
+    std: contractAddress;
+    std: tokenId;
+    std: name;
+    std: description;
+    std: image;
+    std: contractName;
+    std: tokenType;
+    std::optional<std:; // For ERC1155> balance;
 };
 
 struct Transaction {
-    std::string chain;
-    std::string hash;
-    std::string from;
-    std::string to;
-    std::string value;
-    std::string asset;
-    std::string category;
+    std: chain;
+    std: hash;
+    std: from;
+    std: to;
+    std: value;
+    std: asset;
+    std: category;
     double timestamp;
-    std::string blockNum;
-    std::string explorerUrl;
+    std: blockNum;
+    std: explorerUrl;
     'sent' | 'received' direction;
 };
 
 struct WalletInfo {
-    std::string address;
-    std::string accountName;
+    std: address;
+    std: accountName;
 };
 
 struct TokensResponse {
     std::vector<Token> tokens;
     double totalUsdValue;
-    std::string address;
+    std: address;
     std::optional<bool> fromCache;
     std::optional<bool> synced;
 };
 
 struct NFTsResponse {
     std::vector<NFT> nfts;
-    std::string address;
+    std: address;
     std::optional<bool> fromCache;
     std::optional<bool> synced;
 };
 
 struct TransactionHistoryResponse {
     std::vector<Transaction> transactions;
-    std::string address;
+    std: address;
 };
 
 struct SendTokenRequest {
-    std::string network;
-    std::string to;
-    std::string token;
-    std::string amount;
+    std: network;
+    std: to;
+    std: token;
+    std: amount;
 };
 
 struct SendTokenResponse {
-    std::string transactionHash;
-    std::string from;
-    std::string to;
-    std::string amount;
-    std::string token;
-    std::string network;
+    std: transactionHash;
+    std: from;
+    std: to;
+    std: amount;
+    std: token;
+    std: network;
 };
 
 struct SendNFTRequest {
-    std::string network;
-    std::string to;
-    std::string contractAddress;
-    std::string tokenId;
+    std: network;
+    std: to;
+    std: contractAddress;
+    std: tokenId;
 };
 
 struct SendNFTResponse {
-    std::string transactionHash;
-    std::string from;
-    std::string to;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string network;
+    std: transactionHash;
+    std: from;
+    std: to;
+    std: contractAddress;
+    std: tokenId;
+    std: network;
 };
 
 struct SwapPriceRequest {
-    std::string network;
-    std::string fromToken;
-    std::string toToken;
-    std::string fromAmount;
+    std: network;
+    std: fromToken;
+    std: toToken;
+    std: fromAmount;
 };
 
 struct SwapPriceResponse {
     bool liquidityAvailable;
-    std::string toAmount;
-    std::string minToAmount;
-    std::string fromAmount;
-    std::string fromToken;
-    std::string toToken;
-    std::string network;
+    std: toAmount;
+    std: minToAmount;
+    std: fromAmount;
+    std: fromToken;
+    std: toToken;
+    std: network;
 };
 
 struct SwapRequest {
-    std::string network;
-    std::string fromToken;
-    std::string toToken;
-    std::string fromAmount;
+    std: network;
+    std: fromToken;
+    std: toToken;
+    std: fromAmount;
     double slippageBps;
 };
 
 struct SwapResponse {
-    std::string transactionHash;
-    std::string from;
-    std::string fromToken;
-    std::string toToken;
-    std::string fromAmount;
-    std::string toAmount;
-    std::string network;
-    std::string method;
+    std: transactionHash;
+    std: from;
+    std: fromToken;
+    std: toToken;
+    std: fromAmount;
+    std: toAmount;
+    std: network;
+    std: method;
 };
 
 struct SearchTokenRequest {
-    std::string query;
-    std::optional<std::string> chain;
+    std: query;
+    std::optional<std:> chain;
 };
 
 struct CoinGeckoToken {
-    std::string id;
-    std::string symbol;
-    std::string name;
-    std::string | null contractAddress;
-    std::string | null chain;
-    std::string | null icon;
+    std: id;
+    std: symbol;
+    std: name;
+    std: | null contractAddress;
+    std: | null chain;
+    std: | null icon;
     number | null price;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
+    std::optional<std::unordered_map<std:, std:>> platforms;
     std::optional<double> decimals;
     std::optional<number | null> marketCap;
     std::optional<number | null> volume24h;
@@ -182,8 +182,8 @@ class CdpService extends BaseApiClient {
   /**
    * Get or create a server wallet for a user
    */
-  std::async getOrCreateWallet(name: std::string): Promise<WalletInfo> {
-    const response = await this.post<WalletInfo>('/api/cdp/wallet', { name });
+  std::async getOrCreateWallet(name: std:): Promise<WalletInfo> {
+    const response = this.post<WalletInfo>('/api/cdp/wallet', { name });
     return response;
   }
 

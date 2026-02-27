@@ -20,21 +20,21 @@ namespace elizaos {
  * Attachment type for messages
  */
 struct MessageAttachment {
-    std::string type;
-    std::string url;
-    std::optional<std::string> name;
+    std: type;
+    std: url;
+    std::optional<std:> name;
     std::optional<double> size;
-    std::optional<std::string> mimeType;
+    std::optional<std:> mimeType;
 };
 
 /**
  * Session message metadata type
  */
 struct SessionMessageMetadata {
-    std::optional<std::string> source;
-    std::optional<std::string> priority;
+    std::optional<std:> source;
+    std::optional<std:> priority;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std::string> thought;
+    std::optional<std:> thought;
     std::optional<std::vector<std::string>> actions;
 };
 
@@ -42,17 +42,17 @@ struct SessionMessageMetadata {
  * Metadata associated with a session
  */
 struct SessionMetadata {
-    std::optional<std::string> platform;
-    std::optional<std::string> username;
-    std::optional<std::string> discriminator;
-    std::optional<std::string> avatar;
+    std::optional<std:> platform;
+    std::optional<std:> username;
+    std::optional<std:> discriminator;
+    std::optional<std:> avatar;
 };
 
 /**
  * Represents a messaging session between a user and an agent
  */
 struct Session {
-    std::string id;
+    std: id;
     UUID agentId;
     UUID channelId;
     UUID userId;
@@ -65,8 +65,8 @@ struct Session {
  * Request parameters for creating a session
  */
 struct CreateSessionParams {
-    std::string agentId;
-    std::string userId;
+    std: agentId;
+    std: userId;
     std::optional<SessionMetadata> metadata;
 };
 
@@ -74,7 +74,7 @@ struct CreateSessionParams {
  * Response for session creation
  */
 struct CreateSessionResponse {
-    std::string sessionId;
+    std: sessionId;
     UUID agentId;
     UUID userId;
     std::chrono::system_clock::time_point createdAt;
@@ -85,7 +85,7 @@ struct CreateSessionResponse {
  * Request parameters for sending a message
  */
 struct SendMessageParams {
-    std::string content;
+    std: content;
     std::optional<std::vector<MessageAttachment>> attachments;
     std::optional<SessionMessageMetadata> metadata;
 };
@@ -98,9 +98,9 @@ struct SendMessageParams {
  * Simplified message format for API responses
  */
 struct SimplifiedMessage {
-    std::string id;
-    std::string content;
-    std::string authorId;
+    std: id;
+    std: content;
+    std: authorId;
     bool isAgent;
     std::chrono::system_clock::time_point createdAt;
     SessionMessageMetadata metadata;
@@ -118,7 +118,7 @@ struct GetMessagesResponse {
  * Session info response
  */
 struct SessionInfoResponse {
-    std::string sessionId;
+    std: sessionId;
     UUID agentId;
     UUID userId;
     std::chrono::system_clock::time_point createdAt;
@@ -130,9 +130,9 @@ struct SessionInfoResponse {
  * Health check response
  */
 struct SessionsHealthResponse {
-    std::string status;
+    std: status;
     double activeSessions;
-    std::string timestamp;
+    std: timestamp;
 };
 
 /**
@@ -147,9 +147,9 @@ struct ListSessionsResponse {
  * Message response when sending a message
  */
 struct MessageResponse {
-    std::string id;
-    std::string content;
-    std::string authorId;
+    std: id;
+    std: content;
+    std: authorId;
     std::chrono::system_clock::time_point createdAt;
     std::optional<SessionMessageMetadata> metadata;
 };

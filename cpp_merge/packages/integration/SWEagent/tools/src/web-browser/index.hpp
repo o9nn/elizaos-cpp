@@ -18,9 +18,9 @@ public:
 
     std::shared_ptr<Page> page;
 
-    string screenshotDir = std::string("/tmp/browser-screenshots");
+    string screenshotDir = std:("/tmp/browser-screenshots");
 
-    boolean isHeadless = process->env->WEB_BROWSER_HEADLESS != std::string("0");
+    boolean isHeadless = process->env->WEB_BROWSER_HEADLESS != std:("0");
 
     BrowserManager();
     virtual std::shared_ptr<Promise<void>> init();
@@ -28,7 +28,7 @@ public:
     virtual std::shared_ptr<Promise<void>> closeSite();
     virtual std::shared_ptr<Promise<void>> screenshot(string filename = undefined);
     template <typename P2>
-    std::shared_ptr<Promise<void>> click(double x, double y, P2 button = std::string("left"));
+    std::shared_ptr<Promise<void>> click(double x, double y, P2 button = std:("left"));
     virtual std::shared_ptr<Promise<void>> type(string text);
     virtual std::shared_ptr<Promise<void>> scroll(double deltaX, double deltaY);
     virtual std::shared_ptr<Promise<void>> executeScript(string script);
@@ -53,13 +53,13 @@ template <typename P2>
 std::shared_ptr<Promise<void>> BrowserManager::click(double x, double y, P2 button)
 {
     if (!this->page) {
-        console->error(std::string("No page open"));
+        console->error(std:("No page open"));
         return std::shared_ptr<Promise<void>>();
     }
     std::async([=]() { this->page->mouse->click(x, y, object{
-        object::pair{std::string("button"), std::string("button")}
+        object::pair{std:("button"), std:("button")}
     }); });
-    console->log(std::string("Clicked at (") + x + std::string(", ") + y + std::string(") with ") + button + std::string(" button"));
+    console->log(std:("Clicked at (") + x + std:(", ") + y + std:(") with ") + button + std:(" button"));
 }
 
 #endif

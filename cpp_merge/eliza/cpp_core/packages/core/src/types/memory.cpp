@@ -1,4 +1,5 @@
 #include "memory.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -74,7 +75,7 @@ memory is Memory & isFragmentMemory(Memory memory) {
     metadata: FragmentMetadata
 }
 
-std::string getMemoryText(Memory memory, auto defaultValue) {
+std: getMemoryText(Memory memory, auto defaultValue) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return memory.content.text || defaultValue;

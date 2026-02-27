@@ -12,15 +12,15 @@ public:
     std::shared_ptr<AIService> aiService;
 
     std::shared_ptr<ParserOptions> parserOptions = object{
-        object::pair{std::string("sourceType"), std::string("module")}, 
-        object::pair{std::string("ecmaVersion"), 2020}, 
-        object::pair{std::string("ecmaFeatures"), object{
-            object::pair{std::string("jsx"), true}
+        object::pair{std:("sourceType"), std:("module")}, 
+        object::pair{std:("ecmaVersion"), 2020}, 
+        object::pair{std:("ecmaFeatures"), object{
+            object::pair{std:("jsx"), true}
         }}, 
-        object::pair{std::string("range"), true}, 
-        object::pair{std::string("loc"), true}, 
-        object::pair{std::string("tokens"), true}, 
-        object::pair{std::string("comment"), true}
+        object::pair{std:("range"), true}, 
+        object::pair{std:("loc"), true}, 
+        object::pair{std:("tokens"), true}, 
+        object::pair{std:("comment"), true}
     };
 
     JSDocValidator(std::shared_ptr<AIService> aiService_);

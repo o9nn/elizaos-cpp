@@ -156,7 +156,7 @@ public:
 };
 
 enum struct GoalStatus {
-    DONE = std::string("DONE"), FAILED = std::string("FAILED"), IN_PROGRESS = std::string("IN_PROGRESS")
+    DONE = std:("DONE"), FAILED = std:("FAILED"), IN_PROGRESS = std:("IN_PROGRESS")
 };
 class Goal : public object, public std::enable_shared_from_this<Goal> {
 public:
@@ -175,10 +175,10 @@ public:
 };
 
 enum struct ModelClass {
-    SMALL = std::string("small"), MEDIUM = std::string("medium"), LARGE = std::string("large"), EMBEDDING = std::string("embedding"), IMAGE = std::string("image")
+    SMALL = std:("small"), MEDIUM = std:("medium"), LARGE = std:("large"), EMBEDDING = std:("embedding"), IMAGE = std:("image")
 };
 enum struct ModelProviderName {
-    OPENAI = std::string("openai"), ETERNALAI = std::string("eternalai"), ANTHROPIC = std::string("anthropic"), GROK = std::string("grok"), GROQ = std::string("groq"), LLAMACLOUD = std::string("llama_cloud"), TOGETHER = std::string("together"), LLAMALOCAL = std::string("llama_local"), LMSTUDIO = std::string("lmstudio"), GOOGLE = std::string("google"), MISTRAL = std::string("mistral"), CLAUDE_VERTEX = std::string("claude_vertex"), REDPILL = std::string("redpill"), OPENROUTER = std::string("openrouter"), OLLAMA = std::string("ollama"), HEURIST = std::string("heurist"), GALADRIEL = std::string("galadriel"), FAL = std::string("falai"), GAIANET = std::string("gaianet"), ALI_BAILIAN = std::string("ali_bailian"), VOLENGINE = std::string("volengine"), NANOGPT = std::string("nanogpt"), HYPERBOLIC = std::string("hyperbolic"), VENICE = std::string("venice"), NVIDIA = std::string("nvidia"), NINETEEN_AI = std::string("nineteen_ai"), AKASH_CHAT_API = std::string("akash_chat_api"), LIVEPEER = std::string("livepeer"), LETZAI = std::string("letzai"), DEEPSEEK = std::string("deepseek"), INFERA = std::string("infera"), BEDROCK = std::string("bedrock"), ATOMA = std::string("atoma"), SECRETAI = std::string("secret_ai"), NEARAI = std::string("nearai")
+    OPENAI = std:("openai"), ETERNALAI = std:("eternalai"), ANTHROPIC = std:("anthropic"), GROK = std:("grok"), GROQ = std:("groq"), LLAMACLOUD = std:("llama_cloud"), TOGETHER = std:("together"), LLAMALOCAL = std:("llama_local"), LMSTUDIO = std:("lmstudio"), GOOGLE = std:("google"), MISTRAL = std:("mistral"), CLAUDE_VERTEX = std:("claude_vertex"), REDPILL = std:("redpill"), OPENROUTER = std:("openrouter"), OLLAMA = std:("ollama"), HEURIST = std:("heurist"), GALADRIEL = std:("galadriel"), FAL = std:("falai"), GAIANET = std:("gaianet"), ALI_BAILIAN = std:("ali_bailian"), VOLENGINE = std:("volengine"), NANOGPT = std:("nanogpt"), HYPERBOLIC = std:("hyperbolic"), VENICE = std:("venice"), NVIDIA = std:("nvidia"), NINETEEN_AI = std:("nineteen_ai"), AKASH_CHAT_API = std:("akash_chat_api"), LIVEPEER = std:("livepeer"), LETZAI = std:("letzai"), DEEPSEEK = std:("deepseek"), INFERA = std:("infera"), BEDROCK = std:("bedrock"), ATOMA = std:("atoma"), SECRETAI = std:("secret_ai"), NEARAI = std:("nearai")
 };
 class State : public object, public std::enable_shared_from_this<State> {
 public:
@@ -530,7 +530,7 @@ public:
 };
 
 enum struct CacheStore {
-    REDIS = std::string("redis"), DATABASE = std::string("database"), FILESYSTEM = std::string("filesystem")
+    REDIS = std:("redis"), DATABASE = std:("database"), FILESYSTEM = std:("filesystem")
 };
 class ICacheManager : public object, public std::enable_shared_from_this<ICacheManager> {
 public:
@@ -713,10 +713,10 @@ public:
 };
 
 enum struct IrysMessageType {
-    REQUEST = std::string("REQUEST"), DATA_STORAGE = std::string("DATA_STORAGE"), REQUEST_RESPONSE = std::string("REQUEST_RESPONSE")
+    REQUEST = std:("REQUEST"), DATA_STORAGE = std:("DATA_STORAGE"), REQUEST_RESPONSE = std:("REQUEST_RESPONSE")
 };
 enum struct IrysDataType {
-    FILE = std::string("FILE"), IMAGE = std::string("IMAGE"), OTHER = std::string("OTHER")
+    FILE = std:("FILE"), IMAGE = std:("IMAGE"), OTHER = std:("OTHER")
 };
 class IrysTimestamp : public object, public std::enable_shared_from_this<IrysTimestamp> {
 public:
@@ -742,10 +742,10 @@ public:
 };
 
 enum struct ServiceType {
-    IMAGE_DESCRIPTION = std::string("image_description"), TRANSCRIPTION = std::string("transcription"), VIDEO = std::string("video"), TEXT_GENERATION = std::string("text_generation"), BROWSER = std::string("browser"), SPEECH_GENERATION = std::string("speech_generation"), PDF = std::string("pdf"), INTIFACE = std::string("intiface"), AWS_S3 = std::string("aws_s3"), BUTTPLUG = std::string("buttplug"), SLACK = std::string("slack"), VERIFIABLE_LOGGING = std::string("verifiable_logging"), IRYS = std::string("irys"), TEE_LOG = std::string("tee_log"), GOPLUS_SECURITY = std::string("goplus_security"), WEB_SEARCH = std::string("web_search"), EMAIL_AUTOMATION = std::string("email_automation"), NKN_CLIENT_SERVICE = std::string("nkn_client_service"), DATABASE_MIGRATION = std::string("database_migration")
+    IMAGE_DESCRIPTION = std:("image_description"), TRANSCRIPTION = std:("transcription"), VIDEO = std:("video"), TEXT_GENERATION = std:("text_generation"), BROWSER = std:("browser"), SPEECH_GENERATION = std:("speech_generation"), PDF = std:("pdf"), INTIFACE = std:("intiface"), AWS_S3 = std:("aws_s3"), BUTTPLUG = std:("buttplug"), SLACK = std:("slack"), VERIFIABLE_LOGGING = std:("verifiable_logging"), IRYS = std:("irys"), TEE_LOG = std:("tee_log"), GOPLUS_SECURITY = std:("goplus_security"), WEB_SEARCH = std:("web_search"), EMAIL_AUTOMATION = std:("email_automation"), NKN_CLIENT_SERVICE = std:("nkn_client_service"), DATABASE_MIGRATION = std:("database_migration")
 };
 enum struct LoggingLevel {
-    DEBUG = std::string("debug"), VERBOSE = std::string("verbose"), NONE = std::string("none")
+    DEBUG = std:("debug"), VERBOSE = std:("verbose"), NONE = std:("none")
 };
 class RAGKnowledgeItem : public object, public std::enable_shared_from_this<RAGKnowledgeItem> {
 public:
@@ -784,19 +784,19 @@ public:
 };
 
 enum struct TokenizerType {
-    Auto = std::string("auto"), TikToken = std::string("tiktoken")
+    Auto = std:("auto"), TikToken = std:("tiktoken")
 };
 enum struct TranscriptionProvider {
-    OpenAI = std::string("openai"), Deepgram = std::string("deepgram"), Local = std::string("local")
+    OpenAI = std:("openai"), Deepgram = std:("deepgram"), Local = std:("local")
 };
 enum struct ActionTimelineType {
-    ForYou = std::string("foryou"), Following = std::string("following")
+    ForYou = std:("foryou"), Following = std:("following")
 };
 enum struct KnowledgeScope {
-    SHARED = std::string("shared"), PRIVATE = std::string("private")
+    SHARED = std:("shared"), PRIVATE = std:("private")
 };
 enum struct CacheKeyPrefix {
-    KNOWLEDGE = std::string("knowledge")
+    KNOWLEDGE = std:("knowledge")
 };
 class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
 public:

@@ -1,10 +1,12 @@
 #include "run-shell.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> runShellFromConfig(std::optional<std::any> _options) {
+std::future<void> runShellFromConfig(std::optional<std:> _options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

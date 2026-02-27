@@ -1,4 +1,6 @@
 #include "evaluators.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,8 +10,8 @@ void formatEvaluatorNames(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    ".std::map((evaluator: Evaluator) => " + """ + evaluator.name + """
-    .join(",\n");
+    ".std::map[&]((evaluator: Evaluator) { return " + """ + evaluator.name + """
+    .join(",\n"); };
 
 }
 
@@ -17,9 +19,9 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    .std::map((evaluator) => {
+    .std::map[&]((evaluator) {
         return evaluator.examples;
-        .std::map((example) => {
+        .std::map[&]((example) {
             const auto exampleNames = Array.from({ length: 5 }, () =>;
             uniqueNamesGenerator({ dictionaries: [names] }),
             );
@@ -27,16 +29,16 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
             auto formattedPrompt = example.prompt;
             auto formattedOutcome = example.outcome;
 
-            exampleNames.forEach((name, index) => {
+            exampleNames.forEach[&]((name, index) {
                 const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
                 formattedPrompt = formattedPrompt.replaceAll(placeholder, name);
                 formattedOutcome = formattedOutcome.replaceAll(placeholder, name);
                 });
 
                 const auto formattedMessages = example.messages;
-                .std::map((message: ActionExample) => {
+                .std::map[&]((message: ActionExample) {
                     auto messageString = message.name + ": " + message.content.text;
-                    exampleNames.forEach((name, index) => {
+                    exampleNames.forEach[&]((name, index) {
                         const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
                         messageString = messageString.replaceAll(placeholder, name);
                         });
@@ -46,14 +48,11 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
                         "? " + " (" + std::to_string(message.content.action || message.content.actions.join(", ")) + ")";
                         : "")
                         );
-                        });
-                        .join("\n");
+                        }).join("\n");
 
                         return "Prompt:\n" + formattedPrompt + "\n\nMessages:\n" + formattedMessages + "\n\nOutcome:\n" + formattedOutcome;
-                        });
-                        .join("\n\n");
-                        });
-                        .join("\n\n");
+                        }).join("\n\n");
+                        }).join("\n\n");
 
 }
 
@@ -61,10 +60,9 @@ void formatEvaluators(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    .std::map(;
-    "(evaluator: Evaluator) => " + """ + evaluator.name + ": " + evaluator.description + """
-    );
-    .join(",\n");
+    .std::map[&](;
+    "(evaluator: Evaluator) { return " + """ + evaluator.name + ": " + evaluator.description + """
+    ); }.join(",\n");
 
 }
 

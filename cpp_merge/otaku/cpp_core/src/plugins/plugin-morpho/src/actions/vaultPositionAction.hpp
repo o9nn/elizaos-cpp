@@ -22,8 +22,8 @@ namespace elizaos {
 
 
 struct VaultPositionsParams {
-    std::optional<std::string> vault;
-    std::optional<std::string> chain;
+    std::optional<std:> vault;
+    std::optional<std:> chain;
 };
 
 using VaultPositionsInput = {
@@ -31,7 +31,7 @@ using VaultPositionsInput = {
 using VaultPositionsActionResult = ActionResult;
 
 // Helper functions to format vault position data
-std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, double decimals);
+std: normalizeUnitsFromApi(const std::variant<std:, double>& raw, double decimals);
 
 void formatVaultPositionData(const std::vector<UserVaultPosition>& vaults);
 

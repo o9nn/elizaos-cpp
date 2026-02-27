@@ -1,4 +1,5 @@
 #include "interactive.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -25,7 +26,7 @@ std::future<void> showMainMenu(InteractiveEnvOptions options) {
 
             if (clack.isCancel(action)) {
                 clack.cancel("Operation cancelled.");
-                process.exit(0);
+                std::exit(0);
             }
             if (!action || action == 'exit') {
                 exit = true;

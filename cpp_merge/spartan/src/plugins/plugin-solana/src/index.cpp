@@ -1,21 +1,21 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/index.h"
 
 std::shared_ptr<Plugin> solanaPlugin = object{
-    object::pair{std::string("name"), SOLANA_SERVICE_NAME}, 
-    object::pair{std::string("description"), std::string("Solana Plugin for Eliza")}, 
-    object::pair{std::string("actions"), array<any>{ transferToken, executeSwap }}, 
-    object::pair{std::string("evaluators"), array<any>()}, 
-    object::pair{std::string("providers"), array<any>{ walletProvider }}, 
-    object::pair{std::string("services"), array<SolanaService>{ SolanaService }}, 
-    object::pair{std::string("init"), [=](auto _, auto runtime) mutable
+    object::pair{std:("name"), SOLANA_SERVICE_NAME}, 
+    object::pair{std:("description"), std:("Solana Plugin for Eliza")}, 
+    object::pair{std:("actions"), array<any>{ transferToken, executeSwap }}, 
+    object::pair{std:("evaluators"), array<any>()}, 
+    object::pair{std:("providers"), array<any>{ walletProvider }}, 
+    object::pair{std:("services"), array<SolanaService>{ SolanaService }}, 
+    object::pair{std:("init"), [=](auto _, auto runtime) mutable
     {
-        console->log(std::string("solana init"));
-        auto asking = std::string("solana");
-        auto serviceType = std::string("TRADER_CHAIN");
+        console->log(std:("solana init"));
+        auto asking = std:("solana");
+        auto serviceType = std:("TRADER_CHAIN");
         auto traderChainService = as<any>(runtime->getService(serviceType));
         while (!traderChainService)
         {
-            console->log(asking, std::string("waiting for"), serviceType, std::string("service..."));
+            console->log(asking, std:("waiting for"), serviceType, std:("service..."));
             traderChainService = as<any>(runtime->getService(serviceType));
             if (!traderChainService) {
                 std::async([=]() { std::make_shared<Promise>([=](auto waitResolve) mutable
@@ -24,14 +24,14 @@ std::shared_ptr<Plugin> solanaPlugin = object{
                 }
                 ); });
             } else {
-                console->log(asking, std::string("Acquired"), serviceType, std::string("service..."));
+                console->log(asking, std:("Acquired"), serviceType, std:("service..."));
             }
         }
         auto me = object{
-            object::pair{std::string("name"), std::string("Solana services")}
+            object::pair{std:("name"), std:("Solana services")}
         };
         traderChainService["registerChain"](me);
-        console->log(std::string("jupiter init done"));
+        console->log(std:("jupiter init done"));
     }
     }
 };

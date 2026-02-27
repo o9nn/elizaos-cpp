@@ -15,7 +15,7 @@ void LoadingPanelProvider() {
         id: nullptr,
         });
 
-        const auto showLoading = useCallback((title: std::string, messages: std::string | std::string[], id?: std::string) => {;
+        const auto showLoading = useCallback[&]((title: std:, messages: std: | std:[], id?: std:) {;
             setState({
                 isVisible: true,
                 type: "loading",
@@ -25,12 +25,12 @@ void LoadingPanelProvider() {
                 });
                 }, []);
 
-                const auto showSuccess = useCallback((;
-                title: std::string,
-                messages: std::string | std::string[],
-                id?: std::string,
-                autoClose: boolean = true
-                ) => {
+                const auto showSuccess = useCallback[&]((;
+                title: std:,
+                messages: std: | std:[],
+                id?: std:,
+                autoClose = true
+                ) {
                     setState({
                         isVisible: true,
                         type: "success",
@@ -41,7 +41,7 @@ void LoadingPanelProvider() {
 
                         // Auto-close success messages after 2 seconds
                         if (autoClose) {
-                            setTimeout(() => {
+                            setTimeout[&](() {
                                 setState(prev => {
                                     // Only hide if this is still the same success message
                                     if (prev.id == (id || null) && prev.type == 'success') {
@@ -53,7 +53,7 @@ void LoadingPanelProvider() {
                                 }
                                 }, []);
 
-                                const auto showError = useCallback((title: std::string, messages: std::string | std::string[], id?: std::string) => {;
+                                const auto showError = useCallback[&]((title: std:, messages: std: | std:[], id?: std:) {;
                                     setState({
                                         isVisible: true,
                                         type: "error",
@@ -63,7 +63,7 @@ void LoadingPanelProvider() {
                                         });
                                         }, []);
 
-                                        const auto hide = useCallback((id?: std::string) => {;
+                                        const auto hide = useCallback[&]((id?: std:) {;
                                             setState(prev => {
                                                 // If an ID is provided, only hide if it matches the current ID
                                                 // This prevents race conditions where one component hides another's panel
@@ -74,7 +74,7 @@ void LoadingPanelProvider() {
                                                 });
                                                 }, []);
 
-                                                const auto handleClose = useCallback(() => {;
+                                                const auto handleClose = useCallback[&](() {;
                                                     setState(prev => ({ ...prev, isVisible: false }));
                                                     }, []);
 

@@ -115,7 +115,7 @@ namespace elizaos {
 
   /**
    * Retrieves group chat memories from all rooms under a given server.
-   * It fetches all room IDs associated with the `serverId`, then retrieves memories
+   * It fetches all room IDs associated with the "serverId", then retrieves memories
    * from those rooms in descending order (latest to oldest), with an std::optional count limit.
    *
    * @param params - An object containing:
@@ -355,14 +355,14 @@ namespace elizaos {
   /**
    * Retrieves a cached value by key from the database.
    * @param key The key to look up in the cache
-   * @returns Promise resolving to the cached std::string value
+   * @returns Promise resolving to the cached std: value
    */
 
   /**
    * Sets a value in the cache with the given key.
    * @param params Object containing the cache key and value
    * @param key The key to store the value under
-   * @param value The std::string value to cache
+   * @param value The std: value to cache
    * @returns Promise resolving to true if the cache was std::set successfully
    */
 

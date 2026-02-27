@@ -1,4 +1,7 @@
 #include "form-step.hpp"
+#include <string>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,17 +13,17 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     const auto [showAdvanced, setShowAdvanced] = useState(false);
 
     // Convert raw balance to human-readable
-    const auto maxBalance = useMemo(() => {;
+    const auto maxBalance = useMemo[&](() {;
         const auto raw = BigInt(selectedTokenBalance || "0");
         return Number(raw) / Math.pow(10, selectedTokenDecimals);
         }, [selectedTokenBalance, selectedTokenDecimals]);
 
-        const auto currentAmount = useMemo(() => {;
+        const auto currentAmount = useMemo[&](() {;
             return parseFloat(formData.amount) || 0;
             }, [formData.amount]);
 
             // Validation errors
-            const auto validationErrors = useMemo(() => {;
+            const auto validationErrors = useMemo[&](() {;
                 const std::vector<std::string> errors = [];
 
                 if (!formData.amount || parseFloat(formData.amount) <= 0) {
@@ -53,7 +56,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
                         const auto isValid = validationErrors.size() == 0 && currentAmount > 0;
 
                         const auto setAmountPercentage = useCallback(;
-                        [&](pct: number) {
+                        [&](pct) {
                             const auto amount = Math.floor(maxBalance * pct);
                             updateFormData({ amount: std::to_string(amount) });
                             },
@@ -108,7 +111,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     type="text";
     inputMode="decimal";
     value={formData.amount}
-    onChange={(e) => {
+    onChange={[&](e) {
         const auto val = e.target.value.replace(/[^0-9.]/g, "");
         updateFormData({ amount: val });
     }}
@@ -140,8 +143,8 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     onChange={(val) =>;
     updateFormData({ amount: Math.floor(val).toString() })
     }
-    formatValue={(v) => v.toLocaleString()}
-    />;
+    formatValue={[&](v) { return v.toLocaleString()}
+    />; };
     )}
 
     <div className="flex gap-2">;
@@ -151,7 +154,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     { label: "50%", pct: 0.5 },
     { label: "75%", pct: 0.75 },
     { label: "Max", pct: 1 },
-    ].std::map(({ label, pct }) => (;
+    ].std::map[&](({ label, pct }) { return (; };
     <button;
     key={label}
     type="button";
@@ -232,7 +235,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
         maxDiscountBps: maxVal * 100,
         });
     }
-    "formatValue={(v) => " + v + "%";
+    "formatValue={[&](v) { return " + v + "%"; };
     accentColor="orange";
     />;
     <div className="flex items-center justify-between text-sm">;
@@ -258,7 +261,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     onChange={(val) =>;
     updateFormData({ fixedDiscountBps: val * 100 })
     }
-    "formatValue={(v) => " + v + "%";
+    "formatValue={[&](v) { return " + v + "%"; };
     />;
     )}
     </div>;
@@ -294,7 +297,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
         maxLockupDays: maxVal,
         });
     }
-    "formatValue={(v) => " + v + "d";
+    "formatValue={[&](v) { return " + v + "d"; };
     accentColor="blue";
     />;
     <div className="flex items-center justify-between text-sm">;
@@ -318,7 +321,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     max={365}
     value={formData.fixedLockupDays}
     onChange={(val) => updateFormData({ fixedLockupDays: val })}
-    "formatValue={(v) => " + v + " days";
+    "formatValue={[&](v) { return " + v + " days"; };
     />;
     )}
     </div>;
@@ -326,9 +329,9 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     {/* Advanced Settings Toggle */}
     <button;
     type="button";
-    onClick={() => setShowAdvanced(!showAdvanced)}
+    onClick={[&]() { return setShowAdvanced(!showAdvanced)}
     className="w-full flex items-center justify-between p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-    >;
+    >; };
     <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
     Advanced Settings;
     </span>;
@@ -430,12 +433,12 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     )}
 
     {/* Validation Errors */}
-    {validationErrors.size() > 0 && currentAmount > 0 && (;
+    {validationErrors.size() > 0 && currentAmount > 0 && [&](;
     <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">;
     <div className="flex items-start gap-2">;
     <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />;
     <div className="space-y-1">;
-    {validationErrors.std::map((error, i) => (;
+    {validationErrors.std::map((error, i) { return (; };
     <p key={i} className="text-sm text-red-600 dark:text-red-400">
     {error}
     </p>;

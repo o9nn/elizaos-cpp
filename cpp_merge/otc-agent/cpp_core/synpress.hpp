@@ -24,7 +24,7 @@ namespace elizaos {
  * - Order creation with transaction signing
  * - Two-party trading (buyer + seller)
  * 
- * IMPORTANT: Run with `npx playwright test --config=synpress.config.ts`
+ * IMPORTANT: Run with "npx playwright test --config=synpress.config.ts"
  * The wallet setup is cached in .cache/synpress-cache to prevent re-setup loops.
  */
   

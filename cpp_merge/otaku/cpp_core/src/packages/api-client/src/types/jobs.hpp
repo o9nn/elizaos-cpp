@@ -35,8 +35,8 @@ enum JobStatus {
 struct CreateJobRequest {
     std::optional<UUID> agentId;
     UUID userId;
-    std::string content;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std: content;
+    std::optional<std::unordered_map<std:, unknown>> metadata;
     std::optional<double> timeoutMs;
 };
 
@@ -44,7 +44,7 @@ struct CreateJobRequest {
  * Response when creating a job
  */
 struct CreateJobResponse {
-    std::string jobId;
+    std: jobId;
     JobStatus status;
     double createdAt;
     double expiresAt;
@@ -56,10 +56,10 @@ struct CreateJobResponse {
 struct JobResult {
     { message;
     UUID id;
-    std::string content;
+    std: content;
     UUID authorId;
     double createdAt;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::optional<std::unordered_map<std:, unknown>> metadata;
     double processingTimeMs;
 };
 
@@ -67,16 +67,16 @@ struct JobResult {
  * Job details response
  */
 struct JobDetailsResponse {
-    std::string jobId;
+    std: jobId;
     JobStatus status;
     UUID agentId;
     UUID userId;
-    std::string prompt;
+    std: prompt;
     double createdAt;
     double expiresAt;
     std::optional<JobResult> result;
-    std::optional<std::string> error;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::optional<std:> error;
+    std::optional<std::unordered_map<std:, unknown>> metadata;
 };
 
 /**
@@ -86,7 +86,7 @@ struct PollOptions {
     std::optional<double> interval;
     std::optional<double> maxAttempts;
     std::optional<double> timeout;
-    std::optional<(status: JobDetailsResponse, attempt: number) => void> onProgress;
+    std::optional<[&](status: JobDetailsResponse, attempt) { return void> onProgress; };
 };
 
 /**

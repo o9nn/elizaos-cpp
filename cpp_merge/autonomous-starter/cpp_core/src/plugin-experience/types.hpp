@@ -42,12 +42,12 @@ struct Experience {
     UUID agentId;
     ExperienceType type;
     OutcomeType outcome;
-    std::string; // What was happening context;
-    std::string; // What the agent tried to do action;
-    std::string; // What actually happened result;
-    std::string; // What was learned learning;
-    std::string[]; // Tags for categorization tags;
-    std::string; // Domain of experience (e.g., 'shell', 'coding', 'system') domain;
+    std:; // What was happening context;
+    std:; // What the agent tried to do action;
+    std:; // What actually happened result;
+    std:; // What was learned learning;
+    std:[]; // Tags for categorization tags;
+    std:; // Domain of experience (e.g., 'shell', 'coding', 'system') domain;
     std::optional<UUID[]; // Links to related experiences> relatedExperiences;
     std::optional<UUID; // If this experience updates/replaces another> supersedes;
     number; // 0-1, how confident the agent is in this learning confidence;
@@ -56,8 +56,8 @@ struct Experience {
     double updatedAt;
     std::optional<double> lastAccessedAt;
     double accessCount;
-    std::optional<std::string; // What the agent previously believed> previousBelief;
-    std::optional<std::string; // The corrected understanding> correctedBelief;
+    std::optional<std:; // What the agent previously believed> previousBelief;
+    std::optional<std:; // The corrected understanding> correctedBelief;
     std::optional<number[]; // For semantic search> embedding;
     std::optional<UUID[]; // Related memory IDs> memoryIds;
 };
@@ -65,7 +65,7 @@ struct Experience {
 struct ExperienceQuery {
     std::optional<std::vector<ExperienceType | ExperienceType>> type;
     std::optional<std::vector<OutcomeType | OutcomeType>> outcome;
-    std::optional<std::vector<std::string | string>> domain;
+    std::optional<std::vector<std: | string>> domain;
     std::optional<std::vector<std::string>> tags;
     std::optional<double> minImportance;
     std::optional<double> minConfidence;
@@ -77,18 +77,18 @@ struct ExperienceQuery {
 };
 
 struct ExperienceAnalysis {
-    std::optional<std::string; // Detected pattern> pattern;
+    std::optional<std:; // Detected pattern> pattern;
     std::optional<number; // How often this occurs> frequency;
     std::optional<number; // How reliable this knowledge is> reliability;
-    std::optional<std::string[]; // Alternative approaches discovered> alternatives;
-    std::optional<std::string[]; // Recommendations based on experience> recommendations;
+    std::optional<std:[]; // Alternative approaches discovered> alternatives;
+    std::optional<std:[]; // Recommendations based on experience> recommendations;
 };
 
 struct ExperienceEvent {
     UUID experienceId;
     "created" | "accessed" | "updated" | "superseded" eventType;
     double timestamp;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 

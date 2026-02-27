@@ -1,17 +1,19 @@
 #include "wagmi-client.hpp"
+#include <cstdlib>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getProxyUrl(const std::string& path) {
+std: getProxyUrl(const std:& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof window != "undefined") {
         return window.location.origin + path;
     }
     // Server-side fallback - use env or default
-    const auto appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:4444";
+    const auto appUrl = std::getenv("NEXT_PUBLIC_APP_URL") || "http://localhost:4444";
     return appUrl + path;
 
 }
@@ -19,7 +21,7 @@ std::string getProxyUrl(const std::string& path) {
 void getAvailableChains() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto network = process.env.NEXT_PUBLIC_NETWORK;
+    const auto network = std::getenv("NEXT_PUBLIC_NETWORK");
     const auto isLocalNetwork = network == "local" || network == "localnet";
     const auto chains = [];
 
@@ -43,7 +45,7 @@ void getTransports() {
 
     const std::unordered_map<double, ReturnType<typeof http>> transports = {};
 
-    const auto network = process.env.NEXT_PUBLIC_NETWORK;
+    const auto network = std::getenv("NEXT_PUBLIC_NETWORK");
     const auto isLocalNetwork = network == "local" || network == "localnet";
 
     // Only add localhost transport when explicitly using local network
@@ -84,7 +86,7 @@ void getConnectors() {
     if (typeof window == "undefined") return [];
     return [;
     farcasterMiniApp(), // Prioritize Farcaster wallet when in Farcaster Mini App context;
-    injected({ shimDisconnect: true }), // Fallback for browser wallets
+    injected(Config{shimDisconnect = true}), // Fallback for browser wallets
     ];
 
 }

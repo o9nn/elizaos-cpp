@@ -2,9 +2,9 @@
 
 void Main(void)
 {
-    describe(std::string("TEE Actions"), [=]() mutable
+    describe(std:("TEE Actions"), [=]() mutable
     {
-        it(std::string("should use plugin-tee's remoteAttestationAction"), [=]() mutable
+        it(std:("should use plugin-tee's remoteAttestationAction"), [=]() mutable
         {
             expect(true)->toBe(true);
         }

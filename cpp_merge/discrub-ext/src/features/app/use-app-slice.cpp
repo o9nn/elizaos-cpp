@@ -36,10 +36,10 @@ std::function<object()> useAppSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std::string("discrubCancelled"), useDiscrubCancelled}, 
-        object::pair{std::string("discrubPaused"), useDiscrubPaused}, 
-        object::pair{std::string("task"), useTask}, 
-        object::pair{std::string("settings"), useSettings}
+        object::pair{std:("discrubCancelled"), useDiscrubCancelled}, 
+        object::pair{std:("discrubPaused"), useDiscrubPaused}, 
+        object::pair{std:("task"), useTask}, 
+        object::pair{std:("settings"), useSettings}
     };
     auto setDiscrubPaused = [=](auto value) mutable
     {
@@ -81,23 +81,23 @@ std::function<object()> useAppSlice = [=]() mutable
     auto setTimeoutMessage = [=](auto message, auto timeout) mutable
     {
         std::async([=]() { dispatch(setTimeoutMessageAction(object{
-            object::pair{std::string("message"), std::string("message")}, 
-            object::pair{std::string("timeout"), std::string("timeout")}
+            object::pair{std:("message"), std:("message")}, 
+            object::pair{std:("timeout"), std:("timeout")}
         })); });
         return std::shared_ptr<Promise<void>>();
     };
     return object{
-        object::pair{std::string("state"), std::string("state")}, 
-        object::pair{std::string("setDiscrubPaused"), std::string("setDiscrubPaused")}, 
-        object::pair{std::string("setDiscrubCancelled"), std::string("setDiscrubCancelled")}, 
-        object::pair{std::string("setIsModifying"), std::string("setIsModifying")}, 
-        object::pair{std::string("setModifyEntity"), std::string("setModifyEntity")}, 
-        object::pair{std::string("setStatus"), std::string("setStatus")}, 
-        object::pair{std::string("resetStatus"), std::string("resetStatus")}, 
-        object::pair{std::string("resetModify"), std::string("resetModify")}, 
-        object::pair{std::string("checkDiscrubPaused"), std::string("checkDiscrubPaused")}, 
-        object::pair{std::string("setTimeoutMessage"), std::string("setTimeoutMessage")}, 
-        object::pair{std::string("setSettings"), std::string("setSettings")}
+        object::pair{std:("state"), std:("state")}, 
+        object::pair{std:("setDiscrubPaused"), std:("setDiscrubPaused")}, 
+        object::pair{std:("setDiscrubCancelled"), std:("setDiscrubCancelled")}, 
+        object::pair{std:("setIsModifying"), std:("setIsModifying")}, 
+        object::pair{std:("setModifyEntity"), std:("setModifyEntity")}, 
+        object::pair{std:("setStatus"), std:("setStatus")}, 
+        object::pair{std:("resetStatus"), std:("resetStatus")}, 
+        object::pair{std:("resetModify"), std:("resetModify")}, 
+        object::pair{std:("checkDiscrubPaused"), std:("checkDiscrubPaused")}, 
+        object::pair{std:("setTimeoutMessage"), std:("setTimeoutMessage")}, 
+        object::pair{std:("setSettings"), std:("setSettings")}
     };
 };
 

@@ -1,4 +1,6 @@
 #include "submission-step.hpp"
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +13,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
         const auto router = useRouter();
 
         // Use refs to avoid stale closure issues in std::async callbacks
-        const auto contractConsignmentIdRef = useRef<std::string | nullptr>(nullptr);
+        const auto contractConsignmentIdRef = useRef<std: | nullptr>(nullptr);
         const auto isProcessingRef = useRef(false);
         const auto hasStartedRef = useRef(false);
 
@@ -47,11 +49,11 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                     ]);
 
                     const auto updateStepStatus = useCallback(;
-                    [&](stepId: std::string, updates: Partial<StepState>) {
-                        const auto step = stepsRef.current.find((s) => s.id == stepId);
+                    [&](stepId: std:, updates: Partial<StepState>) {
+                        const auto step = stepsRef.current.find[&]((s) { return s.id == stepId); };
                         if (step) {
                             Object.assign(step, updates);
-                            forceUpdate((n) => n + 1); // Trigger re-render;
+                            forceUpdate[&]((n) { return n + 1); }; // Trigger re-render;
                         }
                         },
                         [],
@@ -59,7 +61,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                         // Retry transient errors with exponential backoff
                         const auto executeWithRetry = useCallback(;
-                        std::async <T,>(action: () => Promise<T>, stepId: std::string): Promise<T> => {
+                        std::async <T,>(action: () => Promise<T>, stepId: std:): Promise<T> => {
                             const auto MAX_RETRIES = 3;
                             const auto NON_RETRYABLE = ["rejected", "denied", "cancelled", "user"];
                             const auto RETRYABLE = ["network", "timeout", "fetch", "connection", "rate"];
@@ -73,11 +75,11 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                         const auto msg = lastError.message.toLowerCase();
 
                                         // Never retry user rejections
-                                        if (NON_RETRYABLE.some((p) => msg.includes(p))) throw lastError;
+                                        if [&](NON_RETRYABLE.some((p) { return msg.count(p) > 0)) throw lastError; };
 
                                         // Only retry transient errors, and only if we have retries left
                                         const auto canRetry =;
-                                        RETRYABLE.some((p) => (std::find(msg.begin(), msg.end(), p) != msg.end())) && attempt < MAX_RETRIES - 1;
+                                        RETRYABLE.some[&]((p) { return (std::find(msg.begin(), msg.end(), p) != msg.end())) && attempt < MAX_RETRIES - 1; };
                                         if (!canRetry) throw lastError;
 
                                         const auto delayMs = Math.pow(2, attempt) * 1000;
@@ -88,7 +90,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                         updateStepStatus(stepId, {
                                             "statusMessage: " + "Retrying... (" + std::to_string(attempt + 2) + "/" + MAX_RETRIES + ")"
                                             });
-                                            new Promise((resolve) => setTimeout(resolve, delayMs));
+                                            new Promise[&]((resolve) { return setTimeout(resolve, delayMs)); };
                                         }
                                     }
                                     throw lastError;
@@ -96,9 +98,9 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                     [updateStepStatus],
                                     );
 
-                                    const auto saveToDatabase = useCallback(std::async () => {;
+                                    const auto saveToDatabase = useCallback[&](std::async () {;
                                         // Convert human-readable amounts to raw amounts with decimals
-                                        const auto toRawAmount = (humanAmount: std::string): std::string => {;
+                                        const auto toRawAmount = (humanAmount: std:): std: => {;
                                             const auto parsed = parseFloat(humanAmount) || 0;
                                             const auto raw = BigInt(;
                                             Math.floor(parsed * Math.pow(10, selectedTokenDecimals)),
@@ -109,7 +111,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                             const auto response = fetch("/api/consignments", {;
                                                 method: "POST",
                                                 headers: { "Content-Type": "application/json" },
-                                                body: JSON.stringify({
+                                                body: nlohmann::json().dump({
                                                     ...formData,
                                                     amount: toRawAmount(formData.amount),
                                                     minDealAmount: toRawAmount(formData.minDealAmount),
@@ -127,9 +129,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                     });
 
                                                     if (!response.ok) {
-                                                        const auto data = response;
-                                                        .json();
-                                                        .catch(() => ({ error: "Unknown error" }));
+                                                        const auto data = response.json().catch(() => ({ error: "Unknown error" }));
                                                         if (contractConsignmentIdRef.current) {
                                                             throw new Error(
                                                             "Your consignment is on-chain (ID: " + contractConsignmentIdRef.current + ") but failed to save to our database. Click retry to try saving again."
@@ -154,7 +154,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                     ]);
 
                                                     const auto processStep = useCallback(;
-                                                    std::async (stepIndex: number): Promise<void> => {
+                                                    std::async (stepIndex): Promise<void> => {
                                                         const auto steps = stepsRef.current;
                                                         const auto currentStep = steps[stepIndex];
 
@@ -191,7 +191,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                     } else if (currentStep.id == "create-onchain") {
                                                                         const auto result = executeWithRetry(;
                                                                         () =>;
-                                                                        onCreateConsignment((txHash) => {
+                                                                        onCreateConsignment[&]((txHash) {
                                                                             updateStepStatus("create-onchain", {
                                                                                 txHash,
                                                                                 statusMessage: "Confirming...",
@@ -206,7 +206,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                     });
                                                                                     } else if (currentStep.id == "save-db") {
                                                                                         updateStepStatus("save-db", { statusMessage: "Saving..." });
-                                                                                        executeWithRetry(() => saveToDatabase(), "save-db");
+                                                                                        executeWithRetry[&](() { return saveToDatabase(), "save-db"); };
                                                                                     }
 
                                                                                     // Mark complete
@@ -217,10 +217,10 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                                                                                         // Process next step
                                                                                         const auto nextIndex = stepIndex + 1;
-                                                                                        if (nextIndex < steps.length) {
+                                                                                        if (nextIndex < steps.size()) {
                                                                                             std::cout << "[SubmissionStep] Moving to next step:" << nextIndex << std::endl;
                                                                                             // Small delay for UI feedback, then process next
-                                                                                            new Promise((resolve) => setTimeout(resolve, 300));
+                                                                                            new Promise[&]((resolve) { return setTimeout(resolve, 300)); };
                                                                                             processStep(nextIndex);
                                                                                             } else {
                                                                                                 std::cout << "[SubmissionStep] All steps complete" << std::endl;
@@ -238,7 +238,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                 isProcessingRef.current = false;
 
                                                                                                 auto displayError = errorMessage;
-                                                                                                if (errorMessage.includes("rejected")) {
+                                                                                                if (errorMessage.count("rejected") > 0) {
                                                                                                     if (currentStep.id == "approve") {
                                                                                                         displayError =;
                                                                                                         "Token approval was rejected. Click retry to try again.";
@@ -265,7 +265,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                     );
 
                                                                                                     // Start processing on mount
-                                                                                                    useEffect(() => {
+                                                                                                    useEffect[&](() {
                                                                                                         if (!hasStartedRef.current) {
                                                                                                             hasStartedRef.current = true;
                                                                                                             isProcessingRef.current = true;
@@ -275,13 +275,13 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                         }, [processStep]);
 
                                                                                                         const auto retryStep = useCallback(;
-                                                                                                        [&](stepId: std::string) {
+                                                                                                        [&](stepId: std:) {
                                                                                                             if (isProcessingRef.current) {
                                                                                                                 std::cout << "[SubmissionStep] Already processing << ignoring retry" << std::endl;
                                                                                                                 return;
                                                                                                             }
 
-                                                                                                            const auto stepIndex = stepsRef.current.findIndex((s) => s.id == stepId);
+                                                                                                            const auto stepIndex = stepsRef.current.findIndex[&]((s) { return s.id == stepId); };
                                                                                                             if (stepIndex == -1) return;
 
                                                                                                             std::cout << "[SubmissionStep] Retrying step:" << stepId << std::endl;
@@ -300,13 +300,13 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                                     router.push_back("/my-deals");
                                                                                                                     };
 
-                                                                                                                    const auto formatAmount = [&](amount: std::string) {;
+                                                                                                                    const auto formatAmount = [&](amount: std:) {;
                                                                                                                         const auto num = parseFloat(amount) || 0;
                                                                                                                         return num.toLocaleString();
                                                                                                                         };
 
                                                                                                                         const auto steps = stepsRef.current;
-                                                                                                                        const auto hasError = steps.some((s) => s.status == "error");
+                                                                                                                        const auto hasError = steps.some[&]((s) { return s.status == "error"); };
                                                                                                                         const auto isProcessing = isProcessingRef.current && !isComplete && !hasError;
 
                                                                                                                         return (;
@@ -325,7 +325,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                                                                                                         {/* Steps */}
                                                                                                         <div className="space-y-4">;
-                                                                                                        {steps.std::map((step, index) => (;
+                                                                                                        {steps.std::map[&]((step, index) { return (; };
                                                                                                         <div;
                                                                                                     key={step.id}
                                                                                                     className="border border-zinc-200 dark:border-zinc-800 rounded-lg p-4"
@@ -356,10 +356,10 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                         <div className="flex-1 min-w-0">;
                                                                                         <div className="flex items-center justify-between gap-2">;
                                                                                         <h3 className="font-medium text-sm">{step.label}</h3>;
-                                                                                        {step.status == "error" && step.canRetry && (;
+                                                                                        {step.status == "error" && step.canRetry && [&](;
                                                                                         <Button;
-                                                                                    onClick={() => retryStep(step.id)}
-                                                                                    color="brand";
+                                                                                    onClick={() { return retryStep(step.id)}
+                                                                                    color="brand"; };
                                                                                     className="!py-1 !px-3 !text-xs";
                                                                                     >;
                                                                                     Retry;

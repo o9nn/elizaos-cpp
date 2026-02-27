@@ -11,7 +11,7 @@ void ExampleRoute() {
     const auto agentId = config.agentId;
 
     // Apply dark mode to the root element
-    React.useEffect(() => {
+    React.useEffect[&](() {
         document.documentElement.classList.add("dark");
         }, []);
 

@@ -1,4 +1,6 @@
 #include "retry-cache.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,39 +18,39 @@ double calculateDelay(double attempt) {
 
 }
 
-bool isRetryableError(const std::any& error) {
+bool isRetryableError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
         const auto message = error.message.toLowerCase();
         // Rate limit errors
-        if (message.includes("429") || message.includes("rate limit")) return true;
+        if (message.count("429") > 0 || message.count("rate limit") > 0) return true;
         // Network errors
-        if (message.includes("network") || message.includes("timeout")) return true;
-        if (message.includes("econnreset") || message.includes("enotfound"))
+        if (message.count("network") > 0 || message.count("timeout") > 0) return true;
+        if (message.count("econnreset") > 0 || message.count("enotfound") > 0)
         return true;
         // RPC specific errors
-        if (message.includes("too many requests")) return true;
-        if (message.includes("secondary index")) return true; // Solana specific
+        if (message.count("too many requests") > 0) return true;
+        if (message.count("secondary index") > 0) return true; // Solana specific
     }
     return false;
 
 }
 
-std::future<std::string> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions) {
+std::future<std:> fetchWithRetry(const std:& url, std::optional<RequestInit> options, std::optional<std:> retryOptions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto cacheKey = "retryOptions.cacheKey || " + "fetch:" + url;
 
-        return withRetryAndCache(;
+        return withRetryAndCache[&](;
         cacheKey,
-        std::async () => {
+        std::async () {
             const auto response = fetch(url, options);
 
             // Treat 429 as an error for retry logic
             if (response.status == 429) {
-                throw std::runtime_error(`429 Too Many Requests: ${url}`);
+                throw std::runtime_error("429 Too Many Requests: " + std::to_string(url) + "");
             }
 
             return response;

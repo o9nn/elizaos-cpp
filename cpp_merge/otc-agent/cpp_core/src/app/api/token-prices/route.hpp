@@ -31,7 +31,7 @@ struct CachedPrice {
 /**
  * Set cached token price
  */
-std::future<void> setCachedPrice(const std::string& chain, const std::string& address, double priceUsd);
+std::future<void> setCachedPrice(const std:& chain, const std:& address, double priceUsd);
 
 /**
  * Fetch Solana token prices from Jupiter Price API

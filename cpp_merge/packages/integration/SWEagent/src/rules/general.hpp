@@ -15,8 +15,8 @@ array<std::shared_ptr<CodingRule>> getApplicableRules(string filePath, P1 langua
 template <typename P1>
 array<std::shared_ptr<CodingRule>> getApplicableRules(string filePath, P1 language)
 {
-    auto lang = OR((language), (((filePath->endsWith(std::string(".py"))) ? std::string("python") : std::string("typescript"))));
-    return (lang == std::string("python")) ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
+    auto lang = OR((language), (((filePath->endsWith(std:(".py"))) ? std:("python") : std:("typescript"))));
+    return (lang == std:("python")) ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
 };
 
 

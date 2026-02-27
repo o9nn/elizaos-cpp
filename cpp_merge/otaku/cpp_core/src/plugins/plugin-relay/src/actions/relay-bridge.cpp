@@ -1,10 +1,14 @@
 #include "relay-bridge.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, std::vector<std::any> collectedTxHashes = {}, std::optional<std::string> tokenSymbol) {
+std: formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std:& requestId, std::vector<std::string> collectedTxHashes = {}, std::optional<std:> tokenSymbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIndicator = status.status == "success" ? "" : status.status == "pending" ? "" : "";
@@ -16,14 +20,14 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
     tokenSymbol ||;
     "TOKEN";
 
-    auto response = `;
-    ${statusIndicator} **Bridge ${(status.status || "PENDING").toUpperCase()}**;
+    auto response = ";
+    " + std::to_string(statusIndicator) + " **Bridge " + std::to_string((status.status || "PENDING").toUpperCase()) + "**;
 
-    **Request ID:** \`${requestId}\`
-    **Route:** ${getChainName(request.originChainId)}  ${getChainName(request.destinationChainId)}
-    **Amount:** ${formatAmount(request.amount, symbol)}
-    **Status:** ${status?.status || "pending"}
-    `.trim();
+    **Request ID:** \"${requestId}\"
+    **Route:** " + std::to_string(getChainName(request.originChainId)) + "  " + std::to_string(getChainName(request.destinationChainId)) + "
+    **Amount:** " + std::to_string(formatAmount(request.amount, symbol)) + "
+    **Status:** " + std::to_string((status ? status.status : nullptr) || "pending") + "
+    ";
 
     // Show transaction hashes from status (preferred) or from collected hashes
     const auto originTxHash = status.data.inTxs.[0].hash ||;
@@ -40,11 +44,11 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
     }
 
     // Show all collected tx hashes if there are more than origin/dest
-    if (collectedTxHashes.length > 0) {
+    if (collectedTxHashes.size() > 0) {
         const auto otherTxs = collectedTxHashes.filter(;
         [&](tx) { return tx.txHash != originTxHash && tx.txHash != destTxHash; }
         );
-        if (otherTxs.length > 0) {
+        if (otherTxs.size() > 0) {
             "response += " + "\n\n**Other Transactions:**"
             for (const auto& tx : otherTxs)
                 "response += " + "\n- \" + "${tx.txHash}\" + " (Chain " + tx.chainId + ")";
@@ -63,10 +67,10 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
 
 }
 
-std::string getChainName(double chainId) {
+std: getChainName(double chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<double, std::string> chains = {;
+    const std::unordered_map<double, std:> chains = {;
         1: "Ethereum",
         8453: "Base",
         42161: "Arbitrum",
@@ -81,10 +85,10 @@ std::string getChainName(double chainId) {
 
 }
 
-std::string formatAmount(const std::string& amount, const std::string& currency) {
+std: formatAmount(const std:& amount, const std:& currency) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto decimals = currency.toLowerCase().includes("usdc") || currency.toLowerCase().includes("usdt") ? 6 : 18;
+    const auto decimals = currency.toLowerCase().count("usdc") > 0 || currency.toLowerCase().count("usdt") > 0 ? 6 : 18;
     const auto value = Number(amount) / Math.pow(10, decimals);
     return std::to_string(value.toFixed(6)) + " " + std::to_string(currency.toUpperCase());
 

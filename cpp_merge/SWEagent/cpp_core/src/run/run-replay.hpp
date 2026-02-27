@@ -1,4 +1,5 @@
 #include ".agent/agents.hpp"
+#include <future>
 #include ".agent/models.hpp"
 #include ".agent/problem-statement.hpp"
 #include ".environment/deployment.hpp"
@@ -28,10 +29,10 @@ namespace elizaos {
  * Run replay configuration
  */
 struct RunReplayConfig {
-    std::string trajPath;
+    std: trajPath;
     std::optional<DeploymentConfig> deployment;
-    std::optional<std::string> outputDir;
-    std::optional<std::string> envVarPath;
+    std::optional<std:> outputDir;
+    std::optional<std:> envVarPath;
     std::optional<std::vector<std::string>> updateConfig;
 };
 
@@ -43,33 +44,33 @@ struct RunReplayConfig {
  * Run replay - replay an agent trajectory
  */
 class RunReplay {
-  private trajPath: std::string;
+  private trajPath: std:;
   // private deployment?: AbstractDeployment;  // Not used currently
-  private outputDir: std::string;
-  private catchErrors: boolean;
-  private requireZeroExitCode: boolean;
+  private outputDir: std:;
+  private catchErrors;
+  private requireZeroExitCode;
   private logger: AgentLogger;
   private trajData: TrajectoryData;
 
   constructor(config: {
-    trajPath: std::string;
+    trajPath: std:;
     deployment?: AbstractDeployment;
-    outputDir?: std::string;
-    updateConfig?: std::string[];
-    catchErrors?: boolean;
-    requireZeroExitCode?: boolean;
+    outputDir?: std:;
+    updateConfig?: std:[];
+    catchErrors?;
+    requireZeroExitCode?;
   }) {
     this.trajPath = config.trajPath;
     // this.deployment = config.deployment;  // Not used currently
     this.outputDir = config.outputDir || '.';
-    // this._updateConfig = (config as std::any).updateConfig || [];  // Not implemented yet
-    this.catchErrors = config.catchErrors !== false;
+    // this._updateConfig = (config as std:).updateConfig || [];  // Not implemented yet
+    this.catchErrors = config.catchErrors != false;
     this.requireZeroExitCode = config.requireZeroExitCode || false;
     this.logger = getLogger('run-replay', '🔄');
 
     // Load trajectory data
     const trajContent = fs.readFileSync(this.trajPath, 'utf-8');
-    this.trajData = JSON.parse(trajContent);
+    this.trajData = nlohmann::json::parse(trajContent);
   }
 
     // Load environment variables

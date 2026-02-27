@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string getEntityUsername(Entity entity) {
+std: getEntityUsername(Entity entity) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entity.metadata) return "unknown";

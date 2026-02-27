@@ -1,71 +1,71 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/workers/worker-logger.h"
 
 object logger = object{
-    object::pair{std::string("info"), [=](auto message, Args... args_) mutable
+    object::pair{std:("info"), [=](auto message, Args... args_) mutable
     {
         array<any> args = array<any>{args_...};
         auto logMessage = object{
-            object::pair{std::string("type"), std::string("log")}, 
-            object::pair{std::string("level"), std::string("info")}, 
-            object::pair{std::string("message"), std::string("message")}, 
-            object::pair{std::string("args"), std::string("args")}, 
-            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std:("type"), std:("log")}, 
+            object::pair{std:("level"), std:("info")}, 
+            object::pair{std:("message"), std:("message")}, 
+            object::pair{std:("args"), std:("args")}, 
+            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         };
         if (parentPort) {
             parentPort->postMessage(logMessage);
         } else {
-            console->log(std::string("[INFO] ") + message + string_empty, const_(args)[0], const_(args)[1]);
+            console->log(std:("[INFO] ") + message + string_empty, const_(args)[0], const_(args)[1]);
         }
     }
     }, 
-    object::pair{std::string("warn"), [=](auto message, Args... args_) mutable
+    object::pair{std:("warn"), [=](auto message, Args... args_) mutable
     {
         array<any> args = array<any>{args_...};
         auto logMessage = object{
-            object::pair{std::string("type"), std::string("log")}, 
-            object::pair{std::string("level"), std::string("warn")}, 
-            object::pair{std::string("message"), std::string("message")}, 
-            object::pair{std::string("args"), std::string("args")}, 
-            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std:("type"), std:("log")}, 
+            object::pair{std:("level"), std:("warn")}, 
+            object::pair{std:("message"), std:("message")}, 
+            object::pair{std:("args"), std:("args")}, 
+            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         };
         if (parentPort) {
             parentPort->postMessage(logMessage);
         } else {
-            console->warn(std::string("[WARN] ") + message + string_empty, const_(args)[0], const_(args)[1]);
+            console->warn(std:("[WARN] ") + message + string_empty, const_(args)[0], const_(args)[1]);
         }
     }
     }, 
-    object::pair{std::string("error"), [=](auto message, Args... args_) mutable
+    object::pair{std:("error"), [=](auto message, Args... args_) mutable
     {
         array<any> args = array<any>{args_...};
         auto logMessage = object{
-            object::pair{std::string("type"), std::string("log")}, 
-            object::pair{std::string("level"), std::string("error")}, 
-            object::pair{std::string("message"), std::string("message")}, 
-            object::pair{std::string("args"), std::string("args")}, 
-            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std:("type"), std:("log")}, 
+            object::pair{std:("level"), std:("error")}, 
+            object::pair{std:("message"), std:("message")}, 
+            object::pair{std:("args"), std:("args")}, 
+            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         };
         if (parentPort) {
             parentPort->postMessage(logMessage);
         } else {
-            console->error(std::string("[ERROR] ") + message + string_empty, const_(args)[0], const_(args)[1]);
+            console->error(std:("[ERROR] ") + message + string_empty, const_(args)[0], const_(args)[1]);
         }
     }
     }, 
-    object::pair{std::string("debug"), [=](auto message, Args... args_) mutable
+    object::pair{std:("debug"), [=](auto message, Args... args_) mutable
     {
         array<any> args = array<any>{args_...};
         auto logMessage = object{
-            object::pair{std::string("type"), std::string("log")}, 
-            object::pair{std::string("level"), std::string("debug")}, 
-            object::pair{std::string("message"), std::string("message")}, 
-            object::pair{std::string("args"), std::string("args")}, 
-            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std:("type"), std:("log")}, 
+            object::pair{std:("level"), std:("debug")}, 
+            object::pair{std:("message"), std:("message")}, 
+            object::pair{std:("args"), std:("args")}, 
+            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         };
         if (parentPort) {
             parentPort->postMessage(logMessage);
         } else {
-            console->debug(std::string("[DEBUG] ") + message + string_empty, const_(args)[0], const_(args)[1]);
+            console->debug(std:("[DEBUG] ") + message + string_empty, const_(args)[0], const_(args)[1]);
         }
     }
     }

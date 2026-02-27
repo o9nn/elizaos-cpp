@@ -19,9 +19,9 @@ namespace elizaos {
 
 struct MessageServer {
     UUID id;
-    std::string name;
-    std::string sourceType;
-    std::optional<std::string> sourceId;
+    std: name;
+    std: sourceType;
+    std::optional<std:> sourceId;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
 };
@@ -29,11 +29,11 @@ struct MessageServer {
 struct MessageChannel {
     UUID id;
     UUID messageServerId;
-    std::string name;
+    std: name;
     ChannelType type;
-    std::optional<std::string> sourceType;
-    std::optional<std::string> sourceId;
-    std::optional<std::string> topic;
+    std::optional<std:> sourceType;
+    std::optional<std:> sourceId;
+    std::optional<std:> topic;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
 };
@@ -42,11 +42,11 @@ struct CentralRootMessage {
     UUID id;
     UUID channelId;
     UUID authorId;
-    std::string content;
-    std::optional<std::any> rawMessage;
+    std: content;
+    std::optional<std:> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
-    std::optional<std::string> sourceType;
-    std::optional<std::string> sourceId;
+    std::optional<std:> sourceType;
+    std::optional<std:> sourceId;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
 };
@@ -57,14 +57,14 @@ struct MessageServiceStructure {
     UUID channel_id;
     UUID server_id;
     UUID author_id;
-    std::optional<std::string> author_display_name;
-    std::string content;
-    std::optional<std::any> raw_message;
-    std::optional<std::string> source_id;
-    std::optional<std::string> source_type;
+    std::optional<std:> author_display_name;
+    std: content;
+    std::optional<std:> raw_message;
+    std::optional<std:> source_id;
+    std::optional<std:> source_type;
     std::optional<UUID> in_reply_to_message_id;
     double created_at;
-    std::optional<std::any> metadata;
+    std::optional<std:> metadata;
 };
 
 

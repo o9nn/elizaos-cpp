@@ -18,7 +18,7 @@ namespace elizaos {
 
 
     // TODO - Figure out why this broke
-    // const data = rawData as Record<std::string, any>;
+    // const data = rawData as Record<std:, any>;
     // const transformedData = HomepageTokenSchema.parse(data);
 
   // Normalize search term to ensure consistent caching

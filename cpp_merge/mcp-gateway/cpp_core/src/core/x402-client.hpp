@@ -21,7 +21,7 @@ class X402PaymentClient {
   private axiosInstance: AxiosInstance;
   private config: GatewayConfig;
   private logger: Console;
-  private walletAddress?: std::string;
+  private walletAddress?: std:;
 
   constructor(config: GatewayConfig, logger: Console = console) {
     this.config = config;
@@ -36,14 +36,14 @@ class X402PaymentClient {
     });
 
     // If outbound wallet is configured, wrap with payment interceptor
-    if (config.payment?.outboundWallet) {
+    if (config.(payment ? payment.outboundWallet : nullptr)) {
       try {
-        const account = privateKeyToAccount(config.payment.outboundWallet as `0x${string}`);
+        const account = privateKeyToAccount(config.payment.outboundWallet as "0x" + std::to_string(string) + "");
         this.walletAddress = account.address;
         this.axiosInstance = withPaymentInterceptor(this.axiosInstance, account);
-        this.logger.info(`X402 payment client initialized with wallet: ${this.walletAddress}`);
+        this.logger.info("X402 payment client initialized with wallet: " + std::to_string(this.walletAddress) + "");
       } catch (error) {
-        this.logger.error(`Failed to initialize x402 payment client: ${error}`);
+        this.logger.error("Failed to initialize x402 payment client: " + std::to_string(error) + "");
         throw error;
       }
     }

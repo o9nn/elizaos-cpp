@@ -15,6 +15,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-void enhancePrompt(const std::string& userPrompt, const std::any& tokenMetadata);
+void enhancePrompt(const std:& userPrompt, const std:& tokenMetadata);
 
 } // namespace elizaos

@@ -21,6 +21,6 @@ namespace elizaos {
 /**
  * Generate package metadata for the registry
  */
-std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std::string& cliVersion, const std::string& username);
+std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std:& cliVersion, const std:& username);
 
 } // namespace elizaos

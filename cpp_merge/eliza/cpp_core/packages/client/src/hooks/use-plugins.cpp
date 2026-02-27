@@ -1,4 +1,7 @@
 #include "use-plugins.hpp"
+#include <string>
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,9 +10,9 @@ namespace elizaos {
 void usePlugins() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return useQuery({;
+    return useQuery[&]({;
         queryKey: ["plugins"],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             try {
                 // Fetch plugins from registry and agent data in parallel
                 const auto elizaClient = createElizaClient();
@@ -23,7 +26,7 @@ void usePlugins() {
 
                 // Extract plugin names from registry that support v1 and are plugins
                 const auto registryPlugins = Object.entries(registryData.registry || {});
-                .filter(([name, data]: [std::string, PluginInfo]) => {
+                .filter[&](([name, data]: [std:, PluginInfo]) {
                     // Check if it's a plugin and has v1 support
                     const auto isPlugin = (std::find(name.begin(), name.end(), "plugin") != name.end());
                     const auto hasV1Support = data.supports.v1 == true;
@@ -32,15 +35,14 @@ void usePlugins() {
 
                     return isPlugin && hasV1Support && hasV1Version;
                     });
-                    .std::map(([name]) => name.replace(/^@elizaos-plugins\//, "@elizaos/"));
-                    .sort();
+                    .std::map[&](([name]) { return name.replace(/^@elizaos-plugins\//, "@elizaos/")); }.sort();
 
                     // Process agent plugins from the parallel fetch
                     std::vector<std::string> agentPlugins = [];
                     try {
-                        if (agentsResponse.length > 0) {
+                        if (agentsResponse.size() > 0) {
                             // Get plugins from the first active agent
-                            const auto activeAgent = agentsResponse.find((agent) => agent.status == "active");
+                            const auto activeAgent = agentsResponse.find[&]((agent) { return agent.status == "active"); };
                             if (activeAgent && activeAgent.id) {
                                 const auto agentDetailResponse = elizaClient.agents.getAgent(activeAgent.id);
 
@@ -70,8 +72,7 @@ void usePlugins() {
                             "@elizaos/plugin-farcaster",
                             "@elizaos/plugin-groq",
                             ];
-                            .filter((name) => (std::find(name.begin(), name.end(), "plugin") != name.end()));
-                            .sort();
+                            .filter[&]((name) { return (std::find(name.begin(), name.end(), "plugin") != name.end())); }.sort();
                         }
                         },
                         });

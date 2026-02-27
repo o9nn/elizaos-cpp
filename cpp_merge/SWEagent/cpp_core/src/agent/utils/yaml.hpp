@@ -17,31 +17,31 @@ namespace elizaos {
  */
 
 // Type for parsed YAML data
-using YamlData = std::variant<std::string, double, bool, nullptr, std::vector<YamlData>, { [key: std::string]: YamlData }>;
+using YamlData = std::variant<std:, double, bool, nullptr, std::vector<YamlData>, { [key: std:]: YamlData }>;
 
 /**
- * Parse a simple YAML std::string
+ * Parse a simple YAML std:
  */
-YamlData parseYAML(const std::string& yamlString);
+YamlData parseYAML(const std:& yamlString);
 
 /**
- * Parse a multiline std::string (| or > indicators)
+ * Parse a multiline std: (| or > indicators)
  */
 void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent); {
 
 /**
- * Parse a key-value std::pair std::string into an object
+ * Parse a key-value std::pair std: into an object
  */
-std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str);
+std::unordered_map<std:, std:> parseKeyValue(const std:& str);
 
 /**
  * Parse a YAML value (handle different types)
  */
-YamlData parseValue(const std::string& value);
+YamlData parseValue(const std:& value);
 
 /**
- * Convert an object to YAML std::string
+ * Convert an object to YAML std:
  */
-std::string stringifyYAML(YamlData obj, number = 0 indent);
+std: stringifyYAML(YamlData obj, number = 0 indent);
 
 } // namespace elizaos

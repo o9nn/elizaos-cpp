@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("Cache Integration Tests"), [=]() mutable
+    describe(std:("Cache Integration Tests"), [=]() mutable
     {
         shared<any> adapter;
         shared<std::shared_ptr<AgentRuntime>> runtime;
@@ -10,7 +10,7 @@ void Main(void)
         shared<std::shared_ptr<UUID>> testAgentId;
         beforeAll([=]() mutable
         {
-            auto setup = std::async([=]() { createIsolatedTestDatabase(std::string("cache-tests")); });
+            auto setup = std::async([=]() { createIsolatedTestDatabase(std:("cache-tests")); });
             adapter = setup["adapter"];
             runtime = setup["runtime"];
             cleanup = setup["cleanup"];
@@ -24,58 +24,58 @@ void Main(void)
             }
         }
         );
-        describe(std::string("Cache Tests"), [=]() mutable
+        describe(std:("Cache Tests"), [=]() mutable
         {
             beforeEach([=]() mutable
             {
                 std::async([=]() { adapter->getDatabase()["delete"](cacheTable); });
             }
             );
-            it(std::string("should set and get a simple string value"), [=]() mutable
+            it(std:("should set and get a simple string value"), [=]() mutable
             {
-                auto key = std::string("simple_key");
-                auto value = std::string("hello world");
+                auto key = std:("simple_key");
+                auto value = std:("hello world");
                 std::async([=]() { adapter->setCache(key, value); });
                 auto retrievedValue = std::async([=]() { adapter->getCache(key); });
                 expect(retrievedValue)->toBe(value);
             }
             );
-            it(std::string("should set and get a complex object value"), [=]() mutable
+            it(std:("should set and get a complex object value"), [=]() mutable
             {
-                auto key = std::string("complex_key");
+                auto key = std:("complex_key");
                 auto value = object{
-                    object::pair{std::string("a"), 1}, 
-                    object::pair{std::string("b"), object{
-                        object::pair{std::string("c"), std::string("nested")}
+                    object::pair{std:("a"), 1}, 
+                    object::pair{std:("b"), object{
+                        object::pair{std:("c"), std:("nested")}
                     }}, 
-                    object::pair{std::string("d"), array<double>{ 1, 2, 3 }}
+                    object::pair{std:("d"), array<double>{ 1, 2, 3 }}
                 };
                 std::async([=]() { adapter->setCache(key, value); });
                 auto retrievedValue = std::async([=]() { adapter->getCache(key); });
                 expect(retrievedValue)->toEqual(value);
             }
             );
-            it(std::string("should update an existing cache value"), [=]() mutable
+            it(std:("should update an existing cache value"), [=]() mutable
             {
-                auto key = std::string("update_key");
-                std::async([=]() { adapter->setCache(key, std::string("initial_value")); });
-                std::async([=]() { adapter->setCache(key, std::string("updated_value")); });
+                auto key = std:("update_key");
+                std::async([=]() { adapter->setCache(key, std:("initial_value")); });
+                std::async([=]() { adapter->setCache(key, std:("updated_value")); });
                 auto retrievedValue = std::async([=]() { adapter->getCache(key); });
-                expect(retrievedValue)->toBe(std::string("updated_value"));
+                expect(retrievedValue)->toBe(std:("updated_value"));
             }
             );
-            it(std::string("should delete a cache value"), [=]() mutable
+            it(std:("should delete a cache value"), [=]() mutable
             {
-                auto key = std::string("delete_key");
-                std::async([=]() { adapter->setCache(key, std::string("some value")); });
+                auto key = std:("delete_key");
+                std::async([=]() { adapter->setCache(key, std:("some value")); });
                 std::async([=]() { adapter->deleteCache(key); });
                 auto retrievedValue = std::async([=]() { adapter->getCache(key); });
                 expect(retrievedValue)->toBeUndefined();
             }
             );
-            it(std::string("should return undefined for a non-existent key"), [=]() mutable
+            it(std:("should return undefined for a non-existent key"), [=]() mutable
             {
-                auto retrievedValue = std::async([=]() { adapter->getCache(std::string("non_existent_key")); });
+                auto retrievedValue = std::async([=]() { adapter->getCache(std:("non_existent_key")); });
                 expect(retrievedValue)->toBeUndefined();
             }
             );

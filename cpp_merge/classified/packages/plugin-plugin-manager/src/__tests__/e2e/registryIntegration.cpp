@@ -2,29 +2,29 @@
 
 void Main(void)
 {
-    vi->mock(std::string("../../services/pluginRegistryService"), [=]() mutable
+    vi->mock(std:("../../services/pluginRegistryService"), [=]() mutable
     {
         return (object{
-            object::pair{std::string("searchPluginsByContent"), vi->fn()}, 
-            object::pair{std::string("getPluginDetails"), vi->fn()}, 
-            object::pair{std::string("clonePlugin"), vi->fn()}
+            object::pair{std:("searchPluginsByContent"), vi->fn()}, 
+            object::pair{std:("getPluginDetails"), vi->fn()}, 
+            object::pair{std:("clonePlugin"), vi->fn()}
         });
     }
     );
-    describe(std::string("Registry Integration E2E Tests"), [=]() mutable
+    describe(std:("Registry Integration E2E Tests"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> runtime;
         beforeEach([=]() mutable
         {
             runtime = as<any>(object{
-                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("test-agent"))}, 
-                object::pair{std::string("actions"), array<any>()}, 
-                object::pair{std::string("registerAction"), [=](auto action) mutable
+                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("test-agent"))}, 
+                object::pair{std:("actions"), array<any>()}, 
+                object::pair{std:("registerAction"), [=](auto action) mutable
                 {
                     return runtime->actions->push(action);
                 }
                 }, 
-                object::pair{std::string("getService"), [=](auto name) mutable
+                object::pair{std:("getService"), [=](auto name) mutable
                 {
                     return nullptr;
                 }
@@ -33,79 +33,79 @@ void Main(void)
             vi->clearAllMocks();
         }
         );
-        describe(std::string("searchPluginAction"), [=]() mutable
+        describe(std:("searchPluginAction"), [=]() mutable
         {
-            it(std::string("should call searchPluginsByContent and format results"), [=]() mutable
+            it(std:("should call searchPluginsByContent and format results"), [=]() mutable
             {
                 auto mockResults = array<object>{ object{
-                    object::pair{std::string("name"), std::string("@elizaos/plugin-weather")}, 
-                    object::pair{std::string("description"), std::string("A weather plugin")}, 
-                    object::pair{std::string("score"), 0.9}, 
-                    object::pair{std::string("tags"), array<string>{ std::string("weather") }}
+                    object::pair{std:("name"), std:("@elizaos/plugin-weather")}, 
+                    object::pair{std:("description"), std:("A weather plugin")}, 
+                    object::pair{std:("score"), 0.9}, 
+                    object::pair{std:("tags"), array<string>{ std:("weather") }}
                 } };
                 (as<any>(pluginRegistryService->searchPluginsByContent))["mockResolvedValue"](mockResults);
                 auto message = as<std::shared_ptr<Memory>>(object{
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("search for weather plugins")}
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("search for weather plugins")}
                     }}
                 });
                 auto callback = vi->fn();
                 std::async([=]() { searchPluginAction->handler(runtime, message, undefined, undefined, callback); });
-                expect(pluginRegistryService->searchPluginsByContent)->toHaveBeenCalledWith(std::string("weather plugins"));
+                expect(pluginRegistryService->searchPluginsByContent)->toHaveBeenCalledWith(std:("weather plugins"));
                 expect(callback)->toHaveBeenCalledWith(expect->objectContaining(object{
-                    object::pair{std::string("text"), expect->stringContaining(std::string("Found 1 plugin"))}
+                    object::pair{std:("text"), expect->stringContaining(std:("Found 1 plugin"))}
                 }));
             }
             );
         }
         );
-        describe(std::string("getPluginDetailsAction"), [=]() mutable
+        describe(std:("getPluginDetailsAction"), [=]() mutable
         {
-            it(std::string("should call getPluginDetails and format details"), [=]() mutable
+            it(std:("should call getPluginDetails and format details"), [=]() mutable
             {
                 auto mockDetails = object{
-                    object::pair{std::string("name"), std::string("@elizaos/plugin-weather")}, 
-                    object::pair{std::string("description"), std::string("A weather plugin")}, 
-                    object::pair{std::string("version"), std::string("1.0.0")}, 
-                    object::pair{std::string("tags"), array<string>{ std::string("weather") }}, 
-                    object::pair{std::string("features"), array<string>{ std::string("current weather") }}
+                    object::pair{std:("name"), std:("@elizaos/plugin-weather")}, 
+                    object::pair{std:("description"), std:("A weather plugin")}, 
+                    object::pair{std:("version"), std:("1.0.0")}, 
+                    object::pair{std:("tags"), array<string>{ std:("weather") }}, 
+                    object::pair{std:("features"), array<string>{ std:("current weather") }}
                 };
                 (as<any>(pluginRegistryService->getPluginDetails))["mockResolvedValue"](mockDetails);
                 auto message = as<std::shared_ptr<Memory>>(object{
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("get details for @elizaos/plugin-weather")}
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("get details for @elizaos/plugin-weather")}
                     }}
                 });
                 auto callback = vi->fn();
                 std::async([=]() { getPluginDetailsAction->handler(runtime, message, undefined, undefined, callback); });
-                expect(pluginRegistryService->getPluginDetails)->toHaveBeenCalledWith(std::string("@elizaos/plugin-weather"));
+                expect(pluginRegistryService->getPluginDetails)->toHaveBeenCalledWith(std:("@elizaos/plugin-weather"));
                 expect(callback)->toHaveBeenCalledWith(expect->objectContaining(object{
-                    object::pair{std::string("text"), expect->stringContaining(std::string("**@elizaos/plugin-weather** Details"))}
+                    object::pair{std:("text"), expect->stringContaining(std:("**@elizaos/plugin-weather** Details"))}
                 }));
             }
             );
         }
         );
-        describe(std::string("clonePluginAction"), [=]() mutable
+        describe(std:("clonePluginAction"), [=]() mutable
         {
-            it(std::string("should call clonePlugin and report success"), [=]() mutable
+            it(std:("should call clonePlugin and report success"), [=]() mutable
             {
                 auto mockResult = object{
-                    object::pair{std::string("success"), true}, 
-                    object::pair{std::string("pluginName"), std::string("@elizaos/plugin-weather")}, 
-                    object::pair{std::string("localPath"), std::string("/cloned-plugins/plugin-weather")}
+                    object::pair{std:("success"), true}, 
+                    object::pair{std:("pluginName"), std:("@elizaos/plugin-weather")}, 
+                    object::pair{std:("localPath"), std:("/cloned-plugins/plugin-weather")}
                 };
                 (as<any>(pluginRegistryService->clonePlugin))["mockResolvedValue"](mockResult);
                 auto message = as<std::shared_ptr<Memory>>(object{
-                    object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("clone plugin @elizaos/plugin-weather")}
+                    object::pair{std:("content"), object{
+                        object::pair{std:("text"), std:("clone plugin @elizaos/plugin-weather")}
                     }}
                 });
                 auto callback = vi->fn();
                 std::async([=]() { clonePluginAction->handler(runtime, message, undefined, undefined, callback); });
-                expect(pluginRegistryService->clonePlugin)->toHaveBeenCalledWith(std::string("@elizaos/plugin-weather"));
+                expect(pluginRegistryService->clonePlugin)->toHaveBeenCalledWith(std:("@elizaos/plugin-weather"));
                 expect(callback)->toHaveBeenCalledWith(expect->objectContaining(object{
-                    object::pair{std::string("text"), expect->stringContaining(std::string("Successfully cloned"))}
+                    object::pair{std:("text"), expect->stringContaining(std:("Successfully cloned"))}
                 }));
             }
             );

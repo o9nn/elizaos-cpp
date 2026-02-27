@@ -24,7 +24,7 @@ struct Log {
     std::optional<UUID> id;
     UUID entityId;
     std::optional<UUID> roomId;
-    std::string type;
+    std: type;
     std::chrono::system_clock::time_point createdAt;
 };
 
@@ -32,44 +32,44 @@ struct Log {
  * Interface for database operations
  */
 struct IDatabaseAdapter {
-    std::any db;
+    std: db;
     std::optional<UUID> sourceEntityId;
     std::optional<UUID> entityId;
     std::optional<UUID> agentId;
     std::optional<double> count;
     std::optional<bool> unique;
-    std::string tableName;
+    std: tableName;
     std::optional<double> start;
     std::optional<double> end;
     std::optional<UUID> roomId;
     std::optional<UUID> worldId;
-    std::string tableName;
+    std: tableName;
     std::vector<UUID> roomIds;
     std::optional<double> limit;
-    std::string query_table_name;
+    std: query_table_name;
     double query_threshold;
-    std::string query_input;
-    std::string query_field_name;
-    std::string query_field_sub_name;
+    std: query_input;
+    std: query_field_name;
+    std: query_field_sub_name;
     double query_match_count;
     UUID entityId;
     UUID roomId;
-    std::string type;
+    std: type;
     UUID entityId;
     std::optional<UUID> roomId;
-    std::optional<std::string> type;
+    std::optional<std:> type;
     std::optional<double> count;
     std::optional<double> offset;
     std::vector<double> embedding;
     std::optional<double> match_threshold;
     std::optional<double> count;
     std::optional<bool> unique;
-    std::string tableName;
-    std::optional<std::string> query;
+    std: tableName;
+    std::optional<std:> query;
     std::optional<UUID> roomId;
     std::optional<UUID> worldId;
     std::optional<UUID> entityId;
-    std::string state;
+    std: state;
     UUID sourceEntityId;
     UUID targetEntityId;
     std::optional<std::vector<std::string>> tags;
@@ -79,7 +79,7 @@ struct IDatabaseAdapter {
     std::optional<std::vector<std::string>> tags;
     UUID worldId;
     std::optional<double> count;
-    std::optional<std::string> tableName;
+    std::optional<std:> tableName;
 };
 
 /**
@@ -145,9 +145,9 @@ struct UnifiedMemoryOptions {
  * Represents a generic database connection object.
  * The actual type of this connection will depend on the specific database adapter implementation
  * (e.g., a connection pool object for PostgreSQL, a client instance for a NoSQL database).
- * This `unknown` type serves as a placeholder in the abstract `IDatabaseAdapter`.
+ * This "unknown" type serves as a placeholder in the abstract "IDatabaseAdapter".
  */
-using DbConnection = std::any;
+using DbConnection = std:;
 
 // Allowable std::vector dimensions
 

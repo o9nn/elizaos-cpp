@@ -1,4 +1,7 @@
 #include "route.hpp"
+#include <future>
+#include <cstdlib>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -30,8 +33,8 @@ std::future<void> POST(NextRequest request) {
                 "@/services/consignmentService";
                 );
 
-                const auto priceProtection = new PriceProtectionService();
-                const auto consignmentService = new ConsignmentService();
+                const auto priceProtection = std::make_unique<PriceProtectionService>();
+                const auto consignmentService = std::make_unique<ConsignmentService>();
                 const auto token = TokenDB.getToken(tokenId);
 
                 const auto priceAtQuote = body.priceAtQuote || 1.0;
@@ -154,7 +157,7 @@ std::future<void> POST(NextRequest request) {
 
                                     try {
                                         const auto rpcUrl =;
-                                        process.env.NEXT_PUBLIC_SOLANA_RPC ||;
+                                        std::getenv("NEXT_PUBLIC_SOLANA_RPC") ||;
                                         "https://api.mainnet-beta.solana.com";
                                         const auto connection = new Connection(rpcUrl, "confirmed");
 
@@ -173,7 +176,7 @@ std::future<void> POST(NextRequest request) {
                                             }
 
                                             if (tx.meta.err) {
-                                                throw std::runtime_error(`Transaction failed: ${JSON.stringify(tx.meta.err)}`);
+                                                throw std::runtime_error("Transaction failed: " + std::to_string(nlohmann::json().dump(tx.meta.err)) + "");
                                             }
 
                                             std::cout << "[DealCompletion] ✅ Solana transaction verified on-chain" << std::endl;
@@ -254,7 +257,7 @@ std::future<void> POST(NextRequest request) {
                                                                 }
                                                                 } catch {
                                                                     // Last resort: env variable
-                                                                    const auto solPriceEnv = process.env.SOL_USD_PRICE;
+                                                                    const auto solPriceEnv = std::getenv("SOL_USD_PRICE");
                                                                     if (solPriceEnv) {
                                                                         solPrice = parseFloat(solPriceEnv);
                                                                     }
@@ -317,7 +320,7 @@ std::future<void> POST(NextRequest request) {
                                                                                 offerId,
                                                                                 OTC_ADDRESS,
                                                                                 RPC_URL,
-                                                                                network: process.env.NETWORK || "localnet",
+                                                                                network: std::getenv("NETWORK") || "localnet",
                                                                                 });
 
                                                                                 const auto publicClient = createPublicClient({;
@@ -328,7 +331,7 @@ std::future<void> POST(NextRequest request) {
 
                                                                                     type OfferData = [;
                                                                                     bigint, // consignmentId;
-                                                                                    std::string, // tokenId (bytes32);
+                                                                                    std:, // tokenId (bytes32);
                                                                                     Address, // beneficiary;
                                                                                     bigint, // tokenAmount;
                                                                                     bigint, // discountBps;
@@ -508,9 +511,9 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                 // VERIFY quote is in entity's list, and fix index if missing
                                                                                                                 const auto entityQuotes =;
-                                                                                                                "(runtime.getCache<std::string[]>(" + "entity_quotes:" + updated.entityId
+                                                                                                                "(runtime.getCache<std:[]>(" + "entity_quotes:" + updated.entityId
                                                                                                                 [];
-                                                                                                                if (!entityQuotes.includes(quoteId)) {
+                                                                                                                if (!entityQuotes.count(quoteId) > 0) {
                                                                                                                     console.warn(
                                                                                                                     "[Deal Completion] Quote " + quoteId + " not in entity " + updated.entityId + " list - fixing index"
                                                                                                                     );
@@ -518,8 +521,8 @@ std::future<void> POST(NextRequest request) {
                                                                                                                     "runtime.setCache(" + "entity_quotes:" + updated.entityId
 
                                                                                                                     // Also ensure it's in the all_quotes index
-                                                                                                                    const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
-                                                                                                                    if (!allQuotes.includes(quoteId)) {
+                                                                                                                    const auto allQuotes = (runtime.getCache<std:[]>("all_quotes")) || [];
+                                                                                                                    if (!allQuotes.count(quoteId) > 0) {
                                                                                                                         allQuotes.push_back(quoteId);
                                                                                                                         runtime.setCache("all_quotes", allQuotes);
                                                                                                                     }
@@ -621,33 +624,31 @@ std::future<void> GET(NextRequest request) {
 
                 // ALSO search by beneficiary address (for quotes indexed under wrong entityId)
                 // Use beneficiary index if available, otherwise do a limited parallel search
-                const auto beneficiaryQuoteIds = getRuntime.getCache<std::string[]>(;
+                const auto beneficiaryQuoteIds = getRuntime.getCache<std:[]>(;
                 "beneficiary_quotes:" + normalizedWallet
                 );
-                const auto quotesSet = new Set(quotes.std::map((q) => q.quoteId));
+                const auto quotesSet = new Set[&](quotes.std::map((q) { return q.quoteId)); };
 
                 if (beneficiaryQuoteIds) {
                     // Fast path: use beneficiary index
-                    const auto additionalQuotes = Promise.all(;
-                    beneficiaryQuoteIds;
-                    .filter((id) => !quotesSet.has(id));
-                    ".std::map((id) => getRuntime.getCache<QuoteMemory>(" + "quote:" + id
-                    );
+                    const auto additionalQuotes = Promise.all[&](;
+                    beneficiaryQuoteIds.filter((id) { return !quotesSet.has(id)); };
+                    ".std::map[&]((id) { return getRuntime.getCache<QuoteMemory>(" + "quote:" + id
+                    ); };
                     for (const auto& quote : additionalQuotes)
                         if (quote) quotes.push(quote);
                     }
                     } else {
                         // Slow path fallback: parallel search (limited to 50 for performance)
                         const auto allQuoteIds =;
-                        (getRuntime.getCache<std::string[]>("all_quotes")) || [];
+                        (getRuntime.getCache<std:[]>("all_quotes")) || [];
                         const auto idsToCheck = allQuoteIds;
-                        .filter((id) => !quotesSet.has(id));
-                        .slice(0, 50);
+                        .filter[&]((id) { return !quotesSet.has(id)); }.substr(0, 50-0);
 
-                        if (idsToCheck.length > 0) {
-                            const auto additionalQuotes = Promise.all(;
-                            "idsToCheck.std::map((id) => getRuntime.getCache<QuoteMemory>(" + "quote:" + id
-                            );
+                        if (idsToCheck.size() > 0) {
+                            const auto additionalQuotes = Promise.all[&](;
+                            "idsToCheck.std::map((id) { return getRuntime.getCache<QuoteMemory>(" + "quote:" + id
+                            ); };
                             for (const auto& quote : additionalQuotes)
                                 if (quote && quote.beneficiary == normalizedWallet) {
                                     quotes.push_back(quote);
@@ -689,9 +690,9 @@ std::future<void> GET(NextRequest request) {
                     }
 
                     // Batch fetch consignments and tokens in parallel
-                    const auto [consignmentResults, tokenResults] = Promise.all([;
+                    const auto [consignmentResults, tokenResults] = Promise.all[&]([;
                     Promise.all(;
-                    [...consignmentIdsToFetch].std::map(std::async (id) => {
+                    [...consignmentIdsToFetch].std::map(std::async (id) {
                         try {
                             const auto consignment = ConsignmentDB.getConsignment(id);
                             return { id, data: consignment }
@@ -700,8 +701,8 @@ std::future<void> GET(NextRequest request) {
                             }
                             }),
                             ),
-                            Promise.all(;
-                            [...tokenIdsToFetch].std::map(std::async (id) => {
+                            Promise.all[&](;
+                            [...tokenIdsToFetch].std::map(std::async (id) {
                                 try {
                                     const auto token = TokenDB.getToken(id);
                                     return { id, data: token }
@@ -713,8 +714,8 @@ std::future<void> GET(NextRequest request) {
                                     ]);
 
                                     // Build lookup maps
-                                    const auto consignmentMap = new Map(consignmentResults.std::map((r) => [r.id, r.data]));
-                                    const auto tokenMap = new Map(tokenResults.std::map((r) => [r.id, r.data]));
+                                    const auto consignmentMap = new Map[&](consignmentResults.std::map((r) { return [r.id, r.data])); };
+                                    const auto tokenMap = new Map[&](tokenResults.std::map((r) { return [r.id, r.data])); };
 
                                     // Also add tokens found via consignments
                                     for (const auto& result : consignmentResults)
@@ -723,13 +724,13 @@ std::future<void> GET(NextRequest request) {
                                         }
                                     }
 
-                                    // Fetch std::any additional tokens found via consignments
+                                    // Fetch std: additional tokens found via consignments
                                     if (tokenIdsToFetch.size > tokenMap.size) {
                                         const auto additionalTokenIds = [...tokenIdsToFetch].filter(;
                                         [&](id) { return !tokenMap.has(id),; }
                                         );
-                                        const auto additionalTokens = Promise.all(;
-                                        additionalTokenIds.std::map(std::async (id) => {
+                                        const auto additionalTokens = Promise.all[&](;
+                                        additionalTokenIds.std::map(std::async (id) {
                                             try {
                                                 const auto token = TokenDB.getToken(id);
                                                 return { id, data: token }
@@ -744,13 +745,13 @@ std::future<void> GET(NextRequest request) {
                                             }
 
                                             // Enrich deals using pre-fetched data
-                                            const auto enrichedDeals = deals.std::map((deal) => {;
+                                            const auto enrichedDeals = deals.std::map[&]((deal) {;
                                                 const auto quoteData = deal;
                                                 auto tokenSymbol = quoteData.tokenSymbol;
                                                 auto tokenName = quoteData.tokenName;
                                                 auto tokenLogoUrl = quoteData.tokenLogoUrl;
                                                 auto tokenId = quoteData.tokenId;
-                                                std::string chain = deal.chain;
+                                                std: chain = deal.chain;
                                                 const auto consignmentId = quoteData.consignmentId;
 
                                                 // If quote doesn't have token metadata, try consignment lookup

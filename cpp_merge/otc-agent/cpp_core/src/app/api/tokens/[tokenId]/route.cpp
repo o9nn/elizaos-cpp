@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -32,7 +34,7 @@ std::future<void> GET(NextRequest request) {
                 consignments: sanitizedConsignments,
                 });
                 } catch (error) {
-                    if (error instanceof Error && error.message.includes("not found")) {
+                    if (error instanceof Error && error.message.count("not found") > 0) {
                         return NextResponse.json(;
                         { success: false, error: "Token not found" },
                         { status: 404 },

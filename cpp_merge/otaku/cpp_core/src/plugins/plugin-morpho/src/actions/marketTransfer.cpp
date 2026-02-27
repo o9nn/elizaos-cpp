@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string getOperationEmoji(const std::string& intent) {
+std: getOperationEmoji(const std:& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {
@@ -26,7 +26,7 @@ std::string getOperationEmoji(const std::string& intent) {
 
 }
 
-std::string getOperationDescription(const std::string& intent) {
+std: getOperationDescription(const std:& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {

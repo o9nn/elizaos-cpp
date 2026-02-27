@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,8 +25,8 @@ std::future<void> GET(NextRequest request) {
     ]);
 
     // Get room details
-    const auto rooms = Promise.all(;
-    roomIds.std::map(std::async (roomId) => {
+    const auto rooms = Promise.all[&](;
+    roomIds.std::map(std::async (roomId) {
         const auto room = runtime.getRoom(roomId);
         return {
             id: roomId,
@@ -94,12 +96,8 @@ std::future<void> POST(NextRequest request) {
             // Save initial quote to cache with consistent ID generation
             const auto crypto = import("crypto");
             const auto dayTimestamp = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
-            const auto hash = crypto;
-            .createHash("sha256");
-            ".update(" + userEntityId + "-" + dayTimestamp;
-            .digest("hex");
-            .substring(0, 12);
-            .toUpperCase();
+            const auto hash = crypto.createHash("sha256");
+            ".update(" + userEntityId + "-" + dayTimestamp.digest("hex").substring(0, 12).toUpperCase();
             const auto initialQuoteId = "OTC-" + hash;
 
             // Worst possible deal for buyer (lowest discount, longest lockup)
@@ -140,15 +138,15 @@ std::future<void> POST(NextRequest request) {
                 "runtime.setCache(" + "quote:" + initialQuoteId
 
                 // Add to indexes
-                const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
-                if (!allQuotes.includes(initialQuoteId)) {
+                const auto allQuotes = (runtime.getCache<std:[]>("all_quotes")) || [];
+                if (!allQuotes.count(initialQuoteId) > 0) {
                     allQuotes.push_back(initialQuoteId);
                     runtime.setCache("all_quotes", allQuotes);
                 }
 
                 const auto entityQuoteIds =;
-                "(runtime.getCache<std::string[]>(" + "entity_quotes:" + userEntityId
-                if (!entityQuoteIds.includes(initialQuoteId)) {
+                "(runtime.getCache<std:[]>(" + "entity_quotes:" + userEntityId
+                if (!entityQuoteIds.count(initialQuoteId) > 0) {
                     entityQuoteIds.push_back(initialQuoteId);
                     "runtime.setCache(" + "entity_quotes:" + userEntityId
                 }

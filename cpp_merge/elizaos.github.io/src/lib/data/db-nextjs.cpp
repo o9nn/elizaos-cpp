@@ -2,24 +2,24 @@
 
 std::shared_ptr<Database::Database> sqlite;
 any db = drizzle(sqlite, object{
-    object::pair{std::string("schema"), std::string("schema")}
+    object::pair{std:("schema"), std:("schema")}
 });
 
 void Main(void)
 {
     try
     {
-        sqlite = std::make_shared<Database>(path->join(process->cwd(), std::string("data/db.sqlite")), object{
-            object::pair{std::string("fileMustExist"), false}
+        sqlite = std::make_shared<Database>(path->join(process->cwd(), std:("data/db.sqlite")), object{
+            object::pair{std:("fileMustExist"), false}
         });
-        sqlite->pragma(std::string("journal_mode = WAL"));
+        sqlite->pragma(std:("journal_mode = WAL"));
     }
     catch (const any& error)
     {
-        console->error(std::string("Failed to initialize database:"), error);
+        console->error(std:("Failed to initialize database:"), error);
         process->exit(1);
     }
-    process->on(std::string("exit"), [=]() mutable
+    process->on(std:("exit"), [=]() mutable
     {
         sqlite->close();
     }

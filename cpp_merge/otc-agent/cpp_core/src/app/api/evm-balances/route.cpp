@@ -1,10 +1,17 @@
 #include "route.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::unordered_map<std::string, CachedTokenMetadata>> getBulkMetadataCache(const std::string& chain) {
+std::future<std::unordered_map<std:, CachedTokenMetadata>> getBulkMetadataCache(const std:& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -19,7 +26,7 @@ std::future<std::unordered_map<std::string, CachedTokenMetadata>> getBulkMetadat
 
 }
 
-std::future<void> setBulkMetadataCache(const std::string& chain, const std::unordered_map<std::string, CachedTokenMetadata>& metadata) {
+std::future<void> setBulkMetadataCache(const std:& chain, const std::unordered_map<std:, CachedTokenMetadata>& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -31,7 +38,7 @@ std::future<void> setBulkMetadataCache(const std::string& chain, const std::unor
 
 }
 
-std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(const std::string& chain, const std::string& address) {
+std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(const std:& chain, const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -51,7 +58,7 @@ std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(co
 
 }
 
-std::future<void> setCachedWalletBalances(const std::string& chain, const std::string& address, const std::vector<TokenBalance>& tokens) {
+std::future<void> setCachedWalletBalances(const std:& chain, const std:& address, const std::vector<TokenBalance>& tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -66,13 +73,13 @@ std::future<void> setCachedWalletBalances(const std::string& chain, const std::s
 
 }
 
-std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
+std::future<std:> cacheImageToBlob(const std:& imageUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!imageUrl) return null;
 
     // Skip if already a blob URL
-    if (imageUrl.includes("blob.vercel-storage.com")) {
+    if (imageUrl.count("blob.vercel-storage.com") > 0) {
         return imageUrl;
     }
 
@@ -82,7 +89,7 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
         const auto blobPath = "token-images/" + urlHash + "." + extension;
 
         // Check if already cached in blob storage
-        const auto existing = head(blobPath).catch(() => nullptr);
+        const auto existing = head(blobPath).catch[&](() { return nullptr); };
         if (existing) {
             return existing.url;
         }
@@ -114,7 +121,7 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
 
 }
 
-std::string getExtensionFromUrl(const std::string& url) {
+std: getExtensionFromUrl(const std:& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -122,7 +129,7 @@ std::string getExtensionFromUrl(const std::string& url) {
         const auto match = pathname.match(/\.([a-zA-Z0-9]+)$/);
         if (match) {
             const auto ext = match[1].toLowerCase();
-            if (["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext)) {
+            if (["png", "jpg", "jpeg", "gif", "webp", "svg"].count(ext) > 0) {
                 return ext;
             }
         }
@@ -133,7 +140,7 @@ std::string getExtensionFromUrl(const std::string& url) {
 
 }
 
-std::future<std::unordered_map<std::string, double>> getBulkPriceCache(const std::string& chain) {
+std::future<std::unordered_map<std:, double>> getBulkPriceCache(const std:& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -153,7 +160,7 @@ std::future<std::unordered_map<std::string, double>> getBulkPriceCache(const std
 
 }
 
-std::future<void> setBulkPriceCache(const std::string& chain, const std::unordered_map<std::string, double>& prices) {
+std::future<void> setBulkPriceCache(const std:& chain, const std::unordered_map<std:, double>& prices) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -168,7 +175,7 @@ std::future<void> setBulkPriceCache(const std::string& chain, const std::unorder
 
 }
 
-std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& address, const std::string& chain, const std::string& apiKey) {
+std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address, const std:& chain, const std:& apiKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = CHAIN_CONFIG[chain];
@@ -181,7 +188,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
         const auto balancesResponse = fetch(url, {;
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: nlohmann::json().dump({
                 jsonrpc: "2.0",
                 id: 1,
                 method: "alchemy_getTokenBalances",
@@ -212,7 +219,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
                 // Filter non-zero balances
                 const auto nonZeroBalances = tokenBalances.filter(;
-                [&](t: { tokenBalance: std::string }) {
+                [&](t: { tokenBalance: std: }) {
                     const auto bal = t.tokenBalance;
                     return bal && bal != "0x0" && bal != "0x" && BigInt(bal) > 0n;
                     },
@@ -222,18 +229,18 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                     "[EVM Balances] Found " + nonZeroBalances.size() + " tokens with balance > 0"
                     );
 
-                    if (nonZeroBalances.length == 0) return [];
+                    if (nonZeroBalances.size() == 0) return [];
 
                     // Step 2: Get bulk metadata cache (single fast lookup)
                     const auto bulkCache = getBulkMetadataCache(chain);
-                    const std::unordered_map<std::string, CachedTokenMetadata> cachedMetadata = {;
+                    const std::unordered_map<std:, CachedTokenMetadata> cachedMetadata = {;
                         ...bulkCache,
                         };
                         const std::vector<std::string> needsMetadata = [];
 
                         for (const auto& t : nonZeroBalances)
                             const auto addr = (;
-                        t as { contractAddress: std::string }
+                        t as { contractAddress: std: }
                         ).contractAddress.toLowerCase();
                         if (!cachedMetadata[addr]) {
                             needsMetadata.push_back(addr);
@@ -245,14 +252,14 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                     );
 
                     // Step 3: Fetch metadata for uncached tokens (parallel, fast)
-                    if (needsMetadata.length > 0) {
-                        const auto metadataResults = Promise.all(;
-                        needsMetadata.std::map(std::async (contractAddress) => {
+                    if (needsMetadata.size() > 0) {
+                        const auto metadataResults = Promise.all[&](;
+                        needsMetadata.std::map(std::async (contractAddress) {
                             try {
                                 const auto metaRes = fetch(url, {;
                                     method: "POST",
                                     headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
+                                    body: nlohmann::json().dump({
                                         jsonrpc: "2.0",
                                         id: 1,
                                         method: "alchemy_getTokenMetadata",
@@ -274,7 +281,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
                                                 // Fire-and-forget image caching
                                                 if (result.logo) {
-                                                    cacheImageToBlob(result.logo).catch(() => {
+                                                    cacheImageToBlob(result.logo).catch[&](() {
                                                         // Ignore image caching failures - non-critical
                                                         });
                                                     }
@@ -298,20 +305,20 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
                                                     // Update bulk cache with new metadata (merge with existing to handle concurrent requests)
                                                     getBulkMetadataCache(chain);
-                                                    .then((existing) => {
+                                                    .then[&]((existing) {
                                                         const auto merged = { ...existing, ...cachedMetadata };
-                                                        setBulkMetadataCache(chain, merged).catch(() => {
+                                                        setBulkMetadataCache(chain, merged).catch[&](() {
                                                             // Cache write failures are non-critical
                                                             });
                                                             });
-                                                            .catch(() => {
+                                                            .catch[&](() {
                                                                 // Cache read failures are non-critical - proceed without merging
                                                                 });
                                                             }
 
                                                             // Step 4: Build token list
                                                             const std::vector<TokenBalance> tokens = nonZeroBalances.std::map(;
-                                                            [&](tokenData: { contractAddress: std::string; tokenBalance: std::string }) {
+                                                            [&](tokenData: { contractAddress: std:; tokenBalance: std: }) {
                                                                 const auto contractAddress = tokenData.contractAddress.toLowerCase();
                                                                 const auto balance = BigInt(tokenData.tokenBalance).toString();
                                                                 const auto metadata = cachedMetadata[contractAddress] || {;
@@ -339,10 +346,10 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
 }
 
-std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const std::string& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std:, double>> fetchDeFiLlamaPrices(const std:& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (addresses.length == 0) return {};
+    if (addresses.size() == 0) return {};
 
     // DeFiLlama chain identifiers
     const auto llamaChain =;
@@ -350,7 +357,7 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
 
     try {
         // DeFiLlama accepts comma-separated list of chain:address
-        const auto coins = "addresses.std::map((a) => " + llamaChain + ":" + a;
+        const auto coins = "addresses.std::map[&]((a) { return " + llamaChain + ":" + a; };
         const auto url = "https://coins.llama.fi/prices/current/" + coins;
 
         const auto response = fetch(url, { signal: AbortSignal.timeout(10000) });
@@ -361,13 +368,13 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
         }
 
         const auto data = response.json();
-        const std::unordered_map<std::string, double> prices = {};
+        const std::unordered_map<std:, double> prices = {};
 
-        // Response format: { coins: { "chain:address": { price: number, ... } } }
+        // Response format: { coins: { "chain:address": { price, ... } } }
         if (data.coins) {
             for (const int [key, priceData] of Object.entries(data.coins)) {
                 const auto address = key.split(":")[1].toLowerCase();
-                const auto price = (priceData as { price?: number }).price;
+                const auto price = (priceData as { price? }).price;
                 if (address && typeof price == "number" && price > 0) {
                     prices[address] = price;
                 }
@@ -385,17 +392,17 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
 
 }
 
-std::future<std::unordered_map<std::string, double>> fetchCoinGeckoPrices(const std::string& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std:, double>> fetchCoinGeckoPrices(const std:& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (addresses.length == 0) return {};
+    if (addresses.size() == 0) return {};
 
     const auto config = CHAIN_CONFIG[chain];
     if (!config) return {};
 
     try {
         const auto addressList = addresses.join(",");
-        const auto apiKey = process.env.COINGECKO_API_KEY;
+        const auto apiKey = std::getenv("COINGECKO_API_KEY");
 
         const auto url = apiKey;
         "? " + "https://pro-api.coingecko.com/api/v3/simple/token_price/" + config.coingeckoPlatform + "?contract_addresses=" + addressList + "&vs_currencies=usd"
@@ -414,10 +421,10 @@ std::future<std::unordered_map<std::string, double>> fetchCoinGeckoPrices(const 
             if (!response.ok) return {};
 
             const auto data = response.json();
-            const std::unordered_map<std::string, double> prices = {};
+            const std::unordered_map<std:, double> prices = {};
 
             for (const int [address, priceData] of Object.entries(data)) {
-                const auto usd = (priceData as { usd?: number }).usd;
+                const auto usd = (priceData as { usd? }).usd;
                 if (typeof usd == "number") {
                     prices[address.toLowerCase()] = usd;
                 }
@@ -430,10 +437,10 @@ std::future<std::unordered_map<std::string, double>> fetchCoinGeckoPrices(const 
 
 }
 
-std::future<std::unordered_map<std::string, double>> fetchPrices(const std::string& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std:, double>> fetchPrices(const std:& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (addresses.length == 0) return {};
+    if (addresses.size() == 0) return {};
 
     // Try DeFiLlama first (better coverage for newer tokens)
     const auto llamaPrices = fetchDeFiLlamaPrices(chain, addresses);
@@ -443,7 +450,7 @@ std::future<std::unordered_map<std::string, double>> fetchPrices(const std::stri
     [&](a) { return !llamaPrices[a.toLowerCase()],; }
     );
 
-    if (missingAddresses.length == 0) {
+    if (missingAddresses.size() == 0) {
         return llamaPrices;
     }
 
@@ -481,7 +488,7 @@ std::future<void> GET(NextRequest request) {
             }
 
             const auto alchemyKey =;
-            process.env.ALCHEMY_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+            std::getenv("ALCHEMY_API_KEY") || std::getenv("NEXT_PUBLIC_ALCHEMY_API_KEY");
 
             if (!alchemyKey) {
                 std::cerr << "[EVM Balances] ALCHEMY_API_KEY is required - add to .env" << std::endl;
@@ -494,13 +501,13 @@ std::future<void> GET(NextRequest request) {
                 std::cout << "[EVM Balances] Using Alchemy API" << std::endl;
                 const auto tokens = fetchAlchemyBalances(address, chain, alchemyKey);
 
-                if (tokens.length == 0) {
+                if (tokens.size() == 0) {
                     return NextResponse.json({ tokens: [] });
                 }
 
                 // Get bulk price cache (single fast lookup)
                 const auto cachedPrices = getBulkPriceCache(chain);
-                const auto tokensNeedingPrices = tokens.filter((t) => !t.priceUsd);
+                const auto tokensNeedingPrices = tokens.filter[&]((t) { return !t.priceUsd); };
                 const std::vector<std::string> uncachedAddresses = [];
 
                 // Apply cached prices first
@@ -518,7 +525,7 @@ std::future<void> GET(NextRequest request) {
                     );
 
                     // Fetch uncached prices (DeFiLlama + CoinGecko)
-                    if (uncachedAddresses.length > 0) {
+                    if (uncachedAddresses.size() > 0) {
                         const auto newPrices = fetchPrices(chain, uncachedAddresses);
                         for (const auto& token : tokensNeedingPrices)
                             if (!token.priceUsd) {
@@ -536,13 +543,13 @@ std::future<void> GET(NextRequest request) {
                         }
                         // Merge with existing to handle concurrent requests
                         getBulkPriceCache(chain);
-                        .then((existing) => {
+                        .then[&]((existing) {
                             const auto merged = { ...existing, ...allPrices };
                             setBulkPriceCache(chain, merged).catch((err) =>;
                             console.debug("[EVM Balances] Price cache write failed:", err),
                             );
                             });
-                            .catch(() => {});
+                            .catch[&](() {});
                         }
 
                         // Calculate USD values
@@ -555,7 +562,7 @@ std::future<void> GET(NextRequest request) {
                         }
 
                         // Filter only obvious dust - show tokens without prices too
-                        const auto filteredTokens = tokens.filter((t) => {;
+                        const auto filteredTokens = tokens.filter[&]((t) {;
                             const auto humanBalance = Number(BigInt(t.balance)) / Math.pow(10, t.decimals);
                             const auto balanceUsd = t.balanceUsd || 0;
                             const auto hasPrice = t.priceUsd && t.priceUsd > 0;
@@ -569,7 +576,7 @@ std::future<void> GET(NextRequest request) {
                             });
 
                             // Sort: priced tokens first (by USD value), then unpriced tokens (by balance)
-                            filteredTokens.sort((a, b) => {
+                            filteredTokens.sort[&]((a, b) {
                                 const auto aHasPrice = a.priceUsd && a.priceUsd > 0;
                                 const auto bHasPrice = b.priceUsd && b.priceUsd > 0;
 

@@ -18,12 +18,12 @@ namespace elizaos {
  * Media generation types
  */
 struct MediaGeneration {
-    std::string id;
-    std::string mint;
-    std::string type;
-    std::string prompt;
-    std::string mediaUrl;
-    std::optional<std::string> negativePrompt;
+    std: id;
+    std: mint;
+    std: type;
+    std: prompt;
+    std: mediaUrl;
+    std::optional<std:> negativePrompt;
     std::optional<double> numInferenceSteps;
     std::optional<double> seed;
     std::optional<double> numFrames;
@@ -32,34 +32,34 @@ struct MediaGeneration {
     std::optional<double> duration;
     std::optional<double> durationSeconds;
     std::optional<double> bpm;
-    std::optional<std::string> creator;
-    std::string timestamp;
+    std::optional<std:> creator;
+    std: timestamp;
     std::optional<double> dailyGenerationCount;
-    std::optional<std::string> lastGenerationReset;
+    std::optional<std:> lastGenerationReset;
 };
 
 using TTokenStatus = ;
 
 struct IToken {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string mint;
-    std::string creator;
+    std: id;
+    std: name;
+    std: ticker;
+    std: mint;
+    std: creator;
     TTokenStatus status;
-    std::string createdAt;
+    std: createdAt;
     double tokenPriceUSD;
     double marketCapUSD;
     double volume24h;
 };
 
 struct ITokenHolder {
-    std::string id;
-    std::string mint;
-    std::string address;
+    std: id;
+    std: mint;
+    std: address;
     double amount;
     double percentage;
-    std::string lastUpdated;
+    std: lastUpdated;
 };
 
 

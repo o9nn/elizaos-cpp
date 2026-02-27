@@ -28,7 +28,7 @@ public:
 };
 
 enum struct TEEMode {
-    OFF = std::string("OFF"), LOCAL = std::string("LOCAL"), DOCKER = std::string("DOCKER"), PRODUCTION = std::string("PRODUCTION")
+    OFF = std:("OFF"), LOCAL = std:("LOCAL"), DOCKER = std:("DOCKER"), PRODUCTION = std:("PRODUCTION")
 };
 class RemoteAttestationQuote : public object, public std::enable_shared_from_this<RemoteAttestationQuote> {
 public:
@@ -59,7 +59,7 @@ public:
 };
 
 enum struct TeeType {
-    TDX_DSTACK = std::string("tdx_dstack")
+    TDX_DSTACK = std:("tdx_dstack")
 };
 class TeePluginConfig : public object, public std::enable_shared_from_this<TeePluginConfig> {
 public:

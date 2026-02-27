@@ -1,4 +1,6 @@
 #include "tokens.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -67,8 +69,8 @@ void AdminTokensList() {
                     };
 
                     // Mutation for toggling hidden status for a specific token
-                    const auto toggleHiddenMutation = useMutation({;
-                        mutationFn: std::async (tokenAddress: std::string) => {
+                    const auto toggleHiddenMutation = useMutation[&]({;
+                        mutationFn: std::async (tokenAddress: std:) {
                             const auto token = tokensPagination.items.find(;
                             [&](t) { return t.mint == tokenAddress,; }
                             );
@@ -77,7 +79,7 @@ void AdminTokensList() {
                                 hidden: !currentHiddenStatus,
                                 });
                                 },
-                                onSuccess: (_, tokenAddress) => {
+                                onSuccess: [&](_, tokenAddress) {
                                     const auto token = tokensPagination.items.find(;
                                     [&](t) { return t.mint == tokenAddress,; }
                                     );
@@ -90,7 +92,7 @@ void AdminTokensList() {
                                         refetchType: "active",
                                         });
                                         },
-                                        onError: (error, tokenAddress) => {
+                                        onError: [&](error, tokenAddress) {
                                             toast.error(;
                                             "Failed to update hidden status for token " + tokenAddress + ": " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                             );
@@ -98,11 +100,11 @@ void AdminTokensList() {
                                             });
 
                                             // --- NEW: Mutation for deleting a token ---
-                                            const auto deleteTokenMutation = useMutation({;
-                                                mutationFn: std::async (tokenAddress: std::string) => {
-                                                    return "fetcher(" + "/api/admin/tokens/" + tokenAddress;
+                                            const auto deleteTokenMutation = useMutation[&]({;
+                                                mutationFn: std::async (tokenAddress: std:) {
+                                                    return "fetcher[&](" + "/api/admin/tokens/" + tokenAddress;
                                                     },
-                                                    onSuccess: (_, tokenAddress) => {
+                                                    onSuccess: (_, tokenAddress) {
                                                         toast.success(;
                                                         "Token " + std::to_string(tokenAddress.substring(0, 6)) + "... deleted successfully"
                                                         );
@@ -113,7 +115,7 @@ void AdminTokensList() {
                                                             setIsDeleteModalOpen(false);
                                                             setTokenToDelete(nullptr);
                                                             },
-                                                            onError: (error, tokenAddress) => {
+                                                            onError: [&](error, tokenAddress) {
                                                                 toast.error(;
                                                                 "Failed to delete token " + std::to_string(tokenAddress.substring(0, 6)) + "...: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                 );
@@ -139,7 +141,7 @@ void AdminTokensList() {
                                                                             return <Loader />;
                                                                         }
 
-                                                                        return (;
+                                                                        return [&](;
                                                                         <div className="p-4 bg-autofun-background-input ">;
                                                                         <div className="flex justify-between items-center mb-4">;
                                                                         <h2 className="text-xl font-bold">Tokens</h2>;
@@ -148,8 +150,8 @@ void AdminTokensList() {
                                                                         <input;
                                                                         type="checkbox";
                                                                     checked={hideImported}
-                                                                onChange={() => setHideImported(!hideImported)}
-                                                                className="form-checkbox";
+                                                                onChange={() { return setHideImported(!hideImported)}
+                                                                className="form-checkbox"; };
                                                                 />;
                                                                 <span>Hide Imported</span>;
                                                                 </label>;
@@ -165,8 +167,8 @@ void AdminTokensList() {
                                                                 <TableHead className="text-left p-2">;
                                                                 <button;
                                                                 className="flex items-center gap-1 hover:text-autofun-text-primary transition-colors uppercase"
-                                                            onClick={() => handleSort("marketCapUSD")}
-                                                            >;
+                                                            onClick={[&]() { return handleSort("marketCapUSD")}
+                                                            >; };
                                                             MCap;
                                                             <SortIcon columnKey="marketCapUSD" />;
                                                             </button>;
@@ -174,8 +176,8 @@ void AdminTokensList() {
                                                             <TableHead className="text-left p-2">;
                                                             <button;
                                                             className="flex items-center gap-1 hover:text-autofun-text-primary transition-colors uppercase"
-                                                        onClick={() => handleSort("volume24h")}
-                                                        >;
+                                                        onClick={[&]() { return handleSort("volume24h")}
+                                                        >; };
                                                         24H Vol;
                                                         <SortIcon columnKey="volume24h" />;
                                                         </button>;
@@ -183,8 +185,8 @@ void AdminTokensList() {
                                                         <TableHead className="text-left p-2">;
                                                         <button;
                                                         className="flex items-center gap-1 hover:text-autofun-text-primary transition-colors uppercase"
-                                                    onClick={() => handleSort("curveProgress")}
-                                                    >;
+                                                    onClick={[&]() { return handleSort("curveProgress")}
+                                                    >; };
                                                     Bonding;
                                                     <SortIcon columnKey="curveProgress" />;
                                                     </button>;
@@ -192,8 +194,8 @@ void AdminTokensList() {
                                                     <TableHead className="text-left p-2">;
                                                     <button;
                                                     className="flex items-center gap-1 hover:text-autofun-text-primary transition-colors uppercase"
-                                                onClick={() => handleSort("createdAt")}
-                                                >;
+                                                onClick={[&]() { return handleSort("createdAt")}
+                                                >; };
                                                 Created;
                                                 <SortIcon columnKey="createdAt" />;
                                                 </button>;
@@ -203,8 +205,8 @@ void AdminTokensList() {
                                                 </tr>;
                                                 </TableHeader>;
                                                 <TableBody>;
-                                                {tokensPagination.items.std::map((token: IToken) => (
-                                                <TableRow;
+                                                {tokensPagination.items.std::map[&]((token: IToken) { return (
+                                                <TableRow; };
                                             key={token.mint}
                                             className="border-b border-autofun-background-primary";
                                             >;
@@ -351,7 +353,7 @@ void AdminTokensList() {
     }
     alt={tokenToDelete.name || "Token Image"}
     className="w-10 h-10 rounded-full object-cover flex-shrink-0";
-    onError={(e) => {
+    onError={[&](e) {
         (e.target).src = "/placeholder.png";
     }}
     />;
@@ -372,8 +374,8 @@ void AdminTokensList() {
     <DialogClose asChild>;
     <Button;
     variant="outline";
-    onClick={() => setTokenToDelete(nullptr)}
-    >;
+    onClick={[&]() { return setTokenToDelete(nullptr)}
+    >; };
     Cancel;
     </Button>;
     </DialogClose>;
@@ -416,7 +418,7 @@ void AdminTokenDetails() {
 
             // State for the new image upload
             const auto [selectedImageFile, setSelectedImageFile] = useState<File | nullptr>(nullptr);
-            const auto [selectedImageBase64, setSelectedImageBase64] = useState<std::string | nullptr>(;
+            const auto [selectedImageBase64, setSelectedImageBase64] = useState<std: | nullptr>(;
             nullptr,
             );
             const auto fileInputRef = useRef<HTMLInputElement>(nullptr); // Ref for file input;
@@ -426,13 +428,13 @@ void AdminTokenDetails() {
             const auto [originalMetadataContent, setOriginalMetadataContent] =;
             useState<string>("");
             const auto [isLoadingMetadata, setIsLoadingMetadata] = useState<boolean>(false);
-            const auto [metadataError, setMetadataError] = useState<std::string | nullptr>(nullptr);
+            const auto [metadataError, setMetadataError] = useState<std: | nullptr>(nullptr);
             const auto [isMetadataJsonValid, setIsMetadataJsonValid] = useState<boolean>(true);
 
             // Fetch token data using the getToken std::function
-            const auto tokenQuery = useQuery<AdminToken>({;
+            const auto tokenQuery = useQuery<AdminToken>[&]({;
                 queryKey: ["token", address],
-                queryFn: std::async () => {
+                queryFn: std::async () {
                     if (!address) throw new Error("No address provided");
                     try {
                         // Cast the result to AdminToken with featured and verified properties
@@ -458,7 +460,7 @@ void AdminTokenDetails() {
                         }
 
                         // Update original details ONLY IF they haven't been std::set yet OR the fetched data differs significantly
-                        // This helps prevent stale `originalDetails` if a save happened between refetches
+                        // This helps prevent stale "originalDetails" if a save happened between refetches
                         if (
                         !originalDetails.name || // First load;
                         originalDetails.name != (tokenData.name || "") ||;
@@ -491,13 +493,13 @@ void AdminTokenDetails() {
                                 });
 
                                 // --- Effect to fetch metadata content --- (Separate useEffect for clarity)
-                                useEffect(() => {
-                                    const auto fetchMetadata = std::async () => {;
+                                useEffect[&](() {
+                                    const auto fetchMetadata = std::async [&]() {;
                                         if (
                                         tokenQuery.data &&;
                                         tokenQuery.data.url &&;
                                         tokenQuery.data.imported != 1 &&;
-                                        !tokenQuery.data.url.startsWith("data:") // Avoid fetching data URLs
+                                        !tokenQuery.data.url.substr(0, "data:") // Avoid fetching data URLs
                                         ) {
                                             setIsLoadingMetadata(true);
                                             setMetadataError(nullptr);
@@ -516,7 +518,7 @@ void AdminTokenDetails() {
                                                 // Basic check if it looks like JSON before pretty printing
                                                 auto formattedContent = textContent;
                                                 try {
-                                                    formattedContent = /* JSON.stringify */ std::string(/* JSON.parse */ textContent, nullptr, 2);
+                                                    formattedContent = /* JSON.stringify */ std:(/* JSON::parse */ textContent, nullptr, 2);
                                                     } catch (e) {
                                                         // If parsing fails, use the raw text but mark as invalid
                                                         std::cout << "Fetched metadata content is not valid JSON." << std::endl;
@@ -548,13 +550,13 @@ void AdminTokenDetails() {
                                                         }, [tokenQuery.data]); // Rerun when token data changes;
 
                                                         // --- Effect to validate JSON content on change ---
-                                                        useEffect(() => {
+                                                        useEffect[&](() {
                                                             if (!metadataContent) {
                                                                 setIsMetadataJsonValid(true); // Empty is considered valid (or handled by save logic);
                                                                 return;
                                                             }
                                                             try {
-                                                                /* JSON.parse */ metadataContent;
+                                                                /* JSON::parse */ metadataContent;
                                                                 setIsMetadataJsonValid(true);
                                                                 } catch (e) {
                                                                     setIsMetadataJsonValid(false);
@@ -571,7 +573,7 @@ void AdminTokenDetails() {
                                                                     });
 
                                                                     // Update socialLinks when token changes
-                                                                    useEffect(() => {
+                                                                    useEffect[&](() {
                                                                         if (tokenQuery.data) {
                                                                             setSocialLinks({
                                                                                 website: tokenQuery.data.website || "",
@@ -584,19 +586,19 @@ void AdminTokenDetails() {
                                                                             }, [tokenQuery.data]);
 
                                                                             // Mutation for updating token social links
-                                                                            const auto updateSocialLinksMutation = useMutation({;
-                                                                                mutationFn: std::async (links: SocialLinks) => {
+                                                                            const auto updateSocialLinksMutation = useMutation[&]({;
+                                                                                mutationFn: std::async (links: SocialLinks) {
                                                                                     return fetcher(;
                                                                                     "/api/admin/tokens/" + address + "/social"
                                                                                     "POST",
                                                                                     links,
                                                                                     );
                                                                                     },
-                                                                                    onSuccess: () => {
+                                                                                    onSuccess: [&]() {
                                                                                         "toast.success(" + "Token social links updated successfully";
                                                                                         tokenQuery.refetch(); // Refetch token data after update;
                                                                                         },
-                                                                                        onError: (error) => {
+                                                                                        onError: [&](error) {
                                                                                             toast.error(;
                                                                                             "Failed to update social links: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                             );
@@ -604,19 +606,19 @@ void AdminTokenDetails() {
                                                                                             });
 
                                                                                             // Mutation for toggling featured status
-                                                                                            const auto toggleFeaturedMutation = useMutation({;
-                                                                                                mutationFn: std::async () => {
+                                                                                            const auto toggleFeaturedMutation = useMutation[&]({;
+                                                                                                mutationFn: std::async () {
                                                                                                     return "fetcher(" + "/api/admin/tokens/" + address + "/featured";
                                                                                                         featured: tokenQuery.data ? !tokenQuery.data.featured : false,
                                                                                                         });
                                                                                                         },
-                                                                                                        onSuccess: () => {
+                                                                                                        onSuccess: [&]() {
                                                                                                             toast.success(;
                                                                                                             "Token " + std::to_string(tokenQuery.data.featured ? "removed from" : "added to") + " featured tokens"
                                                                                                             );
                                                                                                             tokenQuery.refetch(); // Refetch token data after update;
                                                                                                             },
-                                                                                                            onError: (error) => {
+                                                                                                            onError: [&](error) {
                                                                                                                 toast.error(;
                                                                                                                 "Failed to update featured status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                 );
@@ -624,19 +626,19 @@ void AdminTokenDetails() {
                                                                                                                 });
 
                                                                                                                 // Mutation for toggling verified status
-                                                                                                                const auto toggleVerifiedMutation = useMutation({;
-                                                                                                                    mutationFn: std::async () => {
+                                                                                                                const auto toggleVerifiedMutation = useMutation[&]({;
+                                                                                                                    mutationFn: std::async () {
                                                                                                                         return "fetcher(" + "/api/admin/tokens/" + address + "/verified";
                                                                                                                             verified: tokenQuery.data ? !tokenQuery.data.verified : false,
                                                                                                                             });
                                                                                                                             },
-                                                                                                                            onSuccess: () => {
+                                                                                                                            onSuccess: [&]() {
                                                                                                                                 toast.success(;
                                                                                                                                 "Token " + std::to_string(tokenQuery.data.verified ? "unverified" : "verified") + " successfully"
                                                                                                                                 );
                                                                                                                                 tokenQuery.refetch(); // Refetch token data after update;
                                                                                                                                 },
-                                                                                                                                onError: (error) => {
+                                                                                                                                onError: [&](error) {
                                                                                                                                     toast.error(;
                                                                                                                                     "Failed to update verified status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                     );
@@ -644,19 +646,19 @@ void AdminTokenDetails() {
                                                                                                                                     });
 
                                                                                                                                     // Mutation for toggling hidden status
-                                                                                                                                    const auto toggleHiddenMutation = useMutation({;
-                                                                                                                                        mutationFn: std::async () => {
+                                                                                                                                    const auto toggleHiddenMutation = useMutation[&]({;
+                                                                                                                                        mutationFn: std::async () {
                                                                                                                                             return "fetcher(" + "/api/admin/tokens/" + address + "/hidden";
                                                                                                                                                 hidden: tokenQuery.data ? !tokenQuery.data.hidden : false,
                                                                                                                                                 });
                                                                                                                                                 },
-                                                                                                                                                onSuccess: () => {
+                                                                                                                                                onSuccess: [&]() {
                                                                                                                                                     toast.success(;
                                                                                                                                                     "Token " + std::to_string(tokenQuery.data.hidden ? "unhidden" : "hidden") + " successfully"
                                                                                                                                                     );
                                                                                                                                                     tokenQuery.refetch(); // Refetch token data after update;
                                                                                                                                                     },
-                                                                                                                                                    onError: (error) => {
+                                                                                                                                                    onError: [&](error) {
                                                                                                                                                         toast.error(;
                                                                                                                                                         "Failed to update hidden status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                         );
@@ -664,14 +666,14 @@ void AdminTokenDetails() {
                                                                                                                                                         });
 
                                                                                                                                                         // Mutation for updating token details (name, ticker, image, url)
-                                                                                                                                                        const auto updateTokenDetailsMutation = useMutation({;
+                                                                                                                                                        const auto updateTokenDetailsMutation = useMutation[&]({;
                                                                                                                                                             mutationFn: std::async (details: {
-                                                                                                                                                                name: std::string;
-                                                                                                                                                                ticker: std::string;
-                                                                                                                                                                image: std::string;
-                                                                                                                                                                url: std::string;
-                                                                                                                                                                description: std::string;
-                                                                                                                                                                }) => {
+                                                                                                                                                                name: std:;
+                                                                                                                                                                ticker: std:;
+                                                                                                                                                                image: std:;
+                                                                                                                                                                url: std:;
+                                                                                                                                                                description: std:;
+                                                                                                                                                                }) {
                                                                                                                                                                     // Add description to type
                                                                                                                                                                     return fetcher(;
                                                                                                                                                                     "/api/admin/tokens/" + address + "/details"
@@ -679,7 +681,7 @@ void AdminTokenDetails() {
                                                                                                                                                                     details,
                                                                                                                                                                     );
                                                                                                                                                                     },
-                                                                                                                                                                    onSuccess: (data) => {
+                                                                                                                                                                    onSuccess: [&](data) {
                                                                                                                                                                         // data contains { success, message, token }
                                                                                                                                                                         "toast.success(data.message || " + "Token details updated successfully";
                                                                                                                                                                         // Update edit fields AND original details state to prevent immediate re-save
@@ -700,7 +702,7 @@ void AdminTokenDetails() {
                                                                                                                                                                             // Optionally refetch all token data if needed, though optimistic update might suffice
                                                                                                                                                                             // tokenQuery.refetch();
                                                                                                                                                                             },
-                                                                                                                                                                            onError: (error) => {
+                                                                                                                                                                            onError: [&](error) {
                                                                                                                                                                                 toast.error(;
                                                                                                                                                                                 "Failed to update token details: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                                 );
@@ -708,16 +710,16 @@ void AdminTokenDetails() {
                                                                                                                                                                                 });
 
                                                                                                                                                                                 // --- NEW: Mutation for updating metadata JSON ---
-                                                                                                                                                                                const auto updateMetadataMutation = useMutation({;
-                                                                                                                                                                                    mutationFn: std::async (newMetadataString: std::string) => {
-                                                                                                                                                                                        // Use fetch directly to send raw std::string body
+                                                                                                                                                                                const auto updateMetadataMutation = useMutation[&]({;
+                                                                                                                                                                                    mutationFn: std::async (newMetadataString: std:) {
+                                                                                                                                                                                        // Use fetch directly to send raw std: body
                                                                                                                                                                                         const auto authToken = localStorage.getItem("authToken");
-                                                                                                                                                                                        const std::unordered_map<std::string, std::string> headers = {;
-                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON std::string
+                                                                                                                                                                                        const std::unordered_map<std:, std:> headers = {;
+                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON std:
                                                                                                                                                                                             Accept: "application/json",
                                                                                                                                                                                             };
                                                                                                                                                                                             if (authToken) {
-                                                                                                                                                                                                "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON.parse */ authToken);
+                                                                                                                                                                                                "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON::parse */ authToken);
                                                                                                                                                                                             }
 
                                                                                                                                                                                             const auto response = fetch(;
@@ -725,14 +727,13 @@ void AdminTokenDetails() {
                                                                                                                                                                                             {
                                                                                                                                                                                                 method: "POST",
                                                                                                                                                                                                 headers,
-                                                                                                                                                                                                body: newMetadataString, // Send the raw std::string
+                                                                                                                                                                                                body: newMetadataString, // Send the raw std:
                                                                                                                                                                                                 credentials: "include",
                                                                                                                                                                                                 },
                                                                                                                                                                                                 );
 
                                                                                                                                                                                                 if (!response.ok) {
-                                                                                                                                                                                                    const auto errorData = response;
-                                                                                                                                                                                                    .json();
+                                                                                                                                                                                                    const auto errorData = response.json();
                                                                                                                                                                                                     ".catch(() => ({ error: " + "HTTP error " + response.status
                                                                                                                                                                                                     throw new Error(
                                                                                                                                                                                                     "errorData.error || " + "Failed to update metadata (" + response.status + ")"
@@ -740,13 +741,13 @@ void AdminTokenDetails() {
                                                                                                                                                                                                 }
                                                                                                                                                                                             return response.json(); // Contains { success, message, metadataUrl };
                                                                                                                                                                                             },
-                                                                                                                                                                                            onSuccess: (data) => {
+                                                                                                                                                                                            onSuccess: [&](data) {
                                                                                                                                                                                                 toast.success(data.message || "Metadata updated successfully!");
                                                                                                                                                                                                 // Update original content to prevent immediate re-save
-                                                                                                                                                                                                // Re-format potentially un-prettified input std::string before saving as original
+                                                                                                                                                                                                // Re-format potentially un-prettified input std: before saving as original
                                                                                                                                                                                                 auto savedContent = metadataContent;
                                                                                                                                                                                                 try {
-                                                                                                                                                                                                    savedContent = /* JSON.stringify */ std::string(/* JSON.parse */ metadataContent, nullptr, 2);
+                                                                                                                                                                                                    savedContent = /* JSON.stringify */ std:(/* JSON::parse */ metadataContent, nullptr, 2);
                                                                                                                                                                                                     setMetadataContent(savedContent); // Update editor content to formatted version;
                                                                                                                                                                                                     } catch (e) {
                                                                                                                                                                                                         /* Keep raw content if formatting fails */
@@ -755,7 +756,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                     setIsMetadataJsonValid(true); // Should be valid if save succeeded;
                                                                                                                                                                                                     // No need to refetch tokenQuery data as the URL doesn't change
                                                                                                                                                                                                     },
-                                                                                                                                                                                                    onError: (error) => {
+                                                                                                                                                                                                    onError: [&](error) {
                                                                                                                                                                                                         toast.error(;
                                                                                                                                                                                                         true /* instanceof check */ ? error.message : "Failed to update metadata",
                                                                                                                                                                                                         );
@@ -763,8 +764,8 @@ void AdminTokenDetails() {
                                                                                                                                                                                                         });
 
                                                                                                                                                                                                         // --- NEW: Mutation for uploading token image ---
-                                                                                                                                                                                                        const auto uploadImageMutation = useMutation({;
-                                                                                                                                                                                                            mutationFn: std::async (imageBase64: std::string) => {
+                                                                                                                                                                                                        const auto uploadImageMutation = useMutation[&]({;
+                                                                                                                                                                                                            mutationFn: std::async (imageBase64: std:) {
                                                                                                                                                                                                                 if (!imageBase64) throw new Error("No image data provided");
                                                                                                                                                                                                                 return fetcher(;
                                                                                                                                                                                                                 "/api/admin/tokens/" + address + "/image"
@@ -772,7 +773,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                 { imageBase64 }, // Send base64 data in the body;
                                                                                                                                                                                                                 );
                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                onSuccess: (data) => {
+                                                                                                                                                                                                                onSuccess: [&](data) {
                                                                                                                                                                                                                     // data contains { success, message, imageUrl, token }
                                                                                                                                                                                                                     toast.success(data.message || "Image uploaded successfully!");
                                                                                                                                                                                                                     const auto newImageUrl = data.imageUrl;
@@ -789,7 +790,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                     // but good for consistency if other fields could change implicitly
                                                                                                                                                                                                                     // tokenQuery.refetch();
                                                                                                                                                                                                                     },
-                                                                                                                                                                                                                    onError: (error) => {
+                                                                                                                                                                                                                    onError: [&](error) {
                                                                                                                                                                                                                         toast.error(;
                                                                                                                                                                                                                         "Failed to upload image: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                                                                         );
@@ -804,7 +805,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                             const auto file = event.target.files.[0];
                                                                                                                                                                                                                             if (file) {
                                                                                                                                                                                                                                 // Basic validation (type, size)
-                                                                                                                                                                                                                                if (!file.type.startsWith("image/")) {
+                                                                                                                                                                                                                                if (!file.type.substr(0, "image/")) {
                                                                                                                                                                                                                                     toast.error("Please select an image file.");
                                                                                                                                                                                                                                     return;
                                                                                                                                                                                                                                 }
@@ -817,11 +818,11 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                 setSelectedImageFile(file);
 
                                                                                                                                                                                                                                 // Read file as base64 for preview and upload
-                                                                                                                                                                                                                                const auto reader = new FileReader();
-                                                                                                                                                                                                                                reader.onloadend = () => {
+                                                                                                                                                                                                                                const auto reader = std::make_unique<FileReader>();
+                                                                                                                                                                                                                                reader.onloadend = [&]() {
                                                                                                                                                                                                                                     setSelectedImageBase64(reader.result);
                                                                                                                                                                                                                                     };
-                                                                                                                                                                                                                                    reader.onerror = () => {
+                                                                                                                                                                                                                                    reader.onerror = [&]() {
                                                                                                                                                                                                                                         toast.error("Failed to read image file.");
                                                                                                                                                                                                                                         setSelectedImageFile(nullptr);
                                                                                                                                                                                                                                         setSelectedImageBase64(nullptr);
@@ -865,16 +866,16 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                 const auto token = tokenQuery.data;
 
                                                                                                                                                                                                                                                 // Add delete token mutation
-                                                                                                                                                                                                                                                const auto deleteTokenMutation = useMutation({;
-                                                                                                                                                                                                                                                    mutationFn: std::async () => {
-                                                                                                                                                                                                                                                        return "fetcher(" + "/api/admin/tokens/" + address;
+                                                                                                                                                                                                                                                const auto deleteTokenMutation = useMutation[&]({;
+                                                                                                                                                                                                                                                    mutationFn: std::async () {
+                                                                                                                                                                                                                                                        return "fetcher[&](" + "/api/admin/tokens/" + address;
                                                                                                                                                                                                                                                         },
-                                                                                                                                                                                                                                                        onSuccess: () => {
+                                                                                                                                                                                                                                                        onSuccess: () {
                                                                                                                                                                                                                                                             toast.success("Token deleted successfully");
                                                                                                                                                                                                                                                             // Redirect to admin tokens page after deletion
                                                                                                                                                                                                                                                             navigate("/admin/tokens");
                                                                                                                                                                                                                                                             },
-                                                                                                                                                                                                                                                            onError: (error) => {
+                                                                                                                                                                                                                                                            onError: [&](error) {
                                                                                                                                                                                                                                                                 toast.error(;
                                                                                                                                                                                                                                                                 "Failed to delete token: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                                                                                                                                                                                                                                                 );
@@ -920,7 +921,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                                         );
                                                                                                                                                                                                                                                                     }
 
-                                                                                                                                                                                                                                                                    return (;
+                                                                                                                                                                                                                                                                    return [&](;
                                                                                                                                                                                                                                                                     <div className="p-4 bg-autofun-background-input ">;
                                                                                                                                                                                                                                                                     <div className="flex justify-between items-center mb-4">;
                                                                                                                                                                                                                                                                     <h2 className="text-xl font-bold">Token Details</h2>;
@@ -952,7 +953,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                             src={token.image}
                                                                                                                                                                                                                                                         alt={token.name || "Token Image"}
                                                                                                                                                                                                                                                         className="w-10 h-10 rounded-full object-cover ml-2";
-                                                                                                                                                                                                                                                        onError={(e) => {
+                                                                                                                                                                                                                                                        onError={(e) {
                                                                                                                                                                                                                                                             // Replace broken images with a placeholder
                                                                                                                                                                                                                                                             (e.target).src = "/placeholder.png";
                                                                                                                                                                                                                                                         }}
@@ -1059,8 +1060,8 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                     id="edit-ticker" // Add ID for focus check;
                                                                                                                                                                                                                     type="text";
                                                                                                                                                                                                                 value={editTicker}
-                                                                                                                                                                                                            onChange={(e) => setEditTicker(e.target.value)}
-                                                                                                                                                                                                            className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white";
+                                                                                                                                                                                                            onChange={[&](e) { return setEditTicker(e.target.value)}
+                                                                                                                                                                                                            className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white"; };
                                                                                                                                                                                                             placeholder="Ticker";
                                                                                                                                                                                                             />;
                                                                                                                                                                                                             </div>;
@@ -1074,7 +1075,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                         id="edit-image-url" // Add ID for focus check;
                                                                                                                                                                                                         type="text";
                                                                                                                                                                                                         value={editImage} // Bind to editImage state;
-                                                                                                                                                                                                        onChange={(e) => setEditImage(e.target.value)} // Update editImage state;
+                                                                                                                                                                                                        onChange={[&](e) { return setEditImage(e.target.value)} // Update editImage state; };
                                                                                                                                                                                                         className="flex-grow bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white";
                                                                                                                                                                                                         placeholder="https://... or /placeholder.png"
                                                                                                                                                                                                         />;
@@ -1084,7 +1085,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                     src={editImage || "/placeholder.png"} // Use editImage state, fallback;
                                                                                                                                                                                                     alt="Preview";
                                                                                                                                                                                                     className="w-10 h-10 rounded-full object-cover border border-neutral-700 flex-shrink-0";
-                                                                                                                                                                                                    onError={(e) => {
+                                                                                                                                                                                                    onError={[&](e) {
                                                                                                                                                                                                         // Fallback if the URL in the input is invalid
                                                                                                                                                                                                         (e.target).src = "/placeholder.png";
                                                                                                                                                                                                     }}
@@ -1104,7 +1105,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                     <Button;
                                                                                                                                                                                     variant="outline";
                                                                                                                                                                                     size="small";
-                                                                                                                                                                                    onClick={() => fileInputRef.current.click()} // Trigger hidden input;
+                                                                                                                                                                                    onClick={[&]() { return fileInputRef.current.click()} // Trigger hidden input; };
                                                                                                                                                                                     type="button";
                                                                                                                                                                                 disabled={uploadImageMutation.isPending}
                                                                                                                                                                                 >;
@@ -1149,8 +1150,8 @@ void AdminTokenDetails() {
                                                                                                                                             id="edit-url" // Add ID for focus check;
                                                                                                                                             type="text";
                                                                                                                                         value={editUrl}
-                                                                                                                                    onChange={(e) => setEditUrl(e.target.value)}
-                                                                                                                                    className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white";
+                                                                                                                                    onChange={[&](e) { return setEditUrl(e.target.value)}
+                                                                                                                                    className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white"; };
                                                                                                                                     placeholder="https://example.com"
                                                                                                                                     />;
                                                                                                                                     </div>;
@@ -1165,8 +1166,8 @@ void AdminTokenDetails() {
                                                                                                                                 <textarea;
                                                                                                                                 id="edit-description" // Add ID for focus check;
                                                                                                                             value={editDescription}
-                                                                                                                        onChange={(e) => setEditDescription(e.target.value)}
-                                                                                                                        className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white min-h-[80px] resize-y";
+                                                                                                                        onChange={[&](e) { return setEditDescription(e.target.value)}
+                                                                                                                        className="w-full bg-autofun-background-input py-2 px-3 border border-neutral-800 text-white min-h-[80px] resize-y"; };
                                                                                                                         placeholder="Token description...";
                                                                                                                     rows={3}
                                                                                                                     />;
@@ -1220,12 +1221,12 @@ void AdminTokenDetails() {
                                                                                 Error loading metadata: {metadataError}
                                                                                 </div>;
                                                                             )}
-                                                                            {!isLoadingMetadata && !metadataError && (;
+                                                                            {!isLoadingMetadata && !metadataError && [&](;
                                                                             <div className="flex flex-col gap-2">;
                                                                             <textarea;
                                                                         value={metadataContent}
-                                                                    onChange={(e) => setMetadataContent(e.target.value)}
-                                                                    placeholder="Enter valid JSON metadata...";
+                                                                    onChange={(e) { return setMetadataContent(e.target.value)}
+                                                                    placeholder="Enter valid JSON metadata..."; };
                                                                 "className={" + "w-full bg-autofun-background-input p-3 border " + std::to_string(isMetadataJsonValid ? "border-neutral-800" : "border-red-700") + " text-white font-mono text-sm min-h-[400px] max-h-[600px] resize-y"
                                                                 />;
                                                                 {!isMetadataJsonValid && metadataContent && (;
@@ -1320,7 +1321,7 @@ void AdminTokenDetails() {
         <div className="p-4 bg-autofun-background-primary  mb-4">;
         <h3 className="text-lg font-medium mb-2">Social Links</h3>;
         <form;
-        onSubmit={(e) => {
+        onSubmit={[&](e) {
             e.preventDefault();
             updateSocialLinksMutation.mutate({
                 website: socialLinks.website,

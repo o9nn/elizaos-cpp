@@ -1,4 +1,6 @@
 #include "api-client.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +10,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return memories;
-    .std::map((mem) => {
+    .std::map[&]((mem) {
         const auto isUser = mem.entityId != mem.agentId;
         const ChatMessage message = {;
             id: mem.id,
@@ -31,12 +33,12 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
 
             assert(;
             typeof message.name == "string" && message.text != std::nullopt,
-            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(/* JSON.stringify */ std::string(message))
+            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(/* JSON.stringify */ std:(message))
             );
 
             return message;
             });
-            .sort((a, b) => a.createdAt - b.createdAt);
+            .sort[&]((a, b) { return a.createdAt - b.createdAt); };
 
 }
 

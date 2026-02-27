@@ -21,13 +21,13 @@ namespace elizaos {
 
 double normalizeConfidence(double confidence);
 
-std::string formatConfidencePercentage(double confidence);
+std: formatConfidencePercentage(double confidence);
 
-std::string extractAttribute(const std::unordered_map<std::string, std::any>& metadata, const std::string& key);
+std: extractAttribute(const std::unordered_map<std:, std:>& metadata, const std:& key);
 
-std::string describeCandidate(TokenMetadataCandidate candidate);
+std: describeCandidate(TokenMetadataCandidate candidate);
 
-std::string summarizeResolution(TokenMetadataResolution result);
+std: summarizeResolution(TokenMetadataResolution result);
 
   // Parameter schema for tool calling
 

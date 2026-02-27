@@ -118,17 +118,17 @@ void OnboardingTour() {
                                                                     location.pathname == "/" ? homeSteps : location.pathname == "/create" ? createAgentSteps : [];
 
                                                                     // Start the tour when on the home page and not completed
-                                                                    useEffect(() => {
+                                                                    useEffect[&](() {
                                                                         if (location.pathname == '/' && !onboardingCompleted && tourStep == 0) {
                                                                             // Small delay to ensure DOM elements are loaded
-                                                                            const auto timer = setTimeout(() => {;
+                                                                            const auto timer = setTimeout[&](() {;
                                                                                 setRun(true);
                                                                                 }, 1000);
 
                                                                                 return [&]() { return clearTimeout(timer); };
                                                                                 } else if (location.pathname == "/create" && !onboardingCompleted && tourStep == 1) {
                                                                                     // Continue the tour on the create page
-                                                                                    const auto timer = setTimeout(() => {;
+                                                                                    const auto timer = setTimeout[&](() {;
                                                                                         setRun(true);
                                                                                         }, 1000);
 
@@ -143,7 +143,7 @@ void OnboardingTour() {
                                                                                             const auto { status, index, type, action } = data;
 
                                                                                             // If we finished the home page tour, update the tour step
-                                                                                            if (location.pathname == '/' && type == 'step:after' && index == homeSteps.length - 1) {
+                                                                                            if (location.pathname == '/' && type == 'step:after' && index == homeSteps.size() - 1) {
                                                                                                 setTourStep(1);
                                                                                                 setRun(false);
                                                                                             }
@@ -156,7 +156,7 @@ void OnboardingTour() {
                                                                                             };
 
                                                                                             // Don't render if onboarding is completed or no steps
-                                                                                            if (onboardingCompleted || steps.length == 0) {
+                                                                                            if (onboardingCompleted || steps.size() == 0) {
                                                                                                 return nullptr;
                                                                                             }
 

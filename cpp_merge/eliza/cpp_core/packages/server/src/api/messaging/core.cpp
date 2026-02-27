@@ -10,7 +10,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Endpoint for AGENT REPLIES or direct submissions to the central bus FROM AGENTS/SYSTEM
-    (router).post("/submit", std::async (req: express.Request, res: express.Response) => {
+    (router).post[&]("/submit", std::async (req: express.Request, res: express.Response) {
         const auto {;
             channel_id,
             server_id, // This is the server_id;
@@ -90,7 +90,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                 });
 
                                 // Endpoint to notify that a message is complete (e.g., agent finished responding)
-                                (router).post("/complete", std::async (req: express.Request, res: express.Response) => {
+                                (router).post[&]("/complete", std::async (req: express.Request, res: express.Response) {
                                     const auto { channel_id, server_id } = req.body;
 
                                     if (!validateUuid(channel_id) || !validateUuid(server_id)) {
@@ -116,7 +116,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                 });
 
                                                 // Endpoint for INGESTING messages from EXTERNAL platforms (e.g., Discord plugin)
-                                                (router).post("/ingest-external", std::async (req: express.Request, res: express.Response) => {
+                                                (router).post[&]("/ingest-external", std::async (req: express.Request, res: express.Response) {
                                                     const auto messagePayload = req.body<MessageService>; // Partial because ID, created_at will be generated;
 
                                                     if (

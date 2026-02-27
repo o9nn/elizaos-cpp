@@ -1,4 +1,5 @@
 #include "reconciliation.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +9,7 @@ ReconciliationService getReconciliationService() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!reconciliationServiceInstance) {
-        reconciliationServiceInstance = new ReconciliationService();
+        reconciliationServiceInstance = std::make_unique<ReconciliationService>();
     }
     return reconciliationServiceInstance;
 

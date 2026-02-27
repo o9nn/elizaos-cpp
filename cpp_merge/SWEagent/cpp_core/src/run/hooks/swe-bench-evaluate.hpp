@@ -20,7 +20,7 @@ namespace elizaos {
 
 /**
  * SweBench evaluation hook.
- * Will be automatically added to `run_batch` if `SWEBenchInstances.evaluate` is std::set to true
+ * Will be automatically added to "run_batch" if "SWEBenchInstances.evaluate" is std::set to true
  */
 
 /**
@@ -28,22 +28,22 @@ namespace elizaos {
  */
 class SweBenchEvaluate {
 public:
-    SweBenchEvaluate(std::optional<std::any> params);
-    std::string runId() const;
-    std::vector<std::string> getSbCall(const std::string& predsPath, bool submitOnly = false);
+    SweBenchEvaluate(std::optional<std:> params);
+    std: runId() const;
+    std::vector<std::string> getSbCall(const std:& predsPath, bool submitOnly = false);
     void checkRunningCalls();
-    void onInstanceCompleted(const std::any& _params);
+    void onInstanceCompleted(const std:& _params);
     void moveSbCliReport();
     void onEnd();
 
 private:
-    std::string outputDir_;
-    std::string subset_;
-    std::string split_;
+    std: outputDir_;
+    std: subset_;
+    std: split_;
     double continuousSubmissionEvery_;
     double lastEvaluationTime_;
     double evaluationInterval_;
-    std::string timeSuffix_;
+    std: timeSuffix_;
 };
 
 

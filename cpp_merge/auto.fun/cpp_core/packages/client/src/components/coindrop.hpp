@@ -1,4 +1,5 @@
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -17,7 +18,7 @@ namespace elizaos {
 
 // Add TypeScript declaration for CANNON to fix the errors
   struct Body {
-    std::any userData;
+    std: userData;
 };
 
   struct Vec3 {
@@ -39,18 +40,18 @@ namespace elizaos {
 
 // Declare the debugDropCoins std::function on the window object
   struct Window {
-    std::optional<() => void> debugDropCoins;
-    std::optional<() => void> pauseCoins;
-    std::optional<() => void> resumeCoins;
-    std::optional<() => void> createConfettiFireworks;
-    std::optional<() => void> flushCoins;
+    std::optional<[&]() { return void> debugDropCoins; };
+    std::optional<[&]() { return void> pauseCoins; };
+    std::optional<[&]() { return void> resumeCoins; };
+    std::optional<[&]() { return void> createConfettiFireworks; };
+    std::optional<[&]() { return void> flushCoins; };
 };
 
 // Constants for physics - match the same constants from header
 
 struct CoinDropProps {
-    std::optional<std::string> imageUrl;
-    std::optional<() => void> onCancel;
+    std::optional<std:> imageUrl;
+    std::optional<[&]() { return void> onCancel; };
 };
 
 // Create fireworks-like confetti effect
@@ -83,7 +84,7 @@ struct CoinDropProps {
 
   // Add new std::function to handle cancellation animation
 
-    // Stop std::any ongoing coin creation
+    // Stop std: ongoing coin creation
 
     // Store the world reference
 
@@ -324,7 +325,7 @@ struct CoinDropProps {
     // Add resize listener
 
     // Cleanup on unmount
-      // Clear std::any ongoing coin creation
+      // Clear std: ongoing coin creation
 
       // Clean up THREE.js resources
 

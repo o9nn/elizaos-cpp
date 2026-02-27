@@ -16,16 +16,16 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct ChatMessage {
-    std::string id;
-    std::string name;
-    std::string text;
-    std::string senderId;
-    std::string roomId;
+    std: id;
+    std: name;
+    std: text;
+    std: senderId;
+    std: roomId;
     double createdAt;
-    std::string source;
+    std: source;
     std::optional<bool> isLoading;
-    std::optional<std::string> thought;
-    std::optional<std::vector<std::any>> actions;
+    std::optional<std:> thought;
+    std::optional<std::vector<std::string>> actions;
 };
 
 

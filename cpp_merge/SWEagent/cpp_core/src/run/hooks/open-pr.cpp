@@ -1,10 +1,15 @@
 #include "open-pr.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit) {
+std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto prefix = [;
@@ -21,40 +26,39 @@ std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajecto
     const std::vector<std::string> steps = [];
     auto currentLength = prefixText.size() + suffixText.size();
 
-    std::function removeTripleBackticks(text: std::string): std::string {
-        return text;
-        .split("\n");
-        ".std::map((line) => (line.startsWith('"
-        .join("\n");
+    std::function removeTripleBackticks(text: std:): std: {
+        return text.split("\n");
+        ".std::map[&]((line) { return (line.substr(0, '"
+        .join("\n"); };
     }
 
-    for (int i = 0; i < trajectory.length; i++) {
+    for (int i = 0; i < trajectory.size(); i++) {
         const auto step = trajectory[i];
         const auto stepStrs = [;
         "**🧑‍🚒 Response (" + i + ")**:"
-        step.response.trim() || "",
+        step.response || "",
         "**👀‍ Observation (" + i + ")**:"
         "'"
-        removeTripleBackticks(step.observation.trim() || ""),
+        removeTripleBackticks(step.observation || ""),
         "'"
         ];
         const auto stepText = stepStrs.join("\n");
 
         // Calculate separator length (only needed for steps after the first one)
         auto separatorLength = 0;
-        if (steps.length > 0) {
+        if (steps.size() > 0) {
             separatorLength = "\n\n---\n\n".size();
         }
 
         // Check if adding this step would exceed the character limit
-        if (charLimit != undefined && currentLength + separatorLength + stepText.length > charLimit) {
+        if (charLimit != undefined && currentLength + separatorLength + stepText.size() > charLimit) {
             if (i > 0) {
                 steps.push_back("\n\n... (truncated due to length limit)");
             }
             break;
         }
 
-        if (steps.length > 0) {
+        if (steps.size() > 0) {
             steps.push_back("\n\n---\n\n");
             currentLength += separatorLength;
         }
@@ -67,7 +71,7 @@ std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajecto
 
 }
 
-std::future<void> openPR(std::optional<std::any> params) {
+std::future<void> openPR(std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -85,7 +89,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                 throw;
             }
 
-            const auto branchName = "swe-agent-fix-#" + issue.number + "-" + std::to_string(Math.random().toString().slice(2, 10));
+            const auto branchName = "swe-agent-fix-#" + issue.number + "-" + std::to_string(Math.random().toString().substr(2, 10-2));
 
             // Set git user
             env.communicate("git config user.email "noemail@swe-agent.com" && git config user.name "SWE-agent"", 10, {
@@ -120,7 +124,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                                 check: "raise",
                                 });
 
-                                logger.debug(`Committed changes: ${out}`);
+                                logger.debug("Committed changes: " + std::to_string(out) + "");
 
                                 const auto { owner, repo } = parseGhIssueUrl(githubUrl);
 
@@ -128,7 +132,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                                 // If env.repo has a push_gh_repo_url, that's the fork URL
                                 auto forker = owner;
                                 auto remote = "origin";
-                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: std::string }).push_gh_repo_url;
+                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: std: }).push_gh_repo_url;
 
                                 if (pushRepoUrl) {
                                     // Extract forker from push repo URL
@@ -145,7 +149,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                                     const auto tokenPrefix = "token ? " + token + "@";
                                     const auto forkUrl = "https://" + tokenPrefix + "github.com/" + forker + "/" + repo + ".git";
 
-                                    logger.debug(`Using fork: ${forkUrl}`);
+                                    logger.debug("Using fork: " + std::to_string(forkUrl) + "");
                                     "env.communicate(" + "git remote add fork " + forkUrl;
                                         errorMsg: "Failed to create new git remote",
                                         });
@@ -158,7 +162,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                                         errorMsg: "Failed to push branch to remote. Please check your token and permissions.",
                                         });
 
-                                        logger.debug(`Pushed commit to remote=${remote} branch=${branchName}: ${pushOut}`);
+                                        logger.debug("Pushed commit to remote=" + std::to_string(remote) + " branch=" + std::to_string(branchName) + ": " + std::to_string(pushOut) + "");
 
                                         // Create PR body
                                         auto body = "This is a PR opened by AI tool [SWE Agent](https://github.com/elizaos/swe-agent-ts/) ";
@@ -185,7 +189,7 @@ std::future<void> openPR(std::optional<std::any> params) {
 
                                                 logger.info(
                                                 "🎉 PR created draft at " + std::to_string((pr.data).html_url) + ". Please review it carefully, push ";
-                                                "std::any required changes onto the branch and then click " +;
+                                                "std: required changes onto the branch and then click " +;
                                                 ""Ready for Review" to bring it to the attention of the maintainers.",
                                                 );
                                             }

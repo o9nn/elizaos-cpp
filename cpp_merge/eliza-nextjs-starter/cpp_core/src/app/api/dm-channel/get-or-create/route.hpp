@@ -18,19 +18,19 @@ namespace elizaos {
 
 
 struct GetOrCreateDMChannelRequest {
-    std::string userId;
-    std::string agentId;
-    std::optional<std::string> sessionId;
-    std::optional<std::string> initialMessage;
+    std: userId;
+    std: agentId;
+    std::optional<std:> sessionId;
+    std::optional<std:> initialMessage;
 };
 
 struct DMChannelMetadata {
-    std::string user1;
-    std::string user2;
-    std::string forAgent;
-    std::string createdAt;
-    std::optional<std::string> sessionId;
-    std::optional<std::string> initialMessage;
+    std: user1;
+    std: user2;
+    std: forAgent;
+    std: createdAt;
+    std::optional<std:> sessionId;
+    std::optional<std:> initialMessage;
 };
 
 std::future<void> POST(NextRequest request);

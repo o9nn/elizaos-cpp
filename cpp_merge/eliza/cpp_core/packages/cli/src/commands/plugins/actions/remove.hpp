@@ -25,6 +25,6 @@ namespace elizaos {
 /**
  * Remove a plugin from the project
  */
-std::future<void> removePlugin(const std::string& plugin);
+std::future<void> removePlugin(const std:& plugin);
 
 } // namespace elizaos

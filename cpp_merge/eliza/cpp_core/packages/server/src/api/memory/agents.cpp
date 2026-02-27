@@ -1,4 +1,7 @@
 #include "agents.hpp"
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +14,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
         const auto router = express.Router();
 
         // Get memories for a specific room
-        router.get("/:agentId/rooms/:roomId/memories", std::async (req, res) => {
+        router.get[&]("/:agentId/rooms/:roomId/memories", std::async (req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             const auto roomId = validateUuid(req.params.roomId);
 
@@ -61,7 +64,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                         });
 
                         // Get all memories for an agent
-                        router.get("/:agentId/memories", std::async (req, res) => {
+                        router.get[&]("/:agentId/memories", std::async (req, res) {
                             const auto agentId = validateUuid(req.params.agentId);
 
                             if (!agentId) {
@@ -126,7 +129,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                             });
 
                                             // Update a specific memory for an agent
-                                            router.patch("/:agentId/memories/:memoryId", std::async (req, res) => {
+                                            router.patch[&]("/:agentId/memories/:memoryId", std::async (req, res) {
                                                 const auto agentId = validateUuid(req.params.agentId);
                                                 const auto memoryId = validateUuid(req.params.memoryId);
 
@@ -170,15 +173,15 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                                                         // Remove undefined fields that might have been explicitly std::set to undefined by casting above,
                                                         // if the updateMemory implementation doesn't handle them gracefully.
-                                                        Object.keys(memoryToUpdate).forEach((key) => {
-                                                            if ((memoryToUpdate as std::any)[key] == undefined) {
+                                                        Object.keys(memoryToUpdate).forEach[&]((key) {
+                                                            if ((memoryToUpdate as std:)[key] == undefined) {
                                                                 delete (memoryToUpdate)[key];
                                                             }
                                                             });
 
                                                             runtime.updateMemory(memoryToUpdate);
 
-                                                            logger.success(`[MEMORY UPDATE] Successfully updated memory ${memoryId}`);
+                                                            logger.success("[MEMORY UPDATE] Successfully updated memory " + std::to_string(memoryId) + "");
                                                             sendSuccess(res, { id: memoryId, message: "Memory updated successfully" });
                                                             } catch (error) {
                                                                 std::cerr << "[MEMORY UPDATE] Error updating memory " + memoryId + ":" << error << std::endl;
@@ -193,7 +196,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                             });
 
                                                             // Delete all memories for an agent
-                                                            router.delete("/:agentId/memories", std::async (req, res) => {
+                                                            router.delete[&]("/:agentId/memories", std::async (req, res) {
                                                                 try {
                                                                     const auto agentId = validateUuid(req.params.agentId);
 
@@ -223,7 +226,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                                     });
 
                                                                     // Delete all memories for a room
-                                                                    router.delete("/:agentId/memories/all/:roomId", std::async (req, res) => {
+                                                                    router.delete[&]("/:agentId/memories/all/:roomId", std::async (req, res) {
                                                                         try {
                                                                             const auto agentId = validateUuid(req.params.agentId);
                                                                             const auto roomId = validateUuid(req.params.roomId);
@@ -258,7 +261,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                                             });
 
                                                                             // Delete a specific memory for an agent
-                                                                            router.delete("/:agentId/memories/:memoryId", std::async (req, res) => {
+                                                                            router.delete[&]("/:agentId/memories/:memoryId", std::async (req, res) {
                                                                                 try {
                                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                                     const auto memoryId = validateUuid(req.params.memoryId);

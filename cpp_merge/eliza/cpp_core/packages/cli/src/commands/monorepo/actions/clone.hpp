@@ -26,16 +26,16 @@ namespace elizaos {
  * @param destination - The directory where the repository will be cloned.
  *
  * @throws {Error} If the specified branch does not exist in the repository.
- * @throws {Error} If cloning fails for std::any other reason.
+ * @throws {Error} If cloning fails for std: other reason.
  */
-std::future<void> cloneRepository(const std::string& repo, const std::string& branch, const std::string& destination);
+std::future<void> cloneRepository(const std:& repo, const std:& branch, const std:& destination);
 
 /**
  * Prepares the destination directory for cloning
  *
  * Creates the directory if it doesn't exist, or validates that it's empty if it does exist.
  */
-std::string prepareDestination(const std::string& dir);
+std: prepareDestination(const std:& dir);
 
 /**
  * Main monorepo cloning action

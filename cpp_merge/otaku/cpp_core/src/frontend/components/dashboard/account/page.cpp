@@ -1,20 +1,22 @@
 #include "page.hpp"
+#include <future>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
+std::future<std:> compressImage(File file, double maxSizeKB = 500) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return new Promise((resolve, reject) => {;
-            const auto reader = new FileReader();
+        return new Promise[&]((resolve, reject) {;
+            const auto reader = std::make_unique<FileReader>();
 
-            reader.onload = (e) => {
-                const auto img = new Image();
+            reader.onload = [&](e) {
+                const auto img = std::make_unique<Image>();
 
-                img.onload = () => {
+                img.onload = [&]() {
                     const auto canvas = document.createElement("canvas");
                     auto width = img.width;
                     auto height = img.height;
@@ -46,7 +48,7 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
                         auto quality = 0.9;
                         auto base64 = canvas.toDataURL("image/jpeg", quality);
 
-                        while (base64.length > maxSizeKB * 1024 && quality > 0.1) {
+                        while (base64.size() > maxSizeKB * 1024 && quality > 0.1) {
                             quality -= 0.1;
                             base64 = canvas.toDataURL("image/jpeg", quality);
                         }
@@ -54,11 +56,11 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
                         resolve(base64);
                         };
 
-                        img.onerror = () => reject(std::runtime_error("Failed to load image"));
+                        img.onerror = [&]() { return reject(std::runtime_error("Failed to load image")); };
                         img.src = e.target.result;
                         };
 
-                        reader.onerror = () => reject(std::runtime_error("Failed to read file"));
+                        reader.onerror = [&]() { return reject(std::runtime_error("Failed to read file")); };
                         reader.readAsDataURL(file);
                         });
 
@@ -71,13 +73,13 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
 void AvatarPickerModal(auto onSelectAvatar) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <div className="space-y-4 w-full max-w-sm mx-auto">;
     <h3 className="text-lg font-semibold">Choose Avatar</h3>;
 
     {/* Predefined Avatars Grid with Upload Option */}
     <div className="grid grid-cols-3 gap-3">;
-    {predefinedAvatars.std::map((avatarUrl, index) => (;
+    {predefinedAvatars.std::map((avatarUrl, index) { return (; };
     <div key={index} className="flex flex-col items-center gap-1">;
     <button;
     onClick={() => onSelectAvatar(avatarUrl)}
@@ -128,17 +130,17 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         const auto avatarPickerModalId = "avatar-picker-modal";
 
         // Fetch user summary from gamification service
-        const auto { data: userSummary, isLoading: isLoadingSummary } = useQuery({;
+        const auto { data: userSummary, isLoading: isLoadingSummary } = useQuery[&]({;
             queryKey: ["userSummary", agentId, userId],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 if (!agentId || !userId) {
                     return nullptr;
                 }
                 try {
                     return elizaClient.gamification.getUserSummary(agentId, userId);
-                    } catch (err: std::any) {
+                    } catch (err: std:) {
                         std::cerr << "[AccountPage] Error fetching user summary:" << err << std::endl;
-                        // If 404, return null (user might not have std::any points yet)
+                        // If 404, return null (user might not have std: points yet)
                         if (err.response.status == 404 || err.status == 404) {
                             return nullptr;
                         }
@@ -151,7 +153,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                     });
 
                     // Initialize state from userProfile when it becomes available
-                    useEffect(() => {
+                    useEffect[&](() {
                         if (userProfile && !isInitialized.current) {
                             setDisplayName(userProfile.displayName);
                             setBio(userProfile.bio);
@@ -167,24 +169,24 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                         const auto streakDays = userSummary.streakDays || 0;
                         const auto swapsCompleted = userSummary.swapsCompleted || 0;
 
-                        const auto handleCopyAddress = std::async () => {;
+                        const auto handleCopyAddress = std::async [&]() {;
                             if (!userProfile.walletAddress) return;
 
                             try {
                                 navigator.clipboard.writeText(userProfile.walletAddress);
                                 setIsCopied(true);
-                                setTimeout(() => setIsCopied(false), 2000);
+                                setTimeout[&](() { return setIsCopied(false), 2000); };
                                 } catch (err) {
                                     std::cerr << "Failed to copy address:" << err << std::endl;
                                 }
                                 };
 
-                                const auto handleImageUpload = std::async (e: React.ChangeEvent<HTMLInputElement>) => {;
+                                const auto handleImageUpload = std::async [&](e: React.ChangeEvent<HTMLInputElement>) {;
                                     const auto file = e.target.files.[0];
                                     if (!file) return;
 
                                     // Validate file type
-                                    if (!file.type.startsWith('image/')) {
+                                    if (!file.type.substr(0, 'image/')) {
                                         showError("Error", "Invalid file type", loadingPanelId);
                                         return;
                                     }
@@ -217,7 +219,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                         }
                                         };
 
-                                        const auto handleRemoveImage = std::async () => {;
+                                        const auto handleRemoveImage = std::async [&]() {;
                                             try {
                                                 showLoading("Processing...", "Removing image...", loadingPanelId);
 
@@ -230,7 +232,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                 }
                                                 };
 
-                                                const auto handleSelectPredefinedAvatar = std::async (avatarUrl: std::string) => {;
+                                                const auto handleSelectPredefinedAvatar = std::async [&](avatarUrl: std:) {;
                                                     try {
                                                         showLoading("Processing...", "Changing avatar...", loadingPanelId);
 
@@ -245,11 +247,11 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                         };
 
                                                         const auto handleOpenAvatarPicker = [&]() {;
-                                                            showModal(;
+                                                            showModal[&](;
                                                             <AvatarPickerModal;
                                                         currentAvatar={userProfile.avatarUrl || "/avatars/user_krimson.png"}
                                                     onSelectAvatar={handleSelectPredefinedAvatar}
-                                                    onUploadCustom={() => {
+                                                    onUploadCustom={() {
                                                         hideModal(avatarPickerModalId);
                                                         fileInputRef.current.click();
                                                     }}
@@ -259,8 +261,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                 );
                                                 };
 
-                                                const auto handleSaveChanges = std::async () => {;
-                                                    if (!displayName.trim()) {
+                                                const auto handleSaveChanges = std::async [&]() {;
+                                                    if (!displayName) {
                                                         showError("Error", "Name cannot be empty", loadingPanelId);
                                                         return;
                                                     }
@@ -269,8 +271,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                         showLoading("Processing...", "Saving changes...", loadingPanelId);
 
                                                         onUpdateProfile({
-                                                            displayName: displayName.trim(),
-                                                            bio: bio.trim(),
+                                                            displayName: displayName,
+                                                            bio: bio,
                                                             });
 
                                                             showSuccess("Success!", "Changes saved!", loadingPanelId);
@@ -280,11 +282,11 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                             }
                                                             };
 
-                                                            return (;
+                                                            return [&](;
                                                             <>;
                                                         {/* Preload avatar images to prevent loading delay when modal opens */}
                                                         <div className="hidden">;
-                                                        {predefinedAvatars.std::map((avatarUrl, index) => (;
+                                                        {predefinedAvatars.std::map((avatarUrl, index) { return (; };
                                                         <img key={index} src={avatarUrl} alt="" />;
                                                     ))}
                                                     </div>;
@@ -373,8 +375,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                         <Input;
                         id="display-name";
                     value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                />;
+                onChange={[&](e) { return setDisplayName(e.target.value)}
+                />; };
                 </div>;
                 </div>;
                 <div className="space-y-2">;
@@ -405,8 +407,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         <Input;
         id="bio";
         value={bio}
-        onChange={(e) => setBio(e.target.value)}
-        />;
+        onChange={[&](e) { return setBio(e.target.value)}
+        />; };
         </div>;
         <Button onClick={handleSaveChanges}>Save Changes</Button>;
         </div>;

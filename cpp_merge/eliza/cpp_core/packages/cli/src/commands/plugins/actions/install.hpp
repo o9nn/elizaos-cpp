@@ -27,16 +27,16 @@ namespace elizaos {
 /**
  * Install a plugin from GitHub repository
  */
-std::future<void> installPluginFromGitHub(const std::string& plugin, const std::string& cwd, AddPluginOptions opts);
+std::future<void> installPluginFromGitHub(const std:& plugin, const std:& cwd, AddPluginOptions opts);
 
 /**
  * Install a plugin from registry
  */
-std::future<void> installPluginFromRegistry(const std::string& plugin, const std::string& cwd, AddPluginOptions opts);
+std::future<void> installPluginFromRegistry(const std:& plugin, const std:& cwd, AddPluginOptions opts);
 
 /**
  * Main plugin installation std::function
  */
-std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts);
+std::future<void> addPlugin(const std:& pluginArg, AddPluginOptions opts);
 
 } // namespace elizaos

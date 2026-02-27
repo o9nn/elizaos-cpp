@@ -1,4 +1,8 @@
 #include "dev-server.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +11,7 @@ namespace elizaos {
 std::future<void> startDevMode(DevOptions options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto cwd = process.cwd();
+    const auto cwd = std::filesystem::current_path().string();
     const auto context = createDevContext(cwd);
     const auto serverManager = getServerManager();
 
@@ -52,7 +56,7 @@ std::future<void> startDevMode(DevOptions options) {
                     }
 
                     // Function to rebuild and restart the server
-                    const auto rebuildAndRestart = std::async () => {;
+                    const auto rebuildAndRestart = std::async [&]() {;
                         try {
                             // Ensure the server is stopped first
                             serverManager.stop();

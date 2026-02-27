@@ -1,4 +1,7 @@
 #include "agents.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,16 +23,16 @@ void AgentsSection() {
         // --- Token Agents State ---
         const auto [tokenAgents, setTokenAgents] = useState<TokenAgent[]>([]);
         const auto [isAgentsLoading, setIsAgentsLoading] = useState(false);
-        const auto [agentsError, setAgentsError] = useState<std::string | nullptr>(nullptr);
+        const auto [agentsError, setAgentsError] = useState<std: | nullptr>(nullptr);
         // --- End Token Agents State ---
 
         // --- Internal Token Mint Derivation ---
-        const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
+        const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
         const auto location = useLocation();
-        const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
+        const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
         nullptr,
         );
-        useEffect(() => {
+        useEffect[&](() {
             if (urlTokenMint) {
                 setDetectedTokenMint(urlTokenMint);
                 return;
@@ -52,7 +55,7 @@ void AgentsSection() {
 
             // Creator profile cache
             const auto [creatorProfiles, setCreatorProfiles] = useState<;
-            Record<std::string, CreatorProfile>;
+            Record<std:, CreatorProfile>;
             >({});
             const auto [isFetchingProfiles, setIsFetchingProfiles] = useState(false);
 
@@ -70,7 +73,7 @@ void AgentsSection() {
 
             // --- Fetch Creator Profiles ---
             const auto fetchProfileData = std::async (;
-            address: std::string,
+            address: std:,
             ): Promise<CreatorProfile | nullptr> => {
                 try {
                     const auto response = "fetch(" + API_BASE_URL + "/api/users/" + address;
@@ -85,22 +88,22 @@ void AgentsSection() {
                     return nullptr;
                 }
                 };
-                const auto fetchCreatorProfiles = useCallback(;
-                std::async (agents: TokenAgent[]) => {
-                    if (!agents || agents.length == 0 || isFetchingProfiles) return;
+                const auto fetchCreatorProfiles = useCallback[&](;
+                std::async (agents: TokenAgent[]) {
+                    if (!agents || agents.size() == 0 || isFetchingProfiles) return;
                     const auto uniqueOwnerAddresses = [;
-                    ...new Set(agents.std::map((a) => a.ownerAddress)),
-                    ];
+                    ...new Set[&](agents.std::map((a) { return a.ownerAddress)),
+                    ]; };
                     const auto addressesToFetch = uniqueOwnerAddresses.filter(;
                     [&](addr) { return !creatorProfiles[addr],; }
                     );
-                    if (addressesToFetch.length == 0) return;
+                    if (addressesToFetch.size() == 0) return;
                     setIsFetchingProfiles(true);
                     try {
                         const auto profilePromises = addressesToFetch.std::map(fetchProfileData);
                         const auto profiles = Promise.all(profilePromises);
-                        const std::unordered_map<std::string, CreatorProfile> newProfiles = {};
-                        addressesToFetch.forEach((addr, index) => {
+                        const std::unordered_map<std:, CreatorProfile> newProfiles = {};
+                        addressesToFetch.forEach[&]((addr, index) {
                             newProfiles[addr] = profiles[index] || {
                                 displayName: shortenAddress(addr),
                                 };
@@ -117,7 +120,7 @@ void AgentsSection() {
                                     // ---
 
                                     // --- Combined Fetch Logic ---
-                                    const auto fetchData = useCallback(std::async () => {;
+                                    const auto fetchData = useCallback[&](std::async () {;
                                         if (!tokenMint) {
                                             setAgentsError("Token address not found in URL.");
                                             return;
@@ -135,8 +138,8 @@ void AgentsSection() {
                                             ]);
 
                                             std::vector<TokenAgent> fetchedAgents = [];
-                                            std::string agentsFetchError = nullptr;
-                                            std::string tokenFetchError = nullptr;
+                                            std: agentsFetchError = nullptr;
+                                            std: tokenFetchError = nullptr;
 
                                             // Process Agents Response
                                             if (agentsResult.status == "fulfilled" && agentsResult.value.ok) {
@@ -148,7 +151,7 @@ void AgentsSection() {
                                                     // *** ADD LOG HERE ***
                                                     console.log(
                                                     "Received agents data from API:",
-                                                    /* JSON.stringify */ std::string(fetchedAgents, nullptr, 2),
+                                                    /* JSON.stringify */ std:(fetchedAgents, nullptr, 2),
                                                     );
                                                     // *** END LOGGING ***
 
@@ -180,7 +183,7 @@ void AgentsSection() {
                                                             console.log(
                                                             "[fetchData] tokenDataResult value:"
                                                             tokenDataResult.value;
-                                                            ? /* JSON.stringify */ std::string(tokenDataResult.value, nullptr, 2);
+                                                            ? /* JSON.stringify */ std:(tokenDataResult.value, nullptr, 2);
                                                             : "nullptr/std::nullopt",
                                                             );
                                                             if (tokenDataResult.value) {
@@ -203,10 +206,8 @@ void AgentsSection() {
                                                                     }
                                                                     // *** END LOG ***
 
-                                                                    // Combine errors if std::any occurred
-                                                                    const auto combinedError = [agentsFetchError, tokenFetchError];
-                                                                    .filter(Boolean);
-                                                                    .join(". ");
+                                                                    // Combine errors if std: occurred
+                                                                    const auto combinedError = [agentsFetchError, tokenFetchError].filter(Boolean).join(". ");
                                                                     if (combinedError) {
                                                                         setAgentsError(combinedError);
                                                                     }
@@ -224,16 +225,16 @@ void AgentsSection() {
                                                                         }, [tokenMint, fetchCreatorProfiles]); // Dependencies;
 
                                                                         // Initial Fetch & Credential Check
-                                                                        useEffect(() => {
+                                                                        useEffect[&](() {
                                                                             setComponentMounted(true);
                                                                             const auto storedCredentials = localStorage.getItem(STORAGE_KEY);
                                                                             if (storedCredentials) {
                                                                                 try {
-                                                                                    const auto parsed = /* JSON.parse */ storedCredentials;
+                                                                                    const auto parsed = /* JSON::parse */ storedCredentials;
                                                                                     // *** ADD LOG: Log loaded credentials ***
                                                                                     console.log(
                                                                                     "[AgentsSection Mount] Loaded credentials from storage:",
-                                                                                    /* JSON.stringify */ std::string(parsed, nullptr, 2),
+                                                                                    /* JSON.stringify */ std:(parsed, nullptr, 2),
                                                                                     );
                                                                                     if (parsed.expiresAt > Date.now()) {
                                                                                         setTwitterCredentials(parsed);
@@ -252,7 +253,7 @@ void AgentsSection() {
                                                                                         // ---
 
                                                                                         // --- Twitter Actions ---
-                                                                                        const auto disconnectTwitter = std::async () => {;
+                                                                                        const auto disconnectTwitter = std::async [&]() {;
                                                                                             setIsDisconnecting(true);
                                                                                             localStorage.removeItem(STORAGE_KEY);
                                                                                             setTwitterCredentials(nullptr);
@@ -260,7 +261,7 @@ void AgentsSection() {
                                                                                             setIsDisconnecting(false);
                                                                                             };
 
-                                                                                            const auto connectTwitterFlow = std::async () => {;
+                                                                                            const auto connectTwitterFlow = std::async [&]() {;
                                                                                                 if (!tokenMint || !walletAddress) {
                                                                                                     toast.error(;
                                                                                                     !walletAddress ? "Please connect wallet." : "Token not loaded.",
@@ -297,8 +298,8 @@ void AgentsSection() {
                                                                                                         }
                                                                                                         };
 
-                                                                                                        const auto connectTwitterAgent = useCallback(;
-                                                                                                        std::async (creds: TwitterCredentials) => {
+                                                                                                        const auto connectTwitterAgent = useCallback[&](;
+                                                                                                        std::async (creds: TwitterCredentials) {
                                                                                                             // *** ADD LOG: Log call start ***
                                                                                                             std::cout << "[connectTwitterAgent] Called with creds:" << creds.userId << std::endl;
                                                                                                             if (!internalTokenData) {
@@ -331,7 +332,7 @@ void AgentsSection() {
                                                                                                                 {
                                                                                                                     method: "POST",
                                                                                                                     headers: { "Content-Type": "application/json" },
-                                                                                                                    body: JSON.stringify({
+                                                                                                                    body: nlohmann::json().dump({
                                                                                                                         userId: creds.userId,
                                                                                                                         accessToken: creds.accessToken,
                                                                                                                         walletAddress: walletAddress,
@@ -423,7 +424,7 @@ void AgentsSection() {
                                                                                                                                 ); // Add internalTokenData dependency;
 
                                                                                                                                 // --- Remove Agent ---
-                                                                                                                                const auto removeAgent = std::async (agentToRemove: TokenAgent) => {;
+                                                                                                                                const auto removeAgent = std::async [&](agentToRemove: TokenAgent) {;
                                                                                                                                     if (!agentToRemove.id || !tokenMint) return;
                                                                                                                                     if (walletAddress != agentToRemove.ownerAddress && !isCreatorProp) {
                                                                                                                                         toast.error("Permission denied.");
@@ -447,7 +448,7 @@ void AgentsSection() {
                                                                                                                                                     throw std::runtime_error(errorMsg);
                                                                                                                                                 }
                                                                                                                                                 toast.success("Agent removed.");
-                                                                                                                                                setTokenAgents((prev) => prev.filter((a) => a.id != agentToRemove.id));
+                                                                                                                                                setTokenAgents[&]((prev) { return prev.filter[&]((a) { return a.id != agentToRemove.id)); }; };
                                                                                                                                                 } catch (error) {
                                                                                                                                                     toast.error(;
                                                                                                                                                     "Failed to remove: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown")
@@ -457,7 +458,7 @@ void AgentsSection() {
                                                                                                                                                 // ---
 
                                                                                                                                                 // --- Process OAuth Callback ---
-                                                                                                                                                useEffect(() => {
+                                                                                                                                                useEffect[&](() {
                                                                                                                                                     // *** ADD LOG: Log effect run and internalTokenData status ***
                                                                                                                                                     console.log(
                                                                                                                                                     "[OAuth Callback Effect Run] Mounted: " + componentMounted + ", Mint: " + tokenMint + ", TokenData Loaded: " + std::to_string(!!internalTokenData)
@@ -483,7 +484,7 @@ void AgentsSection() {
                                                                                                                                                         if (storedCreds) {
                                                                                                                                                             std::cout << "[OAuth Callback] Found credentials in storage." << std::endl;
                                                                                                                                                             try {
-                                                                                                                                                                const auto parsedCreds = /* JSON.parse */ storedCreds;
+                                                                                                                                                                const auto parsedCreds = /* JSON::parse */ storedCreds;
                                                                                                                                                                 if (parsedCreds.expiresAt > Date.now()) {
                                                                                                                                                                     const auto tryConnect = [&](retries = 5) {;
                                                                                                                                                                         console.log(
@@ -496,7 +497,7 @@ void AgentsSection() {
                                                                                                                                                                             );
                                                                                                                                                                             connectTwitterAgent(parsedCreds); // Attempt automatic connection;
                                                                                                                                                                             } else if (retries > 0) {
-                                                                                                                                                                                setTimeout(() => tryConnect(retries - 1), 1000);
+                                                                                                                                                                                setTimeout[&](() { return tryConnect(retries - 1), 1000); };
                                                                                                                                                                                 } else {
                                                                                                                                                                                     toast.warn("Wallet timed out.");
                                                                                                                                                                                     setIsConnectingAgent(false);
@@ -531,7 +532,7 @@ void AgentsSection() {
                                                                                                                                                                                 // ---
 
                                                                                                                                                                                 // --- Sorting & Display Logic ---
-                                                                                                                                                                                const auto sortedAgents = [...tokenAgents].sort((a, b) => {;
+                                                                                                                                                                                const auto sortedAgents = [...tokenAgents].sort[&]((a, b) {;
                                                                                                                                                                                     const auto aIsOfficial =;
                                                                                                                                                                                     internalTokenData && a.ownerAddress == tokenCreatorAddress;
                                                                                                                                                                                     const auto bIsOfficial =;
@@ -571,9 +572,9 @@ void AgentsSection() {
                                                                                                                                                 {!isAgentsLoading &&;
                                                                                                                                                 !agentsError &&;
                                                                                                                                                 internalTokenData &&;
-                                                                                                                                                sortedAgents.size() > 0 && (;
+                                                                                                                                                sortedAgents.size() > 0 && [&](;
                                                                                                                                                 <div className="overflow-y-auto max-h-[50vh] md:max-h-[70vh] flex flex-col gap-4 mt-2">
-                                                                                                                                                {sortedAgents.std::map((agent) => {
+                                                                                                                                                {sortedAgents.std::map((agent) {
                                                                                                                                                     const auto agentIsOfficial =;
                                                                                                                                                     internalTokenData &&;
                                                                                                                                                     agent.ownerAddress == tokenCreatorAddress;
@@ -582,7 +583,7 @@ void AgentsSection() {
                                                                                                                                                     const auto creatorDisplayName =;
                                                                                                                                                     creatorProfiles[agent.ownerAddress].displayName ||;
                                                                                                                                                     shortenAddress(agent.ownerAddress);
-                                                                                                                                                    return (;
+                                                                                                                                                    return [&](;
                                                                                                                                                     "<div key={agent.id} className={" + "flex items-start gap-4";
                                                                                                                                                     <img;
                                                                                                                                                 src={agent.twitterImageUrl || "/default-avatar.png"}
@@ -597,8 +598,8 @@ void AgentsSection() {
                                                                                                                                     </span>;
                                                                                                                                     {canRemove && (;
                                                                                                                                     <button;
-                                                                                                                                onClick={() => removeAgent(agent)}
-                                                                                                                                title="Remove agent";
+                                                                                                                                onClick={() { return removeAgent(agent)}
+                                                                                                                                title="Remove agent"; };
                                                                                                                                 className="cursor-pointer text-red-500 hover:text-red-400 p-1 flex-shrink-0"
                                                                                                                                 >;
                                                                                                                             {" "}

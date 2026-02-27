@@ -1,10 +1,12 @@
 #include "vaultPositionAction.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, double decimals) {
+std: normalizeUnitsFromApi(const std::variant<std:, double>& raw, double decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = typeof raw == "number" ? std::to_string(raw) : (raw || "0");
@@ -15,7 +17,7 @@ std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, 
 void formatVaultPositionData(const std::vector<UserVaultPosition>& vaults) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return vaults.std::map((v) => {;
+    return vaults.std::map[&]((v) {;
         const auto decimals = Number(v.vault.asset.decimals || 18);
         const auto assetsFormatted = normalizeUnitsFromApi(v.assets, decimals);
 

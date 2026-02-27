@@ -3,36 +3,36 @@
 string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues)
 {
     auto statusIcon = const_(object{
-        object::pair{std::string("missing"), std::string("❌")}, 
-        object::pair{std::string("generating"), std::string("⏳")}, 
-        object::pair{std::string("validating"), std::string("🔍")}, 
-        object::pair{std::string("invalid"), std::string("⚠️")}, 
-        object::pair{std::string("valid"), std::string("✅")}
+        object::pair{std:("missing"), std:("❌")}, 
+        object::pair{std:("generating"), std:("⏳")}, 
+        object::pair{std:("validating"), std:("🔍")}, 
+        object::pair{std:("invalid"), std:("⚠️")}, 
+        object::pair{std:("valid"), std:("✅")}
     })[config->status];
-    auto typeLabel = config->type->replace(std::string("_"), std::string(" "))->toUpperCase();
-    auto requiredLabel = (config->required) ? std::string("Required") : std::string("Optional");
-    auto valueDisplay = std::string("Not set");
+    auto typeLabel = config->type->replace(std:("_"), std:(" "))->toUpperCase();
+    auto requiredLabel = (config->required) ? std:("Required") : std:("Optional");
+    auto valueDisplay = std:("Not set");
     if (config->value) {
-        if (OR((OR((config->type == std::string("api_key")), (config->type == std::string("secret")))), (config->type == std::string("private_key")))) {
-            valueDisplay = (showValues) ? any(config->value) : any(std::string("****************"));
+        if (OR((OR((config->type == std:("api_key")), (config->type == std:("secret")))), (config->type == std:("private_key")))) {
+            valueDisplay = (showValues) ? any(config->value) (std:("****************"));
         } else {
             valueDisplay = config->value;
         }
     }
-    auto statusText = string_empty + statusIcon + std::string(" **") + (OR((config->description), (std::string("Environment Variable")))) + std::string("**\
+    auto statusText = string_empty + statusIcon + std:(" **") + (OR((config->description), (std:("Environment Variable")))) + std:("**\
 ");
-    statusText += std::string("   Type: ") + typeLabel + std::string(" (") + requiredLabel + std::string(")\
+    statusText += std:("   Type: ") + typeLabel + std:(" (") + requiredLabel + std:(")\
 ");
-    statusText += std::string("   Status: ") + config->status->toUpperCase() + std::string("\
+    statusText += std:("   Status: ") + config->status->toUpperCase() + std:("\
 ");
-    statusText += std::string("   Value: ") + valueDisplay + std::string("\
+    statusText += std:("   Value: ") + valueDisplay + std:("\
 ");
-    if (AND((config->canGenerate), (config->status == std::string("missing")))) {
-        statusText += std::string("   🤖 Can be auto-generated\
+    if (AND((config->canGenerate), (config->status == std:("missing")))) {
+        statusText += std:("   🤖 Can be auto-generated\
 ");
     }
     if (config->lastError) {
-        statusText += std::string("   Error: ") + config->lastError + std::string("\
+        statusText += std:("   Error: ") + config->lastError + std:("\
 ");
     }
     return statusText;
@@ -43,7 +43,7 @@ string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean
 {
     auto plugins = Object->keys(envVars);
     if (plugins->get_length() == 0) {
-        return std::string("No environment variables configured yet.");
+        return std:("No environment variables configured yet.");
     }
     auto totalVars = 0;
     auto missingRequired = 0;
@@ -55,9 +55,9 @@ string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean
         for (auto& config : Object->values(plugin))
         {
             totalVars++;
-            if (config->status == std::string("valid")) {
+            if (config->status == std:("valid")) {
                 validVars++;
-            } else if (AND((config->required), (config->status == std::string("missing")))) {
+            } else if (AND((config->required), (config->status == std:("missing")))) {
                 missingRequired++;
                 if (config->canGenerate) {
                     generatable++;
@@ -67,53 +67,53 @@ string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean
             }
         }
     }
-    auto statusMessage = std::string("# Environment Variables Status\
+    auto statusMessage = std:("# Environment Variables Status\
 \
 ");
-    statusMessage += std::string("**Summary:** ") + validVars + std::string("/") + totalVars + std::string(" variables configured\
+    statusMessage += std:("**Summary:** ") + validVars + std:("/") + totalVars + std:(" variables configured\
 ");
     if (missingRequired > 0) {
-        statusMessage += std::string("**Missing Required:** ") + missingRequired + std::string(" variables\
+        statusMessage += std:("**Missing Required:** ") + missingRequired + std:(" variables\
 ");
         if (generatable > 0) {
-            statusMessage += std::string("**Auto-generatable:** ") + generatable + std::string(" variables\
+            statusMessage += std:("**Auto-generatable:** ") + generatable + std:(" variables\
 ");
         }
         if (needsUserInput > 0) {
-            statusMessage += std::string("**Needs User Input:** ") + needsUserInput + std::string(" variables\
+            statusMessage += std:("**Needs User Input:** ") + needsUserInput + std:(" variables\
 ");
         }
     }
-    statusMessage += std::string("\
+    statusMessage += std:("\
 ");
     for (auto& [pluginName, plugin] : Object->entries(envVars))
     {
-        statusMessage += std::string("## ") + (pluginName->charAt(0)->toUpperCase() + pluginName->slice(1)) + std::string(" Plugin\
+        statusMessage += std:("## ") + (pluginName->charAt(0)->toUpperCase() + pluginName->slice(1)) + std:(" Plugin\
 \
 ");
         for (auto& [varName, config] : Object->entries(plugin))
         {
-            statusMessage += std::string("### ") + varName + std::string("\
+            statusMessage += std:("### ") + varName + std:("\
 ");
             statusMessage += formatEnvVarStatus(config, showValues);
-            statusMessage += std::string("\
+            statusMessage += std:("\
 ");
         }
     }
     if (missingRequired > 0) {
-        statusMessage += std::string("\
+        statusMessage += std:("\
 ## Recommended Actions\
 \
 ");
         if (generatable > 0) {
-            statusMessage += std::string("1. **Generate Variables**: I can automatically generate ") + generatable + std::string(" variables for you.\
+            statusMessage += std:("1. **Generate Variables**: I can automatically generate ") + generatable + std:(" variables for you.\
 ");
         }
         if (needsUserInput > 0) {
-            statusMessage += std::string("2. **User Input Required**: ") + needsUserInput + std::string(" variables need to be provided by you.\
+            statusMessage += std:("2. **User Input Required**: ") + needsUserInput + std:(" variables need to be provided by you.\
 ");
         }
-        statusMessage += std::string("\
+        statusMessage += std:("\
 Use the SET_ENV_VAR action to configure variables or GENERATE_ENV_VAR to auto-generate them.\
 ");
     }
@@ -122,42 +122,42 @@ Use the SET_ENV_VAR action to configure variables or GENERATE_ENV_VAR to auto-ge
 
 
 std::shared_ptr<Provider> envStatusProvider = object{
-    object::pair{std::string("name"), std::string("ENV_STATUS")}, 
-    object::pair{std::string("description"), std::string("Current status of environment variables for all plugins")}, 
-    object::pair{std::string("get"), [=](auto runtime, auto message, auto state = undefined) mutable
+    object::pair{std:("name"), std:("ENV_STATUS")}, 
+    object::pair{std:("description"), std:("Current status of environment variables for all plugins")}, 
+    object::pair{std:("get"), [=](auto runtime, auto message, auto state = undefined) mutable
     {
         try
         {
-            auto worldId = as<std::shared_ptr<UUID>>(runtime->getSetting(std::string("WORLD_ID")));
+            auto worldId = as<std::shared_ptr<UUID>>(runtime->getSetting(std:("WORLD_ID")));
             if (!worldId) {
-                logger->debug(std::string("[EnvStatus] No WORLD_ID found, skipping env status provider"));
+                logger->debug(std:("[EnvStatus] No WORLD_ID found, skipping env status provider"));
                 return object{
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("envVars"), object{}}
+                    object::pair{std:("data"), object{
+                        object::pair{std:("envVars"), object{}}
                     }}, 
-                    object::pair{std::string("values"), object{
-                        object::pair{std::string("envStatus"), std::string("No world configuration found.")}, 
-                        object::pair{std::string("hasMissing"), false}, 
-                        object::pair{std::string("hasGeneratable"), false}, 
-                        object::pair{std::string("needsUserInput"), false}
+                    object::pair{std:("values"), object{
+                        object::pair{std:("envStatus"), std:("No world configuration found.")}, 
+                        object::pair{std:("hasMissing"), false}, 
+                        object::pair{std:("hasGeneratable"), false}, 
+                        object::pair{std:("needsUserInput"), false}
                     }}, 
-                    object::pair{std::string("text"), std::string("No world configuration found.")}
+                    object::pair{std:("text"), std:("No world configuration found.")}
                 };
             }
             auto world = std::async([=]() { runtime->getWorld(worldId); });
             if (!world->metadata->envVars) {
-                logger->debug(std::string("[EnvStatus] No environment variables configured yet"));
+                logger->debug(std:("[EnvStatus] No environment variables configured yet"));
                 return object{
-                    object::pair{std::string("data"), object{
-                        object::pair{std::string("envVars"), object{}}
+                    object::pair{std:("data"), object{
+                        object::pair{std:("envVars"), object{}}
                     }}, 
-                    object::pair{std::string("values"), object{
-                        object::pair{std::string("envStatus"), std::string("No environment variables configured yet.")}, 
-                        object::pair{std::string("hasMissing"), false}, 
-                        object::pair{std::string("hasGeneratable"), false}, 
-                        object::pair{std::string("needsUserInput"), false}
+                    object::pair{std:("values"), object{
+                        object::pair{std:("envStatus"), std:("No environment variables configured yet.")}, 
+                        object::pair{std:("hasMissing"), false}, 
+                        object::pair{std:("hasGeneratable"), false}, 
+                        object::pair{std:("needsUserInput"), false}
                     }}, 
-                    object::pair{std::string("text"), std::string("No environment variables configured yet.")}
+                    object::pair{std:("text"), std:("No environment variables configured yet.")}
                 };
             }
             auto envVars = as<std::shared_ptr<EnvVarMetadata>>(world->metadata->envVars);
@@ -168,7 +168,7 @@ std::shared_ptr<Provider> envStatusProvider = object{
             {
                 for (auto& config : Object->values(plugin))
                 {
-                    if (AND((config->required), (config->status == std::string("missing")))) {
+                    if (AND((config->required), (config->status == std:("missing")))) {
                         hasMissing = true;
                         if (config->canGenerate) {
                             hasGeneratable = true;
@@ -178,60 +178,60 @@ std::shared_ptr<Provider> envStatusProvider = object{
                     }
                 }
             }
-            auto showValues = message->content->channelType == std::string("DM");
+            auto showValues = message->content->channelType == std:("DM");
             auto statusText = generateEnvStatusMessage(envVars, showValues);
             return object{
-                object::pair{std::string("data"), object{
-                    object::pair{std::string("envVars"), std::string("envVars")}, 
-                    object::pair{std::string("summary"), object{
-                        object::pair{std::string("total"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
+                object::pair{std:("data"), object{
+                    object::pair{std:("envVars"), std:("envVars")}, 
+                    object::pair{std:("summary"), object{
+                        object::pair{std:("total"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
                         {
                             return sum + Object->keys(plugin)->get_length();
                         }
                         , 0)}, 
-                        object::pair{std::string("missing"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
+                        object::pair{std:("missing"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
                         {
                             return sum + Object->values(plugin)->filter([=](auto c) mutable
                             {
-                                return AND((c->required), (c->status == std::string("missing")));
+                                return AND((c->required), (c->status == std:("missing")));
                             }
                             )->get_length();
                         }
                         , 0)}, 
-                        object::pair{std::string("valid"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
+                        object::pair{std:("valid"), Object->values(envVars)->reduce([=](auto sum, auto plugin) mutable
                         {
                             return sum + Object->values(plugin)->filter([=](auto c) mutable
                             {
-                                return c->status == std::string("valid");
+                                return c->status == std:("valid");
                             }
                             )->get_length();
                         }
                         , 0)}
                     }}
                 }}, 
-                object::pair{std::string("values"), object{
-                    object::pair{std::string("envStatus"), statusText}, 
-                    object::pair{std::string("hasMissing"), std::string("hasMissing")}, 
-                    object::pair{std::string("hasGeneratable"), std::string("hasGeneratable")}, 
-                    object::pair{std::string("needsUserInput"), std::string("needsUserInput")}
+                object::pair{std:("values"), object{
+                    object::pair{std:("envStatus"), statusText}, 
+                    object::pair{std:("hasMissing"), std:("hasMissing")}, 
+                    object::pair{std:("hasGeneratable"), std:("hasGeneratable")}, 
+                    object::pair{std:("needsUserInput"), std:("needsUserInput")}
                 }}, 
-                object::pair{std::string("text"), statusText}
+                object::pair{std:("text"), statusText}
             };
         }
         catch (const any& error)
         {
-            logger->error(std::string("[EnvStatus] Error in environment status provider:"), error);
+            logger->error(std:("[EnvStatus] Error in environment status provider:"), error);
             return object{
-                object::pair{std::string("data"), object{
-                    object::pair{std::string("envVars"), object{}}
+                object::pair{std:("data"), object{
+                    object::pair{std:("envVars"), object{}}
                 }}, 
-                object::pair{std::string("values"), object{
-                    object::pair{std::string("envStatus"), std::string("Error retrieving environment variable status.")}, 
-                    object::pair{std::string("hasMissing"), false}, 
-                    object::pair{std::string("hasGeneratable"), false}, 
-                    object::pair{std::string("needsUserInput"), false}
+                object::pair{std:("values"), object{
+                    object::pair{std:("envStatus"), std:("Error retrieving environment variable status.")}, 
+                    object::pair{std:("hasMissing"), false}, 
+                    object::pair{std:("hasGeneratable"), false}, 
+                    object::pair{std:("needsUserInput"), false}
                 }}, 
-                object::pair{std::string("text"), std::string("Error retrieving environment variable status.")}
+                object::pair{std:("text"), std:("Error retrieving environment variable status.")}
             };
         }
     }

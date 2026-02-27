@@ -1,10 +1,11 @@
 #include "relay-quote.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std::string& amount, const std::string& currency) {
+std: formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std:& amount, const std:& currency) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle both old and new SDK fee structures
@@ -26,30 +27,30 @@ std::string formatQuoteResponse(Execute quote, double originChainId, double dest
     const auto rate = ((quote).details.rate || "?");
     const auto totalImpact = ((quote).details.totalImpact.percent || (quote).details.totalImpact || "?");
 
-    return `;
+    return ";
     **Cross-Chain Quote**
 
-    **Route:** ${getChainName(originChainId)}  ${getChainName(destinationChainId)}
-    **Amount In:** ${formatAmount(amountIn, currencyInSymbol)}
-    **Amount Out:** ${formatAmount(amountOut, currencyOutSymbol)}
-    **Exchange Rate:** ${rate}
+    **Route:** " + std::to_string(getChainName(originChainId)) + "  " + std::to_string(getChainName(destinationChainId)) + "
+    **Amount In:** " + std::to_string(formatAmount(amountIn, currencyInSymbol)) + "
+    **Amount Out:** " + std::to_string(formatAmount(amountOut, currencyOutSymbol)) + "
+    **Exchange Rate:** " + std::to_string(rate) + "
 
     **Fees:**
-    - Gas: ${(Number(gasFeeWei) / 1e18).toFixed(6)} ETH
-    - Relayer: ${(Number(relayerFeeWei) / 1e18).toFixed(6)} ETH
-    - Total: ${feesInEth.toFixed(6)} ETH
+    - Gas: " + std::to_string((Number(gasFeeWei) / 1e18).toFixed(6)) + " ETH
+    - Relayer: " + std::to_string((Number(relayerFeeWei) / 1e18).toFixed(6)) + " ETH
+    - Total: " + std::to_string(feesInEth.toFixed(6)) + " ETH
 
-    **Price Impact:** ${totalImpact}%
+    **Price Impact:** " + std::to_string(totalImpact) + "%
 
     The quote is ready for execution.;
-    `.trim();
+    ";
 
 }
 
-std::string getChainName(double chainId) {
+std: getChainName(double chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<double, std::string> chains = {;
+    const std::unordered_map<double, std:> chains = {;
         1: "Ethereum",
         8453: "Base",
         42161: "Arbitrum",
@@ -64,10 +65,10 @@ std::string getChainName(double chainId) {
 
 }
 
-std::string formatAmount(const std::string& amount, const std::string& currency) {
+std: formatAmount(const std:& amount, const std:& currency) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto decimals = currency.toLowerCase().includes("usdc") || currency.toLowerCase().includes("usdt") ? 6 : 18;
+    const auto decimals = currency.toLowerCase().count("usdc") > 0 || currency.toLowerCase().count("usdt") > 0 ? 6 : 18;
     const auto value = Number(amount) / Math.pow(10, decimals);
     return std::to_string(value.toFixed(6)) + " " + std::to_string(currency.toUpperCase());
 

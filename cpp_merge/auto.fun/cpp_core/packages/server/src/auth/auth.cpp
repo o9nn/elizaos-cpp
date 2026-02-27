@@ -1,16 +1,18 @@
 #include "auth.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> createJwtToken(const std::string& publicKey) {
+std::future<std:> createJwtToken(const std:& publicKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         try {
             const auto salt =;
-            process.env.AUTH_TOKEN_SALT || "development-salt-for-local-testing";
+            std::getenv("AUTH_TOKEN_SALT") || "development-salt-for-local-testing";
 
             const auto tokenId = crypto.randomUUID();
 

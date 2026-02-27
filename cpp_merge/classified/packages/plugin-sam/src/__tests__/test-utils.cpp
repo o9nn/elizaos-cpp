@@ -3,89 +3,89 @@
 std::shared_ptr<IAgentRuntime> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides)
 {
     return as<std::shared_ptr<IAgentRuntime>>(utils::assign(object{
-        object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001"))}, 
-        object::pair{std::string("getSetting"), mock([=](auto key) mutable
+        object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001"))}, 
+        object::pair{std:("getSetting"), mock([=](auto key) mutable
         {
             auto settings = object{
-                object::pair{std::string("SAM_SPEED"), 72}, 
-                object::pair{std::string("SAM_PITCH"), 64}, 
-                object::pair{std::string("SAM_THROAT"), 128}, 
-                object::pair{std::string("SAM_MOUTH"), 128}
+                object::pair{std:("SAM_SPEED"), 72}, 
+                object::pair{std:("SAM_PITCH"), 64}, 
+                object::pair{std:("SAM_THROAT"), 128}, 
+                object::pair{std:("SAM_MOUTH"), 128}
             };
             return OR((const_(settings)[key]), (nullptr));
         }
         )}, 
-        object::pair{std::string("getService"), mock([=]() mutable
+        object::pair{std:("getService"), mock([=]() mutable
         {
             return nullptr;
         }
         )}, 
-        object::pair{std::string("hasService"), mock([=]() mutable
+        object::pair{std:("hasService"), mock([=]() mutable
         {
             return false;
         }
         )}, 
-        object::pair{std::string("registerService"), mock()}, 
-        object::pair{std::string("initialize"), mock([=]() mutable
+        object::pair{std:("registerService"), mock()}, 
+        object::pair{std:("initialize"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("stop"), mock([=]() mutable
+        object::pair{std:("stop"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("evaluate"), mock([=]() mutable
+        object::pair{std:("evaluate"), mock([=]() mutable
         {
             return Promise->resolve(nullptr);
         }
         )}, 
-        object::pair{std::string("processActions"), mock([=]() mutable
+        object::pair{std:("processActions"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("useModel"), as<any>(mock([=]() mutable
+        object::pair{std:("useModel"), as<any>(mock([=]() mutable
         {
-            return Promise->resolve(std::string("test response"));
+            return Promise->resolve(std:("test response"));
         }
         ))}, 
-        object::pair{std::string("ensureConnection"), mock([=]() mutable
+        object::pair{std:("ensureConnection"), mock([=]() mutable
         {
             return Promise->resolve();
         }
         )}, 
-        object::pair{std::string("composeState"), mock([=]() mutable
+        object::pair{std:("composeState"), mock([=]() mutable
         {
             return Promise->resolve(as<std::shared_ptr<State>>(object{
-                object::pair{std::string("data"), object{}}, 
-                object::pair{std::string("values"), object{}}, 
-                object::pair{std::string("text"), string_empty}
+                object::pair{std:("data"), object{}}, 
+                object::pair{std:("values"), object{}}, 
+                object::pair{std:("text"), string_empty}
             }));
         }
         )}, 
-        object::pair{std::string("createMemory"), mock([=]() mutable
+        object::pair{std:("createMemory"), mock([=]() mutable
         {
-            return Promise->resolve(as<std::shared_ptr<UUID>>(std::string("test-memory-id")));
+            return Promise->resolve(as<std::shared_ptr<UUID>>(std:("test-memory-id")));
         }
         )}, 
-        object::pair{std::string("actions"), array<any>()}, 
-        object::pair{std::string("providers"), array<any>()}, 
-        object::pair{std::string("evaluators"), array<any>()}, 
-        object::pair{std::string("services"), std::make_shared<Map>()}, 
-        object::pair{std::string("db"), nullptr}, 
-        object::pair{std::string("plugins"), array<any>()}, 
-        object::pair{std::string("routes"), array<any>()}, 
-        object::pair{std::string("logger"), std::string("logger")}, 
-        object::pair{std::string("character"), object{
-            object::pair{std::string("name"), std::string("Test SAM Agent")}, 
-            object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001"))}, 
-            object::pair{std::string("username"), std::string("test-sam-agent")}, 
-            object::pair{std::string("bio"), array<string>{ std::string("Retro voice synthesis agent") }}, 
-            object::pair{std::string("settings"), object{}}, 
-            object::pair{std::string("system"), std::string("You are a helpful assistant with retro voice synthesis.")}, 
-            object::pair{std::string("plugins"), array<string>{ std::string("@elizaos/plugin-sam") }}
+        object::pair{std:("actions"), array<any>()}, 
+        object::pair{std:("providers"), array<any>()}, 
+        object::pair{std:("evaluators"), array<any>()}, 
+        object::pair{std:("services"), std::make_shared<Map>()}, 
+        object::pair{std:("db"), nullptr}, 
+        object::pair{std:("plugins"), array<any>()}, 
+        object::pair{std:("routes"), array<any>()}, 
+        object::pair{std:("logger"), std:("logger")}, 
+        object::pair{std:("character"), object{
+            object::pair{std:("name"), std:("Test SAM Agent")}, 
+            object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001"))}, 
+            object::pair{std:("username"), std:("test-sam-agent")}, 
+            object::pair{std:("bio"), array<string>{ std:("Retro voice synthesis agent") }}, 
+            object::pair{std:("settings"), object{}}, 
+            object::pair{std:("system"), std:("You are a helpful assistant with retro voice synthesis.")}, 
+            object::pair{std:("plugins"), array<string>{ std:("@elizaos/plugin-sam") }}
         }}
     }, overrides));
 };
@@ -93,24 +93,24 @@ std::shared_ptr<IAgentRuntime> createMockRuntime(Partial<std::shared_ptr<IAgentR
 
 void setupLoggerSpies()
 {
-    spyOn(logger, std::string("info"));
-    spyOn(logger, std::string("error"));
-    spyOn(logger, std::string("warn"));
-    spyOn(logger, std::string("debug"));
+    spyOn(logger, std:("info"));
+    spyOn(logger, std:("error"));
+    spyOn(logger, std:("warn"));
+    spyOn(logger, std:("debug"));
 };
 
 
 std::shared_ptr<Memory> createMockMemory(Partial<std::shared_ptr<Memory>> overrides)
 {
     return utils::assign(object{
-        object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000002"))}, 
-        object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000003"))}, 
-        object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001"))}, 
-        object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000004"))}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("test message")}
+        object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000002"))}, 
+        object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000003"))}, 
+        object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001"))}, 
+        object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000004"))}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("test message")}
         }}, 
-        object::pair{std::string("createdAt"), Date->now()}
+        object::pair{std:("createdAt"), Date->now()}
     }, overrides);
 };
 
@@ -118,9 +118,9 @@ std::shared_ptr<Memory> createMockMemory(Partial<std::shared_ptr<Memory>> overri
 std::shared_ptr<State> createMockState(Partial<std::shared_ptr<State>> overrides)
 {
     return utils::assign(object{
-        object::pair{std::string("data"), object{}}, 
-        object::pair{std::string("values"), object{}}, 
-        object::pair{std::string("text"), string_empty}
+        object::pair{std:("data"), object{}}, 
+        object::pair{std:("values"), object{}}, 
+        object::pair{std:("text"), string_empty}
     }, overrides);
 };
 
@@ -141,10 +141,10 @@ std::shared_ptr<Uint8Array> createMockWAVBuffer(std::shared_ptr<Uint8Array> audi
     auto wavHeaderSize = 44;
     auto wavBuffer = std::make_shared<Uint8Array>(wavHeaderSize + audioData->length);
     auto view = std::make_shared<DataView>(wavBuffer->buffer, 0, wavHeaderSize);
-    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std::string("RIFF")), 0);
+    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std:("RIFF")), 0);
     view->setUint32(4, 36 + audioData->length, true);
-    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std::string("WAVE")), 8);
-    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std::string("fmt ")), 12);
+    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std:("WAVE")), 8);
+    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std:("fmt ")), 12);
     view->setUint32(16, 16, true);
     view->setUint16(20, 1, true);
     view->setUint16(22, 1, true);
@@ -152,7 +152,7 @@ std::shared_ptr<Uint8Array> createMockWAVBuffer(std::shared_ptr<Uint8Array> audi
     view->setUint32(28, sampleRate, true);
     view->setUint16(32, 1, true);
     view->setUint16(34, 8, true);
-    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std::string("data")), 36);
+    wavBuffer->set(((std::make_shared<TextEncoder>()))->encode(std:("data")), 36);
     view->setUint32(40, audioData->length, true);
     wavBuffer->set(audioData, wavHeaderSize);
     return wavBuffer;

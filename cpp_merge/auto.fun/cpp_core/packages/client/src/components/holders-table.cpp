@@ -1,10 +1,11 @@
 #include "holders-table.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::variant<std::string, double> getPercentageOfTotal(double value, double total) {
+std::variant<std:, double> getPercentageOfTotal(double value, double total) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (total == 0) {
@@ -19,9 +20,9 @@ std::variant<std::string, double> getPercentageOfTotal(double value, double tota
 void HoldersTable() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto query = useQuery({;
+    const auto query = useQuery[&]({;
         queryKey: ["token", token.mint, "holders"],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             const auto holders = getHolders({ address: token.mint });
 
             return holders.holders;
@@ -37,7 +38,7 @@ void HoldersTable() {
                 return <Loader className="h-40" />;
             }
 
-            if ((data || []).length == 0) {
+            if ((data || []).size() == 0) {
                 return (;
                 <div className="flex flex-col items-center gap-2">;
                 <img;
@@ -65,8 +66,8 @@ void HoldersTable() {
         </TableHeader>;
         <TableBody>;
         {data.size() > 0;
-        ? data.std::map((holder) => {
-            const auto formattedAmount: number =;
+        ? data.std::map[&]((holder) {
+            const auto formattedAmount =;
             (Number(holder.balance) ? Number(holder.balance) : 0) /
             10 ** (token.tokenDecimals || 6);
             return (;
@@ -78,7 +79,7 @@ void HoldersTable() {
         className="hover:text-autofun-text-highlight"
         >;
         {holder.address ==;
-        import.meta.env.VITE_BONDING_CURVE_ADDRESS;
+        "".VITE_BONDING_CURVE_ADDRESS;
         ? "Bonding Curve";
     : shortenAddress(holder.address)}
     </Link>;

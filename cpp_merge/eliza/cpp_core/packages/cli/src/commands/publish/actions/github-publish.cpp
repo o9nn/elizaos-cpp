@@ -1,10 +1,11 @@
 #include "github-publish.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false) {
+std::future<PublishResult> publishToGitHubAction(const std:& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

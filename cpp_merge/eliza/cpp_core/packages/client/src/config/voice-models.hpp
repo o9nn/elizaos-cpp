@@ -15,11 +15,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct VoiceModel {
-    std::string value;
-    std::string label;
-    std::string provider;
-    std::optional<std::string> gender;
-    std::optional<std::string> language;
+    std: value;
+    std: label;
+    std: provider;
+    std::optional<std:> gender;
+    std::optional<std:> language;
     std::optional<std::vector<std::string>> features;
 };
 

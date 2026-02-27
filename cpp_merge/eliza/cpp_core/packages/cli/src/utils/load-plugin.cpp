@@ -1,10 +1,14 @@
 #include "load-plugin.hpp"
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getGlobalNodeModulesPath() {
+std: getGlobalNodeModulesPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // process.execPath gives us the path to the node executable
@@ -20,50 +24,50 @@ std::string getGlobalNodeModulesPath() {
 
 }
 
-std::string resolveNodeModulesPath(const std::string& repository) {
+std: resolveNodeModulesPath(const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return path.resolve(process.cwd(), "node_modules", repository, ...segments);
+    return path.resolve(std::filesystem::current_path().string(), "node_modules", repository, ...segments);
 
 }
 
-std::future<std::optional<PackageJson>> readPackageJson(const std::string& repository) {
+std::future<std::optional<PackageJson>> readPackageJson(const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageJsonPath = resolveNodeModulesPath(repository, "package.json");
     try {
         if (existsSync(packageJsonPath)) {
-            return /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
+            return /* JSON::parse */ readFileSync(packageJsonPath, "utf-8");
         }
         } catch (error) {
-            logger.debug(`Failed to read package.json for '${repository}':`, error);
+            logger.debug("Failed to read package.json for '" + std::to_string(repository) + "':", error);
         }
         return nullptr;
 
 }
 
-std::future<std::optional<std::any>> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository) {
+std::future<std::optional<std:>> tryImporting(const std:& importPath, const std:& strategy, const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto module = import(importPath);
-        logger.success(`Successfully loaded plugin '${repository}' using ${strategy} (${importPath})`);
+        logger.success("Successfully loaded plugin '" + std::to_string(repository) + "' using " + std::to_string(strategy) + " (" + std::to_string(importPath) + ")");
         return module;
         } catch (error) {
-            logger.debug(`Import failed using ${strategy} ('${importPath}'):`, error);
+            logger.debug("Import failed using " + std::to_string(strategy) + " ('" + std::to_string(importPath) + "'):", error);
             return nullptr;
         }
 
 }
 
-bool isElizaOSPackageName(const std::string& repository) {
+bool isElizaOSPackageName(const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return repository.startsWith("@elizaos/") || repository.startsWith("@elizaos-plugins/");
+    return repository.substr(0, "@elizaos/") || repository.substr(0, "@elizaos-plugins/");
 
 }
 
-std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository) {
+std::vector<ImportStrategy> getStrategiesForPlugin(const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isElizaOS = isElizaOSPackageName(repository);
@@ -83,7 +87,7 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository
 
 }
 
-std::future<std::optional<std::any>> loadPluginModule(const std::string& repository) {
+std::future<std::optional<std:>> loadPluginModule(const std:& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isElizaOS = isElizaOSPackageName(repository);

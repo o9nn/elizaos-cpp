@@ -2,7 +2,7 @@
 
 std::function<any()> useTransactionSpeed = [=]() mutable
 {
-    auto [transactionSpeed, setTransactionSpeed] = useLocalStorage<TTransactionSpeed>(std::string("use-transaction-speed"), std::string("turbo"));
+    auto [transactionSpeed, setTransactionSpeed] = useLocalStorage<TTransactionSpeed>(std:("use-transaction-speed"), std:("turbo"));
     return as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ transactionSpeed, setTransactionSpeed });
 };
 

@@ -17,11 +17,11 @@ namespace elizaos {
 
 
 struct Moderator {
-    std::string id;
-    std::string address;
-    std::optional<std::string> name;
+    std: id;
+    std: address;
+    std::optional<std:> name;
     bool isAdmin;
-    std::string createdAt;
+    std: createdAt;
 };
 
 

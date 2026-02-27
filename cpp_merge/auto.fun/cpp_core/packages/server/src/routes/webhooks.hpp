@@ -17,28 +17,27 @@ namespace elizaos {
 
 
 
-  // const body = await c.req.json();
+  // const body = c.req.json();
   // const swapEvent = WebhookTokenPairEvent.parse(body).data.event;
 
   // const token0IsSol =
-  //   swapEvent.token0Address === "So11111111111111111111111111111111111111112";
+  //   swapEvent.token0Address == "So11111111111111111111111111111111111111112";
   // const tokenMint = token0IsSol
   //   ? swapEvent.token1Address
   //   : swapEvent.token0Address;
-  // const redisCache = await getGlobalRedisCache();
+  // const redisCache = getGlobalRedisCache();
   // const txId = swapEvent.transactionHash;
-  // const dedupeKey = `webhook:tx:${txId}`;
-  // const firstSeen = await redisCache.redisPool.useClient((client) =>
-  //   client.std::set(dedupeKey, "1", "EX", 120 * 60, "NX")
-  // );
-  // if (firstSeen === null) {
+  // const dedupeKey = "webhook:tx:" + std::to_string(txId) + "";
+  // const firstSeen = redisCache.redisPool.useClient[&]((client) { return //   client.std::set(dedupeKey, "1", "EX", 120 * 60, "NX")
+  // ); };
+  // if (firstSeen == null) {
   //   // Already processed recently
-  //   logger.log(`Skipping dup tx ${txId}`);
+  //   logger.log("Skipping dup tx " + std::to_string(txId) + "");
   //   return c.json({ message: "Duplicate, ignored" }, 200);
   // }
-  // logger.log(`Enqueuing webhook for ${tokenMint}…`);
+  // logger.log("Enqueuing webhook for " + std::to_string(tokenMint) + "…");
   // queueJob(swapEvent).catch(err => {
-  //   logger.error(`Failed to enqueue swapEvent ${txId}:`, err);
+  //   logger.error("Failed to enqueue swapEvent " + std::to_string(txId) + ":", err);
   // });
 
 // Start monitoring batch

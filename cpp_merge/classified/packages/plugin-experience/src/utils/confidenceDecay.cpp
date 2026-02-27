@@ -41,18 +41,18 @@ std::shared_ptr<DecayConfig> ConfidenceDecayManager::getDomainSpecificDecay(std:
 {
     auto config = utils::assign(object{
     }, this->config);
-    if (OR((static_cast<long>(experience->type) == std::string("discovery")), (static_cast<long>(experience->type) == std::string("learning")))) {
+    if (OR((static_cast<long>(experience->type) == std:("discovery")), (static_cast<long>(experience->type) == std:("learning")))) {
         config["halfLife"] *= 2;
     }
-    if (OR((static_cast<long>(experience->type) == std::string("warning")), (static_cast<long>(experience->type) == std::string("correction")))) {
+    if (OR((static_cast<long>(experience->type) == std:("warning")), (static_cast<long>(experience->type) == std:("correction")))) {
         config["halfLife"] *= 1.5;
         config["minConfidence"] = 0.2;
     }
     static switch_type __switch2813_3275 = {
-        { any(std::string("security")), 1 },
-        { any(std::string("safety")), 2 },
-        { any(std::string("performance")), 3 },
-        { any(std::string("user_preference")), 4 }
+        { any(std:("security")), 1 },
+        { any(std:("safety")), 2 },
+        { any(std:("performance")), 3 },
+        { any(std:("user_preference")), 4 }
     };
     switch (__switch2813_3275[experience->domain])
     {
@@ -92,17 +92,17 @@ array<object> ConfidenceDecayManager::getConfidenceTrend(std::shared_ptr<Experie
             confidence = Math->max(specificConfig->minConfidence, experience->confidence * decayFactor);
         }
         trend->push(object{
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("confidence"), std::string("confidence")}
+            object::pair{std:("timestamp"), std:("timestamp")}, 
+            object::pair{std:("confidence"), std:("confidence")}
         });
     }
     return trend;
 }
 
 std::shared_ptr<DecayConfig> DEFAULT_DECAY_CONFIG = object{
-    object::pair{std::string("halfLife"), 30 * 24 * 60 * 60 * 1000}, 
-    object::pair{std::string("minConfidence"), 0.1}, 
-    object::pair{std::string("decayStartDelay"), 7 * 24 * 60 * 60 * 1000}
+    object::pair{std:("halfLife"), 30 * 24 * 60 * 60 * 1000}, 
+    object::pair{std:("minConfidence"), 0.1}, 
+    object::pair{std:("decayStartDelay"), 7 * 24 * 60 * 60 * 1000}
 };
 
 void Main(void)

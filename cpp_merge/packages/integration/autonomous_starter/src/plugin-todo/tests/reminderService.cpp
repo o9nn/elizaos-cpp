@@ -2,18 +2,18 @@
 
 void Main(void)
 {
-    describe(std::string("TodoReminderService"), [=]() mutable
+    describe(std:("TodoReminderService"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<std::shared_ptr<TodoReminderService>> service;
         beforeEach([=]() mutable
         {
             mockRuntime = as<any>(object{
-                object::pair{std::string("agentId"), as<any>(std::string("test-agent"))}, 
-                object::pair{std::string("getTasks"), vi->fn()}, 
-                object::pair{std::string("updateTask"), vi->fn()}, 
-                object::pair{std::string("emitEvent"), vi->fn()}, 
-                object::pair{std::string("getService"), vi->fn()}
+                object::pair{std:("agentId"), as<any>(std:("test-agent"))}, 
+                object::pair{std:("getTasks"), vi->fn()}, 
+                object::pair{std:("updateTask"), vi->fn()}, 
+                object::pair{std:("emitEvent"), vi->fn()}, 
+                object::pair{std:("getService"), vi->fn()}
             });
         }
         );
@@ -24,78 +24,78 @@ void Main(void)
             }
         }
         );
-        it(std::string("should have correct service type"), [=]() mutable
+        it(std:("should have correct service type"), [=]() mutable
         {
-            expect(TodoReminderService::serviceType)->toBe(std::string("TODO_REMINDER"));
+            expect(TodoReminderService::serviceType)->toBe(std:("TODO_REMINDER"));
         }
         );
-        it(std::string("should start service and begin timer"), [=]() mutable
+        it(std:("should start service and begin timer"), [=]() mutable
         {
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             expect(service)->toBeInstanceOf(TodoReminderService);
-            expect(service->capabilityDescription)->toBe(std::string("The agent can send reminders for overdue tasks"));
+            expect(service->capabilityDescription)->toBe(std:("The agent can send reminders for overdue tasks"));
         }
         );
-        it(std::string("should stop service and clear timer"), [=]() mutable
+        it(std:("should stop service and clear timer"), [=]() mutable
         {
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             std::async([=]() { service->stop(); });
             expect(true)->toBe(true);
         }
         );
-        it(std::string("should start and setup timer for periodic checks"), [=]() mutable
+        it(std:("should start and setup timer for periodic checks"), [=]() mutable
         {
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             expect(service)->toBeInstanceOf(TodoReminderService);
             std::async([=]() { service->checkTasksNow(); });
             expect(mockRuntime->getTasks)->toHaveBeenCalledWith(object{
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}
             });
         }
         );
-        it(std::string("should send reminder for overdue tasks"), [=]() mutable
+        it(std:("should send reminder for overdue tasks"), [=]() mutable
         {
             auto overdueDate = std::make_shared<Date>(Date->now() - 2 * 24 * 60 * 60 * 1000);
             auto mockTasks = array<std::shared_ptr<Task>>{ as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task1"))}, 
-                object::pair{std::string("roomId"), as<any>(std::string("room1"))}, 
-                object::pair{std::string("name"), std::string("Overdue task")}, 
-                object::pair{std::string("description"), std::string("Test overdue task")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("dueDate"), overdueDate->toISOString()}
+                object::pair{std:("id"), as<any>(std:("task1"))}, 
+                object::pair{std:("roomId"), as<any>(std:("room1"))}, 
+                object::pair{std:("name"), std:("Overdue task")}, 
+                object::pair{std:("description"), std:("Test overdue task")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("dueDate"), overdueDate->toISOString()}
                 }}
             }) };
             mockRuntime->getTasks = vi->fn()->mockResolvedValue(mockTasks);
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             std::async([=]() { service->checkTasksNow(); });
-            expect(mockRuntime->emitEvent)->toHaveBeenCalledWith(std::string("MESSAGE_RECEIVED"), expect->objectContaining(object{
-                object::pair{std::string("message"), expect->objectContaining(object{
-                    object::pair{std::string("content"), expect->objectContaining(object{
-                        object::pair{std::string("text"), expect->stringContaining(std::string("Task Reminder"))}
+            expect(mockRuntime->emitEvent)->toHaveBeenCalledWith(std:("MESSAGE_RECEIVED"), expect->objectContaining(object{
+                object::pair{std:("message"), expect->objectContaining(object{
+                    object::pair{std:("content"), expect->objectContaining(object{
+                        object::pair{std:("text"), expect->stringContaining(std:("Task Reminder"))}
                     })}
                 })}
             }));
-            expect(mockRuntime->updateTask)->toHaveBeenCalledWith(std::string("task1"), expect->objectContaining(object{
-                object::pair{std::string("metadata"), expect->objectContaining(object{
-                    object::pair{std::string("lastReminderSent"), expect->any(String)}
+            expect(mockRuntime->updateTask)->toHaveBeenCalledWith(std:("task1"), expect->objectContaining(object{
+                object::pair{std:("metadata"), expect->objectContaining(object{
+                    object::pair{std:("lastReminderSent"), expect->any(String)}
                 })}
             }));
         }
         );
-        it(std::string("should respect reminder cooldown period"), [=]() mutable
+        it(std:("should respect reminder cooldown period"), [=]() mutable
         {
             auto overdueDate = std::make_shared<Date>(Date->now() - 2 * 24 * 60 * 60 * 1000);
             auto recentReminderDate = std::make_shared<Date>(Date->now() - 12 * 60 * 60 * 1000);
             auto mockTasks = array<std::shared_ptr<Task>>{ as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task1"))}, 
-                object::pair{std::string("roomId"), as<any>(std::string("room1"))}, 
-                object::pair{std::string("name"), std::string("Overdue task with recent reminder")}, 
-                object::pair{std::string("description"), std::string("Test task with recent reminder")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("dueDate"), overdueDate->toISOString()}, 
-                    object::pair{std::string("lastReminderSent"), recentReminderDate->toISOString()}
+                object::pair{std:("id"), as<any>(std:("task1"))}, 
+                object::pair{std:("roomId"), as<any>(std:("room1"))}, 
+                object::pair{std:("name"), std:("Overdue task with recent reminder")}, 
+                object::pair{std:("description"), std:("Test task with recent reminder")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("dueDate"), overdueDate->toISOString()}, 
+                    object::pair{std:("lastReminderSent"), recentReminderDate->toISOString()}
                 }}
             }) };
             mockRuntime->getTasks = vi->fn()->mockResolvedValue(mockTasks);
@@ -105,15 +105,15 @@ void Main(void)
             expect(mockRuntime->updateTask)->not->toHaveBeenCalled();
         }
         );
-        it(std::string("should handle tasks without due dates gracefully"), [=]() mutable
+        it(std:("should handle tasks without due dates gracefully"), [=]() mutable
         {
             auto mockTasks = array<std::shared_ptr<Task>>{ as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task1"))}, 
-                object::pair{std::string("roomId"), as<any>(std::string("room1"))}, 
-                object::pair{std::string("name"), std::string("Task without due date")}, 
-                object::pair{std::string("description"), std::string("Test task without due date")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{}}
+                object::pair{std:("id"), as<any>(std:("task1"))}, 
+                object::pair{std:("roomId"), as<any>(std:("room1"))}, 
+                object::pair{std:("name"), std:("Task without due date")}, 
+                object::pair{std:("description"), std:("Test task without due date")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{}}
             }) };
             mockRuntime->getTasks = vi->fn()->mockResolvedValue(mockTasks);
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
@@ -121,25 +121,25 @@ void Main(void)
             expect(mockRuntime->emitEvent)->not->toHaveBeenCalled();
         }
         );
-        it(std::string("should handle invalid date formats"), [=]() mutable
+        it(std:("should handle invalid date formats"), [=]() mutable
         {
             auto mockTasks = array<std::shared_ptr<Task>>{ as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task1"))}, 
-                object::pair{std::string("roomId"), as<any>(std::string("room1"))}, 
-                object::pair{std::string("name"), std::string("Task with invalid date")}, 
-                object::pair{std::string("description"), std::string("Test task with invalid date")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("dueDate"), std::string("invalid-date")}
+                object::pair{std:("id"), as<any>(std:("task1"))}, 
+                object::pair{std:("roomId"), as<any>(std:("room1"))}, 
+                object::pair{std:("name"), std:("Task with invalid date")}, 
+                object::pair{std:("description"), std:("Test task with invalid date")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("dueDate"), std:("invalid-date")}
                 }}
             }), as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task2"))}, 
-                object::pair{std::string("roomId"), as<any>(std::string("room2"))}, 
-                object::pair{std::string("name"), std::string("Task with null date")}, 
-                object::pair{std::string("description"), std::string("Test task with null date")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("dueDate"), nullptr}
+                object::pair{std:("id"), as<any>(std:("task2"))}, 
+                object::pair{std:("roomId"), as<any>(std:("room2"))}, 
+                object::pair{std:("name"), std:("Task with null date")}, 
+                object::pair{std:("description"), std:("Test task with null date")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("dueDate"), nullptr}
                 }}
             }) };
             mockRuntime->getTasks = vi->fn()->mockResolvedValue(mockTasks);
@@ -148,16 +148,16 @@ void Main(void)
             expect(mockRuntime->emitEvent)->not->toHaveBeenCalled();
         }
         );
-        it(std::string("should skip tasks without roomId"), [=]() mutable
+        it(std:("should skip tasks without roomId"), [=]() mutable
         {
             auto mockTasks = array<std::shared_ptr<Task>>{ as<std::shared_ptr<Task>>(object{
-                object::pair{std::string("id"), as<any>(std::string("task1"))}, 
-                object::pair{std::string("roomId"), as<any>(undefined)}, 
-                object::pair{std::string("name"), std::string("Task without room")}, 
-                object::pair{std::string("description"), std::string("Test task without room")}, 
-                object::pair{std::string("tags"), array<string>{ std::string("one-off") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("dueDate"), ((std::make_shared<Date>(Date->now() - 24 * 60 * 60 * 1000)))->toISOString()}
+                object::pair{std:("id"), as<any>(std:("task1"))}, 
+                object::pair{std:("roomId"), as<any>(undefined)}, 
+                object::pair{std:("name"), std:("Task without room")}, 
+                object::pair{std:("description"), std:("Test task without room")}, 
+                object::pair{std:("tags"), array<string>{ std:("one-off") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("dueDate"), ((std::make_shared<Date>(Date->now() - 24 * 60 * 60 * 1000)))->toISOString()}
                 }}
             }) };
             mockRuntime->getTasks = vi->fn()->mockResolvedValue(mockTasks);
@@ -166,19 +166,19 @@ void Main(void)
             expect(mockRuntime->emitEvent)->not->toHaveBeenCalled();
         }
         );
-        it(std::string("should handle errors in checkOverdueTasks gracefully"), [=]() mutable
+        it(std:("should handle errors in checkOverdueTasks gracefully"), [=]() mutable
         {
-            mockRuntime->getTasks = vi->fn()->mockRejectedValue(std::make_shared<Error>(std::string("Database error")));
+            mockRuntime->getTasks = vi->fn()->mockRejectedValue(std::make_shared<Error>(std:("Database error")));
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             std::async([=]() { service->checkTasksNow(); });
             expect(true)->toBe(true);
         }
         );
-        it(std::string("should stop service via static method"), [=]() mutable
+        it(std:("should stop service via static method"), [=]() mutable
         {
             service = std::async([=]() { TodoReminderService::start(mockRuntime); });
             mockRuntime->getService = vi->fn()->mockReturnValue(service);
-            auto stopSpy = vi->spyOn(service, std::string("stop"));
+            auto stopSpy = vi->spyOn(service, std:("stop"));
             std::async([=]() { TodoReminderService::stop(mockRuntime); });
             expect(mockRuntime->getService)->toHaveBeenCalledWith(TodoReminderService::serviceType);
             expect(stopSpy)->toHaveBeenCalled();

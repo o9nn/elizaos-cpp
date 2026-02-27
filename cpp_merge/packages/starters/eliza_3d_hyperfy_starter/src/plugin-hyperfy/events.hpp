@@ -7,7 +7,7 @@
 enum struct hyperfyEventType;
 
 enum struct hyperfyEventType {
-    MESSAGE_RECEIVED = std::string("HYPERFY_MESSAGE_RECEIVED"), VOICE_MESSAGE_RECEIVED = std::string("HYPERFY_VOICE_MESSAGE_RECEIVED")
+    MESSAGE_RECEIVED = std:("HYPERFY_MESSAGE_RECEIVED"), VOICE_MESSAGE_RECEIVED = std:("HYPERFY_VOICE_MESSAGE_RECEIVED")
 };
 extern object hyperfyEvents;
 #endif

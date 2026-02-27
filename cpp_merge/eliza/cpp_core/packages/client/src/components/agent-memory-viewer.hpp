@@ -18,15 +18,15 @@ namespace elizaos {
 
 struct MemoryContent {
     std::optional<boolean | string> thought;
-    std::optional<std::string> channelType;
-    std::optional<std::string> source;
-    std::optional<std::string> text;
+    std::optional<std:> channelType;
+    std::optional<std:> source;
+    std::optional<std:> text;
     std::optional<{> metadata;
-    std::optional<std::string> fileType;
-    std::optional<std::string> title;
-    std::optional<std::string> filename;
-    std::optional<std::string> path;
-    std::optional<std::string> description;
+    std::optional<std:> fileType;
+    std::optional<std:> title;
+    std::optional<std:> filename;
+    std::optional<std:> path;
+    std::optional<std:> description;
 };
 
 enum MemoryType {
@@ -39,7 +39,7 @@ enum MemoryType {
 
 struct AgentMemoryViewerProps {
     UUID agentId;
-    std::string agentName;
+    std: agentName;
     std::optional<UUID; // Renamed from roomId to channelId for clarity> channelId;
 };
 

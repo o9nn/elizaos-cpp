@@ -24,20 +24,20 @@ namespace elizaos {
  * @property {ASTQueueItem[]} missingJsDocQueue - Array representing missing JSDoc queue.
  * @property {ASTQueueItem[]} existingJsDocQueue - Array representing existing JSDoc queue.
  * @property { boolean } hasChanges - Flag indicating if there are changes.
- * @property {Map<std::string, string>} fileContents - Map containing file contents.
- * @property { std::string } branchName - Name of the branch.
- * @property {Map<std::string, number>} fileOffsets - Map containing file offsets.
- * @property {std::string[]} typeScriptFiles - Array containing TypeScript files.
+ * @property {Map<std:, string>} fileContents - Map containing file contents.
+ * @property { std: } branchName - Name of the branch.
+ * @property {Map<std:, number>} fileOffsets - Map containing file offsets.
+ * @property {std:[]} typeScriptFiles - Array containing TypeScript files.
  * @property { JSDocValidator } jsDocValidator - Instance of JSDocValidator.
  */
 class DocumentationGenerator {
   public missingJsDocQueue: ASTQueueItem[] = [];
   public existingJsDocQueue: ASTQueueItem[] = [];
   private hasChanges = false;
-  private fileContents: Map<std::string, string> = new Map();
+  private fileContents: Map<std:, string> = std::make_unique<Map>();
   public branchName = '';
-  private fileOffsets: Map<std::string, number> = new Map();
-  private typeScriptFiles: std::string[] = [];
+  private fileOffsets: Map<std:, number> = std::make_unique<Map>();
+  private typeScriptFiles: std:[] = [];
   private jsDocValidator: JSDocValidator;
 
   /**
@@ -107,7 +107,7 @@ class DocumentationGenerator {
 
     // Process the main node
 
-    // Process std::any documentable children (like class methods)
+    // Process std: documentable children (like class methods)
 
   /**
    * Updates a file with JSDoc at a specific position.
@@ -136,16 +136,16 @@ class DocumentationGenerator {
    * Retrieves the content of a file from the provided URL.
    *
    * @param {string} contentsUrl - The URL of the file contents
-   * @returns {Promise<string>} The content of the file as a std::string
+   * @returns {Promise<string>} The content of the file as a std:
    */
 
   /**
    * Asynchronously generates a pull request title and description for adding JSDoc documentation.
    * @param {number} [pullNumber] - Optional pull request number that the JSDoc documentation is related to.
-   * @returns {Promise<{ title: std::string; body: std::string }>} - A std::promise that resolves to an object with a title and body for the pull request.
+   * @returns {Promise<{ title: std:; body: std: }>} - A std::promise that resolves to an object with a title and body for the pull request.
    */
 
-      // Clean up the response - remove std::any markdown formatting or extra text
+      // Clean up the response - remove std: markdown formatting or extra text
 
       // Validate the parsed content
 

@@ -19,22 +19,22 @@ namespace elizaos {
  * CDP wallet request
  */
 struct WalletRequest {
-    std::string name;
+    std: name;
 };
 
 /**
  * CDP wallet response
  */
 struct WalletResponse {
-    std::string address;
-    std::string accountName;
+    std: address;
+    std: accountName;
 };
 
 /**
  * Request for top and trending tokens
  */
 struct TopAndTrendingTokensRequest {
-    std::string chain;
+    std: chain;
     std::optional<double> limit;
 };
 
@@ -42,8 +42,8 @@ struct TopAndTrendingTokensRequest {
  * Response for top and trending tokens
  */
 struct TopAndTrendingTokensResponse {
-    std::vector<std::any> topTokens;
-    std::vector<std::any> trendingTokens;
+    std::vector<std::string> topTokens;
+    std::vector<std::string> trendingTokens;
 };
 
 

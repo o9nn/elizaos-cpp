@@ -1,4 +1,9 @@
 #include "route.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,7 +18,7 @@ std::future<void> GET(NextRequest request) {
     const auto maxMarketCap = searchParams.get("maxMarketCap");
     const auto isActive = searchParams.get("isActive");
 
-    const auto service = new TokenRegistryService();
+    const auto service = std::make_unique<TokenRegistryService>();
 
     const Parameters<typeof service::getAllTokens>[0] filters = {};
     if (chain) filters.chain = chain;
@@ -23,8 +28,8 @@ std::future<void> GET(NextRequest request) {
 
     const auto tokens = service.getAllTokens(filters);
 
-    const auto tokensWithMarketData = Promise.all(;
-    tokens.std::map(std::async (token) => {
+    const auto tokensWithMarketData = Promise.all[&](;
+    tokens.std::map(std::async (token) {
         const auto marketData = MarketDataDB.getMarketData(token.id);
         return {
             ...token,
@@ -74,7 +79,7 @@ std::future<void> POST(NextRequest request) {
             );
         }
 
-        const auto service = new TokenRegistryService();
+        const auto service = std::make_unique<TokenRegistryService>();
         const auto token = service.registerToken({;
             symbol,
             name,
@@ -88,14 +93,14 @@ std::future<void> POST(NextRequest request) {
             });
 
             const auto isLocalTestnet =;
-            contractAddress.startsWith("0x5FbDB") ||;
-            contractAddress.startsWith("0x5fbdb") ||;
+            contractAddress.substr(0, "0x5FbDB") ||;
+            contractAddress.substr(0, "0x5fbdb") ||;
             (chain == "ethereum" && contractAddress.size() == 42);
 
-            const auto isSolanaWithoutKey = chain == "solana" && !process.env.BIRDEYE_API_KEY;
+            const auto isSolanaWithoutKey = chain == "solana" && !std::getenv("BIRDEYE_API_KEY");
 
             if (!isLocalTestnet && !isSolanaWithoutKey) {
-                const auto marketDataService = new MarketDataService();
+                const auto marketDataService = std::make_unique<MarketDataService>();
                 marketDataService.refreshTokenData(token.id, contractAddress, chain);
                 } else {
                     MarketDataDB.setMarketData({
@@ -168,8 +173,8 @@ std::future<void> DELETE(NextRequest request) {
         "runtime.deleteCache(" + "market_data:" + tokenId
 
         // Remove from all_tokens index
-        const auto allTokens = (runtime.getCache<std::string[]>("all_tokens")) || [];
-        const auto updated = allTokens.filter((id) => id != tokenId);
+        const auto allTokens = (runtime.getCache<std:[]>("all_tokens")) || [];
+        const auto updated = allTokens.filter[&]((id) { return id != tokenId); };
         runtime.setCache("all_tokens", updated);
 
         return NextResponse.json({;
@@ -179,7 +184,7 @@ std::future<void> DELETE(NextRequest request) {
         }
 
         // Delete ALL tokens
-        const auto allTokens = (runtime.getCache<std::string[]>("all_tokens")) || [];
+        const auto allTokens = (runtime.getCache<std:[]>("all_tokens")) || [];
         const std::vector<std::string> deleted = [];
 
         for (const auto& id : allTokens)
@@ -193,7 +198,7 @@ std::future<void> DELETE(NextRequest request) {
 
         // Also clear consignments since they reference tokens
         const auto allConsignments =;
-        (runtime.getCache<std::string[]>("all_consignments")) || [];
+        (runtime.getCache<std:[]>("all_consignments")) || [];
         for (const auto& id : allConsignments)
             "runtime.deleteCache(" + "consignment:" + id
         }

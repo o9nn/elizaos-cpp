@@ -1,4 +1,6 @@
 #include "index.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -16,9 +18,9 @@ std::optional<JSX::Element> CopyPageButton() {
         const auto location = useLocation();
         const auto { siteConfig } = useDocusaurusContext();
 
-        const auto isExcludedPath = EXCLUDED_PATHS.some((regex) => regex.test(location.pathname));
+        const auto isExcludedPath = EXCLUDED_PATHS.some[&]((regex) { return regex.test(location.pathname)); };
 
-        useEffect(() => {
+        useEffect[&](() {
             std::function handleClickOutside(event: MouseEvent) {
                 if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                     setIsOpen(false);
@@ -30,9 +32,9 @@ std::optional<JSX::Element> CopyPageButton() {
                 };
                 }, []);
 
-                useEffect(() => {
+                useEffect[&](() {
                     if (copySuccess) {
-                        const auto timer = setTimeout(() => {;
+                        const auto timer = setTimeout[&](() {;
                             setCopySuccess(false);
                             }, 2000);
                             return [&]() { return clearTimeout(timer); };
@@ -43,20 +45,20 @@ std::optional<JSX::Element> CopyPageButton() {
                             setIsOpen(!isOpen);
                             };
 
-                            const auto getEditUrl = (): std::string | nullptr => {;
+                            const auto getEditUrl = (): std: | nullptr => {;
                                 const auto editLinkElement = document.querySelector("a.theme-edit-this-page");
                                 if (editLinkElement && editLinkElement.getAttribute('href')) {
                                     return editLinkElement.getAttribute("href");
                                 }
-                                if (process.env.NODE_ENV == 'development') {
+                                if (std::getenv("NODE_ENV") == 'development') {
                                     auto editUrl = siteConfig.presets.[0].[1].docs.editUrl || siteConfig.themeConfig.editUrl;
                                     if (editUrl) {
-                                        if (editUrl.includes('/tree/')) {
+                                        if (editUrl.count('/tree/') > 0) {
                                             editUrl = editUrl.replace("/tree/", "/edit/");
                                         }
-                                        const auto baseEditUrl = editUrl.endsWith("/") ? editUrl.slice(0, -1) : editUrl;
+                                        const auto baseEditUrl = editUrl.rfind("/") ? editUrl.slice(0, -1) : editUrl;
                                         auto currentPath = location.pathname.replace(/^\//, "").replace(/\/$/, "");
-                                        if (currentPath.startsWith('docs/')) {
+                                        if (currentPath.substr(0, 'docs/')) {
                                             currentPath = currentPath.substring(5);
                                         }
                                         // For versioned docs, the path might already include the version and not need /docs prefix
@@ -66,7 +68,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                             return baseEditUrl + "/" + currentPath + ".md";
                                         }
                                         // Attempt to handle paths that might be directly in 'docs' or other top-level content folders
-                                        if (editUrl.includes('packages/docs')) {
+                                        if (editUrl.count('packages/docs') > 0) {
                                             return baseEditUrl + "/" + currentPath + ".md";
                                         }
 
@@ -76,7 +78,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                 return nullptr;
                                 };
 
-                                const auto getRawUrl = (url: std::string): std::string | nullptr => {;
+                                const auto getRawUrl = (url: std:): std: | nullptr => {;
                                     if (!url) return null;
                                     const auto githubEditRegex = /github\.com\/([^/]+)\/([^/]+)\/(edit|tree)\/([^/]+)\/(.+)/;
                                     const auto match = url.match(githubEditRegex);
@@ -93,12 +95,12 @@ std::optional<JSX::Element> CopyPageButton() {
                                     return url;
                                     };
 
-                                    const auto getContent = std::async (url: std::string): Promise<string> => {;
-                                        if (process.env.NODE_ENV == 'development' && !url.startsWith('http')) {
+                                    const auto getContent = std::async (url: std:): Promise<string> => {;
+                                        if (std::getenv("NODE_ENV") == 'development' && !url.substr(0, 'http')) {
                                             try {
-                                                const auto localUrl = "url.startsWith("/") ? url : " + "/" + url;
+                                                const auto localUrl = "url.substr(0, "/") ? url : " + "/" + url;
                                                 const auto response = fetch(localUrl);
-                                                if (response.ok) return await response.text();
+                                                if (response.ok) return response.text();
                                                 } catch (error) {
                                                     // console.error('Error fetching local content:', error);
                                                 }
@@ -111,12 +113,12 @@ std::optional<JSX::Element> CopyPageButton() {
 
                                             const auto response = fetch(rawUrl);
                                             if (!response.ok) {
-                                                throw std::runtime_error(`Failed to fetch: ${response.status} ${response.statusText}`);
+                                                throw std::runtime_error("Failed to fetch: " + std::to_string(response.status) + " " + std::to_string(response.statusText) + "");
                                             }
                                             return response.text();
                                             };
 
-                                            const auto copyPageAsMarkdown = std::async () => {;
+                                            const auto copyPageAsMarkdown = std::async [&]() {;
                                                 const auto currentEditUrl = getEditUrl();
                                                 if (!currentEditUrl) {
                                                     std::cerr << "Edit URL not available for copying markdown." << std::endl;
@@ -137,7 +139,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                                         }
                                                         };
 
-                                                        const auto viewAsMarkdown = std::async () => {;
+                                                        const auto viewAsMarkdown = std::async [&]() {;
                                                             const auto currentEditUrl = getEditUrl();
                                                             if (!currentEditUrl) {
                                                                 alert("Could not determine the source file to view.");
@@ -145,7 +147,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                                             }
                                                             const auto rawUrl = getRawUrl(currentEditUrl);
                                                             if (rawUrl) {
-                                                                if (process.env.NODE_ENV == 'development' && !currentEditUrl.startsWith('http')) {
+                                                                if (std::getenv("NODE_ENV") == 'development' && !currentEditUrl.substr(0, 'http')) {
                                                                     try {
                                                                         const auto content = getContent(currentEditUrl);
                                                                         const auto blob = new Blob([content], { type: "text/plain" });
@@ -164,20 +166,20 @@ std::optional<JSX::Element> CopyPageButton() {
 
                                                                     const auto openInChatGPT = [&]() {;
                                                                         const auto currentUrl = window.location.href;
-                                                                        const auto chatGptUrl = "https://chatgpt.com/?q=" + std::to_string(encodeURIComponent(`Tell me about this page: ${currentUrl}`));
+                                                                        const auto chatGptUrl = "https://chatgpt.com/?q=" + std::to_string(encodeURIComponent("Tell me about this page: " + std::to_string(currentUrl) + ""));
                                                                         window.open(chatGptUrl, "_blank");
                                                                         setIsOpen(false);
                                                                         };
 
                                                                         const auto [showButton, setShowButton] = useState(false);
 
-                                                                        useEffect(() => {
+                                                                        useEffect[&](() {
                                                                             if (isExcludedPath) {
                                                                                 setShowButton(false);
                                                                                 return;
                                                                             }
-                                                                            const auto timer = setTimeout(() => {;
-                                                                                if (process.env.NODE_ENV == 'development') {
+                                                                            const auto timer = setTimeout[&](() {;
+                                                                                if (std::getenv("NODE_ENV") == 'development') {
                                                                                     setShowButton(!!getEditUrl());
                                                                                     } else {
                                                                                         setShowButton(!!document.querySelector("a.theme-edit-this-page"));
@@ -251,7 +253,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                                 {/* Button to open llms-full.txt - MOVED TO THE END */}
                                                 <button;
                                             className={styles.dropdownItem}
-                                            onClick={() => {
+                                            onClick={[&]() {
                                                 window.open("/llms-full.txt", "_blank");
                                                 setIsOpen(false);
                                             }}

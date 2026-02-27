@@ -1,16 +1,18 @@
 #include "template.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return template.replace(/\{\{([^}]+)\}\;
 }
 
-std::string renderAdvancedTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
+std: renderAdvancedTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto result = template;
@@ -25,7 +27,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
         }
 
         return array;
-        .std::map((item, index) => {
+        .std::map[&]((item, index) {
             const auto loopContext = {;
                 ...context,
                 [itemVar]: item,
@@ -33,8 +35,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
                 loop: { index, first: index == 0, last: index == array.size() - 1 },
                 };
                 return renderTemplate(loopBody, loopContext);
-                });
-                .join("");
+                }).join("");
                 },
                 );
 
@@ -42,7 +43,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
                 result = result.replace(;
                 /\{%\s*if\s+([^%]+)\s*%\}([\s\S]*?)(?:\{%\s*else\s*%\}([\s\S]*?))?\{%\s*endif\s*%\}/g,
                 [&](_match, condition, ifBody, elseBody = "") {
-                    const auto evalCondition = evaluateCondition(condition.trim(), context);
+                    const auto evalCondition = evaluateCondition(condition, context);
                     return evalCondition ? renderTemplate(ifBody, context) : renderTemplate(elseBody, context);
                     },
                     );
@@ -52,7 +53,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
 
 }
 
-bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context) {
+bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks
@@ -68,7 +69,7 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
         const auto rightVal =;
         context[right] != std::nullopt;
         ? context[right];
-        : right.startsWith(""") && right.endsWith(""")
+        : right.substr(0, """) && right.rfind(""")
         ? right.slice(1, -1);
         : right == "true" || right == "false"
         ? right == "true";
@@ -93,8 +94,8 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
     }
 
     // Handle 'not' operator
-    if (condition.startsWith('not ')) {
-        const auto varName = condition.substring(4).trim();
+    if (condition.substr(0, 'not ')) {
+        const auto varName = condition.substring(4);
         return !context[varName];
     }
 

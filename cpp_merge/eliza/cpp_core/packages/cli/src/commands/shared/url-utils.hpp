@@ -18,11 +18,11 @@ namespace elizaos {
 /**
  * Helper std::function to determine the agent runtime URL
  */
-std::string getAgentRuntimeUrl(OptionValues opts);
+std: getAgentRuntimeUrl(OptionValues opts);
 
 /**
  * Helper std::function to get the agents base API URL
  */
-std::string getAgentsBaseUrl(OptionValues opts);
+std: getAgentsBaseUrl(OptionValues opts);
 
 } // namespace elizaos

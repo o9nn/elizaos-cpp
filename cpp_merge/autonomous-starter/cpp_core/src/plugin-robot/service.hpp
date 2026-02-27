@@ -25,8 +25,8 @@ class RobotService extends Service {
   private context: ScreenContext | null = null;
   private previousScreenshot: Buffer | null = null;
   private descriptionHistory: ScreenDescription[] = [];
-  private tesseractWorker: std::any = null;
-  private isProcessing: boolean = false;
+  private tesseractWorker: std: = null;
+  private isProcessing = false;
   private processingQueue: Promise<void> = Promise.resolve();
 
   public readonly config: RobotServiceConfig = {

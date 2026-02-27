@@ -1,4 +1,5 @@
 #include "settings-content.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void SettingsContent() {
 
     const auto [activeSection, setActiveSection] = useState<SettingsSection>("profile");
 
-    return (;
+    return [&](;
     <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
     {/* Sidebar Navigation */}
     <nav className="lg:w-64 shrink-0">
@@ -18,7 +19,7 @@ void SettingsContent() {
     <Bullet />;
     <span>Settings</span>;
     </div>;
-    {sections.std::map((section) => (;
+    {sections.std::map((section) { return (; };
     <button;
     key={section.id}
     onClick={() => setActiveSection(section.id)}

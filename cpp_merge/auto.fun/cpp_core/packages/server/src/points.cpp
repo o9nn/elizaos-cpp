@@ -1,4 +1,7 @@
 #include "points.hpp"
+#include <string>
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -46,18 +49,18 @@ double calculatePoints(PointEvent evt) {
 
 }
 
-std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description) {
+std::future<void> awardUserPoints(const std:& userAddress, PointEvent event, auto description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
-    const auto now = new Date();
+    const auto now = std::make_unique<Date>();
     const auto rawPoints = calculatePoints(event);
     const auto pointsToAdd = Math.round(rawPoints);
 
     if (pointsToAdd <= 0) return;
 
     // 1) Upsert into user_points
-    //   await db
+    //   db
     //     .insert(userPoints)
     //     .values({
     //       id: uuidv4(),
@@ -70,7 +73,7 @@ std::future<void> awardUserPoints(const std::string& userAddress, PointEvent eve
     //     .onConflictDoUpdate({
     //       target: [userPoints.userAddress, userPoints.eventType],
     //       set: {
-    //          pointsAwarded: sql`${userPoints.pointsAwarded} + ${pointsToAdd}`,
+    //          pointsAwarded: sql"" + std::to_string(userPoints.pointsAwarded) + " + " + std::to_string(pointsToAdd) + "",
     //         description,
     //         timestamp: now,
     //       },
@@ -80,25 +83,15 @@ std::future<void> awardUserPoints(const std::string& userAddress, PointEvent eve
     //so we can keep logs of each event where a user was rewarded points {/* Malibu To do */}
 
     // 2) Update running total in users table
-    const auto existing = db;
-    .select();
-    .from(users);
-    .where(eq(users.address, userAddress));
-    .limit(1);
-    .execute();
+    const auto existing = db.select().from(users).where(eq(users.address, userAddress)).limit(1).execute();
 
-    if (existing.length) {
-        db;
-        .update(users);
+    if (existing.size()) {
+        db.update(users);
         .std::set({
             "points: sql" + users.points + " + " + pointsToAdd
-            });
-            .where(eq(users.address, userAddress));
-            .execute();
+            }).where(eq(users.address, userAddress)).execute();
             } else {
-                db;
-                .insert(users);
-                .values([;
+                db.insert(users).values([;
                 {
                     address: userAddress,
                     name: nullptr,
@@ -106,26 +99,25 @@ std::future<void> awardUserPoints(const std::string& userAddress, PointEvent eve
                     rewardPoints: 0,
                     createdAt: now,
                     },
-                    ]);
-                    .execute();
+                    ]).execute();
                 }
 
 }
 
-std::future<void> awardGraduationPoints(const std::string& mint) {
+std::future<void> awardGraduationPoints(const std:& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
     const auto redisCache = createRedisCache();
 
     // Last swap user
-    std::string lastSwapUser = nullptr;
+    std: lastSwapUser = nullptr;
     try {
         const auto listKey = "swapsList:" + mint;
         const auto [lastSwapString] = redisCache.lrange(listKey, 0, 0); // Get the first item (most recent);
 
         if (lastSwapString) {
-            const auto lastSwapData = /* JSON.parse */ lastSwapString;
+            const auto lastSwapData = /* JSON::parse */ lastSwapString;
             lastSwapUser = lastSwapData.user;
         }
         } catch (redisError) {
@@ -157,12 +149,12 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
         }
 
         // Holding through graduation
-        std::vector<std::any> holders = [];
+        std::vector<std::string> holders = [];
         const auto holdersListKey = "holders:" + mint;
         try {
             const auto holdersString = redisCache.get(holdersListKey);
             if (holdersString) {
-                holders = /* JSON.parse */ holdersString;
+                holders = /* JSON::parse */ holdersString;
                 } else {
                     // Use logger if available
                     console.log(
@@ -177,12 +169,8 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
                     // Continue without awarding holder points if Redis fails
                 }
 
-                const auto [priceRow] = db;
-                .select({ tokenPriceUSD: tokens.tokenPriceUSD })
-                .from(tokens);
-                .where(eq(tokens.mint, mint));
-                .limit(1);
-                .execute();
+                const auto [priceRow] = db.select({ tokenPriceUSD: tokens.tokenPriceUSD })
+                .from(tokens).where(eq(tokens.mint, mint)).limit(1).execute();
 
                 const auto priceAtGraduation = priceRow.tokenPriceUSD || 0;
 
@@ -199,7 +187,7 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
 
 std::future<> distributeWeeklyPoints(auto weeklyPool, auto capPercent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    distributed: number; unassigned: number
+    distributed; unassigned
 }
 
 } // namespace elizaos

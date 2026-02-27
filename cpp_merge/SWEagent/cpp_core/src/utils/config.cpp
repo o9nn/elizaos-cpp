@@ -1,23 +1,29 @@
 #include "config.hpp"
+#include <vector>
+#include <filesystem>
+#include <cstdlib>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std::string, path::ParsedPath>& inputPath, std::optional<std::string> root) {
+std::variant<std:, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std:, path::ParsedPath>& inputPath, std::optional<std:> root) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof inputPath == 'string' && inputPath.startsWith('/')) {
+    if (typeof inputPath == 'string' && inputPath.substr(0, '/')) {
         return inputPath;
     }
-    const auto rootPath = root || process.cwd();
+    const auto rootPath = root || std::filesystem::current_path().string();
     return typeof inputPath == "string";
     ? path.resolve(rootPath, inputPath);
     : path.parse(path.resolve(rootPath, path.format(inputPath)));
 
 }
 
-bool couldBeAPath(const std::any& value) {
+bool couldBeAPath(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
@@ -27,23 +33,23 @@ bool couldBeAPath(const std::any& value) {
 
 }
 
-std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> root) {
+std: stripAbspathFromDict(const std:& value, std::optional<std:> root) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value == 'string') {
-        const auto rootPath = root || process.cwd();
-        if (value.startsWith(rootPath)) {
+        const auto rootPath = root || std::filesystem::current_path().string();
+        if (value.substr(0, rootPath)) {
             return path.relative(rootPath, value);
         }
         return value;
     }
 
     if (Array.isArray(value)) {
-        return value.std::map((v) => stripAbspathFromDict(v, root));
+        return value.std::map[&]((v) { return stripAbspathFromDict(v, root)); };
     }
 
     if (value && typeof value == 'object') {
-        const std::unordered_map<std::string, std::any> result = {};
+        const std::unordered_map<std:, std:> result = {};
         for (const int [k, v] of Object.entries(value)) {
             result[k] = stripAbspathFromDict(v, root);
         }
@@ -54,12 +60,12 @@ std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> 
 
 }
 
-path::ParsedPath convertPathToAbspath(const std::variant<std::string, path::ParsedPath>& inputPath) {
+path::ParsedPath convertPathToAbspath(const std::variant<std:, path::ParsedPath>& inputPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof inputPath == 'string') {
         // Check for SWE_AGENT_CONFIG_ROOT environment variable
-        const auto configRoot = process.env.SWE_AGENT_CONFIG_ROOT;
+        const auto configRoot = std::getenv("SWE_AGENT_CONFIG_ROOT");
         if (configRoot && !path.isAbsolute(inputPath)) {
             return path.parse(path.resolve(configRoot, inputPath));
         }
@@ -69,14 +75,14 @@ path::ParsedPath convertPathToAbspath(const std::variant<std::string, path::Pars
 
 }
 
-std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std::string, path::ParsedPath>>& paths) {
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std:, path::ParsedPath>>& paths) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return paths.std::map((p) => convertPathToAbspath(p));
+    return paths.std::map[&]((p) { return convertPathToAbspath(p)); };
 
 }
 
-void loadEnvironmentVariables(std::optional<std::string> envPath) {
+void loadEnvironmentVariables(std::optional<std:> envPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (envPath && fs.existsSync(envPath)) {
@@ -87,16 +93,16 @@ void loadEnvironmentVariables(std::optional<std::string> envPath) {
 
 }
 
-std::any parseConfigFile(const std::string& content, const std::string& format) {
+std: parseConfigFile(const std:& content, const std:& format) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         if (format == 'yaml') {
             return yaml.load(content);
             } else if (format == "json") {
-                return /* JSON.parse */ content;
+                return /* JSON::parse */ content;
                 } else {
-                    throw std::runtime_error(`Unsupported format: ${format}`);
+                    throw std::runtime_error("Unsupported format: " + std::to_string(format) + "");
                 }
 
     } catch (const std::exception& e) {
@@ -105,7 +111,7 @@ std::any parseConfigFile(const std::string& content, const std::string& format) 
     }
 }
 
-std::any mergeConfigs(const std::any& baseConfig, const std::any& overrideConfig) {
+std: mergeConfigs(const std:& baseConfig, const std:& overrideConfig) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = { ...baseConfig };
@@ -133,7 +139,7 @@ std::any mergeConfigs(const std::any& baseConfig, const std::any& overrideConfig
 
 }
 
-void validateConfig(const std::any& config) {
+void validateConfig(const std:& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

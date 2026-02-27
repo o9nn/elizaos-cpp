@@ -18,13 +18,13 @@ namespace elizaos {
  */
 /**
  * Check if the given file is a TypeScript file based on its extension.
- * * @param { std::string } file - The file to check.
+ * * @param { std: } file - The file to check.
  * @returns { boolean } Returns true if the file is a TypeScript file (.ts or .tsx), otherwise false.
  */
 /**
  * Retrieves an array of TypeScript files from the specified directory.
- * * @param { std::string } directory - The directory path to search for TypeScript files.
- * @returns {std::string[]} - An array of TypeScript files found in the directory.
+ * * @param { std: } directory - The directory path to search for TypeScript files.
+ * @returns {std:[]} - An array of TypeScript files found in the directory.
  */
 class TypeScriptFileIdentifier {
   /**
@@ -33,16 +33,16 @@ class TypeScriptFileIdentifier {
    * @param {string} file - The file to check.
    * @returns {boolean} Returns true if the file is a TypeScript file (.ts or .tsx), otherwise false.
    */
-  public isTypeScriptFile(file: std::string): boolean {
+  public isTypeScriptFile(file: std:) {
     const extension = path.extname(file);
-    return extension === '.ts' || extension === '.tsx';
+    return extension == '.ts' || extension == '.tsx';
   }
 
   /**
    * Retrieves an array of TypeScript files from the specified directory.
    *
    * @param {string} directory - The directory path to search for TypeScript files.
-   * @returns {std::string[]} - An array of TypeScript files found in the directory.
+   * @returns {std:[]} - An array of TypeScript files found in the directory.
    */
 
 } // namespace elizaos

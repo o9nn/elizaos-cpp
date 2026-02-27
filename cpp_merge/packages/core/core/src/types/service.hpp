@@ -111,7 +111,7 @@ public:
     std::shared_ptr<Error> cause;
 };
 
-std::shared_ptr<ServiceError> createServiceError(any error, string code = std::string("UNKNOWN_ERROR"));
+std::shared_ptr<ServiceError> createServiceError(any error, string code = std:("UNKNOWN_ERROR"));
 
 template <typename T>
 any getTypedService(std::shared_ptr<IAgentRuntime> runtime, ServiceTypeName serviceType)

@@ -1,4 +1,9 @@
 #include "experienceAnalyzer.hpp"
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,7 +19,7 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
     );
 
     // If we've seen this exact pattern many times, it's less significant
-    if (similarExperiences.length > 5) {
+    if (similarExperiences.size() > 5) {
         return {
             isSignificant: false,
             confidence: 0.3,
@@ -26,14 +31,14 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
         partialExperience,
         recentExperiences,
         );
-        if (contradictions.length > 0) {
+        if (contradictions.size() > 0) {
             return {
                 isSignificant: true,
                 "learning: " + "New outcome contradicts previous experience: " + partialExperience.result + " vs " + std::to_string(contradictions[0].result)
                 confidence: 0.8,
-                relatedExperiences: contradictions.std::map((e) => e.id),
+                relatedExperiences: contradictions.std::map[&]((e) { return e.id),
                 actionableInsights: ["Update strategy based on new information"],
-                };
+                }; };
             }
 
             // Check if this is a first-time action
@@ -101,13 +106,13 @@ std::vector<Experience> findContradictions(const std::optional<Experience>& part
 
 }
 
-bool similarContext(const std::string& context1, const std::string& context2) {
+bool similarContext(const std:& context1, const std:& context2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Simple similarity check - could be enhanced with better NLP
     const auto words1 = context1.toLowerCase().split(/\s+/);
     const auto words2 = context2.toLowerCase().split(/\s+/);
-    const auto commonWords = words1.filter((w) => (std::find(words2.begin(), words2.end(), w) != words2.end()));
+    const auto commonWords = words1.filter[&]((w) { return (std::find(words2.begin(), words2.end(), w) != words2.end())); };
     return commonWords.size() / Math.max(words1.size(), words2.size()) > 0.5;
 
 }
@@ -116,35 +121,34 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto recentFailures = experiences;
-    .filter((e) => e.type == ExperienceType.FAILURE);
-    .slice(0, 10);
+    .filter[&]((e) { return e.type == ExperienceType.FAILURE); }.substr(0, 10-0);
 
     // Check for repeated failures
     const auto sameActionFailures = recentFailures.filter(;
     [&](e) { return e.action == partial.action,; }
     );
-    if (sameActionFailures.length >= 3) {
+    if (sameActionFailures.size() >= 3) {
         return {
             "learning: " + "Action " + partial.action + " has failed " + sameActionFailures.size() + " times recently. Need alternative approach."
-            relatedIds: sameActionFailures.std::map((e) => e.id),
+            relatedIds: sameActionFailures.std::map[&]((e) { return e.id),
             insights: [
             "Avoid " + partial.action + " until root cause is addressed"
             "Consider alternative actions to achieve the same goal",
             ],
-            };
+            }; };
         }
 
         // Check for cascading failures
-        if (recentFailures.length >= 5) {
+        if (recentFailures.size() >= 5) {
             return {
                 learning:
                 "Multiple consecutive failures detected. System may be in unstable state.",
-                relatedIds: recentFailures.slice(0, 5).std::map((e) => e.id),
+                relatedIds: recentFailures.substr(0, 5-0).std::map[&]((e) { return e.id),
                 insights: [
                 "Pause and reassess current approach",
                 "Check system health and dependencies",
                 ],
-                };
+                }; };
             }
 
             return nullptr;
@@ -154,9 +158,9 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
 std::future<std::vector> detectPatterns(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    description: std::string;
-    frequency: number;
-    experiences: std::string[];
+    description: std:;
+    frequency;
+    experiences: std:[];
     significance: "low" | "medium" | "high";
 
 }
@@ -166,7 +170,7 @@ std::unordered_map<double, std::vector<Experience>> groupByHour(const std::vecto
 
     const auto groups = new Map<number, Experience[]>();
 
-    experiences.forEach((exp) => {
+    experiences.forEach[&]((exp) {
         const auto hour = new Date(exp.createdAt).getHours();
         const auto group = groups.get(hour) || [];
         group.push_back(exp);

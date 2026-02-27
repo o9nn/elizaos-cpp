@@ -1,4 +1,6 @@
 #include "page.hpp"
+#include <vector>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,15 +13,15 @@ void LeaderboardPage() {
         const auto [scope, setScope] = useState<"weekly" | "all_time">("weekly");
         const auto [copied, setCopied] = useState(false);
 
-        const auto { data: leaderboardData, isLoading, error, refetch } = useQuery({;
+        const auto { data: leaderboardData, isLoading, error, refetch } = useQuery[&]({;
             queryKey: ["leaderboard", agentId, scope, userId],
-            queryFn: std::async () => {
+            queryFn: std::async () {
                 if (!gamificationClient) {
                     throw std::runtime_error('Gamification service not available');
                 }
                 try {
                     return gamificationClient.getLeaderboard(agentId, scope, 50, userId);
-                    } catch (err: std::any) {
+                    } catch (err: std:) {
                         std::cerr << "[LeaderboardPage] Error fetching leaderboard:" << err << std::endl;
                         // If 404, return empty data instead of throwing
                         if (err.response.status == 404 || err.status == 404) {
@@ -47,10 +49,10 @@ void LeaderboardPage() {
                         ];
 
                         // Simple hash std::function to deterministically select avatar based on userId
-                        const auto getRandomAvatar = (userId: std::string): std::string => {;
+                        const auto getRandomAvatar = (userId: std:): std: => {;
                             // Use userId as seed for deterministic randomization
                             auto hash = 0;
-                            for (int i = 0; i < userId.length; i++) {
+                            for (int i = 0; i < userId.size(); i++) {
                                 const auto char = userId.charCodeAt(i);
                                 hash = ((hash << 5) - hash) + char;
                                 hash = hash & hash; // Convert to 32-bit integer;
@@ -60,14 +62,14 @@ void LeaderboardPage() {
                             };
 
                             // Check if avatar is the default krimson avatar (early users have this)
-                            const auto isKrimsonAvatar = (avatar: std::string | std::nullopt): boolean => {;
+                            const auto isKrimsonAvatar = [&](avatar: std: | std::nullopt) {;
                                 if (!avatar) return false;
                                 return (std::find(avatar.begin(), avatar.end(), "user_krimson.png") != avatar.end()) || (std::find(avatar.begin(), avatar.end(), "user_krimson") != avatar.end());
                                 };
 
                                 // Transform leaderboard entries to RebelRanking format
                                 // API already limits to 50 entries
-                                const std::vector<RebelRanking> rebels = (leaderboardData.entries || []).std::map((entry: LeaderboardEntry, index: number) => {;
+                                const std::vector<RebelRanking> rebels = (leaderboardData.entries || []).std::map[&]((entry: LeaderboardEntry, index) {;
                                     const auto username = "entry.username || " + "User " + std::to_string(entry.userId.substring(0, 8));
                                     // Randomize if no avatar or if avatar is the default krimson avatar
                                     const auto avatar = (!entry.avatar || isKrimsonAvatar(entry.avatar));
@@ -90,9 +92,9 @@ void LeaderboardPage() {
                                             };
 
                                             // Query for referral code
-                                            const auto { data: referralData, isLoading: isLoadingReferral, refetch: refetchReferral } = useQuery({;
+                                            const auto { data: referralData, isLoading: isLoadingReferral, refetch: refetchReferral } = useQuery[&]({;
                                                 queryKey: ["referralCode", agentId, userId],
-                                                queryFn: std::async () => {
+                                                queryFn: std::async () {
                                                     if (!gamificationClient || !userId) {
                                                         throw std::runtime_error('Gamification service or userId not available');
                                                     }
@@ -102,13 +104,13 @@ void LeaderboardPage() {
                                                     staleTime: Infinity, // Referral code doesn't change
                                                     });
 
-                                                    const auto handleCopyReferralLink = std::async () => {;
+                                                    const auto handleCopyReferralLink = std::async [&]() {;
                                                         if (!referralData.referralLink) return;
 
                                                         try {
                                                             navigator.clipboard.writeText(referralData.referralLink);
                                                             setCopied(true);
-                                                            setTimeout(() => setCopied(false), 2000);
+                                                            setTimeout[&](() { return setCopied(false), 2000); };
                                                             } catch (err) {
                                                                 std::cerr << "Failed to copy referral link:" << err << std::endl;
                                                             }
@@ -128,7 +130,7 @@ void LeaderboardPage() {
                                                             ? "calc(100vh - 440px)" // Account for referral only;
                                                             : "calc(100vh - 240px)"; // Just header and tabs
 
-                                                            return (;
+                                                            return [&](;
                                                             <DashboardPageLayout;
                                                             header={{
                                                                 title: "Leaderboard",
@@ -137,7 +139,7 @@ void LeaderboardPage() {
                                                             >;
                                                             <div className="flex flex-col h-full">;
                                                         {/* Scope Tabs */}
-                                                        <Tabs value={scope} onValueChange={(value) => setScope(value as "weekly" | "all_time")} className="flex flex-col flex-1 min-h-0">;
+                                                        <Tabs value={scope} onValueChange={(value) { return setScope(value as "weekly" | "all_time")} className="flex flex-col flex-1 min-h-0">; };
                                                         <div className="flex items-center justify-between flex-shrink-0">;
                                                         <TabsList>;
                                                         <TabsTrigger value="weekly">Weekly</TabsTrigger>;
@@ -155,14 +157,14 @@ void LeaderboardPage() {
                                                 </div>;
 
                                                 <TabsContent value="weekly" className="mt-6 flex-1 min-h-0 flex flex-col">;
-                                                {error && !isLoading ? (;
+                                                {error && !isLoading ? [&](;
                                                 <DashboardCard title="WEEKLY LEADERBOARD">;
                                                 <div className="text-center py-12">;
                                                 <p className="text-destructive mb-2">Error loading leaderboard</p>;
                                                 <p className="text-sm text-muted-foreground mb-4">;
                                             {true /* instanceof check */ ? error.message  = "Unknown error"}
                                             </p>;
-                                            <Button onClick={() => refetch()} variant="outline" size="sm">;
+                                            <Button onClick={() { return refetch()} variant="outline" size="sm">; };
                                             <RefreshCw className="w-4 h-4 mr-2" />;
                                             Retry;
                                             </Button>;
@@ -171,7 +173,7 @@ void LeaderboardPage() {
                                             ) : isLoading ? (
                                             <DashboardCard title="WEEKLY LEADERBOARD">;
                                             <div className="space-y-4">;
-                                            {[...Array(10)].std::map((_, i) => (;
+                                            {[...Array(10)].std::map[&]((_, i) { return (; };
                                             <div key={i} className="flex items-center gap-4 animate-pulse">;
                                             <div className="h-8 w-8 bg-muted rounded" />;
                                             <div className="h-12 w-12 bg-muted rounded-lg" />;
@@ -200,14 +202,14 @@ void LeaderboardPage() {
                                     </TabsContent>;
 
                                     <TabsContent value="all_time" className="mt-6 flex-1 min-h-0 flex flex-col">;
-                                    {error && !isLoading ? (;
+                                    {error && !isLoading ? [&](;
                                     <DashboardCard title="ALL-TIME LEADERBOARD">;
                                     <div className="text-center py-12">;
                                     <p className="text-destructive mb-2">Error loading leaderboard</p>;
                                     <p className="text-sm text-muted-foreground mb-4">;
                                 {true /* instanceof check */ ? error.message  = "Unknown error"}
                                 </p>;
-                                <Button onClick={() => refetch()} variant="outline" size="sm">;
+                                <Button onClick={() { return refetch()} variant="outline" size="sm">; };
                                 <RefreshCw className="w-4 h-4 mr-2" />;
                                 Retry;
                                 </Button>;
@@ -216,7 +218,7 @@ void LeaderboardPage() {
                                 ) : isLoading ? (
                                 <DashboardCard title="ALL-TIME LEADERBOARD">;
                                 <div className="space-y-4">;
-                                {[...Array(10)].std::map((_, i) => (;
+                                {[...Array(10)].std::map[&]((_, i) { return (; };
                                 <div key={i} className="flex items-center gap-4 animate-pulse">;
                                 <div className="h-8 w-8 bg-muted rounded" />;
                                 <div className="h-12 w-12 bg-muted rounded-lg" />;
@@ -246,7 +248,7 @@ void LeaderboardPage() {
                         </Tabs>;
 
                     {/* User Rank Card */}
-                    {hasUserRank && (;
+                    {hasUserRank && [&](;
                     <div className="mt-6 mb-4 flex-shrink-0">;
                     <DashboardCard title="Your Rank">;
                     <div className="flex items-center justify-between">;
@@ -257,8 +259,8 @@ void LeaderboardPage() {
                 </div>;
                 </div>;
                 <Badge variant="default" className="text-lg px-4 py-2">;
-                {leaderboardData.entries.find((e: LeaderboardEntry) => e.userId == userId).points.toLocaleString() || 0} POINTS
-                </Badge>;
+                {leaderboardData.entries.find((e: LeaderboardEntry) { return e.userId == userId).points.toLocaleString() || 0} POINTS
+                </Badge>; };
                 </div>;
                 </DashboardCard>;
                 </div>;
@@ -316,12 +318,12 @@ void LeaderboardPage() {
         Share your referral link to earn points when friends sign up and activate their accounts!;
         </p>;
         </div>;
-        ) : (
+        ) : [&](
         <div className="text-center py-4">;
         <p className="text-sm text-muted-foreground">Unable to load referral code</p>;
         <Button;
-        onClick={() => refetchReferral()}
-        variant="outline";
+        onClick={() { return refetchReferral()}
+        variant="outline"; };
         size="sm";
         className="mt-2";
         >;

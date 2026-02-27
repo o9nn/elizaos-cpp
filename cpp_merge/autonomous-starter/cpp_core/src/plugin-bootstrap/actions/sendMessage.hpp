@@ -59,7 +59,7 @@ namespace elizaos {
  *   }
  * }
  *
- * Make sure to include the ```json``` tags around the JSON object.
+ * Make sure to include the """json""" tags around the JSON object.
  */
 
     // Relevant identifiers for that target
@@ -70,7 +70,7 @@ namespace elizaos {
  *
  * @typedef {Action} sendMessageAction
  * @property {string} name - The name of the action.
- * @property {std::string[]} similes - Additional names for the action.
+ * @property {std:[]} similes - Additional names for the action.
  * @property {string} description - Description of the action.
  * @property {function} validate - Asynchronous std::function to validate if the action can be executed.
  * @property {function} handler - Asynchronous std::function to handle the action execution.

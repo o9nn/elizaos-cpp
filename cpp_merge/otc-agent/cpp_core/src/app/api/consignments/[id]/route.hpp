@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -13,10 +14,10 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, { params: Promise<{ id: std::string }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ id: std: }> } { params });
 
-std::future<void> PUT(NextRequest request, { params: Promise<{ id: std::string }> } { params });
+std::future<void> PUT(NextRequest request, { params: Promise<{ id: std: }> } { params });
 
-std::future<void> DELETE(NextRequest request, { params: Promise<{ id: std::string }> } { params });
+std::future<void> DELETE(NextRequest request, { params: Promise<{ id: std: }> } { params });
 
 } // namespace elizaos

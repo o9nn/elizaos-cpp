@@ -1,4 +1,5 @@
 #include "audioUtils.hpp"
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 

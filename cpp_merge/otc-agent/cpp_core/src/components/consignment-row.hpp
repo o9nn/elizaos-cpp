@@ -16,7 +16,7 @@ namespace elizaos {
 
 struct ConsignmentRowProps {
     OTCConsignment consignment;
-    std::optional<() => void> onUpdate;
+    std::optional<[&]() { return void> onUpdate; };
 };
 
 void ConsignmentRow(auto { consignment, ConsignmentRowProps onUpdate });

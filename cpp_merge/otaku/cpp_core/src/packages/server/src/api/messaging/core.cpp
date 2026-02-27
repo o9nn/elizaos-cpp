@@ -1,4 +1,5 @@
 #include "core.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Endpoint for AGENT REPLIES or direct submissions to the central bus FROM AGENTS/SYSTEM
-    (router).post("/submit", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) => {
+    (router).post[&]("/submit", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) {
         const auto {;
             channel_id,
             server_id, // This is the server_id;
@@ -97,7 +98,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                 }
                                 });
 
-                                (router).post("/action", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) => {
+                                (router).post[&]("/action", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) {
                                     const auto {;
                                         messageId,
                                         channel_id,
@@ -128,9 +129,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                             }
 
                                             if (in_reply_to_message_id && !validateUuid(in_reply_to_message_id)) {
-                                                return res;
-                                                .status(400);
-                                                .json({ success: false, error: "Invalid in_reply_to_message_id format" });
+                                                return res.status(400).json({ success: false, error: "Invalid in_reply_to_message_id format" });
                                             }
 
                                             if (messageId && !validateUuid(messageId)) {
@@ -186,7 +185,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                         }
                                                         });
 
-                                                        (router).patch("/action/:id", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) => {
+                                                        (router).patch[&]("/action/:id", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) {
                                                             const auto { id } = req.params;
 
                                                             if (!validateUuid(id)) {
@@ -204,9 +203,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                                 } = req.body || {}
 
                                                                 if (in_reply_to_message_id && !validateUuid(in_reply_to_message_id)) {
-                                                                    return res;
-                                                                    .status(400);
-                                                                    .json({ success: false, error: "Invalid in_reply_to_message_id format" });
+                                                                    return res.status(400).json({ success: false, error: "Invalid in_reply_to_message_id format" });
                                                                 }
                                                                 if (author_id && !validateUuid(author_id)) {
                                                                     return res.status(400).json({ success: false, error: "Invalid author_id format" });
@@ -264,7 +261,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                                             });
 
                                                                             // Endpoint for INGESTING messages from EXTERNAL platforms (e.g., Discord plugin)
-                                                                            (router).post("/ingest-external", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) => {
+                                                                            (router).post[&]("/ingest-external", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) {
                                                                                 const auto messagePayload = req.body<MessageService>; // Partial because ID, created_at will be generated;
 
                                                                                 if (

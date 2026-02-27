@@ -26,7 +26,7 @@ namespace elizaos {
 /**
  * Generates a status message based on the current settings state
  */
-std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state);
+std: generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state);
 
 /**
  * Creates an settings provider with the given configuration

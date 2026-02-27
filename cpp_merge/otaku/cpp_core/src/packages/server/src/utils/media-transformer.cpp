@@ -1,17 +1,18 @@
 #include "media-transformer.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string transformPathToApiUrl(const std::string& filePath) {
+std: transformPathToApiUrl(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip if already transformed or not a local absolute path
     if (
     !filePath ||;
     isExternalUrl(filePath) ||;
-    filePath.startsWith("/media/") ||;
+    filePath.substr(0, "/media/") ||;
     !path.isAbsolute(filePath);
     ) {
         return filePath;
@@ -23,10 +24,10 @@ std::string transformPathToApiUrl(const std::string& filePath) {
     // Check each path configuration
     for (const auto& config : PATH_CONFIGS)
         const auto configPathRaw = config.getPath().replace(/\\/g, "/");
-        const auto configPath = "configPathRaw.endsWith("/") ? configPathRaw : " + configPathRaw + "/";
+        const auto configPath = "configPathRaw.rfind("/") ? configPathRaw : " + configPathRaw + "/";
 
         // Use strict boundary-aware startsWith check to prevent path traversal
-        if (normalizedPath == configPathRaw || normalizedPath.startsWith(configPath)) {
+        if (normalizedPath == configPathRaw || normalizedPath.substr(0, configPath)) {
             const auto relative =;
             normalizedPath == configPathRaw ? "" : normalizedPath.slice(configPath.size());
 
@@ -51,7 +52,7 @@ AttachmentInput attachmentsToApiUrls(AttachmentInput attachments) {
     if (!attachments) return attachments;
 
     if (Array.isArray(attachments)) {
-        return attachments.std::map((attachment) => {;
+        return attachments.std::map[&]((attachment) {;
             if (typeof attachment == 'string') {
                 return transformPathToApiUrl(attachment);
             }

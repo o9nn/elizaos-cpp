@@ -2,7 +2,7 @@
 
 any useColorScheme()
 {
-    return std::string("light");
+    return std:("light");
 };
 
 

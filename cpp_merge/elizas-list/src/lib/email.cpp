@@ -3,23 +3,23 @@
 void sendProjectNotification(string to, object project)
 {
     auto html = render(ProjectNotification(object{
-        object::pair{std::string("project"), std::string("project")}
+        object::pair{std:("project"), std:("project")}
     }));
     std::async([=]() { transporter->sendMail(object{
-        object::pair{std::string("from"), std::string(""ELIZAS LIST" <notifications@elizaslist.dev>")}, 
-        object::pair{std::string("to"), std::string("to")}, 
-        object::pair{std::string("subject"), std::string("New Project: ") + project["name"] + string_empty}, 
-        object::pair{std::string("html"), std::string("html")}
+        object::pair{std:("from"), std:(""ELIZAS LIST" <notifications@elizaslist.dev>")}, 
+        object::pair{std:("to"), std:("to")}, 
+        object::pair{std:("subject"), std:("New Project: ") + project["name"] + string_empty}, 
+        object::pair{std:("html"), std:("html")}
     }); });
 };
 
 
 any transporter = createTransport(object{
-    object::pair{std::string("host"), process->env->SMTP_HOST}, 
-    object::pair{std::string("port"), parseInt(OR((process->env->SMTP_PORT), (std::string("587"))))}, 
-    object::pair{std::string("auth"), object{
-        object::pair{std::string("user"), process->env->SMTP_USER}, 
-        object::pair{std::string("pass"), process->env->SMTP_PASS}
+    object::pair{std:("host"), process->env->SMTP_HOST}, 
+    object::pair{std:("port"), parseInt(OR((process->env->SMTP_PORT), (std:("587"))))}, 
+    object::pair{std:("auth"), object{
+        object::pair{std:("user"), process->env->SMTP_USER}, 
+        object::pair{std:("pass"), process->env->SMTP_PASS}
     }}
 });
 

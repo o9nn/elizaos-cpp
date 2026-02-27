@@ -1,23 +1,25 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void createFilemap(const std::string& filePath) {
+void createFilemap(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
         std::cerr << "File not found: " + filePath << std::endl;
-        process.exit(1);
+        std::exit(1);
     }
 
     // Read file content
     const auto fileContent = fs.readFileSync(filePath, "utf-8");
 
     // Initialize parser
-    const auto parser = new Parser();
+    const auto parser = std::make_unique<Parser>();
     parser.setLanguage(Python);
 
     // Parse the file
@@ -45,7 +47,7 @@ void createFilemap(const std::string& filePath) {
     // Build output with elided ranges
     const auto lines = fileContent.split("\n");
     const auto elidedLines = new Set<number>();
-    const std::vector<std::any> elideMessages = [];
+    const std::vector<std::string> elideMessages = [];
 
     for (const auto& range : elideRanges)
         for (int i = range.start; i <= range.end; i++) {
@@ -58,9 +60,9 @@ void createFilemap(const std::string& filePath) {
         }
 
         // Combine regular lines and elide messages
-        const std::vector<std::any> output = [];
+        const std::vector<std::string> output = [];
 
-        lines.forEach((line, index) => {
+        lines.forEach[&]((line, index) {
             if (!elidedLines.has(index)) {
                 output.push_back({ line: index, content: line });
             }
@@ -71,7 +73,7 @@ void createFilemap(const std::string& filePath) {
                 });
 
                 // Sort by line number and print
-                output.sort((a, b) => a.line - b.line);
+                output.sort[&]((a, b) { return a.line - b.line); };
 
                 output.forEach(item => {
                     const auto lineNum = (item.line + 1).toString().padStart(6, " ");

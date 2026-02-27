@@ -1,4 +1,5 @@
 #include "crud.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,13 +13,13 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
         const auto db = serverInstance.database;
 
         // List all agents with minimal details (public)
-        router.get("/", std::async (_: express.Request, res) => {
+        router.get[&]("/", std::async (_: express.Request, res) {
             try {
                 if (!db) {
                     return sendError(res, 500, "DB_ERROR", "Database not available");
                 }
                 const auto allAgents = db.getAgents();
-                const auto runtimes = elizaOS.getAgents().std::map((a) => a.agentId);
+                const auto runtimes = elizaOS.getAgents().std::map[&]((a) { return a.agentId); };
 
                 // Return only minimal agent data
                 const auto response = allAgents;
@@ -29,8 +30,8 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                     bio: agent.bio.[0] || "",
                     status: agent.id && (std::find(runtimes.begin(), runtimes.end(), agent.id) != runtimes.end()) ? "active" : "inactive",
                     }));
-                    .filter((agent) => agent.id) // Filter out agents without IDs;
-                    .sort((a: std::any, b: std::any) => {
+                    .filter[&]((agent) { return agent.id) // Filter out agents without IDs; };
+                    .sort[&]((a: std:, b: std:) {
                         if (a.status == b.status) {
                             return a.name.localeCompare(b.name);
                         }
@@ -54,7 +55,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                         });
 
                         // Get specific agent details (public)
-                        router.get("/:agentId", std::async (req: express.Request, res) => {
+                        router.get[&]("/:agentId", std::async (req: express.Request, res) {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -95,7 +96,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                     });
 
                                     // Create new agent - ADMIN ONLY
-                                    router.post("/", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
+                                    router.post[&]("/", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) {
                                         logger.debug('[AGENT CREATE] Creating new agent');
                                         const auto { characterPath, characterJson, agent } = req.body;
                                         if (!db) {
@@ -109,7 +110,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                 logger.debug('[AGENT CREATE] Parsing character from JSON');
                                                 character = serverInstance.jsonToCharacter(characterJson);
                                                 } else if (characterPath) {
-                                                    logger.debug(`[AGENT CREATE] Loading character from path: ${characterPath}`);
+                                                    logger.debug("[AGENT CREATE] Loading character from path: " + std::to_string(characterPath) + "");
                                                     character = serverInstance.loadCharacterTryPath(characterPath);
                                                     } else if (agent) {
                                                         logger.debug('[AGENT CREATE] Parsing character from agent object');
@@ -126,12 +127,12 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                             logger.debug('[AGENT CREATE] Encrypting secrets');
                                                             const auto salt = getSalt();
                                                             character.settings.secrets = encryptObjectValues(;
-                                                            character.settings.secrets<std::string, any>,
+                                                            character.settings.secrets<std:, any>,
                                                             salt;
                                                             );
                                                         }
 
-                                                        const auto ensureAgentExists = std::async (character: Character) => {;
+                                                        const auto ensureAgentExists = std::async [&](character: Character) {;
                                                             const auto agentId = stringToUuid(character.name);
                                                             auto agent = db.getAgent(agentId);
                                                             if (!agent) {
@@ -144,7 +145,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                             const auto newAgent = ensureAgentExists(character);
 
                                                             if (!newAgent) {
-                                                                throw std::runtime_error(`Failed to create agent ${character.name}`);
+                                                                throw std::runtime_error("Failed to create agent " + std::to_string(character.name) + "");
                                                             }
 
                                                             // Remove settings from response to prevent exposure of secrets
@@ -157,7 +158,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                     character: safeCharacter,
                                                                     },
                                                                     });
-                                                                    logger.success(`[AGENT CREATE] Successfully created agent: ${character.name}`);
+                                                                    logger.success("[AGENT CREATE] Successfully created agent: " + std::to_string(character.name) + "");
                                                                     } catch (error) {
                                                                         logger.error(
                                                                         "[AGENT CREATE] Error creating agent:",
@@ -175,7 +176,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                             });
 
                                                                             // Update agent - ADMIN ONLY
-                                                                            router.patch("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
+                                                                            router.patch[&]("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) {
                                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                                 if (!agentId) {
                                                                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -193,8 +194,8 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
 
                                                                                     if (updates.settings.secrets) {
                                                                                         const auto salt = getSalt();
-                                                                                        const std::variant<Record<std::string, std::string, null>> encryptedSecrets = {};
-                                                                                        Object.entries(updates.settings.secrets).forEach(([key, value]) => {
+                                                                                        const std::variant<Record<std:, std:, null>> encryptedSecrets = {};
+                                                                                        Object.entries(updates.settings.secrets).forEach[&](([key, value]) {
                                                                                             if (value == null) {
                                                                                                 encryptedSecrets[key] = nullptr;
                                                                                                 } else if (typeof value == "string") {
@@ -206,7 +207,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                     updates.settings.secrets = encryptedSecrets;
                                                                                                 }
 
-                                                                                                if (Object.keys(updates).length > 0) {
+                                                                                                if (Object.keys(updates).size() > 0) {
                                                                                                     db.updateAgent(agentId, updates);
                                                                                                 }
 
@@ -220,26 +221,22 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                         throw std::runtime_error('plugins must be an array');
                                                                                                     }
 
-                                                                                                    const auto currentPlugins = (currentAgent.plugins || []);
-                                                                                                    .filter(p => p != nullptr);
+                                                                                                    const auto currentPlugins = (currentAgent.plugins || []).filter(p => p != nullptr);
                                                                                                     .std::map(p => typeof p == "string" ? p : (p).name)
-                                                                                                    .filter(name => typeof name == "string");
-                                                                                                    .sort();
+                                                                                                    .filter(name => typeof name == "string").sort();
 
-                                                                                                    const auto updatedPlugins = (updatedAgent.plugins || []);
-                                                                                                    .filter(p => p != nullptr);
+                                                                                                    const auto updatedPlugins = (updatedAgent.plugins || []).filter(p => p != nullptr);
                                                                                                     .std::map(p => typeof p == "string" ? p : (p).name)
-                                                                                                    .filter(name => typeof name == "string");
-                                                                                                    .sort();
+                                                                                                    .filter(name => typeof name == "string").sort();
 
                                                                                                     const auto pluginsChanged =;
                                                                                                     currentPlugins.size() != updatedPlugins.size() ||;
-                                                                                                    currentPlugins.some((plugin, idx) => plugin != updatedPlugins[idx]);
+                                                                                                    currentPlugins.some[&]((plugin, idx) { return plugin != updatedPlugins[idx]); };
 
                                                                                                     needsRestart = pluginsChanged;
 
                                                                                                     if (needsRestart) {
-                                                                                                        logger.debug(`[AGENT UPDATE] Agent ${agentId} requires restart due to plugins changes`);
+                                                                                                        logger.debug("[AGENT UPDATE] Agent " + std::to_string(agentId) + " requires restart due to plugins changes");
                                                                                                     }
                                                                                                 }
 
@@ -247,7 +244,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                 if (activeRuntime && updatedAgent) {
                                                                                                     if (needsRestart) {
                                                                                                         // Plugins changed - need full restart
-                                                                                                        logger.debug(`[AGENT UPDATE] Restarting agent ${agentId} due to configuration changes`);
+                                                                                                        logger.debug("[AGENT UPDATE] Restarting agent " + std::to_string(agentId) + " due to configuration changes");
 
                                                                                                         try {
                                                                                                             serverInstance.unregisterAgent(agentId);
@@ -255,10 +252,10 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                             // Restart the agent with new configuration
                                                                                                             const auto { enabled, status, createdAt, updatedAt, ...characterData } = updatedAgent;
                                                                                                             const auto runtimes = serverInstance.startAgents([characterData]);
-                                                                                                            if (!runtimes || runtimes.length == 0) {
+                                                                                                            if (!runtimes || runtimes.size() == 0) {
                                                                                                                 throw std::runtime_error('Failed to restart agent after configuration change');
                                                                                                             }
-                                                                                                            logger.success(`[AGENT UPDATE] Agent ${agentId} restarted successfully`);
+                                                                                                            logger.success("[AGENT UPDATE] Agent " + std::to_string(agentId) + " restarted successfully");
                                                                                                             } catch (restartError) {
                                                                                                                 logger.error(
                                                                                                                 { error: restartError, agentId },
@@ -283,7 +280,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                     // Only character properties changed - can update in-place
                                                                                                                     const auto { enabled, status, createdAt, updatedAt, ...characterData } = updatedAgent;
                                                                                                                     elizaOS.updateAgent(agentId, characterData);
-                                                                                                                    logger.debug(`[AGENT UPDATE] Updated active agent ${agentId} without restart`);
+                                                                                                                    logger.debug("[AGENT UPDATE] Updated active agent " + std::to_string(agentId) + " without restart");
                                                                                                                 }
                                                                                                             }
 
@@ -310,8 +307,8 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                             });
 
                                                                                                             // Delete agent - ADMIN ONLY
-                                                                                                            router.delete("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
-                                                                                                                logger.debug(`[AGENT DELETE] Received request to delete agent with ID: ${req.params.agentId}`);
+                                                                                                            router.delete[&]("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) {
+                                                                                                                logger.debug("[AGENT DELETE] Received request to delete agent with ID: " + std::to_string(req.params.agentId) + "");
 
                                                                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                                                                 if (!agentId) {
@@ -322,7 +319,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                     return sendError(res, 500, "DB_ERROR", "Database not available");
                                                                                                                 }
 
-                                                                                                                logger.debug(`[AGENT DELETE] Validated agent ID: ${agentId}, proceeding with deletion`);
+                                                                                                                logger.debug("[AGENT DELETE] Validated agent ID: " + std::to_string(agentId) + ", proceeding with deletion");
 
                                                                                                                 try {
                                                                                                                     const auto agent = db.getAgent(agentId);
@@ -331,7 +328,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                         return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                                                                     }
 
-                                                                                                                    logger.debug(`[AGENT DELETE] Agent found: ${agent.name} (${agentId})`);
+                                                                                                                    logger.debug("[AGENT DELETE] Agent found: " + std::to_string(agent.name) + " (" + std::to_string(agentId) + ")");
                                                                                                                     } catch (checkError) {
                                                                                                                         logger.error(
                                                                                                                         "[AGENT DELETE] Error checking if agent exists: " + agentId
@@ -339,7 +336,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                         );
                                                                                                                     }
 
-                                                                                                                    const auto timeoutId = setTimeout(() => {;
+                                                                                                                    const auto timeoutId = setTimeout[&](() {;
                                                                                                                         std::cout << "[AGENT DELETE] Operation taking longer than expected for agent: " + agentId << std::endl;
                                                                                                                         if (!res.headersSent) {
                                                                                                                             res.status(202).json({
@@ -353,16 +350,16 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
 
                                                                                                                             const auto MAX_RETRIES = 2;
                                                                                                                             auto retryCount = 0;
-                                                                                                                            std::any lastError = nullptr;
+                                                                                                                            std: lastError = nullptr;
 
                                                                                                                             while (retryCount <= MAX_RETRIES) {
                                                                                                                                 try {
                                                                                                                                     const auto runtime = elizaOS.getAgent(agentId);
                                                                                                                                     if (runtime) {
-                                                                                                                                        logger.debug(`[AGENT DELETE] Agent ${agentId} is running, unregistering from server`);
+                                                                                                                                        logger.debug("[AGENT DELETE] Agent " + std::to_string(agentId) + " is running, unregistering from server");
                                                                                                                                         try {
                                                                                                                                             serverInstance.unregisterAgent(agentId);
-                                                                                                                                            logger.debug(`[AGENT DELETE] Agent ${agentId} unregistered successfully`);
+                                                                                                                                            logger.debug("[AGENT DELETE] Agent " + std::to_string(agentId) + " unregistered successfully");
                                                                                                                                             } catch (stopError) {
                                                                                                                                                 logger.error(
                                                                                                                                                 "[AGENT DELETE] Error stopping agent " + agentId + ":"
@@ -370,17 +367,17 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                                                 );
                                                                                                                                             }
                                                                                                                                             } else {
-                                                                                                                                                logger.debug(`[AGENT DELETE] Agent ${agentId} was not running, no need to unregister`);
+                                                                                                                                                logger.debug("[AGENT DELETE] Agent " + std::to_string(agentId) + " was not running, no need to unregister");
                                                                                                                                             }
 
-                                                                                                                                            logger.debug(`[AGENT DELETE] Calling database deleteAgent method for agent: ${agentId}`);
+                                                                                                                                            logger.debug("[AGENT DELETE] Calling database deleteAgent method for agent: " + std::to_string(agentId) + "");
 
                                                                                                                                             const auto deleteResult = db.deleteAgent(agentId);
-                                                                                                                                            logger.debug(`[AGENT DELETE] Database deleteAgent result: ${JSON.stringify(deleteResult)}`);
+                                                                                                                                            logger.debug("[AGENT DELETE] Database deleteAgent result: " + std::to_string(nlohmann::json().dump(deleteResult)) + "");
 
                                                                                                                                             clearTimeout(timeoutId);
 
-                                                                                                                                            logger.success(`[AGENT DELETE] Successfully deleted agent: ${agentId}`);
+                                                                                                                                            logger.success("[AGENT DELETE] Successfully deleted agent: " + std::to_string(agentId) + "");
 
                                                                                                                                             if (!res.headersSent) {
                                                                                                                                                 res.status(204).send();
@@ -401,8 +398,8 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                                                 }
 
                                                                                                                                                 const auto delay = 1000 * Math.pow(2, retryCount - 1);
-                                                                                                                                                logger.debug(`[AGENT DELETE] Waiting ${delay}ms before retry ${retryCount}`);
-                                                                                                                                                new Promise((resolve) => setTimeout(resolve, delay));
+                                                                                                                                                logger.debug("[AGENT DELETE] Waiting " + std::to_string(delay) + "ms before retry " + std::to_string(retryCount) + "");
+                                                                                                                                                new Promise[&]((resolve) { return setTimeout(resolve, delay)); };
                                                                                                                                             }
                                                                                                                                         }
 
@@ -415,7 +412,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                                                             if (lastError instanceof Error) {
                                                                                                                                                 const auto message = lastError.message;
 
-                                                                                                                                                if (message.includes('foreign key constraint')) {
+                                                                                                                                                if (message.count('foreign key constraint') > 0) {
                                                                                                                                                     errorMessage = "Cannot delete agent because it has active references in the system";
                                                                                                                                                     statusCode = 409;
                                                                                                                                                     } else if ((std::find(message.begin(), message.end(), "timed out") != message.end())) {

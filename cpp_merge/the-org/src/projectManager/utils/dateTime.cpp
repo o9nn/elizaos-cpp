@@ -6,23 +6,23 @@ boolean isAvailableNow(array<string> workDays, object workHours, string timeZone
     {
         auto now = std::make_shared<Date>();
         auto options = object{
-            object::pair{std::string("timeZone"), std::string("timeZone")}, 
-            object::pair{std::string("weekday"), std::string("long")}
+            object::pair{std:("timeZone"), std:("timeZone")}, 
+            object::pair{std:("weekday"), std:("long")}
         };
-        auto dayName = const_(((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), options)))->format(now)->split(std::string(",")))[0];
+        auto dayName = const_(((std::make_shared<Intl::DateTimeFormat>(std:("en-US"), options)))->format(now)->split(std:(",")))[0];
         if (!workDays->includes(dayName)) {
             return false;
         }
         auto timeOptions = object{
-            object::pair{std::string("timeZone"), std::string("timeZone")}, 
-            object::pair{std::string("hour"), std::string("numeric")}, 
-            object::pair{std::string("minute"), std::string("numeric")}, 
-            object::pair{std::string("hour12"), false}
+            object::pair{std:("timeZone"), std:("timeZone")}, 
+            object::pair{std:("hour"), std:("numeric")}, 
+            object::pair{std:("minute"), std:("numeric")}, 
+            object::pair{std:("hour12"), false}
         };
-        auto currentTime = ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), timeOptions)))->format(now);
-        auto [currentHour, currentMinute] = currentTime->split(std::string(":"))->map(Number);
-        auto [startHour, startMinute] = workHours["start"]->split(std::string(":"))->map(Number);
-        auto [endHour, endMinute] = workHours["end"]->split(std::string(":"))->map(Number);
+        auto currentTime = ((std::make_shared<Intl::DateTimeFormat>(std:("en-US"), timeOptions)))->format(now);
+        auto [currentHour, currentMinute] = currentTime->split(std:(":"))->map(Number);
+        auto [startHour, startMinute] = workHours["start"]->split(std:(":"))->map(Number);
+        auto [endHour, endMinute] = workHours["end"]->split(std:(":"))->map(Number);
         auto currentTimeMinutes = currentHour * 60 + currentMinute;
         auto startTimeMinutes = startHour * 60 + startMinute;
         auto endTimeMinutes = endHour * 60 + endMinute;
@@ -30,7 +30,7 @@ boolean isAvailableNow(array<string> workDays, object workHours, string timeZone
     }
     catch (const any& error)
     {
-        console->error(std::string("Error checking availability:"), error);
+        console->error(std:("Error checking availability:"), error);
         return false;
     }
 };
@@ -41,7 +41,7 @@ std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHo
     auto now = std::make_shared<Date>();
     auto getDateWithTime = [=](auto date, auto timeStr) mutable
     {
-        auto [hours, minutes] = timeStr->split(std::string(":"))->map(Number);
+        auto [hours, minutes] = timeStr->split(std:(":"))->map(Number);
         auto result = std::make_shared<Date>(date);
         result->setHours(hours, minutes, 0, 0);
         return result;
@@ -51,10 +51,10 @@ std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHo
     while (daysChecked < 14)
     {
         auto options = object{
-            object::pair{std::string("timeZone"), std::string("timeZone")}, 
-            object::pair{std::string("weekday"), std::string("long")}
+            object::pair{std:("timeZone"), std:("timeZone")}, 
+            object::pair{std:("weekday"), std:("long")}
         };
-        auto dayName = ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), options)))->format(nextDate);
+        auto dayName = ((std::make_shared<Intl::DateTimeFormat>(std:("en-US"), options)))->format(nextDate);
         if (workDays->includes(dayName)) {
             auto startTime = getDateWithTime(nextDate, workHours["start"]);
             if (nextDate < startTime) {
@@ -82,15 +82,15 @@ std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHo
 string formatDate(std::shared_ptr<Date> date, string timeZone)
 {
     auto options = object{
-        object::pair{std::string("weekday"), std::string("long")}, 
-        object::pair{std::string("year"), std::string("numeric")}, 
-        object::pair{std::string("month"), std::string("long")}, 
-        object::pair{std::string("day"), std::string("numeric")}, 
-        object::pair{std::string("hour"), std::string("2-digit")}, 
-        object::pair{std::string("minute"), std::string("2-digit")}, 
-        object::pair{std::string("timeZone"), std::string("timeZone")}
+        object::pair{std:("weekday"), std:("long")}, 
+        object::pair{std:("year"), std:("numeric")}, 
+        object::pair{std:("month"), std:("long")}, 
+        object::pair{std:("day"), std:("numeric")}, 
+        object::pair{std:("hour"), std:("2-digit")}, 
+        object::pair{std:("minute"), std:("2-digit")}, 
+        object::pair{std:("timeZone"), std:("timeZone")}
     };
-    return ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), options)))->format(date);
+    return ((std::make_shared<Intl::DateTimeFormat>(std:("en-US"), options)))->format(date);
 };
 
 

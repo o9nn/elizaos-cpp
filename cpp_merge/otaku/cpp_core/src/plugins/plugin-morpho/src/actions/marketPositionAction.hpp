@@ -22,8 +22,8 @@ namespace elizaos {
 
 
 struct MarketPositionsParams {
-    std::optional<std::string> market;
-    std::optional<std::string> chain;
+    std::optional<std:> market;
+    std::optional<std:> chain;
 };
 
 using MarketPositionsInput = {

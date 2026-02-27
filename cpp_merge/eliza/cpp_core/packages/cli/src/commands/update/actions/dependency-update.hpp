@@ -25,6 +25,6 @@ namespace elizaos {
  *
  * Updates ElizaOS dependencies in a project or plugin, with support for dry-run mode, major version confirmation, and std::optional build step.
  */
-std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, UpdateOptions options = {});
+std::future<void> updateDependencies(const std:& cwd, bool isPlugin, UpdateOptions options = {});
 
 } // namespace elizaos

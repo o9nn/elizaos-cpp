@@ -78,8 +78,8 @@ enum PlatformPrefix {
  */
 struct EventPayload {
     IAgentRuntime runtime;
-    std::string source;
-    std::optional<() => void> onComplete;
+    std: source;
+    std::optional<[&]() { return void> onComplete; };
 };
 
 /**
@@ -131,11 +131,11 @@ struct EventPayloadMap {
  */
 
 /**
- * Defines a more specific type for event handlers, expecting an `Metadata`.
+ * Defines a more specific type for event handlers, expecting an "Metadata".
  * This aims to improve upon generic 'any' type handlers, providing a clearer contract
- * for functions that respond to events emitted within the agent runtime (see `emitEvent` in `AgentRuntime`).
+ * for functions that respond to events emitted within the agent runtime (see "emitEvent" in "AgentRuntime").
  * Handlers can be synchronous or asynchronous.
  */
-using TypedEventHandler = std::variant<(data: Metadata) => Promise<void>, void>;
+using TypedEventHandler = std::variant<[&](data: Metadata) { return Promise<void>, void>; };
 
 } // namespace elizaos

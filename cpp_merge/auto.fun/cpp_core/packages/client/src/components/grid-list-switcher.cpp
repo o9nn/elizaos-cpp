@@ -13,22 +13,22 @@ void GridListSwitcher() {
         setActiveTab(activeTab == "grid" ? "list" : "grid");
         };
 
-        return (;
+        return [&](;
         <>;
     {/* Two buttons shown on sm screens and larger */}
     <div className="hidden sm:flex items-center gap-1">
     <Button;
     variant={activeTab == "grid" ? "primary" : "outline"}
-    onClick={() => setActiveTab("grid")}
-    aria-label="grid";
+    onClick={() { return setActiveTab("grid")}
+    aria-label="grid"; };
     className="p-2";
     >;
     <Grid color="#eee" size={24} />;
     </Button>;
     <Button;
     variant={activeTab == "list" ? "primary" : "outline"}
-    onClick={() => setActiveTab("list")}
-    className="p-2";
+    onClick={[&]() { return setActiveTab("list")}
+    className="p-2"; };
     aria-label="list";
     >;
     <List className="size-6" />;

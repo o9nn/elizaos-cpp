@@ -120,13 +120,13 @@ void SidebarTrigger() {
 
     const auto { toggleSidebar } = useSidebar();
 
-    return (;
+    return [&](;
     <Button;
     data-sidebar="trigger";
     data-slot="sidebar-trigger";
     variant="secondary";
     size="icon";
-    onClick={(event) => {
+    onClick={(event) {
         onClick.(event);
         toggleSidebar();
     }}
@@ -451,7 +451,7 @@ void SidebarMenuSkeleton(auto showIcon) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Random width between 50 to 90%.
-    const auto width = React.useMemo(() => {;
+    const auto width = React.useMemo[&](() {;
         return std::to_string(Math.floor(Math.random() * 40) + 50) + "%";
         }, []);
 

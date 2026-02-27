@@ -22,7 +22,7 @@ using XCredentials = {
 
 using PendingShare = {
 
-std::string getApiUrl();
+std: getApiUrl();
 
 std::optional<XCredentials> getXCreds();
 
@@ -39,7 +39,7 @@ bool ensureXAuth(std::optional<PendingShare> pending);
 
   // Clean URL param
 
-std::future<void> safeText(const std::string& r);
+std::future<void> safeText(const std:& r);
 
 
 } // namespace elizaos

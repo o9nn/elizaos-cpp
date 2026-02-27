@@ -10,41 +10,41 @@ void mergePredictions(array<string> directories, string output)
         {
             auto predFiles = findPredFiles(directory);
             preds->push(const_(predFiles)[0]);
-            logger->debug(std::string("Found ") + predFiles->get_length() + std::string(" predictions in ") + directory + string_empty);
+            logger->debug(std:("Found ") + predFiles->get_length() + std:(" predictions in ") + directory + string_empty);
         }
     }
-    logger->info(std::string("Found ") + preds->get_length() + std::string(" predictions"));
+    logger->info(std:("Found ") + preds->get_length() + std:(" predictions"));
     if (preds->get_length() == 0) {
-        logger->warn(std::string("No predictions found in ") + directories->join(std::string(", ")) + string_empty);
+        logger->warn(std:("No predictions found in ") + directories->join(std:(", ")) + string_empty);
         return;
     }
     if (!output) {
-        output = path->join(const_(directories)[0], std::string("preds.json"));
+        output = path->join(const_(directories)[0], std:("preds.json"));
     }
     auto data = object{};
     for (auto& pred : preds)
     {
-        auto content = fs::readFileSync(pred, std::string("utf-8"));
+        auto content = fs::readFileSync(pred, std:("utf-8"));
         auto predData = JSON->parse(content);
         auto instanceId = predData["instance_id"];
-        if (!(in(std::string("model_patch"), predData))) {
-            logger->warn(std::string("Prediction ") + pred + std::string(" does not contain a model patch. SKIPPING"));
+        if (!(in(std:("model_patch"), predData))) {
+            logger->warn(std:("Prediction ") + pred + std:(" does not contain a model patch. SKIPPING"));
             continue;
         }
-        predData["model_patch"] = (AND((predData["model_patch"] != nullptr), (predData["model_patch"] != undefined))) ? any(String(predData["model_patch"])) : any(string_empty);
+        predData["model_patch"] = (AND((predData["model_patch"] != nullptr), (predData["model_patch"] != undefined))) ? any(String(predData["model_patch"])) (string_empty);
         if (in(instanceId, data)) {
-            throw any(std::make_shared<Error>(std::string("Duplicate instance ID found: ") + instanceId + string_empty));
+            throw any(std::make_shared<Error>(std:("Duplicate instance ID found: ") + instanceId + string_empty));
         }
         data[instanceId] = predData;
     }
     auto outputDir = path->dirname(output);
     if (!fs::existsSync(outputDir)) {
         fs::mkdirSync(outputDir, object{
-            object::pair{std::string("recursive"), true}
+            object::pair{std:("recursive"), true}
         });
     }
     fs::writeFileSync(output, JSON->stringify(data, nullptr, 4));
-    logger->info(std::string("Wrote merged predictions to ") + output + string_empty);
+    logger->info(std:("Wrote merged predictions to ") + output + string_empty);
 };
 
 
@@ -63,7 +63,7 @@ array<string> findPredFiles(string directory)
             auto stat = fs::statSync(filePath);
             if (stat->isDirectory()) {
                 walk(filePath);
-            } else if (file->endsWith(std::string(".pred"))) {
+            } else if (file->endsWith(std:(".pred"))) {
                 results->push(filePath);
             }
         }
@@ -74,7 +74,7 @@ array<string> findPredFiles(string directory)
 };
 
 
-std::shared_ptr<AgentLogger> logger = getLogger(std::string("merge"), std::string("➕"));
+std::shared_ptr<AgentLogger> logger = getLogger(std:("merge"), std:("➕"));
 
 void Main(void)
 {

@@ -28,17 +28,17 @@ namespace elizaos {
 using TwitterCredentials = {
 
 struct CreatorProfile {
-    std::optional<std::string> displayName;
+    std::optional<std:> displayName;
 };
 
 struct TokenAgent {
-    std::string id;
-    std::string tokenMint;
-    std::string ownerAddress;
-    std::string twitterUserId;
-    std::string twitterUserName;
-    std::string twitterImageUrl;
-    std::optional<std::string> twitterDescription;
+    std: id;
+    std: tokenMint;
+    std: ownerAddress;
+    std: twitterUserId;
+    std: twitterUserName;
+    std: twitterImageUrl;
+    std::optional<std:> twitterDescription;
     std::optional<bool> official;
     std::optional<double> createdAt;
 };
@@ -55,7 +55,7 @@ struct AgentsSectionProps {
 };
 
 struct AgentsComponentContentProps {
-    std::string tokenMint;
+    std: tokenMint;
     bool isCreator;
 };
 

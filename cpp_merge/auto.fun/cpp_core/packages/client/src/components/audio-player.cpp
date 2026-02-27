@@ -10,7 +10,7 @@ void AudioPlayer(auto albumArt, auto lyrics, auto showControls, auto className) 
     const auto [isEditingLyrics, setIsEditingLyrics] = useState(false);
     const auto [editableLyrics, setEditableLyrics] = useState(lyrics);
 
-    return (;
+    return [&](;
     <div;
     "className={" + "flex flex-col gap-4 border border-gray-700 p-0 bg-black " + className;
     >;
@@ -29,18 +29,18 @@ void AudioPlayer(auto albumArt, auto lyrics, auto showControls, auto className) 
     <div className="absolute top-0 right-0 z-10 flex gap-2">;
     <CopyButton text={editableLyrics || ""} />;
     <button;
-    onClick={() => setIsEditingLyrics(!isEditingLyrics)}
+    onClick={() { return setIsEditingLyrics(!isEditingLyrics)}
     className="p-1 bg-gray-700 rounded hover:bg-gray-600"
-    >;
+    >; };
     {isEditingLyrics ? "Save"  = "Edit"}
     </button>;
     </div>;
     <div className="absolute inset-0 overflow-y-auto">;
-    {isEditingLyrics ? (;
+    {isEditingLyrics ? [&](;
     <textarea;
     value={editableLyrics || ""}
-    onChange={(e) => setEditableLyrics(e.target.value)}
-    className="w-full h-full p-2 bg-gray-800 text-white font-mono resize-none";
+    onChange={(e) { return setEditableLyrics(e.target.value)}
+    className="w-full h-full p-2 bg-gray-800 text-white font-mono resize-none"; };
     />;
     ) : (
     <div className="text-white font-mono whitespace-pre-line pt-8">;

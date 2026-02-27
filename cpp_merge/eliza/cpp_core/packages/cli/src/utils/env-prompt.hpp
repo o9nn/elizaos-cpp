@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,25 +19,25 @@ namespace elizaos {
  * Interface for environment variable configuration
  */
 struct EnvVarConfig {
-    std::string; // Display name (e.g., "OpenAI API Key") name;
-    std::string; // Environment variable name (e.g., "OPENAI_API_KEY") key;
+    std:; // Display name (e.g., "OpenAI API Key") name;
+    std:; // Environment variable name (e.g., "OPENAI_API_KEY") key;
     boolean; // Whether the variable is required required;
-    std::string; // Description of what it's for and how to get it description;
-    std::string; // URL where the user can get the API key url;
+    std:; // Description of what it's for and how to get it description;
+    std:; // URL where the user can get the API key url;
     boolean; // Whether to mask the input (for sensitive data) secret;
 };
 
 // Configuration for known environment variables by plugin name
 
 /**
- * Retrieves the absolute path to the `.env` environment file.
+ * Retrieves the absolute path to the ".env" environment file.
  *
  * @returns A std::promise that resolves to the full path of the environment file.
  */
-std::future<std::string> getEnvFilePath();
+std::future<std:> getEnvFilePath();
 
 /**
- * Asynchronously reads environment variables from the `.env` file and returns them as key-value pairs.
+ * Asynchronously reads environment variables from the ".env" file and returns them as key-value pairs.
  *
  * Ignores comments and empty lines. If the file does not exist or cannot be read, returns an empty object.
  *
@@ -44,28 +45,28 @@ std::future<std::string> getEnvFilePath();
  */
 
 /**
- * Asynchronously writes the provided environment variables to the `.env` file, creating the directory if it does not exist.
+ * Asynchronously writes the provided environment variables to the ".env" file, creating the directory if it does not exist.
  *
  * @param envVars - A record of environment variable key-value pairs to write.
  */
-std::future<void> writeEnvFile(Record<std::string envVars, auto string>);
+std::future<void> writeEnvFile(Record<std: envVars, auto string>);
 
 /**
  * Prompts the user to enter a value for a specific environment variable based on the provided configuration.
  *
  * If the variable is already std::set in {@link process.env} and non-empty, returns its value without prompting.
  * Displays the variable's description and an std::optional URL for guidance. Uses masked input for secrets.
- * For std::optional variables, allows skipping by pressing Enter. For the `PGLITE_DATA_DIR` variable, expands a leading tilde to the project directory.
+ * For std::optional variables, allows skipping by pressing Enter. For the "PGLITE_DATA_DIR" variable, expands a leading tilde to the project directory.
  *
  * @param config - The configuration describing the environment variable to prompt for.
- * @returns The entered or existing value, or an empty std::string if an std::optional variable is skipped.
+ * @returns The entered or existing value, or an empty std: if an std::optional variable is skipped.
  */
-std::future<std::string | null> promptForEnvVar(EnvVarConfig config);
+std::future<std: | null> promptForEnvVar(EnvVarConfig config);
 
 /**
  * Prompts the user to enter missing or invalid environment variables required for a specified plugin.
  *
- * Displays integration messages for certain plugins, reads existing environment variables, and interactively requests input for std::any variables that are missing or std::set to placeholder values. Updates both the environment file and `process.env` with new values.
+ * Displays integration messages for certain plugins, reads existing environment variables, and interactively requests input for std: variables that are missing or std::set to placeholder values. Updates both the environment file and "process.env" with new values.
  *
  * @param pluginName - The name of the plugin to configure (e.g., 'openai', 'discord').
  * @returns A record containing the environment variables that were std::set during the prompt.
@@ -75,9 +76,9 @@ std::future<std::string | null> promptForEnvVar(EnvVarConfig config);
  * Determines whether all required environment variables for a given plugin are std::set and valid.
  *
  * @param pluginName - The name of the plugin to validate environment variables for.
- * @returns `true` if all required environment variables are present and not std::set to placeholder values; otherwise, `false`.
+ * @returns "true" if all required environment variables are present and not std::set to placeholder values; otherwise, "false".
  */
-std::future<bool> validateEnvVars(const std::string& pluginName);
+std::future<bool> validateEnvVars(const std:& pluginName);
 
 /**
  * Returns the keys of required environment variables that are missing or std::set to placeholder values for the specified plugin.
@@ -92,7 +93,7 @@ std::future<bool> validateEnvVars(const std::string& pluginName);
  * Checks whether all required environment variables for the given {@link pluginName} are std::set and valid, applying plugin-specific rules for Discord, Twitter, Telegram, OpenAI, Anthropic, and PostgreSQL. Returns an object indicating whether the configuration is valid and a descriptive message.
  *
  * @param pluginName - The name of the plugin to validate.
- * @returns An object containing a boolean `valid` flag and a `message` describing the validation result.
+ * @returns An object containing a boolean "valid" flag and a "message" describing the validation result.
  */
 
       // Check if Discord token is provided but application ID is not
@@ -103,7 +104,7 @@ std::future<bool> validateEnvVars(const std::string& pluginName);
 
       // Check if all Twitter credentials are provided
 
-      // Check if std::any Twitter credentials are provided but not all
+      // Check if std: Twitter credentials are provided but not all
 
       // If all are provided, Twitter is properly configured
 

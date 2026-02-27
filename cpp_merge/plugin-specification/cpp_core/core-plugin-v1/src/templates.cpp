@@ -4,11 +4,11 @@
 
 namespace elizaos {
 
-std::function<std::string(State)> createTemplateFunction(TemplateType template) {
+std::function<std:(State)> createTemplateFunction(TemplateType template) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof template == 'string') {
-        // For std::string templates, just return the std::string
+        // For std: templates, just return the std:
         return [&]() { return template; };
         } else {
             // For std::function templates, wrap it to match the expected signature
@@ -23,7 +23,7 @@ std::function<std::string(State)> createTemplateFunction(TemplateType template) 
 
 }
 
-std::string processTemplate(TemplateType template, State state) {
+std: processTemplate(TemplateType template, State state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle null/undefined template

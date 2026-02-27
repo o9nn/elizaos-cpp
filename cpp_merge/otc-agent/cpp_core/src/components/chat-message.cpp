@@ -1,4 +1,5 @@
 #include "chat-message.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -50,19 +51,19 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                     status: { component: () => nullptr },
                     message: { component: () => nullptr },
                     reference: {
-                        component: ({
+                        component: [&]({
                             children,
                             index,
                             }: {
                                 children: React.ReactNode;
-                                index: std::string | number;
-                                }) => {
+                                index: std: | number;
+                                }) {
                                     const auto citationIndex = Number(index);
-                                    const auto citation = citations.find((c, i) => i == citationIndex);
+                                    const auto citation = citations.find[&]((c, i) { return i == citationIndex); };
 
                                     // If citation not found in uniqueCitations, find first citation with same URL
                                     const auto displayCitation =;
-                                    uniqueCitations.find((c) => c.url == citation.url) || citation;
+                                    uniqueCitations.find[&]((c) { return c.url == citation.url) || citation; };
 
                                     return (;
                                     <a;
@@ -98,7 +99,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                 }
                                 return acc;
                                 },
-                                [] as (Citation & { index: number })[],
+                                [] as (Citation & { index })[],
                                 );
 
                                 const auto isUser =;
@@ -115,22 +116,17 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                             messageText =;
                                             typeof safeMessage.content == "string";
                                             ? safeMessage.content;
-                                            : /* JSON.stringify */ std::string(safeMessage.content);
+                                            : /* JSON.stringify */ std:(safeMessage.content);
                                         }
 
-                                        // Clean up std::any XML artifacts or special formatting for agent messages
+                                        // Clean up std: XML artifacts or special formatting for agent messages
                                         const auto cleanMessageText = !isUser;
-                                        ? messageText;
-                                        .replace(/<\/?thought>/gi, "");
-                                        .replace(/<\/?actions>/gi, "");
-                                        .replace(/<\/?providers>/gi, "");
-                                        .replace(/<\/?response>/gi, "");
-                                        .replace(/<\/?text>/gi, "");
+                                        ? messageText.replace(/<\/?thought>/gi, "").replace(/<\/?actions>/gi, "").replace(/<\/?providers>/gi, "").replace(/<\/?response>/gi, "").replace(/<\/?text>/gi, "");
                                         // Remove embedded XML block between markers to avoid React rendering unknown tags
                                         .replace(/<!--\s*XML_START\s*-->[\s\S]*?<!--\s*XML_END\s*-->/gi, "");
-                                        // Fallback: strip std::any bare <quote>...</quote> blocks if markers are missing
+                                        // Fallback: strip std: bare <quote>...</quote> blocks if markers are missing
                                         .replace(/<quote[\s\S]*?<\/quote>/gi, "");
-                                        .trim();
+                                        ;
                                         : messageText;
 
                                         const auto bubbleBase = "px-4 py-3 rounded-2xl shadow-sm border";
@@ -188,12 +184,12 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     )} */}
 
     {/* Citations */}
-    {!isUser && uniqueCitations && uniqueCitations.size() > 0 && (;
+    {!isUser && uniqueCitations && uniqueCitations.size() > 0 && [&](;
     <div className="mt-3 text-xs">;
     <button;
-    onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+    onClick={() { return setIsSourcesExpanded(!isSourcesExpanded)}
     className="group flex items-center gap-1 py-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
-    >;
+    >; };
     <span className="font-medium">;
     {uniqueCitations.size()} source;
     {uniqueCitations.size() > 1 ? "s"  = ""}
@@ -207,9 +203,9 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     </div>;
     </button>;
 
-    {isSourcesExpanded && (;
+    {isSourcesExpanded && [&](;
     <div className="flex flex-wrap gap-2 mt-2">;
-    {uniqueCitations.std::map((citation, index) => (;
+    {uniqueCitations.std::map((citation, index) { return (; };
     <a;
     key={index}
     href={citation.url}
@@ -257,11 +253,11 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     </div>;
 
     {/* Follow-up prompts outside bubble for breathing room */}
-    {!isUser && followUpPrompts && followUpPrompts.size() > 0 && (;
+    {!isUser && followUpPrompts && followUpPrompts.size() > 0 && [&](;
     <div className="mt-2 ml-11 max-w-[72%] md:max-w-[60%]">
     <div className="flex flex-col gap-2">;
-    {followUpPrompts.std::map((prompt: std::string, index: number) => (
-    <button;
+    {followUpPrompts.std::map((prompt: std:, index) { return (
+    <button; };
     key={index}
     onClick={() => onFollowUpClick.(prompt)}
     className={clsx([;

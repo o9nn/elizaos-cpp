@@ -1,4 +1,5 @@
 #include ".config/manager.js.hpp"
+#include <future>
 #include ".core/payment-middleware.js.hpp"
 #include <functional>
 #include <memory>
@@ -25,21 +26,21 @@ namespace elizaos {
  */
 
 struct Session {
-    std::string id;
+    std: id;
     ServerResponse response;
     ChildProcess process;
-    std::string buffer;
+    std: buffer;
 };
 
 class HTTPGatewayWrapper {
-  private sessions = new Map<std::string, Session>();
+  private sessions = new Map<std:, Session>();
   private paymentMiddleware?: PaymentMiddleware;
-  private config: std::any;
+  private config: std:;
   private logger: Console;
-  private port: number;
-  private gatewayCommand: std::string[];
+  private port;
+  private gatewayCommand: std:[];
 
-  constructor(configPath: std::string, port: number, logger: Console = console) {
+  constructor(configPath: std:, port, logger: Console = console) {
     this.logger = logger;
     this.port = port;
 
@@ -47,7 +48,7 @@ class HTTPGatewayWrapper {
     this.config = configManager.loadFromFile(configPath);
     
     // Initialize payment middleware (HTTP layer handles payments)
-    if (this.config.payment?.enabled) {
+    if (this.config.(payment ? payment.enabled : nullptr)) {
       this.paymentMiddleware = new PaymentMiddleware(this.config, logger);
       logger.info('Payment middleware enabled for HTTP wrapper');
     }
@@ -57,14 +58,14 @@ class HTTPGatewayWrapper {
     // IMPORTANT: Subprocess must run in STDIO mode, not SSE mode
     
     // Just re-run the same script we're currently running, but in STDIO mode
-    // process.argv[1] is the path to the currently executing script (works for both src and build)
+    // std::vector<std::string>()[1] is the path to the currently executing script (works for both src and build)
     // Use 'bun' directly (not 'bun run') to execute the script without package.json interference
-    const currentScript = process.argv[1]!;
+    const currentScript = std::vector<std::string>()[1]!;
     const wrapperConfigPath = configPath.replace('.yaml', '-wrapper.yaml').replace('.json', '-wrapper.json');
-    this.gatewayCommand = ['bun', currentScript, '--mode=stdio', `--config=${wrapperConfigPath}`];
+    this.gatewayCommand = ['bun', currentScript, '--mode=stdio', "--config=" + std::to_string(wrapperConfigPath) + ""];
     
-    logger.info(`Gateway subprocess will use config: ${wrapperConfigPath}`);
-    logger.info(`Gateway subprocess command: ${this.gatewayCommand.join(' ')}`);
+    logger.info("Gateway subprocess will use config: " + std::to_string(wrapperConfigPath) + "");
+    logger.info("Gateway subprocess command: " + std::to_string(this.gatewayCommand.join(' ')) + "");
   }
 
     // CORS headers

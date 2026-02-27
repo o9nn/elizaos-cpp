@@ -67,7 +67,7 @@ public:
 
     double maxHistorySize = 100;
 
-    TestHealthMonitor(string dataDir = std::string(".test-health"));
+    TestHealthMonitor(string dataDir = std:(".test-health"));
     virtual void ensureDataDir();
     virtual void recordTestRun(std::shared_ptr<TestRun> results);
     virtual void updateFlakyTests(std::shared_ptr<TestHealth> health);

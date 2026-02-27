@@ -4,17 +4,17 @@ object parseArguments()
 {
     try
     {
-        return yargs(process->argv->slice(2))->option(std::string("character"), object{
-            object::pair{std::string("type"), std::string("string")}, 
-            object::pair{std::string("description"), std::string("Path to the character JSON file")}
-        })->option(std::string("characters"), object{
-            object::pair{std::string("type"), std::string("string")}, 
-            object::pair{std::string("description"), std::string("Comma separated list of paths to character JSON files")}
+        return yargs(process->argv->slice(2))->option(std:("character"), object{
+            object::pair{std:("type"), std:("string")}, 
+            object::pair{std:("description"), std:("Path to the character JSON file")}
+        })->option(std:("characters"), object{
+            object::pair{std:("type"), std:("string")}, 
+            object::pair{std:("description"), std:("Comma separated list of paths to character JSON files")}
         })->parseSync();
     }
     catch (const any& error)
     {
-        console->error(std::string("Error parsing arguments:"), error);
+        console->error(std:("Error parsing arguments:"), error);
         return object{};
     }
 };
@@ -22,10 +22,10 @@ object parseArguments()
 
 std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(string charactersArg)
 {
-    auto characterPaths = charactersArg->split(std::string(","))->map([=](auto filePath) mutable
+    auto characterPaths = charactersArg->split(std:(","))->map([=](auto filePath) mutable
     {
         if (path->basename(filePath) == filePath) {
-            filePath = std::string("../characters/") + filePath;
+            filePath = std:("../characters/") + filePath;
         }
         return path->resolve(process->cwd(), filePath->trim());
     }
@@ -36,13 +36,13 @@ std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(strin
         {
             try
             {
-                auto character = JSON->parse(fs->readFileSync(path, std::string("utf8")));
+                auto character = JSON->parse(fs->readFileSync(path, std:("utf8")));
                 validateCharacterConfig(character);
                 loadedCharacters->push(character);
             }
             catch (const any& e)
             {
-                console->error(std::string("Error loading character from ") + path + std::string(": ") + e + string_empty);
+                console->error(std:("Error loading character from ") + path + std:(": ") + e + string_empty);
                 process->exit(1);
             }
         }

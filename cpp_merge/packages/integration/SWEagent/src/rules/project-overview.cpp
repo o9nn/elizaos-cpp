@@ -9,20 +9,20 @@ any getComponentByPath(string path)
     );
     if (entryPoint) {
         return object{
-            object::pair{std::string("component"), std::string("entry-point")}, 
-            object::pair{std::string("description"), entryPoint->description}
+            object::pair{std:("component"), std:("entry-point")}, 
+            object::pair{std:("description"), entryPoint->description}
         };
     }
     if (path == MAIN_AGENT_CLASS->path) {
         return object{
-            object::pair{std::string("component"), std::string("main-agent")}, 
-            object::pair{std::string("description"), MAIN_AGENT_CLASS->description}
+            object::pair{std:("component"), std:("main-agent")}, 
+            object::pair{std:("description"), MAIN_AGENT_CLASS->description}
         };
     }
     if (path == SWE_ENV_CLASS->path) {
         return object{
-            object::pair{std::string("component"), std::string("environment")}, 
-            object::pair{std::string("description"), SWE_ENV_CLASS->description}
+            object::pair{std:("component"), std:("environment")}, 
+            object::pair{std:("description"), SWE_ENV_CLASS->description}
         };
     }
     auto inspector = INSPECTORS->find([=](auto i) mutable
@@ -32,14 +32,14 @@ any getComponentByPath(string path)
     );
     if (inspector) {
         return object{
-            object::pair{std::string("component"), std::string("inspector")}, 
-            object::pair{std::string("description"), inspector->description}
+            object::pair{std:("component"), std:("inspector")}, 
+            object::pair{std:("description"), inspector->description}
         };
     }
-    if (path->startsWith(std::string("tools/"))) {
+    if (path->startsWith(std:("tools/"))) {
         return object{
-            object::pair{std::string("component"), std::string("tool")}, 
-            object::pair{std::string("description"), std::string("Tool bundle for agent actions")}
+            object::pair{std:("component"), std:("tool")}, 
+            object::pair{std:("description"), std:("Tool bundle for agent actions")}
         };
     }
     return nullptr;
@@ -66,61 +66,61 @@ array<string> getPythonModules()
 
 
 array<std::shared_ptr<EntryPoint>> ENTRY_POINTS = array<std::shared_ptr<EntryPoint>>{ object{
-    object::pair{std::string("path"), std::string("sweagent/run/run_single.py")}, 
-    object::pair{std::string("description"), std::string("Main entry point for running single agent instances")}, 
-    object::pair{std::string("type"), std::string("single")}
+    object::pair{std:("path"), std:("sweagent/run/run_single.py")}, 
+    object::pair{std:("description"), std:("Main entry point for running single agent instances")}, 
+    object::pair{std:("type"), std:("single")}
 }, object{
-    object::pair{std::string("path"), std::string("sweagent/run/run_batch.py")}, 
-    object::pair{std::string("description"), std::string("Entry point for batch processing, used for benchmarking")}, 
-    object::pair{std::string("type"), std::string("batch")}
+    object::pair{std:("path"), std:("sweagent/run/run_batch.py")}, 
+    object::pair{std:("description"), std:("Entry point for batch processing, used for benchmarking")}, 
+    object::pair{std:("type"), std:("batch")}
 } };
 std::shared_ptr<ClassInfo> MAIN_AGENT_CLASS = object{
-    object::pair{std::string("name"), std::string("Agent")}, 
-    object::pair{std::string("path"), std::string("sweagent/agent/agents.py")}, 
-    object::pair{std::string("description"), std::string("Main class that governs agent behavior")}
+    object::pair{std:("name"), std:("Agent")}, 
+    object::pair{std:("path"), std:("sweagent/agent/agents.py")}, 
+    object::pair{std:("description"), std:("Main class that governs agent behavior")}
 };
 std::shared_ptr<ClassInfo> SWE_ENV_CLASS = object{
-    object::pair{std::string("name"), std::string("SWEEnv")}, 
-    object::pair{std::string("path"), std::string("sweagent/environment/swe_env.py")}, 
-    object::pair{std::string("description"), std::string("Class that interfaces with the SWE-ReX project to interface with sandboxed docker containers")}
+    object::pair{std:("name"), std:("SWEEnv")}, 
+    object::pair{std:("path"), std:("sweagent/environment/swe_env.py")}, 
+    object::pair{std:("description"), std:("Class that interfaces with the SWE-ReX project to interface with sandboxed docker containers")}
 };
 std::shared_ptr<ExecutionEnvironment> EXECUTION_ENVIRONMENT = object{
-    object::pair{std::string("type"), std::string("docker")}, 
-    object::pair{std::string("description"), std::string("AI agent proposes actions that are executed in sandboxed docker containers")}, 
-    object::pair{std::string("interfaceClass"), SWE_ENV_CLASS}, 
-    object::pair{std::string("interfaceProject"), std::string("SWE-ReX")}
+    object::pair{std:("type"), std:("docker")}, 
+    object::pair{std:("description"), std:("AI agent proposes actions that are executed in sandboxed docker containers")}, 
+    object::pair{std:("interfaceClass"), SWE_ENV_CLASS}, 
+    object::pair{std:("interfaceProject"), std:("SWE-ReX")}
 };
 std::shared_ptr<ToolsInfo> TOOLS_INFO = object{
-    object::pair{std::string("location"), std::string("tools/")}, 
-    object::pair{std::string("organization"), std::string("bundles")}, 
-    object::pair{std::string("deployment"), std::string("Copied to sandboxed container and made available in $PATH variable")}
+    object::pair{std:("location"), std:("tools/")}, 
+    object::pair{std:("organization"), std:("bundles")}, 
+    object::pair{std:("deployment"), std:("Copied to sandboxed container and made available in $PATH variable")}
 };
 array<std::shared_ptr<Inspector>> INSPECTORS = array<std::shared_ptr<Inspector>>{ object{
-    object::pair{std::string("name"), std::string("CLI Inspector")}, 
-    object::pair{std::string("path"), std::string("inspector_cli.py")}, 
-    object::pair{std::string("type"), std::string("cli")}, 
-    object::pair{std::string("description"), std::string("Command line interface for inspecting agent trajectories")}
+    object::pair{std:("name"), std:("CLI Inspector")}, 
+    object::pair{std:("path"), std:("inspector_cli.py")}, 
+    object::pair{std:("type"), std:("cli")}, 
+    object::pair{std:("description"), std:("Command line interface for inspecting agent trajectories")}
 }, object{
-    object::pair{std::string("name"), std::string("Web Inspector")}, 
-    object::pair{std::string("path"), std::string("sweagent/inspector/server.py")}, 
-    object::pair{std::string("type"), std::string("web")}, 
-    object::pair{std::string("description"), std::string("Web interface for inspecting agent trajectories")}
+    object::pair{std:("name"), std:("Web Inspector")}, 
+    object::pair{std:("path"), std:("sweagent/inspector/server.py")}, 
+    object::pair{std:("type"), std:("web")}, 
+    object::pair{std:("description"), std:("Web interface for inspecting agent trajectories")}
 } };
 std::shared_ptr<ProjectStructure> PROJECT_STRUCTURE = object{
-    object::pair{std::string("mainEntryPoints"), ENTRY_POINTS}, 
-    object::pair{std::string("mainClass"), MAIN_AGENT_CLASS}, 
-    object::pair{std::string("executionEnvironment"), EXECUTION_ENVIRONMENT}, 
-    object::pair{std::string("tools"), TOOLS_INFO}, 
-    object::pair{std::string("inspectors"), INSPECTORS}
+    object::pair{std:("mainEntryPoints"), ENTRY_POINTS}, 
+    object::pair{std:("mainClass"), MAIN_AGENT_CLASS}, 
+    object::pair{std:("executionEnvironment"), EXECUTION_ENVIRONMENT}, 
+    object::pair{std:("tools"), TOOLS_INFO}, 
+    object::pair{std:("inspectors"), INSPECTORS}
 };
-string PROJECT_OVERVIEW = std::string("SWE-agent implements an AI software engineering agent that uses language models to fix github issues.");
+string PROJECT_OVERVIEW = std:("SWE-agent implements an AI software engineering agent that uses language models to fix github issues.");
 Record<string, string> TYPESCRIPT_EQUIVALENTS = object{
-    object::pair{std::string("sweagent/run/run_single.py"), std::string("src/run/run-single.ts")}, 
-    object::pair{std::string("sweagent/run/run_batch.py"), std::string("src/run/run-batch.ts")}, 
-    object::pair{std::string("sweagent/agent/agents.py"), std::string("src/agent/agents.ts")}, 
-    object::pair{std::string("sweagent/environment/swe_env.py"), std::string("src/environment/swe-env.ts")}, 
-    object::pair{std::string("inspector_cli.py"), std::string("src/inspector/cli.ts")}, 
-    object::pair{std::string("sweagent/inspector/server.py"), std::string("src/inspector/server.ts")}
+    object::pair{std:("sweagent/run/run_single.py"), std:("src/run/run-single.ts")}, 
+    object::pair{std:("sweagent/run/run_batch.py"), std:("src/run/run-batch.ts")}, 
+    object::pair{std:("sweagent/agent/agents.py"), std:("src/agent/agents.ts")}, 
+    object::pair{std:("sweagent/environment/swe_env.py"), std:("src/environment/swe-env.ts")}, 
+    object::pair{std:("inspector_cli.py"), std:("src/inspector/cli.ts")}, 
+    object::pair{std:("sweagent/inspector/server.py"), std:("src/inspector/server.ts")}
 };
 
 void Main(void)

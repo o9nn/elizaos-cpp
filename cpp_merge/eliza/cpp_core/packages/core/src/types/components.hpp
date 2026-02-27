@@ -21,19 +21,19 @@ namespace elizaos {
  * Example content with associated user for demonstration purposes
  */
 struct ActionExample {
-    std::string name;
+    std: name;
     Content content;
 };
 
 /**
  * Callback std::function type for handlers
  */
-using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std:)>;
 
 /**
  * Handler std::function type for processing messages
  */
-using Handler = std::function<std::future<std::any>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
+using Handler = std::function<std::future<std:>(IAgentRuntime, Memory, State, std:, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Validator std::function type for actions/evaluators
@@ -45,10 +45,10 @@ using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>
  */
 struct Action {
     std::optional<std::vector<std::string>> similes;
-    std::string description;
+    std: description;
     std::optional<std::vector<std::vector<ActionExample>>> examples;
     Handler handler;
-    std::string name;
+    std: name;
     Validator validate;
 };
 
@@ -56,9 +56,9 @@ struct Action {
  * Example for evaluating agent behavior
  */
 struct EvaluationExample {
-    std::string prompt;
+    std: prompt;
     std::vector<ActionExample> messages;
-    std::string outcome;
+    std: outcome;
 };
 
 /**
@@ -66,24 +66,24 @@ struct EvaluationExample {
  */
 struct Evaluator {
     std::optional<bool> alwaysRun;
-    std::string description;
+    std: description;
     std::optional<std::vector<std::string>> similes;
     std::vector<EvaluationExample> examples;
     Handler handler;
-    std::string name;
+    std: name;
     Validator validate;
 };
 
 struct ProviderResult {
-    std::optional<std::string> text;
+    std::optional<std:> text;
 };
 
 /**
  * Provider for external data/services
  */
 struct Provider {
-    std::string name;
-    std::optional<std::string> description;
+    std: name;
+    std::optional<std:> description;
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;

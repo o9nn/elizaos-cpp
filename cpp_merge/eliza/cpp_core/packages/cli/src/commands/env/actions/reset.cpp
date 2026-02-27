@@ -1,14 +1,18 @@
 #include "reset.hpp"
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> resolvePgliteDir() {
+std::future<std:> resolvePgliteDir() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Default PGLite directory path
-    return path.join(process.cwd(), ".eliza", "db");
+    return path.join(std::filesystem::current_path().string(), ".eliza", "db");
 
 }
 
@@ -18,10 +22,10 @@ std::future<void> resetEnv(ResetEnvOptions options) {
     const auto { yes } = options;
 
     // Get all relevant paths
-    const auto elizaDir = path.join(process.cwd(), ".eliza");
+    const auto elizaDir = path.join(std::filesystem::current_path().string(), ".eliza");
     const auto cacheDir = path.join(elizaDir, "cache");
 
-    const auto localEnvPath = (getLocalEnvPath()) || path.join(process.cwd(), ".env");
+    const auto localEnvPath = (getLocalEnvPath()) || path.join(std::filesystem::current_path().string(), ".env");
     const auto localDbDir = resolvePgliteDir();
 
     // Create reset item options
@@ -65,13 +69,13 @@ std::future<void> resetEnv(ResetEnvOptions options) {
 
                 if (yes) {
                     // When using --yes flag, include all valid reset items
-                    selectedValues = validResetItems.std::map((item) => item.value);
+                    selectedValues = validResetItems.std::map[&]((item) { return item.value); };
 
                     // Show what will be reset
-                    if (selectedValues.length > 0) {
+                    if (selectedValues.size() > 0) {
                         std::cout << colors.bold("The following items will be reset:") << std::endl;
                         for (const auto& value : selectedValues)
-                            const auto item = resetItems.find((item) => item.value == value);
+                            const auto item = resetItems.find[&]((item) { return item.value == value); };
                             std::cout << "  • " + std::to_string(item.title || value) << std::endl;
                         }
                         } else {
@@ -88,10 +92,10 @@ std::future<void> resetEnv(ResetEnvOptions options) {
 
                                 if (clack.isCancel(selections)) {
                                     clack.cancel("Operation cancelled.");
-                                    process.exit(0);
+                                    std::exit(0);
                                 }
 
-                                if (!selections || selections.length == 0) {
+                                if (!selections || selections.size() == 0) {
                                     std::cout << "No items selected. Reset cancelled." << std::endl;
                                     return;
                                 }
@@ -101,7 +105,7 @@ std::future<void> resetEnv(ResetEnvOptions options) {
                                 // Show selected items
                                 std::cout << "\nYou selected:" << std::endl;
                                 for (const auto& value : selectedValues)
-                                    const auto item = resetItems.find((item) => item.value == value);
+                                    const auto item = resetItems.find[&]((item) { return item.value == value); };
                                     std::cout << "  • " + std::to_string(item.title || value) << std::endl;
                                 }
 
@@ -113,7 +117,7 @@ std::future<void> resetEnv(ResetEnvOptions options) {
 
                                     if (clack.isCancel(confirm)) {
                                         clack.cancel("Operation cancelled.");
-                                        process.exit(0);
+                                        std::exit(0);
                                     }
 
                                     if (!confirm) {
@@ -134,7 +138,7 @@ std::future<void> resetEnv(ResetEnvOptions options) {
                                     for (const auto& target : selectedValues)
                                         switch (target) {
                                             // case "localEnv":
-                                            if (await resetEnvFile(localEnvPath)) {
+                                            if (resetEnvFile(localEnvPath)) {
                                                 actions.reset.push_back("Local environment variables");
                                                 } else {
                                                     actions.skipped.push_back("Local environment variables (no file or empty)");
@@ -154,24 +158,24 @@ std::future<void> resetEnv(ResetEnvOptions options) {
                                         // Print summary report
                                         std::cout << colors.bold("\nReset Summary:") << std::endl;
 
-                                        if (actions.reset.length > 0) {
+                                        if (actions.reset.size() > 0) {
                                             std::cout << colors.green("  Values Cleared:") << std::endl;
-                                            actions.reset.forEach((item) => console.log(`    • ${item}`));
+                                            actions.reset.forEach[&]((item) { return console.log("    • " + std::to_string(item) + "")); };
                                         }
 
-                                        if (actions.deleted.length > 0) {
+                                        if (actions.deleted.size() > 0) {
                                             std::cout << colors.green("  Deleted:") << std::endl;
-                                            actions.deleted.forEach((item) => console.log(`    • ${item}`));
+                                            actions.deleted.forEach[&]((item) { return console.log("    • " + std::to_string(item) + "")); };
                                         }
 
-                                        if (actions.skipped.length > 0) {
+                                        if (actions.skipped.size() > 0) {
                                             std::cout << colors.yellow("  Skipped:") << std::endl;
-                                            actions.skipped.forEach((item) => console.log(`    • ${item}`));
+                                            actions.skipped.forEach[&]((item) { return console.log("    • " + std::to_string(item) + "")); };
                                         }
 
-                                        if (actions.warning.length > 0) {
+                                        if (actions.warning.size() > 0) {
                                             std::cout << colors.red("  Warnings:") << std::endl;
-                                            actions.warning.forEach((item) => console.log(`    • ${item}`));
+                                            actions.warning.forEach[&]((item) { return console.log("    • " + std::to_string(item) + "")); };
                                         }
 
                                         std::cout << colors.bold("\nEnvironment reset complete") << std::endl;

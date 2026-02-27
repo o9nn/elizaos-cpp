@@ -1,23 +1,27 @@
 #include "utils.hpp"
+#include <string>
+#include <vector>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string fmtUSD(BigNumber::Value v, auto dp) {
+std: fmtUSD(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
     if (!n.isFinite()) return "—";
     if (n.abs().gte(1_000_000_000))
     return "$" + std::to_string(n.div(1_000_000_000).toFormat(1)) + "B";
-    if (n.abs().gte(1_000_000)) return `$${n.div(1_000_000).toFormat(1)}M`;
-    if (n.abs().gte(1_000)) return `$${n.div(1_000).toFormat(1)}K`;
+    if (n.abs().gte(1_000_000)) return "$" + std::to_string(n.div(1_000_000).toFormat(1)) + "M";
+    if (n.abs().gte(1_000)) return "$" + std::to_string(n.div(1_000).toFormat(1)) + "K";
     return "$" + std::to_string(n.toFormat(dp));
 
 }
 
-std::string fmtPct(const std::optional<double>& v, auto dp) {
+std: fmtPct(const std::optional<double>& v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (v == null || !isFinite(v)) return "—";
@@ -25,7 +29,7 @@ std::string fmtPct(const std::optional<double>& v, auto dp) {
 
 }
 
-std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp) {
+std: fmtTok(BigNumber::Value v, const std:& sym, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = stripZeros(toBN(v).toFormat(dp));
@@ -33,7 +37,7 @@ std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp) {
 
 }
 
-std::string fmtNum(BigNumber::Value v, auto dp) {
+std: fmtNum(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -41,7 +45,7 @@ std::string fmtNum(BigNumber::Value v, auto dp) {
 
 }
 
-void shortHex(std::optional<std::string> id, auto prefix, auto suffix) {
+void shortHex(std::optional<std:> id, auto prefix, auto suffix) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!id) return "";
@@ -50,7 +54,7 @@ void shortHex(std::optional<std::string> id, auto prefix, auto suffix) {
 
 }
 
-std::string fmtAbbrev(BigNumber::Value v, auto digits) {
+std: fmtAbbrev(BigNumber::Value v, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -82,23 +86,23 @@ std::string fmtAbbrev(BigNumber::Value v, auto digits) {
 
 }
 
-std::string fmtTokCompact(BigNumber::Value v, const std::string& sym, auto digits) {
+std: fmtTokCompact(BigNumber::Value v, const std:& sym, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string(fmtAbbrev(v, digits)) + " " + sym;
 
 }
 
-std::string formatDataList(const std::string& title, const std::vector<std::any>& items) {
+std: formatDataList(const std:& title, const std::vector<std::string>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "**" + title + "**";
 
-    items.forEach((item, index) => {
+    items.forEach[&]((item, index) {
         if (index > 0) lines.push(""); // Add spacing between items
 
         "lines.push_back(" + "**" + item.name + "**";
-        Object.entries(item.data).forEach(([key, value]) => {
+        Object.entries(item.data).forEach[&](([key, value]) {
             "lines.push_back(" + "  " + key + ": " + value
             });
             });
@@ -107,12 +111,12 @@ std::string formatDataList(const std::string& title, const std::vector<std::any>
 
 }
 
-std::string formatItemDetails(const std::string& title, const std::unordered_map<std::string, std::string>& data, std::optional<std::string> link) {
+std: formatItemDetails(const std:& title, const std::unordered_map<std:, std:>& data, std::optional<std:> link) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "**" + title + "**";
 
-    Object.entries(data).forEach(([key, value]) => {
+    Object.entries(data).forEach[&](([key, value]) {
         "lines.push_back(" + "**" + key + "**: " + value
         });
 

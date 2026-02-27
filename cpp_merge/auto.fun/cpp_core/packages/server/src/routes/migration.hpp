@@ -20,7 +20,7 @@ namespace elizaos {
 
 
 // middleware to check if the request is authorized
-  await next();
+  next();
 
     // Create connection based on the environment setting.
 
@@ -33,7 +33,7 @@ namespace elizaos {
     //   connection,
     //   new Wallet(wallet),
     //   program,
-    //   autofunProgram as std::any,
+    //   autofunProgram as std:,
     //   provider,
     //   redisCache,
     // );
@@ -45,7 +45,7 @@ namespace elizaos {
     // requireAuth middleware ensures user exists, but let's double-check
 
     //check if the user is the creator of the token
-    // std::async () => {
+    // std::async [&]() {
     // }
     // Return a success response.
 

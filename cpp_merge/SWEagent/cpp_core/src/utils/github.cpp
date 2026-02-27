@@ -1,10 +1,14 @@
 #include "github.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isGithubRepoUrl(const std::string& dataPath) {
+bool isGithubRepoUrl(const std:& dataPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -13,33 +17,33 @@ bool isGithubRepoUrl(const std::string& dataPath) {
     /^git@github\.com:[\w-]+\/[\w-]+\.git$/,
     /^gh:[\w-]+\/[\w-]+$/,
     ];
-    return patterns.some((pattern) => pattern.test(dataPath));
+    return patterns.some[&]((pattern) { return pattern.test(dataPath)); };
 
 }
 
-bool isGithubIssueUrl(const std::string& dataPath) {
+bool isGithubIssueUrl(const std:& dataPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^https?:\/\/github\.com\/[\w-]+\/[\w-]+\/issues\/\d+$/.test(dataPath);
 
 }
 
-void parseGhIssueUrl(const std::string& issueUrl) {
+void parseGhIssueUrl(const std:& issueUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    owner: std::string; repo: std::string; issueNumber: std::string
+    owner: std:; repo: std:; issueNumber: std:
 }
 
-void parseGhRepoUrl(const std::string& repoUrl) {
+void parseGhRepoUrl(const std:& repoUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    owner: std::string; repo: std::string
+    owner: std:; repo: std:
 }
 
-std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string token = "") {
+std::future<std:> getGhIssueData(const std:& issueUrl, std: token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { owner, repo, issueNumber } = parseGhIssueUrl(issueUrl);
 
-    const std::unordered_map<std::string, std::string> headers = {;
+    const std::unordered_map<std:, std:> headers = {;
         Accept: "application/vnd.github.v3+json",
         };
 
@@ -53,10 +57,10 @@ std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string to
 
 }
 
-std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, std::string token = "") {
+std::future<std:> getProblemStatementFromGithubIssue(const std:& owner, const std:& repo, const std:& issueNumber, std: token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::string> headers = {;
+    const std::unordered_map<std:, std:> headers = {;
         Accept: "application/vnd.github.v3+json",
         };
 
@@ -71,10 +75,10 @@ std::future<std::string> getProblemStatementFromGithubIssue(const std::string& o
 
 }
 
-std::future<std::vector<std::string>> getAssociatedCommitUrls(const std::string& org, const std::string& repo, const std::string& issueNumber, std::string token = "") {
+std::future<std::vector<std::string>> getAssociatedCommitUrls(const std:& org, const std:& repo, const std:& issueNumber, std: token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, std::string> headers = {;
+    const std::unordered_map<std:, std:> headers = {;
         Accept: "application/vnd.github.v3+json",
         };
 

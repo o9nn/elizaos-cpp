@@ -22,7 +22,7 @@ namespace elizaos {
  * Options for component test execution
  */
 struct ComponentTestOptions {
-    std::optional<std::string> name;
+    std::optional<std:> name;
     std::optional<bool> skipBuild;
     std::optional<bool> skipTypeCheck;
 };
@@ -32,7 +32,7 @@ struct ComponentTestOptions {
  */
 struct E2ETestOptions {
     std::optional<double> port;
-    std::optional<std::string> name;
+    std::optional<std:> name;
     std::optional<bool> skipBuild;
 };
 
@@ -51,7 +51,7 @@ struct TestResult {
  * Test context configuration
  */
 struct TestContext {
-    std::optional<std::string> testPath;
+    std::optional<std:> testPath;
     TestCommandOptions options;
 };
 
@@ -66,8 +66,8 @@ struct ServerConfig {
  * Plugin dependency information
  */
 struct PluginDependency {
-    std::string name;
-    std::string path;
+    std: name;
+    std: path;
 };
 
 

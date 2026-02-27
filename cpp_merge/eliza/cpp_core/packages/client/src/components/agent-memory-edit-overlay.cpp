@@ -18,35 +18,35 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
 
     const auto textareaRef = useRef<HTMLTextAreaElement>(nullptr);
     const auto isProcessing = isUpdating || isDeleting;
-    const auto originalContent = /* JSON.stringify */ std::string(memory.content, nullptr, 2);
+    const auto originalContent = /* JSON.stringify */ std:(memory.content, nullptr, 2);
 
     // Initialize content when component opens
-    useEffect(() => {
+    useEffect[&](() {
         if (isOpen) {
             setEditedContent(originalContent);
             setIsValidJson(true);
             setHasUnsavedChanges(false);
             setIsPreviewMode(false);
-            setTimeout(() => {
+            setTimeout[&](() {
                 textareaRef.current.focus();
                 }, 100);
             }
             }, [isOpen, originalContent]);
 
             // Check for unsaved changes
-            useEffect(() => {
+            useEffect[&](() {
                 setHasUnsavedChanges(editedContent != originalContent);
                 }, [editedContent, originalContent]);
 
                 // Validate JSON on content change
-                useEffect(() => {
-                    if (!editedContent.trim()) {
+                useEffect[&](() {
+                    if (!editedContent) {
                         setIsValidJson(false);
                         return;
                     }
 
                     try {
-                        /* JSON.parse */ editedContent;
+                        /* JSON::parse */ editedContent;
                         setIsValidJson(true);
                         } catch {
                             setIsValidJson(false);
@@ -54,7 +54,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                         }, [editedContent]);
 
                         // Handle escape key
-                        useEffect(() => {
+                        useEffect[&](() {
                             const auto handleEscape = [&](e: KeyboardEvent) {;
                                 if (e.key == 'Escape' && isOpen) {
                                     if (hasUnsavedChanges) {
@@ -71,8 +71,8 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                     return [&]() { return document.removeEventListener("keydown", handleEscape); };
                                     }, [isOpen, hasUnsavedChanges, onClose]);
 
-                                    const auto handleSave = useCallback(() => {;
-                                        if (!editedContent.trim()) {
+                                    const auto handleSave = useCallback[&](() {;
+                                        if (!editedContent) {
                                             toast({
                                                 title: "Error",
                                                 description: "Memory content cannot be empty",
@@ -91,9 +91,9 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                 }
 
                                                 try {
-                                                    const auto parsedContent = /* JSON.parse */ editedContent;
+                                                    const auto parsedContent = /* JSON::parse */ editedContent;
 
-                                                    updateMemory(;
+                                                    updateMemory[&](;
                                                     {
                                                         agentId,
                                                         memoryId: memory.id!,
@@ -102,14 +102,14 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                             },
                                                             },
                                                             {
-                                                                onSuccess: () => {
+                                                                onSuccess: () {
                                                                     onClose();
                                                                     toast({
                                                                         title: "Memory Updated",
                                                                         description: "The memory content has been successfully updated",
                                                                         });
                                                                         },
-                                                                        onError: (error) => {
+                                                                        onError: [&](error) {
                                                                             toast({
                                                                                 title: "Update Failed",
                                                                                 description: error.message || "Failed to update memory",
@@ -127,22 +127,22 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                 }
                                                                                 }, [editedContent, isValidJson, updateMemory, agentId, memory.id, onClose, toast]);
 
-                                                                                const auto handleDelete = useCallback(() => {;
+                                                                                const auto handleDelete = useCallback[&](() {;
                                                                                     if (confirm('Are you sure you want to delete this memory? This action cannot be undone.')) {
-                                                                                        deleteMemory(;
+                                                                                        deleteMemory[&](;
                                                                                         {
                                                                                             agentId,
                                                                                             memoryId: memory.id!,
                                                                                             },
                                                                                             {
-                                                                                                onSuccess: () => {
+                                                                                                onSuccess: () {
                                                                                                     onClose();
                                                                                                     toast({
                                                                                                         title: "Memory Deleted",
                                                                                                         description: "The memory has been successfully removed",
                                                                                                         });
                                                                                                         },
-                                                                                                        onError: (error) => {
+                                                                                                        onError: [&](error) {
                                                                                                             toast({
                                                                                                                 title: "Delete Failed",
                                                                                                                 description: error.message || "Failed to delete memory",
@@ -154,10 +154,10 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                         }
                                                                                                         }, [deleteMemory, agentId, memory.id, onClose, toast]);
 
-                                                                                                        const auto handlePrettyFormat = useCallback(() => {;
+                                                                                                        const auto handlePrettyFormat = useCallback[&](() {;
                                                                                                             try {
-                                                                                                                const auto parsed = /* JSON.parse */ editedContent;
-                                                                                                                setEditedContent(/* JSON.stringify */ std::string(parsed, nullptr, 2));
+                                                                                                                const auto parsed = /* JSON::parse */ editedContent;
+                                                                                                                setEditedContent(/* JSON.stringify */ std:(parsed, nullptr, 2));
                                                                                                                 toast({
                                                                                                                     title: "Formatted",
                                                                                                                     description: "JSON has been formatted",
@@ -171,13 +171,13 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                         }
                                                                                                                         }, [editedContent, toast]);
 
-                                                                                                                        const auto handleReset = useCallback(() => {;
+                                                                                                                        const auto handleReset = useCallback[&](() {;
                                                                                                                             if (confirm('Reset to original content? All changes will be lost.')) {
                                                                                                                                 setEditedContent(originalContent);
                                                                                                                             }
                                                                                                                             }, [originalContent]);
 
-                                                                                                                            const auto handleCopyToClipboard = useCallback(std::async () => {;
+                                                                                                                            const auto handleCopyToClipboard = useCallback[&](std::async () {;
                                                                                                                                 try {
                                                                                                                                     navigator.clipboard.writeText(editedContent);
                                                                                                                                     toast({
@@ -193,7 +193,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                                             }
                                                                                                                                             }, [editedContent, toast]);
 
-                                                                                                                                            const auto formatTimestamp = [&](timestamp: number) {;
+                                                                                                                                            const auto formatTimestamp = [&](timestamp) {;
                                                                                                                                                 return new Date(timestamp).toLocaleString();
                                                                                                                                                 };
 
@@ -211,7 +211,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
 
                                                                                                                                                         if (!isOpen) return null;
 
-                                                                                                                                                        return (;
+                                                                                                                                                        return [&](;
                                                                                                                                                         <div;
                                                                                                                                                         className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4";
                                                                                                                                                     onClick={handleOverlayClick}
@@ -221,8 +221,8 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                                                     >;
                                                                                                                                                     <Card;
                                                                                                                                                     className="w-full max-w-4xl h-[85vh] max-h-[800px] flex flex-col";
-                                                                                                                                                onClick={(e) => e.stopPropagation()}
-                                                                                                                                                >;
+                                                                                                                                                onClick={(e) { return e.stopPropagation()}
+                                                                                                                                                >; };
                                                                                                                                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-shrink-0">;
                                                                                                                                                 <div className="flex items-center gap-2">;
                                                                                                                                                 <CardTitle id="memory-edit-title" className="text-xl font-semibold">;
@@ -346,7 +346,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                         {isPreviewMode ? (;
                                                                         <div className="flex-1 border rounded-md p-3 bg-muted/50 overflow-auto">;
                                                                         <pre className="text-sm whitespace-pre-wrap">;
-                                                                    {isValidJson ? /* JSON.stringify */ std::string(/* JSON.parse */ editedContent, nullptr, 2)  = editedContent}
+                                                                    {isValidJson ? /* JSON.stringify */ std:(/* JSON::parse */ editedContent, nullptr, 2)  = editedContent}
                                                                     </pre>;
                                                                     </div>;
                                                                     ) : (

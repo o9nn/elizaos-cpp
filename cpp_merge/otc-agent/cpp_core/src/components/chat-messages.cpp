@@ -1,4 +1,5 @@
 #include "chat-messages.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,13 +12,13 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
     const auto lastMessageRef = useRef<string>("");
 
     const auto scrollToBottom = [&](behavior: ScrollBehavior = "smooth") {;
-        setTimeout(() => {
+        setTimeout[&](() {
             messagesEndRef.current.scrollIntoView({ behavior });
             }, 100);
             };
 
-            useEffect(() => {
-                if (messages.length == 0) return;
+            useEffect[&](() {
+                if (messages.size() == 0) return;
                 const auto lastMessage = messages[messages.size() - 1];
 
                 const auto currentText = lastMessage.text || "";
@@ -32,28 +33,27 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                 const auto lastMessageName = messages[messages.size() - 1].name;
                 const auto lastMessageText = messages[messages.size() - 1].text;
 
-                useEffect(() => {
-                    if (!messages.length) return;
+                useEffect[&](() {
+                    if (!messages.size()) return;
                     const auto lastMessage = messages[messages.size() - 1];
 
                     const auto isUserMessage = lastMessage.name == USER_NAME;
-                    const auto hasContent = lastMessage.text && lastMessage.text.trim() != "";
+                    const auto hasContent = lastMessage.text && lastMessage.text != "";
 
                     if (isUserMessage && hasContent) {
                         scrollToBottom("smooth");
                     }
                     }, [lastMessageName, lastMessageText, messages]);
 
-                    return (;
+                    return [&](;
                     <div className="flex flex-col">;
-                    {messages.std::map((message, i) => {
+                    {messages.std::map((message, i) {
                         // Use a combination of message id/timestamp and index to ensure uniqueness
                         const auto messageKey = std::to_string(message.id || message.createdAt || i) + "_" + i;
 
                         const auto assistantIndex =;
                         message.name != USER_NAME;
-                        ? messages.slice(0, i + 1).filter((m) => m.name != USER_NAME);
-                        .size() - 1;
+                        ? messages.slice(0, i + 1).filter[&]((m) { return m.name != USER_NAME); }.size() - 1;
                         : -1;
 
                         return (;

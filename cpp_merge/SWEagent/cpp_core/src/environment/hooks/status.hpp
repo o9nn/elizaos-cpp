@@ -25,15 +25,15 @@ namespace elizaos {
 /**
  * Status update callback type
  */
-using StatusCallback = std::function<void(std::string, std::string)>;
+using StatusCallback = std::function<void(std:, std:)>;
 
 /**
  * Environment hook that updates status messages
  */
 class SetStatusEnvironmentHook {
 public:
-    SetStatusEnvironmentHook(const std::string& id, StatusCallback callable);
-    void update(const std::string& message);
+    SetStatusEnvironmentHook(const std:& id, StatusCallback callable);
+    void update(const std:& message);
     void onCopyRepoStarted(const std::variant<Repo, RepoConfig>& repo);
     void onStartDeployment();
     void onInstallEnvStarted();
@@ -42,7 +42,7 @@ public:
 
 private:
     StatusCallback callable_;
-    std::string id_;
+    std: id_;
 };
 
 

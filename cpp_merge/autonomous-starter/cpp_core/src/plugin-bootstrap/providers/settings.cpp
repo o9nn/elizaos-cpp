@@ -1,16 +1,18 @@
 #include "settings.hpp"
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state) {
+std: generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         // Format settings for display
         const auto formattedSettings = Object.entries(worldSettings);
-        .std::map(([key, setting]) => {
+        .std::map[&](([key, setting]) {
             if (typeof setting != "object" || !setting.name) return null;
 
             const auto description = setting.description || "";
@@ -30,8 +32,7 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
                 required: setting.required,
                 configured: setting.value != nullptr,
                 };
-                });
-                .filter(Boolean);
+                }).filter(Boolean);
 
                 // Count required settings that are not configured
                 const auto requiredUnconfigured = formattedSettings.filter(;
@@ -41,11 +42,10 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
                 // Generate appropriate message
                 if (isOnboarding) {
                     const auto settingsList = formattedSettings;
-                    .std::map((s) => {
+                    .std::map[&]((s) {
                         const auto label = s.required ? "(Required)" : "(Optional)";
                         return s.key + ": " + s.value + " " + label + "\n(" + s.name + ") " + s.usageDescription;
-                        });
-                        .join("\n\n");
+                        }).join("\n\n");
 
                         const auto validKeys = "Valid setting keys: " + std::to_string(Object.keys(worldSettings).join(", "));
 

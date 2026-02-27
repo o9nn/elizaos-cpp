@@ -64,6 +64,6 @@ public:
 
 array<string> findTrajFiles(string dir);
 
-std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath = std::string("."), string dataPath = undefined);
+std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath = std:("."), string dataPath = undefined);
 
 #endif

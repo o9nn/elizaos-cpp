@@ -1,4 +1,7 @@
 #include "group-panel.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,7 +14,7 @@ agent is SelectableAgent isAgentSelectable(const std::optional<Agent>& agent) {
     !!agent.id &&;
     !!validateUuid(agent.id) &&;
     typeof agent.name == "string" &&;
-    agent.name.trim() != "";
+    agent.name != "";
     );
 
 }
@@ -38,7 +41,7 @@ void GroupPanel() {
                 isError: isErrorAgents,
                 } = useAgentsWithDetails();
 
-                const auto allAvailableSelectableAgents = useMemo(() => {;
+                const auto allAvailableSelectableAgents = useMemo[&](() {;
                     return (agentsData.agents || []).filter(isAgentSelectable);
                     }, [agentsData]);
 
@@ -47,7 +50,7 @@ void GroupPanel() {
                     const auto { toast } = useToast();
 
                     // Force fetch participants immediately when component mounts with channelId
-                    useEffect(() => {
+                    useEffect[&](() {
                         if (channelId) {
                             queryClient.invalidateQueries({ queryKey: ["channelParticipants", channelId] });
                             queryClient.refetchQueries({ queryKey: ["channelParticipants", channelId] });
@@ -55,8 +58,8 @@ void GroupPanel() {
                         }, [channelId, queryClient]);
 
                         // Create group mutation
-                        const auto createGroupMutation = useMutation({;
-                            mutationFn: std::async ({ name, participantIds }: { name: std::string; participantIds: UUID[] }) => {
+                        const auto createGroupMutation = useMutation[&]({;
+                            mutationFn: std::async ({ name, participantIds }: { name: std:; participantIds: UUID[] }) {
                                 const auto elizaClient = createElizaClient();
                                 return elizaClient.messaging.createGroupChannel({;
                                     name,
@@ -66,18 +69,18 @@ void GroupPanel() {
                                     metadata: { source: GROUP_CHAT_SOURCE },
                                     });
                                     },
-                                    onSuccess: (response) => {
+                                    onSuccess: [&](response) {
                                         if (response) {
                                             toast({ title: "Success", description: "Group created successfully." });
                                             queryClient.invalidateQueries({ queryKey: ["channels", serverId] });
                                             queryClient.invalidateQueries({ queryKey: ["channels"] });
                                             onClose();
-                                            setTimeout(() => {
+                                            setTimeout[&](() {
                                                 "navigate(" + "/group/" + response.id + "?serverId=" + serverId;
                                                 }, 100);
                                             }
                                             },
-                                            onError: (error) => {
+                                            onError: [&](error) {
                                                 clientLogger.error("Failed to create group", error);
                                                 const auto errorMsg = true /* instanceof check */ ? error.message : "Failed to create group.";
                                                 toast({ title: "Error", description: errorMsg, variant: "destructive" });
@@ -85,8 +88,8 @@ void GroupPanel() {
                                                 });
 
                                                 // Update group mutation
-                                                const auto updateGroupMutation = useMutation({;
-                                                    mutationFn: std::async ({ name, participantIds }: { name: std::string; participantIds: UUID[] }) => {
+                                                const auto updateGroupMutation = useMutation[&]({;
+                                                    mutationFn: std::async ({ name, participantIds }: { name: std:; participantIds: UUID[] }) {
                                                         if (!channelId) throw new Error('Channel ID is required for update');
                                                         const auto elizaClient = createElizaClient();
                                                         return elizaClient.messaging.updateChannel(channelId, {;
@@ -94,16 +97,16 @@ void GroupPanel() {
                                                             participantCentralUserIds: participantIds,
                                                             });
                                                             },
-                                                            onSuccess: () => {
+                                                            onSuccess: [&]() {
                                                                 toast({ title: "Group Updated", description: "Group details updated successfully." });
                                                                 queryClient.invalidateQueries({ queryKey: ["channels", serverId] });
                                                                 queryClient.invalidateQueries({ queryKey: ["channels"] });
                                                                 onClose();
-                                                                setTimeout(() => {
+                                                                setTimeout[&](() {
                                                                     "navigate(" + "/group/" + channelId + "?serverId=" + serverId;
                                                                     }, 100);
                                                                     },
-                                                                    onError: (error) => {
+                                                                    onError: [&](error) {
                                                                         clientLogger.error("Failed to update group", error);
                                                                         std::cerr << "Group update error details:" << error << std::endl;
                                                                         const auto errorMsg = true /* instanceof check */ ? error.message : "Failed to update group.";
@@ -112,23 +115,23 @@ void GroupPanel() {
                                                                         });
 
                                                                         // Delete group mutation
-                                                                        const auto deleteGroupMutation = useMutation({;
-                                                                            mutationFn: std::async () => {
+                                                                        const auto deleteGroupMutation = useMutation[&]({;
+                                                                            mutationFn: std::async () {
                                                                                 if (!channelId) throw new Error('Channel ID is required for delete');
                                                                                 const auto elizaClient = createElizaClient();
                                                                                 return elizaClient.messaging.deleteChannel(channelId);
                                                                                 },
-                                                                                onSuccess: () => {
+                                                                                onSuccess: [&]() {
                                                                                     toast({ title: "Group Deleted", description: "The group has been successfully deleted." });
                                                                                     queryClient.invalidateQueries({ queryKey: ["channels", serverId] });
                                                                                     queryClient.invalidateQueries({ queryKey: ["channels"] });
                                                                                     navigate("/");
                                                                                     onClose();
                                                                                     },
-                                                                                    onError: (error) => {
+                                                                                    onError: [&](error) {
                                                                                         clientLogger.error("Failed to delete channel", error);
                                                                                         const auto errorMsg = true /* instanceof check */ ? error.message : "Could not delete group.";
-                                                                                        if (typeof error == 'object' && error != null && (error as std::any).statusCode == 404) {
+                                                                                        if (typeof error == 'object' && error != null && (error as std:).statusCode == 404) {
                                                                                             toast({
                                                                                                 title: "Error Deleting Group",
                                                                                                 description: "Delete operation not found on server.",
@@ -145,9 +148,9 @@ void GroupPanel() {
                                                                                                     isLoading: isLoadingChannelParticipants,
                                                                                                     isError: isErrorChannelParticipants,
                                                                                                     error: errorChannelParticipants,
-                                                                                                    }: UseQueryResult<ChannelParticipantsResponse, Error> = useQuery({
+                                                                                                    }: UseQueryResult<ChannelParticipantsResponse, Error> = useQuery[&]({
                                                                                                         queryKey: ["channelParticipants", channelId],
-                                                                                                        queryFn: std::async () => {
+                                                                                                        queryFn: std::async () {
                                                                                                             if (!channelId) return { success: true, data: [] };
                                                                                                             try {
                                                                                                                 const auto elizaClient = createElizaClient();
@@ -156,7 +159,7 @@ void GroupPanel() {
                                                                                                                 // Handle different possible response formats
                                                                                                                 auto participants = [];
                                                                                                                 if (result && Array.isArray(result.participants)) {
-                                                                                                                    participants = result.participants.std::map((participant) => participant.userId);
+                                                                                                                    participants = result.participants.std::map[&]((participant) { return participant.userId); };
                                                                                                                     } else if (result && Array.isArray(result)) {
                                                                                                                         // If result is directly an array
                                                                                                                         participants = result.std::map(;
@@ -182,9 +185,9 @@ void GroupPanel() {
                                                                                                                         });
 
                                                                                                                         // Separate effect for initializing chat name when channel loads
-                                                                                                                        useEffect(() => {
+                                                                                                                        useEffect[&](() {
                                                                                                                             if (channelId && channelsData.data.channels) {
-                                                                                                                                const auto channelDetails = channelsData.data.channels.find((ch) => ch.id == channelId);
+                                                                                                                                const auto channelDetails = channelsData.data.channels.find[&]((ch) { return ch.id == channelId); };
                                                                                                                                 if (!initializedRef.current || lastChannelIdRef.current != channelId) {
                                                                                                                                     const auto initialName = channelDetails.name || "";
                                                                                                                                     setChatName(initialName);
@@ -204,7 +207,7 @@ void GroupPanel() {
                                                                                                                                 }, [channelId, channelsData]);
 
                                                                                                                                 // Separate effect for handling participants
-                                                                                                                                useEffect(() => {
+                                                                                                                                useEffect[&](() {
                                                                                                                                     if (isLoadingAgents) return;
                                                                                                                                     if (channelId && isLoadingChannelParticipants) return;
                                                                                                                                     if (!channelId) {
@@ -235,7 +238,7 @@ void GroupPanel() {
                                                                                                                                             );
 
                                                                                                                                             setSelectedAgents(newSelected);
-                                                                                                                                            setInitialSelectedAgentIds(newSelected.std::map((a) => a.id));
+                                                                                                                                            setInitialSelectedAgentIds[&](newSelected.std::map((a) { return a.id)); };
                                                                                                                                             agentsInitializedRef.current = true;
                                                                                                                                             } else if (channelParticipantsApiResponse && !channelParticipantsApiResponse.success) {
                                                                                                                                                 toast({
@@ -262,18 +265,18 @@ void GroupPanel() {
                                                                                                                                                     toast,
                                                                                                                                                     ]);
 
-                                                                                                                                                    const std::vector<ComboboxOption> comboboxOptions = useMemo(() => {;
+                                                                                                                                                    const std::vector<ComboboxOption> comboboxOptions = useMemo[&](() {;
                                                                                                                                                         if (isLoadingAgents || isErrorAgents) return [];
                                                                                                                                                         return allAvailableSelectableAgents.std::map((agent) => ({;
                                                                                                                                                             id: agent.id,
                                                                                                                                                             "label: " + agent.name + std::to_string(agent.status == AgentStatus.INACTIVE ? " (Inactive)" : "")
-                                                                                                                                                            icon: agent.settings.avatar || "", // Ensure icon is always a std::string
+                                                                                                                                                            icon: agent.settings.avatar || "", // Ensure icon is always a std:
                                                                                                                                                             }));
                                                                                                                                                             }, [allAvailableSelectableAgents, isLoadingAgents, isErrorAgents]);
 
-                                                                                                                                                            const auto STABLE_EMPTY_COMBOBOX_OPTIONS_ARRAY = useMemo(() => [], []);
+                                                                                                                                                            const auto STABLE_EMPTY_COMBOBOX_OPTIONS_ARRAY = useMemo[&](() { return [], []); };
 
-                                                                                                                                                            const std::vector<ComboboxOption> initialSelectedComboboxOptions = useMemo(() => {;
+                                                                                                                                                            const std::vector<ComboboxOption> initialSelectedComboboxOptions = useMemo[&](() {;
                                                                                                                                                                 if (isLoadingAgents) return STABLE_EMPTY_COMBOBOX_OPTIONS_ARRAY;
                                                                                                                                                                 if (!channelId) return STABLE_EMPTY_COMBOBOX_OPTIONS_ARRAY; // Create mode
 
@@ -292,16 +295,16 @@ void GroupPanel() {
                                                                                                                                                                     const auto handleSelectAgents = useCallback(;
                                                                                                                                                                     [&](selectedOptions: ComboboxOption[]) {
                                                                                                                                                                         const auto newSelectedAgentObjects = allAvailableSelectableAgents.filter((agent) =>;
-                                                                                                                                                                        selectedOptions.some((option) => option.id == agent.id);
+                                                                                                                                                                        selectedOptions.some[&]((option) { return option.id == agent.id); };
                                                                                                                                                                         );
                                                                                                                                                                         setSelectedAgents(newSelectedAgentObjects);
                                                                                                                                                                         },
                                                                                                                                                                         [allAvailableSelectableAgents];
                                                                                                                                                                         );
 
-                                                                                                                                                                        const auto handleDeleteGroup = useCallback(std::async () => {;
+                                                                                                                                                                        const auto handleDeleteGroup = useCallback[&](std::async () {;
                                                                                                                                                                             if (!channelId) return;
-                                                                                                                                                                            const auto channel = channelsData.data.channels.find((ch) => ch.id == channelId);
+                                                                                                                                                                            const auto channel = channelsData.data.channels.find[&]((ch) { return ch.id == channelId); };
                                                                                                                                                                             const auto confirmDelete = window.confirm(;
                                                                                                                                                                             "Are you sure you want to permanently delete the group chat \"" + std::to_string(channel.name || chatName || "this group") + "\"? This action cannot be undone.";
                                                                                                                                                                             );
@@ -310,20 +313,20 @@ void GroupPanel() {
                                                                                                                                                                             }, [channelId, chatName, channelsData, deleteGroupMutation]);
 
                                                                                                                                                                             // Check if form has changed
-                                                                                                                                                                            const auto hasFormChanged = useMemo(() => {;
+                                                                                                                                                                            const auto hasFormChanged = useMemo[&](() {;
                                                                                                                                                                                 if (!channelId) return true; // Always allow creation
 
-                                                                                                                                                                                const auto nameChanged = chatName.trim() != initialChatName.trim();
-                                                                                                                                                                                const auto currentAgentIds = selectedAgents.std::map((a) => a.id).sort();
+                                                                                                                                                                                const auto nameChanged = chatName != initialChatName;
+                                                                                                                                                                                const auto currentAgentIds = selectedAgents.std::map[&]((a) { return a.id).sort(); };
                                                                                                                                                                                 const auto initialAgentIds = initialSelectedAgentIds.sort();
-                                                                                                                                                                                const auto agentsChanged = /* JSON.stringify */ std::string(currentAgentIds) != /* JSON.stringify */ std::string(initialAgentIds);
+                                                                                                                                                                                const auto agentsChanged = /* JSON.stringify */ std:(currentAgentIds) != /* JSON.stringify */ std:(initialAgentIds);
 
                                                                                                                                                                                 return nameChanged || agentsChanged;
                                                                                                                                                                                 }, [channelId, chatName, initialChatName, selectedAgents, initialSelectedAgentIds]);
 
-                                                                                                                                                                                const auto handleCreateOrUpdateGroup = useCallback(std::async () => {;
+                                                                                                                                                                                const auto handleCreateOrUpdateGroup = useCallback[&](std::async () {;
                                                                                                                                                                                     // For create mode, require at least one agent
-                                                                                                                                                                                    if (!channelId && selectedAgents.length == 0) {
+                                                                                                                                                                                    if (!channelId && selectedAgents.size() == 0) {
                                                                                                                                                                                         toast({
                                                                                                                                                                                             title: "Validation Error",
                                                                                                                                                                                             description: "Please select at least one agent for the group.",
@@ -333,19 +336,19 @@ void GroupPanel() {
                                                                                                                                                                                         }
 
                                                                                                                                                                                         // For edit mode, warn if removing all agents but allow it
-                                                                                                                                                                                        if (channelId && selectedAgents.length == 0) {
+                                                                                                                                                                                        if (channelId && selectedAgents.size() == 0) {
                                                                                                                                                                                             const auto confirmRemoveAll = window.confirm(;
                                                                                                                                                                                             "Are you sure you want to remove all agents from this group? This will leave the group with no participants.";
                                                                                                                                                                                             );
                                                                                                                                                                                             if (!confirmRemoveAll) return;
                                                                                                                                                                                         }
 
-                                                                                                                                                                                        const auto participantIds = selectedAgents.std::map((agent) => agent.id);
+                                                                                                                                                                                        const auto participantIds = selectedAgents.std::map[&]((agent) { return agent.id); };
                                                                                                                                                                                         // Generate name if empty - for groups with no agents, use the chat name or a default
                                                                                                                                                                                         const auto finalName =;
-                                                                                                                                                                                        chatName.trim() ||;
+                                                                                                                                                                                        chatName ||;
                                                                                                                                                                                         (selectedAgents.size() > 0;
-                                                                                                                                                                                        ? selectedAgents.std::map((agent) => agent.name).join(", ");
+                                                                                                                                                                                        ? selectedAgents.std::map[&]((agent) { return agent.name).join(", "); };
                                                                                                                                                                                         : "Empty Group");
 
                                                                                                                                                                                         if (!channelId) {
@@ -368,12 +371,12 @@ void GroupPanel() {
                                                                                                                                                                                             updateGroupMutation.isPending ||;
                                                                                                                                                                                             deleteGroupMutation.isPending;
 
-                                                                                                                                                                                            return (;
+                                                                                                                                                                                            return [&](;
                                                                                                                                                                                             <div;
                                                                                                                                                                                             className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50";
                                                                                                                                                                                         onClick={onClose}
                                                                                                                                                                                         >;
-                                                                                                                                                                                        <Card className="w-[80%] max-w-2xl" onClick={(e) => e.stopPropagation()}>;
+                                                                                                                                                                                        <Card className="w-[80%] max-w-2xl" onClick={(e) { return e.stopPropagation()}>; };
                                                                                                                                                                                         <CardHeader className="flex flex-row items-center justify-between space-y-0">;
                                                                                                                                                                                         <CardTitle className="text-xl font-semibold">;
                                                                                                                                                                                     {channelId ? "Edit Group Chat"  = "Create Group Chat"}
@@ -394,8 +397,8 @@ void GroupPanel() {
                                                                                                                                                                                     <Input;
                                                                                                                                                                                     id="chat-name";
                                                                                                                                                                                 value={chatName}
-                                                                                                                                                                            onChange={(e) => setChatName(e.target.value)}
-                                                                                                                                                                            className="w-full bg-background text-foreground";
+                                                                                                                                                                            onChange={[&](e) { return setChatName(e.target.value)}
+                                                                                                                                                                            className="w-full bg-background text-foreground"; };
                                                                                                                                                                             placeholder="Leave blank to auto-generate from participants";
                                                                                                                                                                             disabled={
                                                                                                                                                                                 createGroupMutation.isPending ||;

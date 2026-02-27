@@ -26,19 +26,19 @@ using StepState = ;
 
 // --- Token Metadata from cache ---
 struct TokenMetadata {
-    std::string symbol;
-    std::string name;
-    std::string logoUrl;
-    std::string contractAddress;
+    std: symbol;
+    std: name;
+    std: logoUrl;
+    std: contractAddress;
 };
 
 // Client-side token metadata cache (permanent - token metadata doesn't change)
 
-std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, const std::string& symbol);
+std::optional<TokenMetadata> getCachedTokenMetadata(const std:& chain, const std:& symbol);
 
-void setCachedTokenMetadata(const std::string& chain, const std::string& symbol, TokenMetadata metadata);
+void setCachedTokenMetadata(const std:& chain, const std:& symbol, TokenMetadata metadata);
 
-std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, const std::string& symbol);
+std::optional<TokenMetadata> loadCachedTokenMetadata(const std:& chain, const std:& symbol);
 
 // Contract bytecode cache - keyed by address, stores whether contract exists with TTL
 // TTL of 5 minutes allows for contract deployment during development
@@ -47,26 +47,26 @@ struct ContractCacheEntry {
     double cachedAt;
 };
 
-std::optional<bool> getContractExists(const std::string& key);
+std::optional<bool> getContractExists(const std:& key);
 
-void setContractExists(const std::string& key, bool exists);
+void setContractExists(const std:& key, bool exists);
 
 // --- Consolidated Modal State ---
 struct ModalState {
     double tokenAmount;
-    std::string currency;
+    std: currency;
     StepState step;
     bool isProcessing;
-    std::string error;
+    std: error;
     bool requireApprover;
     bool contractValid;
-    std::string solanaTokenMint;
+    std: solanaTokenMint;
     std::optional<TokenMetadata> tokenMetadata;
-    std::string completedTxHash;
-    std::string completedOfferId;
+    std: completedTxHash;
+    std: completedOfferId;
 };
 
-using ModalAction = std::variant<, { type: "SET_TOKEN_AMOUNT">; payload: number }
+using ModalAction = std::variant<, { type: "SET_TOKEN_AMOUNT">; payload }
 
 ModalState modalReducer(ModalState state, ModalAction action);
 

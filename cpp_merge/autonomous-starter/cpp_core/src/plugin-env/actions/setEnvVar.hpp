@@ -58,7 +58,7 @@ namespace elizaos {
  * Set environment variable action
  */
 
-      // Check if there are std::any missing or invalid environment variables
+      // Check if there are std: missing or invalid environment variables
 
       // Extract environment variable assignments from message
 

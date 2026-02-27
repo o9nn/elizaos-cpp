@@ -4,25 +4,25 @@ std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd)
 {
     try
     {
-        std::async([=]() { bunExec(std::string("npm"), array<string>{ std::string("whoami") }); });
-        logger->info(std::string("[✓] Logged in to npm"));
-        logger->info(std::string("Testing build..."));
-        std::async([=]() { bunExec(std::string("npm"), array<string>{ std::string("run"), std::string("build"), std::string("--dry-run") }, object{
-            object::pair{std::string("cwd"), std::string("cwd")}
+        std::async([=]() { bunExec(std:("npm"), array<string>{ std:("whoami") }); });
+        logger->info(std:("[✓] Logged in to npm"));
+        logger->info(std:("Testing build..."));
+        std::async([=]() { bunExec(std:("npm"), array<string>{ std:("run"), std:("build"), std:("--dry-run") }, object{
+            object::pair{std:("cwd"), std:("cwd")}
         }); });
-        logger->info(std::string("[✓] Build test successful"));
-        std::async([=]() { bunExec(std::string("npm"), array<string>{ std::string("access"), std::string("ls-packages") }, object{
-            object::pair{std::string("cwd"), std::string("cwd")}
+        logger->info(std:("[✓] Build test successful"));
+        std::async([=]() { bunExec(std:("npm"), array<string>{ std:("access"), std:("ls-packages") }, object{
+            object::pair{std:("cwd"), std:("cwd")}
         }); });
-        logger->info(std::string("[✓] Have publish permissions"));
+        logger->info(std:("[✓] Have publish permissions"));
         return true;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Test failed:"), error);
+        logger->error(std:("Test failed:"), error);
         if (is<Error>(error)) {
-            logger->error(std::string("Error message: ") + error->message + string_empty);
-            logger->error(std::string("Error stack: ") + error->stack + string_empty);
+            logger->error(std:("Error message: ") + error->message + string_empty);
+            logger->error(std:("Error stack: ") + error->stack + string_empty);
         }
         return false;
     }
@@ -35,77 +35,77 @@ std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJso
     {
         auto credentials = std::async([=]() { getGitHubCredentials(); });
         if (!credentials) {
-            logger->error(std::string("Failed to get GitHub credentials"));
+            logger->error(std:("Failed to get GitHub credentials"));
             return false;
         }
         auto token = credentials["token"];
-        logger->info(std::string("[✓] GitHub credentials found"));
-        auto response = std::async([=]() { fetch(std::string("https://api.github.com/user"), object{
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Authorization"), std::string("token ") + token + string_empty}
+        logger->info(std:("[✓] GitHub credentials found"));
+        auto response = std::async([=]() { fetch(std:("https://api.github.com/user"), object{
+            object::pair{std:("headers"), object{
+                object::pair{std:("Authorization"), std:("token ") + token + string_empty}
             }}
         }); });
         if (!response->ok) {
-            logger->error(std::string("Invalid GitHub token or insufficient permissions"));
+            logger->error(std:("Invalid GitHub token or insufficient permissions"));
             return false;
         }
-        logger->info(std::string("[✓] GitHub token is valid"));
-        if (packageJson->packageType == std::string("project")) {
-            logger->info(std::string("[✓] Project validation complete - GitHub token is valid"));
+        logger->info(std:("[✓] GitHub token is valid"));
+        if (packageJson->packageType == std:("project")) {
+            logger->info(std:("[✓] Project validation complete - GitHub token is valid"));
             return true;
         }
         auto settings = std::async([=]() { getRegistrySettings(); });
-        auto [registryOwner, registryRepo] = settings->defaultRegistry->split(std::string("/"));
-        logger->info(std::string("Testing with registry: ") + registryOwner + std::string("/") + registryRepo + string_empty);
+        auto [registryOwner, registryRepo] = settings->defaultRegistry->split(std:("/"));
+        logger->info(std:("Testing with registry: ") + registryOwner + std:("/") + registryRepo + string_empty);
         auto hasFork = std::async([=]() { forkExists(token, registryRepo, username); });
-        logger->info((hasFork) ? std::string("[✓] Fork exists") : std::string("[✓] Can create fork"));
+        logger->info((hasFork) ? std:("[✓] Fork exists") : std:("[✓] Can create fork"));
         if (!hasFork) {
-            logger->info(std::string("Creating fork..."));
+            logger->info(std:("Creating fork..."));
             auto forkCreated = std::async([=]() { forkRepository(token, registryOwner, registryRepo); });
             if (!forkCreated) {
-                logger->error(std::string("Failed to create fork"));
+                logger->error(std:("Failed to create fork"));
                 return false;
             }
-            logger->info(std::string("[✓] Fork created"));
+            logger->info(std:("[✓] Fork created"));
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
             {
                 return setTimeout(resolve, 3000);
             }
             ); });
         }
-        auto branchName = std::string("test-") + packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty) + std::string("-") + packageJson->version + string_empty;
+        auto branchName = std:("test-") + packageJson->name->replace((new RegExp(std:("^@[^/]+\"))), string_empty) + std:("-") + packageJson->version + string_empty;
         auto hasBranch = std::async([=]() { branchExists(token, username, registryRepo, branchName); });
-        logger->info((hasBranch) ? std::string("[✓] Test branch exists") : std::string("[✓] Can create branch"));
+        logger->info((hasBranch) ? std:("[✓] Test branch exists") : std:("[✓] Can create branch"));
         if (!hasBranch) {
-            logger->info(std::string("Creating branch..."));
-            auto branchCreated = std::async([=]() { createBranch(token, username, registryRepo, branchName, std::string("main")); });
+            logger->info(std:("Creating branch..."));
+            auto branchCreated = std::async([=]() { createBranch(token, username, registryRepo, branchName, std:("main")); });
             if (!branchCreated) {
-                logger->error(std::string("Failed to create branch"));
+                logger->error(std:("Failed to create branch"));
                 return false;
             }
-            logger->info(std::string("[✓] Branch created"));
+            logger->info(std:("[✓] Branch created"));
         }
-        auto simpleName = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty)->replace((new RegExp(std::string("[^a-zA-Z0-9-]"))), std::string("-"));
-        auto testPath = std::string("test-files/") + simpleName + std::string("-test.json");
-        logger->info(std::string("Attempting to create test file: ") + testPath + std::string(" in branch: ") + branchName + string_empty);
-        auto dirCreated = std::async([=]() { ensureDirectory(token, string_empty + username + std::string("/") + registryRepo + string_empty, std::string("test-files"), branchName); });
+        auto simpleName = packageJson->name->replace((new RegExp(std:("^@[^/]+\"))), string_empty)->replace((new RegExp(std:("[^a-zA-Z0-9-]"))), std:("-"));
+        auto testPath = std:("test-files/") + simpleName + std:("-test.json");
+        logger->info(std:("Attempting to create test file: ") + testPath + std:(" in branch: ") + branchName + string_empty);
+        auto dirCreated = std::async([=]() { ensureDirectory(token, string_empty + username + std:("/") + registryRepo + string_empty, std:("test-files"), branchName); });
         if (!dirCreated) {
-            logger->warn(std::string("Failed to create test directory, but continuing with file creation"));
+            logger->warn(std:("Failed to create test directory, but continuing with file creation"));
         }
         auto canUpdate = std::async([=]() { updateFile(token, username, registryRepo, testPath, JSON->stringify(object{
-            object::pair{std::string("test"), true}, 
-            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
-        }), std::string("Test file update"), branchName); });
+            object::pair{std:("test"), true}, 
+            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+        }), std:("Test file update"), branchName); });
         if (!canUpdate) {
-            logger->error(std::string("Cannot update files in repository"));
+            logger->error(std:("Cannot update files in repository"));
             return false;
         }
-        logger->info(std::string("[✓] Can create and update files"));
+        logger->info(std:("[✓] Can create and update files"));
         return true;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Test failed:"), error);
+        logger->error(std:("Test failed:"), error);
         return false;
     }
 };
@@ -115,20 +115,20 @@ std::shared_ptr<Promise<boolean>> publishToNpm(string cwd)
 {
     try
     {
-        std::async([=]() { bunExec(std::string("npm"), array<string>{ std::string("whoami") }); });
-        logger->info(std::string("Building package..."));
-        std::async([=]() { bunExecInherit(std::string("npm"), array<string>{ std::string("run"), std::string("build") }, object{
-            object::pair{std::string("cwd"), std::string("cwd")}
+        std::async([=]() { bunExec(std:("npm"), array<string>{ std:("whoami") }); });
+        logger->info(std:("Building package..."));
+        std::async([=]() { bunExecInherit(std:("npm"), array<string>{ std:("run"), std:("build") }, object{
+            object::pair{std:("cwd"), std:("cwd")}
         }); });
-        logger->info(std::string("Publishing to npm..."));
-        std::async([=]() { bunExecInherit(std::string("npm"), array<string>{ std::string("publish") }, object{
-            object::pair{std::string("cwd"), std::string("cwd")}
+        logger->info(std:("Publishing to npm..."));
+        std::async([=]() { bunExecInherit(std:("npm"), array<string>{ std:("publish") }, object{
+            object::pair{std:("cwd"), std:("cwd")}
         }); });
         return true;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Failed to publish to npm:"), error);
+        logger->error(std:("Failed to publish to npm:"), error);
         return false;
     }
 };

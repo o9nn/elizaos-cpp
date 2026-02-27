@@ -1,4 +1,5 @@
 #include "featured-section.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 

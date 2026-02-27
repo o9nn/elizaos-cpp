@@ -2,17 +2,17 @@
 
 void Main(void)
 {
-    describe(std::string("Experience Plugin Tests"), [=]() mutable
+    describe(std:("Experience Plugin Tests"), [=]() mutable
     {
-        describe(std::string("Plugin Structure Tests"), [=]() mutable
+        describe(std:("Plugin Structure Tests"), [=]() mutable
         {
-            it(std::string("should have correct plugin metadata"), [=]() mutable
+            it(std:("should have correct plugin metadata"), [=]() mutable
             {
-                expect(experiencePlugin->name)->toBe(std::string("experience"));
-                expect(experiencePlugin->description)->toBe(std::string("Self-learning experience system that records experiences and learns from agent interactions"));
+                expect(experiencePlugin->name)->toBe(std:("experience"));
+                expect(experiencePlugin->description)->toBe(std:("Self-learning experience system that records experiences and learns from agent interactions"));
             }
             );
-            it(std::string("should required components"), [=]() mutable
+            it(std:("should required components"), [=]() mutable
             {
                 expect(experiencePlugin->services)->toBeDefined();
                 expect(experiencePlugin->services->length)->toBeGreaterThan(0);

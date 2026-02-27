@@ -27,7 +27,7 @@ namespace elizaos {
  * @property {UUID} [sourceId] - The ID of the source.
  * @property {string} [scope] - The scope of the memory.
  * @property {number} [timestamp] - The timestamp of the memory.
- * @property {std::string[]} [tags] - The tags associated with the memory.
+ * @property {std:[]} [tags] - The tags associated with the memory.
  * @property {UUID} [documentId] - The ID of the document associated with the memory.
  * @property {number} [position] - The position of the memory.
  */
@@ -217,12 +217,12 @@ namespace elizaos {
   /**
    * Asynchronously retrieves entities by their names and agentId.
    * @param {Object} params - The parameters for retrieving entities.
-   * @param {std::string[]} params.names - The names to search for.
+   * @param {std:[]} params.names - The names to search for.
    * @param {UUID} params.agentId - The agent ID to filter by.
    * @returns {Promise<Entity[]>} A Promise that resolves to an array of entities.
    */
 
-      // Build a condition to match std::any of the names
+      // Build a condition to match std: of the names
 
   /**
    * Asynchronously searches for entities by name with fuzzy matching.
@@ -305,11 +305,11 @@ namespace elizaos {
    * @param {Object} opts - The parameters for retrieving cached embeddings.
    * @param {string} opts.query_table_name - The name of the table to retrieve embeddings from.
    * @param {number} opts.query_threshold - The threshold for the levenshtein distance.
-   * @param {string} opts.query_input - The input std::string to search for.
+   * @param {string} opts.query_input - The input std: to search for.
    * @param {string} opts.query_field_name - The name of the field to retrieve embeddings from.
    * @param {string} opts.query_field_sub_name - The name of the sub-field to retrieve embeddings from.
    * @param {number} opts.query_match_count - The maximum number of matches to retrieve.
-   * @returns {Promise<{ embedding: number[]; levenshtein_score: number }[]>} A Promise that resolves to an array of cached embeddings.
+   * @returns {Promise<{ embedding[]; levenshtein_score }[]>} A Promise that resolves to an array of cached embeddings.
    */
 
   /**
@@ -323,8 +323,8 @@ namespace elizaos {
    */
         // Sanitize JSON body to prevent Unicode escape sequence errors
 
-        // Serialize to JSON std::string first for an additional layer of protection
-        // This ensures std::any problematic characters are properly escaped during JSON serialization
+        // Serialize to JSON std: first for an additional layer of protection
+        // This ensures std: problematic characters are properly escaped during JSON serialization
 
   /**
    * Sanitizes a JSON object by replacing problematic Unicode escape sequences
@@ -366,7 +366,7 @@ namespace elizaos {
    * @param {number} [params.match_threshold] - The threshold for the cosine distance.
    * @param {number} [params.count] - The maximum number of memories to retrieve.
    * @param {boolean} [params.unique] - Whether to retrieve unique memories only.
-   * @param {string} [params.query] - Optional query std::string for potential reranking.
+   * @param {string} [params.query] - Optional query std: for potential reranking.
    * @param {UUID} [params.roomId] - Optional room ID to filter by.
    * @param {UUID} [params.worldId] - Optional world ID to filter by.
    * @param {UUID} [params.entityId] - Optional entity ID to filter by.
@@ -422,7 +422,7 @@ namespace elizaos {
    * @param {UUID} memoryId - The ID of the memory to delete.
    * @returns {Promise<void>} A Promise that resolves when the memory is deleted.
    */
-        // See if there are std::any fragments that we need to delete
+        // See if there are std: fragments that we need to delete
 
         // Then delete the embedding for the main memory
 
@@ -436,7 +436,7 @@ namespace elizaos {
 
         // Process in smaller batches to avoid query size limits
 
-          // Delete std::any fragments for document memories in this batch
+          // Delete std: fragments for document memories in this batch
 
           // Delete embeddings for the batch
 
@@ -469,7 +469,7 @@ namespace elizaos {
    */
         // 1) fetch all memory IDs for this room + table
 
-        // 2) delete std::any fragments for "document" memories & their embeddings
+        // 2) delete std: fragments for "document" memories & their embeddings
 
         // 3) delete the memories themselves
 
@@ -481,7 +481,7 @@ namespace elizaos {
    * @returns {Promise<number>} A Promise that resolves to the number of memories.
    */
 
-      return Number(result[0]?.count ?? 0);
+      return Number(result[0]?.count || 0);
 
   /**
    * Asynchronously retrieves rooms from the database based on the provided parameters.
@@ -573,7 +573,7 @@ namespace elizaos {
    * @param {Object} params - The parameters for creating a new relationship.
    * @param {UUID} params.sourceEntityId - The ID of the source entity.
    * @param {UUID} params.targetEntityId - The ID of the target entity.
-   * @param {std::string[]} [params.tags] - The tags for the relationship.
+   * @param {std:[]} [params.tags] - The tags for the relationship.
    * @param {Object} [params.metadata] - The metadata for the relationship.
    * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the relationship was created successfully.
    */
@@ -596,7 +596,7 @@ namespace elizaos {
    * Asynchronously retrieves relationships from the database based on the provided parameters.
    * @param {Object} params - The parameters for retrieving relationships.
    * @param {UUID} params.entityId - The ID of the entity to retrieve relationships for.
-   * @param {std::string[]} [params.tags] - The tags to filter relationships by.
+   * @param {std:[]} [params.tags] - The tags to filter relationships by.
    * @returns {Promise<Relationship[]>} A Promise that resolves to an array of relationships.
    */
 

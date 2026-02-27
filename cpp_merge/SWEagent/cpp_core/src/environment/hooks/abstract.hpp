@@ -62,7 +62,7 @@ struct EnvironmentInstance {
 class CombinedEnvHooks extends EnvHook {
   private hooks: EnvHook[] = [];
 
-  addHook(hook: EnvHook): void {
+  addHook(hook: EnvHook) {
     this.hooks.push(hook);
   }
 

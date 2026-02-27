@@ -27,7 +27,7 @@ void displayBunInstallationTips();
 /**
  * Display compact bun installation tip for inline use
  */
-std::string displayBunInstallationTipCompact();
+std: displayBunInstallationTipCompact();
 
 /**
  * Check if bun is available and provide installation tips if not

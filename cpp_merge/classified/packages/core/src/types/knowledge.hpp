@@ -12,10 +12,10 @@ class KnowledgeItem;
 class IKnowledgeService;
 
 enum struct KnowledgeScope {
-    SHARED = std::string("shared"), PRIVATE = std::string("private")
+    SHARED = std:("shared"), PRIVATE = std:("private")
 };
 enum struct CacheKeyPrefix {
-    KNOWLEDGE = std::string("knowledge")
+    KNOWLEDGE = std:("knowledge")
 };
 class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
 public:

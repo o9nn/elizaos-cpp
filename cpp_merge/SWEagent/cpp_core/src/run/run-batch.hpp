@@ -1,4 +1,5 @@
 #include ".agent/agents.hpp"
+#include <future>
 #include ".environment/swe-env.hpp"
 #include "types.hpp"
 #include ".utils/config.hpp"
@@ -33,12 +34,12 @@ namespace elizaos {
  * Progress manager for batch runs
  */
 class BatchProgressManager {
-  private totalInstances: number;
-  private completedInstances: number = 0;
-  private instanceStatuses: Map<std::string, string> = new Map();
+  private totalInstances;
+  private completedInstances = 0;
+  private instanceStatuses: Map<std:, string> = std::make_unique<Map>();
   private logger: AgentLogger;
 
-  constructor(numInstances: number) {
+  constructor(numInstances) {
     this.totalInstances = numInstances;
     this.logger = getLogger('progress', '📊');
   }
@@ -51,27 +52,27 @@ class BatchProgressManager {
 class RunBatch {
   private instances: BatchInstance[];
   private agentConfig: AgentConfig;
-  private outputDir: std::string;
+  private outputDir: std:;
   private hooks: RunHook[];
-  private raiseExceptions: boolean;
-  private redoExisting: boolean;
-  private numWorkers: number;
+  private raiseExceptions;
+  private redoExisting;
+  private numWorkers;
   // @ts-ignore - This field is reserved for std::future use (progress bar display)
-  private _progressBar: boolean;
-  private randomDelayMultiplier: number;
+  private _progressBar;
+  private randomDelayMultiplier;
   private logger: AgentLogger;
   private progressManager: BatchProgressManager;
 
   constructor(config: {
     instances: BatchInstance[];
     agentConfig: AgentConfig;
-    outputDir?: std::string;
+    outputDir?: std:;
     hooks?: RunHook[];
-    raiseExceptions?: boolean;
-    redoExisting?: boolean;
-    numWorkers?: number;
-    progressBar?: boolean;
-    randomDelayMultiplier?: number;
+    raiseExceptions?;
+    redoExisting?;
+    numWorkers?;
+    progressBar?;
+    randomDelayMultiplier?;
   }) {
     this.instances = config.instances;
     this.agentConfig = config.agentConfig;
@@ -83,7 +84,7 @@ class RunBatch {
     this._progressBar = config.progressBar || true;
     this.randomDelayMultiplier = config.randomDelayMultiplier || 0.3;
     this.logger = getLogger('run-batch', '🏃');
-    this.progressManager = new BatchProgressManager(this.instances.length);
+    this.progressManager = new BatchProgressManager(this.instances.size());
   }
 
     // Load environment variables
@@ -116,7 +117,7 @@ class RunBatch {
 
     // Start environment
 
-      // Run agent - cast env to std::any to avoid type issues
+      // Run agent - cast env to std: to avoid type issues
 
       // Clean up environment
 

@@ -19,7 +19,7 @@ struct Component {
     UUID roomId;
     UUID worldId;
     UUID sourceEntityId;
-    std::string type;
+    std: type;
     double createdAt;
     Metadata data;
 };
@@ -36,11 +36,11 @@ struct Entity {
 };
 
 /**
- * Defines roles within a system, typically for access control or permissions, often within a `World`.
- * - `OWNER`: Represents the highest level of control, typically the creator or primary administrator.
- * - `ADMIN`: Represents administrative privileges, usually a subset of owner capabilities.
- * - `NONE`: Indicates no specific role or default, minimal permissions.
- * These roles are often used in `World.metadata.roles` to assign roles to entities.
+ * Defines roles within a system, typically for access control or permissions, often within a "World".
+ * - "OWNER": Represents the highest level of control, typically the creator or primary administrator.
+ * - "ADMIN": Represents administrative privileges, usually a subset of owner capabilities.
+ * - "NONE": Indicates no specific role or default, minimal permissions.
+ * These roles are often used in "World.metadata.roles" to assign roles to entities.
  */
 enum Role {
   OWNER = 'OWNER',
@@ -86,7 +86,7 @@ struct Relationship {
     UUID agentId;
     std::vector<std::string> tags;
     Metadata metadata;
-    std::optional<std::string> createdAt;
+    std::optional<std:> createdAt;
 };
 
 

@@ -13,7 +13,7 @@ void ApiKeyDialog(auto onOpenChange) {
 
     const auto storageKey = getLocalStorageApiKey();
 
-    useEffect(() => {
+    useEffect[&](() {
         if (open) {
             try {
                 const auto storedKey = localStorage.getItem(storageKey);
@@ -25,7 +25,7 @@ void ApiKeyDialog(auto onOpenChange) {
             }, [open, storageKey]);
 
             const auto handleSave = [&]() {;
-                if (!apiKey.trim()) {
+                if (!apiKey) {
                     toast({
                         title: "API Key Required",
                         description: "Please enter a valid API key.",
@@ -51,7 +51,7 @@ void ApiKeyDialog(auto onOpenChange) {
                                 onOpenChange(false);
                                 };
 
-                                return (;
+                                return [&](;
                                 <Dialog open={open} onOpenChange={onOpenChange}>;
                                 <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>;
@@ -71,8 +71,8 @@ void ApiKeyDialog(auto onOpenChange) {
                                 id="api-key";
                             type={showKey ? "text" : "password"}
                         value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="pr-10";
+                    onChange={(e) { return setApiKey(e.target.value)}
+                    className="pr-10"; };
                     />;
                     <Button;
                     type="button";

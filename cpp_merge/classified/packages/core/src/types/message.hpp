@@ -184,7 +184,7 @@ public:
 
     string serviceType = ServiceType["MESSAGE"];
 
-    string capabilityDescription = std::string("Message sending, receiving, and management capabilities");
+    string capabilityDescription = std:("Message sending, receiving, and management capabilities");
 
     virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sendMessage(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageContent> content, std::shared_ptr<MessageSendOptions> options = undefined) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageInfo>>>> getMessages(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageSearchOptions> options = undefined) = 0;

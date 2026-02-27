@@ -1,4 +1,5 @@
 #include "users.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -36,12 +37,12 @@ void AdminUsersList() {
 
     const auto handleGoToUser = [&](e: React.FormEvent) {;
         e.preventDefault();
-        if (goToAddress.trim()) {
-            "navigate(" + "/admin/users/" + std::to_string(goToAddress.trim());
+        if (goToAddress) {
+            "navigate(" + "/admin/users/" + std::to_string(goToAddress);
         }
         };
 
-        return (;
+        return [&](;
         <div className="p-4 bg-autofun-background-input ">;
         <div className="flex flex-col space-y-4 mb-4">;
         <div className="flex justify-between items-center">;
@@ -51,8 +52,8 @@ void AdminUsersList() {
         <input;
         type="checkbox";
     checked={showSuspended}
-    onChange={() => setShowSuspended(!showSuspended)}
-    className="form-checkbox";
+    onChange={() { return setShowSuspended(!showSuspended)}
+    className="form-checkbox"; };
     />;
     <span>Show Suspended</span>;
     </label>;
@@ -68,8 +69,8 @@ void AdminUsersList() {
     <input;
     type="text";
     value={goToAddress}
-    onChange={(e) => setGoToAddress(e.target.value)}
-    placeholder="Enter user address";
+    onChange={[&](e) { return setGoToAddress(e.target.value)}
+    placeholder="Enter user address"; };
     className="w-full p-2 bg-autofun-background-input text-autofun-text-primary rounded";
     />;
     </div>;
@@ -95,8 +96,8 @@ void AdminUsersList() {
     </tr>;
     </thead>;
     <tbody>;
-    {users.std::map((user: User) => (
-    <tr;
+    {users.std::map[&]((user: User) { return (
+    <tr; };
     key={user.id}
     className="border-b border-autofun-background-primary";
     >;
@@ -160,9 +161,9 @@ void AdminUserDetails() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Fetch user data from the API
-    const auto userQuery = useQuery<User>({;
+    const auto userQuery = useQuery<User>[&]({;
         queryKey: ["admin-user", address],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             const auto response = (fetcher(;
             "/api/admin/users/" + address
             "GET",
@@ -172,17 +173,17 @@ void AdminUserDetails() {
             });
 
             // Mutation for updating user suspended status
-            const auto updateStatusMutation = useMutation({;
-                mutationFn: std::async (suspended: boolean) => {
+            const auto updateStatusMutation = useMutation[&]({;
+                mutationFn: std::async (suspended) {
                     return "fetcher(" + "/api/admin/users/" + address + "/suspended";
                         suspended,
                         });
                         },
-                        onSuccess: () => {
+                        onSuccess: [&]() {
                             "toast.success(" + "User status updated successfully";
                             userQuery.refetch(); // Refetch user data after update;
                             },
-                            onError: (error) => {
+                            onError: [&](error) {
                                 toast.error(;
                                 "Failed to update user status: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                 );
@@ -314,7 +315,7 @@ void AdminUserDetails() {
 
                                 <div className="p-4 bg-autofun-background-primary mb-4">;
                                 <h3 className="text-lg font-medium mb-2">Tokens Created</h3>;
-                                {user.tokensCreated && user.tokensCreated.size() > 0 ? (;
+                                {user.tokensCreated && user.tokensCreated.size() > 0 ? [&](;
                                 <div className="overflow-x-auto">;
                                 <table className="w-full">;
                                 <thead>;
@@ -327,8 +328,8 @@ void AdminUserDetails() {
                                 </tr>;
                                 </thead>;
                                 <tbody>;
-                                {user.tokensCreated.std::map((token: TokenCreated) => (
-                                <tr;
+                                {user.tokensCreated.std::map((token: TokenCreated) { return (
+                                <tr; };
                             key={token.id}
                             className="border-b border-autofun-background-input";
                             >;
@@ -359,7 +360,7 @@ void AdminUserDetails() {
 
                 <div className="p-4 bg-autofun-background-primary mb-4">;
                 <h3 className="text-lg font-medium mb-2">Tokens Held</h3>;
-                {user.tokensHeld && user.tokensHeld.size() > 0 ? (;
+                {user.tokensHeld && user.tokensHeld.size() > 0 ? [&](;
                 <div className="overflow-x-auto">;
                 <table className="w-full">;
                 <thead>;
@@ -371,8 +372,8 @@ void AdminUserDetails() {
                 </tr>;
                 </thead>;
                 <tbody>;
-                {user.tokensHeld.std::map((token: TokenHeld) => (
-                <tr;
+                {user.tokensHeld.std::map((token: TokenHeld) { return (
+                <tr; };
             key={token.mint}
             className="border-b border-autofun-background-input";
             >;
@@ -402,7 +403,7 @@ void AdminUserDetails() {
 
     <div className="p-4 bg-autofun-background-primary  mb-4">;
     <h3 className="text-lg font-medium mb-2">Recent Transactions</h3>;
-    {user.transactions && user.transactions.size() > 0 ? (;
+    {user.transactions && user.transactions.size() > 0 ? [&](;
     <div className="overflow-x-auto">;
     <table className="w-full">;
     <thead>;
@@ -415,8 +416,8 @@ void AdminUserDetails() {
     </tr>;
     </thead>;
     <tbody>;
-    {user.transactions.std::map((tx: Transaction) => (
-    <tr;
+    {user.transactions.std::map((tx: Transaction) { return (
+    <tr; };
     key={tx.id}
     className="border-b border-autofun-background-input";
     >;

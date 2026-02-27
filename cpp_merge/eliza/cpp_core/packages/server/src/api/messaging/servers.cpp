@@ -10,7 +10,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // GET /central-servers
-    (router).get("/central-servers", std::async (_req: express.Request, res: express.Response) => {
+    (router).get[&]("/central-servers", std::async (_req: express.Request, res: express.Response) {
         try {
             const auto servers = serverInstance.getServers();
             res.json({ success: true, data: { servers } });
@@ -21,7 +21,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
             });
 
             // POST /servers - Create a new server
-            (router).post("/servers", std::async (req: express.Request, res: express.Response) => {
+            (router).post[&]("/servers", std::async (req: express.Request, res: express.Response) {
                 const auto { name, sourceType, sourceId, metadata } = req.body;
 
                 if (!name || !sourceType) {
@@ -45,14 +45,14 @@ express::Router createServersRouter(AgentServer serverInstance) {
                             }
                             });
 
-                            // ===============================
+                            // ==============
                             // Server-Agent Association Endpoints
-                            // ===============================
+                            // ==============
 
                             // POST /servers/:serverId/agents - Add agent to server
-                            (router).post(;
+                            (router).post[&](;
                             "/servers/:serverId/agents",
-                            std::async (req: express.Request, res: express.Response) => {
+                            std::async (req: express.Request, res: express.Response) {
                                 const auto serverId =;
                                 req.params.serverId == DEFAULT_SERVER_ID;
                                 ? DEFAULT_SERVER_ID;
@@ -97,9 +97,9 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                 );
 
                                                 // DELETE /servers/:serverId/agents/:agentId - Remove agent from server
-                                                (router).delete(;
+                                                (router).delete[&](;
                                                 "/servers/:serverId/agents/:agentId",
-                                                std::async (req: express.Request, res: express.Response) => {
+                                                std::async (req: express.Request, res: express.Response) {
                                                     const auto serverId =;
                                                     req.params.serverId == DEFAULT_SERVER_ID;
                                                     ? DEFAULT_SERVER_ID;
@@ -144,9 +144,9 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                     );
 
                                                                     // GET /servers/:serverId/agents - List agents in server
-                                                                    (router).get(;
+                                                                    (router).get[&](;
                                                                     "/servers/:serverId/agents",
-                                                                    std::async (req: express.Request, res: express.Response) => {
+                                                                    std::async (req: express.Request, res: express.Response) {
                                                                         const auto serverId =;
                                                                         req.params.serverId == DEFAULT_SERVER_ID;
                                                                         ? DEFAULT_SERVER_ID;
@@ -176,9 +176,9 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                                     );
 
                                                                                     // GET /agents/:agentId/servers - List servers agent belongs to
-                                                                                    (router).get(;
+                                                                                    (router).get[&](;
                                                                                     "/agents/:agentId/servers",
-                                                                                    std::async (req: express.Request, res: express.Response) => {
+                                                                                    std::async (req: express.Request, res: express.Response) {
                                                                                         const auto agentId = validateUuid(req.params.agentId);
 
                                                                                         if (!agentId) {

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ErrorResponse handleError(const std::any& error) {
+ErrorResponse handleError(const std:& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -18,7 +18,7 @@ ErrorResponse handleError(const std::any& error) {
 
         if (error instanceof Error) {
             // Check for common errors
-            if (error.message.includes("insufficient funds")) {
+            if (error.message.count("insufficient funds") > 0) {
                 return new ClankerError(;
                 ErrorCode.INSUFFICIENT_BALANCE,
                 "Insufficient balance to complete transaction",
@@ -42,7 +42,7 @@ ErrorResponse handleError(const std::any& error) {
                 ).toResponse();
             }
 
-            if (error.message.includes("slippage")) {
+            if (error.message.count("slippage") > 0) {
                 return new ClankerError(;
                 ErrorCode.SLIPPAGE_EXCEEDED,
                 "Transaction would exceed slippage tolerance",
@@ -51,7 +51,7 @@ ErrorResponse handleError(const std::any& error) {
                 ).toResponse();
             }
 
-            if (error.message.includes("reverted")) {
+            if (error.message.count("reverted") > 0) {
                 return new ClankerError(;
                 ErrorCode.TRANSACTION_FAILED,
                 "Transaction reverted on chain",
@@ -78,14 +78,14 @@ ErrorResponse handleError(const std::any& error) {
     }
 }
 
-bool validateAddress(const std::string& address) {
+bool validateAddress(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 
 }
 
-bool validateAmount(const std::string& amount) {
+bool validateAmount(const std:& amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

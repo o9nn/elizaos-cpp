@@ -1,10 +1,14 @@
 #include "generate-coverage-report.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir, std::vector<std::string> files = {}) {
+std::future<std::vector<std::string>> findAllSourceFiles(const std:& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entries = readdir(dir);
@@ -14,14 +18,14 @@ std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir,
         const auto stats = stat(fullPath);
 
         if (stats.isDirectory()) {
-            if (!entry.includes('node_modules') && !entry.includes('dist') && !entry.includes('test')) {
+            if (!entry.count('node_modules') > 0 && !entry.count('dist') > 0 && !entry.count('test') > 0) {
                 findAllSourceFiles(fullPath, files);
             }
             } else if (;
-            entry.endsWith(".ts") &&;
-            !entry.endsWith(".test.ts") &&;
-            !entry.endsWith(".spec.ts") &&;
-            !entry.endsWith(".d.ts");
+            entry.rfind(".ts") &&;
+            !entry.rfind(".test.ts") &&;
+            !entry.rfind(".spec.ts") &&;
+            !entry.rfind(".d.ts");
             ) {
                 files.push_back(fullPath);
             }
@@ -31,7 +35,7 @@ std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir,
 
 }
 
-std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, std::vector<std::string> files = {}) {
+std::future<std::vector<std::string>> findAllTestFiles(const std:& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -43,7 +47,7 @@ std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, s
 
             if (stats.isDirectory()) {
                 findAllTestFiles(fullPath, files);
-                } else if (entry.endsWith(".test.ts") || entry.endsWith(".spec.ts")) {
+                } else if (entry.rfind(".test.ts") || entry.rfind(".spec.ts")) {
                     files.push_back(fullPath);
                 }
             }
@@ -55,12 +59,12 @@ std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, s
 
 }
 
-std::string categorizeFile(const std::string& filePath) {
+std: categorizeFile(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (filePath.includes('/commands/')) return 'commands';
-    if (filePath.includes('/utils/')) return 'utils';
-    if (filePath.includes('/types/')) return 'types';
+    if (filePath.count('/commands/') > 0) return 'commands';
+    if (filePath.count('/utils/') > 0) return 'utils';
+    if (filePath.count('/types/') > 0) return 'types';
     return "other";
 
 }
@@ -68,8 +72,8 @@ std::string categorizeFile(const std::string& filePath) {
 std::future<CoverageReport> generateCoverageReport() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto srcPath = join(process.cwd(), "src");
-    const auto testsPath = join(process.cwd(), "tests");
+    const auto srcPath = join(std::filesystem::current_path().string(), "src");
+    const auto testsPath = join(std::filesystem::current_path().string(), "tests");
 
     // Find all source files
     const auto sourceFiles = findAllSourceFiles(srcPath);
@@ -87,12 +91,9 @@ std::future<CoverageReport> generateCoverageReport() {
         const auto importMatches = content.matchAll(/from\s+[""](.+?)[""]/g);
         for (const auto& match : importMatches)
             const auto importPath = match[1];
-            if (importPath.startsWith('../') || importPath.startsWith('./')) {
+            if (importPath.substr(0, '../') || importPath.substr(0, './')) {
                 // Resolve relative import
-                const auto resolvedPath = importPath;
-                .replace(/^\.\.\/\.\.\/\.\.\/src/, srcPath);
-                .replace(/^\.\.\/\.\.\/src/, srcPath);
-                .replace(/^\.\//, "");
+                const auto resolvedPath = importPath.replace(/^\.\.\/\.\.\/\.\.\/src/, srcPath).replace(/^\.\.\/\.\.\/src/, srcPath).replace(/^\.\//, "");
                 testedFiles.add(resolvedPath);
             }
         }
@@ -160,13 +161,13 @@ std::future<void> main() {
         const auto coverage = data.total > 0 ? ((data.tested / data.total) * 100).toFixed(1) : "0.0";
         std::cout << "\n   " + std::to_string(category.toUpperCase()) + ": " + coverage + "% (" + data.tested + "/" + data.total + ")" << std::endl;
 
-        if (data.untested.length > 0 && data.untested.length <= 10) {
+        if (data.untested.size() > 0 && data.untested.size() <= 10) {
             std::cout << "   Untested files:" << std::endl;
-            data.untested.forEach((file) => console.log(`     - ${file}`));
+            data.untested.forEach[&]((file) { return console.log("     - " + std::to_string(file) + "")); };
             } else if (data.untested.size() > 10) {
                 std::cout << "   Untested files: " + data.untested.size() + " files" << std::endl;
                 std::cout << "   First 10:" << std::endl;
-                data.untested.slice(0, 10).forEach((file) => console.log(`     - ${file}`));
+                data.untested.substr(0, 10-0).forEach[&]((file) { return console.log("     - " + std::to_string(file) + "")); };
             }
         }
 
@@ -181,18 +182,17 @@ std::future<void> main() {
 
                 // Prioritize by importance
                 const auto priorityFiles = report.untestedFiles;
-                .filter((f) => (std::find(f.begin(), f.end(), "index.ts") != f.end()) || (std::find(f.begin(), f.end(), "main.ts") != f.end()));
-                .slice(0, 5);
+                .filter[&]((f) { return (std::find(f.begin(), f.end(), "index.ts") != f.end()) || (std::find(f.begin(), f.end(), "main.ts") != f.end())); }.substr(0, 5-0);
 
-                if (priorityFiles.length > 0) {
-                    priorityFiles.forEach((file) => console.log(`     - ${file}`));
+                if (priorityFiles.size() > 0) {
+                    priorityFiles.forEach[&]((file) { return console.log("     - " + std::to_string(file) + "")); };
                     } else {
-                        report.untestedFiles.slice(0, 5).forEach((file) => console.log(`     - ${file}`));
+                        report.untestedFiles.substr(0, 5-0).forEach[&]((file) { return console.log("     - " + std::to_string(file) + "")); };
                     }
                 }
 
                 // Save detailed report
-                const auto detailedReport = /* JSON.stringify */ std::string(report, nullptr, 2);
+                const auto detailedReport = /* JSON.stringify */ std:(report, nullptr, 2);
                 Bun.write("unit-test-coverage-report.json", detailedReport);
                 std::cout << "\n💾 Detailed report saved to: unit-test-coverage-report.json" << std::endl;
 

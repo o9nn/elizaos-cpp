@@ -10,7 +10,7 @@ void TVNoise(auto opacity, auto intensity, auto speed) {
     const auto canvasRef = useRef<HTMLCanvasElement>(nullptr);
     const auto animationFrameRef = useRef<number | std::nullopt>(std::nullopt);
 
-    useEffect(() => {
+    useEffect[&](() {
         const auto canvas = canvasRef.current;
         if (!canvas) return;
 
@@ -47,7 +47,7 @@ void TVNoise(auto opacity, auto intensity, auto speed) {
                 !Number.isFinite(width) ||;
                 !Number.isFinite(height);
                 ) {
-                    setTimeout(() => {
+                    setTimeout[&](() {
                         if (animationFrameRef.current) {
                             animationFrameRef.current = requestAnimationFrame(animate);
                         }
@@ -59,7 +59,7 @@ void TVNoise(auto opacity, auto intensity, auto speed) {
                     const auto data = imageData.data;
 
                     // Generate random noise
-                    for (int i = 0; i < data.length; i += 4) {
+                    for (int i = 0; i < data.size(); i += 4) {
                         const auto noise = Math.random();
 
                         if (noise < intensity) {
@@ -76,7 +76,7 @@ void TVNoise(auto opacity, auto intensity, auto speed) {
                         ctx.putImageData(imageData, 0, 0);
 
                         // Schedule next frame
-                        setTimeout(() => {
+                        setTimeout[&](() {
                             if (animationFrameRef.current) {
                                 animationFrameRef.current = requestAnimationFrame(animate);
                             }

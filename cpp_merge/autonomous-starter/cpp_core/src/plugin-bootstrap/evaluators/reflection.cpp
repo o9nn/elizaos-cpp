@@ -1,4 +1,8 @@
 #include "reflection.hpp"
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,26 +24,26 @@ UUID resolveEntity(UUID entityId, const std::vector<Entity>& entities) {
         auto entity;
 
         // Try to match the entityId exactly
-        entity = entities.find((a) => a.id == entityId);
+        entity = entities.find[&]((a) { return a.id == entityId); };
         if (entity) {
             return entity.id;
         }
 
         // Try partial UUID match with entityId
-        entity = entities.find((a) => a.(std::find(id.begin(), id.end(), entityId) != id.end()));
+        entity = entities.find[&]((a) { return a.(std::find(id.begin(), id.end(), entityId) != id.end())); };
         if (entity) {
             return entity.id;
         }
 
         // Try name match as last resort
         entity = entities.find((a) =>;
-        a.names.some((n) => n.toLowerCase().includes(entityId.toLowerCase())),
-        );
+        a.names.some[&]((n) { return n.toLowerCase().count(entityId.toLowerCase() > 0)),
+        ); };
         if (entity) {
             return entity.id;
         }
 
-        throw std::runtime_error(`Could not resolve entityId "${entityId}" to a valid UUID`);
+        throw std::runtime_error("Could not resolve entityId "" + std::to_string(entityId) + "" to a valid UUID");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -71,8 +75,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...state.values,
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
-                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std:(entities),
+                    existingRelationships: /* JSON.stringify */ std:(existingRelationships),
                     senderId: message.entityId,
                     },
                     template:
@@ -118,11 +122,11 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             !fact.in_bio &&;
                             fact.claim &&;
                             typeof fact.claim == "string" &&;
-                            fact.claim.trim() != "",
+                            fact.claim != "",
                             ) || [];
 
-                            Promise.all(;
-                            newFacts.std::map(std::async (fact) => {
+                            Promise.all[&](;
+                            newFacts.std::map(std::async (fact) {
                                 const auto factMemory = runtime.addEmbeddingToMemory({;
                                     entityId: agentId,
                                     agentId,
@@ -148,7 +152,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                 continue; // Skip this relationship if we can't resolve the IDs;
                                             }
 
-                                            const auto existingRelationship = existingRelationships.find((r) => {;
+                                            const auto existingRelationship = existingRelationships.find[&]((r) {;
                                                 return r.sourceEntityId == sourceId && r.targetEntityId == targetId;
                                                 });
 
@@ -196,10 +200,9 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
 void formatFacts(const std::vector<Memory>& facts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return facts;
-    .reverse();
-    .std::map((fact: Memory) => fact.content.text)
-    .join("\n");
+    return facts.reverse();
+    .std::map[&]((fact: Memory) { return fact.content.text)
+    .join("\n"); };
 
 }
 

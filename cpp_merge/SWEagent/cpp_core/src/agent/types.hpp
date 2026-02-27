@@ -19,8 +19,8 @@ namespace elizaos {
  * Model response output
  */
 struct ModelOutput {
-    std::string message;
-    std::optional<std::string> content;
+    std: message;
+    std::optional<std:> content;
     std::optional<std::vector<ToolCall>> toolCalls;
     std::optional<std::vector<ThinkingBlock>> thinkingBlocks;
     std::optional<{> usage;
@@ -33,28 +33,28 @@ struct ModelOutput {
  * Tool call structure
  */
 struct ToolCall {
-    std::string id;
+    std: id;
     'function' type;
     { std::function;
-    std::string name;
-    std::string arguments;
+    std: name;
+    std: arguments;
 };
 
 /**
  * Thinking block structure
  */
 struct ThinkingBlock {
-    std::string type;
-    std::string content;
+    std: type;
+    std: content;
 };
 
 /**
  * Command definition
  */
 struct Command {
-    std::string name;
-    std::optional<std::string> endName;
-    std::optional<std::string> installScript;
+    std: name;
+    std::optional<std:> endName;
+    std::optional<std:> installScript;
 };
 
 /**
@@ -85,8 +85,8 @@ struct StatsData {
 struct APIResponse {
     std::optional<Array<{> choices;
     std::optional<{> message;
-    std::string content;
-    std::string role;
+    std: content;
+    std: role;
     double index;
     std::optional<{> usage;
     std::optional<double> prompt_tokens;
@@ -97,11 +97,11 @@ struct APIResponse {
 /**
  * History message content type
  */
-using MessageContent = std::variant<, std::string, Array<{
+using MessageContent = std::variant<, std:, Array<{
       type: 'text', 'image_url'>;
-      text?: std::string;
-      image_url?: { url: std::string };
-      cacheControl?: { type: std::string };
+      text?: std:;
+      image_url?: { url: std: };
+      cacheControl?: { type: std: };
     }>;
 
 } // namespace elizaos

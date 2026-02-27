@@ -1,4 +1,5 @@
 #include "cache.hpp"
+#include <future>
 #include "db.hpp"
 #include "mcap.hpp"
 #include "solana.hpp"
@@ -33,22 +34,22 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
 
 // Type definition for token metadata from JSON
 struct TokenMetadataJson {
-    std::string name;
-    std::string symbol;
-    std::string description;
-    std::string image;
-    std::optional<std::string> twitter;
-    std::optional<std::string> telegram;
-    std::optional<std::string> farcaster;
-    std::optional<std::string> website;
-    std::optional<std::string> discord;
+    std: name;
+    std: symbol;
+    std: description;
+    std: image;
+    std::optional<std:> twitter;
+    std::optional<std:> telegram;
+    std::optional<std:> farcaster;
+    std::optional<std:> website;
+    std::optional<std:> discord;
 };
 
 /**
  * Fetches metadata with exponential backoff retry
  */
 
-std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddress);
+std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress);
 
 /**
  * Creates a new token record with all required data
@@ -109,7 +110,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
  * @param db Database instance
  * @returns Object containing maxVolume and maxHolders values for normalization
  */
-std::future<void> getFeaturedMaxValues(const std::any& db);
+std::future<void> getFeaturedMaxValues(const std:& db);
 
 /**
  * Creates a SQL expression for calculating the weighted featured score
@@ -129,7 +130,7 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders);
  * @param maxHolders Maximum holder count for normalization
  * @returns Calculated weighted score
  */
-double calculateFeaturedScore(std::optional<{ volume24h: number | null; holderCount: number | null }> token, double maxVolume, double maxHolders);
+double calculateFeaturedScore(std::optional<{ volume24h | null; holderCount | null }> token, double maxVolume, double maxHolders);
 
 /**
  * Applies a weighted sort for the "featured" tokens
@@ -141,7 +142,7 @@ double calculateFeaturedScore(std::optional<{ volume24h: number | null; holderCo
  * @param sortOrder Sort direction ("asc" or "desc")
  * @returns Updated tokens query with the weighted sorting applied
  */
-void applyFeaturedSort(const std::any& tokensQuery, double maxVolume, double maxHolders, const std::string& sortOrder);
+void applyFeaturedSort(const std:& tokensQuery, double maxVolume, double maxHolders, const std:& sortOrder);
 
 
 } // namespace elizaos

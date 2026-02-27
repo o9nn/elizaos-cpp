@@ -1,10 +1,15 @@
 #include "action.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
+std::future<std:> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto messageText = message.content.text;
@@ -53,7 +58,7 @@ std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory
 
 }
 
-std::string quoteShellArgs(const std::string& command) {
+std: quoteShellArgs(const std:& command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!command) return "";
@@ -66,17 +71,17 @@ std::string quoteShellArgs(const std::string& command) {
     }
 
     return commandParts;
-    .std::map((part, index) => {
+    .std::map[&]((part, index) {
         if (index == 0) return part; // Don't quote the command itself
-        if (part.startsWith("-")) return part; // Don't quote options
+        if (part.substr(0, "-")) return part; // Don't quote options
 
         // Check if part contains wildcards and is not already quoted
         const auto hasWildcard = ["*", "?", "[", "]"].some((char) =>;
         (std::find(part.begin(), part.end(), char) != part.end()),
         );
         const auto isQuoted =;
-        (part.startsWith(""") && part.endsWith(""")) ||;
-        (part.startsWith(""") && part.endsWith("""));
+        (part.substr(0, """) && part.rfind(""")) ||;
+        (part.substr(0, """) && part.rfind("""));
 
         if (hasWildcard && !isQuoted) {
             // Escape single quotes within the part, then wrap the whole part in single quotes
@@ -84,12 +89,11 @@ std::string quoteShellArgs(const std::string& command) {
             return """ + escapedPart + """;
         }
         return part;
-        });
-        .join(" ");
+        }).join(" ");
 
 }
 
-std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std::string& text, std::optional<std::vector<std::string>> actions, std::optional<std::vector<Media>> attachments) {
+std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std:& text, std::optional<std::vector<std::string>> actions, std::optional<std::vector<Media>> attachments) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Memory memory = {;

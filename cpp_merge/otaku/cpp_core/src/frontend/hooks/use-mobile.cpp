@@ -9,7 +9,7 @@ void useIsMobile() {
 
     const auto [isMobile, setIsMobile] = React.useState<boolean | std::nullopt>(std::nullopt);
 
-    React.useEffect(() => {
+    React.useEffect[&](() {
         const auto mql = "window.matchMedia(" + "(max-width: " + std::to_string(MOBILE_BREAKPOINT - 1) + "px)";
         const auto onChange = [&]() {;
             setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);

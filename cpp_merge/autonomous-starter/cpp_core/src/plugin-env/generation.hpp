@@ -34,16 +34,16 @@ namespace elizaos {
 /**
  * Determines if an environment variable can be auto-generated
  */
-bool canGenerateEnvVar(const std::string& varName, const std::string& type, std::optional<std::string> description);
+bool canGenerateEnvVar(const std:& varName, const std:& type, std::optional<std:> description);
 
 /**
  * Generates a script for creating an environment variable
  */
-std::optional<GenerationScript> generateScript(const std::string& varName, const std::string& type, const std::string& pluginName, std::optional<std::string> description);
+std::optional<GenerationScript> generateScript(const std:& varName, const std:& type, const std:& pluginName, std::optional<std:> description);
 
 /**
  * Gets a human-readable description of what will be generated
  */
-std::string getGenerationDescription(const std::string& varName, const std::string& type);
+std: getGenerationDescription(const std:& varName, const std:& type);
 
 } // namespace elizaos

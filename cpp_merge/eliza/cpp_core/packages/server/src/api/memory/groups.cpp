@@ -1,4 +1,7 @@
 #include "groups.hpp"
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,27 +15,27 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
         const auto db = serverInstance.database;
 
         // Create group memory spaces for multiple agents
-        router.post("/groups/:serverId", std::async (req, res) => {
+        router.post[&]("/groups/:serverId", std::async (req, res) {
             const auto serverId = validateUuid(req.params.serverId);
             const auto { name, worldId, source, metadata, agentIds = [] } = req.body;
 
-            if (!Array.isArray(agentIds) || agentIds.length == 0) {
+            if (!Array.isArray(agentIds) || agentIds.size() == 0) {
                 return sendError(res, 400, "BAD_REQUEST", "agentIds must be a non-empty array");
             }
 
             std::vector<Room> results = [];
             auto errors: {;
                 agentId: UUID;
-                code: std::string;
-                message: std::string;
-                details: std::string;
+                code: std:;
+                message: std:;
+                details: std:;
                 }[] = [];
 
                 for (const auto& agentId : agentIds)
                     try {
                         const auto runtime = getRuntime(agents, agentId);
                         const auto roomId = createUniqueUuid(runtime, serverId);
-                        const auto roomName = "name || " + "Chat " + std::to_string(new Date().toLocaleString());
+                        const auto roomName = "name || " + "Chat " + std::to_string(std::make_unique<Date>().toLocaleString());
 
                         runtime.ensureWorldExists({
                             id: worldId,
@@ -80,7 +83,7 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                         }
                                     }
 
-                                    if (results.length == 0 && errors.length > 0) {
+                                    if (results.size() == 0 && errors.size() > 0) {
                                         res.status(500).json({
                                             success: false,
                                             error: errors.size()
@@ -98,7 +101,7 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                             });
 
                                             // Delete group
-                                            router.delete("/groups/:serverId", std::async (req, res) => {
+                                            router.delete[&]("/groups/:serverId", std::async (req, res) {
                                                 const auto worldId = validateUuid(req.params.serverId);
                                                 if (!worldId) {
                                                     return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
@@ -123,7 +126,7 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                     });
 
                                                     // Clear group memories
-                                                    router.delete("/groups/:serverId/memories", std::async (req, res) => {
+                                                    router.delete[&]("/groups/:serverId/memories", std::async (req, res) {
                                                         const auto worldId = validateUuid(req.params.serverId);
                                                         if (!worldId) {
                                                             return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
@@ -134,9 +137,9 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                                                         try {
                                                             const auto memories = db.getMemoriesByWorldId({ worldId, tableName: "messages" });
-                                                            const auto memoryIds = memories.std::map((memory) => memory.id);
+                                                            const auto memoryIds = memories.std::map[&]((memory) { return memory.id); };
 
-                                                            if (memoryIds.length > 0) {
+                                                            if (memoryIds.size() > 0) {
                                                                 (db).deleteManyMemories(memoryIds);
                                                             }
 

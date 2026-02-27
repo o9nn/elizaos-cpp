@@ -1,13 +1,17 @@
 #include "common.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false) {
+std: shortenString(const std:& s, double maxLength, bool shortenLeft = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (s.length <= maxLength) {
+    if (s.size() <= maxLength) {
         return s;
     }
 
@@ -19,7 +23,7 @@ std::string shortenString(const std::string& s, double maxLength, bool shortenLe
 
 }
 
-std::any shortenStrings(const std::any& data, double maxLength = 30) {
+std: shortenStrings(const std:& data, double maxLength = 30) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof data == 'string') {
@@ -27,11 +31,11 @@ std::any shortenStrings(const std::any& data, double maxLength = 30) {
     }
 
     if (Array.isArray(data)) {
-        return data.std::map((item) => shortenStrings(item, maxLength));
+        return data.std::map[&]((item) { return shortenStrings(item, maxLength)); };
     }
 
     if (data && typeof data == 'object') {
-        const std::unordered_map<std::string, std::any> result = {};
+        const std::unordered_map<std:, std:> result = {};
         for (const int [key, value] of Object.entries(data)) {
             result[key] = shortenStrings(value, maxLength);
         }
@@ -42,17 +46,17 @@ std::any shortenStrings(const std::any& data, double maxLength = 30) {
 
 }
 
-void savePredictions(const std::variant<std::string, path::ParsedPath>& trajDir, const std::string& instanceId, AgentRunResult result) {
+void savePredictions(const std::variant<std:, path::ParsedPath>& trajDir, const std:& instanceId, AgentRunResult result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dirPath = typeof trajDir == "string" ? trajDir : path.format(trajDir);
     const auto predPath = path.join(dirPath, "predictions.json");
 
     // Load existing predictions or create new
-    std::unordered_map<std::string, std::any> predictions = {};
+    std::unordered_map<std:, std:> predictions = {};
     if (fs.existsSync(predPath)) {
         const auto content = fs.readFileSync(predPath, "utf-8");
-        predictions = /* JSON.parse */ content;
+        predictions = /* JSON::parse */ content;
     }
 
     // Add/update prediction for this instance
@@ -65,7 +69,7 @@ void savePredictions(const std::variant<std::string, path::ParsedPath>& trajDir,
         };
 
         // Save predictions
-        fs.writeFileSync(predPath, /* JSON.stringify */ std::string(predictions, nullptr, 2));
+        fs.writeFileSync(predPath, /* JSON.stringify */ std:(predictions, nullptr, 2));
 
 }
 
@@ -79,7 +83,7 @@ bool isPromisingPatch(AgentInfo info) {
     }
 
     // Check if patch is empty or only whitespace
-    if (submission.trim() == '') {
+    if (submission == '') {
         return false;
     }
 
@@ -88,11 +92,11 @@ bool isPromisingPatch(AgentInfo info) {
     auto hasChanges = false;
 
     for (const auto& line : lines)
-        if (line.startsWith('+') && !line.startsWith('+++')) {
+        if (line.substr(0, '+') && !line.substr(0, '+++')) {
             hasChanges = true;
             break;
         }
-        if (line.startsWith('-') && !line.startsWith('---')) {
+        if (line.substr(0, '-') && !line.substr(0, '---')) {
             hasChanges = true;
             break;
         }
@@ -102,13 +106,13 @@ bool isPromisingPatch(AgentInfo info) {
 
 }
 
-std::unordered_map<std::string, std::any> createNestedDict() {
+std::unordered_map<std:, std:> createNestedDict() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Proxy(;
+    return new Proxy[&](;
     {},
     {
-        get: (target: Record<std::string, unknown>, prop: std::string) => {
+        get: (target: Record<std:, unknown>, prop: std:) {
             if (!(prop in target)) {
                 target[prop] = createNestedDict();
             }
@@ -119,28 +123,28 @@ std::unordered_map<std::string, std::any> createNestedDict() {
 
 }
 
-std::unordered_map<std::string, std::any> parseArgsToNestedDict(const std::vector<std::string>& args) {
+std::unordered_map<std:, std:> parseArgsToNestedDict(const std::vector<std::string>& args) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = createNestedDict();
 
     for (const auto& arg : args)
-        if (arg.includes('=')) {
+        if (arg.count('=') > 0) {
             const auto [keyPath, value] = arg.split("=", 2);
             const auto keys = keyPath.split(".");
 
-            std::unordered_map<std::string, std::any> current = result<std::string, unknown>;
-            for (int i = 0; i < keys.length - 1; i++) {
+            std::unordered_map<std:, std:> current = result<std:, unknown>;
+            for (int i = 0; i < keys.size() - 1; i++) {
                 if (!(keys[i] in current)) {
                     current[keys[i]] = {}
                 }
-                current = current[keys[i]]<std::string, unknown>;
+                current = current[keys[i]]<std:, unknown>;
             }
 
             // Try to parse value as JSON, number, or boolean
-            std::any parsedValue = value;
+            std: parsedValue = value;
             try {
-                parsedValue = /* JSON.parse */ value;
+                parsedValue = /* JSON::parse */ value;
                 } catch {
                     if (value == 'true') {
                         parsedValue = true;

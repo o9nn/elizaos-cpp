@@ -12,7 +12,7 @@ std::function<object()> useThreadSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std::string("threads"), useThreads}
+        object::pair{std:("threads"), useThreads}
     };
     auto setThreads = [=](auto value) mutable
     {
@@ -25,16 +25,16 @@ std::function<object()> useThreadSlice = [=]() mutable
     auto getArchivedThreads = [=](auto channelId, auto knownThreads) mutable
     {
         auto threads = std::async([=]() { dispatch(getArchivedThreadsAction(object{
-            object::pair{std::string("channelId"), std::string("channelId")}, 
-            object::pair{std::string("knownThreads"), std::string("knownThreads")}
+            object::pair{std:("channelId"), std:("channelId")}, 
+            object::pair{std:("knownThreads"), std:("knownThreads")}
         })); });
         return threads;
     };
     auto getThreadsFromMessages = [=](auto messages, auto knownThreads) mutable
     {
         return getThreadsFromMessagesAction(object{
-            object::pair{std::string("messages"), std::string("messages")}, 
-            object::pair{std::string("knownThreads"), std::string("knownThreads")}
+            object::pair{std:("messages"), std:("messages")}, 
+            object::pair{std:("knownThreads"), std:("knownThreads")}
         });
     };
     auto unarchiveThread = template <typename RET>
@@ -46,19 +46,19 @@ std::function<object()> useThreadSlice = [=]() mutable
     auto liftThreadRestrictions = [=](auto channelId, auto noPermissionThreadIds) mutable
     {
         auto noPermissionIds = std::async([=]() { dispatch(liftThreadRestrictionsAction(object{
-            object::pair{std::string("channelId"), std::string("channelId")}, 
-            object::pair{std::string("noPermissionThreadIds"), std::string("noPermissionThreadIds")}
+            object::pair{std:("channelId"), std:("channelId")}, 
+            object::pair{std:("noPermissionThreadIds"), std:("noPermissionThreadIds")}
         })); });
         return noPermissionIds;
     };
     return object{
-        object::pair{std::string("state"), std::string("state")}, 
-        object::pair{std::string("setThreads"), std::string("setThreads")}, 
-        object::pair{std::string("resetThreads"), std::string("resetThreads")}, 
-        object::pair{std::string("getArchivedThreads"), std::string("getArchivedThreads")}, 
-        object::pair{std::string("getThreadsFromMessages"), std::string("getThreadsFromMessages")}, 
-        object::pair{std::string("unarchiveThread"), std::string("unarchiveThread")}, 
-        object::pair{std::string("liftThreadRestrictions"), std::string("liftThreadRestrictions")}
+        object::pair{std:("state"), std:("state")}, 
+        object::pair{std:("setThreads"), std:("setThreads")}, 
+        object::pair{std:("resetThreads"), std:("resetThreads")}, 
+        object::pair{std:("getArchivedThreads"), std:("getArchivedThreads")}, 
+        object::pair{std:("getThreadsFromMessages"), std:("getThreadsFromMessages")}, 
+        object::pair{std:("unarchiveThread"), std:("unarchiveThread")}, 
+        object::pair{std:("liftThreadRestrictions"), std:("liftThreadRestrictions")}
     };
 };
 

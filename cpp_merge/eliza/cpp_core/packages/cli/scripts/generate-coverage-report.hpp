@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -19,10 +20,10 @@ struct CoverageReport {
     std::vector<std::string> untestedFiles;
     double coverage;
     { byCategory;
-    { total: number; tested: number; untested: std::string[] } commands;
-    { total: number; tested: number; untested: std::string[] } utils;
-    { total: number; tested: number; untested: std::string[] } types;
-    { total: number; tested: number; untested: std::string[] } other;
+    { total; tested; untested: std:[] } commands;
+    { total; tested; untested: std:[] } utils;
+    { total; tested; untested: std:[] } types;
+    { total; tested; untested: std:[] } other;
 };
 
 std::future<CoverageReport> generateCoverageReport();

@@ -12,16 +12,16 @@ void ArrayInput(auto data) {
     const auto handleKeyDown = [&](e: React.KeyboardEvent<HTMLInputElement>) {;
         if (e.key == 'Enter') {
             e.preventDefault();
-            const auto trimmedValue = inputValue.trim();
-            if (trimmedValue && !data.includes(trimmedValue)) {
+            const auto trimmedValue = inputValue;
+            if (trimmedValue && !data.count(trimmedValue) > 0) {
                 onChange([...data, trimmedValue]);
                 setInputValue("");
             }
         }
         };
 
-        const auto removeTag = [&](tagToRemove: std::string) {;
-            onChange(data.filter((tag) => tag != tagToRemove));
+        const auto removeTag = [&](tagToRemove: std:) {;
+            onChange[&](data.filter((tag) { return tag != tagToRemove)); };
             };
 
             return (;

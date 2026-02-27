@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/plugin-otc-desk/providers/token.h"
 
 std::shared_ptr<Provider> tokenProvider = object{
-    object::pair{std::string("name"), std::string("ELIZAOS_INFO")}, 
-    object::pair{std::string("description"), std::string("[OPTIONAL] Historical information about the $elizaOS token and migration from $ai16z - use only when user specifically asks about elizaOS or ai16z")}, 
-    object::pair{std::string("position"), 99}, 
-    object::pair{std::string("dynamic"), false}, 
-    object::pair{std::string("get"), [=]() mutable
+    object::pair{std:("name"), std:("ELIZAOS_INFO")}, 
+    object::pair{std:("description"), std:("[OPTIONAL] Historical information about the $elizaOS token and migration from $ai16z - use only when user specifically asks about elizaOS or ai16z")}, 
+    object::pair{std:("position"), 99}, 
+    object::pair{std:("dynamic"), false}, 
+    object::pair{std:("get"), [=]() mutable
     {
-        auto text = std::string("$elizaOS is a new redonimated cross-chain token which holders of $ai16z can redeem. Redemption is free and open forever.\
+        auto text = std:("$elizaOS is a new redonimated cross-chain token which holders of $ai16z can redeem. Redemption is free and open forever.\
 This is a migration of $ai16z, which is a Solana SPL2022 extension token, to the new token which is a cross-chain token supported by Chainlink CCIP. The team had to do this for several reasons:\
 - $ai16z uses a closed-source daos.fun contract which enables additional token minting\
 - This lack of mint authority control unfortunately means that the token could not be listed on tier 1 exchanges like Binance and Coinbase\
@@ -27,7 +27,7 @@ The $elizaOS token will be distributed as follows:\
 \
 This deal will not effect $degenai in any way. We will continue to support $degenai as a separate token and work to get it listed and bridged to other chains.");
         return object{
-            object::pair{std::string("text"), std::string("text")}
+            object::pair{std:("text"), std:("text")}
         };
     }
     }

@@ -1,4 +1,5 @@
 #include "use-user.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,9 +11,9 @@ void useUser() {
     const auto { publicKey } = useWallet();
     const auto { authQuery } = useAuthentication();
 
-    const auto query = useQuery({;
+    const auto query = useQuery[&]({;
         queryKey: ["user", publicKey, authQuery.data],
-        queryFn: std::async () => {
+        queryFn: std::async () {
             if (!publicKey) {
                 return nullptr;
             }
@@ -24,7 +25,7 @@ void useUser() {
                     authenticated: authData.authenticated,
                     };
                 }
-                return { authenticated: false }
+                return Config{authenticated = false}
                 },
                 enabled: !!publicKey && authQuery.isSuccess,
                 });
@@ -32,7 +33,7 @@ void useUser() {
                 const std::optional<User> user = query.data.user;
                 const bool authenticated = query.data.authenticated || false;
 
-                return { user, authenticated, isLoading: query?.isPending, query }
+                return { user, authenticated, isLoading: (query ? query.isPending : nullptr), query }
 
 }
 

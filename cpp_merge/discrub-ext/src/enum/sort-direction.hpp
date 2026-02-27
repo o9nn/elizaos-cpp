@@ -5,6 +5,6 @@
 enum struct SortDirection;
 
 enum struct SortDirection {
-    DESCENDING = std::string("desc"), ASCENDING = std::string("asc")
+    DESCENDING = std:("desc"), ASCENDING = std:("asc")
 };
 #endif

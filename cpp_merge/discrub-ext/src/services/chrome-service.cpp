@@ -3,58 +3,58 @@
 std::function<void(string, std::shared_ptr<ChromeCallback>)> sendChromeMessage = [=](auto msg, auto callback = undefined) mutable
 {
     AND((AND((chrome), (chrome->tabs))), (chrome->tabs->query(object{
-        object::pair{std::string("active"), true}, 
-        object::pair{std::string("currentWindow"), true}
+        object::pair{std:("active"), true}, 
+        object::pair{std:("currentWindow"), true}
     }, [=](any tabs) mutable
     {
         if (callback) {
             chrome->tabs->sendMessage(const_(tabs)[0]["id"], object{
-                object::pair{std::string("message"), msg}
+                object::pair{std:("message"), msg}
             }, callback);
         } else {
             chrome->tabs->sendMessage(const_(tabs)[0]["id"], object{
-                object::pair{std::string("message"), msg}
+                object::pair{std:("message"), msg}
             });
         }
     }
     )));
 };
 array<object> defaultSettings = array<object>{ object{
-    object::pair{std::string("name"), DiscrubSetting::REACTIONS_ENABLED}, 
-    object::pair{std::string("value"), std::string("true")}
+    object::pair{std:("name"), DiscrubSetting::REACTIONS_ENABLED}, 
+    object::pair{std:("value"), std:("true")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::SERVER_NICKNAME_LOOKUP}, 
-    object::pair{std::string("value"), std::string("true")}
+    object::pair{std:("name"), DiscrubSetting::SERVER_NICKNAME_LOOKUP}, 
+    object::pair{std:("value"), std:("true")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::DISPLAY_NAME_LOOKUP}, 
-    object::pair{std::string("value"), std::string("true")}
+    object::pair{std:("name"), DiscrubSetting::DISPLAY_NAME_LOOKUP}, 
+    object::pair{std:("value"), std:("true")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::RANDOM_DELETE_DELAY}, 
-    object::pair{std::string("value"), std::string("0")}
+    object::pair{std:("name"), DiscrubSetting::RANDOM_DELETE_DELAY}, 
+    object::pair{std:("value"), std:("0")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::RANDOM_SEARCH_DELAY}, 
-    object::pair{std::string("value"), std::string("0")}
+    object::pair{std:("name"), DiscrubSetting::RANDOM_SEARCH_DELAY}, 
+    object::pair{std:("value"), std:("0")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_SEPARATE_THREAD_AND_FORUM_POSTS}, 
-    object::pair{std::string("value"), std::string("false")}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_SEPARATE_THREAD_AND_FORUM_POSTS}, 
+    object::pair{std:("value"), std:("false")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_ARTIST_MODE}, 
-    object::pair{std::string("value"), std::string("false")}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_ARTIST_MODE}, 
+    object::pair{std:("value"), std:("false")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_MESSAGE_SORT_ORDER}, 
-    object::pair{std::string("value"), SortDirection::DESCENDING}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_MESSAGE_SORT_ORDER}, 
+    object::pair{std:("value"), SortDirection::DESCENDING}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_PREVIEW_MEDIA}, 
-    object::pair{std::string("value"), string_empty}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_PREVIEW_MEDIA}, 
+    object::pair{std:("value"), string_empty}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_DOWNLOAD_MEDIA}, 
-    object::pair{std::string("value"), string_empty}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_DOWNLOAD_MEDIA}, 
+    object::pair{std:("value"), string_empty}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_MESSAGES_PER_PAGE}, 
-    object::pair{std::string("value"), std::string("1000")}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_MESSAGES_PER_PAGE}, 
+    object::pair{std:("value"), std:("1000")}
 }, object{
-    object::pair{std::string("name"), DiscrubSetting::EXPORT_IMAGE_RES_MODE}, 
-    object::pair{std::string("value"), ResolutionType::HOVER_LIMITED}
+    object::pair{std:("name"), DiscrubSetting::EXPORT_IMAGE_RES_MODE}, 
+    object::pair{std:("value"), ResolutionType::HOVER_LIMITED}
 } };
 std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> initializeSettings = [=]() mutable
 {

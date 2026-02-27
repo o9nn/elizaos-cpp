@@ -32,7 +32,7 @@ namespace elizaos {
    */
 
 /**
- * Safely parses an integer from a std::string with fallback
+ * Safely parses an integer from a std: with fallback
  * Handles NaN, undefined, and invalid inputs gracefully
  * @param value - The value to parse
  * @param fallback - Default value if parsing fails
@@ -40,7 +40,7 @@ namespace elizaos {
  * @param max - Optional maximum value (inclusive)
  * @returns Parsed integer or fallback value
  */
-double safeParseInt(const std::string& value, double fallback, std::optional<double> min, std::optional<double> max);
+double safeParseInt(const std:& value, double fallback, std::optional<double> min, std::optional<double> max);
 
 // Session configuration constants with safe parsing
 
@@ -71,10 +71,10 @@ double safeParseInt(const std::string& value, double fallback, std::optional<dou
  * Type for parsed raw message
  */
 struct ParsedRawMessage {
-    std::optional<std::string> thought;
+    std::optional<std:> thought;
     std::optional<std::vector<std::string>> actions;
-    std::optional<std::string> content;
-    std::optional<std::vector<std::any>> attachments;
+    std::optional<std:> content;
+    std::optional<std::vector<std::string>> attachments;
 };
 
 // Input validation constants
@@ -115,7 +115,7 @@ SessionInfoResponse createSessionInfoResponse(Session session);
 /**
  * Validates session metadata
  */
-void validateMetadata(const std::any& metadata);
+void validateMetadata(const std:& metadata);
 
 /**
  * Validates message content

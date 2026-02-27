@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -38,7 +39,7 @@ class DevServerManager implements ServerProcess {
       this.process = null;
 
       // Give the process a moment to fully terminate
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      new Promise[&]((resolve) { return setTimeout(resolve, 500)); };
     }
   }
 
@@ -73,11 +74,11 @@ std::future<void> stopServer();
 /**
  * Start the server with given arguments
  */
-std::future<void> startServer(const std::vector<std::string[] =>& args);
+std::future<void> startServer(const std::vector<std:[] =>& args);
 
 /**
  * Restart the server with given arguments
  */
-std::future<void> restartServer(const std::vector<std::string[] =>& args);
+std::future<void> restartServer(const std::vector<std:[] =>& args);
 
 } // namespace elizaos

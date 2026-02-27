@@ -29,7 +29,7 @@ namespace elizaos {
 
 // Constants
 
-    await displayBanner();
+    displayBanner();
 
       // Use standardized directory detection
 
@@ -44,7 +44,7 @@ namespace elizaos {
       // Validate data directory and settings only if we need GitHub publishing
 
           // Initialize data directory first
-          await initializeDataDir();
+          initializeDataDir();
 
           // Use the built-in credentials std::function
 
@@ -83,10 +83,10 @@ namespace elizaos {
       // Save updated package.json
 
       // Validate plugin requirements
-      await validatePluginRequirements(cwd, packageJson);
+      validatePluginRequirements(cwd, packageJson);
 
       // Update registry settings
-      await saveRegistrySettings(settings);
+      saveRegistrySettings(settings);
 
       // Generate package metadata
 
@@ -101,7 +101,7 @@ namespace elizaos {
       // Track what was actually published for accurate messaging
 
       // Step 1: Publish to npm (always, unless we add a --skip-npm flag later)
-      await publishToNpm(cwd, packageJson, npmUsername);
+      publishToNpm(cwd, packageJson, npmUsername);
 
       // Add npm package info to metadata
 

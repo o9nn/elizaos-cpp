@@ -2,39 +2,39 @@
 
 void Main(void)
 {
-    describe(std::string("TodoPlugin Initialization"), [=]() mutable
+    describe(std:("TodoPlugin Initialization"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         auto setupMocks = [=]() mutable
         {
             mockRuntime = createMockRuntime(object{
-                object::pair{std::string("db"), nullptr}, 
-                object::pair{std::string("getService"), [=]() mutable
+                object::pair{std:("db"), nullptr}, 
+                object::pair{std:("getService"), [=]() mutable
                 {
                     return nullptr;
                 }
                 }
             });
         };
-        it(std::string("should have correct plugin metadata"), [=]() mutable
+        it(std:("should have correct plugin metadata"), [=]() mutable
         {
-            expect(TodoPlugin->name)->toBe(std::string("todo"));
-            expect(TodoPlugin->description)->toContain(std::string("task management"));
+            expect(TodoPlugin->name)->toBe(std:("todo"));
+            expect(TodoPlugin->description)->toContain(std:("task management"));
             expect(TodoPlugin->services)->toBeDefined();
             expect(TodoPlugin->actions)->toBeDefined();
             expect(TodoPlugin->providers)->toBeDefined();
             expect(TodoPlugin->schema)->toBeDefined();
         }
         );
-        it(std::string("should have the correct number of services"), [=]() mutable
+        it(std:("should have the correct number of services"), [=]() mutable
         {
             expect(TodoPlugin->services)->toHaveLength(2);
             auto services = as<array<object>>(TodoPlugin->services);
-            expect(const_(services)[0]["serviceType"])->toBe(std::string("TODO"));
-            expect(const_(services)[1]["serviceType"])->toBe(std::string("TODO_REMINDER"));
+            expect(const_(services)[0]["serviceType"])->toBe(std:("TODO"));
+            expect(const_(services)[1]["serviceType"])->toBe(std:("TODO_REMINDER"));
         }
         );
-        it(std::string("should have all required actions"), [=]() mutable
+        it(std:("should have all required actions"), [=]() mutable
         {
             expect(TodoPlugin->actions)->toHaveLength(5);
             auto actionNames = TodoPlugin->actions->map([=](auto action) mutable
@@ -42,36 +42,36 @@ void Main(void)
                 return action["name"];
             }
             );
-            expect(actionNames)->toContain(std::string("CREATE_TODO"));
-            expect(actionNames)->toContain(std::string("COMPLETE_TODO"));
-            expect(actionNames)->toContain(std::string("CONFIRM_TODO"));
-            expect(actionNames)->toContain(std::string("UPDATE_TODO"));
-            expect(actionNames)->toContain(std::string("CANCEL_TODO"));
+            expect(actionNames)->toContain(std:("CREATE_TODO"));
+            expect(actionNames)->toContain(std:("COMPLETE_TODO"));
+            expect(actionNames)->toContain(std:("CONFIRM_TODO"));
+            expect(actionNames)->toContain(std:("UPDATE_TODO"));
+            expect(actionNames)->toContain(std:("CANCEL_TODO"));
         }
         );
-        it(std::string("should have the todos provider"), [=]() mutable
+        it(std:("should have the todos provider"), [=]() mutable
         {
             expect(TodoPlugin->providers)->toHaveLength(1);
-            expect(const_(TodoPlugin->providers)[0]->name)->toBe(std::string("TODOS"));
+            expect(const_(TodoPlugin->providers)[0]->name)->toBe(std:("TODOS"));
         }
         );
-        it(std::string("should have test dependencies"), [=]() mutable
+        it(std:("should have test dependencies"), [=]() mutable
         {
-            expect(TodoPlugin->testDependencies)->toContain(std::string("@elizaos/plugin-sql"));
+            expect(TodoPlugin->testDependencies)->toContain(std:("@elizaos/plugin-sql"));
         }
         );
-        it(std::string("should have schema with correct tables"), [=]() mutable
+        it(std:("should have schema with correct tables"), [=]() mutable
         {
             expect(TodoPlugin->schema)->toBeDefined();
             expect(TodoPlugin->schema->todosTable)->toBeDefined();
             expect(TodoPlugin->schema->todoTagsTable)->toBeDefined();
         }
         );
-        it(std::string("should correct types"), [=]() mutable
+        it(std:("should correct types"), [=]() mutable
         {
             expect(TodoPlugin)->toBeDefined();
-            expect(TodoPlugin->name)->toBe(std::string("todo"));
-            expect(type_of(TodoPlugin->init))->toBe(std::string("function"));
+            expect(TodoPlugin->name)->toBe(std:("todo"));
+            expect(type_of(TodoPlugin->init))->toBe(std:("function"));
         }
         );
     }

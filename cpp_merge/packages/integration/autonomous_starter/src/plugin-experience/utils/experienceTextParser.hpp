@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_UTILS_EXPERIENCETEXTPARSER_H
 #include "core.h"
 
-string detectDomain(string text, string defaultDomain = std::string("general"));
+string detectDomain(string text, string defaultDomain = std:("general"));
 
 #endif

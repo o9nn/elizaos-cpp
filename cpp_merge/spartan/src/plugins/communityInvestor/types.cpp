@@ -18,7 +18,7 @@ void Main(void)
         infer;
         Rest;
     }
-    std::string("\
+    std:("\
   ? Var | ExtractVariables<Rest>\
   : never;\
 \
@@ -27,10 +27,10 @@ void Main(void)
  *\
  * @template T - The string type for which template variables are defined.\
  * @typedef TemplateVariables\
- * @type {Pretty<{ [K in ExtractVariables<T>]: string; }>}\
+ * @type {Pretty<{ [K in ExtractVariables<T>]; }>}\
  */\
 type TemplateVariables<T extends string> = Pretty<{\
-  [K in ExtractVariables<T>]: string;\
+  [K in ExtractVariables<T>];\
 }>;\
 \
 /**\
@@ -92,28 +92,28 @@ type TransactionRow = ToSQLiteRecord<Transaction>;\
  * Interface representing the metrics of a recommender.\
  * @typedef {{\
  *    entityId: UUID,\
- *    platform: string,\
- *    totalRecommendations: number,\
- *    successfulRecs: number,\
- *    failedTrades: number,\
- *    totalProfit: number,\
- *    avgTokenPerformance: number,\
- *    consistencyScore: number,\
- *    trustScore: number,\
+ *    platform,\
+ *    totalRecommendations,\
+ *    successfulRecs,\
+ *    failedTrades,\
+ *    totalProfit,\
+ *    avgTokenPerformance,\
+ *    consistencyScore,\
+ *    trustScore,\
  *    lastUpdated: Date,\
  *    createdAt: Date\
  * }} RecommenderMetrics\
  */\
 interface RecommenderMetrics {\
   entityId: UUID;\
-  platform: string;\
-  totalRecommendations: number;\
-  successfulRecs: number;\
-  failedTrades: number;\
-  totalProfit: number;\
-  avgTokenPerformance: number;\
-  consistencyScore: number;\
-  trustScore: number;\
+  platform;\
+  totalRecommendations;\
+  successfulRecs;\
+  failedTrades;\
+  totalProfit;\
+  avgTokenPerformance;\
+  consistencyScore;\
+  trustScore;\
   lastUpdated: Date;\
   createdAt: Date;\
 }\
@@ -161,29 +161,29 @@ interface RecommenderMetricsHistory {\
  * @property {Date} [updatedAt] - The date and time when the token performance data was last updated.\
  */\
 interface TokenPerformance {\
-  chain?: string;\
-  address?: string;\
-  name?: string;\
-  symbol?: string;\
-  decimals?: number;\
+  chain?;\
+  address?;\
+  name?;\
+  symbol?;\
+  decimals?;\
   metadata?: Record<string, any>;\
-  price?: number;\
-  price24hChange?: number;\
-  volume?: number;\
-  volume24hChange?: number;\
-  trades?: number;\
-  trades24hChange?: number;\
-  liquidity?: number;\
-  holders?: number;\
-  holders24hChange?: number;\
-  initialMarketCap?: number;\
-  currentMarketCap?: number;\
-  rugPull?: boolean;\
-  isScam?: boolean;\
-  sustainedGrowth?: boolean;\
-  rapidDump?: boolean;\
-  suspiciousVolume?: boolean;\
-  validationTrust?: number;\
+  price?;\
+  price24hChange?;\
+  volume?;\
+  volume24hChange?;\
+  trades?;\
+  trades24hChange?;\
+  liquidity?;\
+  holders?;\
+  holders24hChange?;\
+  initialMarketCap?;\
+  currentMarketCap?;\
+  rugPull?;\
+  isScam?;\
+  sustainedGrowth?;\
+  rapidDump?;\
+  suspiciousVolume?;\
+  validationTrust?;\
   createdAt?: Date;\
   updatedAt?: Date;\
 }\
@@ -226,20 +226,20 @@ enum RecommendationType {\
 type TokenRecommendation = {\
   id: UUID;\
   entityId: UUID;\
-  chain: string;\
-  tokenAddress: string;\
+  chain;\
+  tokenAddress;\
   conviction: Conviction;\
   type: RecommendationType;\
-  initialMarketCap: string;\
-  initialLiquidity: string;\
-  initialPrice: string;\
-  marketCap: string;\
-  liquidity: string;\
-  price: string;\
-  rugPull: boolean;\
-  isScam: boolean;\
-  riskScore: number;\
-  performanceScore: number;\
+  initialMarketCap;\
+  initialLiquidity;\
+  initialPrice;\
+  marketCap;\
+  liquidity;\
+  price;\
+  rugPull;\
+  isScam;\
+  riskScore;\
+  performanceScore;\
   metadata: Record<string, any>;\
   status: 'ACTIVE' | 'COMPLETED' | 'EXPIRED' | 'WITHDRAWN';\
   createdAt: Date;\
@@ -249,17 +249,17 @@ type TokenRecommendation = {\
 interface Position {\
   id: UUID;\
   entityId: UUID;\
-  tokenAddress: string;\
-  chain: string;\
-  walletAddress: string;\
-  balance: string;\
+  tokenAddress;\
+  chain;\
+  walletAddress;\
+  balance;\
   status: 'OPEN' | 'CLOSED';\
   createdAt: Date;\
   closedAt?: Date;\
-  isSimulation: boolean;\
-  amount: string;\
-  initialPrice: string;\
-  currentPrice?: string;\
+  isSimulation;\
+  amount;\
+  initialPrice;\
+  currentPrice?;\
   recommendationId: UUID;\
 }\
 \
@@ -284,90 +284,90 @@ enum TransactionType {\
 interface Transaction {\
   id: UUID;\
   positionId: UUID;\
-  tokenAddress: string;\
+  tokenAddress;\
   type: TransactionType;\
-  amount: string;\
-  valueUsd?: number;\
-  marketCap?: number;\
-  liquidity?: number;\
-  price: string;\
-  isSimulation: boolean;\
+  amount;\
+  valueUsd?;\
+  marketCap?;\
+  liquidity?;\
+  price;\
+  isSimulation;\
   timestamp: Date;\
-  chain?: string;\
-  transactionHash?: string;\
+  chain?;\
+  transactionHash?;\
 }\
 \
 type SellDetails = {\
-  price: number;\
-  timestamp: string;\
+  price;\
+  timestamp;\
   amount: bigint;\
   receivedSol: bigint;\
-  valueUsd: number;\
-  profitUsd: number;\
-  profitPercent: number;\
-  marketCap: number;\
-  marketCapChange: number;\
-  liquidity: number;\
-  liquidityChange: number;\
-  rapidDump: boolean;\
-  entityId: string;\
+  valueUsd;\
+  profitUsd;\
+  profitPercent;\
+  marketCap;\
+  marketCapChange;\
+  liquidity;\
+  liquidityChange;\
+  rapidDump;\
+  entityId;\
 };\
 \
 type BuyData = {\
-  positionId: string;\
-  chain: string;\
-  tokenAddress: string;\
-  walletAddress: string;\
+  positionId;\
+  chain;\
+  tokenAddress;\
+  walletAddress;\
   entityID: UUID;\
-  recommendationId: string;\
+  recommendationId;\
   solAmount: bigint;\
   buyAmount: bigint;\
   timestamp: Date;\
-  initialTokenPriceUsd: string;\
-  isSimulation: boolean;\
-  txHash: string;\
+  initialTokenPriceUsd;\
+  isSimulation;\
+  txHash;\
 };\
 \
 type SellData = {\
-  positionId: string;\
-  chain: string;\
-  tokenAddress: string;\
-  walletAddress: string;\
+  positionId;\
+  chain;\
+  tokenAddress;\
+  walletAddress;\
   entityID: UUID;\
   solAmount: bigint;\
   sellAmount: bigint;\
   timestamp: Date;\
-  isSimulation: boolean;\
-  txHash: string;\
+  isSimulation;\
+  txHash;\
 };\
 \
 type RecommenderAnalytics = {\
-  entityId: string;\
-  trustScore: number;\
-  riskScore: number;\
-  consistencyScore: number;\
+  entityId;\
+  trustScore;\
+  riskScore;\
+  consistencyScore;\
   recommenderMetrics: RecommenderMetrics;\
 };\
 \
 type TokenRecommendationSummary = {\
-  chain: string;\
-  tokenAddress: string;\
-  averageTrustScore: number;\
-  averageRiskScore: number;\
-  averageConsistencyScore: number;\
+  chain;\
+  tokenAddress;\
+  averageTrustScore;\
+  averageRiskScore;\
+  averageConsistencyScore;\
   recommenders: RecommenderAnalytics[];\
 };\
 \
 type TransactionData = {\
-  chain: string;\
-  tokenAddress: string;\
-  pairId: string;\
-  amount: string;\
-  currentBalance: string;\
-  sellRecommenderId: string;\
-  walletAddress: string;\
-  transaction: any | null;\
-  isSimulation: boolean;\
+  chain;\
+  tokenAddress;\
+  pairId;\
+  amount;\
+  currentBalance;\
+  sellRecommenderId;\
+  walletAddress;\
+  transaction | null;\
+  isSimulation;\
 };\
 \
 type QuoteResult<Data = any> = {\
@@ -376,25 +376,25 @@ type QuoteResult<Data = any> = {\
 };\
 \
 type SwapInResult<Data = any> = {\
-  txHash: string;\
+  txHash;\
   amountOut: bigint;\
   timestamp: Date;\
   data?: Data;\
 };\
 \
 type QuoteInParams = {\
-  inputToken: string;\
-  outputToken: string;\
+  inputToken;\
+  outputToken;\
   amountIn: bigint;\
-  slippageBps?: number;\
+  slippageBps?;\
 };\
 \
 type SwapInParams<SwapData = any> = {\
-  inputToken: string;\
-  outputToken: string;\
+  inputToken;\
+  outputToken;\
   amountIn: bigint;\
   minAmountOut: bigint;\
-  isSimulation: boolean;\
+  isSimulation;\
   data?: SwapData;\
 };\
 \
@@ -404,64 +404,64 @@ interface TrustWalletProvider<\
   SwapResultData = any,\
   TSwapResult extends SwapInResult<SwapResultData> = SwapInResult<SwapResultData>,\
 > {\
-  getCurrencyAddress(): string;\
-  getAddress(): string;\
+  getCurrencyAddress();\
+  getAddress();\
   getQuoteIn(props: QuoteInParams): Promise<TQuoteResult>;\
   swapIn(props: SwapInParams<QuoteData>): Promise<TSwapResult>;\
 \
   executeSwap<SwapData = any, SwapResultData = any>(params: {\
-    inputToken: string;\
-    outputToken: string;\
+    inputToken;\
+    outputToken;\
     swapData: SwapData;\
   }): Promise<SwapInResult<SwapResultData>>;\
 \
-  getTokenFromWallet(tokenSymbol: string): Promise<string | null>;\
+  getTokenFromWallet(tokenSymbol): Promise<string | null>;\
   getAccountBalance(): Promise<bigint>;\
 }\
 \
 type TokenMetadata = {\
-  chain: string;\
-  address: string;\
-  name: string;\
-  symbol: string;\
-  decimals: number;\
+  chain;\
+  address;\
+  name;\
+  symbol;\
+  decimals;\
   metadata: Record<string, any>;\
 };\
 \
 type TokenMarketData = {\
-  price: number;\
-  priceUsd: string;\
-  price24hChange: number;\
+  price;\
+  priceUsd;\
+  price24hChange;\
 \
-  marketCap: number;\
+  marketCap;\
 \
-  uniqueWallet24h: number;\
-  uniqueWallet24hChange: number;\
+  uniqueWallet24h;\
+  uniqueWallet24hChange;\
 \
-  volume24h: number;\
-  volume24hChange: number;\
+  volume24h;\
+  volume24hChange;\
 \
-  trades: number;\
-  trades24hChange: number;\
+  trades;\
+  trades24hChange;\
 \
-  liquidityUsd: number;\
+  liquidityUsd;\
 \
-  holders: number;\
+  holders;\
 };\
 \
 // Message recommendation extracted from text\
 interface MessageRecommendation {\
-  tokenMentioned: string;\
-  isTicker: boolean;\
+  tokenMentioned;\
+  isTicker;\
   sentiment: 'positive' | 'negative' | 'neutral';\
   conviction: 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH';\
-  quote: string;\
+  quote;\
 }\
 \
 interface RecommendationMemory extends Memory {\
   content: Content & {\
     recommendation: MessageRecommendation & {\
-      confirmed?: boolean;\
+      confirmed?;\
     };\
   };\
 }\
@@ -469,378 +469,378 @@ interface RecommendationMemory extends Memory {\
 // TODO: Consolidate this into "Entity" with metadata\
 type Account = {\
   id: UUID;\
-  name: string;\
-  username: string;\
-  email: string;\
-  avatarUrl: string;\
-  telegramId: string;\
-  discordId: string;\
+  name;\
+  username;\
+  email;\
+  avatarUrl;\
+  telegramId;\
+  discordId;\
 };\
 \
 type TokenTradeData = {\
-  address: string;\
-  holder: number;\
-  market: number;\
-  last_trade_unix_time: number;\
-  last_trade_human_time: string;\
-  price: number;\
-  history_30m_price: number;\
-  price_change_30m_percent: number;\
-  history_1h_price: number;\
-  price_change_1h_percent: number;\
-  history_2h_price: number;\
-  price_change_2h_percent: number;\
-  history_4h_price: number;\
-  price_change_4h_percent: number;\
-  history_6h_price: number;\
-  price_change_6h_percent: number;\
-  history_8h_price: number;\
-  price_change_8h_percent: number;\
-  history_12h_price: number;\
-  price_change_12h_percent: number;\
-  history_24h_price: number;\
-  price_change_24h_percent: number;\
-  unique_wallet_30m: number;\
-  unique_wallet_history_30m: number;\
-  unique_wallet_30m_change_percent: number;\
-  unique_wallet_1h: number;\
-  unique_wallet_history_1h: number;\
-  unique_wallet_1h_change_percent: number;\
-  unique_wallet_2h: number;\
-  unique_wallet_history_2h: number;\
-  unique_wallet_2h_change_percent: number;\
-  unique_wallet_4h: number;\
-  unique_wallet_history_4h: number;\
-  unique_wallet_4h_change_percent: number;\
-  unique_wallet_8h: number;\
-  unique_wallet_history_8h: number | null;\
-  unique_wallet_8h_change_percent: number | null;\
-  unique_wallet_24h: number;\
-  unique_wallet_history_24h: number | null;\
-  unique_wallet_24h_change_percent: number | null;\
-  trade_30m: number;\
-  trade_history_30m: number;\
-  trade_30m_change_percent: number;\
-  sell_30m: number;\
-  sell_history_30m: number;\
-  sell_30m_change_percent: number;\
-  buy_30m: number;\
-  buy_history_30m: number;\
-  buy_30m_change_percent: number;\
-  volume_30m: number;\
-  volume_30m_usd: number;\
-  volume_history_30m: number;\
-  volume_history_30m_usd: number;\
-  volume_30m_change_percent: number;\
-  volume_buy_30m: number;\
-  volume_buy_30m_usd: number;\
-  volume_buy_history_30m: number;\
-  volume_buy_history_30m_usd: number;\
-  volume_buy_30m_change_percent: number;\
-  volume_sell_30m: number;\
-  volume_sell_30m_usd: number;\
-  volume_sell_history_30m: number;\
-  volume_sell_history_30m_usd: number;\
-  volume_sell_30m_change_percent: number;\
-  trade_1h: number;\
-  trade_history_1h: number;\
-  trade_1h_change_percent: number;\
-  sell_1h: number;\
-  sell_history_1h: number;\
-  sell_1h_change_percent: number;\
-  buy_1h: number;\
-  buy_history_1h: number;\
-  buy_1h_change_percent: number;\
-  volume_1h: number;\
-  volume_1h_usd: number;\
-  volume_history_1h: number;\
-  volume_history_1h_usd: number;\
-  volume_1h_change_percent: number;\
-  volume_buy_1h: number;\
-  volume_buy_1h_usd: number;\
-  volume_buy_history_1h: number;\
-  volume_buy_history_1h_usd: number;\
-  volume_buy_1h_change_percent: number;\
-  volume_sell_1h: number;\
-  volume_sell_1h_usd: number;\
-  volume_sell_history_1h: number;\
-  volume_sell_history_1h_usd: number;\
-  volume_sell_1h_change_percent: number;\
-  trade_2h: number;\
-  trade_history_2h: number;\
-  trade_2h_change_percent: number;\
-  sell_2h: number;\
-  sell_history_2h: number;\
-  sell_2h_change_percent: number;\
-  buy_2h: number;\
-  buy_history_2h: number;\
-  buy_2h_change_percent: number;\
-  volume_2h: number;\
-  volume_2h_usd: number;\
-  volume_history_2h: number;\
-  volume_history_2h_usd: number;\
-  volume_2h_change_percent: number;\
-  volume_buy_2h: number;\
-  volume_buy_2h_usd: number;\
-  volume_buy_history_2h: number;\
-  volume_buy_history_2h_usd: number;\
-  volume_buy_2h_change_percent: number;\
-  volume_sell_2h: number;\
-  volume_sell_2h_usd: number;\
-  volume_sell_history_2h: number;\
-  volume_sell_history_2h_usd: number;\
-  volume_sell_2h_change_percent: number;\
-  trade_4h: number;\
-  trade_history_4h: number;\
-  trade_4h_change_percent: number;\
-  sell_4h: number;\
-  sell_history_4h: number;\
-  sell_4h_change_percent: number;\
-  buy_4h: number;\
-  buy_history_4h: number;\
-  buy_4h_change_percent: number;\
-  volume_4h: number;\
-  volume_4h_usd: number;\
-  volume_history_4h: number;\
-  volume_history_4h_usd: number;\
-  volume_4h_change_percent: number;\
-  volume_buy_4h: number;\
-  volume_buy_4h_usd: number;\
-  volume_buy_history_4h: number;\
-  volume_buy_history_4h_usd: number;\
-  volume_buy_4h_change_percent: number;\
-  volume_sell_4h: number;\
-  volume_sell_4h_usd: number;\
-  volume_sell_history_4h: number;\
-  volume_sell_history_4h_usd: number;\
-  volume_sell_4h_change_percent: number;\
-  trade_8h: number;\
-  trade_history_8h: number | null;\
-  trade_8h_change_percent: number | null;\
-  sell_8h: number;\
-  sell_history_8h: number | null;\
-  sell_8h_change_percent: number | null;\
-  buy_8h: number;\
-  buy_history_8h: number | null;\
-  buy_8h_change_percent: number | null;\
-  volume_8h: number;\
-  volume_8h_usd: number;\
-  volume_history_8h: number;\
-  volume_history_8h_usd: number;\
-  volume_8h_change_percent: number | null;\
-  volume_buy_8h: number;\
-  volume_buy_8h_usd: number;\
-  volume_buy_history_8h: number;\
-  volume_buy_history_8h_usd: number;\
-  volume_buy_8h_change_percent: number | null;\
-  volume_sell_8h: number;\
-  volume_sell_8h_usd: number;\
-  volume_sell_history_8h: number;\
-  volume_sell_history_8h_usd: number;\
-  volume_sell_8h_change_percent: number | null;\
-  trade_24h: number;\
-  trade_history_24h: number;\
-  trade_24h_change_percent: number | null;\
-  sell_24h: number;\
-  sell_history_24h: number;\
-  sell_24h_change_percent: number | null;\
-  buy_24h: number;\
-  buy_history_24h: number;\
-  buy_24h_change_percent: number | null;\
-  volume_24h: number;\
-  volume_24h_usd: number;\
-  volume_history_24h: number;\
-  volume_history_24h_usd: number;\
-  volume_24h_change_percent: number | null;\
-  volume_buy_24h: number;\
-  volume_buy_24h_usd: number;\
-  volume_buy_history_24h: number;\
-  volume_buy_history_24h_usd: number;\
-  volume_buy_24h_change_percent: number | null;\
-  volume_sell_24h: number;\
-  volume_sell_24h_usd: number;\
-  volume_sell_history_24h: number;\
-  volume_sell_history_24h_usd: number;\
-  volume_sell_24h_change_percent: number | null;\
+  address;\
+  holder;\
+  market;\
+  last_trade_unix_time;\
+  last_trade_human_time;\
+  price;\
+  history_30m_price;\
+  price_change_30m_percent;\
+  history_1h_price;\
+  price_change_1h_percent;\
+  history_2h_price;\
+  price_change_2h_percent;\
+  history_4h_price;\
+  price_change_4h_percent;\
+  history_6h_price;\
+  price_change_6h_percent;\
+  history_8h_price;\
+  price_change_8h_percent;\
+  history_12h_price;\
+  price_change_12h_percent;\
+  history_24h_price;\
+  price_change_24h_percent;\
+  unique_wallet_30m;\
+  unique_wallet_history_30m;\
+  unique_wallet_30m_change_percent;\
+  unique_wallet_1h;\
+  unique_wallet_history_1h;\
+  unique_wallet_1h_change_percent;\
+  unique_wallet_2h;\
+  unique_wallet_history_2h;\
+  unique_wallet_2h_change_percent;\
+  unique_wallet_4h;\
+  unique_wallet_history_4h;\
+  unique_wallet_4h_change_percent;\
+  unique_wallet_8h;\
+  unique_wallet_history_8h | null;\
+  unique_wallet_8h_change_percent | null;\
+  unique_wallet_24h;\
+  unique_wallet_history_24h | null;\
+  unique_wallet_24h_change_percent | null;\
+  trade_30m;\
+  trade_history_30m;\
+  trade_30m_change_percent;\
+  sell_30m;\
+  sell_history_30m;\
+  sell_30m_change_percent;\
+  buy_30m;\
+  buy_history_30m;\
+  buy_30m_change_percent;\
+  volume_30m;\
+  volume_30m_usd;\
+  volume_history_30m;\
+  volume_history_30m_usd;\
+  volume_30m_change_percent;\
+  volume_buy_30m;\
+  volume_buy_30m_usd;\
+  volume_buy_history_30m;\
+  volume_buy_history_30m_usd;\
+  volume_buy_30m_change_percent;\
+  volume_sell_30m;\
+  volume_sell_30m_usd;\
+  volume_sell_history_30m;\
+  volume_sell_history_30m_usd;\
+  volume_sell_30m_change_percent;\
+  trade_1h;\
+  trade_history_1h;\
+  trade_1h_change_percent;\
+  sell_1h;\
+  sell_history_1h;\
+  sell_1h_change_percent;\
+  buy_1h;\
+  buy_history_1h;\
+  buy_1h_change_percent;\
+  volume_1h;\
+  volume_1h_usd;\
+  volume_history_1h;\
+  volume_history_1h_usd;\
+  volume_1h_change_percent;\
+  volume_buy_1h;\
+  volume_buy_1h_usd;\
+  volume_buy_history_1h;\
+  volume_buy_history_1h_usd;\
+  volume_buy_1h_change_percent;\
+  volume_sell_1h;\
+  volume_sell_1h_usd;\
+  volume_sell_history_1h;\
+  volume_sell_history_1h_usd;\
+  volume_sell_1h_change_percent;\
+  trade_2h;\
+  trade_history_2h;\
+  trade_2h_change_percent;\
+  sell_2h;\
+  sell_history_2h;\
+  sell_2h_change_percent;\
+  buy_2h;\
+  buy_history_2h;\
+  buy_2h_change_percent;\
+  volume_2h;\
+  volume_2h_usd;\
+  volume_history_2h;\
+  volume_history_2h_usd;\
+  volume_2h_change_percent;\
+  volume_buy_2h;\
+  volume_buy_2h_usd;\
+  volume_buy_history_2h;\
+  volume_buy_history_2h_usd;\
+  volume_buy_2h_change_percent;\
+  volume_sell_2h;\
+  volume_sell_2h_usd;\
+  volume_sell_history_2h;\
+  volume_sell_history_2h_usd;\
+  volume_sell_2h_change_percent;\
+  trade_4h;\
+  trade_history_4h;\
+  trade_4h_change_percent;\
+  sell_4h;\
+  sell_history_4h;\
+  sell_4h_change_percent;\
+  buy_4h;\
+  buy_history_4h;\
+  buy_4h_change_percent;\
+  volume_4h;\
+  volume_4h_usd;\
+  volume_history_4h;\
+  volume_history_4h_usd;\
+  volume_4h_change_percent;\
+  volume_buy_4h;\
+  volume_buy_4h_usd;\
+  volume_buy_history_4h;\
+  volume_buy_history_4h_usd;\
+  volume_buy_4h_change_percent;\
+  volume_sell_4h;\
+  volume_sell_4h_usd;\
+  volume_sell_history_4h;\
+  volume_sell_history_4h_usd;\
+  volume_sell_4h_change_percent;\
+  trade_8h;\
+  trade_history_8h | null;\
+  trade_8h_change_percent | null;\
+  sell_8h;\
+  sell_history_8h | null;\
+  sell_8h_change_percent | null;\
+  buy_8h;\
+  buy_history_8h | null;\
+  buy_8h_change_percent | null;\
+  volume_8h;\
+  volume_8h_usd;\
+  volume_history_8h;\
+  volume_history_8h_usd;\
+  volume_8h_change_percent | null;\
+  volume_buy_8h;\
+  volume_buy_8h_usd;\
+  volume_buy_history_8h;\
+  volume_buy_history_8h_usd;\
+  volume_buy_8h_change_percent | null;\
+  volume_sell_8h;\
+  volume_sell_8h_usd;\
+  volume_sell_history_8h;\
+  volume_sell_history_8h_usd;\
+  volume_sell_8h_change_percent | null;\
+  trade_24h;\
+  trade_history_24h;\
+  trade_24h_change_percent | null;\
+  sell_24h;\
+  sell_history_24h;\
+  sell_24h_change_percent | null;\
+  buy_24h;\
+  buy_history_24h;\
+  buy_24h_change_percent | null;\
+  volume_24h;\
+  volume_24h_usd;\
+  volume_history_24h;\
+  volume_history_24h_usd;\
+  volume_24h_change_percent | null;\
+  volume_buy_24h;\
+  volume_buy_24h_usd;\
+  volume_buy_history_24h;\
+  volume_buy_history_24h_usd;\
+  volume_buy_24h_change_percent | null;\
+  volume_sell_24h;\
+  volume_sell_24h_usd;\
+  volume_sell_history_24h;\
+  volume_sell_history_24h_usd;\
+  volume_sell_24h_change_percent | null;\
 };\
 \
 type HolderData = {\
-  address: string;\
-  balance: string;\
+  address;\
+  balance;\
 };\
 \
 type TokenSecurityData = {\
-  ownerBalance: string;\
-  creatorBalance: string;\
-  ownerPercentage: number;\
-  creatorPercentage: number;\
-  top10HolderBalance: string;\
-  top10HolderPercent: number;\
+  ownerBalance;\
+  creatorBalance;\
+  ownerPercentage;\
+  creatorPercentage;\
+  top10HolderBalance;\
+  top10HolderPercent;\
 };\
 \
 type ProcessedTokenData = {\
   token: TokenOverview;\
   security: TokenSecurityData;\
   tradeData: TokenTradeData;\
-  holderDistributionTrend: string; // 'increasing' | 'decreasing' | 'stable'\
+  holderDistributionTrend; // 'increasing' | 'decreasing' | 'stable'\
   highValueHolders: {\
-    holderAddress: string;\
-    balanceUsd: string;\
+    holderAddress;\
+    balanceUsd;\
   }[];\
-  recentTrades: boolean;\
-  highSupplyHoldersCount: number;\
+  recentTrades;\
+  highSupplyHoldersCount;\
   dexScreenerData: DexScreenerData;\
 \
-  isDexScreenerListed: boolean;\
-  isDexScreenerPaid: boolean;\
+  isDexScreenerListed;\
+  isDexScreenerPaid;\
 };\
 \
 type DexScreenerPair = {\
-  chainId: string;\
-  dexId: string;\
-  url: string;\
-  pairAddress: string;\
+  chainId;\
+  dexId;\
+  url;\
+  pairAddress;\
   baseToken: {\
-    address: string;\
-    name: string;\
-    symbol: string;\
+    address;\
+    name;\
+    symbol;\
   };\
   quoteToken: {\
-    address: string;\
-    name: string;\
-    symbol: string;\
+    address;\
+    name;\
+    symbol;\
   };\
-  priceNative: string;\
-  priceUsd: string;\
+  priceNative;\
+  priceUsd;\
   txns: {\
-    m5: { buys: number; sells: number };\
-    h1: { buys: number; sells: number };\
-    h6: { buys: number; sells: number };\
-    h24: { buys: number; sells: number };\
+    m5: { buys; sells };\
+    h1: { buys; sells };\
+    h6: { buys; sells };\
+    h24: { buys; sells };\
   };\
   volume: {\
-    h24: number;\
-    h6: number;\
-    h1: number;\
-    m5: number;\
+    h24;\
+    h6;\
+    h1;\
+    m5;\
   };\
   priceChange: {\
-    m5: number;\
-    h1: number;\
-    h6: number;\
-    h24: number;\
+    m5;\
+    h1;\
+    h6;\
+    h24;\
   };\
   liquidity?: {\
-    usd: number;\
-    base: number;\
-    quote: number;\
+    usd;\
+    base;\
+    quote;\
   };\
-  fdv: number;\
-  marketCap: number;\
-  pairCreatedAt: number;\
+  fdv;\
+  marketCap;\
+  pairCreatedAt;\
   info: {\
-    imageUrl: string;\
-    websites: { label: string; url: string }[];\
-    socials: { type: string; url: string }[];\
+    imageUrl;\
+    websites: { label; url }[];\
+    socials: { type; url }[];\
   };\
   boosts: {\
-    active: number;\
+    active;\
   };\
 };\
 \
 type DexScreenerData = {\
-  schemaVersion: string;\
+  schemaVersion;\
   pairs: DexScreenerPair[];\
 };\
 \
 type Prices = {\
-  solana: { usd: string };\
-  bitcoin: { usd: string };\
-  ethereum: { usd: string };\
+  solana: { usd };\
+  bitcoin: { usd };\
+  ethereum: { usd };\
 };\
 \
 type CalculatedBuyAmounts = {\
   none: 0;\
-  low: number;\
-  medium: number;\
-  high: number;\
+  low;\
+  medium;\
+  high;\
 };\
 \
 type WalletPortfolioItem = {\
-  name: string;\
-  address: string;\
-  symbol: string;\
-  decimals: number;\
-  balance: string;\
-  uiAmount: string;\
-  priceUsd: string;\
-  valueUsd: string;\
-  valueSol?: string;\
+  name;\
+  address;\
+  symbol;\
+  decimals;\
+  balance;\
+  uiAmount;\
+  priceUsd;\
+  valueUsd;\
+  valueSol?;\
 };\
 \
 type WalletPortfolio = {\
-  totalUsd: string;\
-  totalSol?: string;\
+  totalUsd;\
+  totalSol?;\
   items: WalletPortfolioItem[];\
 };\
 \
 type TokenOverview = {\
-  address: string;\
-  name: string;\
-  symbol: string;\
-  decimals?: number;\
-  logoURI?: string;\
+  address;\
+  name;\
+  symbol;\
+  decimals?;\
+  logoURI?;\
 };\
 \
 interface BuySignalMessage {\
-  positionId?: string;\
-  tokenAddress: string;\
-  chain: string;\
-  walletAddress: string;\
-  isSimulation: boolean;\
-  entityId: string;\
-  recommendationId: string;\
-  price: string;\
-  marketCap: string;\
-  liquidity: string;\
-  amount: string;\
+  positionId?;\
+  tokenAddress;\
+  chain;\
+  walletAddress;\
+  isSimulation;\
+  entityId;\
+  recommendationId;\
+  price;\
+  marketCap;\
+  liquidity;\
+  amount;\
   type: RecommendationType;\
   conviction: Conviction;\
 }\
 \
 interface Trade {\
-  id: string;\
-  positionId: string;\
+  id;\
+  positionId;\
   type: TransactionType.BUY | TransactionType.SELL;\
   amount: bigint;\
   price: bigint;\
   timestamp: Date;\
-  txHash: string;\
+  txHash;\
 }\
 \
 interface TradePerformance {\
-  token_address: string;\
-  recommender_id: string;\
-  buy_price: number;\
-  sell_price: number;\
-  buy_timeStamp: string;\
-  sell_timeStamp: string;\
-  buy_amount: number;\
-  sell_amount: number;\
-  buy_sol: number;\
-  received_sol: number;\
-  buy_value_usd: number;\
-  sell_value_usd: number;\
-  profit_usd: number;\
-  profit_percent: number;\
-  buy_market_cap: number;\
-  sell_market_cap: number;\
-  market_cap_change: number;\
-  buy_liquidity: number;\
-  sell_liquidity: number;\
-  liquidity_change: number;\
-  last_updated: string;\
-  rapidDump: boolean;\
+  token_address;\
+  recommender_id;\
+  buy_price;\
+  sell_price;\
+  buy_timeStamp;\
+  sell_timeStamp;\
+  buy_amount;\
+  sell_amount;\
+  buy_sol;\
+  received_sol;\
+  buy_value_usd;\
+  sell_value_usd;\
+  profit_usd;\
+  profit_percent;\
+  buy_market_cap;\
+  sell_market_cap;\
+  market_cap_change;\
+  buy_liquidity;\
+  sell_liquidity;\
+  liquidity_change;\
+  last_updated;\
+  rapidDump;\
 }\
 \
 /**\
@@ -863,17 +863,17 @@ interface TradePerformance {\
  * @property {Date} lastTradeTime - The timestamp of the last trade\
  */\
 type TradeMetrics = {\
-  totalBought: number;\
-  totalBoughtValue: number;\
-  totalSold: number;\
-  totalSoldValue: number;\
-  totalTransferIn: number;\
-  totalTransferOut: number;\
-  averageEntryPrice: number;\
-  averageExitPrice: number;\
-  realizedPnL: number;\
-  realizedPnLPercent: number;\
-  volumeUsd: number;\
+  totalBought;\
+  totalBoughtValue;\
+  totalSold;\
+  totalSoldValue;\
+  totalTransferIn;\
+  totalTransferOut;\
+  averageEntryPrice;\
+  averageExitPrice;\
+  realizedPnL;\
+  realizedPnLPercent;\
+  volumeUsd;\
   firstTradeTime: Date;\
   lastTradeTime: Date;\
 };\
@@ -887,18 +887,18 @@ type TradeMetrics = {\
 type PositionPerformance = Pretty<\
   PositionWithBalance & {\
     token: TokenPerformance;\
-    currentValue: number;\
-    initialValue: number;\
-    profitLoss: number;\
-    profitLossPercentage: number;\
-    priceChange: number;\
-    priceChangePercentage: number;\
-    normalizedBalance: number;\
+    currentValue;\
+    initialValue;\
+    profitLoss;\
+    profitLossPercentage;\
+    priceChange;\
+    priceChangePercentage;\
+    normalizedBalance;\
     trades: TradeMetrics;\
-    unrealizedPnL: number;\
-    unrealizedPnLPercent: number;\
-    totalPnL: number;\
-    totalPnLPercent: number;\
+    unrealizedPnL;\
+    unrealizedPnLPercent;\
+    totalPnL;\
+    totalPnLPercent;\
   }\
 >;\
 \
@@ -917,11 +917,11 @@ enum SupportedChain {\
 \
 // Metrics calculated after observing a recommendation's market performance\
 interface RecommendationMetric {\
-  potentialProfitPercent?: number; // e.g., based on ATH after recommendation or price after X days for BUYs\
-  avoidedLossPercent?: number; // For SELL/criticism, based on price drop avoided\
-  isScamOrRug?: boolean; // Flagged based on heuristics\
-  evaluationTimestamp: number; // When this metric was last calculated\
-  notes?: string; // e.g., "Hit ATH 3 days later", "Rug pulled", "Low liquidity spike"\
+  potentialProfitPercent?; // e.g., based on ATH after recommendation or price after X days for BUYs\
+  avoidedLossPercent?; // For SELL/criticism, based on price drop avoided\
+  isScamOrRug?; // Flagged based on heuristics\
+  evaluationTimestamp; // When this metric was last calculated\
+  notes?; // e.g., "Hit ATH 3 days later", "Rug pulled", "Low liquidity spike"\
 }\
 \
 // Represents a single recommendation or criticism made by a user\
@@ -929,25 +929,25 @@ interface Recommendation {\
   id: UUID; // Unique ID for this recommendation instance\
   userId: UUID; // Entity ID of the recommender\
   messageId: UUID; // Original message ID that sparked this recommendation\
-  timestamp: number; // When the recommendation was made (from original message)\
-  tokenTicker?: string; // e.g., "SOL", "BTC" (if identified as a ticker)\
-  tokenAddress: string; // e.g., "So11111111111111111111111111111111111111112"\
+  timestamp; // When the recommendation was made (from original message)\
+  tokenTicker?; // e.g., "SOL", "BTC" (if identified as a ticker)\
+  tokenAddress; // e.g., "So11111111111111111111111111111111111111112"\
   chain: SupportedChain; // The blockchain the token is on\
   recommendationType: 'BUY' | 'SELL'; // 'SELL' for criticisms\
   conviction: 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH'; // Sender's conviction level\
-  rawMessageQuote: string; // The exact text snippet that is the recommendation/criticism\
-  priceAtRecommendation?: number; // Price of the token when the recommendation was made\
+  rawMessageQuote; // The exact text snippet that is the recommendation/criticism\
+  priceAtRecommendation?; // Price of the token when the recommendation was made\
   metrics?: RecommendationMetric; // Performance metrics, calculated later by a task\
-  processedForTradeDecision?: boolean; // Has the PROCESS_TRADE_DECISION task run for this?\
+  processedForTradeDecision?; // Has the PROCESS_TRADE_DECISION task run for this?\
 }\
 \
 // Data structure for the component stored on an Entity\
 interface UserTrustProfile {\
-  version: string; // Schema version, e.g., "1.0.0"\
+  version; // Schema version, e.g., "1.0.0"\
   userId: UUID; // Entity ID this profile belongs to\
-  trustScore: number; // Weighted average score from -100 to 100\
-  lastTrustScoreCalculationTimestamp: number; // When trustScore was last calculated\
-  lastTradeDecisionMadeTimestamp?: number; // For the 12-hour cooldown for *acting* on this user's recs\
+  trustScore; // Weighted average score from -100 to 100\
+  lastTrustScoreCalculationTimestamp; // When trustScore was last calculated\
+  lastTradeDecisionMadeTimestamp?; // For the 12-hour cooldown for *acting* on this user's recs\
   recommendations: Recommendation[]; // Array of recommendations made by this user\
 }\
 \
@@ -965,24 +965,24 @@ interface TradeDecisionInput {\
 \
 // Structure for data fetched from external token APIs (e.g., Birdeye, DexScreener)\
 interface TokenAPIData {\
-  name?: string;\
-  symbol?: string;\
-  currentPrice?: number;\
-  ath?: number; // All-Time High\
-  atl?: number; // All-Time Low\
-  priceAtRecommendation?: number; // Price snapshot when the recommendation was made (if fetched at that time)\
-  priceHistory?: Array<{ timestamp: number; price: number }>; // For historical analysis\
-  liquidity?: number;\
-  marketCap?: number;\
-  isKnownScam?: boolean; // From external data sources if available\
+  name?;\
+  symbol?;\
+  currentPrice?;\
+  ath?; // All-Time High\
+  atl?; // All-Time Low\
+  priceAtRecommendation?; // Price snapshot when the recommendation was made (if fetched at that time)\
+  priceHistory?: Array<{ timestamp; price }>; // For historical analysis\
+  liquidity?;\
+  marketCap?;\
+  isKnownScam?; // From external data sources if available\
 }\
 \
 // Data structure for frontend leaderboard entries\
 interface LeaderboardEntry {\
   userId: UUID;\
-  username?: string; // Display name for the user\
-  trustScore: number;\
-  rank?: number; // Calculated dynamically\
+  username?; // Display name for the user\
+  trustScore;\
+  rank?; // Calculated dynamically\
   recommendations: Recommendation[]; // Full recommendation history for drill-down\
 }\
 \
@@ -991,32 +991,32 @@ interface LeaderboardEntry {\
 interface ICommunityInvestorService {\
   initialize(runtime: IAgentRuntime): Promise<void>;\
   resolveTicker(\
-    ticker: string,\
+    ticker,\
     chain: SupportedChain,\
     contextMessages: Memory[]\
-  ): Promise<{ address: string; chain: SupportedChain; ticker?: string } | null>;\
-  getTokenAPIData(address: string, chain: SupportedChain): Promise<TokenAPIData | null>;\
-  isLikelyScamOrRug(tokenData: TokenAPIData, recommendationTimestamp: number): Promise<boolean>;\
+  ): Promise<{ address; chain: SupportedChain; ticker? } | null>;\
+  getTokenAPIData(address, chain: SupportedChain): Promise<TokenAPIData | null>;\
+  isLikelyScamOrRug(tokenData: TokenAPIData, recommendationTimestamp): Promise<boolean>;\
   evaluateRecommendationPerformance(\
     recommendation: Recommendation,\
     tokenData: TokenAPIData\
   ): Promise<RecommendationMetric>;\
   calculateUserTrustScore(userId: UUID, runtime: IAgentRuntime): Promise<void>;\
-  getRecencyWeight(recommendationTimestamp: number): number;\
-  getConvictionWeight(conviction: Recommendation['conviction']): number;\
+  getRecencyWeight(recommendationTimestamp);\
+  getConvictionWeight(conviction: Recommendation['conviction']);\
   getLeaderboardData(runtime: IAgentRuntime): Promise<LeaderboardEntry[]>;\
-  // ensureTaskWorkersRegistered(runtime: IAgentRuntime): void; // Task registration is internal to constructor\
+  // ensureTaskWorkersRegistered(runtime: IAgentRuntime); // Task registration is internal to constructor\
 }\
 \
 // Adding MessageReceivedHandlerParams\
 interface MessageReceivedHandlerParams {\
   runtime: IAgentRuntime;\
   message: Memory;\
-  callback: (\
-    response: string | Record<string, any>,\
+  callback: [&](\
+    response | Record<string, any>,\
     metadata?: Record<string, any>\
-  ) => Promise<void>;\
-  onComplete?: () => void;\
+  ) { return Promise<void>; };\
+  onComplete?: [&]() { return void; };\
 }\
 ");
 }

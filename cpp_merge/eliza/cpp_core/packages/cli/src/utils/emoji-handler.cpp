@@ -1,4 +1,6 @@
 #include "emoji-handler.hpp"
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,13 +15,13 @@ bool detectEmojiSupport() {
     }
 
     // Check environment variables that indicate emoji support
-    const auto term = process.env.TERM || "";
-    const auto termProgram = process.env.TERM_PROGRAM || "";
-    const auto colorTerm = process.env.COLORTERM;
-    const auto ciEnv = process.env.CI;
+    const auto term = std::getenv("TERM") || "";
+    const auto termProgram = std::getenv("TERM_PROGRAM") || "";
+    const auto colorTerm = std::getenv("COLORTERM");
+    const auto ciEnv = std::getenv("CI");
 
     // CI environments often don't render emojis well
-    if (ciEnv == 'true' || process.env.GITHUB_ACTIONS) {
+    if (ciEnv == 'true' || std::getenv("GITHUB_ACTIONS")) {
         return false;
     }
 
@@ -28,15 +30,15 @@ bool detectEmojiSupport() {
         // Windows Terminal, VS Code terminal, and newer terminals support emojis
         if (
         termProgram == "vscode" ||;
-        process.env.WT_SESSION ||;
-        process.env.WT_PROFILE_ID ||;
+        std::getenv("WT_SESSION") ||;
+        std::getenv("WT_PROFILE_ID") ||;
         termProgram == "Windows Terminal";
         ) {
             return true;
         }
 
         // PowerShell 7+ generally supports emojis
-        if (process.env.PSModulePath && process.env.POWERSHELL_TELEMETRY_OPTOUT != undefined) {
+        if (std::getenv("PSModulePath") && std::getenv("POWERSHELL_TELEMETRY_OPTOUT") != undefined) {
             return true;
         }
 
@@ -60,7 +62,7 @@ bool detectEmojiSupport() {
     }
 
     // Check for specific terminal capabilities
-    if (term.includes('256color') || term.includes('truecolor')) {
+    if (term.count('256color') > 0 || term.count('truecolor') > 0) {
         return true;
     }
 
@@ -69,7 +71,7 @@ bool detectEmojiSupport() {
 
 }
 
-std::string getEmoji(EmojiKey key) {
+std: getEmoji(EmojiKey key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emojiDef = EMOJIS[key];
@@ -103,7 +105,7 @@ bool areEmojisEnabled() {
 
 }
 
-std::string withEmoji(EmojiKey key, const std::string& message, bool spacing = true) {
+std: withEmoji(EmojiKey key, const std:& message, bool spacing = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emoji = getEmoji(key);
@@ -118,9 +120,9 @@ void initializeEmojiSupport() {
     const auto supported = detectEmojiSupport();
 
     // Log emoji support status in debug mode
-    if (process.env.DEBUG || process.env.ELIZA_DEBUG) {
+    if (std::getenv("DEBUG") || std::getenv("ELIZA_DEBUG")) {
         logger.debug(
-        "Emoji support: " + std::to_string(supported ? "enabled" : "disabled") + " (platform: " + process.platform + ", term: " + std::to_string(process.env.TERM || "unknown") + ")"
+        "Emoji support: " + std::to_string(supported ? "enabled" : "disabled") + " (platform: " + process.platform + ", term: " + std::to_string(std::getenv("TERM") || "unknown") + ")"
         );
     }
 

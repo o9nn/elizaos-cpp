@@ -67,19 +67,19 @@ std::shared_ptr<Promise<boolean>> Birdeye::syncTrendingTokens(P0 chain)
     try
     {
         auto options = object{
-            object::pair{std::string("method"), std::string("GET")}, 
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("accept"), std::string("application/json")}, 
-                object::pair{std::string("x-chain"), chain}, 
-                object::pair{std::string("X-API-KEY"), this->apiKey}
+            object::pair{std:("method"), std:("GET")}, 
+            object::pair{std:("headers"), object{
+                object::pair{std:("accept"), std:("application/json")}, 
+                object::pair{std:("x-chain"), chain}, 
+                object::pair{std:("X-API-KEY"), this->apiKey}
             }}
         };
-        auto cachedTokens = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<IToken>>>(std::string("tokens_") + chain + string_empty); });
-        auto tokens = (cachedTokens) ? any(cachedTokens) : any(array<any>());
+        auto cachedTokens = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<IToken>>>(std:("tokens_") + chain + string_empty); });
+        auto tokens = (cachedTokens) ? any(cachedTokens) (array<any>());
         for (auto batch = 0; batch < 5; batch++)
         {
             auto currentOffset = batch * 20;
-            auto res = std::async([=]() { fetch(std::string("https://public-api.birdeye.so/defi/token_trending?sort_by=rank&sort_type=asc&offset=") + currentOffset + std::string("&limit=20"), options); });
+            auto res = std::async([=]() { fetch(std:("https://public-api.birdeye.so/defi/token_trending?sort_by=rank&sort_type=asc&offset=") + currentOffset + std:("&limit=20"), options); });
             auto resp = std::async([=]() { res->json(); });
             auto data = resp["data"];
             auto last_updated = std::make_shared<Date>(data["updateUnixTime"] * 1000);
@@ -91,24 +91,24 @@ std::shared_ptr<Promise<boolean>> Birdeye::syncTrendingTokens(P0 chain)
             {
                 auto existingIndex = tokens->findIndex([=](auto t) mutable
                 {
-                    return AND((AND((t->provider == std::string("birdeye")), (t->rank == token["rank"]))), (t->chain == chain));
+                    return AND((AND((t->provider == std:("birdeye")), (t->rank == token["rank"]))), (t->chain == chain));
                 }
                 );
                 auto tokenData = object{
-                    object::pair{std::string("address"), token["address"]}, 
-                    object::pair{std::string("chain"), chain}, 
-                    object::pair{std::string("provider"), std::string("birdeye")}, 
-                    object::pair{std::string("decimals"), OR((token["decimals"]), (0))}, 
-                    object::pair{std::string("liquidity"), OR((token["liquidity"]), (0))}, 
-                    object::pair{std::string("logoURI"), OR((token["logoURI"]), (string_empty))}, 
-                    object::pair{std::string("name"), OR((token["name"]), (token["symbol"]))}, 
-                    object::pair{std::string("symbol"), token["symbol"]}, 
-                    object::pair{std::string("marketcap"), 0}, 
-                    object::pair{std::string("volume24hUSD"), OR((token["volume24hUSD"]), (0))}, 
-                    object::pair{std::string("rank"), OR((token["rank"]), (0))}, 
-                    object::pair{std::string("price"), OR((token["price"]), (0))}, 
-                    object::pair{std::string("price24hChangePercent"), OR((token["price24hChangePercent"]), (0))}, 
-                    object::pair{std::string("last_updated"), std::string("last_updated")}
+                    object::pair{std:("address"), token["address"]}, 
+                    object::pair{std:("chain"), chain}, 
+                    object::pair{std:("provider"), std:("birdeye")}, 
+                    object::pair{std:("decimals"), OR((token["decimals"]), (0))}, 
+                    object::pair{std:("liquidity"), OR((token["liquidity"]), (0))}, 
+                    object::pair{std:("logoURI"), OR((token["logoURI"]), (string_empty))}, 
+                    object::pair{std:("name"), OR((token["name"]), (token["symbol"]))}, 
+                    object::pair{std:("symbol"), token["symbol"]}, 
+                    object::pair{std:("marketcap"), 0}, 
+                    object::pair{std:("volume24hUSD"), OR((token["volume24hUSD"]), (0))}, 
+                    object::pair{std:("rank"), OR((token["rank"]), (0))}, 
+                    object::pair{std:("price"), OR((token["price"]), (0))}, 
+                    object::pair{std:("price24hChangePercent"), OR((token["price24hChangePercent"]), (0))}, 
+                    object::pair{std:("last_updated"), std:("last_updated")}
                 };
                 if (existingIndex >= 0) {
                     tokens[existingIndex] = tokenData;
@@ -122,13 +122,13 @@ std::shared_ptr<Promise<boolean>> Birdeye::syncTrendingTokens(P0 chain)
             }
             ); });
         }
-        std::async([=]() { this->runtime->setCache<array<std::shared_ptr<IToken>>>(std::string("tokens_") + chain + string_empty, tokens); });
-        logger->debug(std::string("Updated ") + chain + std::string(" tokens cache with ") + tokens->get_length() + std::string(" tokens"));
+        std::async([=]() { this->runtime->setCache<array<std::shared_ptr<IToken>>>(std:("tokens_") + chain + string_empty, tokens); });
+        logger->debug(std:("Updated ") + chain + std:(" tokens cache with ") + tokens->get_length() + std:(" tokens"));
         return true;
     }
     catch (const any& error)
     {
-        logger->error(std::string("Failed to sync trending tokens"), error);
+        logger->error(std:("Failed to sync trending tokens"), error);
         throw any(error);
     }
 }

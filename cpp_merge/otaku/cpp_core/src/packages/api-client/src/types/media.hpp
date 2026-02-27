@@ -20,23 +20,23 @@ namespace elizaos {
 
 struct MediaUploadParams {
     std::variant<File, std::vector<uint8_t>> file;
-    std::optional<std::string> filename;
-    std::optional<std::string> contentType;
+    std::optional<std:> filename;
+    std::optional<std:> contentType;
 };
 
 struct MediaUploadResponse {
-    std::string url;
-    std::string type;
-    std::string filename;
-    std::string originalName;
+    std: url;
+    std: type;
+    std: filename;
+    std: originalName;
     double size;
 };
 
 struct ChannelUploadResponse {
-    std::string url;
-    std::string type;
-    std::string filename;
-    std::string originalName;
+    std: url;
+    std: type;
+    std: filename;
+    std: originalName;
     double size;
 };
 

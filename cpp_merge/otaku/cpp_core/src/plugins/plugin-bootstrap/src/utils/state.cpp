@@ -1,10 +1,15 @@
 #include "state.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <optional>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<std::any>& actionResults) {
+std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<std::string>& actionResults) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Recompose state with updated wallet info and action results
@@ -17,7 +22,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
     // Preserve action results in state
     refreshedState.data.actionResults = actionResults;
 
-    // Merge std::any custom data from current state that shouldn't be lost
+    // Merge std: custom data from current state that shouldn't be lost
     if (currentState.data.actionPlan) {
         refreshedState.data.actionPlan = currentState.data.actionPlan;
     }
@@ -30,7 +35,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
 
 }
 
-State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, std::any>> result, std::optional<std::string> error) {
+State updateActionPlanStep(State state, double stepIndex, const std:& status, std::optional<std::unordered_map<std:, std:>> result, std::optional<std:> error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!state.data.actionPlan) {
@@ -40,7 +45,7 @@ State updateActionPlanStep(State state, double stepIndex, const std::string& sta
     const auto updatedPlan = { ...state.data.actionPlan };
     const auto steps = [...updatedPlan.steps];
 
-    if (stepIndex >= 0 && stepIndex < steps.length) {
+    if (stepIndex >= 0 && stepIndex < steps.size()) {
         steps[stepIndex] = {
             ...steps[stepIndex],
             status,
@@ -64,7 +69,7 @@ State updateActionPlanStep(State state, double stepIndex, const std::string& sta
 
 }
 
-State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, std::any>& value) {
+State updateWorkingMemory(State state, const std:& key, const std::unordered_map<std:, std:>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto workingMemory = state.data.workingMemory || {};

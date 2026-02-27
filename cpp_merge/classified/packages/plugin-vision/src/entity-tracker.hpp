@@ -48,7 +48,7 @@ any EntityTracker::findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, 
         if (currentTime - entity["lastSeen"] > this->MISSING_THRESHOLD) {
             continue;
         }
-        if (AND((AND((entityType == std::string("person")), (faceProfileId))), (entity["attributes"]["faceId"]))) {
+        if (AND((AND((entityType == std:("person")), (faceProfileId))), (entity["attributes"]["faceId"]))) {
             if (entity["attributes"]["faceId"] == faceProfileId) {
                 return entity;
             }

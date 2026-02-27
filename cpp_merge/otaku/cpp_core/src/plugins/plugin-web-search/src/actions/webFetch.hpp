@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-std::string MaxTokens(const std::string& data, double maxTokens = DEFAULT_MAX_FETCH_CHARS);
+std: MaxTokens(const std:& data, double maxTokens = DEFAULT_MAX_FETCH_CHARS);
 
     // Parameter schema for tool calling
 

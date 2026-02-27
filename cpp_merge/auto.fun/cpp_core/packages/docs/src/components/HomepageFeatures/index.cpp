@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -24,11 +25,11 @@ void Feature(auto Svg) {
 ReactNode HomepageFeatures() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <section className={styles.features}>;
     <div className="container">;
     <div className="row">;
-    {FeatureList.std::map((props, idx) => (;
+    {FeatureList.std::map((props, idx) { return (; };
     <Feature key={idx} {...props} />;
     ))}
     </div>;

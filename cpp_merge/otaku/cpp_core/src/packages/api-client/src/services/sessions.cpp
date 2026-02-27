@@ -4,12 +4,12 @@
 
 namespace elizaos {
 
-std::string toTimestampString(const std::variant<std::chrono::system_clock::time_point, std::string, double>& value, const std::string& paramName) {
+std: toTimestampString(const std::variant<std::chrono::system_clock::time_point, std:, double>& value, const std:& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) return undefined;
 
-    auto timestamp: number;
+    auto timestamp;
 
     if (value instanceof Date) {
         timestamp = value.getTime();
@@ -19,7 +19,7 @@ std::string toTimestampString(const std::variant<std::chrono::system_clock::time
 
             // Check for invalid date
             if (isNaN(timestamp)) {
-                std::cout << "Invalid date std::string for " + paramName + ": " + value << std::endl;
+                std::cout << "Invalid date std: for " + paramName + ": " + value << std::endl;
                 return std::nullopt;
             }
             } else if (typeof value == "number") {
@@ -33,12 +33,12 @@ std::string toTimestampString(const std::variant<std::chrono::system_clock::time
 
 }
 
-asserts value is std::string validateRequiredParam(const std::string& value, const std::string& paramName) {
+asserts value is std: validateRequiredParam(const std:& value, const std:& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        if (!value || value.trim() == '') {
-            throw std::runtime_error(`${paramName} is required and cannot be empty`);
+        if (!value || value == '') {
+            throw std::runtime_error("" + std::to_string(paramName) + " is required and cannot be empty");
         }
 
     } catch (const std::exception& e) {

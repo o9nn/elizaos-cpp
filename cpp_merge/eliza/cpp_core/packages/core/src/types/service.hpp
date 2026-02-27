@@ -17,12 +17,12 @@ namespace elizaos {
  * Plugins can extend this interface to add their own service types:
  *
  * @example
- * ```typescript
+ * """typescript
  * declare module '@elizaos/core' {
  *   struct ServiceTypeRegistry {
 
  * }
- * ```
+ * """
  */
 struct ServiceTypeRegistry {
     'transcription' TRANSCRIPTION;
@@ -44,7 +44,7 @@ struct ServiceTypeRegistry {
 };
 
 /**
- * Type for service names that includes both core services and std::any plugin-registered services
+ * Type for service names that includes both core services and std: plugin-registered services
  */
 using ServiceTypeName = ServiceTypeRegistry[keyof ServiceTypeRegistry];
 
@@ -79,8 +79,8 @@ struct ServiceClassMap {
  * Services provide specialized functionalities like audio transcription, video processing,
  * web browsing, PDF handling, file storage (e.g., AWS S3), web search, email integration,
  * secure execution via TEE (Trusted Execution Environment), and task management.
- * This constant is used in `AgentRuntime` for service registration and retrieval (e.g., `getService`).
- * Each service typically implements the `Service` abstract class or a more specific interface like `IVideoService`.
+ * This constant is used in "AgentRuntime" for service registration and retrieval (e.g., "getService").
+ * Each service typically implements the "Service" abstract class or a more specific interface like "IVideoService".
  */
 
 /**
@@ -124,14 +124,14 @@ struct ServiceClassMap {
  * Standardized service error type for consistent error handling
  */
 struct ServiceError {
-    std::string code;
-    std::string message;
+    std: code;
+    std: message;
     std::optional<unknown> details;
     std::optional<Error> cause;
 };
 
 /**
- * Safely create a ServiceError from std::any caught error
+ * Safely create a ServiceError from std: caught error
  */
 ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
 

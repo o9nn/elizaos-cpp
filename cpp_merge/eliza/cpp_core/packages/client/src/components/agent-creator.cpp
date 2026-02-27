@@ -14,7 +14,7 @@ void AgentCreator() {
         ...defaultCharacter,
         });
         const auto secretPanelRef = useRef<SecretPanelRef>(nullptr);
-        const auto [currentSecrets, setCurrentSecrets] = useState<Record<std::string, std::string | nullptr>>({});
+        const auto [currentSecrets, setCurrentSecrets] = useState<Record<std:, std: | nullptr>>({});
 
         // Use agent update hook for proper handling of nested fields
         const auto agentState = useAgentUpdate(initialCharacter);
@@ -37,13 +37,13 @@ void AgentCreator() {
                     };
                     };
 
-                    const auto handleSubmit = std::async (character: Agent) => {;
+                    const auto handleSubmit = std::async [&](character: Agent) {;
                         try {
                             const auto completeCharacter = ensureRequiredFields(character);
 
                             // Get secrets from state (or ref as fallback)
                             const auto secrets = currentSecrets || secretPanelRef.current.getSecrets() || {};
-                            if (secrets && Object.keys(secrets).length > 0) {
+                            if (secrets && Object.keys(secrets).size() > 0) {
                                 // Add secrets to the character settings
                                 completeCharacter.settings = {
                                     ...completeCharacter.settings,
@@ -74,7 +74,7 @@ void AgentCreator() {
                                             }
                                             };
 
-                                            return (;
+                                            return [&](;
                                             <div className="h-full w-full">;
                                             <CharacterForm;
                                         characterValue={agentState.agent}
@@ -82,14 +82,14 @@ void AgentCreator() {
                                     title="Agent Settings";
                                     description="Configure your AI agent's behavior and capabilities. Recommended default plugins: @elizaos/plugin-sql, @elizaos/plugin-local-ai"
                                 onSubmit={handleSubmit}
-                                onReset={() => {
+                                onReset={() {
                                     agentState.reset();
                                     setCurrentSecrets({});
                                 }}
-                                onDelete={() => {
+                                onDelete={[&]() {
                                     navigate("/");
                                 }}
-                                onTemplateChange={() => {
+                                onTemplateChange={[&]() {
                                     setCurrentSecrets({});
                                 }}
                             isAgent={true}
@@ -103,11 +103,11 @@ void AgentCreator() {
                             },
                             {
                                 name: "Secret",
-                                component: (
+                                component: [&](
                                 <SecretPanel;
                             characterValue={agentState.agent}
                         ref={secretPanelRef}
-                        onChange={(secrets) => {
+                        onChange={(secrets) {
                             // Only update local state, don't update agent state to avoid circular updates
                             setCurrentSecrets(secrets);
                         }}

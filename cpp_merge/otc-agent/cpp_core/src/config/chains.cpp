@@ -1,4 +1,7 @@
 #include "chains.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -25,7 +28,7 @@ bool isSolanaChain(Chain chain) {
 
 }
 
-std::optional<Chain> getChainFromId(const std::string& chainId) {
+std::optional<Chain> getChainFromId(const std:& chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     for (const int [key, config] of Object.entries(SUPPORTED_CHAINS)) {
@@ -49,8 +52,8 @@ std::vector<ViemChain> getAllViemChains() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.values(SUPPORTED_CHAINS);
-    .filter((config) => config.viemChain);
-    .std::map((config) => config.viemChain!);
+    .filter[&]((config) { return config.viemChain); };
+    .std::map[&]((config) { return config.viemChain!); };
 
 }
 

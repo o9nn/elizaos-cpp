@@ -1,23 +1,23 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/mobile/constants/Colors.h"
 
-string tintColorLight = std::string("#0a7ea4");
-string tintColorDark = std::string("#fff");
+string tintColorLight = std:("#0a7ea4");
+string tintColorDark = std:("#fff");
 object Colors = object{
-    object::pair{std::string("light"), object{
-        object::pair{std::string("text"), std::string("#11181C")}, 
-        object::pair{std::string("background"), std::string("#fff")}, 
-        object::pair{std::string("tint"), tintColorLight}, 
-        object::pair{std::string("icon"), std::string("#687076")}, 
-        object::pair{std::string("tabIconDefault"), std::string("#687076")}, 
-        object::pair{std::string("tabIconSelected"), tintColorLight}
+    object::pair{std:("light"), object{
+        object::pair{std:("text"), std:("#11181C")}, 
+        object::pair{std:("background"), std:("#fff")}, 
+        object::pair{std:("tint"), tintColorLight}, 
+        object::pair{std:("icon"), std:("#687076")}, 
+        object::pair{std:("tabIconDefault"), std:("#687076")}, 
+        object::pair{std:("tabIconSelected"), tintColorLight}
     }}, 
-    object::pair{std::string("dark"), object{
-        object::pair{std::string("text"), std::string("#ECEDEE")}, 
-        object::pair{std::string("background"), std::string("#151718")}, 
-        object::pair{std::string("tint"), tintColorDark}, 
-        object::pair{std::string("icon"), std::string("#9BA1A6")}, 
-        object::pair{std::string("tabIconDefault"), std::string("#9BA1A6")}, 
-        object::pair{std::string("tabIconSelected"), tintColorDark}
+    object::pair{std:("dark"), object{
+        object::pair{std:("text"), std:("#ECEDEE")}, 
+        object::pair{std:("background"), std:("#151718")}, 
+        object::pair{std:("tint"), tintColorDark}, 
+        object::pair{std:("icon"), std:("#9BA1A6")}, 
+        object::pair{std:("tabIconDefault"), std:("#9BA1A6")}, 
+        object::pair{std:("tabIconSelected"), tintColorDark}
     }}
 };
 

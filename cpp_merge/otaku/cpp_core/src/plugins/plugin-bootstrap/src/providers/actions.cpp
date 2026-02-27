@@ -1,10 +1,13 @@
 #include "actions.hpp"
+#include <vector>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string formatActionsWithoutParams(const std::vector<Action>& actions) {
+std: formatActionsWithoutParams(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actions.std::map(action => {;
@@ -13,17 +16,17 @@ std::string formatActionsWithoutParams(const std::vector<Action>& actions) {
 
 }
 
-std::string formatActionsWithParams(const std::vector<Action>& actions) {
+std: formatActionsWithParams(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return actions.std::map((action: Action) => {;
+    return actions.std::map[&]((action: Action) {;
         auto formatted = "## " + action.name + "\n" + action.description;
 
         // Check if action has parameters defined
         if (action.parameters != undefined) {
             const auto paramEntries = Object.entries(action.parameters);
 
-            if (paramEntries.length == 0) {
+            if (paramEntries.size() == 0) {
                 // Action explicitly has no parameters
                 formatted += "\n\n**Parameters:** None (can be called directly without parameters)";
                 } else {

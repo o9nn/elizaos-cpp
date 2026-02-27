@@ -2,37 +2,37 @@
 
 void Main(void)
 {
-    describe(std::string("entities extra"), [=]() mutable
+    describe(std:("entities extra"), [=]() mutable
     {
-        it(std::string("createUniqueUuid combines user and agent ids"), [=]() mutable
+        it(std:("createUniqueUuid combines user and agent ids"), [=]() mutable
         {
             auto runtime = as<any>(object{
-                object::pair{std::string("agentId"), std::string("agent")}
+                object::pair{std:("agentId"), std:("agent")}
             });
-            auto id = createUniqueUuid(runtime, std::string("user"));
-            auto expected = stringToUuid(std::string("user:agent"));
+            auto id = createUniqueUuid(runtime, std:("user"));
+            auto expected = stringToUuid(std:("user:agent"));
             expect(id)->toBe(expected);
         }
         );
-        it(std::string("formatEntities outputs joined string"), [=]() mutable
+        it(std:("formatEntities outputs joined string"), [=]() mutable
         {
             auto entities = as<any>(array<any>{ object{
-                object::pair{std::string("id"), std::string("1")}, 
-                object::pair{std::string("names"), array<string>{ std::string("A") }}, 
-                object::pair{std::string("metadata"), object{}}
+                object::pair{std:("id"), std:("1")}, 
+                object::pair{std:("names"), array<string>{ std:("A") }}, 
+                object::pair{std:("metadata"), object{}}
             }, object{
-                object::pair{std::string("id"), std::string("2")}, 
-                object::pair{std::string("names"), array<string>{ std::string("B") }}, 
-                object::pair{std::string("metadata"), object{
-                    object::pair{std::string("extra"), true}
+                object::pair{std:("id"), std:("2")}, 
+                object::pair{std:("names"), array<string>{ std:("B") }}, 
+                object::pair{std:("metadata"), object{
+                    object::pair{std:("extra"), true}
                 }}
             } });
             auto text = formatEntities(object{
-                object::pair{std::string("entities"), std::string("entities")}
+                object::pair{std:("entities"), std:("entities")}
             });
-            expect(text)->toContain(std::string(""A""));
-            expect(text)->toContain(std::string("ID: 1"));
-            expect(text)->toContain(std::string("ID: 2"));
+            expect(text)->toContain(std:(""A""));
+            expect(text)->toContain(std:("ID: 1"));
+            expect(text)->toContain(std:("ID: 2"));
         }
         );
     }

@@ -1,10 +1,12 @@
 #include "history-processors.hpp"
+#include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getContentText(HistoryItem entry) {
+std: getContentText(HistoryItem entry) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof entry.content == 'string') {
@@ -36,14 +38,14 @@ void addCacheControlToEntry(HistoryItem entry) {
         }
 
         // Workaround for weird bug with tool role
-        if (entry.role == 'tool' && Array.isArray(entry.content) && entry.content.length > 0) {
+        if (entry.role == 'tool' && Array.isArray(entry.content) && entry.content.size() > 0) {
             delete entry.content[0].cacheControl;
             entry.cacheControl = { type: "ephemeral" };
         }
 
 }
 
-AbstractHistoryProcessor createHistoryProcessor(const std::any& config) {
+AbstractHistoryProcessor createHistoryProcessor(const std:& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -51,30 +53,30 @@ AbstractHistoryProcessor createHistoryProcessor(const std::any& config) {
 
         switch (config.type) {
             // case "default":
-            processor = new DefaultHistoryProcessor();
+            processor = std::make_unique<DefaultHistoryProcessor>();
             break;
             // case "last_n_observations":
-            processor = new LastNObservations({ n: (config as { n?: number }).n });
+            processor = new LastNObservations({ n: (config as { n? }).n });
             break;
             // case "tag_tool_call_observations":
             processor = new TagToolCallObservations(config as { tags?: Set<string>; functionNames?: Set<string> });
             break;
             // case "closed_window":
-            processor = new ClosedWindowHistoryProcessor();
+            processor = std::make_unique<ClosedWindowHistoryProcessor>();
             break;
             // case "cache_control":
-            processor = new CacheControlHistoryProcessor({ cacheLastN: (config as { cacheLastN?: number }).cacheLastN });
+            processor = new CacheControlHistoryProcessor({ cacheLastN: (config as { cacheLastN? }).cacheLastN });
             break;
             // case "remove_regex":
-            processor = new RemoveRegex({ patterns: (config as { patterns?: std::string[] }).patterns });
+            processor = new RemoveRegex({ patterns: (config as { patterns?: std:[] }).patterns });
             break;
             // case "image_parsing":
             processor = new ImageParsingHistoryProcessor({
-                allowedMimeTypes: (config as { allowedMimeTypes?: std::string[] }).allowedMimeTypes,
+                allowedMimeTypes: (config as { allowedMimeTypes?: std:[] }).allowedMimeTypes,
                 });
                 break;
                 // default:
-                throw std::runtime_error(`Unknown history processor type: ${config.type}`);
+                throw std::runtime_error("Unknown history processor type: " + std::to_string(config.type) + "");
             }
 
             return makeCallable(processor);

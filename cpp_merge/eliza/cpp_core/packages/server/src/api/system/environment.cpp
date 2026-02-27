@@ -1,10 +1,13 @@
 #include "environment.hpp"
+#include <future>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<EnvVars> parseEnvFile(const std::string& filePath) {
+std::future<EnvVars> parseEnvFile(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -14,27 +17,26 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
 
         const auto content = fs.readFile(filePath, "utf-8");
         // Handle empty file case gracefully
-        if (content.trim() == '') {
+        if (content == '') {
             return {}
         }
         return dotenv.parse(content);
-        } catch (error: std::any) {
+        } catch (error: std:) {
             std::cerr << "Error parsing .env file: " + error.message << std::endl;
             return {}
         }
 
 }
 
-std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj) {
+std: serializeEnvObject(const std::unordered_map<std:, std:>& envObj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
-    ".std::map(([key, val]) => " + key + "=" + std::to_string(val || "");
-    .join("\n\n");
+    ".std::map[&](([key, val]) { return " + key + "=" + std::to_string(val || ""); }.join("\n\n");
 
 }
 
-std::string getLocalEnvPath() {
+std: getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();
@@ -49,7 +51,7 @@ express::Router createEnvironmentRouter() {
         const auto router = express.Router();
 
         // Get local environment variables
-        (router).get("/local", std::async (_req: express.Request, res: express.Response) => {
+        (router).get[&]("/local", std::async (_req: express.Request, res: express.Response) {
             try {
                 const auto localEnvPath = getLocalEnvPath();
                 if (!localEnvPath) {
@@ -78,7 +80,7 @@ express::Router createEnvironmentRouter() {
                                 });
 
                                 // Update local environment variables
-                                (router).post("/local", std::async (req: express.Request, res: express.Response) => {
+                                (router).post[&]("/local", std::async (req: express.Request, res: express.Response) {
                                     try {
                                         const auto { content } = req.body;
 

@@ -1,4 +1,5 @@
 #include "default.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,31 +13,31 @@ Character getDefaultCharacter() {
     "@elizaos/plugin-sql",
 
     // Text-only plugins (no embedding support)
-    ...(process.env.ANTHROPIC_API_KEY.trim() ? ["@elizaos/plugin-anthropic"] : []),
-    ...(process.env.OPENROUTER_API_KEY.trim() ? ["@elizaos/plugin-openrouter"] : []),
+    ...(std::getenv("ANTHROPIC_API_KEY") ? ["@elizaos/plugin-anthropic"] : []),
+    ...(std::getenv("OPENROUTER_API_KEY") ? ["@elizaos/plugin-openrouter"] : []),
 
     // Embedding-capable plugins (before platform plugins per documented order)
-    ...(process.env.OPENAI_API_KEY.trim() ? ["@elizaos/plugin-openai"] : []),
-    ...(process.env.GOOGLE_GENERATIVE_AI_API_KEY.trim() ? ["@elizaos/plugin-google-genai"] : []),
+    ...(std::getenv("OPENAI_API_KEY") ? ["@elizaos/plugin-openai"] : []),
+    ...(std::getenv("GOOGLE_GENERATIVE_AI_API_KEY") ? ["@elizaos/plugin-google-genai"] : []),
 
     // Platform plugins
-    ...(process.env.DISCORD_API_TOKEN.trim() ? ["@elizaos/plugin-discord"] : []),
-    ...(process.env.TWITTER_API_KEY.trim() &&;
-    process.env.TWITTER_API_SECRET_KEY.trim() &&;
-    process.env.TWITTER_ACCESS_TOKEN.trim() &&;
-    process.env.TWITTER_ACCESS_TOKEN_SECRET.trim();
+    ...(std::getenv("DISCORD_API_TOKEN") ? ["@elizaos/plugin-discord"] : []),
+    ...(std::getenv("TWITTER_API_KEY") &&;
+    std::getenv("TWITTER_API_SECRET_KEY") &&;
+    std::getenv("TWITTER_ACCESS_TOKEN") &&;
+    std::getenv("TWITTER_ACCESS_TOKEN_SECRET");
     ? ["@elizaos/plugin-twitter"];
     : []),
-    ...(process.env.TELEGRAM_BOT_TOKEN.trim() ? ["@elizaos/plugin-telegram"] : []),
+    ...(std::getenv("TELEGRAM_BOT_TOKEN") ? ["@elizaos/plugin-telegram"] : []),
 
     // Bootstrap plugin
-    ...(!process.env.IGNORE_BOOTSTRAP ? ["@elizaos/plugin-bootstrap"] : []),
+    ...(!std::getenv("IGNORE_BOOTSTRAP") ? ["@elizaos/plugin-bootstrap"] : []),
 
     // Only include Ollama as fallback if no other LLM providers are configured
-    ...(!process.env.ANTHROPIC_API_KEY.trim() &&;
-    !process.env.OPENROUTER_API_KEY.trim() &&;
-    !process.env.OPENAI_API_KEY.trim() &&;
-    !process.env.GOOGLE_GENERATIVE_AI_API_KEY.trim();
+    ...(!std::getenv("ANTHROPIC_API_KEY") &&;
+    !std::getenv("OPENROUTER_API_KEY") &&;
+    !std::getenv("OPENAI_API_KEY") &&;
+    !std::getenv("GOOGLE_GENERATIVE_AI_API_KEY");
     ? ["@elizaos/plugin-ollama"];
     : []),
     ];

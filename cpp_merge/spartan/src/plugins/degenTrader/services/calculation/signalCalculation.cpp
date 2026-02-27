@@ -4,17 +4,17 @@ any SignalCalculationService::calculateTechnicalSignals(any marketData)
 {
     auto rsi = this->analyticsService->calculateRSI(marketData["priceHistory"], 14);
     auto macd = this->analyticsService->calculateMACD(marketData["priceHistory"]);
-    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : any(0);
-    auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std::string("increasing") : std::string("stable");
+    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) (0);
+    auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std:("increasing") : std:("stable");
     auto unusualActivity = marketData["volume24h"] > marketData["marketCap"] * 0.2;
     return object{
-        object::pair{std::string("rsi"), std::string("rsi")}, 
-        object::pair{std::string("macd"), std::string("macd")}, 
-        object::pair{std::string("volumeProfile"), object{
-            object::pair{std::string("trend"), as<any>(volumeTrend)}, 
-            object::pair{std::string("unusualActivity"), std::string("unusualActivity")}
+        object::pair{std:("rsi"), std:("rsi")}, 
+        object::pair{std:("macd"), std:("macd")}, 
+        object::pair{std:("volumeProfile"), object{
+            object::pair{std:("trend"), as<any>(volumeTrend)}, 
+            object::pair{std:("unusualActivity"), std:("unusualActivity")}
         }}, 
-        object::pair{std::string("volatility"), std::string("volatility")}
+        object::pair{std:("volatility"), std:("volatility")}
     };
 }
 
@@ -41,9 +41,9 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> SignalCalculationS
             score += std::async([=]() { this->analyticsService->scoreSocialMetrics(token->socialMetrics); });
         }
         score += std::async([=]() { this->analyticsService->scoreMarketMetrics(object{
-            object::pair{std::string("marketCap"), token->marketCap}, 
-            object::pair{std::string("volume24h"), token->volume24h}, 
-            object::pair{std::string("liquidity"), token->liquidity}
+            object::pair{std:("marketCap"), token->marketCap}, 
+            object::pair{std:("volume24h"), token->volume24h}, 
+            object::pair{std:("liquidity"), token->liquidity}
         }); });
         token->score = score;
         return token;
@@ -65,7 +65,7 @@ std::shared_ptr<Promise<double>> SignalCalculationService::calculateDrawdown(obj
     try
     {
         auto highWaterMark = std::async([=]() { this->getHighWaterMark(); });
-        auto currentDrawdown = (highWaterMark > 0) ? any((highWaterMark - portfolio["totalValue"]) / highWaterMark) : any(0);
+        auto currentDrawdown = (highWaterMark > 0) ? any((highWaterMark - portfolio["totalValue"]) / highWaterMark) (0);
         if (portfolio["totalValue"] > highWaterMark) {
             std::async([=]() { this->updateHighWaterMark(portfolio["totalValue"]); });
         }
@@ -73,7 +73,7 @@ std::shared_ptr<Promise<double>> SignalCalculationService::calculateDrawdown(obj
     }
     catch (const any& error)
     {
-        logger->error(std::string("Error calculating drawdown:"), error);
+        logger->error(std:("Error calculating drawdown:"), error);
         return 0;
     }
 }
@@ -82,12 +82,12 @@ std::shared_ptr<Promise<double>> SignalCalculationService::getHighWaterMark()
 {
     try
     {
-        auto stored = std::async([=]() { this->runtime->databaseAdapter->getValue(std::string("high_water_mark")); });
-        return (stored) ? any(Number(stored)) : any(0);
+        auto stored = std::async([=]() { this->runtime->databaseAdapter->getValue(std:("high_water_mark")); });
+        return (stored) ? any(Number(stored)) (0);
     }
     catch (const any& error)
     {
-        logger->error(std::string("Error getting high water mark:"), error);
+        logger->error(std:("Error getting high water mark:"), error);
         return 0;
     }
 }
@@ -96,11 +96,11 @@ std::shared_ptr<Promise<void>> SignalCalculationService::updateHighWaterMark(dou
 {
     try
     {
-        std::async([=]() { this->runtime->databaseAdapter->setValue(std::string("high_water_mark"), value->toString()); });
+        std::async([=]() { this->runtime->databaseAdapter->setValue(std:("high_water_mark"), value->toString()); });
     }
     catch (const any& error)
     {
-        logger->error(std::string("Error updating high water mark:"), error);
+        logger->error(std:("Error updating high water mark:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }

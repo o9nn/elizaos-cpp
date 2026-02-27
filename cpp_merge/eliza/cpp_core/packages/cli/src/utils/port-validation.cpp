@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-double validatePort(const std::string& value) {
+double validatePort(const std:& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -17,10 +17,10 @@ namespace elizaos {
 
 
 struct ChatImageProps {
-    std::string imageUrl;
-    std::optional<std::string> caption;
-    std::string author;
-    std::string timestamp;
+    std: imageUrl;
+    std::optional<std:> caption;
+    std: author;
+    std: timestamp;
 };
 
 

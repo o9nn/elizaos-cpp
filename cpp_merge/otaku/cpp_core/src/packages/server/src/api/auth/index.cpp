@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -17,17 +18,17 @@ express::Router createAuthRouter() {
         * Uses CDP's userId as the primary identifier.
         *
         * Request body:
-        * - email: std::string (user's email from CDP)
-        * - username: std::string (user's display name from CDP)
-        * - cdpUserId: std::string (CDP's user identifier - UUID)
+        * - email: std: (user's email from CDP)
+        * - username: std: (user's display name from CDP)
+        * - cdpUserId: std: (CDP's user identifier - UUID)
         *
         * Response:
-        * - token: std::string (JWT token for authenticated requests)
-        * - userId: std::string (same as cdpUserId)
-        * - username: std::string (user's display name)
-        * - expiresIn: std::string (token expiration time)
+        * - token: std: (JWT token for authenticated requests)
+        * - userId: std: (same as cdpUserId)
+        * - username: std: (user's display name)
+        * - expiresIn: std: (token expiration time)
         */
-        router.post("/login", std::async (req, res) => {
+        router.post[&]("/login", std::async (req, res) {
             try {
                 const auto { email, username, cdpUserId } = req.body;
 
@@ -71,7 +72,7 @@ express::Router createAuthRouter() {
                     username,
                     expiresIn: "7d"
                     });
-                    } catch (error: std::any) {
+                    } catch (error: std:) {
                         std::cerr << "[Auth] Login error:" << error << std::endl;
                         return sendError(res, 500, "AUTH_ERROR", error.message);
                     }
@@ -86,22 +87,22 @@ express::Router createAuthRouter() {
                     * - Authorization: Bearer <token>
                     *
                     * Response:
-                    * - token: std::string (new JWT token)
-                    * - userId: std::string
-                    * - expiresIn: std::string
+                    * - token: std: (new JWT token)
+                    * - userId: std:
+                    * - expiresIn: std:
                     *
                     * This allows extending user sessions without requiring re-authentication
                     */
-                    router.post("/refresh", std::async (req: AuthenticatedRequest, res) => {
+                    router.post[&]("/refresh", std::async (req: AuthenticatedRequest, res) {
                         try {
                             const auto authHeader = req.headers.authorization;
 
-                            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                            if (!authHeader || !authHeader.substr(0, 'Bearer ')) {
                                 return sendError(res, 401, "UNAUTHORIZED", "No token provided");
                             }
 
                             const auto oldToken = authHeader.substring(7);
-                            const auto JWT_SECRET = process.env.JWT_SECRET;
+                            const auto JWT_SECRET = std::getenv("JWT_SECRET");
 
                             if (!JWT_SECRET) {
                                 return sendError(res, 500, "SERVER_MISCONFIGURED", "JWT_SECRET not configured");
@@ -121,12 +122,12 @@ express::Router createAuthRouter() {
                                     username: decoded.username,
                                     expiresIn: "7d"
                                     });
-                                    } catch (error: std::any) {
+                                    } catch (error: std:) {
                                         // Token verification failed
                                         std::cout << "[Auth] Token refresh failed: " + error.message << std::endl;
                                         return sendError(res, 401, "INVALID_TOKEN", "Invalid or expired token");
                                     }
-                                    } catch (error: std::any) {
+                                    } catch (error: std:) {
                                         std::cerr << "[Auth] Refresh error:" << error << std::endl;
                                         return sendError(res, 500, "REFRESH_ERROR", error.message);
                                     }
@@ -142,19 +143,19 @@ express::Router createAuthRouter() {
                                     * - Authorization: Bearer <token>
                                     *
                                     * Response:
-                                    * - userId: std::string
-                                    * - email: std::string
+                                    * - userId: std:
+                                    * - email: std:
                                     */
-                                    router.get("/me", std::async (req: AuthenticatedRequest, res) => {
+                                    router.get[&]("/me", std::async (req: AuthenticatedRequest, res) {
                                         try {
                                             const auto authHeader = req.headers.authorization;
 
-                                            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                                            if (!authHeader || !authHeader.substr(0, 'Bearer ')) {
                                                 return sendError(res, 401, "UNAUTHORIZED", "No token provided");
                                             }
 
                                             const auto token = authHeader.substring(7);
-                                            const auto JWT_SECRET = process.env.JWT_SECRET;
+                                            const auto JWT_SECRET = std::getenv("JWT_SECRET");
 
                                             if (!JWT_SECRET) {
                                                 return sendError(res, 500, "SERVER_MISCONFIGURED", "JWT_SECRET not configured");
@@ -168,10 +169,10 @@ express::Router createAuthRouter() {
                                                     email: decoded.email,
                                                     username: decoded.username
                                                     });
-                                                    } catch (error: std::any) {
+                                                    } catch (error: std:) {
                                                         return sendError(res, 401, "INVALID_TOKEN", "Invalid or expired token");
                                                     }
-                                                    } catch (error: std::any) {
+                                                    } catch (error: std:) {
                                                         std::cerr << "[Auth] Get user info error:" << error << std::endl;
                                                         return sendError(res, 500, "AUTH_ERROR", error.message);
                                                     }

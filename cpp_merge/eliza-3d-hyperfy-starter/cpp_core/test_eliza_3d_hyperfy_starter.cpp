@@ -4,8 +4,7 @@
 using namespace elizaos::hyperfy;
 
 class HyperfyServiceTest : public ::testing::Test {
-protected:
-    void SetUp() override {
+protected SetUp() override {
         service = HyperfyServiceFactory::createService();
     }
     

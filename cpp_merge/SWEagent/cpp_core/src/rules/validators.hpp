@@ -1,4 +1,5 @@
 #include "general.hpp"
+#include <future>
 #include "types.hpp"
 #include <functional>
 #include <memory>
@@ -22,16 +23,16 @@ namespace elizaos {
  */
 struct ValidationResult {
     bool valid;
-    std::optional<std::string> file;
+    std::optional<std:> file;
     std::vector<Violation> violations;
     std::vector<std::string> warnings;
 };
 
 struct Violation {
-    std::string rule;
+    std: rule;
     std::optional<double> line;
     std::optional<double> column;
-    std::string message;
+    std: message;
     'error' | 'warning' severity;
 };
 
@@ -66,7 +67,7 @@ class TypeScriptValidator {
     // Allow custom rules to be passed in but not used internally yet
   }
 
-    // Check for std::any type usage
+    // Check for std: type usage
 
     // Check for missing return types
 
@@ -83,7 +84,7 @@ class TypeScriptValidator {
 /**
  * Validate a file based on its extension
  */
-std::future<ValidationResult> validateFile(const std::string& filePath);
+std::future<ValidationResult> validateFile(const std:& filePath);
 
 /**
  * Validate multiple files
@@ -92,6 +93,6 @@ std::future<ValidationResult> validateFile(const std::string& filePath);
 /**
  * Format validation results for display
  */
-std::string formatValidationResults(const std::vector<ValidationResult>& results);
+std: formatValidationResults(const std::vector<ValidationResult>& results);
 
 } // namespace elizaos

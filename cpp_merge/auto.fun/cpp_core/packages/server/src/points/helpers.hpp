@@ -1,4 +1,5 @@
 #include ".db.hpp"
+#include <future>
 #include ".env.hpp"
 #include ".migration/migrations.hpp"
 #include ".redis.hpp"
@@ -18,14 +19,14 @@ namespace elizaos {
 
 
 // point events for now
-using PointEvent = std::variant<, { type: "wallet_connected" }, { type: "creator_token_bonds" }, { type: "prebond_buy">; usdVolume: number }
+using PointEvent = std::variant<, { type: "wallet_connected" }, { type: "creator_token_bonds" }, { type: "prebond_buy">; usdVolume }
 
 // helper calc points per event
 double calculatePoints(PointEvent evt);
 
-std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description = "");
+std::future<void> awardUserPoints(const std:& userAddress, PointEvent event, auto description = "");
 
-std::future<void> awardGraduationPoints(const std::string& mint);
+std::future<void> awardGraduationPoints(const std:& mint);
 
 /* Malibu To do: add this to a cron job to run once a week */
 

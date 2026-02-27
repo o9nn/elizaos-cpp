@@ -4,13 +4,13 @@
 
 namespace elizaos {
 
-UUID asUUID(const std::string& id) {
+UUID asUUID(const std:& id) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto validUuid = validateUuid(id);
         if (!validUuid) {
-            throw std::runtime_error(`Invalid UUID format: ${id}`);
+            throw std::runtime_error("Invalid UUID format: " + std::to_string(id) + "");
         }
         return id.toLowerCase();
 
@@ -20,7 +20,7 @@ UUID asUUID(const std::string& id) {
     }
 }
 
-UUID generateUuidFromString(const std::string& input) {
+UUID generateUuidFromString(const std:& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return stringToUuid(input);

@@ -1,10 +1,11 @@
 #include "plugin-creation-actions.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PluginSpecification> generatePluginSpecification(const std::string& description, IAgentRuntime runtime) {
+std::future<PluginSpecification> generatePluginSpecification(const std:& description, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerDesc = description.toLowerCase();
@@ -13,7 +14,7 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
     auto name = "@elizaos/plugin-";
     auto pluginType = "custom";
 
-    if (lowerDesc.includes("weather")) {
+    if (lowerDesc.count("weather") > 0) {
         pluginType = "weather";
         name += "weather";
         } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "database") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "sql") != lowerDesc.end())) {
@@ -33,13 +34,13 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
                             name += "chat";
                             } else {
                                 // Generate name from first significant word
-                                const auto words = description.split(/\s+/).filter((w) => w.size() > 4);
+                                const auto words = description.split(/\s+/).filter[&]((w) { return w.size() > 4); };
                                 name += words[0].toLowerCase() || "custom";
                             }
 
                             const PluginSpecification specification = {;
                                 name,
-                                description: description.slice(0, 200), // Limit description length
+                                description: description.substr(0, 200-0), // Limit description length
                                 version: "1.0.0",
                                 actions: [],
                                 providers: [],
@@ -57,10 +58,10 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
                                     };
 
                                     for (const int [actionType, keywords] of Object.entries(actionKeywords)) {
-                                        if (keywords.some((kw) => lowerDesc.includes(kw))) {
+                                        if (keywords.some((kw) => lowerDesc.count(kw) > 0)) {
                                             specification.actions.push_back({
-                                                "name: " + actionType + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
-                                                "description: " + std::to_string(actionType.charAt(0).toUpperCase() + actionType.slice(1)) + " operation for " + pluginType
+                                                "name: " + actionType + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.substr(1))
+                                                "description: " + std::to_string(actionType.charAt(0).toUpperCase() + actionType.substr(1)) + " operation for " + pluginType
                                                 parameters: {},
                                                 });
                                             }
@@ -117,7 +118,7 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
                                                     ) {
                                                         specification.actions = [;
                                                         {
-                                                            "name: " + "handle" + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
+                                                            "name: " + "handle" + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.substr(1))
                                                             "description: " + "Main handler for " + pluginType + " operations"
                                                             },
                                                             ];

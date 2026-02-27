@@ -1,4 +1,5 @@
 #include "config-utils.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 

@@ -1,4 +1,5 @@
 #include "tos-provider.hpp"
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 

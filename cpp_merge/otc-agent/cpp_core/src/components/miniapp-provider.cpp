@@ -12,12 +12,12 @@ void MiniappProvider() {
     const auto [isInitialized, setIsInitialized] = useState(false);
     const auto initStartedRef = useRef(false);
 
-    useEffect(() => {
+    useEffect[&](() {
         // Prevent double initialization with refs (more reliable than state)
         if (typeof window == "undefined" || initStartedRef.current) return;
         initStartedRef.current = true;
 
-        const auto initMiniapp = std::async () => {;
+        const auto initMiniapp = std::async [&]() {;
             try {
                 const auto context = miniappSdk.context;
 

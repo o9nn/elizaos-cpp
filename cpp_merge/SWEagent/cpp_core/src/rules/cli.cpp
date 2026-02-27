@@ -1,4 +1,8 @@
 #include "cli.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,15 +14,15 @@ std::future<std::vector<std::string>> findProjectFiles() {
     const std::vector<std::string> files = [];
     const auto extensions = [".py", ".ts", ".tsx"];
 
-    std::async std::function walk(dir: std::string) {
-        const auto entries = fs.promises.readdir(dir, { withFileTypes: true });
+    std::async std::function walk(dir: std:) {
+        const auto entries = fs.promises.readdir(dir, Config{withFileTypes = true});
 
         for (const auto& entry : entries)
             const auto fullPath = path.join(dir, entry.name);
 
             // Skip node_modules, dist, build, etc.
             if (
-            entry.name.startsWith(".") ||;
+            entry.name.substr(0, ".") ||;
             entry.name == "node_modules" ||;
             entry.name == "dist" ||;
             entry.name == "build";
@@ -30,14 +34,14 @@ std::future<std::vector<std::string>> findProjectFiles() {
                 walk(fullPath);
                 } else if (entry.isFile()) {
                     const auto ext = path.extname(entry.name);
-                    if (extensions.includes(ext)) {
+                    if (extensions.count(ext) > 0) {
                         files.push_back(fullPath);
                     }
                 }
             }
         }
 
-        walk(process.cwd());
+        walk(std::filesystem::current_path().string());
         return files;
 
 }
@@ -71,20 +75,20 @@ std::future<std::vector<std::string>> resolveFiles(const std::vector<std::string
 
 }
 
-std::future<std::vector<std::string>> findFilesInDir(const std::string& dir) {
+std::future<std::vector<std::string>> findFilesInDir(const std:& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> files = [];
     const auto extensions = [".py", ".ts", ".tsx"];
 
-    const auto entries = fs.promises.readdir(dir, { withFileTypes: true });
+    const auto entries = fs.promises.readdir(dir, Config{withFileTypes = true});
 
     for (const auto& entry : entries)
         const auto fullPath = path.join(dir, entry.name);
 
         if (entry.isFile()) {
             const auto ext = path.extname(entry.name);
-            if (extensions.includes(ext)) {
+            if (extensions.count(ext) > 0) {
                 files.push_back(fullPath);
             }
         }

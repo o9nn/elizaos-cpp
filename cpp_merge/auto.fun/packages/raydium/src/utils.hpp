@@ -39,7 +39,7 @@ std::shared_ptr<Promise<T>> retryOperation(std::function<std::shared_ptr<Promise
             ); });
         }
     }
-    throw any(std::make_shared<Error>(std::string("Unreachable")));
+    throw any(std::make_shared<Error>(std:("Unreachable")));
 };
 
 

@@ -30,7 +30,7 @@ void ChartContainer(auto className, auto children, auto config);
 void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto nameKey);
 
 // Helper to extract item config from a payload.
-void getPayloadConfigFromPayload(ChartConfig config, const std::any& payload, const std::string& key);
+void getPayloadConfigFromPayload(ChartConfig config, const std:& payload, const std:& key);
 
 
 } // namespace elizaos

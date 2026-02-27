@@ -26,7 +26,7 @@ namespace elizaos {
  */
 /**
  * Interface representing the ownership state of servers.
- * @property {Object.<std::string, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
+ * @property {Object.<std:, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
  */
 struct ServerOwnershipState {
 };
@@ -42,7 +42,7 @@ struct ServerOwnershipState {
  * @param {string} serverId - The unique identifier of the server.
  * @returns {Promise<Role>} The role of the user entity within the server, resolved as a Promise.
  */
-std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId);
+std::future<Role> getUserServerRole(IAgentRuntime runtime, const std:& entityId, const std:& serverId);
 
 /**
  * Finds a server where the given user is the owner

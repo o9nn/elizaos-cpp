@@ -7,13 +7,13 @@ PgDatabaseAdapter::PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_
 
 std::shared_ptr<Promise<void>> PgDatabaseAdapter::runMigrations()
 {
-    logger->debug(std::string("PgDatabaseAdapter: Migrations should be handled externally"));
+    logger->debug(std:("PgDatabaseAdapter: Migrations should be handled externally"));
     return std::shared_ptr<Promise<void>>();
 }
 
 std::shared_ptr<Promise<void>> PgDatabaseAdapter::init()
 {
-    logger->debug(std::string("PgDatabaseAdapter initialized, skipping automatic migrations."));
+    logger->debug(std:("PgDatabaseAdapter initialized, skipping automatic migrations."));
     return std::shared_ptr<Promise<void>>();
 }
 

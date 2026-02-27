@@ -21,14 +21,14 @@ class MediaService extends BaseApiClient {
    * Upload media for an agent
    */
   std::async uploadAgentMedia(agentId: UUID, params: MediaUploadParams): Promise<MediaUploadResponse> {
-    const formData = new FormData();
+    const formData = std::make_unique<FormData>();
 
     formData.append('file', params.file, params.filename);
 
     if (params.contentType) formData.append('contentType', params.contentType);
-    if (params.metadata) formData.append('metadata', JSON.stringify(params.metadata));
+    if (params.metadata) formData.append('metadata', nlohmann::json().dump(params.metadata));
 
-    return this.request<MediaUploadResponse>('POST', `/api/media/agents/${agentId}/upload-media`, {
+    return this.request<MediaUploadResponse>('POST', "/api/media/agents/" + std::to_string(agentId) + "/upload-media", {
       body: formData,
     });
   }

@@ -4,42 +4,42 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
 {
     try
     {
-        logger->info(std::string("== FETCH CHECK-IN SCHEDULES START =="));
-        auto checkInSchedulesRoomId = createUniqueUuid(runtime, std::string("check-in-schedules"));
-        logger->info(std::string("Generated check-in schedules room ID: ") + checkInSchedulesRoomId + string_empty);
-        logger->info(std::string("Attempting to fetch memories from room..."));
+        logger->info(std:("== FETCH CHECK-IN SCHEDULES START =="));
+        auto checkInSchedulesRoomId = createUniqueUuid(runtime, std:("check-in-schedules"));
+        logger->info(std:("Generated check-in schedules room ID: ") + checkInSchedulesRoomId + string_empty);
+        logger->info(std:("Attempting to fetch memories from room..."));
         auto memories = std::async([=]() { runtime->getMemories(object{
-            object::pair{std::string("roomId"), checkInSchedulesRoomId}, 
-            object::pair{std::string("tableName"), std::string("messages")}
+            object::pair{std:("roomId"), checkInSchedulesRoomId}, 
+            object::pair{std:("tableName"), std:("messages")}
         }); });
-        logger->info(std::string("Found ") + memories->length + std::string(" total memories in check-in schedules room"));
+        logger->info(std:("Found ") + memories->length + std:(" total memories in check-in schedules room"));
         memories->slice(0, 3)->forEach([=](auto memory, auto index) mutable
         {
-            logger->info(std::string("Memory ") + index + std::string(" content:"), object{
-                object::pair{std::string("id"), memory["id"]}, 
-                object::pair{std::string("type"), memory["content"]["type"]}, 
-                object::pair{std::string("hasSchedule"), !!memory["content"]["schedule"]}, 
-                object::pair{std::string("contentKeys"), Object->keys(OR((memory["content"]), (object{})))}
+            logger->info(std:("Memory ") + index + std:(" content:"), object{
+                object::pair{std:("id"), memory["id"]}, 
+                object::pair{std:("type"), memory["content"]["type"]}, 
+                object::pair{std:("hasSchedule"), !!memory["content"]["schedule"]}, 
+                object::pair{std:("contentKeys"), Object->keys(OR((memory["content"]), (object{})))}
             });
         }
         );
         auto schedules = memories->filter([=](auto memory) mutable
         {
-            auto isValidType = memory["content"]["type"] == std::string("team-member-checkin-schedule");
+            auto isValidType = memory["content"]["type"] == std:("team-member-checkin-schedule");
             auto hasSchedule = !!memory["content"]["schedule"];
-            logger->info(std::string("Memory ") + memory["id"] + std::string(" validation:"), object{
-                object::pair{std::string("isValidType"), std::string("isValidType")}, 
-                object::pair{std::string("hasSchedule"), std::string("hasSchedule")}, 
-                object::pair{std::string("contentType"), memory["content"]["type"]}
+            logger->info(std:("Memory ") + memory["id"] + std:(" validation:"), object{
+                object::pair{std:("isValidType"), std:("isValidType")}, 
+                object::pair{std:("hasSchedule"), std:("hasSchedule")}, 
+                object::pair{std:("contentType"), memory["content"]["type"]}
             });
             return AND((isValidType), (hasSchedule));
         }
         )->map([=](auto memory) mutable
         {
             auto schedule = as<std::shared_ptr<CheckInSchedule>>(memory["content"]["schedule"]);
-            logger->info(std::string("Processing schedule from memory ") + memory["id"] + std::string(":"), object{
-                object::pair{std::string("scheduleId"), schedule->scheduleId}, 
-                object::pair{std::string("frequency"), schedule->frequency}
+            logger->info(std:("Processing schedule from memory ") + memory["id"] + std:(":"), object{
+                object::pair{std:("scheduleId"), schedule->scheduleId}, 
+                object::pair{std:("frequency"), schedule->frequency}
             });
             return schedule;
         }
@@ -47,26 +47,26 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
         {
             auto isValid = schedule != undefined;
             if (!isValid) {
-                logger->warn(std::string("Found invalid schedule:"), schedule);
+                logger->warn(std:("Found invalid schedule:"), schedule);
             }
             return isValid;
         }
         );
-        logger->info(std::string("Successfully extracted ") + schedules->length + std::string(" valid schedules"));
-        logger->info(std::string("== FETCH CHECK-IN SCHEDULES END =="));
-        logger->info(std::string("== DETAILED SCHEDULES LOG =="));
-        logger->info(std::string("All schedules:"), JSON->stringify(schedules, nullptr, 2));
-        logger->info(std::string("== END DETAILED SCHEDULES LOG =="));
+        logger->info(std:("Successfully extracted ") + schedules->length + std:(" valid schedules"));
+        logger->info(std:("== FETCH CHECK-IN SCHEDULES END =="));
+        logger->info(std:("== DETAILED SCHEDULES LOG =="));
+        logger->info(std:("All schedules:"), JSON->stringify(schedules, nullptr, 2));
+        logger->info(std:("== END DETAILED SCHEDULES LOG =="));
         return schedules;
     }
     catch (const any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
-        logger->error(std::string("== FETCH CHECK-IN SCHEDULES ERROR =="));
-        logger->error(std::string("Error details:"), object{
-            object::pair{std::string("name"), OR((err->name), (std::string("Unknown error")))}, 
-            object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 
-            object::pair{std::string("stack"), OR((err->stack), (std::string("No stack trace")))}
+        logger->error(std:("== FETCH CHECK-IN SCHEDULES ERROR =="));
+        logger->error(std:("Error details:"), object{
+            object::pair{std:("name"), OR((err->name), (std:("Unknown error")))}, 
+            object::pair{std:("message"), OR((err->message), (std:("No error message")))}, 
+            object::pair{std:("stack"), OR((err->stack), (std:("No stack trace")))}
         });
         throw any(error);
     }
@@ -75,133 +75,133 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
 
 string formatSchedule(std::shared_ptr<CheckInSchedule> schedule)
 {
-    logger->info(std::string("Formatting schedule:"), object{
-        object::pair{std::string("scheduleId"), schedule->scheduleId}, 
-        object::pair{std::string("teamMemberName"), OR((schedule->teamMemberUserName), (schedule->teamMemberName))}, 
-        object::pair{std::string("checkInType"), schedule->checkInType}, 
-        object::pair{std::string("frequency"), schedule->frequency}, 
-        object::pair{std::string("checkInTime"), schedule->checkInTime}
+    logger->info(std:("Formatting schedule:"), object{
+        object::pair{std:("scheduleId"), schedule->scheduleId}, 
+        object::pair{std:("teamMemberName"), OR((schedule->teamMemberUserName), (schedule->teamMemberName))}, 
+        object::pair{std:("checkInType"), schedule->checkInType}, 
+        object::pair{std:("frequency"), schedule->frequency}, 
+        object::pair{std:("checkInTime"), schedule->checkInTime}
     });
-    auto formatted = std::string("\
-📅 Schedule ID: ") + schedule->scheduleId + std::string("\
-📝 Type: ") + schedule->checkInType + std::string("\
-📺 Channel ID: ") + schedule->channelId + std::string("\
-⏰ Time: ") + schedule->checkInTime + std::string("\
-🔄 Frequency: ") + schedule->frequency + std::string("\
-📋 Created: ") + ((std::make_shared<Date>(schedule->createdAt)))->toLocaleString() + std::string("\
+    auto formatted = std:("\
+📅 Schedule ID: ") + schedule->scheduleId + std:("\
+📝 Type: ") + schedule->checkInType + std:("\
+📺 Channel ID: ") + schedule->channelId + std:("\
+⏰ Time: ") + schedule->checkInTime + std:("\
+🔄 Frequency: ") + schedule->frequency + std:("\
+📋 Created: ") + ((std::make_shared<Date>(schedule->createdAt)))->toLocaleString() + std:("\
 ");
-    logger->info(std::string("Successfully formatted schedule"));
+    logger->info(std:("Successfully formatted schedule"));
     return formatted;
 };
 
 
 std::shared_ptr<Action> listCheckInSchedules = object{
-    object::pair{std::string("name"), std::string("LIST_CHECK_IN_SCHEDULES")}, 
-    object::pair{std::string("description"), std::string("Lists all schedules for team members")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("SHOW_CHECK_INS"), std::string("GET_CHECK_IN_SCHEDULES"), std::string("VIEW_CHECK_IN_SCHEDULES") }}, 
-    object::pair{std::string("validate"), [=](auto runtime, auto message) mutable
+    object::pair{std:("name"), std:("LIST_CHECK_IN_SCHEDULES")}, 
+    object::pair{std:("description"), std:("Lists all schedules for team members")}, 
+    object::pair{std:("similes"), array<string>{ std:("SHOW_CHECK_INS"), std:("GET_CHECK_IN_SCHEDULES"), std:("VIEW_CHECK_IN_SCHEDULES") }}, 
+    object::pair{std:("validate"), [=](auto runtime, auto message) mutable
     {
-        logger->info(std::string("Validating listCheckInSchedules action:"), object{
-            object::pair{std::string("messageId"), message->id}, 
-            object::pair{std::string("entityId"), message->entityId}, 
-            object::pair{std::string("contentType"), message->content->type}
+        logger->info(std:("Validating listCheckInSchedules action:"), object{
+            object::pair{std:("messageId"), message->id}, 
+            object::pair{std:("entityId"), message->entityId}, 
+            object::pair{std:("contentType"), message->content->type}
         });
         return true;
     }
     }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state, auto options = object{}, auto callback = undefined) mutable
+    object::pair{std:("handler"), [=](auto runtime, auto message, auto state, auto options = object{}, auto callback = undefined) mutable
     {
         try
         {
-            logger->info(std::string("== LIST CHECK-IN SCHEDULES HANDLER START =="));
-            logger->info(std::string("Handler details:"), object{
-                object::pair{std::string("messageId"), message->id}, 
-                object::pair{std::string("entityId"), message->entityId}, 
-                object::pair{std::string("hasCallback"), !!callback}, 
-                object::pair{std::string("stateKeys"), (state) ? Object->keys(state) : array<any>()}, 
-                object::pair{std::string("optionsKeys"), Object->keys(options)}
+            logger->info(std:("== LIST CHECK-IN SCHEDULES HANDLER START =="));
+            logger->info(std:("Handler details:"), object{
+                object::pair{std:("messageId"), message->id}, 
+                object::pair{std:("entityId"), message->entityId}, 
+                object::pair{std:("hasCallback"), !!callback}, 
+                object::pair{std:("stateKeys"), (state) ? Object->keys(state) : array<any>()}, 
+                object::pair{std:("optionsKeys"), Object->keys(options)}
             });
             if (!callback) {
-                logger->warn(std::string("No callback function provided"));
+                logger->warn(std:("No callback function provided"));
                 return false;
             }
-            logger->info(std::string("Fetching check-in schedules..."));
+            logger->info(std:("Fetching check-in schedules..."));
             auto schedules = std::async([=]() { fetchCheckInSchedules(runtime); });
-            logger->info(std::string("Retrieved ") + schedules->get_length() + std::string(" schedules"));
+            logger->info(std:("Retrieved ") + schedules->get_length() + std:(" schedules"));
             if (schedules->get_length() == 0) {
-                logger->info(std::string("No schedules found, sending empty response"));
+                logger->info(std:("No schedules found, sending empty response"));
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("📝 No check-in schedules found. Use the check-in command to create a new schedule.")}, 
-                    object::pair{std::string("source"), std::string("discord")}
+                    object::pair{std:("text"), std:("📝 No check-in schedules found. Use the check-in command to create a new schedule.")}, 
+                    object::pair{std:("source"), std:("discord")}
                 }, array<any>()); });
                 return true;
             }
-            logger->info(std::string("Formatting schedules for display..."));
-            auto formattedSchedules = schedules->map(formatSchedule)->join(std::string("\
+            logger->info(std:("Formatting schedules for display..."));
+            auto formattedSchedules = schedules->map(formatSchedule)->join(std:("\
 -------------------\
 "));
             auto content = object{
-                object::pair{std::string("text"), std::string("📋 Check-in Schedules (") + schedules->get_length() + std::string(" total):\
+                object::pair{std:("text"), std:("📋 Check-in Schedules (") + schedules->get_length() + std:(" total):\
 ") + formattedSchedules + string_empty}, 
-                object::pair{std::string("source"), std::string("discord")}
+                object::pair{std:("source"), std:("discord")}
             };
-            logger->info(std::string("Sending formatted schedules to callback"));
+            logger->info(std:("Sending formatted schedules to callback"));
             std::async([=]() { callback(content, array<any>()); });
-            logger->info(std::string("Successfully sent check-in schedules list"));
-            logger->info(std::string("== LIST CHECK-IN SCHEDULES HANDLER END =="));
+            logger->info(std:("Successfully sent check-in schedules list"));
+            logger->info(std:("== LIST CHECK-IN SCHEDULES HANDLER END =="));
             return true;
         }
         catch (const any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
-            logger->error(std::string("== LIST CHECK-IN SCHEDULES HANDLER ERROR =="));
-            logger->error(std::string("Error details:"), object{
-                object::pair{std::string("name"), OR((err->name), (std::string("Unknown error")))}, 
-                object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 
-                object::pair{std::string("stack"), OR((err->stack), (std::string("No stack trace")))}
+            logger->error(std:("== LIST CHECK-IN SCHEDULES HANDLER ERROR =="));
+            logger->error(std:("Error details:"), object{
+                object::pair{std:("name"), OR((err->name), (std:("Unknown error")))}, 
+                object::pair{std:("message"), OR((err->message), (std:("No error message")))}, 
+                object::pair{std:("stack"), OR((err->stack), (std:("No stack trace")))}
             });
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("❌ Error retrieving check-in schedules. Please try again.")}, 
-                    object::pair{std::string("source"), std::string("discord")}
+                    object::pair{std:("text"), std:("❌ Error retrieving check-in schedules. Please try again.")}, 
+                    object::pair{std:("source"), std:("discord")}
                 }, array<any>()); });
             }
             return false;
         }
     }
     }, 
-    object::pair{std::string("examples"), array<array<any>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("admin")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Show me all check in schedules")}
+    object::pair{std:("examples"), array<array<any>>{ array<object>{ object{
+        object::pair{std:("name"), std:("admin")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("Show me all check in schedules")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("jimmy")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Here are all the check-in schedules I've found")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("LIST_CHECK_IN_SCHEDULES") }}
+        object::pair{std:("name"), std:("jimmy")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("Here are all the check-in schedules I've found")}, 
+            object::pair{std:("actions"), array<string>{ std:("LIST_CHECK_IN_SCHEDULES") }}
         }}
     } }, array<object>{ object{
-        object::pair{std::string("name"), std::string("admin")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("List team check-ins")}
+        object::pair{std:("name"), std:("admin")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("List team check-ins")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("jimmy")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll show you all active check-in schedules")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("LIST_CHECK_IN_SCHEDULES") }}
+        object::pair{std:("name"), std:("jimmy")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I'll show you all active check-in schedules")}, 
+            object::pair{std:("actions"), array<string>{ std:("LIST_CHECK_IN_SCHEDULES") }}
         }}
     } }, array<object>{ object{
-        object::pair{std::string("name"), std::string("admin")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("list of checkins")}
+        object::pair{std:("name"), std:("admin")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("list of checkins")}
         }}
     }, object{
-        object::pair{std::string("name"), std::string("jimmy")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll show you all active check-in schedules")}, 
-            object::pair{std::string("actions"), array<string>{ std::string("LIST_CHECK_IN_SCHEDULES") }}
+        object::pair{std:("name"), std:("jimmy")}, 
+        object::pair{std:("content"), object{
+            object::pair{std:("text"), std:("I'll show you all active check-in schedules")}, 
+            object::pair{std:("actions"), array<string>{ std:("LIST_CHECK_IN_SCHEDULES") }}
         }}
     } } }}
 };

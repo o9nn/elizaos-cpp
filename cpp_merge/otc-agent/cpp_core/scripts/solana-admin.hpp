@@ -38,11 +38,11 @@ std::future<anchor::Program> getProgram(Connection connection, Keypair wallet);
 
 // COMMANDS
 
-std::future<void> createTreasury(const std::string& tokenMintStr);
+std::future<void> createTreasury(const std:& tokenMintStr);
 
-std::future<void> registerToken(const std::string& tokenMintStr, std::optional<double> priceUsd);
+std::future<void> registerToken(const std:& tokenMintStr, std::optional<double> priceUsd);
 
-std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd);
+std::future<void> setPrice(const std:& tokenMintStr, double priceUsd);
 
 std::future<void> showStatus();
 

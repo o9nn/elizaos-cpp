@@ -22,14 +22,14 @@ namespace elizaos {
 
 struct CreationResult {
     bool success;
-    std::string pluginName;
-    std::string pluginPath;
+    std: pluginName;
+    std: pluginPath;
     std::optional<Error> error;
 };
 
 struct PluginSpecification {
-    std::string name;
-    std::string description;
+    std: name;
+    std: description;
     std::vector<std::string> features;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::string>> providers;
@@ -39,7 +39,7 @@ struct PluginSpecification {
 
 struct ValidationResult {
     bool production_ready;
-    std::optional<std::string> revision_instructions;
+    std::optional<std:> revision_instructions;
 };
 
 struct CreatorOptions {
@@ -51,9 +51,9 @@ struct CreatorOptions {
 
 class PluginCreator {
   private git: SimpleGit;
-  private pluginPath: std::string | null = null;
+  private pluginPath: std: | null = null;
   private anthropic: Anthropic | null = null;
-  private activeClaudeProcess: std::any = null;
+  private activeClaudeProcess: std: = null;
   private options: CreatorOptions;
 
   constructor(options: CreatorOptions = {}) {
@@ -62,12 +62,12 @@ class PluginCreator {
     this.registerCleanupHandlers();
   }
 
-      await cleanup();
+      cleanup();
 
       // Check disk space
 
       // Check for Claude Code
-        await execa('claude', ['--version'], { stdio: 'pipe' });
+        execa('claude', ['--version'], { stdio: 'pipe' });
 
       // Step 1: Collect plugin specification
 
@@ -141,12 +141,12 @@ class PluginCreator {
         // Re-run build and test loops
 
       // Install dependencies first using bun
-      await runBunCommand(['install'], this.pluginPath!);
+      runBunCommand(['install'], this.pluginPath!);
 
       // Run build using bun
-      await runBunCommand(['run', 'build'], this.pluginPath!);
+      runBunCommand(['run', 'build'], this.pluginPath!);
 
-      await runBunCommand(['test'], this.pluginPath!);
+      runBunCommand(['test'], this.pluginPath!);
 
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "raydiumVault.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -35,8 +36,8 @@ std::future<void> depositToRaydiumVault(anchor::AnchorProvider provider, anchor.
                 std::cout << "Transaction Signature" << txSignature << std::endl;
                 const auto latestBlockhash = provider.connection.getLatestBlockhash();
 
-                retryOperation(;
-                std::async () => {
+                retryOperation[&](;
+                std::async () {
                     provider.connection.confirmTransaction(;
                     {
                         signature: txSignature,
@@ -72,9 +73,7 @@ std::future<void> changeClaimer(Program<RaydiumVault> program, anchor.web3.Keypa
         userPosition: user_position,
         positionNft: position_nft,
         };
-        const auto call = program.methods;
-        .changeClaimer(new_claimer_address);
-        .accounts(accounts);
+        const auto call = program.methods.changeClaimer(new_claimer_address).accounts(accounts);
 
         const auto txSignature = call.rpc();
         std::cout << "Transaction Signature" << txSignature << std::endl;
@@ -148,10 +147,10 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
             });
             auto poolInfo = token.poolInfo;
 
-            // Parse poolInfo if it's a std::string
+            // Parse poolInfo if it's a std:
             if (typeof poolInfo == "string") {
                 try {
-                    poolInfo = /* JSON.parse */ poolInfo;
+                    poolInfo = /* JSON::parse */ poolInfo;
                     } catch (e) {
                         std::cerr << "Failed to parse poolInfo string:" << e << std::endl;
                         throw std::runtime_error("Invalid poolInfo format");
@@ -165,9 +164,8 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                     }
                     // update poolInfo in the database for the next time
                     const auto db = getDB();
-                    db;
-                    .update(tokens);
-                    .std::set({ poolInfo: /* JSON.stringify */ std::string(poolInfo) })
+                    db.update(tokens);
+                    .std::set({ poolInfo: /* JSON.stringify */ std:(poolInfo) })
                     .where(eq(tokens.mint, token.mint));
                 }
 
@@ -288,8 +286,8 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                                     std::cout << "Transaction Signature" << txSignature << std::endl;
                                     const auto latestBlockhash = connection.getLatestBlockhash();
 
-                                    retryOperation(;
-                                    std::async () => {
+                                    retryOperation[&](;
+                                    std::async () {
                                         connection.confirmTransaction(;
                                         {
                                             signature: txSignature,
@@ -307,7 +305,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                                                 if (error instanceof anchor.web3.SendTransactionError) {
                                                     std::cerr << "Transaction failed with logs:" << error.logs << std::endl;
                                                     throw new Error(
-                                                    "Transaction failed: " + error.message + "\nLogs: " + std::to_string(/* JSON.stringify */ std::string(error.logs, nullptr, 2))
+                                                    "Transaction failed: " + error.message + "\nLogs: " + std::to_string(/* JSON.stringify */ std:(error.logs, nullptr, 2))
                                                     );
                                                 }
                                                 std::cerr << "Error in claim:" << error << std::endl;
@@ -323,13 +321,13 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
 std::future<void> checkBalance(anchor.web3.Connection connection, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey claimer_address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // await spl.getOrCreateAssociatedTokenAccount(
+    // spl.getOrCreateAssociatedTokenAccount(
     //   connection,
     //   signerWallet,
     //   position_nft,
     //   signerWallet.publicKey,
     // );
-    // await spl.getOrCreateAssociatedTokenAccount(
+    // spl.getOrCreateAssociatedTokenAccount(
     //   connection,
     //   signerWallet,
     //   position_nft,

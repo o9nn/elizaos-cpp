@@ -1,4 +1,5 @@
 #include "followRoom.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,7 +19,7 @@ std::future<bool> _shouldFollow(State state) {
             stopSequences: [],
             });
 
-            const auto cleanedResponse = response.trim().toLowerCase();
+            const auto cleanedResponse = response.toLowerCase();
 
             // Handle various affirmative responses
             if (

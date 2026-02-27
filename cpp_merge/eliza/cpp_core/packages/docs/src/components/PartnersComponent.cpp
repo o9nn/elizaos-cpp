@@ -1,4 +1,5 @@
 #include "PartnersComponent.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -24,10 +25,10 @@ void PartnerCard() {
 JSX::Element PartnersComponent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <div className={styles.partnersContainer}>;
     <div className={styles.partnersGrid}>;
-    {sortedPartners.std::map((partner) => (;
+    {sortedPartners.std::map((partner) { return (; };
     <PartnerCard key={partner.title} partner={partner} />;
     ))}
     </div>;

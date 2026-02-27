@@ -1,4 +1,5 @@
 #include "version.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,14 +8,14 @@ namespace elizaos {
 VersionInfo getVersionInfo() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto timestamp = new Date().toISOString();
+    const auto timestamp = std::make_unique<Date>().toISOString();
 
     try {
         return {
             version: packageJson.version,
             source: "server",
             timestamp,
-            environment: process.env.NODE_ENV || "development",
+            environment: std::getenv("NODE_ENV") || "development",
             uptime: process.uptime(),
             };
             } catch (error) {
@@ -24,7 +25,7 @@ VersionInfo getVersionInfo() {
                     version: "unknown",
                     source: "server",
                     timestamp,
-                    environment: process.env.NODE_ENV || "development",
+                    environment: std::getenv("NODE_ENV") || "development",
                     uptime: process.uptime(),
                     error: "Failed to retrieve version information",
                     };
@@ -38,7 +39,7 @@ express::Router createVersionRouter() {
     const auto router = express.Router();
 
     // GET /api/system/version - Returns version information
-    router.get("/", (_, res) => {
+    router.get[&]("/", (_, res) {
         const auto versionInfo = getVersionInfo();
         const auto statusCode = versionInfo.error ? 500 : 200;
 

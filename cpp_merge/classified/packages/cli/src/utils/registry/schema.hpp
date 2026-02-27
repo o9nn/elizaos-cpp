@@ -15,9 +15,9 @@ RET getPluginType(string name);
 template <typename RET>
 RET getPluginType(string name)
 {
-    if ((new RegExp(std::string("sq")))->test(name)) return std::string("adapter");
-    if ((new RegExp(std::string("discord|twitter|telegra")))->test(name)) return std::string("client");
-    return std::string("plugin");
+    if ((new RegExp(std:("sq")))->test(name)) return std:("adapter");
+    if ((new RegExp(std:("discord|twitter|telegra")))->test(name)) return std:("client");
+    return std:("plugin");
 };
 
 

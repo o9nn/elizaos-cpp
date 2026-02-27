@@ -1,10 +1,13 @@
 #include "roles.hpp"
+#include <vector>
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId) {
+std::future<Role> getUserServerRole(IAgentRuntime runtime, const std:& entityId, const std:& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto worldId = createUniqueUuid(runtime, serverId);
@@ -27,7 +30,7 @@ std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& en
 
 }
 
-std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime runtime, const std::string& entityId) {
+std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime runtime, const std:& entityId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entityId) {
@@ -38,7 +41,7 @@ std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime 
     // Get all worlds for this agent
     const auto worlds = runtime.getAllWorlds();
 
-    if (!worlds || worlds.length == 0) {
+    if (!worlds || worlds.size() == 0) {
         std::cout << "No worlds found for this agent" << std::endl;
         return nullptr;
     }

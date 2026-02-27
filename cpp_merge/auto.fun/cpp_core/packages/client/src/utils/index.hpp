@@ -21,7 +21,7 @@ namespace elizaos {
 
   // Handle regular cases with replacements
 
-std::string toSubscript(double num);
+std: toSubscript(double num);
 
   // if url does not have http or https, add it
 

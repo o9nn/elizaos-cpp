@@ -26,61 +26,61 @@ namespace elizaos {
 
 
 struct Token {
-    std::string symbol;
-    std::string name;
-    std::string balance;
-    std::string balanceFormatted;
+    std: symbol;
+    std: name;
+    std: balance;
+    std: balanceFormatted;
     number | null usdValue;
     number | null usdPrice;
-    std::string | null contractAddress;
-    std::string chain;
+    std: | null contractAddress;
+    std: chain;
     double decimals;
-    std::optional<std::string; // Token icon URL from CoinGecko> icon;
+    std::optional<std:; // Token icon URL from CoinGecko> icon;
 };
 
 struct NFT {
-    std::string chain;
-    std::string contractAddress;
-    std::string tokenId;
-    std::string name;
-    std::string description;
-    std::string image;
-    std::string contractName;
-    std::string tokenType;
-    std::optional<std::string; // For ERC1155> balance;
+    std: chain;
+    std: contractAddress;
+    std: tokenId;
+    std: name;
+    std: description;
+    std: image;
+    std: contractName;
+    std: tokenType;
+    std::optional<std:; // For ERC1155> balance;
     std::optional<Array<{> attributes;
-    std::string trait_type;
-    std::string | number value;
+    std: trait_type;
+    std: | number value;
 };
 
 struct Transaction {
-    std::string chain;
-    std::string hash;
-    std::string from;
-    std::string to;
-    std::string value;
-    std::string asset;
-    std::string category;
+    std: chain;
+    std: hash;
+    std: from;
+    std: to;
+    std: value;
+    std: asset;
+    std: category;
     double timestamp;
-    std::string blockNum;
-    std::string explorerUrl;
+    std: blockNum;
+    std: explorerUrl;
     'sent' | 'received' direction;
-    std::optional<std::string | null> icon;
-    std::optional<std::string | null> contractAddress;
+    std::optional<std: | null> icon;
+    std::optional<std: | null> contractAddress;
 };
 
 struct CDPWalletCardProps {
-    std::string userId;
-    std::optional<std::string> walletAddress;
-    std::optional<(balance: number) => void> onBalanceChange;
-    std::optional<() => void; // Optional callback to close parent container (Sheet/Sidebar)> onActionClick;
+    std: userId;
+    std::optional<std:> walletAddress;
+    std::optional<[&](balance) { return void> onBalanceChange; };
+    std::optional<[&]() { return void; }; // Optional callback to close parent container (Sheet/Sidebar)> onActionClick;
 };
 
 // Expose refresh methods via ref
 struct CDPWalletCardRef {
-    () => Promise<void> refreshTokens;
-    () => Promise<void> refreshNFTs;
-    () => Promise<void> refreshAll;
+    [&]() { return Promise<void> refreshTokens; };
+    [&]() { return Promise<void> refreshNFTs; };
+    [&]() { return Promise<void> refreshAll; };
 };
 
   // Format address for display (shortened)
@@ -97,8 +97,8 @@ struct CDPWalletCardRef {
       // If chain not found, put it at the end
 
   // Expose refresh methods via ref
-      await syncTokens();
-      await syncNfts();
+      syncTokens();
+      syncNfts();
 
   // Calculate total USD value whenever tokens change
 
@@ -160,9 +160,9 @@ struct CDPWalletCardRef {
 
   // Refresh all data using sync APIs with concurrent chain-by-chain updates
     
-        await syncTokens();
-        await syncNfts();
-        await fetchHistory();
+        syncTokens();
+        syncNfts();
+        fetchHistory();
 
   // Format date
 

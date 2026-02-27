@@ -32,10 +32,10 @@ void main();
 template <typename RET>
 RET categorizeFile(string filePath)
 {
-    if (filePath->includes(std::string("/commands/"))) return std::string("commands");
-    if (filePath->includes(std::string("/utils/"))) return std::string("utils");
-    if (filePath->includes(std::string("/types/"))) return std::string("types");
-    return std::string("other");
+    if (filePath->includes(std:("/commands/"))) return std:("commands");
+    if (filePath->includes(std:("/utils/"))) return std:("utils");
+    if (filePath->includes(std:("/types/"))) return std:("types");
+    return std:("other");
 };
 
 

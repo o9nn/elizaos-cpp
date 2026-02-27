@@ -8,10 +8,10 @@ std::shared_ptr<Promise<array<string>>> findAllSourceFiles(string dir, array<str
         auto fullPath = join(dir, entry);
         auto stats = std::async([=]() { stat(fullPath); });
         if (stats->isDirectory()) {
-            if (AND((AND((!entry->includes(std::string("node_modules"))), (!entry->includes(std::string("dist"))))), (!entry->includes(std::string("test"))))) {
+            if (AND((AND((!entry->includes(std:("node_modules"))), (!entry->includes(std:("dist"))))), (!entry->includes(std:("test"))))) {
                 std::async([=]() { findAllSourceFiles(fullPath, files); });
             }
-        } else if (AND((AND((AND((entry->endsWith(std::string(".ts"))), (!entry->endsWith(std::string(".test.ts"))))), (!entry->endsWith(std::string(".spec.ts"))))), (!entry->endsWith(std::string(".d.ts"))))) {
+        } else if (AND((AND((AND((entry->endsWith(std:(".ts"))), (!entry->endsWith(std:(".test.ts"))))), (!entry->endsWith(std:(".spec.ts"))))), (!entry->endsWith(std:(".d.ts"))))) {
             files->push(fullPath);
         }
     }
@@ -21,29 +21,29 @@ std::shared_ptr<Promise<array<string>>> findAllSourceFiles(string dir, array<str
 
 string getTestPath(string sourcePath, string category)
 {
-    auto relativePath = relative(join(process->cwd(), std::string("src")), sourcePath);
-    auto testFileName = basename(sourcePath)->replace(std::string(".ts"), std::string(".test.ts"));
+    auto relativePath = relative(join(process->cwd(), std:("src")), sourcePath);
+    auto testFileName = basename(sourcePath)->replace(std:(".ts"), std:(".test.ts"));
     auto dirPath = dirname(relativePath);
-    if (category == std::string("commands")) {
-        return join(process->cwd(), std::string("tests/commands"), testFileName);
-    } else if (category == std::string("utils")) {
-        return join(process->cwd(), std::string("tests/unit/utils"), dirPath->replace(std::string("utils/"), string_empty), testFileName);
-    } else if (category == std::string("types")) {
-        return join(process->cwd(), std::string("tests/unit/types"), testFileName);
+    if (category == std:("commands")) {
+        return join(process->cwd(), std:("tests/commands"), testFileName);
+    } else if (category == std:("utils")) {
+        return join(process->cwd(), std:("tests/unit/utils"), dirPath->replace(std:("utils/"), string_empty), testFileName);
+    } else if (category == std:("types")) {
+        return join(process->cwd(), std:("tests/unit/types"), testFileName);
     } else {
-        return join(process->cwd(), std::string("tests/unit"), relativePath->replace(std::string(".ts"), std::string(".test.ts")));
+        return join(process->cwd(), std:("tests/unit"), relativePath->replace(std:(".ts"), std:(".test.ts")));
     }
 };
 
 
 std::shared_ptr<Promise<string>> generateTestContent(string sourcePath)
 {
-    auto sourceContent = std::async([=]() { readFile(sourcePath, std::string("utf-8")); });
+    auto sourceContent = std::async([=]() { readFile(sourcePath, std:("utf-8")); });
     auto relativePath = relative(process->cwd(), sourcePath);
-    auto importPath = relativePath->replace(std::string("src/"), std::string("../../../src/"))->replace(std::string(".ts"), string_empty);
-    auto exportMatches = sourceContent->matchAll((new RegExp(std::string("export\s+(async\s+)?function\s+(\w+)"))));
-    auto classMatches = sourceContent->matchAll((new RegExp(std::string("export\s+class\s+(\w+)"))));
-    auto constMatches = sourceContent->matchAll((new RegExp(std::string("export\s+const\s+(\w+)"))));
+    auto importPath = relativePath->replace(std:("src/"), std:("../../../src/"))->replace(std:(".ts"), string_empty);
+    auto exportMatches = sourceContent->matchAll((new RegExp(std:("export\s+(async\s+)?function\s+(\w+)"))));
+    auto classMatches = sourceContent->matchAll((new RegExp(std:("export\s+class\s+(\w+)"))));
+    auto constMatches = sourceContent->matchAll((new RegExp(std:("export\s+const\s+(\w+)"))));
     auto functions = Array->from(exportMatches)->map([=](auto m) mutable
     {
         return const_(m)[2];
@@ -59,12 +59,12 @@ std::shared_ptr<Promise<string>> generateTestContent(string sourcePath)
         return const_(m)[1];
     }
     );
-    auto testContent = std::string("import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';\
+    auto testContent = std:("import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';\
 \
 // TODO: Import the functions/classes to test\
-// import { ") + (array<any>{ functions, classes, constants })->join(std::string(", ")) + std::string(" } from '") + importPath + std::string("';\
+// import { ") + (array<any>{ functions, classes, constants })->join(std:(", ")) + std:(" } from '") + importPath + std:("';\
 \
-describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) + std::string("', [&]() {\
+describe('") + basename(sourcePath)->replace(std:(".ts"), string_empty) + std:("', [&]() {\
   beforeEach([&]() {\
     mock.restore();\
   });\
@@ -75,47 +75,47 @@ describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) +
 ");
     for (auto& func : functions)
     {
-        testContent += std::string("\
-  describe('") + func + std::string("', [&]() {\
-    it.todo('should ") + func + std::string(" correctly');\
+        testContent += std:("\
+  describe('") + func + std:("', [&]() {\
+    it.todo('should ") + func + std:(" correctly');\
     \
-    it.todo('should handle errors in ") + func + std::string("');\
+    it.todo('should handle errors in ") + func + std:("');\
   });\
 ");
     }
     for (auto& cls : classes)
     {
-        testContent += std::string("\
-  describe('") + cls + std::string("', [&]() {\
-    it.todo('should create instance of ") + cls + std::string("');\
+        testContent += std:("\
+  describe('") + cls + std:("', [&]() {\
+    it.todo('should create instance of ") + cls + std:("');\
     \
-    it.todo('should test ") + cls + std::string(" methods');\
+    it.todo('should test ") + cls + std:(" methods');\
   });\
 ");
     }
     for (auto& cnst : constants)
     {
-        testContent += std::string("\
-  describe('") + cnst + std::string("', [&]() {\
-    it.todo('should ") + cnst + std::string(" correctly');\
+        testContent += std:("\
+  describe('") + cnst + std:("', [&]() {\
+    it.todo('should ") + cnst + std:(" correctly');\
   });\
 ");
     }
     if (AND((AND((functions->get_length() == 0), (classes->get_length() == 0))), (constants->get_length() == 0))) {
-        testContent += std::string("\
+        testContent += std:("\
   it.todo('should test module functionality');\
 ");
     }
-    testContent += std::string("});");
+    testContent += std:("});");
     return testContent;
 };
 
 
 void main()
 {
-    console->log(std::string("🧪 Generating Unit Test Skeletons for elizaos CLI...\
+    console->log(std:("🧪 Generating Unit Test Skeletons for elizaos CLI...\
 "));
-    auto srcPath = join(process->cwd(), std::string("src"));
+    auto srcPath = join(process->cwd(), std:("src"));
     auto sourceFiles = std::async([=]() { findAllSourceFiles(srcPath); });
     auto filesToTest = array<std::shared_ptr<FileToTest>>();
     auto skipped = 0;
@@ -128,32 +128,32 @@ void main()
             continue;
         }
         filesToTest->push(object{
-            object::pair{std::string("sourcePath"), std::string("sourcePath")}, 
-            object::pair{std::string("testPath"), std::string("testPath")}, 
-            object::pair{std::string("category"), std::string("category")}
+            object::pair{std:("sourcePath"), std:("sourcePath")}, 
+            object::pair{std:("testPath"), std:("testPath")}, 
+            object::pair{std:("category"), std:("category")}
         });
     }
-    console->log(std::string("📊 Found ") + sourceFiles->get_length() + std::string(" source files"));
-    console->log(std::string("   ") + skipped + std::string(" already have tests"));
-    console->log(std::string("   ") + filesToTest->get_length() + std::string(" need test files\
+    console->log(std:("📊 Found ") + sourceFiles->get_length() + std:(" source files"));
+    console->log(std:("   ") + skipped + std:(" already have tests"));
+    console->log(std:("   ") + filesToTest->get_length() + std:(" need test files\
 "));
     if (filesToTest->get_length() == 0) {
-        console->log(std::string("✅ All files already have tests!"));
+        console->log(std:("✅ All files already have tests!"));
         return std::shared_ptr<Promise<void>>();
     }
-    console->log(std::string("Would you like to generate test skeletons for all untested files?"));
-    console->log(std::string("(This will create .todo tests that you can implement later)\
+    console->log(std:("Would you like to generate test skeletons for all untested files?"));
+    console->log(std:("(This will create .todo tests that you can implement later)\
 "));
     auto shouldGenerateTests = std::async([=]() { clack->confirm(object{
-        object::pair{std::string("message"), std::string("Generate test skeletons for all untested files?")}, 
-        object::pair{std::string("initialValue"), true}
+        object::pair{std:("message"), std:("Generate test skeletons for all untested files?")}, 
+        object::pair{std:("initialValue"), true}
     }); });
     if (clack->isCancel(shouldGenerateTests)) {
-        clack->cancel(std::string("Operation cancelled."));
+        clack->cancel(std:("Operation cancelled."));
         return std::shared_ptr<Promise<void>>();
     }
     if (!shouldGenerateTests) {
-        clack->outro(std::string("Test generation skipped."));
+        clack->outro(std:("Test generation skipped."));
         return std::shared_ptr<Promise<void>>();
     }
     auto created = 0;
@@ -164,29 +164,29 @@ void main()
         {
             auto testDir = dirname(file->testPath);
             std::async([=]() { mkdir(testDir, object{
-                object::pair{std::string("recursive"), true}
+                object::pair{std:("recursive"), true}
             }); });
             auto testContent = std::async([=]() { generateTestContent(file->sourcePath); });
             std::async([=]() { writeFile(file->testPath, testContent); });
-            console->log(std::string("✅ Created: ") + relative(process->cwd(), file->testPath) + string_empty);
+            console->log(std:("✅ Created: ") + relative(process->cwd(), file->testPath) + string_empty);
             created++;
         }
         catch (const any& error)
         {
-            console->error(std::string("❌ Failed: ") + relative(process->cwd(), file->testPath) + string_empty);
-            console->error(std::string("   Error: ") + error["message"] + string_empty);
+            console->error(std:("❌ Failed: ") + relative(process->cwd(), file->testPath) + string_empty);
+            console->error(std:("   Error: ") + error["message"] + string_empty);
             failed++;
         }
     }
-    console->log(std::string("\
+    console->log(std:("\
 📊 Summary:"));
-    console->log(std::string("   ✅ Created: ") + created + std::string(" test files"));
-    console->log(std::string("   ❌ Failed: ") + failed + std::string(" files"));
-    console->log(std::string("\
+    console->log(std:("   ✅ Created: ") + created + std:(" test files"));
+    console->log(std:("   ❌ Failed: ") + failed + std:(" files"));
+    console->log(std:("\
 💡 Next steps:"));
-    console->log(std::string("   1. Run 'bun test' to see all .todo tests"));
-    console->log(std::string("   2. Implement tests by replacing it.todo with it"));
-    console->log(std::string("   3. Run coverage report to track progress"));
+    console->log(std:("   1. Run 'bun test' to see all .todo tests"));
+    console->log(std:("   2. Implement tests by replacing it.todo with it"));
+    console->log(std:("   3. Run coverage report to track progress"));
 };
 
 

@@ -1,12 +1,16 @@
 #include "channels.hpp"
+#include <future>
+#include <optional>
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<> saveChannelUploadedFile(Express.Multer.File file, const std::string& channelId) {
+std::future<> saveChannelUploadedFile(Express.Multer.File file, const std:& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std::string; url: std::string
+    filename: std:; url: std:
 }
 
 express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
@@ -16,9 +20,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
         const auto router = express.Router();
 
         // GUI posts NEW messages from a user here
-        (router).post(;
+        (router).post[&](;
         "/central-channels/:channelId/messages",
-        std::async (req: express.Request, res: express.Response) => {
+        std::async (req: express.Request, res: express.Response) {
             const auto channelIdParam = validateUuid(req.params.channelId);
             const auto {;
                 author_id, // This is the GUI user's central ID;
@@ -65,17 +69,16 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                 try {
                                     // First verify the server exists
                                     const auto servers = serverInstance.getServers();
-                                    const auto serverExists = servers.some((s) => s.id == server_id);
-                                    logger.info(
-                                    "[Messages Router] Server " + server_id + " exists: " + serverExists + ". Available servers: " + std::to_string(servers.std::map((s) => s.id).join(", "))
-                                    );
+                                    const auto serverExists = servers.some[&]((s) { return s.id == server_id); };
+                                    logger.info[&](
+                                    "[Messages Router] Server " + server_id + " exists: " + serverExists + ". Available servers: " + std::to_string(servers.std::map((s) { return s.id).join(", "))
+                                    ); };
 
                                     if (!serverExists) {
                                         logger.error(
                                         "[Messages Router] Server " + server_id + " does not exist, cannot create channel";
                                         );
-                                        return res;
-                                        .status(500);
+                                        return res.status(500);
                                         ".json({ success: false, error: " + "Server " + server_id + " does not exist"
                                     }
 
@@ -96,7 +99,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                         metadata: {
                                             created_by: "gui_auto_creation",
                                             created_for_user: author_id,
-                                            created_at: new Date().toISOString(),
+                                            created_at: std::make_unique<Date>().toISOString(),
                                             channel_type: isDmChannel ? ChannelType.DM : ChannelType.GROUP,
                                             ...metadata,
                                             },
@@ -104,7 +107,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                             logger.info(
                                             "[Messages Router] Creating channel with data:",
-                                            /* JSON.stringify */ std::string(channelData, nullptr, 2);
+                                            /* JSON.stringify */ std:(channelData, nullptr, 2);
                                             );
 
                                             // For DM channels, we need to determine the participants
@@ -135,8 +138,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                     "[Messages Router] Failed to auto-create channel " + channelIdParam + ":"
                                                     createError;
                                                     );
-                                                    return res;
-                                                    .status(500);
+                                                    return res.status(500);
                                                     ".json({ success: false, error: " + "Failed to create channel: " + errorMessage
                                                 }
                                                 } else {
@@ -210,9 +212,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                         );
 
                                                         // GET messages for a central channel
-                                                        (router).get(;
+                                                        (router).get[&](;
                                                         "/central-channels/:channelId/messages",
-                                                        std::async (req: express.Request, res: express.Response) => {
+                                                        std::async (req: express.Request, res: express.Response) {
                                                             const auto channelId = validateUuid(req.params.channelId);
                                                             const auto limit = req.query.limit ? Number.parseInt(req.query.limit, 10) : 50;
                                                             const auto before = req.query.before ? Number.parseInt(req.query.before, 10) : std::nullopt;
@@ -225,10 +227,10 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                             try {
                                                                 const auto messages = serverInstance.getMessagesForChannel(channelId, limit, beforeDate);
                                                                 // Transform to MessageService structure if GUI expects timestamps as numbers, or align types
-                                                                const auto messagesForGui = messages.std::map((msg) => {;
+                                                                const auto messagesForGui = messages.std::map[&]((msg) {;
                                                                     // Extract thought and actions from rawMessage for historical messages
                                                                     const auto rawMessage =;
-                                                                    typeof msg.rawMessage == "string" ? /* JSON.parse */ msg.rawMessage : msg.rawMessage;
+                                                                    typeof msg.rawMessage == "string" ? /* JSON::parse */ msg.rawMessage : msg.rawMessage;
 
                                                                     return {
                                                                         ...msg,
@@ -255,9 +257,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                         );
 
                                                                         // GET /central-servers/:serverId/channels
-                                                                        (router).get(;
+                                                                        (router).get[&](;
                                                                         "/central-servers/:serverId/channels",
-                                                                        std::async (req: express.Request, res: express.Response) => {
+                                                                        std::async (req: express.Request, res: express.Response) {
                                                                             const auto serverId =;
                                                                             req.params.serverId == DEFAULT_SERVER_ID;
                                                                             ? DEFAULT_SERVER_ID;
@@ -279,7 +281,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                             );
 
                                                                             // POST /channels - Create a new central channel
-                                                                            (router).post("/channels", std::async (req: express.Request, res: express.Response) => {
+                                                                            (router).post[&]("/channels", std::async (req: express.Request, res: express.Response) {
                                                                                 const auto serverId = req.body.serverId;
                                                                                 const auto { name, type, sourceType, sourceId, metadata } = req.body;
                                                                                 const auto topic = req.body.topic || req.body.description;
@@ -330,7 +332,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                         });
 
                                                                                                         // GET /dm-channel?targetUserId=<target_user_id>
-                                                                                                        (router).get("/dm-channel", std::async (req: express.Request, res: express.Response) => {
+                                                                                                        (router).get[&]("/dm-channel", std::async (req: express.Request, res: express.Response) {
                                                                                                             const auto targetUserId = validateUuid(req.query.targetUserId);
                                                                                                             const auto currentUserId = validateUuid(req.query.currentUserId);
                                                                                                             const auto providedDmServerId =;
@@ -386,7 +388,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                     });
 
                                                                                                                     // POST /central-channels (for creating group channels)
-                                                                                                                    (router).post("/central-channels", std::async (req: express.Request, res: express.Response) => {
+                                                                                                                    (router).post[&]("/central-channels", std::async (req: express.Request, res: express.Response) {
                                                                                                                         const auto {;
                                                                                                                             name,
                                                                                                                             participantCentralUserIds,
@@ -402,7 +404,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                             !name ||;
                                                                                                                             !isValidServerId ||;
                                                                                                                             !Array.isArray(participantCentralUserIds) ||;
-                                                                                                                            participantCentralUserIds.some((id) => !validateUuid(id));
+                                                                                                                            participantCentralUserIds.some[&]((id) { return !validateUuid(id)); };
                                                                                                                             ) {
                                                                                                                                 return res.status(400).json({;
                                                                                                                                     success: false,
@@ -434,16 +436,14 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                 "[Messages Router /central-channels] Error creating group channel:",
                                                                                                                                                 errorMessage;
                                                                                                                                                 );
-                                                                                                                                                res;
-                                                                                                                                                .status(500);
-                                                                                                                                                .json({ success: false, error: "Failed to create group channel", details: errorMessage });
+                                                                                                                                                res.status(500).json({ success: false, error: "Failed to create group channel", details: errorMessage });
                                                                                                                                             }
                                                                                                                                             });
 
                                                                                                                                             // Get channel details
-                                                                                                                                            (router).get(;
+                                                                                                                                            (router).get[&](;
                                                                                                                                             "/central-channels/:channelId/details",
-                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                            std::async (req: express.Request, res: express.Response) {
                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                 if (!channelId) {
                                                                                                                                                     return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -462,9 +462,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                 );
 
                                                                                                                                                 // Get channel participants
-                                                                                                                                                (router).get(;
+                                                                                                                                                (router).get[&](;
                                                                                                                                                 "/central-channels/:channelId/participants",
-                                                                                                                                                std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                std::async (req: express.Request, res: express.Response) {
                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                     if (!channelId) {
                                                                                                                                                         return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -483,9 +483,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                     );
 
                                                                                                                                                     // POST /central-channels/:channelId/agents - Add agent to channel
-                                                                                                                                                    (router).post(;
+                                                                                                                                                    (router).post[&](;
                                                                                                                                                     "/central-channels/:channelId/agents",
-                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                    std::async (req: express.Request, res: express.Response) {
                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                         const auto { agentId } = req.body;
 
@@ -537,9 +537,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                             );
 
                                                                                                                                                                             // DELETE /central-channels/:channelId/agents/:agentId - Remove agent from channel
-                                                                                                                                                                            (router).delete(;
+                                                                                                                                                                            (router).delete[&](;
                                                                                                                                                                             "/central-channels/:channelId/agents/:agentId",
-                                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                            std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                 const auto agentId = validateUuid(req.params.agentId);
 
@@ -562,7 +562,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                                             // Get current participants to verify agent is in channel
                                                                                                                                                                                             const auto currentParticipants = serverInstance.getChannelParticipants(channelId);
-                                                                                                                                                                                            if (!currentParticipants.includes(agentId)) {
+                                                                                                                                                                                            if (!currentParticipants.count(agentId) > 0) {
                                                                                                                                                                                                 return res.status(404).json({;
                                                                                                                                                                                                     success: false,
                                                                                                                                                                                                     error: "Agent is not a participant in this channel",
@@ -571,7 +571,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                                                 // Remove agent from channel participants
                                                                                                                                                                                                 // Note: We need to update the channel with the new participant list
-                                                                                                                                                                                                const auto updatedParticipants = currentParticipants.filter((id) => id != agentId);
+                                                                                                                                                                                                const auto updatedParticipants = currentParticipants.filter[&]((id) { return id != agentId); };
                                                                                                                                                                                                 serverInstance.updateChannel(channelId, {
                                                                                                                                                                                                     participantCentralUserIds: updatedParticipants,
                                                                                                                                                                                                     });
@@ -601,9 +601,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                             );
 
                                                                                                                                                                                                             // GET /central-channels/:channelId/agents - List agents in channel
-                                                                                                                                                                                                            (router).get(;
+                                                                                                                                                                                                            (router).get[&](;
                                                                                                                                                                                                             "/central-channels/:channelId/agents",
-                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
 
                                                                                                                                                                                                                 if (!channelId) {
@@ -641,9 +641,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                 );
 
                                                                                                                                                                                                                                 // Delete single message
-                                                                                                                                                                                                                                (router).delete(;
+                                                                                                                                                                                                                                (router).delete[&](;
                                                                                                                                                                                                                                 "/central-channels/:channelId/messages/:messageId",
-                                                                                                                                                                                                                                std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                     const auto messageId = validateUuid(req.params.messageId);
                                                                                                                                                                                                                                     if (!channelId || !messageId) {
@@ -684,9 +684,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                             // Clear all messages in channel
-                                                                                                                                                                                                                                            (router).delete(;
+                                                                                                                                                                                                                                            (router).delete[&](;
                                                                                                                                                                                                                                             "/central-channels/:channelId/messages",
-                                                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                 if (!channelId) {
                                                                                                                                                                                                                                                     return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -719,9 +719,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                         );
 
                                                                                                                                                                                                                                                         // Update channel
-                                                                                                                                                                                                                                                        (router).patch(;
+                                                                                                                                                                                                                                                        (router).patch[&](;
                                                                                                                                                                                                                                                         "/central-channels/:channelId",
-                                                                                                                                                                                                                                                        std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                        std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                             if (!channelId) {
                                                                                                                                                                                                                                                                 return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -749,9 +749,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                     );
 
                                                                                                                                                                                                                                                                     // Delete entire channel
-                                                                                                                                                                                                                                                                    (router).delete(;
+                                                                                                                                                                                                                                                                    (router).delete[&](;
                                                                                                                                                                                                                                                                     "/central-channels/:channelId",
-                                                                                                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                         if (!channelId) {
                                                                                                                                                                                                                                                                             return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -796,7 +796,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                 createUploadRateLimit(),
                                                                                                                                                                                                                                                                                 createFileSystemRateLimit(),
                                                                                                                                                                                                                                                                                 channelUploadMiddleware.single("file"),
-                                                                                                                                                                                                                                                                                std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                                std::async [&](req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                     if (!channelId) {
                                                                                                                                                                                                                                                                                         res.status(400).json({ success: false, error: "Invalid channelId format" });
@@ -847,9 +847,9 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                             );
 
-                                                                                                                                                                                                                                                                                            (router).post(;
+                                                                                                                                                                                                                                                                                            (router).post[&](;
                                                                                                                                                                                                                                                                                             "/central-channels/:channelId/generate-title",
-                                                                                                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) {
                                                                                                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                                 const auto { agentId } = req.body;
 
@@ -886,7 +886,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                                                                                                                                                                 const auto messages = serverInstance.getMessagesForChannel(channelId, limit, beforeDate);
 
-                                                                                                                                                                                                                                                                                                                if (!messages || messages.length < 4) {
+                                                                                                                                                                                                                                                                                                                if (!messages || messages.size() < 4) {
                                                                                                                                                                                                                                                                                                                     return res.status(200).json({;
                                                                                                                                                                                                                                                                                                                         success: true,
                                                                                                                                                                                                                                                                                                                         data: {
@@ -897,14 +897,12 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                             });
                                                                                                                                                                                                                                                                                                                         }
 
-                                                                                                                                                                                                                                                                                                                        const auto recentMessages = messages;
-                                                                                                                                                                                                                                                                                                                        .reverse() // Show in chronological order;
-                                                                                                                                                                                                                                                                                                                        .std::map((msg) => {
+                                                                                                                                                                                                                                                                                                                        const auto recentMessages = messages.reverse() // Show in chronological order;
+                                                                                                                                                                                                                                                                                                                        .std::map[&]((msg) {
                                                                                                                                                                                                                                                                                                                             const auto isUser = msg.authorId != runtime.agentId;
                                                                                                                                                                                                                                                                                                                             const auto role = isUser ? "User" : "Agent";
                                                                                                                                                                                                                                                                                                                             return role + ": " + msg.content;
-                                                                                                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                                                                                                            .join("\n");
+                                                                                                                                                                                                                                                                                                                            }).join("\n");
 
                                                                                                                                                                                                                                                                                                                             const auto prompt = composePromptFromState({;
                                                                                                                                                                                                                                                                                                                                 state: {
@@ -930,7 +928,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                     Recent conversation:
                                                                                                                                                                                                                                                                                                                                 {{recentMessages}}
                                                                                                                                                                                                                                                                                                                                 Respond with just the title, nothing else.;
-                                                                                                                                                                                                                                                                                                                                `,
+                                                                                                                                                                                                                                                                                                                                ",
                                                                                                                                                                                                                                                                                                                                 });
 
                                                                                                                                                                                                                                                                                                                                 const auto newTitle = runtime.useModel(ModelType.TEXT_SMALL, {;
@@ -939,12 +937,12 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                     maxTokens: 50, // Keep titles short
                                                                                                                                                                                                                                                                                                                                     });
 
-                                                                                                                                                                                                                                                                                                                                    if (!newTitle || newTitle.trim().length == 0) {
+                                                                                                                                                                                                                                                                                                                                    if (!newTitle || newTitle.size() == 0) {
                                                                                                                                                                                                                                                                                                                                         std::cout << "[ChatTitleEvaluator] Failed to generate title for room " + channelId << std::endl;
                                                                                                                                                                                                                                                                                                                                         return;
                                                                                                                                                                                                                                                                                                                                     }
 
-                                                                                                                                                                                                                                                                                                                                    const auto cleanTitle = newTitle.trim().replace(/^[""]|[""]$/g, ""); // Remove quotes if present;
+                                                                                                                                                                                                                                                                                                                                    const auto cleanTitle = newTitle.replace(/^[""]|[""]$/g, ""); // Remove quotes if present;
 
                                                                                                                                                                                                                                                                                                                                     std::cout << "[ChatTitleEvaluator] Generated title: \"" + cleanTitle + "\" for room " + channelId << std::endl;
 
@@ -953,7 +951,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                         channelId,
                                                                                                                                                                                                                                                                                                                                         };
 
-                                                                                                                                                                                                                                                                                                                                        logger.success(`[CHANNEL SUMMARIZE] Successfully summarized channel ${channelId}`);
+                                                                                                                                                                                                                                                                                                                                        logger.success("[CHANNEL SUMMARIZE] Successfully summarized channel ${channelId}`);
 
                                                                                                                                                                                                                                                                                                                                         res.json({
                                                                                                                                                                                                                                                                                                                                             success: true,

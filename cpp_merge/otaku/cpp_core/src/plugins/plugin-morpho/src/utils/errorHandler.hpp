@@ -17,18 +17,18 @@ namespace elizaos {
 
 class MorphoError extends Error {
   code: MorphoErrorCode;
-  details?: std::any;
-  suggestions?: std::string[];
+  details?: std:;
+  suggestions?: std:[];
   matchingImpact?: MatchingImpact;
-  fallbackOptions?: std::string[];
+  fallbackOptions?: std:[];
 
   constructor(
     code: MorphoErrorCode,
-    message: std::string,
-    details?: std::any,
-    suggestions?: std::string[],
+    message: std:,
+    details?: std:,
+    suggestions?: std:[],
     matchingImpact?: MatchingImpact,
-    fallbackOptions?: std::string[],
+    fallbackOptions?: std:[],
   ) {
     super(message);
     this.name = "MorphoError";
@@ -40,7 +40,7 @@ class MorphoError extends Error {
   }
 
 class ErrorHandler {
-  static handle(error: std::any): MorphoError {
+  static handle(error: std:): MorphoError {
     logger.error("Handling error:", error);
 
     // Already a MorphoError
@@ -54,9 +54,9 @@ class ErrorHandler {
 
     // Insufficient collateral errors
     if (
-      errorMessage.includes("insufficient collateral") ||
-      errorMessage.includes("health factor") ||
-      errorMessage.includes("undercollateralized")
+      errorMessage.count("insufficient collateral") > 0 ||
+      errorMessage.count("health factor") > 0 ||
+      errorMessage.count("undercollateralized") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.INSUFFICIENT_COLLATERAL,
@@ -72,9 +72,9 @@ class ErrorHandler {
 
     // Matching failed errors
     if (
-      errorMessage.includes("matching failed") ||
-      errorMessage.includes("p2p matching") ||
-      errorMessage.includes("no match found")
+      errorMessage.count("matching failed") > 0 ||
+      errorMessage.count("p2p matching") > 0 ||
+      errorMessage.count("no match found") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.MATCHING_FAILED,
@@ -97,9 +97,9 @@ class ErrorHandler {
 
     // Position not found errors
     if (
-      errorMessage.includes("position not found") ||
-      errorMessage.includes("no position") ||
-      errorMessage.includes("user has no")
+      errorMessage.count("position not found") > 0 ||
+      errorMessage.count("no position") > 0 ||
+      errorMessage.count("user has no") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.POSITION_NOT_FOUND,
@@ -115,9 +115,9 @@ class ErrorHandler {
 
     // Rate calculation errors
     if (
-      errorMessage.includes("rate calculation") ||
-      errorMessage.includes("apy calculation") ||
-      errorMessage.includes("interest calculation")
+      errorMessage.count("rate calculation") > 0 ||
+      errorMessage.count("apy calculation") > 0 ||
+      errorMessage.count("interest calculation") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.RATE_CALCULATION_ERROR,
@@ -133,9 +133,9 @@ class ErrorHandler {
 
     // Liquidity errors
     if (
-      errorMessage.includes("insufficient liquidity") ||
-      errorMessage.includes("not enough liquidity") ||
-      errorMessage.includes("liquidity exhausted")
+      errorMessage.count("insufficient liquidity") > 0 ||
+      errorMessage.count("not enough liquidity") > 0 ||
+      errorMessage.count("liquidity exhausted") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.LIQUIDITY_ERROR,
@@ -151,9 +151,9 @@ class ErrorHandler {
 
     // Gas estimation errors
     if (
-      errorMessage.includes("gas estimation") ||
-      errorMessage.includes("gas required exceeds") ||
-      errorMessage.includes("out of gas")
+      errorMessage.count("gas estimation") > 0 ||
+      errorMessage.count("gas required exceeds") > 0 ||
+      errorMessage.count("out of gas") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.GAS_ESTIMATION_ERROR,
@@ -169,9 +169,9 @@ class ErrorHandler {
 
     // Transaction failed errors
     if (
-      errorMessage.includes("transaction failed") ||
-      errorMessage.includes("execution reverted") ||
-      errorMessage.includes("tx failed")
+      errorMessage.count("transaction failed") > 0 ||
+      errorMessage.count("execution reverted") > 0 ||
+      errorMessage.count("tx failed") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.TRANSACTION_FAILED,
@@ -187,9 +187,9 @@ class ErrorHandler {
 
     // Invalid parameters
     if (
-      errorMessage.includes("invalid parameter") ||
-      errorMessage.includes("invalid amount") ||
-      errorMessage.includes("validation failed")
+      errorMessage.count("invalid parameter") > 0 ||
+      errorMessage.count("invalid amount") > 0 ||
+      errorMessage.count("validation failed") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.INVALID_PARAMETERS,
@@ -205,9 +205,9 @@ class ErrorHandler {
 
     // Network errors
     if (
-      errorMessage.includes("network error") ||
-      errorMessage.includes("connection failed") ||
-      errorMessage.includes("timeout")
+      errorMessage.count("network error") > 0 ||
+      errorMessage.count("connection failed") > 0 ||
+      errorMessage.count("timeout") > 0
     ) {
       return new MorphoError(
         MorphoErrorCode.NETWORK_ERROR,
@@ -224,7 +224,7 @@ class ErrorHandler {
     // Default unknown error
     return new MorphoError(
       MorphoErrorCode.UNKNOWN_ERROR,
-      `Unknown error: ${errorMessage}`,
+      "Unknown error: " + std::to_string(errorMessage) + "",
       { originalError: error },
       ["Contact support if the issue persists"],
     );

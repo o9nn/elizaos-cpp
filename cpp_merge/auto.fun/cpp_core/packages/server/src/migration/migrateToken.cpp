@@ -4,11 +4,11 @@
 
 namespace elizaos {
 
-void asBN(const std::variant<BN, std::string>& x) {
+void asBN(const std::variant<BN, std:>& x) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     //   // Redis stored hex strings, so we parse as hex
-    //   return typeof x === "string" ? new BN(x, "hex") : x;
+    //   return typeof x == "string" ? new BN(x, "hex") : x;
     //
 }
 

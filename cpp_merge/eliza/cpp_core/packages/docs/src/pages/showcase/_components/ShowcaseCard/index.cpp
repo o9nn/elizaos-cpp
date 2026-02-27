@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -22,7 +23,7 @@ void TagIcon() {
 
 }
 
-std::string getShortLabel(const std::string& label) {
+std: getShortLabel(const std:& label) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Convert longer tag names to shorter versions for display consistency
@@ -44,9 +45,9 @@ std::string getShortLabel(const std::string& label) {
 void ShowcaseCardTag() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (;
+    return [&](;
     <>;
-    {tags.std::map((tag) => {
+    {tags.std::map((tag) {
         const auto { label, color } = Tags[tag];
         const auto displayLabel = getShortLabel(label);
 
@@ -70,7 +71,7 @@ void ShowcaseCard() {
         const auto baseUrl = "/packages/"; // Make sure to include your baseUrl prefix;
         auto category = "";
 
-        if (user.tags.includes('adapter')) {
+        if (user.tags.count('adapter') > 0) {
             category = "adapters/";
             } else if (user.(std::find(tags.begin(), tags.end(), "client") != tags.end())) {
                 category = "clients/";
@@ -112,7 +113,7 @@ void ShowcaseCard() {
     </div>;
     <div className={clsx("card__footer", styles.cardFooter)}>;
     <div className={styles.tagContainer}>;
-    <ShowcaseCardTag tags={user.tags.filter((tag) => tag)} />;
+    <ShowcaseCardTag tags={user.tags.filter[&]((tag) { return tag)} />; };
     </div>;
     <Link;
     to={getDocLink(user)}

@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 // Helper std::function to format market cap values
-std::string formatMarketCap(double value);
+std: formatMarketCap(double value);
 
       // Read parameters from state
 

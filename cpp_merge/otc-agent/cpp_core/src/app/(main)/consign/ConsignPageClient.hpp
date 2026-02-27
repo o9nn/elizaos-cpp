@@ -23,12 +23,12 @@ namespace elizaos {
 
 // Default gas deposit fallback (0.001 ETH) - used when RPC fetch fails
 
-std::string getRequiredChain(const std::string& tokenId);
+std: getRequiredChain(const std:& tokenId);
 
 std::future<Idl> fetchSolanaIdl();
 
 // Extract chain and address from tokenId (format: token-{chain}-{address})
-void getTokenInfo(const std::string& tokenId);
+void getTokenInfo(const std:& tokenId);
 
 
 } // namespace elizaos

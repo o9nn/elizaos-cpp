@@ -1,17 +1,19 @@
 #include "agents.hpp"
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any> _serverInstance) {
+express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std:> _serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto router = express.Router();
 
         // Get memories for a specific room
-        router.get("/:agentId/rooms/:roomId/memories", requireAuthenticated(), std::async (req, res) => {
+        router.get("/:agentId/rooms/:roomId/memories", requireAuthenticated(), std::async [&](req, res) {
             const auto agentId = validateUuid(req.params.agentId);
             const auto roomId = validateUuid(req.params.roomId);
 
@@ -64,7 +66,7 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
                         });
 
                         // Get all memories for an agent
-                        router.get("/:agentId/memories", requireAuthenticated(), std::async (req, res) => {
+                        router.get("/:agentId/memories", requireAuthenticated(), std::async [&](req, res) {
                             const auto agentId = validateUuid(req.params.agentId);
 
                             if (!agentId) {
@@ -132,7 +134,7 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
                                             });
 
                                             // Update a specific memory for an agent
-                                            router.patch("/:agentId/memories/:memoryId", requireAuthenticated(), std::async (req, res) => {
+                                            router.patch("/:agentId/memories/:memoryId", requireAuthenticated(), std::async [&](req, res) {
                                                 const auto agentId = validateUuid(req.params.agentId);
                                                 const auto memoryId = validateUuid(req.params.memoryId);
 
@@ -176,15 +178,15 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
 
                                                         // Remove undefined fields that might have been explicitly std::set to undefined by casting above,
                                                         // if the updateMemory implementation doesn't handle them gracefully.
-                                                        Object.keys(memoryToUpdate).forEach((key) => {
-                                                            if ((memoryToUpdate as std::any)[key] == undefined) {
+                                                        Object.keys(memoryToUpdate).forEach[&]((key) {
+                                                            if ((memoryToUpdate as std:)[key] == undefined) {
                                                                 delete (memoryToUpdate)[key];
                                                             }
                                                             });
 
                                                             runtime.updateMemory(memoryToUpdate);
 
-                                                            logger.success(`[MEMORY UPDATE] Successfully updated memory ${memoryId}`);
+                                                            logger.success("[MEMORY UPDATE] Successfully updated memory " + std::to_string(memoryId) + "");
                                                             sendSuccess(res, { id: memoryId, message: "Memory updated successfully" });
                                                             } catch (error) {
                                                                 logger.error(
@@ -202,7 +204,7 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
                                                             });
 
                                                             // Delete all memories for an agent
-                                                            router.delete("/:agentId/memories", requireAuthenticated(), std::async (req, res) => {
+                                                            router.delete("/:agentId/memories", requireAuthenticated(), std::async [&](req, res) {
                                                                 try {
                                                                     const auto agentId = validateUuid(req.params.agentId);
 
@@ -235,7 +237,7 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
                                                                     });
 
                                                                     // Delete all memories for a room
-                                                                    router.delete("/:agentId/memories/all/:roomId", requireAuthenticated(), std::async (req, res) => {
+                                                                    router.delete("/:agentId/memories/all/:roomId", requireAuthenticated(), std::async [&](req, res) {
                                                                         try {
                                                                             const auto agentId = validateUuid(req.params.agentId);
                                                                             const auto roomId = validateUuid(req.params.roomId);
@@ -273,7 +275,7 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::any>
                                                                             });
 
                                                                             // Delete a specific memory for an agent
-                                                                            router.delete("/:agentId/memories/:memoryId", requireAuthenticated(), std::async (req, res) => {
+                                                                            router.delete("/:agentId/memories/:memoryId", requireAuthenticated(), std::async [&](req, res) {
                                                                                 try {
                                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                                     const auto memoryId = validateUuid(req.params.memoryId);

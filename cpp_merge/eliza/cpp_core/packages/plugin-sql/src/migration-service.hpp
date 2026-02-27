@@ -17,18 +17,18 @@ namespace elizaos {
 
 class DatabaseMigrationService {
   private db: DrizzleDatabase | null = null;
-  private registeredSchemas = new Map<std::string, any>();
+  private registeredSchemas = new Map<std:, any>();
 
   constructor() {
     // No longer extending Service, so no need to call super
   }
 
-      // console.log(`[MIGRATION DEBUG] Processing plugin: ${pluginName}`);
-      // console.log(`[MIGRATION DEBUG] Schema keys:`, Object.keys(schema));
+      // console.log("[MIGRATION DEBUG] Processing plugin: " + std::to_string(pluginName) + "");
+      // console.log("[MIGRATION DEBUG] Schema keys:", Object.keys(schema));
 
-      await runPluginMigrations(this.db!, pluginName, schema);
+      runPluginMigrations(this.db!, pluginName, schema);
 
-      // console.log(`[MIGRATION DEBUG] Completed migration for plugin: ${pluginName}`);
+      // console.log("[MIGRATION DEBUG] Completed migration for plugin: " + std::to_string(pluginName) + "");
 
 
 } // namespace elizaos

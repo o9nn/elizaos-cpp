@@ -21,8 +21,8 @@ std::function<object()> useRelationshipSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std::string("isLoading"), useIsLoading}, 
-        object::pair{std::string("friends"), useFriends}
+        object::pair{std:("isLoading"), useIsLoading}, 
+        object::pair{std:("friends"), useFriends}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -39,8 +39,8 @@ std::function<object()> useRelationshipSlice = [=]() mutable
     auto addFriend = [=](auto username, auto discriminator) mutable
     {
         dispatch(addFriendAction(object{
-            object::pair{std::string("username"), std::string("username")}, 
-            object::pair{std::string("discriminator"), std::string("discriminator")}
+            object::pair{std:("username"), std:("username")}, 
+            object::pair{std:("discriminator"), std:("discriminator")}
         }));
     };
     auto deleteFriend = [=](auto userId) mutable
@@ -52,13 +52,13 @@ std::function<object()> useRelationshipSlice = [=]() mutable
         dispatch(openDmAction(userId));
     };
     return object{
-        object::pair{std::string("state"), std::string("state")}, 
-        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
-        object::pair{std::string("setFriends"), std::string("setFriends")}, 
-        object::pair{std::string("getFriends"), std::string("getFriends")}, 
-        object::pair{std::string("addFriend"), std::string("addFriend")}, 
-        object::pair{std::string("deleteFriend"), std::string("deleteFriend")}, 
-        object::pair{std::string("openDm"), std::string("openDm")}
+        object::pair{std:("state"), std:("state")}, 
+        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
+        object::pair{std:("setFriends"), std:("setFriends")}, 
+        object::pair{std:("getFriends"), std:("getFriends")}, 
+        object::pair{std:("addFriend"), std:("addFriend")}, 
+        object::pair{std:("deleteFriend"), std:("deleteFriend")}, 
+        object::pair{std:("openDm"), std:("openDm")}
     };
 };
 

@@ -1,4 +1,6 @@
 #include "SendModal.hpp"
+#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,7 +21,7 @@ void SendModalContent(auto userId) {
         const auto dropdownRef = useRef<HTMLDivElement>(nullptr);
 
         // Close dropdown when clicking outside
-        useEffect(() => {
+        useEffect[&](() {
             const auto handleClickOutside = [&](event: MouseEvent) {;
                 if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                     setIsDropdownOpen(false);
@@ -36,13 +38,13 @@ void SendModalContent(auto userId) {
                     }, [isDropdownOpen]);
 
                     // Validate recipient address
-                    const auto isValidAddress = useMemo(() => {;
+                    const auto isValidAddress = useMemo[&](() {;
                         if (!recipientAddress) return null;
                         return /^0x[a-fA-F0-9]{40}$/.test(recipientAddress);
                         }, [recipientAddress]);
 
                         // Calculate USD value of amount
-                        const auto usdValue = useMemo(() => {;
+                        const auto usdValue = useMemo[&](() {;
                             if (!amount || !selectedToken || !selectedToken.usdPrice) return 0;
                             const auto numAmount = parseFloat(amount);
                             if (isNaN(numAmount)) return 0;
@@ -50,7 +52,7 @@ void SendModalContent(auto userId) {
                             }, [amount, selectedToken]);
 
                             // Check if amount is valid
-                            const auto isValidAmount = useMemo(() => {;
+                            const auto isValidAmount = useMemo[&](() {;
                                 if (!amount || !selectedToken) return null;
                                 const auto numAmount = parseFloat(amount);
                                 if (isNaN(numAmount) || numAmount <= 0) return false;
@@ -73,7 +75,7 @@ void SendModalContent(auto userId) {
                                     };
 
                                     // Handle send
-                                    const auto handleSend = std::async () => {;
+                                    const auto handleSend = std::async [&]() {;
                                         if (!selectedToken || !recipientAddress || !amount) {
                                             showError("Validation Error", "Please fill in all fields", modalId);
                                             return;
@@ -99,10 +101,10 @@ void SendModalContent(auto userId) {
                                             const auto amountInBaseUnits = BigInt(Math.floor(amountNum * multiplier)).toString();
 
                                             // Determine token parameter
-                                            auto tokenParam: std::string;
+                                            auto tokenParam: std:;
                                             if (!selectedToken.contractAddress) {
                                                 // Native token - use specific symbol for each chain
-                                                const std::unordered_map<std::string, std::string> nativeTokenMap = {;
+                                                const std::unordered_map<std:, std:> nativeTokenMap = {;
                                                     "base": "eth",
                                                     "ethereum": "eth",
                                                     "polygon": "pol",
@@ -146,7 +148,7 @@ void SendModalContent(auto userId) {
                                                             // Trigger parent to refresh wallet data
                                                             onSuccess();
 
-                                                            } catch (err: std::any) {
+                                                            } catch (err: std:) {
                                                                 std::cerr << " Send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send transaction";
                                                                 showError("Transaction Failed", errorMessage, modalId);
@@ -167,7 +169,7 @@ void SendModalContent(auto userId) {
                                                                     }
                                                                     };
 
-                                                                    return (;
+                                                                    return [&](;
                                                                     <div className="space-y-4">;
                                                                     <div className="flex items-center justify-between">;
                                                                     <h3 className="text-lg font-semibold">Send Tokens</h3>;
@@ -180,9 +182,9 @@ void SendModalContent(auto userId) {
                                                             {/* Dropdown Button */}
                                                             <button;
                                                             type="button";
-                                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                        onClick={() { return setIsDropdownOpen(!isDropdownOpen)}
                                                         className="w-full p-3 border border-border rounded-lg flex items-center justify-between hover:bg-accent/50 transition-colors"
-                                                        >;
+                                                        >; };
                                                         {selectedToken ? (;
                                                         <div className="flex items-center gap-2">;
                                                         <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">;
@@ -206,13 +208,13 @@ void SendModalContent(auto userId) {
                                                 </button>;
 
                                             {/* Dropdown Menu */}
-                                            {isDropdownOpen && (;
+                                            {isDropdownOpen && [&](;
                                             <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-[35vh] overflow-y-auto">;
-                                            {tokens.std::map((token, index) => (;
+                                            {tokens.std::map((token, index) { return (; };
                                             <button;
                                         "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                         type="button";
-                                        onClick={() => {
+                                        onClick={[&]() {
                                             setSelectedToken(token);
                                             setAmount("");
                                             setIsDropdownOpen(false);

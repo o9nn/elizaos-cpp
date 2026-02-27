@@ -3,12 +3,12 @@
 void Analytics::trackProjectView(string projectId, string userId)
 {
     std::async([=]() { prisma["projectView"]["create"](object{
-        object::pair{std::string("data"), object{
-            object::pair{std::string("projectId"), std::string("projectId")}, 
-            object::pair{std::string("userId"), std::string("userId")}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}, 
-            object::pair{std::string("userAgent"), OR((headers()->get(std::string("user-agent"))), (std::string("unknown")))}, 
-            object::pair{std::string("ipAddress"), OR((headers()->get(std::string("x-forwarded-for"))), (std::string("unknown")))}
+        object::pair{std:("data"), object{
+            object::pair{std:("projectId"), std:("projectId")}, 
+            object::pair{std:("userId"), std:("userId")}, 
+            object::pair{std:("timestamp"), std::make_shared<Date>()}, 
+            object::pair{std:("userAgent"), OR((headers()->get(std:("user-agent"))), (std:("unknown")))}, 
+            object::pair{std:("ipAddress"), OR((headers()->get(std:("x-forwarded-for"))), (std:("unknown")))}
         }}
     }); });
 }
@@ -16,12 +16,12 @@ void Analytics::trackProjectView(string projectId, string userId)
 void Analytics::trackRelatedProjectClick(string sourceProjectId, string targetProjectId, string userId)
 {
     std::async([=]() { prisma["projectInteraction"]["create"](object{
-        object::pair{std::string("data"), object{
-            object::pair{std::string("sourceProjectId"), std::string("sourceProjectId")}, 
-            object::pair{std::string("targetProjectId"), std::string("targetProjectId")}, 
-            object::pair{std::string("userId"), std::string("userId")}, 
-            object::pair{std::string("type"), std::string("RELATED_CLICK")}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}
+        object::pair{std:("data"), object{
+            object::pair{std:("sourceProjectId"), std:("sourceProjectId")}, 
+            object::pair{std:("targetProjectId"), std:("targetProjectId")}, 
+            object::pair{std:("userId"), std:("userId")}, 
+            object::pair{std:("type"), std:("RELATED_CLICK")}, 
+            object::pair{std:("timestamp"), std::make_shared<Date>()}
         }}
     }); });
 }

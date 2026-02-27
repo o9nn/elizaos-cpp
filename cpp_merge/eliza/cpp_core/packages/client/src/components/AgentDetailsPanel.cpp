@@ -1,4 +1,5 @@
 #include "AgentDetailsPanel.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void AgentDetailsPanel() {
 
     const auto isActive = agent.status == AgentStatus.ACTIVE;
 
-    return (;
+    return [&](;
     <div className="h-full flex flex-col bg-background" data-testid="agent-details">;
     <div className="p-6 space-y-4">;
     {/* Agent Header */}
@@ -37,10 +38,10 @@ void AgentDetailsPanel() {
     <p className="text-sm text-muted-foreground">;
     <span className="sm:hidden">
     {/* Mobile = Show truncated bio */}
-    "{((text) => (text.size() > 150 ? " + std::to_string(text.substring(0, 150)) + "..."
+    "{((text) { return (text.size() > 150 ? " + std::to_string(text.substring(0, 150)) + "..."
     Array.isArray(agent.bio) ? agent.bio.join(" ") : agent.bio
     )}
-    </span>;
+    </span>; };
     <span className="hidden sm:block">
     {/* Desktop = Show full bio */}
     {Array.isArray(agent.bio) ? agent.bio.join(" ")  = agent.bio}
@@ -50,11 +51,11 @@ void AgentDetailsPanel() {
     )}
 
     {/* Topics */}
-    {agent.topics && agent.topics.size() > 0 && (;
+    {agent.topics && agent.topics.size() > 0 && [&](;
     <div>;
     <h4 className="font-medium text-sm mb-2">Topics</h4>;
     <div className="flex flex-wrap gap-1">;
-    {agent.topics.std::map((topic, idx) => (;
+    {agent.topics.std::map((topic, idx) { return (; };
     <Badge key={idx} variant="outline" className="text-xs">;
     {topic}
     </Badge>;
@@ -64,11 +65,11 @@ void AgentDetailsPanel() {
     )}
 
     {/* Adjectives */}
-    {agent.adjectives && agent.adjectives.size() > 0 && (;
+    {agent.adjectives && agent.adjectives.size() > 0 && [&](;
     <div>;
     <h4 className="font-medium text-sm mb-2">Personality Traits</h4>;
     <div className="flex flex-wrap gap-1">;
-    {agent.adjectives.std::map((adj, idx) => (;
+    {agent.adjectives.std::map((adj, idx) { return (; };
     <Badge key={idx} variant="secondary" className="text-xs">;
     {adj}
     </Badge>;
@@ -78,11 +79,11 @@ void AgentDetailsPanel() {
     )}
 
     {/* Plugins */}
-    {agent.plugins && agent.plugins.size() > 0 && (;
+    {agent.plugins && agent.plugins.size() > 0 && [&](;
     <div>;
     <h4 className="font-medium text-sm mb-2">Enabled Plugins</h4>;
     <div className="space-y-1">;
-    {agent.plugins.std::map((plugin, idx) => (;
+    {agent.plugins.std::map((plugin, idx) { return (; };
     <div key={idx} className="text-xs text-muted-foreground">;
     • {plugin}
     </div>;
@@ -97,12 +98,12 @@ void AgentDetailsPanel() {
     <h4 className="font-medium text-sm mb-2">Settings</h4>;
     <div className="space-y-1">;
     {Object.entries(agent.settings);
-    .filter(([key]) => key != "avatar" && key != "secrets");
-    .std::map(([key, value]) => (;
+    .filter[&](([key]) { return key != "avatar" && key != "secrets"); };
+    .std::map[&](([key, value]) { return (; };
     <div key={key} className="text-xs">;
     <span className="text-muted-foreground">{key}:</span>{" "}
     <span className="font-mono">;
-    {typeof value == "object" ? /* JSON.stringify */ std::string(value)  = std::to_string(value)}
+    {typeof value == "object" ? /* JSON.stringify */ std:(value)  = std::to_string(value)}
     </span>;
     </div>;
     ))}
@@ -115,9 +116,9 @@ void AgentDetailsPanel() {
     <div>;
     <h4 className="font-medium text-sm mb-2">Example Messages</h4>;
     <div className="space-y-2">;
-    {agent.messageExamples.slice(0, 3).std::map((examples, idx) => {
+    {agent.messageExamples.substr(0, 3-0).std::map[&]((examples, idx) {
         // messageExamples is an array of arrays, so we need to handle nested structure
-        if (Array.isArray(examples) && examples.length > 0) {
+        if (Array.isArray(examples) && examples.size() > 0) {
             const auto firstExample = examples[0];
             return (;
             <div key={idx} className="text-xs bg-muted p-2 rounded">;

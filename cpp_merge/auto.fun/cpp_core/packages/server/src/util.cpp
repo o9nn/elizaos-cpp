@@ -1,4 +1,10 @@
 #include "util.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -21,9 +27,7 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
     const auto amountBN = new BN(amount);
 
     // Apply fee: adjusted_amount = amount * (10000 - fee_basis_points) / 10000
-    const auto adjustedAmount = amountBN;
-    .mul(new BN(10000 - feeBasisPoints));
-    .div(new BN(10000));
+    const auto adjustedAmount = amountBN.mul(new BN(10000 - feeBasisPoints)).div(new BN(10000));
 
     // For selling tokens: amount_out = reserve_lamport * adjusted_amount / (reserve_token + adjusted_amount)
     const auto numerator = new BN(reserveLamport).mul(adjustedAmount);
@@ -40,9 +44,7 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
     const auto amountBN = new BN(amount);
 
     // Apply fee: adjusted_amount = amount * (10000 - fee_basis_points) / 10000
-    const auto adjustedAmount = amountBN;
-    .mul(new BN(10000 - feeBasisPoints));
-    .div(new BN(10000));
+    const auto adjustedAmount = amountBN.mul(new BN(10000 - feeBasisPoints)).div(new BN(10000));
 
     const auto numerator = new BN(reserveToken).mul(adjustedAmount);
     const auto denominator = new BN(reserveLamport).add(adjustedAmount);
@@ -51,7 +53,7 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
 
 }
 
-std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddress) {
+std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -65,7 +67,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
         new PublicKey(tokenAddress);
         );
 
-        if (transactionHistory.length > 0) {
+        if (transactionHistory.size() > 0) {
             const auto tokenCreationTxId =;
             transactionHistory[transactionHistory.size() - 1].signature;
             const auto transactionDetails =;
@@ -83,7 +85,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
             }
         }
 
-        throw std::runtime_error(`No transaction found for token address: ${tokenAddress}`);
+        throw std::runtime_error("No transaction found for token address: " + std::to_string(tokenAddress) + "");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -91,7 +93,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
     }
 }
 
-std::future<std::optional<Token>> createNewTokenData(const std::string& txId, const std::string& tokenAddress, const std::string& creatorAddress) {
+std::future<std::optional<Token>> createNewTokenData(const std:& txId, const std:& tokenAddress, const std:& creatorAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -134,7 +136,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
                 }
 
                 // Get TOKEN_DECIMALS from env if available, otherwise use default
-                const auto TOKEN_DECIMALS = Number(process.env.DECIMALS || 6);
+                const auto TOKEN_DECIMALS = Number(std::getenv("DECIMALS") || 6);
 
                 const auto solPrice = getSOLPrice();
 
@@ -169,18 +171,18 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
                 const auto supply = updateTokenSupplyFromChain(tokenAddress);
                 const auto tokenSupply = supply.tokenSupply;
                 ? Number(supply.tokenSupply);
-                : Number(process.env.TOKEN_SUPPLY);
+                : Number(std::getenv("TOKEN_SUPPLY"));
                 const auto marketCapUSD =;
                 (tokenSupply / Math.pow(10, TOKEN_DECIMALS)) * tokenPriceUSD;
                 std::cout << "marketCapUSD" << marketCapUSD << std::endl;
 
                 // Get virtual reserves from env if available, otherwise use default
-                const auto virtualReserves = process.env.VIRTUAL_RESERVES;
-                ? Number(process.env.VIRTUAL_RESERVES);
+                const auto virtualReserves = std::getenv("VIRTUAL_RESERVES");
+                ? Number(std::getenv("VIRTUAL_RESERVES"));
                 : 100000000;
 
                 // Get curve limit from env if available, otherwise use default
-                const auto curveLimit = Number(process.env.CURVE_LIMIT);
+                const auto curveLimit = Number(std::getenv("CURVE_LIMIT"));
 
                 const std::optional<Token> tokenData = {;
                     id: tokenAddress, // Use mint key
@@ -227,9 +229,9 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
                     tokenSupply: std::to_string(tokenSupply),
                     tokenSupplyUiAmount: tokenSupply / Math.pow(10, TOKEN_DECIMALS),
                     tokenDecimals: TOKEN_DECIMALS,
-                    lastSupplyUpdate: new Date(),
-                    createdAt: new Date(),
-                    lastUpdated: new Date(),
+                    lastSupplyUpdate: std::make_unique<Date>(),
+                    createdAt: std::make_unique<Date>(),
+                    lastUpdated: std::make_unique<Date>(),
                     };
 
                     return tokenData;
@@ -247,7 +249,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
 std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>& tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!tokens || tokens.length == 0) {
+    if (!tokens || tokens.size() == 0) {
         return [];
     }
 
@@ -264,33 +266,30 @@ std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>
 
 }
 
-std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
+std::future<> execWithdrawTx(Transaction tx, Connection connection, const std:& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: std::string; logs: std::string[]
+    signature: std:; logs: std:[]
 }
 
-std::vector<std::string> splitIntoLines(std::optional<std::string> text) {
+std::vector<std::string> splitIntoLines(std::optional<std:> text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return undefined;
-    return text;
-    .split("\n");
-    .std::map((line) => line.trim().replace("\n", ""));
-    .filter((line) => line.size() > 0);
+    return text.split("\n");
+    .std::map[&]((line) { return line.replace("\n", "")); };
+    .filter[&]((line) { return line.size() > 0); };
 
 }
 
-std::future<void> getFeaturedMaxValues(const std::any& db) {
+std::future<void> getFeaturedMaxValues(const std:& db) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get max values for normalization with a subquery
     try {
-        const auto maxValues = db;
-        .select({
+        const auto maxValues = db.select({
             "maxVolume: sql" + "MAX(COALESCE(" + tokens.volume24h + ", 0))"
             "maxHolders: sql" + "MAX(COALESCE(" + tokens.holderCount + ", 0))"
-            });
-            .from(tokens);
+            }).from(tokens);
             ".where(sql" + tokens.status + " != "pending"";
 
             // Extract max values, default to 1 to avoid division by zero
@@ -320,7 +319,7 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders) {
 
 }
 
-double calculateFeaturedScore(std::optional<std::any> token, double maxVolume, double maxHolders) {
+double calculateFeaturedScore(std::optional<std:> token, double maxVolume, double maxHolders) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalizedMaxVolume = maxVolume || 1;
@@ -336,7 +335,7 @@ double calculateFeaturedScore(std::optional<std::any> token, double maxVolume, d
 
 }
 
-void applyFeaturedSort(const std::any& tokensQuery, double maxVolume, double maxHolders, const std::string& sortOrder) {
+void applyFeaturedSort(const std:& tokensQuery, double maxVolume, double maxHolders, const std:& sortOrder) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto featuredScore = getFeaturedScoreExpression(maxVolume, maxHolders);

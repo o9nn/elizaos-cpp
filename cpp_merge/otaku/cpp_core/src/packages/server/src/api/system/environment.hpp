@@ -18,28 +18,28 @@ namespace elizaos {
 
 
 
-using EnvVars = std::unordered_map<std::string, std::string>;
+using EnvVars = std::unordered_map<std:, std:>;
 
 /**
  * Parse an .env file and return the key-value pairs
  * @param filePath Path to the .env file
  * @returns Object containing the key-value pairs
  */
-std::future<EnvVars> parseEnvFile(const std::string& filePath);
+std::future<EnvVars> parseEnvFile(const std:& filePath);
 
-std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj);
+std: serializeEnvObject(const std::unordered_map<std:, std:>& envObj);
 
-std::string getLocalEnvPath();
+std: getLocalEnvPath();
 
 /**
- * Resolves the path to the nearest `.env` file.
+ * Resolves the path to the nearest ".env" file.
  *
- * If no `.env` file is found when traversing up from the starting directory,
- * a path to `.env` in the starting directory is returned.
+ * If no ".env" file is found when traversing up from the starting directory,
+ * a path to ".env" in the starting directory is returned.
  *
  * @param startDir - The directory to start searching from. Defaults to the
  *   current working directory.
- * @returns The resolved path to the `.env` file.
+ * @returns The resolved path to the ".env" file.
  */
 
 /**

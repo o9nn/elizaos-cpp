@@ -43,8 +43,8 @@ void Slider(auto defaultValue, auto value, auto min, auto max) {
     }
     />;
     </SliderPrimitive.Track>;
-    {Array.from({ length: _values.size() }, (_, index) => (
-    <SliderPrimitive.Thumb;
+    {Array.from({ length: _values.size() }, [&](_, index) { return (
+    <SliderPrimitive.Thumb; };
     data-slot="slider-thumb";
     key={index}
     className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"

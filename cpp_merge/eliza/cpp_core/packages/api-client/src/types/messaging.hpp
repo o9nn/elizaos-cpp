@@ -17,10 +17,10 @@ namespace elizaos {
 
 struct MessageServer {
     UUID id;
-    std::string name;
-    std::string sourceType;
-    std::optional<std::string> sourceId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std: name;
+    std: sourceType;
+    std::optional<std:> sourceId;
+    std::optional<std::unordered_map<std:, std:>> metadata;
     Date createdAt;
     Date updatedAt;
 };
@@ -28,12 +28,12 @@ struct MessageServer {
 struct MessageChannel {
     UUID id;
     UUID messageServerId;
-    std::string name;
+    std: name;
     ChannelType type;
-    std::optional<std::string> sourceType;
-    std::optional<std::string> sourceId;
-    std::optional<std::string> topic;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std:> sourceType;
+    std::optional<std:> sourceId;
+    std::optional<std:> topic;
+    std::optional<std::unordered_map<std:, std:>> metadata;
     Date createdAt;
     Date updatedAt;
 };
@@ -42,52 +42,52 @@ struct Message {
     UUID id;
     UUID channelId;
     UUID authorId;
-    std::string content;
-    std::optional<std::any> rawMessage;
+    std: content;
+    std::optional<std:> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
-    std::optional<std::string> sourceType;
-    std::optional<std::string> sourceId;
+    std::optional<std:> sourceType;
+    std::optional<std:> sourceId;
     Date createdAt;
     Date updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct MessageSubmitParams {
     UUID agentId;
     UUID channelId;
-    std::string content;
+    std: content;
     std::optional<UUID> inReplyToMessageId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct MessageCompleteParams {
     UUID messageId;
     'completed' | 'failed' status;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 struct ExternalMessageParams {
-    std::string platform;
-    std::string channelId;
+    std: platform;
+    std: channelId;
     Array<{ messages;
-    std::string id;
-    std::string authorId;
-    std::string content;
+    std: id;
+    std: authorId;
+    std: content;
     double timestamp;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct ChannelCreateParams {
-    std::string name;
+    std: name;
     ChannelType type;
     std::optional<UUID> serverId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct GroupChannelCreateParams {
-    std::string name;
+    std: name;
     std::vector<UUID> participantIds;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct DmChannelParams {
@@ -98,28 +98,28 @@ struct ChannelParticipant {
     UUID id;
     UUID channelId;
     UUID userId;
-    std::optional<std::string> role;
+    std::optional<std:> role;
     Date joinedAt;
 };
 
 struct ServerCreateParams {
-    std::string name;
-    std::string sourceType;
-    std::optional<std::string> sourceId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std: name;
+    std: sourceType;
+    std::optional<std:> sourceId;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 struct ServerSyncParams {
     Array<{ channels;
-    std::string name;
+    std: name;
     ChannelType type;
-    std::string sourceId;
+    std: sourceId;
 };
 
 struct ChannelUpdateParams {
-    std::optional<std::string> name;
+    std::optional<std:> name;
     std::optional<std::vector<UUID>> participantCentralUserIds;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 

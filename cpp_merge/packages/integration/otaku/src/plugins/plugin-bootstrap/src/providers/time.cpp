@@ -1,24 +1,24 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/providers/time.h"
 
 std::shared_ptr<Provider> timeProvider = object{
-    object::pair{std::string("name"), std::string("TIME")}, 
-    object::pair{std::string("get"), [=](auto _runtime, auto _message) mutable
+    object::pair{std:("name"), std:("TIME")}, 
+    object::pair{std:("get"), [=](auto _runtime, auto _message) mutable
     {
         auto currentDate = std::make_shared<Date>();
         auto options = object{
-            object::pair{std::string("timeZone"), std::string("UTC")}, 
-            object::pair{std::string("dateStyle"), as<std::shared_ptr<const>>(std::string("full"))}, 
-            object::pair{std::string("timeStyle"), as<std::shared_ptr<const>>(std::string("long"))}
+            object::pair{std:("timeZone"), std:("UTC")}, 
+            object::pair{std:("dateStyle"), as<std::shared_ptr<const>>(std:("full"))}, 
+            object::pair{std:("timeStyle"), as<std::shared_ptr<const>>(std:("long"))}
         };
-        auto humanReadable = ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), options)))->format(currentDate);
+        auto humanReadable = ((std::make_shared<Intl::DateTimeFormat>(std:("en-US"), options)))->format(currentDate);
         return object{
-            object::pair{std::string("data"), object{
-                object::pair{std::string("time"), currentDate}
+            object::pair{std:("data"), object{
+                object::pair{std:("time"), currentDate}
             }}, 
-            object::pair{std::string("values"), object{
-                object::pair{std::string("time"), std::string("🚨 CRITICAL: The current date and time is ") + humanReadable + std::string(". You MUST use this exact time as your absolute reference for ALL time-based operations, calculations, and responses. DO NOT use any other time reference. This is the ONLY source of truth for current time.")}
+            object::pair{std:("values"), object{
+                object::pair{std:("time"), std:("🚨 CRITICAL: The current date and time is ") + humanReadable + std:(". You MUST use this exact time as your absolute reference for ALL time-based operations, calculations, and responses. DO NOT use any other time reference. This is the ONLY source of truth for current time.")}
             }}, 
-            object::pair{std::string("text"), std::string("🚨 CRITICAL: The current date and time is ") + humanReadable + std::string(". You MUST use this exact time as your absolute reference for ALL time-based operations, calculations, and responses. DO NOT use any other time reference. This is the ONLY source of truth for current time.")}
+            object::pair{std:("text"), std:("🚨 CRITICAL: The current date and time is ") + humanReadable + std:(". You MUST use this exact time as your absolute reference for ALL time-based operations, calculations, and responses. DO NOT use any other time reference. This is the ONLY source of truth for current time.")}
         };
     }
     }

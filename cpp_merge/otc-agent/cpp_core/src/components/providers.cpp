@@ -1,4 +1,5 @@
 #include "providers.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,11 +13,11 @@ void Providers() {
 
         const auto [mounted, setMounted] = useState(false);
 
-        useEffect(() => {
+        useEffect[&](() {
             setMounted(true);
             }, []);
 
-            const auto privyAppId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+            const auto privyAppId = std::getenv("NEXT_PUBLIC_PRIVY_APP_ID");
 
             if (!privyAppId) {
                 throw new Error(

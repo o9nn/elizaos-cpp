@@ -1,12 +1,12 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/index.h"
 
 std::shared_ptr<Plugin> pluginDynamic = object{
-    object::pair{std::string("name"), std::string("@elizaos/plugin-dynamic")}, 
-    object::pair{std::string("description"), std::string("Dynamic plugin creation system with AI-powered code generation")}, 
-    object::pair{std::string("actions"), array<any>{ createPluginAction, checkPluginCreationStatusAction, cancelPluginCreationAction, createPluginFromDescriptionAction }}, 
-    object::pair{std::string("providers"), array<any>{ pluginCreationStatusProvider, pluginCreationCapabilitiesProvider }}, 
-    object::pair{std::string("services"), array<PluginCreationService>{ PluginCreationService }}, 
-    object::pair{std::string("evaluators"), array<any>()}
+    object::pair{std:("name"), std:("@elizaos/plugin-dynamic")}, 
+    object::pair{std:("description"), std:("Dynamic plugin creation system with AI-powered code generation")}, 
+    object::pair{std:("actions"), array<any>{ createPluginAction, checkPluginCreationStatusAction, cancelPluginCreationAction, createPluginFromDescriptionAction }}, 
+    object::pair{std:("providers"), array<any>{ pluginCreationStatusProvider, pluginCreationCapabilitiesProvider }}, 
+    object::pair{std:("services"), array<PluginCreationService>{ PluginCreationService }}, 
+    object::pair{std:("evaluators"), array<any>()}
 };
 
 void Main(void)

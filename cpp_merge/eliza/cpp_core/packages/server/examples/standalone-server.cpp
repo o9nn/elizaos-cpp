@@ -1,4 +1,6 @@
 #include "standalone-server.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,14 +14,14 @@ std::future<void> createStandaloneServer() {
             std::cout << "🚀 Creating standalone ElizaOS server..." << std::endl;
 
             // Create server instance
-            const auto server = new AgentServer();
+            const auto server = std::make_unique<AgentServer>();
 
             // Initialize with options
             std::cout << "⚙️  Initializing server..." << std::endl;
             server.initialize(serverOptions);
 
             // Register custom middleware if needed
-            server.registerMiddleware((req, res, next) => {
+            server.registerMiddleware[&]((req, res, next) {
                 // Custom request processing
                 res.setHeader("X-Powered-By", "ElizaOS-Standalone");
                 next();
@@ -46,8 +48,8 @@ std::future<void> startServer() {
         const auto server = createStandaloneServer();
 
         // Start server
-        const auto port = parseInt(process.env.PORT || "3000");
-        const auto host = process.env.HOST || "localhost";
+        const auto port = parseInt(std::getenv("PORT") || "3000");
+        const auto host = std::getenv("HOST") || "localhost";
 
         std::cout << "🌐 Starting server on " + host + ":" + port + "..." << std::endl;
         server.start(port);
@@ -60,18 +62,18 @@ std::future<void> startServer() {
         std::cout << "   WebSocket: ws://" + host + ":" + port + "/" << std::endl;
 
         // Graceful shutdown
-        const auto gracefulShutdown = std::async () => {;
+        const auto gracefulShutdown = std::async [&]() {;
             std::cout << "🛑 Graceful shutdown initiated..." << std::endl;
             server.stop();
             logger.success('✅ Server stopped successfully');
-            process.exit(0);
+            std::exit(0);
             };
 
             process.on("SIGTERM", gracefulShutdown);
             process.on("SIGINT", gracefulShutdown);
             } catch (error) {
                 std::cerr << "❌ Server startup failed:" << error << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
 }

@@ -2,7 +2,7 @@
 
 void Main(void)
 {
-    describe(std::string("ElizaOS Update Commands"), [=]() mutable
+    describe(std:("ElizaOS Update Commands"), [=]() mutable
     {
         shared<string> testTmpDir;
         shared<string> elizaosCmd;
@@ -10,20 +10,20 @@ void Main(void)
         beforeEach([=]() mutable
         {
             originalCwd = process->cwd();
-            testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std::string("eliza-test-update-"))); });
+            testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std:("eliza-test-update-"))); });
             process->chdir(testTmpDir);
-            auto scriptDir = join(__dirname, std::string(".."));
-            elizaosCmd = std::string("bun ") + join(scriptDir, std::string("../dist/index.js")) + string_empty;
+            auto scriptDir = join(__dirname, std:(".."));
+            elizaosCmd = std:("bun ") + join(scriptDir, std:("../dist/index.js")) + string_empty;
         }
         );
         afterEach([=]() mutable
         {
             safeChangeDirectory(originalCwd);
-            if (AND((testTmpDir), (testTmpDir->includes(std::string("eliza-test-update-"))))) {
+            if (AND((testTmpDir), (testTmpDir->includes(std:("eliza-test-update-"))))) {
                 try
                 {
                     std::async([=]() { rm(testTmpDir, object{
-                        object::pair{std::string("recursive"), true}
+                        object::pair{std:("recursive"), true}
                     }); });
                 }
                 catch (const any& e)
@@ -34,141 +34,141 @@ void Main(void)
         );
         shared makeProj = [=](auto name) mutable
         {
-            runCliCommandSilently(elizaosCmd, std::string("create ") + name + std::string(" --yes"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["PROJECT_CREATION"]}
+            runCliCommandSilently(elizaosCmd, std:("create ") + name + std:(" --yes"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["PROJECT_CREATION"]}
             });
             process->chdir(join(testTmpDir, name));
         };
-        it(std::string("update --help shows usage and options"), [=]() mutable
+        it(std:("update --help shows usage and options"), [=]() mutable
         {
-            auto result = execSync(string_empty + elizaosCmd + std::string(" update --help"), object{
-                object::pair{std::string("encoding"), std::string("utf8")}
+            auto result = execSync(string_empty + elizaosCmd + std:(" update --help"), object{
+                object::pair{std:("encoding"), std:("utf8")}
             });
-            expect(result)->toContain(std::string("Usage: elizaos update"));
-            expect(result)->toContain(std::string("--cli"));
-            expect(result)->toContain(std::string("--packages"));
-            expect(result)->toContain(std::string("--check"));
-            expect(result)->toContain(std::string("--skip-build"));
+            expect(result)->toContain(std:("Usage: elizaos update"));
+            expect(result)->toContain(std:("--cli"));
+            expect(result)->toContain(std:("--packages"));
+            expect(result)->toContain(std:("--check"));
+            expect(result)->toContain(std:("--skip-build"));
         }
         );
-        it(std::string("update runs in a valid project"), [=]() mutable
+        it(std:("update runs in a valid project"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-app")); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            std::async([=]() { makeProj(std:("update-app")); });
+            auto result = runCliCommandSilently(elizaosCmd, std:("update"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("(Project successfully updated|Update completed|already up to date|No updates available"))));
+            expect(result)->toMatch((new RegExp(std:("(Project successfully updated|Update completed|already up to date|No updates available"))));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update --check works"), [=]() mutable
+        it(std:("update --check works"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-check-app")); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --check"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            std::async([=]() { makeProj(std:("update-check-app")); });
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --check"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("Version: 1\."))));
+            expect(result)->toMatch((new RegExp(std:("Version: 1\."))));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update --skip-build works"), [=]() mutable
+        it(std:("update --skip-build works"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-skip-build-app")); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --skip-build"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            std::async([=]() { makeProj(std:("update-skip-build-app")); });
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --skip-build"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->not->toContain(std::string("Building project"));
+            expect(result)->not->toContain(std:("Building project"));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update --packages works"), [=]() mutable
+        it(std:("update --packages works"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-packages-app")); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --packages"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            std::async([=]() { makeProj(std:("update-packages-app")); });
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --packages"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("(Project successfully updated|Update completed|already up to date|No updates available"))));
+            expect(result)->toMatch((new RegExp(std:("(Project successfully updated|Update completed|already up to date|No updates available"))));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update --cli works outside a project"), [=]() mutable
+        it(std:("update --cli works outside a project"), [=]() mutable
         {
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --cli"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --cli"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("(Project successfully updated|Update completed|already up to date|No updates available|install the CLI globally|CLI update is not available"))));
+            expect(result)->toMatch((new RegExp(std:("(Project successfully updated|Update completed|already up to date|No updates available|install the CLI globally|CLI update is not available"))));
         }
         , TEST_TIMEOUTS["STANDARD_COMMAND"]);
-        it(std::string("update --cli --packages works"), [=]() mutable
+        it(std:("update --cli --packages works"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-combined-app")); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --cli --packages"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            std::async([=]() { makeProj(std:("update-combined-app")); });
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --cli --packages"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("(Project successfully updated|Update completed|already up to date|No updates available"))));
+            expect(result)->toMatch((new RegExp(std:("(Project successfully updated|Update completed|already up to date|No updates available"))));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update succeeds outside a project (global check)"), [=]() mutable
+        it(std:("update succeeds outside a project (global check)"), [=]() mutable
         {
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toMatch((new RegExp(std::string("(Project successfully updated|Update completed|already up to date|No updates available|create a new ElizaOS project|This appears to be an empty directory"))));
+            expect(result)->toMatch((new RegExp(std:("(Project successfully updated|Update completed|already up to date|No updates available|create a new ElizaOS project|This appears to be an empty directory"))));
         }
         , TEST_TIMEOUTS["STANDARD_COMMAND"]);
-        it(std::string("update --packages shows helpful message in empty directory"), [=]() mutable
+        it(std:("update --packages shows helpful message in empty directory"), [=]() mutable
         {
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --packages"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --packages"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toContain(std::string("This directory doesn't appear to be an ElizaOS project"));
+            expect(result)->toContain(std:("This directory doesn't appear to be an ElizaOS project"));
         }
         , TEST_TIMEOUTS["STANDARD_COMMAND"]);
-        it(std::string("update --packages shows helpful message in non-elizaos project"), [=]() mutable
+        it(std:("update --packages shows helpful message in non-elizaos project"), [=]() mutable
         {
-            std::async([=]() { writeFile(std::string("package.json"), JSON->stringify(object{
-                object::pair{std::string("name"), std::string("some-other-project")}, 
-                object::pair{std::string("version"), std::string("1.0.0")}, 
-                object::pair{std::string("dependencies"), object{
-                    object::pair{std::string("express"), std::string("^4.18.0")}
+            std::async([=]() { writeFile(std:("package.json"), JSON->stringify(object{
+                object::pair{std:("name"), std:("some-other-project")}, 
+                object::pair{std:("version"), std:("1.0.0")}, 
+                object::pair{std:("dependencies"), object{
+                    object::pair{std:("express"), std:("^4.18.0")}
                 }}
             }, nullptr, 2)); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --packages"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --packages"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toContain(std::string("some-other-project"));
-            expect(result)->toContain(std::string("elizaos create"));
+            expect(result)->toContain(std:("some-other-project"));
+            expect(result)->toContain(std:("elizaos create"));
         }
         , TEST_TIMEOUTS["STANDARD_COMMAND"]);
-        it(std::string("update --packages works in elizaos project with dependencies"), [=]() mutable
+        it(std:("update --packages works in elizaos project with dependencies"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-elizaos-project")); });
-            std::async([=]() { writeFile(std::string("package.json"), JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-elizaos-project")}, 
-                object::pair{std::string("version"), std::string("1.0.0")}, 
-                object::pair{std::string("dependencies"), object{
-                    object::pair{std::string("@elizaos/core"), std::string("^1.0.0")}
+            std::async([=]() { makeProj(std:("update-elizaos-project")); });
+            std::async([=]() { writeFile(std:("package.json"), JSON->stringify(object{
+                object::pair{std:("name"), std:("test-elizaos-project")}, 
+                object::pair{std:("version"), std:("1.0.0")}, 
+                object::pair{std:("dependencies"), object{
+                    object::pair{std:("@elizaos/core"), std:("^1.0.0")}
                 }}
             }, nullptr, 2)); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --packages --check"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --packages --check"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toContain(std::string("ElizaOS"));
+            expect(result)->toContain(std:("ElizaOS"));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
-        it(std::string("update --packages shows message for project without elizaos dependencies"), [=]() mutable
+        it(std:("update --packages shows message for project without elizaos dependencies"), [=]() mutable
         {
-            std::async([=]() { makeProj(std::string("update-no-deps-project")); });
-            std::async([=]() { writeFile(std::string("package.json"), JSON->stringify(object{
-                object::pair{std::string("name"), std::string("test-project")}, 
-                object::pair{std::string("version"), std::string("1.0.0")}, 
-                object::pair{std::string("eliza"), object{
-                    object::pair{std::string("type"), std::string("project")}
+            std::async([=]() { makeProj(std:("update-no-deps-project")); });
+            std::async([=]() { writeFile(std:("package.json"), JSON->stringify(object{
+                object::pair{std:("name"), std:("test-project")}, 
+                object::pair{std:("version"), std:("1.0.0")}, 
+                object::pair{std:("eliza"), object{
+                    object::pair{std:("type"), std:("project")}
                 }}, 
-                object::pair{std::string("dependencies"), object{
-                    object::pair{std::string("express"), std::string("^4.18.0")}
+                object::pair{std:("dependencies"), object{
+                    object::pair{std:("express"), std:("^4.18.0")}
                 }}
             }, nullptr, 2)); });
-            auto result = runCliCommandSilently(elizaosCmd, std::string("update --packages"), object{
-                object::pair{std::string("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
+            auto result = runCliCommandSilently(elizaosCmd, std:("update --packages"), object{
+                object::pair{std:("timeout"), TEST_TIMEOUTS["STANDARD_COMMAND"]}
             });
-            expect(result)->toContain(std::string("No ElizaOS packages found"));
+            expect(result)->toContain(std:("No ElizaOS packages found"));
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
     }

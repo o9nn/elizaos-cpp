@@ -1,4 +1,6 @@
 #include "generate.hpp"
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,14 +16,14 @@ std::future<void> generatePlugin(GeneratePluginOptions opts) {
 
             // Set API key if provided
             if (opts.apiKey) {
-                process.env.ANTHROPIC_API_KEY = opts.apiKey;
+                std::getenv("ANTHROPIC_API_KEY") = opts.apiKey;
             }
 
             // Check for API key
-            if (!process.env.ANTHROPIC_API_KEY) {
+            if (!std::getenv("ANTHROPIC_API_KEY")) {
                 std::cerr << "ANTHROPIC_API_KEY is required for plugin generation." << std::endl;
                 std::cout << "\nPlease std::set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
             // Handle spec file if provided
@@ -29,16 +31,16 @@ std::future<void> generatePlugin(GeneratePluginOptions opts) {
             if (opts.specFile) {
                 try {
                     const auto specContent = readFileSync(opts.specFile, "utf-8");
-                    spec = /* JSON.parse */ specContent;
+                    spec = /* JSON::parse */ specContent;
                     } catch (error) {
                         logger.error(
                         "Failed to read or parse spec file: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                         );
-                        process.exit(1);
+                        std::exit(1);
                     }
                     } else if (opts.skipPrompts) {
                         std::cerr << "--skip-prompts requires --spec-file to be provided" << std::endl;
-                        process.exit(1);
+                        std::exit(1);
                     }
 
                     // Create creator instance with options
@@ -65,11 +67,11 @@ std::future<void> generatePlugin(GeneratePluginOptions opts) {
                             std::cout << "4. Add to your ElizaOS project" << std::endl;
                             } else {
                                 std::cerr << "Plugin generation failed: " + std::to_string(result.error.message) << std::endl;
-                                process.exit(1);
+                                std::exit(1);
                             }
                             } catch (error) {
                                 handleError(error);
-                                process.exit(1);
+                                std::exit(1);
                             }
 
     } catch (const std::exception& e) {

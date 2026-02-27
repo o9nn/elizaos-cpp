@@ -1,4 +1,8 @@
 #include "index.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,19 +11,19 @@ namespace elizaos {
 std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto args = process.argv.slice(2);
+    const auto args = std::vector<std::string>().substr(2);
 
     // Parse command line arguments
-    const auto configFile = args.find(arg => arg.startsWith("--config=")).replace("--config=", "");
-    const auto modeArg = args.find(arg => arg.startsWith("--mode=")).replace("--mode=", "") | std::nullopt;
-    const auto portArg = args.find(arg => arg.startsWith("--port=")).replace("--port=", "");
+    const auto configFile = args.find(arg => arg.substr(0, "--config=")).replace("--config=", "");
+    const auto modeArg = args.find(arg => arg.substr(0, "--mode=")).replace("--mode=", "") | std::nullopt;
+    const auto portArg = args.find(arg => arg.substr(0, "--port=")).replace("--port=", "");
 
     // Default to SSE mode
     const TransportMode mode = modeArg || "sse";
     const auto port = portArg ? parseInt(portArg, 10) : 8000;
 
     // Setup logging based on config (will be overridden by config later)
-    const auto logLevel = process.env.MCP_LOG_LEVEL || "info";
+    const auto logLevel = std::getenv("MCP_LOG_LEVEL") || "info";
     const auto logger = createLogger(logLevel);
 
     try {
@@ -28,7 +32,7 @@ std::future<void> main() {
             if (!configFile) {
                 std::cerr << "SSE mode requires --config flag" << std::endl;
                 std::cout << "Usage: bun run src/index.ts --config=path/to/config.yaml --mode=sse --port=8000" << std::endl;
-                process.exit(1);
+                std::exit(1);
             }
 
             std::cout << "Starting MCP Gateway in SSE mode on port " + port << std::endl;
@@ -58,7 +62,7 @@ std::future<void> main() {
             gateway.start();
 
             // Create transport and connect
-            const auto transport = new StdioServerTransport();
+            const auto transport = std::make_unique<StdioServerTransport>();
             gateway.connect(transport);
 
             configLogger.info("MCP Gateway is now serving on stdio");
@@ -66,58 +70,58 @@ std::future<void> main() {
             configLogger.info("Listening on stdio");
 
             // Handle graceful shutdown
-            const auto shutdown = std::async (signal: std::string) => {;
+            const auto shutdown = std::async [&](signal: std:) {;
                 "configLogger.info(" + "Received " + signal + ", shutting down gracefully...";
                 try {
                     gateway.stop();
-                    process.exit(0);
+                    std::exit(0);
                     } catch (error) {
                         "configLogger.error(" + "Error during shutdown: " + error
-                        process.exit(1);
+                        std::exit(1);
                     }
                     };
 
-                    process.on("SIGINT", () => shutdown("SIGINT"));
-                    process.on("SIGTERM", () => shutdown("SIGTERM"));
-                    process.on("uncaughtException", (error) => {
+                    process.on[&]("SIGINT", () { return shutdown("SIGINT")); };
+                    process.on[&]("SIGTERM", () { return shutdown("SIGTERM")); };
+                    process.on[&]("uncaughtException", (error) {
                         "configLogger.error(" + "Uncaught exception: " + error
                         shutdown("uncaughtException");
                         });
-                        process.on("unhandledRejection", (reason) => {
+                        process.on[&]("unhandledRejection", (reason) {
                             "configLogger.error(" + "Unhandled rejection: " + reason
                             shutdown("unhandledRejection");
                             });
 
                             } catch (error) {
                                 std::cerr << "Failed to start MCP Gateway: " + error << std::endl;
-                                process.exit(1);
+                                std::exit(1);
                             }
 
 }
 
-Console createLogger(const std::string& logLevel) {
+Console createLogger(const std:& logLevel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto levels = ["error", "warn", "info", "debug"];
     const auto levelIndex = levels.indexOf(logLevel.toLowerCase());
 
     return {
-        error: (...args: unknown[]) => {
+        error: [&](...args: unknown[]) {
             if (levelIndex >= 0) console.error('[ERROR]', ...args);
             },
-            warn: (...args: unknown[]) => {
+            warn: [&](...args: unknown[]) {
                 if (levelIndex >= 1) console.warn('[WARN]', ...args);
                 },
-                info: (...args: unknown[]) => {
+                info: [&](...args: unknown[]) {
                     if (levelIndex >= 2) console.info('[INFO]', ...args);
                     },
-                    log: (...args: unknown[]) => {
+                    log: [&](...args: unknown[]) {
                         if (levelIndex >= 2) console.log('[INFO]', ...args);
                         },
-                        debug: (...args: unknown[]) => {
+                        debug: [&](...args: unknown[]) {
                             if (levelIndex >= 3) console.debug('[DEBUG]', ...args);
                             },
-                            trace: (...args: unknown[]) => {
+                            trace: [&](...args: unknown[]) {
                                 if (levelIndex >= 3) console.trace('[TRACE]', ...args);
                                 },
                                 // Add other console methods to satisfy the Console interface
@@ -144,7 +148,7 @@ Console createLogger(const std::string& logLevel) {
 void showHelp() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    console.log(`
+    console.log("
     MCP Gateway Server;
 
     USAGE:
@@ -187,7 +191,7 @@ void showHelp() {
     MCP_SERVERS="weather:node:weather.js;filesystem:python:fs_server.py" mcp-gateway --mode=stdio
 
     For more information, visit: https://github.com/studio/mcp-gateway
-    `);
+    ");
 
 }
 

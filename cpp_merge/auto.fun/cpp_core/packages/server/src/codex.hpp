@@ -18,12 +18,12 @@ namespace elizaos {
 
 
 struct CodexTokenEvent {
-    std::string eventDisplayType;
-    std::string token1SwapValueUsd;
-    std::string token1PoolValueUsd;
+    std: eventDisplayType;
+    std: token1SwapValueUsd;
+    std: token1PoolValueUsd;
     double timestamp;
-    std::optional<std::string> amount0;
-    std::optional<std::string> amount1;
+    std::optional<std:> amount0;
+    std::optional<std:> amount1;
 };
 
 /**

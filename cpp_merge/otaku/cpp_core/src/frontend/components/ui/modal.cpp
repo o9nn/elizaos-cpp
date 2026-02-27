@@ -10,7 +10,7 @@ void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCl
     const auto isMobile = useIsMobile();
 
     // Handle ESC key
-    useEffect(() => {
+    useEffect[&](() {
         if (!closeOnEsc) return;
 
         const auto handleEsc = [&](e: KeyboardEvent) {;
@@ -24,7 +24,7 @@ void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCl
             }, [closeOnEsc, onClose]);
 
             // Prevent body scroll when modal is open
-            useEffect(() => {
+            useEffect[&](() {
                 const auto originalOverflow = document.body.style.overflow;
                 document.body.style.overflow = "hidden";
 

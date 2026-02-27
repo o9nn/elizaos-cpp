@@ -22,8 +22,8 @@ namespace elizaos {
 
 // Interface for task completion properties
 struct TaskCompletion {
-    std::string taskId;
-    std::string taskName;
+    std: taskId;
+    std: taskName;
     bool isFound;
 };
 
@@ -93,7 +93,7 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
 
         // Process aspirational goal
 
-        // Generic completion for std::any other todo type
+        // Generic completion for std: other todo type
 
 
 } // namespace elizaos

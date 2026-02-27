@@ -1,4 +1,7 @@
 #include "token-registration-listener-base.hpp"
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,14 +16,14 @@ std::future<void> startBaseListener() {
     }
 
     const auto registrationHelperAddress =;
-    process.env.NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS;
+    std::getenv("NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS");
     if (!registrationHelperAddress) {
         std::cerr << "[Base Listener] REGISTRATION_HELPER_ADDRESS not configured" << std::endl;
         return;
     }
 
     const auto rpcUrl =;
-    process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
+    std::getenv("NEXT_PUBLIC_BASE_RPC_URL") || "https://mainnet.base.org";
 
     const auto client = createPublicClient({;
         chain: base,
@@ -34,8 +37,8 @@ std::future<void> startBaseListener() {
         isListening = true;
 
         // Watch for TokenRegistered events
-        const auto unwatch = client.watchEvent({;
-            "address: registrationHelperAddress as " + "0x" + std::string
+        const auto unwatch = client.watchEvent[&]({;
+            "address: registrationHelperAddress as " + "0x" + std:
             event: {
                 type: "event",
                 name: "TokenRegistered",
@@ -47,24 +50,24 @@ std::future<void> startBaseListener() {
                 { type: "address", name: "registeredBy" },
                 ],
                 },
-                onLogs: std::async (logs) => {
+                onLogs: std::async (logs) {
                     for (const auto& log : logs)
                         handleTokenRegistered(client, log);
                     }
                     },
-                    onError: (error) => {
+                    onError: [&](error) {
                         std::cerr << "[Base Listener] Error:" << error << std::endl;
                         },
                         });
 
                         // Handle graceful shutdown
-                        process.on("SIGINT", () => {
+                        process.on[&]("SIGINT", () {
                             std::cout << "[Base Listener] Stopping..." << std::endl;
                             unwatch();
                             isListening = false;
                             });
 
-                            process.on("SIGTERM", () => {
+                            process.on[&]("SIGTERM", () {
                                 std::cout << "[Base Listener] Stopping..." << std::endl;
                                 unwatch();
                                 isListening = false;
@@ -74,15 +77,15 @@ std::future<void> startBaseListener() {
 
 }
 
-std::future<void> handleTokenRegistered(const std::any& client, const std::any& log) {
+std::future<void> handleTokenRegistered(const std:& client, const std:& log) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // When using watchEvent with event definition, viem automatically decodes the log
     const auto { tokenAddress, registeredBy } = log.args as {;
-        tokenId: std::string;
-        tokenAddress: std::string;
-        pool: std::string;
-        registeredBy: std::string;
+        tokenId: std:;
+        tokenAddress: std:;
+        pool: std:;
+        registeredBy: std:;
         };
 
         console.log(
@@ -95,24 +98,24 @@ std::future<void> handleTokenRegistered(const std::any& client, const std::any& 
         // Fetch token metadata from blockchain
         const auto [symbol, name, decimals] = Promise.all([;
         client.readContract({
-            "address: tokenAddress as " + "0x" + std::string
+            "address: tokenAddress as " + "0x" + std:
             abi: ERC20_ABI,
             functionName: "symbol",
             }),
             client.readContract({
-                "address: tokenAddress as " + "0x" + std::string
+                "address: tokenAddress as " + "0x" + std:
                 abi: ERC20_ABI,
                 functionName: "name",
                 }),
                 client.readContract({
-                    "address: tokenAddress as " + "0x" + std::string
+                    "address: tokenAddress as " + "0x" + std:
                     abi: ERC20_ABI,
                     functionName: "decimals",
                     }),
                     ]);
 
                     // Add to database
-                    const auto tokenService = new TokenRegistryService();
+                    const auto tokenService = std::make_unique<TokenRegistryService>();
                     tokenService.registerToken({
                         symbol: symbol,
                         name: name,
@@ -134,13 +137,13 @@ std::future<void> backfillBaseEvents(std::optional<bigint> fromBlock) {
     try {
 
         const auto registrationHelperAddress =;
-        process.env.NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS;
+        std::getenv("NEXT_PUBLIC_REGISTRATION_HELPER_ADDRESS");
         if (!registrationHelperAddress) {
             throw std::runtime_error("REGISTRATION_HELPER_ADDRESS not configured");
         }
 
         const auto rpcUrl =;
-        process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
+        std::getenv("NEXT_PUBLIC_BASE_RPC_URL") || "https://mainnet.base.org";
 
         const auto client = createPublicClient({;
             chain: base,
@@ -155,7 +158,7 @@ std::future<void> backfillBaseEvents(std::optional<bigint> fromBlock) {
             );
 
             const auto logs = client.getLogs({;
-                "address: registrationHelperAddress as " + "0x" + std::string
+                "address: registrationHelperAddress as " + "0x" + std:
                 event: {
                     type: "event",
                     name: "TokenRegistered",

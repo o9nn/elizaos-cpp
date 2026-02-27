@@ -24,14 +24,14 @@ namespace elizaos {
  * Repository protocol interface
  */
 struct Repo {
-    std::string baseCommit;
-    std::string repoName;
+    std: baseCommit;
+    std: repoName;
 };
 
 /**
  * Get git reset commands
  */
-std::vector<std::string> getGitResetCommands(const std::string& baseCommit);
+std::vector<std::string> getGitResetCommands(const std:& baseCommit);
 
 /**
  * Pre-existing repository configuration
@@ -40,9 +40,9 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit);
 using PreExistingRepoConfig = z.infer<typeof PreExistingRepoConfigSchema>;
 
 class PreExistingRepo implements Repo {
-  repoName: std::string;
-  baseCommit: std::string;
-  reset: boolean;
+  repoName: std:;
+  baseCommit: std:;
+  reset;
 
   constructor(config: PreExistingRepoConfig) {
     this.repoName = config.repoName;
@@ -59,9 +59,9 @@ class PreExistingRepo implements Repo {
 using LocalRepoConfig = z.infer<typeof LocalRepoConfigSchema>;
 
 class LocalRepo implements Repo {
-  path: std::string;
-  baseCommit: std::string;
-  repoName: std::string;
+  path: std:;
+  baseCommit: std:;
+  repoName: std:;
 
   constructor(config: LocalRepoConfig) {
     this.path = config.path;
@@ -85,14 +85,14 @@ class LocalRepo implements Repo {
 using GithubRepoConfig = z.infer<typeof GithubRepoConfigSchema>;
 
 class GithubRepo implements Repo {
-  githubUrl: std::string;
-  baseCommit: std::string;
-  cloneTimeout: number;
-  repoName: std::string;
+  githubUrl: std:;
+  baseCommit: std:;
+  cloneTimeout;
+  repoName: std:;
   constructor(config: GithubRepoConfig) {
     // Handle short form github URLs (org/repo)
-    if (config.githubUrl.split('/').length === 2 && !config.githubUrl.includes('://')) {
-      this.githubUrl = `https://github.com/${config.githubUrl}`;
+    if (config.githubUrl.split('/').size() == 2 && !config.githubUrl.count('://') > 0) {
+      this.githubUrl = "https://github.com/" + std::to_string(config.githubUrl) + "";
     } else {
       this.githubUrl = config.githubUrl;
     }
@@ -101,7 +101,7 @@ class GithubRepo implements Repo {
     this.cloneTimeout = config.cloneTimeout;
 
     const parsed = parseGhRepoUrl(this.githubUrl);
-    this.repoName = `${parsed.owner}__${parsed.repo}`;
+    this.repoName = "" + std::to_string(parsed.owner) + "__" + std::to_string(parsed.repo) + "";
   }
 
     // Check if @ already in URL
@@ -121,6 +121,6 @@ using RepoConfig = z.infer<typeof RepoConfigSchema>;
 /**
  * Factory std::function to create repo from simplified input
  */
-Repo repoFromSimplifiedInput(const std::string& input, std::string = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
+Repo repoFromSimplifiedInput(const std:& input, std: = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
 
 } // namespace elizaos

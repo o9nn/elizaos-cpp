@@ -12,21 +12,21 @@ void SetStatusEnvironmentHook::update(string message)
 
 void SetStatusEnvironmentHook::onStartDeployment()
 {
-    this->update(std::string("Starting deployment"));
+    this->update(std:("Starting deployment"));
 }
 
 void SetStatusEnvironmentHook::onInstallEnvStarted()
 {
-    this->update(std::string("Installing environment"));
+    this->update(std:("Installing environment"));
 }
 
 void SetStatusEnvironmentHook::onEnvironmentStartup()
 {
-    this->update(std::string("Starting environment"));
+    this->update(std:("Starting environment"));
 }
 
 void SetStatusEnvironmentHook::onClose()
 {
-    this->update(std::string("Closing environment"));
+    this->update(std:("Closing environment"));
 }
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ParsedHoldersQuery parseHoldersQuery(const std::string& mintParam, RawHoldersQuery query) {
+ParsedHoldersQuery parseHoldersQuery(const std:& mintParam, RawHoldersQuery query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -12,19 +12,19 @@ ParsedHoldersQuery parseHoldersQuery(const std::string& mintParam, RawHoldersQue
             throw std::runtime_error("Missing mint address");
         }
         if (!parseSolanaAddress(mintParam)) {
-            throw std::runtime_error(`Invalid mint address: ${mintParam}`);
+            throw std::runtime_error("Invalid mint address: " + std::to_string(mintParam) + "");
         }
         const auto mint = mintParam;
 
         const auto rawLimit = query.limit ? parseInt(query.limit, 10) : MAX_LIMIT;
         if (isNaN(rawLimit) || rawLimit < 1) {
-            throw std::runtime_error(`Invalid limit parameter: ${query.limit}`);
+            throw std::runtime_error("Invalid limit parameter: " + std::to_string(query.limit) + "");
         }
         const auto limit = Math.min(rawLimit, MAX_LIMIT);
 
         const auto rawPage = query.page ? parseInt(query.page, 10) : 1;
         if (isNaN(rawPage) || rawPage < 1) {
-            throw std::runtime_error(`Invalid page parameter: ${query.page}`);
+            throw std::runtime_error("Invalid page parameter: " + std::to_string(query.page) + "");
         }
         const auto page = Math.min(rawPage, MAX_PAGE);
 

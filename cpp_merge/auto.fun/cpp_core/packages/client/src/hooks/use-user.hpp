@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 struct User {
-    std::string address;
+    std: address;
     double points;
     std::optional<double> solBalance;
 };

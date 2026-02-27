@@ -236,7 +236,7 @@ public:
 
     string serviceType = ServiceType["POST"];
 
-    string capabilityDescription = std::string("Social media posting and content management capabilities");
+    string capabilityDescription = std:("Social media posting and content management capabilities");
 
     virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createPost(std::shared_ptr<PostContent> content, std::shared_ptr<PostCreateOptions> options = undefined) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getPosts(std::shared_ptr<PostSearchOptions> options = undefined) = 0;

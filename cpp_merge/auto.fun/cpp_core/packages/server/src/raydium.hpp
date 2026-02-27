@@ -22,7 +22,7 @@ namespace elizaos {
 
 struct InitSdkOptions {
     std::optional<bool> loadToken;
-    std::optional<std::any> env;
+    std::optional<std:> env;
 };
 
     // Set the cluster from env or use default

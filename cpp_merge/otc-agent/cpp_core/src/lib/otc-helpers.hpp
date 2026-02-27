@@ -21,8 +21,8 @@ namespace elizaos {
 
 struct ParsedOffer {
     bigint consignmentId;
-    std::string tokenId;
-    std::string beneficiary;
+    std: tokenId;
+    std: beneficiary;
     bigint tokenAmount;
     bigint discountBps;
     bigint createdAt;
@@ -35,7 +35,7 @@ struct ParsedOffer {
     bool paid;
     bool fulfilled;
     bool cancelled;
-    std::string payer;
+    std: payer;
     bigint amountPaid;
 };
 

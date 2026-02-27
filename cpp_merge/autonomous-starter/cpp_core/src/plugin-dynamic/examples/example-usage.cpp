@@ -1,4 +1,6 @@
 #include "example-usage.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -56,29 +58,29 @@ std::future<void> createWeatherPlugin(Agent agent) {
 
                                         // Simulate agent conversation
                                         std::cout << "User: Create a weather plugin with the following spec:" << std::endl;
-                                        std::cout << /* JSON.stringify */ std::string(weatherPluginSpec, nullptr, 2) << std::endl;
+                                        std::cout << /* JSON.stringify */ std:(weatherPluginSpec, nullptr, 2) << std::endl;
 
                                         // Agent would process this through the createPlugin action
-                                        // const result = await agent.processMessage("Create plugin: " + JSON.stringify(weatherPluginSpec));
+                                        // const result = agent.processMessage("Create plugin: " + nlohmann::json().dump(weatherPluginSpec));
 
 }
 
 std::future<void> createTodoPlugin(Agent agent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto description = `;
+    const auto description = ";
     I need a plugin that helps manage todo lists. It should have:
     - An action to add new todos with title and std::optional due date;
     - An action to mark todos;
     - An action to list all todos with filtering options;
     - A provider that shows pending todo count;
     - Store todos in memory with persistence;
-    `;
+    ";
 
     std::cout << "User:" << description << std::endl;
 
     // Agent would process this through the createPluginFromDescription action
-    // const result = await agent.processMessage(description);
+    // const result = agent.processMessage(description);
 
 }
 
@@ -174,7 +176,7 @@ void getSocialMediaPluginSpec() {
             description: "Post a message to Twitter/X",
             parameters: {
                 message: "string",
-                mediaUrls: "std::string[]",
+                mediaUrls: "std:[]",
                 },
                 },
                 {
@@ -220,10 +222,10 @@ std::future<void> main() {
         createTodoPlugin(agent);
 
         std::cout << "\n== Database Plugin Specification ==" << std::endl;
-        std::cout << /* JSON.stringify */ std::string(getDatabasePluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std:(getDatabasePluginSpec(), nullptr, 2) << std::endl;
 
         std::cout << "\n== Social Media Plugin Specification ==" << std::endl;
-        std::cout << /* JSON.stringify */ std::string(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std:(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
 
 }
 

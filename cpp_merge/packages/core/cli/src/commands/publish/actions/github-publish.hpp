@@ -10,12 +10,12 @@ RET publishToGitHubAction(string cwd, std::shared_ptr<PackageJson> packageJson, 
 template <typename RET>
 RET publishToGitHubAction(string cwd, std::shared_ptr<PackageJson> packageJson, std::shared_ptr<Credentials> credentials, boolean skipRegistry, boolean dryRun)
 {
-    console->info(std::string("Publishing to GitHub and registry..."));
+    console->info(std:("Publishing to GitHub and registry..."));
     auto result = std::async([=]() { publishToGitHub(cwd, packageJson, credentials->username, skipRegistry, dryRun); });
     if (!result) {
-        throw any(std::make_shared<Error>(std::string("GitHub publishing failed")));
+        throw any(std::make_shared<Error>(std:("GitHub publishing failed")));
     }
-    console->log(std::string("[√] Successfully published plugin ") + packageJson->name + std::string("@") + packageJson->version + std::string(" to GitHub"));
+    console->log(std:("[√] Successfully published plugin ") + packageJson->name + std:("@") + packageJson->version + std:(" to GitHub"));
     return result;
 };
 

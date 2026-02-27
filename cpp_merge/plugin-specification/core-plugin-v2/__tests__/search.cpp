@@ -2,23 +2,23 @@
 
 void Main(void)
 {
-    describe(std::string("BM25 search"), [=]() mutable
+    describe(std:("BM25 search"), [=]() mutable
     {
-        it(std::string("indexes documents and finds matches"), [=]() mutable
+        it(std:("indexes documents and finds matches"), [=]() mutable
         {
             auto docs = array<object>{ object{
-                object::pair{std::string("text"), std::string("hello world")}
+                object::pair{std:("text"), std:("hello world")}
             }, object{
-                object::pair{std::string("text"), std::string("another document")}
+                object::pair{std:("text"), std:("another document")}
             }, object{
-                object::pair{std::string("text"), std::string("world of javascript")}
+                object::pair{std:("text"), std:("world of javascript")}
             } };
             auto bm = std::make_shared<BM25>(docs, object{
-                object::pair{std::string("fieldBoosts"), object{
-                    object::pair{std::string("text"), 1}
+                object::pair{std:("fieldBoosts"), object{
+                    object::pair{std:("text"), 1}
                 }}
             });
-            auto results = bm->search(std::string("world"));
+            auto results = bm->search(std:("world"));
             expect(const_(results)[0]->index)->toBe(0);
         }
         );

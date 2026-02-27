@@ -1,10 +1,12 @@
 #include "user.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string generateRandomName() {
+std: generateRandomName() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Directly return the result from the library
@@ -12,17 +14,13 @@ std::string generateRandomName() {
 
 }
 
-std::future<User> ensureUserProfile(const std::string& address) {
+std::future<User> ensureUserProfile(const std:& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto db = getDB();
         std::cout << "[ensureUserProfile] Checking for user: " + address << std::endl;
-        auto userResult = db;
-        .select();
-        .from(usersTable);
-        .where(eq(usersTable.address, address));
-        .limit(1);
+        auto userResult = db.select().from(usersTable).where(eq(usersTable.address, address)).limit(1);
 
         auto user = userResult[0];
 
@@ -42,10 +40,10 @@ std::future<User> ensureUserProfile(const std::string& address) {
                     user = userResult[0];
                     if (!user) {
                         std::cerr << "[ensureUserProfile] CRITICAL: Failed find user profile immediately after creation for " + address << std::endl;
-                        throw std::runtime_error(`Failed find user profile immediately after creation for ${address}`);
+                        throw std::runtime_error("Failed find user profile immediately after creation for " + std::to_string(address) + "");
                     }
                     std::cout << "[ensureUserProfile] User " + address + " created and fetched successfully." << std::endl;
-                    } catch (insertError: std::any) {
+                    } catch (insertError: std:) {
                         std::cerr << "[ensureUserProfile] FAILED to insert new user profile for " + address + ":" << insertError << std::endl;
                         std::cerr << "[ensureUserProfile] Insert error code: " + insertError.code << "constraint: ${insertError.constraint}" << std::endl;
                         // Attempt to fetch again in case of race condition
@@ -54,7 +52,7 @@ std::future<User> ensureUserProfile(const std::string& address) {
                         user = userResult[0];
                         if (!user) {
                             std::cerr << "[ensureUserProfile] Still failed to find user profile after insert error for " + address << std::endl;
-                            throw std::runtime_error(`Failed to create or find user profile for ${address}`);
+                            throw std::runtime_error("Failed to create or find user profile for " + std::to_string(address) + "");
                         }
                         std::cout << "[ensureUserProfile] Found user " + address + " after insert error (likely race condition)." << std::endl;
                     }
@@ -71,18 +69,16 @@ std::future<User> ensureUserProfile(const std::string& address) {
                             std::cout << "[ensureUserProfile] Setting default profile picture." << std::endl;
                         }
 
-                        if (Object.keys(updatePayload).length > 0) {
+                        if (Object.keys(updatePayload).size() > 0) {
                             try {
                                 std::cout << "[ensureUserProfile] Updating user " + address + " with defaults:" << updatePayload << std::endl;
-                                db;
-                                .update(usersTable);
-                                .std::set(updatePayload);
-                                .where(eq(usersTable.address, address));
+                                db.update(usersTable);
+                                .std::set(updatePayload).where(eq(usersTable.address, address));
                                 // Update the local user object after successful DB update
                                 if (updatePayload.display_name) user.display_name = updatePayload.display_name;
                                 if (updatePayload.profile_picture_url) user.profile_picture_url = updatePayload.profile_picture_url;
                                 std::cout << "[ensureUserProfile] Updated user " + address + " with defaults successfully." << std::endl;
-                                } catch (updateError: std::any) {
+                                } catch (updateError: std:) {
                                     std::cerr << "[ensureUserProfile] FAILED to update profile defaults for " + address + ":" << updateError << std::endl;
                                     // Continue with the fetched user, defaults might not be critical immediately
                                 }

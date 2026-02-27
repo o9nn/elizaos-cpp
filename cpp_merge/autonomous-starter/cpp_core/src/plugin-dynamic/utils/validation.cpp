@@ -12,16 +12,16 @@ bool validatePrompt(Memory message) {
     }
 
     // Check if the text content is meaningful
-    const auto text = message.content.text.trim();
+    const auto text = message.content.text;
     return text.size() > 0;
 
 }
 
-bool isValidJsonSpecification(const std::string& text) {
+bool isValidJsonSpecification(const std:& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        /* JSON.parse */ text;
+        /* JSON::parse */ text;
         return true;
         } catch {
             return false;

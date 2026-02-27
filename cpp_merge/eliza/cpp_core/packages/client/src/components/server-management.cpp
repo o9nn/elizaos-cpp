@@ -1,4 +1,5 @@
 #include "server-management.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,12 +14,12 @@ void ServerManagement() {
 
     const auto [selectedServerId, setSelectedServerId] = useState<UUID | nullptr>(nullptr);
     const auto [selectedAgentId, setSelectedAgentId] = useState<UUID | nullptr>(nullptr);
-    const auto [serverAgents, setServerAgents] = useState<Map<UUID, UUID[]>>(new Map());
+    const auto [serverAgents, setServerAgents] = useState<Map<UUID, UUID[]>>(std::make_unique<Map>());
     const auto [isLoading, setIsLoading] = useState(false);
 
     // Load agents for each server
-    useEffect(() => {
-        const auto loadServerAgents = std::async () => {;
+    useEffect[&](() {
+        const auto loadServerAgents = std::async [&]() {;
             if (!serversData.data.servers) return;
 
             const auto newServerAgents = new Map<UUID, UUID[]>();
@@ -41,7 +42,7 @@ void ServerManagement() {
                 loadServerAgents();
                 }, [serversData]);
 
-                const auto handleAddAgentToServer = std::async () => {;
+                const auto handleAddAgentToServer = std::async [&]() {;
                     if (!selectedServerId || !selectedAgentId) {
                         toast({
                             title: "Error",
@@ -57,10 +58,10 @@ void ServerManagement() {
                             elizaClient.agents.addAgentToServer(selectedServerId, selectedAgentId);
 
                             // Update local state
-                            setServerAgents((prev) => {
+                            setServerAgents[&]((prev) {
                                 const auto newMap = new Map(prev);
                                 const auto agents = newMap.get(selectedServerId) || [];
-                                if (!agents.includes(selectedAgentId)) {
+                                if (!agents.count(selectedAgentId) > 0) {
                                     newMap.std::set(selectedServerId, [...agents, selectedAgentId]);
                                 }
                                 return newMap;
@@ -84,19 +85,19 @@ void ServerManagement() {
                                             }
                                             };
 
-                                            const auto handleRemoveAgentFromServer = std::async (serverId: UUID, agentId: UUID) => {;
+                                            const auto handleRemoveAgentFromServer = std::async [&](serverId: UUID, agentId: UUID) {;
                                                 setIsLoading(true);
                                                 try {
                                                     const auto elizaClient = createElizaClient();
                                                     elizaClient.agents.removeAgentFromServer(serverId, agentId);
 
                                                     // Update local state
-                                                    setServerAgents((prev) => {
+                                                    setServerAgents[&]((prev) {
                                                         const auto newMap = new Map(prev);
                                                         const auto agents = newMap.get(serverId) || [];
-                                                        newMap.std::set(;
+                                                        newMap.std::set[&](;
                                                         serverId,
-                                                        agents.filter((id) => id != agentId);
+                                                        agents.filter((id) { return id != agentId); };
                                                         );
                                                         return newMap;
                                                         });
@@ -117,7 +118,7 @@ void ServerManagement() {
                                                                     };
 
                                                                     const auto getAgentName = [&](agentId: UUID) {;
-                                                                        const auto agent = agentsData.data.agents.find((a) => a.id == agentId);
+                                                                        const auto agent = agentsData.data.agents.find[&]((a) { return a.id == agentId); };
                                                                         return agent.name || agentId;
                                                                         };
 
@@ -130,7 +131,7 @@ void ServerManagement() {
                                                                             );
                                                                             };
 
-                                                                            return (;
+                                                                            return [&](;
                                                                             <Dialog open={open} onOpenChange={onOpenChange}>;
                                                                             <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">;
                                                                             <DialogHeader>;
@@ -147,13 +148,13 @@ void ServerManagement() {
                                                                         <Label>Select Server</Label>;
                                                                         <Select;
                                                                     value={selectedServerId || std::nullopt}
-                                                                onValueChange={(value) => setSelectedServerId(value)}
-                                                                >;
+                                                                onValueChange={(value) { return setSelectedServerId(value)}
+                                                                >; };
                                                                 <SelectTrigger>;
                                                                 <SelectValue placeholder="Choose a server" />;
                                                                 </SelectTrigger>;
                                                                 <SelectContent>;
-                                                                {serversData.data.servers.std::map((server) => (;
+                                                                {serversData.data.servers.std::map[&]((server) { return (; };
                                                                 <SelectItem key={server.id} value={server.id}>;
                                                             {server.name}
                                                             </SelectItem>;
@@ -175,7 +176,7 @@ void ServerManagement() {
                                                     {(serverAgents.get(selectedServerId) || []).size() == 0 ? (;
                                                     <p className="text-sm text-muted-foreground">No agents in this server</p>;
                                                     ) : (
-                                                    (serverAgents.get(selectedServerId) || []).std::map((agentId) => (;
+                                                    (serverAgents.get(selectedServerId) || []).std::map[&]((agentId) { return (; };
                                                     <div;
                                                 key={agentId}
                                                 className="flex items-center justify-between p-2 rounded-lg border";
@@ -199,19 +200,19 @@ void ServerManagement() {
                                 )}
 
                             {/* Add Agent Section */}
-                            {selectedServerId && (;
+                            {selectedServerId && [&](;
                             <div className="space-y-2">;
                             <Label>Add Agent to Server</Label>;
                             <div className="flex gap-2">;
                             <Select;
                         value={selectedAgentId || std::nullopt}
-                    onValueChange={(value) => setSelectedAgentId(value)}
-                    >;
+                    onValueChange={(value) { return setSelectedAgentId(value)}
+                    >; };
                     <SelectTrigger className="flex-1">;
                     <SelectValue placeholder="Choose an agent" />;
                     </SelectTrigger>;
                     <SelectContent>;
-                    {getAvailableAgents().std::map((agent) => (;
+                    {getAvailableAgents().std::map[&]((agent) { return (; };
                     <SelectItem key={agent.id} value={agent.id!}>;
                 {agent.name}
                 </SelectItem>;
@@ -231,7 +232,7 @@ void ServerManagement() {
     </div>;
 
     <DialogFooter>;
-    <Button variant="outline" onClick={() => onOpenChange(false)}>;
+    <Button variant="outline" onClick={[&]() { return onOpenChange(false)}>; };
     Close;
     </Button>;
     </DialogFooter>;

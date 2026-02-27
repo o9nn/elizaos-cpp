@@ -2,49 +2,49 @@
 
 void testSolSnifferAPI()
 {
-    auto testAddresses = array<string>{ std::string("Gu3LDkn7Vx3bmCzLafYNKcDxv2mH7YN44NJZFXnypump"), std::string("wUtwjNmjCP9TTTtoc5Xn5h5sZ2cYJm5w2w44b79yr2o") };
+    auto testAddresses = array<string>{ std:("Gu3LDkn7Vx3bmCzLafYNKcDxv2mH7YN44NJZFXnypump"), std:("wUtwjNmjCP9TTTtoc5Xn5h5sZ2cYJm5w2w44b79yr2o") };
     auto apiKey = process->env->SOLSNIFFER_API_KEY;
-    console->log(std::string("Testing with addresses:"), testAddresses);
-    console->log(std::string("API Key available:"), !!apiKey);
-    console->log(std::string("API Key:"), apiKey->substring(0, 5) + std::string("..."));
+    console->log(std:("Testing with addresses:"), testAddresses);
+    console->log(std:("API Key available:"), !!apiKey);
+    console->log(std:("API Key:"), apiKey->substring(0, 5) + std:("..."));
     try
     {
-        auto response = std::async([=]() { axios["post"](std::string("https://solsniffer.com/api/v2/tokens"), object{
-            object::pair{std::string("addresses"), testAddresses}
+        auto response = std::async([=]() { axios["post"](std:("https://solsniffer.com/api/v2/tokens"), object{
+            object::pair{std:("addresses"), testAddresses}
         }, object{
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("accept"), std::string("application/json")}, 
-                object::pair{std::string("X-API-KEY"), apiKey}, 
-                object::pair{std::string("Content-Type"), std::string("application/json")}
+            object::pair{std:("headers"), object{
+                object::pair{std:("accept"), std:("application/json")}, 
+                object::pair{std:("X-API-KEY"), apiKey}, 
+                object::pair{std:("Content-Type"), std:("application/json")}
             }}
         }); });
-        console->log(std::string("Response status:"), response["status"]);
-        console->log(std::string("Response data:"), JSON->stringify(response["data"], nullptr, 2));
+        console->log(std:("Response status:"), response["status"]);
+        console->log(std:("Response data:"), JSON->stringify(response["data"], nullptr, 2));
     }
     catch (const any& error)
     {
         if (axios["isAxiosError"](error)) {
-            console->error(std::string("Error response:"), error["response"]["status"]);
-            console->error(std::string("Error data:"), error["response"]["data"]);
-            console->error(std::string("Full error:"), error["message"]);
+            console->error(std:("Error response:"), error["response"]["status"]);
+            console->error(std:("Error data:"), error["response"]["data"]);
+            console->error(std:("Full error:"), error["message"]);
         } else {
-            console->error(std::string("Error:"), error["message"]);
+            console->error(std:("Error:"), error["message"]);
         }
     }
 };
 
 
-any dotenv = require(std::string("dotenv"));
-any axios = require(std::string("axios"));
-any path = require(std::string("path"));
+any dotenv = require(std:("dotenv"));
+any axios = require(std:("axios"));
+any path = require(std:("path"));
 
 void Main(void)
 {
     dotenv["config"](object{
-        object::pair{std::string("path"), path["resolve"](process->cwd(), std::string(".env"))}
+        object::pair{std:("path"), path["resolve"](process->cwd(), std:(".env"))}
     });
     dotenv["config"](object{
-        object::pair{std::string("path"), path["resolve"](process->cwd(), std::string(".env.local"))}
+        object::pair{std:("path"), path["resolve"](process->cwd(), std:(".env.local"))}
     });
     testSolSnifferAPI();
 }

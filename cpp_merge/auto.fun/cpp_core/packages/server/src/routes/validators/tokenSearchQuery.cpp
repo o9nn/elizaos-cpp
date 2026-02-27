@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-SearchTokenInput parseSearchTokenRequest(const std::any& data) {
+SearchTokenInput parseSearchTokenRequest(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return SearchTokenBodySchema.parse(data);

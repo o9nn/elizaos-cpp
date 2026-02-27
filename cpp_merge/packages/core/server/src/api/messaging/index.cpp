@@ -4,11 +4,11 @@ std::shared_ptr<express::Router> messagingRouter(std::shared_ptr<Map<std::shared
 {
     auto router = express->Router();
     if (!serverInstance) {
-        throw any(std::make_shared<Error>(std::string("ServerInstance is required for messaging router")));
+        throw any(std::make_shared<Error>(std:("ServerInstance is required for messaging router")));
     }
-    router->use(std::string("/"), createMessagingCoreRouter(serverInstance));
-    router->use(std::string("/"), createServersRouter(serverInstance));
-    router->use(std::string("/"), createChannelsRouter(agents, serverInstance));
+    router->use(std:("/"), createMessagingCoreRouter(serverInstance));
+    router->use(std:("/"), createServersRouter(serverInstance));
+    router->use(std:("/"), createChannelsRouter(agents, serverInstance));
     return router;
 };
 

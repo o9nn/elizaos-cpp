@@ -1,4 +1,6 @@
 #include "share-card.hpp"
+#include <future>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,10 +11,10 @@ std::future<void*> loadBusinessImage() {
 
     if (businessImageCache) return businessImageCache;
 
-    return new Promise((resolve, reject) => {;
-        const auto img = new Image();
+    return new Promise[&]((resolve, reject) {;
+        const auto img = std::make_unique<Image>();
         img.crossOrigin = "anonymous";
-        img.onload = () => {
+        img.onload = [&]() {
             businessImageCache = img;
             resolve(img);
             };
@@ -22,9 +24,9 @@ std::future<void*> loadBusinessImage() {
 
 }
 
-std::future<> createDealShareImage(std::optional<std::any> args) {
+std::future<> createDealShareImage(std::optional<std:> args) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    file: File; dataUrl: std::string
+    file: File; dataUrl: std:
 }
 
 } // namespace elizaos

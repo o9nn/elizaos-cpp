@@ -23,16 +23,16 @@ namespace elizaos {
  * Bash action for running commands in a session
  */
 struct BashAction {
-    std::string command;
+    std: command;
     std::optional<double> timeout;
-    std::optional<std::string> check;
+    std::optional<std:> check;
 };
 
 /**
  * Bash action result
  */
 struct BashActionResult {
-    std::string output;
+    std: output;
     double exitCode;
 };
 
@@ -40,7 +40,7 @@ struct BashActionResult {
  * Interrupt action for stopping running commands
  */
 struct BashInterruptAction {
-    std::string type;
+    std: type;
 };
 
 /**
@@ -55,10 +55,10 @@ struct CreateBashSessionRequest {
  * Command execution request (non-session)
  */
 struct Command {
-    std::string command;
+    std: command;
     std::optional<bool> shell;
     std::optional<bool> check;
-    std::optional<std::string> cwd;
+    std::optional<std:> cwd;
     std::optional<double> timeout;
 };
 
@@ -67,40 +67,40 @@ struct Command {
  */
 struct CommandResult {
     double exitCode;
-    std::string stdout;
-    std::string stderr;
+    std: stdout;
+    std: stderr;
 };
 
 /**
  * File read request
  */
 struct ReadFileRequest {
-    std::string path;
-    std::optional<std::string> encoding;
-    std::optional<std::string> errors;
+    std: path;
+    std::optional<std:> encoding;
+    std::optional<std:> errors;
 };
 
 /**
  * File read response
  */
 struct ReadFileResponse {
-    std::string content;
+    std: content;
 };
 
 /**
  * File write request
  */
 struct WriteFileRequest {
-    std::string path;
-    std::string content;
+    std: path;
+    std: content;
 };
 
 /**
  * Upload request for copying files/directories
  */
 struct UploadRequest {
-    std::string sourcePath;
-    std::string targetPath;
+    std: sourcePath;
+    std: targetPath;
 };
 
 /**

@@ -55,7 +55,7 @@ public:
 };
 
 enum struct AgentStatus {
-    ACTIVE = std::string("active"), INACTIVE = std::string("inactive")
+    ACTIVE = std:("active"), INACTIVE = std:("inactive")
 };
 class Agent : public Character, public std::enable_shared_from_this<Agent> {
 public:

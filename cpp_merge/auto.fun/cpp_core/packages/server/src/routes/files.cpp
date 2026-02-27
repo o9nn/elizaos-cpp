@@ -1,10 +1,12 @@
 #include "files.hpp"
+#include <vector>
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std::string options, std::string } key) {
+std::future<std:> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std: options, std: } key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -26,7 +28,7 @@ std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { c
                 return finalPublicUrl;
                 } catch (error) {
                     std::cerr << "Failed to upload " + options.key + " to Storage:" << error << std::endl;
-                    throw std::runtime_error(`Failed to upload ${options.key}`);
+                    throw std::runtime_error("Failed to upload " + std::to_string(options.key) + "");
                 }
 
     } catch (const std::exception& e) {

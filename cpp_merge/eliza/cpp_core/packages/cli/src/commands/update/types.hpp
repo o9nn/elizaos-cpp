@@ -31,7 +31,7 @@ struct UpdateOptions {
  * Global CLI update options
  */
 struct GlobalUpdateOptions {
-    std::optional<std::string> version;
+    std::optional<std:> version;
     std::optional<bool> skipBunMigration;
 };
 
@@ -40,15 +40,15 @@ struct GlobalUpdateOptions {
  */
 struct VersionCheckResult {
     bool needsUpdate;
-    std::optional<std::string> error;
+    std::optional<std:> error;
 };
 
 /**
  * Package update information
  */
 struct PackageUpdate {
-    std::string current;
-    std::string latest;
+    std: current;
+    std: latest;
 };
 
 /**
@@ -66,14 +66,14 @@ struct CliEnvironment {
     bool isNpx;
     bool isBunx;
     bool isNpmInstalled;
-    std::string packageManager;
+    std: packageManager;
 };
 
 /**
  * Update context information
  */
 struct UpdateContext {
-    std::string cwd;
+    std: cwd;
     bool isPlugin;
     CliEnvironment environment;
 };

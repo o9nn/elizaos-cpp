@@ -1,29 +1,30 @@
 #include "tee.hpp"
+#include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents) {
+express::Router createTeeRouter(const std::unordered_map<std:, IAgentRuntime>& agents) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     //   const router = express.Router();
 
     //   // Get all TEE agents
-    //   router.get('/agents', std::async (_req, res) => {
+    //   router.get[&]('/agents', std::async (_req, res) {
     //     try {
     //       const allAgents = [];
 
     //       for (const agentRuntime of agents.values()) {
     //         const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
 
-    //         const agents = await teeLogService.getAllAgents();
+    //         const agents = teeLogService.getAllAgents();
     //         allAgents.push(...agents);
     //       }
 
     //       const runtime: IAgentRuntime = agents.values().next().value;
     //       const teeLogService = runtime.getService<ITeeLogService>(ServiceType.TEE);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(allAgents));
+    //       const attestation = teeLogService.generateAttestation(nlohmann::json().dump(allAgents));
     //       res.json({ agents: allAgents, attestation: attestation });
     //     } catch (error) {
     //       logger.error('Failed to get TEE agents:', error instanceof Error ? error.message : String(error));
@@ -34,7 +35,7 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //   });
 
     //   // Get specific TEE agent
-    //   router.get('/agents/:agentId', std::async (req, res) => {
+    //   router.get[&]('/agents/:agentId', std::async (req, res) {
     //     try {
     //       const agentId = req.params.agentId;
     //       const agentRuntime = agents.get(agentId);
@@ -45,8 +46,8 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
 
     //       const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
 
-    //       const teeAgent = await teeLogService.getAgent(agentId);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(teeAgent));
+    //       const teeAgent = teeLogService.getAgent(agentId);
+    //       const attestation = teeLogService.generateAttestation(nlohmann::json().dump(teeAgent));
     //       res.json({ agent: teeAgent, attestation: attestation });
     //     } catch (error) {
     //       logger.error('Failed to get TEE agent:', error instanceof Error ? error.message : String(error));
@@ -57,7 +58,7 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //   });
 
     //   // Query TEE logs
-    //   router.post('/logs', std::async (req: express.Request, res: express.Response) => {
+    //   router.post[&]('/logs', std::async (req: express.Request, res: express.Response) {
     //     try {
     //       const query = req.body.query || {};
     //       const page = Number.parseInt(req.body.page) || 1;
@@ -74,8 +75,8 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //       };
     //       const agentRuntime: IAgentRuntime = agents.values().next().value;
     //       const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
-    //       const pageQuery = await teeLogService.getLogs(teeLogQuery, page, pageSize);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(pageQuery));
+    //       const pageQuery = teeLogService.getLogs(teeLogQuery, page, pageSize);
+    //       const attestation = teeLogService.generateAttestation(nlohmann::json().dump(pageQuery));
     //       res.json({
     //         logs: pageQuery,
     //         attestation: attestation,

@@ -58,7 +58,7 @@ std::shared_ptr<Promise<T>> PgDatabaseAdapter::withDatabase(std::function<std::s
             try
             {
                 auto db = drizzle(as<any>(client), object{
-                    object::pair{std::string("schema"), std::string("schema")}
+                    object::pair{std:("schema"), std:("schema")}
                 });
                 this->db = db;
                 return std::async([=]() { operation(); });

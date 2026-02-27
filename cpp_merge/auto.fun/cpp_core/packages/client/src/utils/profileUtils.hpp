@@ -20,19 +20,19 @@ namespace elizaos {
 
 // --- Types for User Profile Data ---
 struct UserProfileData {
-    std::string id;
-    std::string address;
-    std::string displayName;
-    std::string | null profilePictureUrl;
+    std: id;
+    std: address;
+    std: displayName;
+    std: | null profilePictureUrl;
     double points;
     double rewardPoints;
-    std::string createdAt;
+    std: createdAt;
     double suspended;
 };
 
 struct ProfileApiResponse {
     UserProfileData user;
-    std::vector<std::any> transactions;
+    std::vector<std::string> transactions;
     std::vector<ProfileToken> tokensCreated;
 };
 
@@ -55,20 +55,20 @@ using MetadataAccount = AccountInfo<Buffer>;
           // Skip if URI is not HTTPS
 
     // Get all tokens with bonding curve info
-      await removeNonAutofunTokens(ownedTokenAccounts);
+      removeNonAutofunTokens(ownedTokenAccounts);
 
     // Get metadata for all owned tokens
 
-    // === 1) Build headers ===
+    // == 1) Build headers ==
 
-    // === 2) Fetch the raw tokens list ===
+    // == 2) Fetch the raw tokens list ==
 
-    // === 3) Pull your on‐chain token accounts **once** ===
-    // === 4) Map into ProfileToken[] ===
+    // == 3) Pull your on‐chain token accounts **once** ==
+    // == 4) Map into ProfileToken[] ==
       // const mint = t.mint; // Extract mint property
       // parse the mint
 
-      // find the account with this mint (if std::any)
+      // find the account with this mint (if std:)
 
         // safe‐cast the amount or fall back to zero
 
@@ -103,7 +103,7 @@ using MetadataAccount = AccountInfo<Buffer>;
 
 // Function to trigger profile picture generation (placeholder)
 
-      // body: JSON.stringify({ prompt: "Optional prompt here" }) // Optional: Add if backend supports it
+      // body: nlohmann::json().dump({ prompt: "Optional prompt here" }) // Optional: Add if backend supports it
 
 
 } // namespace elizaos

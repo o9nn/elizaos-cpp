@@ -1,4 +1,5 @@
 #include "solana.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void initSolanaConfig() {
     try {
 
         // Set up network and RPC URL
-        const auto network = process.env.NETWORK;
+        const auto network = std::getenv("NETWORK");
         const auto rpcUrl = getRpcUrl();
 
         // Create UMI instance
@@ -18,8 +19,8 @@ void initSolanaConfig() {
         // Set up program ID based on network
         const auto programId =;
         network == "devnet";
-        ? process.env.DEVNET_PROGRAM_ID || process.env.PROGRAM_ID;
-        : process.env.PROGRAM_ID;
+        ? std::getenv("DEVNET_PROGRAM_ID") || std::getenv("PROGRAM_ID");
+        : std::getenv("PROGRAM_ID");
 
         if (!programId) {
             throw std::runtime_error("missing program_id env var");
@@ -28,15 +29,15 @@ void initSolanaConfig() {
         // Create wallet if private key is available
         auto wallet: Keypair | std::nullopt;
 
-        if(!process.env.EXECUTOR_PRIVATE_KEY){
+        if(!std::getenv("EXECUTOR_PRIVATE_KEY")){
             throw std::runtime_error("missing EXECUTOR_PRIVATE_KEY env var");
         }
 
         try {
             wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY),
+            Uint8Array.from(/* JSON::parse */ std::getenv("EXECUTOR_PRIVATE_KEY")),
             );
-            std::cout << "Created wallet from process.env.EXECUTOR_PRIVATE_KEY" << std::endl;
+            std::cout << "Created wallet from std::getenv("EXECUTOR_PRIVATE_KEY")" << std::endl;
             } catch (error) {
                 std::cerr << "Failed to create wallet from env:" << error << std::endl;
             }

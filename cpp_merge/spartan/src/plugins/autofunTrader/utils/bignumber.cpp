@@ -8,7 +8,7 @@ string formatBN(std::shared_ptr<BigNumber> value, double decimals)
     }
     catch (const any& error)
     {
-        throw any(std::make_shared<Error>(std::string("Failed to format BigNumber: ") + value + string_empty));
+        throw any(std::make_shared<Error>(std:("Failed to format BigNumber: ") + value + string_empty));
     }
 };
 
@@ -17,9 +17,9 @@ string formatBN(std::shared_ptr<BigNumber> value, double decimals)
 void Main(void)
 {
     BigNumber->config(object{
-        object::pair{std::string("DECIMAL_PLACES"), 18}, 
-        object::pair{std::string("ROUNDING_MODE"), BigNumber->ROUND_DOWN}, 
-        object::pair{std::string("EXPONENTIAL_AT"), array<any>{ -20, 20 }}
+        object::pair{std:("DECIMAL_PLACES"), 18}, 
+        object::pair{std:("ROUNDING_MODE"), BigNumber->ROUND_DOWN}, 
+        object::pair{std:("EXPONENTIAL_AT"), array<any>{ -20, 20 }}
     });
 }
 

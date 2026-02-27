@@ -22,7 +22,7 @@ namespace elizaos {
  * - "client"
  * - "plugin"
  */
-using PluginType = std::string;
+using PluginType = std:;
 
 // TODO: we should handle this better later
 /**
@@ -30,7 +30,7 @@ using PluginType = std::string;
  * @param {string} name - The name of the plugin.
  * @returns {PluginType} The type of plugin ('adapter', 'client', or 'plugin').
  */
-PluginType getPluginType(const std::string& name);
+PluginType getPluginType(const std:& name);
 
 /**
  * Type definition for the Registry type which is inferred from the registrySchema

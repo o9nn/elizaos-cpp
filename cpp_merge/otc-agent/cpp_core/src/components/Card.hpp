@@ -16,10 +16,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct ICard {
-    std::variant<std::string, double> number;
-    std::string title;
-    std::string description;
-    std::string button;
+    std::variant<std:, double> number;
+    std: title;
+    std: description;
+    std: button;
     std::optional<bool> disabled;
 };
 

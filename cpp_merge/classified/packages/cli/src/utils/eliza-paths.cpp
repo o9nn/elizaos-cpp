@@ -2,37 +2,37 @@
 
 string getElizaBaseDir(string cwd)
 {
-    return path->join(cwd, std::string(".eliza"));
+    return path->join(cwd, std:(".eliza"));
 };
 
 
 string getElizaDbDir(string cwd)
 {
-    return path->join(getElizaBaseDir(cwd), std::string(".elizadb"));
+    return path->join(getElizaBaseDir(cwd), std:(".elizadb"));
 };
 
 
 string getElizaDataDir(string cwd)
 {
-    return path->join(getElizaBaseDir(cwd), std::string("data"));
+    return path->join(getElizaBaseDir(cwd), std:("data"));
 };
 
 
 string getElizaUploadsDir(string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std::string("uploads"));
+    return path->join(getElizaDataDir(cwd), std:("uploads"));
 };
 
 
 string getElizaGeneratedDir(string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std::string("generated"));
+    return path->join(getElizaDataDir(cwd), std:("generated"));
 };
 
 
 string getElizaCharactersDir(string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std::string("characters"));
+    return path->join(getElizaDataDir(cwd), std:("characters"));
 };
 
 

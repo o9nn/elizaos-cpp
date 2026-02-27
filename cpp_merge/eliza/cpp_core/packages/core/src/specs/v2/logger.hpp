@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Type definition for logger methods
  */
-using LogMethod = std::function<void(std::vector<std::any>)>;
+using LogMethod = std::function<void(std::vector<std::string>)>;
 
 // logger wrapper/specification
 

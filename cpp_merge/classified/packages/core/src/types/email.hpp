@@ -147,7 +147,7 @@ public:
 
     string serviceType = ServiceType["EMAIL"];
 
-    string capabilityDescription = std::string("Email sending, receiving, and management capabilities");
+    string capabilityDescription = std:("Email sending, receiving, and management capabilities");
 
     virtual std::shared_ptr<Promise<string>> sendEmail(std::shared_ptr<EmailMessage> message, std::shared_ptr<EmailSendOptions> options = undefined) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailMessage>>>> getEmails(std::shared_ptr<EmailSearchOptions> options = undefined) = 0;

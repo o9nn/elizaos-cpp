@@ -1,4 +1,5 @@
 #include ".bus.hpp"
+#include <future>
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -22,25 +23,25 @@ struct MessageServiceMessage {
     UUID channel_id;
     UUID server_id;
     UUID; // UUID of a central user identity author_id;
-    std::optional<std::string; // Display name from central user identity> author_display_name;
-    std::string content;
-    std::optional<std::any> raw_message;
-    std::optional<std::string; // original platform message ID> source_id;
-    std::optional<std::string> source_type;
+    std::optional<std:; // Display name from central user identity> author_display_name;
+    std: content;
+    std::optional<std:> raw_message;
+    std::optional<std:; // original platform message ID> source_id;
+    std::optional<std:> source_type;
     std::optional<UUID> in_reply_to_message_id;
     double created_at;
-    std::optional<std::any> metadata;
+    std::optional<std:> metadata;
 };
 
 class MessageBusService extends Service {
   static serviceType = 'message-bus-service';
   capabilityDescription = 'Manages connection and message synchronization with the message server.';
 
-  private boundHandleIncomingMessage: (message: MessageServiceMessage) => Promise<void>;
-  private boundHandleServerAgentUpdate: (data: std::any) => Promise<void>;
-  private boundHandleMessageDeleted: (data: std::any) => Promise<void>;
-  private boundHandleChannelCleared: (data: std::any) => Promise<void>;
-  private subscribedServers: Set<UUID> = new Set();
+  private boundHandleIncomingMessage: [&](message: MessageServiceMessage) { return Promise<void>; };
+  private boundHandleServerAgentUpdate: [&](data: std:) { return Promise<void>; };
+  private boundHandleMessageDeleted: [&](data: std:) { return Promise<void>; };
+  private boundHandleChannelCleared: [&](data: std:) { return Promise<void>; };
+  private subscribedServers: Set<UUID> = std::make_unique<Set>();
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);
@@ -118,7 +119,7 @@ class MessageBusService extends Service {
 
       // Validate port range
 
-      // Remove std::any potentially dangerous URL components
+      // Remove std: potentially dangerous URL components
 
 // Minimal plugin definition to register the service
 

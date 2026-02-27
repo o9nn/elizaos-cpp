@@ -1,4 +1,5 @@
 #include "chat.hpp"
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void ChatPage() {
     try {
 
         const auto { publicKey } = useWallet();
-        const auto { mint: selectedMint } = useParams<{ mint: std::string }>();
+        const auto { mint: selectedMint } = useParams<{ mint: std: }>();
         const auto navigate = useNavigate();
         const auto { solPrice } = useSolPriceContext(); // Get SOL price;
 
@@ -21,8 +22,8 @@ void ChatPage() {
         );
 
         // --- Fetch User's Platform Tokens Effect ---
-        useEffect(() => {
-            const auto loadPlatformTokens = std::async () => {;
+        useEffect[&](() {
+            const auto loadPlatformTokens = std::async [&]() {;
                 if (!publicKey) {
                     setUserTokens([]);
                     setIsLoadingTokens(false);
@@ -51,7 +52,7 @@ void ChatPage() {
                             data.error || "Invalid response format for platform tokens",
                             );
                         }
-                        } catch (err: std::any) {
+                        } catch (err: std:) {
                             std::cerr << "Error fetching platform tokens:" << err << std::endl;
                             setErrorLoadingTokens(;
                             true /* instanceof check */ ? err : std::runtime_error("Failed to load tokens"),
@@ -70,11 +71,11 @@ void ChatPage() {
                             const auto [isLoadingTokenDetails, setIsLoadingTokenDetails] = useState(false);
 
                             // --- Sort Tokens by USD Value ---
-                            const auto sortedUserTokens = useMemo(() => {;
+                            const auto sortedUserTokens = useMemo[&](() {;
                                 std::cout << "userTokens" << userTokens << std::endl;
                                 std::cout << "solPrice" << solPrice << std::endl;
                                 if (!userTokens || !solPrice) return [];
-                                return [...userTokens].sort((a, b) => {;
+                                return [...userTokens].sort[&]((a, b) {;
                                     const auto valueA = (a.solValue || 0) * solPrice;
                                     const auto valueB = (b.solValue || 0) * solPrice;
                                     return valueB - valueA; // Sort descending;
@@ -82,7 +83,7 @@ void ChatPage() {
                                     }, [userTokens, solPrice]);
 
                                     // --- Effect to navigate to first token if none selected ---
-                                    useEffect(() => {
+                                    useEffect[&](() {
                                         if (
                                         !isLoadingTokens &&;
                                         !selectedMint &&;
@@ -94,8 +95,8 @@ void ChatPage() {
                                         }, [isLoadingTokens, selectedMint, userTokens, navigate]);
 
                                         // --- Fetch Selected Token Details (Keep this effect) ---
-                                        useEffect(() => {
-                                            const auto fetchTokenDetails = std::async () => {;
+                                        useEffect[&](() {
+                                            const auto fetchTokenDetails = std::async [&]() {;
                                                 if (!selectedMint) {
                                                     setSelectedTokenDetails(nullptr);
                                                     return;
@@ -138,15 +139,15 @@ void ChatPage() {
                                     (!sortedUserTokens || sortedUserTokens.size() == 0) && (;
                                     <div className="text-center text-neutral-500 text-xs p-2">;
                                     {publicKey;
-                                    ? "You don't seem to hold std::any platform tokens.";
+                                    ? "You don't seem to hold std: platform tokens.";
                                 : "Connect wallet to see your tokens."}
                                 </div>;
                             )}
                             {!isLoadingTokens &&;
-                            sortedUserTokens.std::map(;
+                            sortedUserTokens.std::map[&](;
                             (;
                             token: ProfileToken, // Iterate over sorted tokens
-                            ) => (;
+                            ) { return (; };
                             <Link;
                         key={token.mint}
                     "to={" + "/chat/" + token.mint;

@@ -2,16 +2,16 @@
 
 void Main(void)
 {
-    describe(std::string("Todo Plugin API Tests"), [=]() mutable
+    describe(std:("Todo Plugin API Tests"), [=]() mutable
     {
-        shared baseUrl = OR((Cypress->config(std::string("baseUrl"))), (std::string("http://localhost:7777")));
-        describe(std::string("Basic Server Tests"), [=]() mutable
+        shared baseUrl = OR((Cypress->config(std:("baseUrl"))), (std:("http://localhost:7777")));
+        describe(std:("Basic Server Tests"), [=]() mutable
         {
-            it(std::string("should have the server running"), [=]() mutable
+            it(std:("should have the server running"), [=]() mutable
             {
                 cy->request(object{
-                    object::pair{std::string("url"), string_empty + baseUrl + std::string("/")}, 
-                    object::pair{std::string("failOnStatusCode"), false}
+                    object::pair{std:("url"), string_empty + baseUrl + std:("/")}, 
+                    object::pair{std:("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
                     expect(response["status"])->to->be->oneOf(array<double>{ 200, 404 });
@@ -19,42 +19,42 @@ void Main(void)
                 );
             }
             );
-            it(std::string("should check if plugin routes are available"), [=]() mutable
+            it(std:("should check if plugin routes are available"), [=]() mutable
             {
                 cy->request(object{
-                    object::pair{std::string("method"), std::string("GET")}, 
-                    object::pair{std::string("url"), string_empty + baseUrl + std::string("/api/todos")}, 
-                    object::pair{std::string("failOnStatusCode"), false}
+                    object::pair{std:("method"), std:("GET")}, 
+                    object::pair{std:("url"), string_empty + baseUrl + std:("/api/todos")}, 
+                    object::pair{std:("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
                     if (response["status"] == 200) {
-                        expect(response["body"])->to->be->an(std::string("array"));
+                        expect(response["body"])->to->be->an(std:("array"));
                         if (response["body"]["length"] > 0) {
                             auto world = const_(response["body"])[0];
-                            expect(world)->to->have->property(std::string("worldId"));
-                            expect(world)->to->have->property(std::string("worldName"));
-                            expect(world)->to->have->property(std::string("rooms"));
-                            expect(world["rooms"])->to->be->an(std::string("array"));
+                            expect(world)->to->have->property(std:("worldId"));
+                            expect(world)->to->have->property(std:("worldName"));
+                            expect(world)->to->have->property(std:("rooms"));
+                            expect(world["rooms"])->to->be->an(std:("array"));
                         }
                     } else {
-                        cy->log(std::string("Todo API endpoint not available in dev mode"));
+                        cy->log(std:("Todo API endpoint not available in dev mode"));
                     }
                 }
                 );
             }
             );
-            it(std::string("should check if tags endpoint is available"), [=]() mutable
+            it(std:("should check if tags endpoint is available"), [=]() mutable
             {
                 cy->request(object{
-                    object::pair{std::string("method"), std::string("GET")}, 
-                    object::pair{std::string("url"), string_empty + baseUrl + std::string("/api/tags")}, 
-                    object::pair{std::string("failOnStatusCode"), false}
+                    object::pair{std:("method"), std:("GET")}, 
+                    object::pair{std:("url"), string_empty + baseUrl + std:("/api/tags")}, 
+                    object::pair{std:("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
                     if (response["status"] == 200) {
-                        expect(response["body"])->to->be->an(std::string("array"));
+                        expect(response["body"])->to->be->an(std:("array"));
                     } else {
-                        cy->log(std::string("Tags API endpoint not available in dev mode"));
+                        cy->log(std:("Tags API endpoint not available in dev mode"));
                     }
                 }
                 );
@@ -62,24 +62,24 @@ void Main(void)
             );
         }
         );
-        describe(std::string("Frontend Routes"), [=]() mutable
+        describe(std:("Frontend Routes"), [=]() mutable
         {
-            it(std::string("should serve a page at /"), [=]() mutable
+            it(std:("should serve a page at /"), [=]() mutable
             {
-                cy->visit(std::string("/"), object{
-                    object::pair{std::string("failOnStatusCode"), false}
+                cy->visit(std:("/"), object{
+                    object::pair{std:("failOnStatusCode"), false}
                 });
-                cy->get(std::string("body"))->should(std::string("exist"));
+                cy->get(std:("body"))->should(std:("exist"));
             }
             );
-            it(std::string("should check todos page availability"), [=]() mutable
+            it(std:("should check todos page availability"), [=]() mutable
             {
                 cy->request(object{
-                    object::pair{std::string("url"), std::string("/todos")}, 
-                    object::pair{std::string("failOnStatusCode"), false}
+                    object::pair{std:("url"), std:("/todos")}, 
+                    object::pair{std:("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
-                    cy->log(std::string("Todos page status: ") + response["status"] + string_empty);
+                    cy->log(std:("Todos page status: ") + response["status"] + string_empty);
                 }
                 );
             }

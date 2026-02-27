@@ -19,10 +19,10 @@ namespace elizaos {
 
 
 struct ButtonConfig {
-    std::optional<std::string> label;
+    std::optional<std:> label;
     std::optional<ReactNode> icon;
-    std::optional<std::string> className;
-    std::optional<std::string> size;
+    std::optional<std:> className;
+    std::optional<std:> size;
     std::optional<bool> disabled;
 };
 
@@ -30,7 +30,7 @@ struct ProfileCardProps {
     ReactNode title;
     ReactNode content;
     std::vector<ButtonConfig> buttons;
-    std::optional<std::string> className;
+    std::optional<std:> className;
 };
 
 

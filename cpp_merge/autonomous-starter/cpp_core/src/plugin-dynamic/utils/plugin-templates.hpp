@@ -17,12 +17,12 @@ namespace elizaos {
     // Add similar phrases that might trigger this action
     // Add validation logic here
       // TODO: Implement ${name} logic here
-      // Expected parameters: ${JSON.stringify(parameters, null, 2)}
+      // Expected parameters: ${nlohmann::json().dump(parameters, null, 2)}
       
       // Placeholder implementation
 
       // TODO: Implement ${name} provider logic
-      // Expected data structure: ${JSON.stringify(dataStructure, null, 2)}
+      // Expected data structure: ${nlohmann::json().dump(dataStructure, null, 2)}
       
         // Collect relevant data here
 

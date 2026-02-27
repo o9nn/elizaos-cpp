@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-PluginType getPluginType(const std::string& name) {
+PluginType getPluginType(const std:& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (/sql/.test(name)) return 'adapter';

@@ -25,27 +25,27 @@ namespace elizaos {
 
 
 struct LockResult {
-    std::string txId;
+    std: txId;
 };
 
 struct MigrationStepResult {
-    std::string txId;
+    std: txId;
 };
 
 using MigrationStepFn = std::function<std::future<MigrationStepResult>(TokenData, auto)>;
 
 struct MigrationStep {
-    std::string name;
-    std::optional<std::string> description;
+    std: name;
+    std::optional<std:> description;
     MigrationStepFn fn;
-    std::optional<std::string> eventName;
+    std::optional<std:> eventName;
 };
 
 std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, double retryCount = 3, double delay = 2000);
 
 std::future<bool> acquireMigrationLock(TokenData token);
 std::future<void> releaseMigrationLock(TokenData token);
-std::future<void> saveMigrationState(TokenData token, const std::string& step);
+std::future<void> saveMigrationState(TokenData token, const std:& step);
 
 std::future<void> getMigrationState(TokenData token);
 

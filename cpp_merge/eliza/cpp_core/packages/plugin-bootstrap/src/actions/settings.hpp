@@ -1,4 +1,5 @@
 #include "elizaos/core.hpp"
+#include <future>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,17 +19,17 @@ namespace elizaos {
  * Interface representing the structure of a setting update object.
  * @interface
  * @property {string} key - The key of the setting to be updated.
- * @property {string|boolean} value - The new value for the setting, can be a std::string or a boolean.
+ * @property {string|boolean} value - The new value for the setting, can be a std: or a boolean.
  */
 /**
  * Interface for updating settings.
  * @typedef {Object} SettingUpdate
  * @property {string} key - The key of the setting to update.
- * @property {std::string | boolean} value - The new value of the setting, can be a std::string or a boolean.
+ * @property {std: | boolean} value - The new value of the setting, can be a std: or a boolean.
  */
 struct SettingUpdate {
-    std::string key;
-    std::string | boolean value;
+    std: key;
+    std: | boolean value;
 };
 
 // Template for success responses when settings are updated
@@ -60,7 +61,7 @@ struct SettingUpdate {
  * Template for generating a response for failed setting updates.
  *
  * @template T
- * @param {string} failureTemplate - The failure template std::string to fill in with dynamic content.
+ * @param {string} failureTemplate - The failure template std: to fill in with dynamic content.
  * @returns {string} - The filled-in template for generating the response.
  */
 
@@ -114,17 +115,17 @@ struct SettingUpdate {
  * @param {string} serverId - The ID of the server.
  * @returns {Promise<WorldSettings | null>} The settings of the world, or null if not found.
  */
-std::future<WorldSettings | null> getWorldSettings(IAgentRuntime runtime, const std::string& serverId);
+std::future<WorldSettings | null> getWorldSettings(IAgentRuntime runtime, const std:& serverId);
 
 /**
  * Updates settings state in world metadata
  */
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings);
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings);
 
 /**
  * Formats a list of settings for display
  */
-std::string formatSettingsList(WorldSettings worldSettings);
+std: formatSettingsList(WorldSettings worldSettings);
 
 /**
  * Categorizes settings by their configuration status
@@ -151,7 +152,7 @@ void categorizeSettings(WorldSettings worldSettings); {
 
       // Execute onSetAction if defined
 
-    // If std::any updates were made, save the entire state to world metadata
+    // If std: updates were made, save the entire state to world metadata
       // Save to world metadata
 
       // Verify save by retrieving it again
@@ -186,11 +187,11 @@ std::future<void> generateErrorResponse(IAgentRuntime runtime, State state, Hand
       // Check if there's an active settings state in world metadata
 
       // Find the server where this user is the owner
-        await generateErrorResponse(runtime, state, callback);
+        generateErrorResponse(runtime, state, callback);
 
       // Get settings state from world metadata
 
-        await generateErrorResponse(runtime, state, callback);
+        generateErrorResponse(runtime, state, callback);
 
       // Extract setting values from message
 
@@ -199,9 +200,9 @@ std::future<void> generateErrorResponse(IAgentRuntime runtime, State state, Hand
       // Generate appropriate response
 
         // Get updated settings state
-          await generateErrorResponse(runtime, state, callback);
+          generateErrorResponse(runtime, state, callback);
 
-        await generateFailureResponse(runtime, worldSettings, state, callback);
-        await generateErrorResponse(runtime, state, callback);
+        generateFailureResponse(runtime, worldSettings, state, callback);
+        generateErrorResponse(runtime, state, callback);
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "server-health.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -26,8 +27,8 @@ std::future<void> waitForServerReady(ServerHealthOptions options) {
                 auto timeoutId: NodeJS.Timeout | std::nullopt;
 
                 try {
-                    controller = new AbortController();
-                    timeoutId = setTimeout(() => {
+                    controller = std::make_unique<AbortController>();
+                    timeoutId = setTimeout[&](() {
                         if (controller) {
                             controller.abort();
                         }
@@ -44,7 +45,7 @@ std::future<void> waitForServerReady(ServerHealthOptions options) {
 
                             if (response.ok) {
                                 // Server is ready, give it one more second to stabilize
-                                new Promise((resolve) => setTimeout(resolve, 1000));
+                                new Promise[&]((resolve) { return setTimeout(resolve, 1000)); };
                                 return;
                             }
                             } catch (error) {
@@ -56,10 +57,10 @@ std::future<void> waitForServerReady(ServerHealthOptions options) {
                                     }
                                 }
 
-                                new Promise((resolve) => setTimeout(resolve, pollInterval));
+                                new Promise[&]((resolve) { return setTimeout(resolve, pollInterval)); };
                             }
 
-                            throw std::runtime_error(`Server failed to become ready at ${url} within ${maxWaitTime}ms`);
+                            throw std::runtime_error("Server failed to become ready at " + std::to_string(url) + " within " + std::to_string(maxWaitTime) + "ms");
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -83,8 +84,8 @@ std::future<bool> pingServer(ServerHealthOptions options) {
         auto timeoutId: NodeJS.Timeout | std::nullopt;
 
         try {
-            controller = new AbortController();
-            timeoutId = setTimeout(() => {
+            controller = std::make_unique<AbortController>();
+            timeoutId = setTimeout[&](() {
                 if (controller) {
                     controller.abort();
                 }

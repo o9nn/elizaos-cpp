@@ -25,13 +25,13 @@ struct TokenCacheEntry {
 
 // Fallback: fetch token metadata from blockchain
 
-void useTokenCache(const std::string& tokenId);
+void useTokenCache(const std:& tokenId);
 
   // Set up refresh interval only once per tokenId
     std::future<void> refreshMarketData();
 
       // Clean up interval when no more subscribers
 
-void useMarketDataRefresh(const std::string& tokenId, const std::optional<Token>& token);
+void useMarketDataRefresh(const std:& tokenId, const std::optional<Token>& token);
 
 } // namespace elizaos

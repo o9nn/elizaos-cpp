@@ -2,25 +2,25 @@
 
 void Main(void)
 {
-    describe(std::string("Simple Test"), [=]() mutable
+    describe(std:("Simple Test"), [=]() mutable
     {
-        it(std::string("should verify the server is running"), [=]() mutable
+        it(std:("should verify the server is running"), [=]() mutable
         {
-            cy->visit(std::string("/"), object{
-                object::pair{std::string("failOnStatusCode"), false}
+            cy->visit(std:("/"), object{
+                object::pair{std:("failOnStatusCode"), false}
             });
-            cy->get(std::string("body"))->should(std::string("exist"));
+            cy->get(std:("body"))->should(std:("exist"));
         }
         );
-        it(std::string("should check server response"), [=]() mutable
+        it(std:("should check server response"), [=]() mutable
         {
             cy->request(object{
-                object::pair{std::string("url"), std::string("/")}, 
-                object::pair{std::string("failOnStatusCode"), false}
+                object::pair{std:("url"), std:("/")}, 
+                object::pair{std:("failOnStatusCode"), false}
             })->then([=](auto response) mutable
             {
-                expect(response)->to->have->property(std::string("status"));
-                cy->log(std::string("Server responded with status: ") + response["status"] + string_empty);
+                expect(response)->to->have->property(std:("status"));
+                cy->log(std:("Server responded with status: ") + response["status"] + string_empty);
             }
             );
         }

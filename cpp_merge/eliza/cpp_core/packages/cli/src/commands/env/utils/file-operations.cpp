@@ -1,10 +1,13 @@
 #include "file-operations.hpp"
+#include <future>
+#include <filesystem>
+#include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std::string> getGlobalEnvPath() {
+std::future<std:> getGlobalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envInfo = UserEnvironment.getInstanceInfo();
@@ -12,15 +15,15 @@ std::future<std::string> getGlobalEnvPath() {
 
 }
 
-std::future<std::string> getLocalEnvPath() {
+std::future<std:> getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto localEnvPath = path.join(process.cwd(), ".env");
+    const auto localEnvPath = path.join(std::filesystem::current_path().string(), ".env");
     return existsSync(localEnvPath) ? localEnvPath : nullptr;
 
 }
 
-std::future<EnvVars> parseEnvFile(const std::string& filePath) {
+std::future<EnvVars> parseEnvFile(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -30,7 +33,7 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
 
         const auto content = fs.readFile(filePath, "utf-8");
         // Handle empty file case gracefully
-        if (content.trim() == '') {
+        if (content == '') {
             return {}
         }
         return dotenv.parse(content);
@@ -43,18 +46,17 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
 
 }
 
-std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars) {
+std::future<void> writeEnvFile(const std:& filePath, EnvVars envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto dir = path.dirname(filePath);
         if (!existsSync(dir)) {
-            fs.mkdir(dir, { recursive: true });
+            fs.mkdir(dir, Config{recursive = true});
         }
 
         const auto content = Object.entries(envVars);
-        ".std::map(([key, value]) => " + key + "=" + value;
-        .join("\n");
+        ".std::map[&](([key, value]) { return " + key + "=" + value; }.join("\n");
 
         fs.writeFile(filePath, content);
         } catch (error) {
@@ -65,7 +67,7 @@ std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars) {
 
 }
 
-std::future<bool> resetEnvFile(const std::string& filePath) {
+std::future<bool> resetEnvFile(const std:& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -74,11 +76,11 @@ std::future<bool> resetEnvFile(const std::string& filePath) {
         }
 
         const auto envVars = parseEnvFile(filePath);
-        if (Object.keys(envVars).length == 0) {
+        if (Object.keys(envVars).size() == 0) {
             return false; // No variables to reset;
         }
 
-        const auto resetVars = Object.keys(envVars).reduce((acc, key) => {;
+        const auto resetVars = Object.keys(envVars).reduce[&]((acc, key) {;
             acc[key] = "";
             return acc;
             }, {});

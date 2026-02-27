@@ -21,8 +21,8 @@ std::function<object()> usePurgeSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std::string("isLoading"), useIsLoading}, 
-        object::pair{std::string("purgeChannel"), usePurgeChannel}
+        object::pair{std:("isLoading"), useIsLoading}, 
+        object::pair{std:("purgeChannel"), usePurgeChannel}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -33,9 +33,9 @@ std::function<object()> usePurgeSlice = [=]() mutable
         dispatch(purgeAction(channels));
     };
     return object{
-        object::pair{std::string("state"), std::string("state")}, 
-        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
-        object::pair{std::string("purge"), std::string("purge")}
+        object::pair{std:("state"), std:("state")}, 
+        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
+        object::pair{std:("purge"), std:("purge")}
     };
 };
 

@@ -1,4 +1,6 @@
 #include "route.hpp"
+#include <future>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +10,7 @@ std::future<void> GET() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto idlPath = path.join(;
-    process.cwd(),
+    std::filesystem::current_path().string(),
     "solana",
     "otc-program",
     "target",

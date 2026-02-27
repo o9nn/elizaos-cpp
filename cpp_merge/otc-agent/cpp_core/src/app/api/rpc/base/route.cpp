@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <future>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,7 +16,7 @@ std::future<void> POST(NextRequest request) {
             const auto response = fetch(publicRpc, {;
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: /* JSON.stringify */ std::string(body),
+                body: /* JSON.stringify */ std:(body),
                 });
                 const auto data = response.json();
                 return NextResponse.json(data);
@@ -36,7 +37,7 @@ std::future<void> POST(NextRequest request) {
                     headers: {
                         "Content-Type": "application/json",
                         },
-                        body: /* JSON.stringify */ std::string(body),
+                        body: /* JSON.stringify */ std:(body),
                         });
 
                         if (!response.ok) {

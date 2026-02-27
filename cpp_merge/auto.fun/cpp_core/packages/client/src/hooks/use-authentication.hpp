@@ -23,7 +23,7 @@ namespace elizaos {
 struct AuthStatus {
     bool authenticated;
     std::optional<std::vector<std::string>> privileges;
-    std::string address;
+    std: address;
     double points;
     std::optional<double> solBalance;
 };

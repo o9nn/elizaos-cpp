@@ -1,4 +1,5 @@
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -28,21 +29,21 @@ namespace elizaos {
  * Progress manager for batch runs
  */
 struct SpinnerTask {
-    std::string status;
+    std: status;
     double startTime;
 };
 
 class RunBatchProgressManager {
-  private spinnerTasks: Map<std::string, SpinnerTask> = new Map();
-  // private lock: boolean = false;  // Currently unused
-  private instancesByExitStatus: Map<std::string | null, std::string[]> = new Map();
-  // private mainProgressBar: std::any;  // Currently unused
-  // private taskProgressBar: std::any;  // Currently unused
-  // private mainTaskId: std::any;  // Currently unused
-  private yamlReportPath?: std::string;
-  // private numInstances: number;  // Currently unused
+  private spinnerTasks: Map<std:, SpinnerTask> = std::make_unique<Map>();
+  // private lock = false;  // Currently unused
+  private instancesByExitStatus: Map<std: | null, std:[]> = std::make_unique<Map>();
+  // private mainProgressBar: std:;  // Currently unused
+  // private taskProgressBar: std:;  // Currently unused
+  // private mainTaskId: std:;  // Currently unused
+  private yamlReportPath?: std:;
+  // private numInstances;  // Currently unused
 
-  constructor(_numInstances: number, yamlReportPath?: std::string) {
+  constructor(_numInstances, yamlReportPath?: std:) {
     // this.numInstances = numInstances;  // Currently unused
     this.yamlReportPath = yamlReportPath;
 

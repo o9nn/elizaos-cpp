@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ State loadState() {
 
     if (fs.existsSync(STATE_PATH)) {
         try {
-            return /* JSON.parse */ fs.readFileSync(STATE_PATH, "utf-8");
+            return /* JSON::parse */ fs.readFileSync(STATE_PATH, "utf-8");
             } catch {
                 return {}
             }
@@ -21,7 +22,7 @@ State loadState() {
 void saveState(State state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    fs.writeFileSync(STATE_PATH, /* JSON.stringify */ std::string(state, nullptr, 2));
+    fs.writeFileSync(STATE_PATH, /* JSON.stringify */ std:(state, nullptr, 2));
 
 }
 
@@ -29,7 +30,7 @@ void updateDiffState() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto state = loadState();
-    const auto repoRoot = std::to_string(registry.get("ROOT", process.env.ROOT || "."));
+    const auto repoRoot = std::to_string(registry.get("ROOT", std::getenv("ROOT") || "."));
 
     try {
         // Stage all changes and get the diff
@@ -44,7 +45,7 @@ void updateDiffState() {
             fs.writeFileSync(PATCH_PATH, patch);
 
             // Update state
-            state.diff = patch.trim();
+            state.diff = patch;
             saveState(state);
 
             std::cout << "Diff state updated successfully" << std::endl;
@@ -64,7 +65,7 @@ void clearDiff() {
 
 }
 
-std::string getDiff() {
+std: getDiff() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto state = loadState();

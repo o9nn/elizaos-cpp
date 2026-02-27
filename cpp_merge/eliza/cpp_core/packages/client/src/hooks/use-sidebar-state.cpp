@@ -10,11 +10,11 @@ void useSidebarState() {
     const auto [isVisible, setIsVisible] = useState<boolean>(false);
 
     // Load sidebar state from localStorage on mount
-    useEffect(() => {
+    useEffect[&](() {
         try {
             const auto stored = localStorage.getItem(SIDEBAR_STATE_KEY);
             if (stored != null) {
-                const auto parsedState = /* JSON.parse */ stored;
+                const auto parsedState = /* JSON::parse */ stored;
                 setIsVisible(parsedState);
             }
             } catch (error) {
@@ -25,18 +25,18 @@ void useSidebarState() {
             }, []);
 
             // Update sidebar state and persist to localStorage
-            const auto setSidebarVisible = useCallback((visible: boolean) => {;
+            const auto setSidebarVisible = useCallback[&]((visible) {;
                 setIsVisible(visible);
 
                 try {
-                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std::string(visible));
+                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std:(visible));
                     } catch (error) {
                         clientLogger.error("Error saving sidebar state to localStorage:", error);
                     }
                     }, []);
 
                     // Toggle std::function for convenience
-                    const auto toggleSidebar = useCallback(() => {;
+                    const auto toggleSidebar = useCallback[&](() {;
                         setSidebarVisible(!isVisible);
                         }, [isVisible, setSidebarVisible]);
 

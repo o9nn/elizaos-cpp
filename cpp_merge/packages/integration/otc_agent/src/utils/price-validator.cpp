@@ -4,32 +4,32 @@ std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDiver
 {
     if (OR((!poolPriceUsd), (poolPriceUsd <= 0))) {
         return object{
-            object::pair{std::string("valid"), true}
+            object::pair{std:("valid"), true}
         };
     }
     auto platformId = const_(COINGECKO_CHAIN_MAP)[chain];
     if (!platformId) {
         return object{
-            object::pair{std::string("valid"), true}
+            object::pair{std:("valid"), true}
         };
     }
     try
     {
-        auto url = std::string("https://api.coingecko.com/api/v3/simple/token_price/") + platformId + std::string("?contract_addresses=") + tokenAddress + std::string("&vs_currencies=usd");
-        auto cacheKey = std::string("coingecko:") + platformId + std::string(":") + tokenAddress->toLowerCase() + string_empty;
+        auto url = std:("https://api.coingecko.com/api/v3/simple/token_price/") + platformId + std:("?contract_addresses=") + tokenAddress + std:("&vs_currencies=usd");
+        auto cacheKey = std:("coingecko:") + platformId + std:(":") + tokenAddress->toLowerCase() + string_empty;
         auto data = std::async([=]() { fetchJsonWithRetryAndCache<std::shared_ptr<CoinGeckoPriceResponse>>(url, object{
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Accept"), std::string("application/json")}
+            object::pair{std:("headers"), object{
+                object::pair{std:("Accept"), std:("application/json")}
             }}
         }, object{
-            object::pair{std::string("cacheTtlMs"), COINGECKO_CACHE_TTL_MS}, 
-            object::pair{std::string("cacheKey"), std::string("cacheKey")}, 
-            object::pair{std::string("maxRetries"), 3}
+            object::pair{std:("cacheTtlMs"), COINGECKO_CACHE_TTL_MS}, 
+            object::pair{std:("cacheKey"), std:("cacheKey")}, 
+            object::pair{std:("maxRetries"), 3}
         }); });
         auto tokenData = (*const_(data))[tokenAddress->toLowerCase()];
         if (OR((!tokenData), (!tokenData["usd"]))) {
             return object{
-                object::pair{std::string("valid"), true}
+                object::pair{std:("valid"), true}
             };
         }
         auto aggregatedPrice = tokenData["usd"];
@@ -38,35 +38,35 @@ std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDiver
         auto divergencePercent = divergence * 100;
         if (divergencePercent > 10) {
             return object{
-                object::pair{std::string("valid"), false}, 
-                object::pair{std::string("warning"), std::string("Price Warning: Pool price ($") + poolPriceUsd->toFixed(4) + std::string(") diverges by ") + divergencePercent->toFixed(1) + std::string("% from market price ($") + aggregatedPrice->toFixed(4) + std::string(").")}, 
-                object::pair{std::string("aggregatedPrice"), std::string("aggregatedPrice")}, 
-                object::pair{std::string("poolPrice"), poolPriceUsd}, 
-                object::pair{std::string("divergencePercent"), std::string("divergencePercent")}
+                object::pair{std:("valid"), false}, 
+                object::pair{std:("warning"), std:("Price Warning: Pool price ($") + poolPriceUsd->toFixed(4) + std:(") diverges by ") + divergencePercent->toFixed(1) + std:("% from market price ($") + aggregatedPrice->toFixed(4) + std:(").")}, 
+                object::pair{std:("aggregatedPrice"), std:("aggregatedPrice")}, 
+                object::pair{std:("poolPrice"), poolPriceUsd}, 
+                object::pair{std:("divergencePercent"), std:("divergencePercent")}
             };
         }
         return object{
-            object::pair{std::string("valid"), true}, 
-            object::pair{std::string("aggregatedPrice"), std::string("aggregatedPrice")}, 
-            object::pair{std::string("poolPrice"), poolPriceUsd}, 
-            object::pair{std::string("divergencePercent"), std::string("divergencePercent")}
+            object::pair{std:("valid"), true}, 
+            object::pair{std:("aggregatedPrice"), std:("aggregatedPrice")}, 
+            object::pair{std:("poolPrice"), poolPriceUsd}, 
+            object::pair{std:("divergencePercent"), std:("divergencePercent")}
         };
     }
     catch (const any& error)
     {
-        console->warn(std::string("Price validation failed:"), error);
+        console->warn(std:("Price validation failed:"), error);
         return object{
-            object::pair{std::string("valid"), true}
+            object::pair{std:("valid"), true}
         };
     }
 };
 
 
 Record<string, string> COINGECKO_CHAIN_MAP = object{
-    object::pair{std::string("base"), std::string("base")}, 
-    object::pair{std::string("solana"), std::string("solana")}, 
-    object::pair{std::string("bsc"), std::string("binance-smart-chain")}, 
-    object::pair{std::string("ethereum"), std::string("ethereum")}
+    object::pair{std:("base"), std:("base")}, 
+    object::pair{std:("solana"), std:("solana")}, 
+    object::pair{std:("bsc"), std:("binance-smart-chain")}, 
+    object::pair{std:("ethereum"), std:("ethereum")}
 };
 double COINGECKO_CACHE_TTL_MS = 30000;
 

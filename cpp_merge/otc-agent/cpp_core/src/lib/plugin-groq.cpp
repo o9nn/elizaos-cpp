@@ -1,10 +1,14 @@
 #include "plugin-groq.hpp"
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::string getBaseURL(const std::any& runtime) {
+std: getBaseURL(const std:& runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -18,13 +22,13 @@ TiktokenModel findModelName(ModelTypeName model) {
 
     const auto name =;
     model == ModelType.TEXT_SMALL;
-    ? (process.env.SMALL_GROQ_MODEL || "llama-3.1-8b-instant");
-    : (process.env.LARGE_GROQ_MODEL || "llama-3.3-70b-versatile");
+    ? (std::getenv("SMALL_GROQ_MODEL") || "llama-3.1-8b-instant");
+    : (std::getenv("LARGE_GROQ_MODEL") || "llama-3.3-70b-versatile");
     return name;
 
 }
 
-std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt) {
+std::future<void> tokenizeText(ModelTypeName model, const std:& prompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto encoding = encodingForModel(findModelName(model));
@@ -42,7 +46,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 
 }
 
-std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params) {
+std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std:& model, std::optional<std:> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { text: groqResponse } = generateText({;
@@ -59,7 +63,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
 
 }
 
-std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std::string& model, ObjectGenerationParams params) {
+std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std:& model, ObjectGenerationParams params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { object } = generateObject({;

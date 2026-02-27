@@ -16,25 +16,25 @@ namespace elizaos {
 
 
 struct ExperienceChain {
-    std::string; // UUID of the root experience rootExperience;
-    std::string[]; // Ordered list of experience IDs chain;
+    std:; // UUID of the root experience rootExperience;
+    std:[]; // Ordered list of experience IDs chain;
     number; // How strong the causal relationship is strength;
     boolean; // Whether the chain has been validated validated;
 };
 
 struct ExperienceRelationship {
-    std::string fromId;
-    std::string toId;
+    std: fromId;
+    std: toId;
     "causes" | "contradicts" | "supports" | "supersedes" | "related" type;
     number; // 0-1 strength;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::optional<std::unordered_map<std:, std:>> metadata;
 };
 
 class ExperienceRelationshipManager {
-  private relationships: Map<std::string, ExperienceRelationship[]> = new Map();
-  private chains: Map<std::string, ExperienceChain> = new Map();
+  private relationships: Map<std:, ExperienceRelationship[]> = std::make_unique<Map>();
+  private chains: Map<std:, ExperienceChain> = std::make_unique<Map>();
 
-  addRelationship(relationship: ExperienceRelationship): void {
+  addRelationship(relationship: ExperienceRelationship) {
     const { fromId } = relationship;
     if (!this.relationships.has(fromId)) {
       this.relationships.std::set(fromId, []);

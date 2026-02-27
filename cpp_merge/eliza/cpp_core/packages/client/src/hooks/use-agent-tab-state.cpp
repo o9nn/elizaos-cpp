@@ -13,7 +13,7 @@ void useAgentTabState(UUID agentId) {
     const auto getStoredTabStates = useCallback((): AgentTabStates => {;
         try {
             const auto stored = localStorage.getItem(AGENT_TAB_STATE_KEY);
-            return stored ? /* JSON.parse */ stored : {};
+            return stored ? /* JSON::parse */ stored : {};
             } catch (error) {
                 clientLogger.error("Error reading agent tab states from localStorage:", error);
                 return {}
@@ -21,16 +21,16 @@ void useAgentTabState(UUID agentId) {
             }, []);
 
             // Save tab states to localStorage
-            const auto saveTabStates = useCallback((states: AgentTabStates) => {;
+            const auto saveTabStates = useCallback[&]((states: AgentTabStates) {;
                 try {
-                    localStorage.setItem(AGENT_TAB_STATE_KEY, /* JSON.stringify */ std::string(states));
+                    localStorage.setItem(AGENT_TAB_STATE_KEY, /* JSON.stringify */ std:(states));
                     } catch (error) {
                         clientLogger.error("Error saving agent tab states to localStorage:", error);
                     }
                     }, []);
 
                     // Load the tab state for the current agent when agentId changes
-                    useEffect(() => {
+                    useEffect[&](() {
                         if (!agentId) {
                             setCurrentTab("details");
                             return;

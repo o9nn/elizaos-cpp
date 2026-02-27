@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatDuration(double seconds) {
+std: formatDuration(double seconds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (seconds == 0) {
@@ -35,20 +35,20 @@ std::string formatDuration(double seconds) {
 
 }
 
-std::string truncateString(const std::string& str, double maxLength) {
+std: truncateString(const std:& str, double maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!str || str.length <= maxLength) {
+    if (!str || str.size() <= maxLength) {
         return str;
     }
     return str.substring(0, maxLength - 3) + "...";
 
 }
 
-std::string calculateHash(const std::any& data) {
+std: calculateHash(const std:& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto stringData = typeof data == "object" ? /* JSON.stringify */ std::string(data, Object.keys(data).sort()) : std::to_string(data);
+    const auto stringData = typeof data == "object" ? /* JSON.stringify */ std:(data, Object.keys(data).sort()) : std::to_string(data);
 
     return crypto.createHash("sha256").update(stringData).digest("hex");
 
@@ -61,7 +61,7 @@ void debounced() {
         clearTimeout(timeoutId);
     }
 
-    timeoutId = setTimeout(() => {
+    timeoutId = setTimeout[&](() {
         fn(...args);
         timeoutId = nullptr;
         }, delay);
@@ -84,7 +84,7 @@ void throttled() {
             }
 
             const auto remainingTime = delay - timeSinceLastCall;
-            timeoutId = setTimeout(() => {
+            timeoutId = setTimeout[&](() {
                 fn(...args);
                 lastCallTime = Date.now();
                 timeoutId = nullptr;

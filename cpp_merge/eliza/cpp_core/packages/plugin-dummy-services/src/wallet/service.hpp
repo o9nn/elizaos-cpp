@@ -31,14 +31,14 @@ class DummyWalletService extends Service implements IWalletService {
   public readonly capabilityDescription =
     'Provides standardized access to wallet balances and portfolios.';
 
-  private balances: Map<std::string, number>; // assetSymbolOrAddress -> quantity
-  private positions: Map<std::string, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
-  private quoteAssetSymbol: std::string;
+  private balances: Map<std:, number>; // assetSymbolOrAddress -> quantity
+  private positions: Map<std:, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
+  private quoteAssetSymbol: std:;
 
   constructor(runtime: AgentRuntime) {
     super(runtime);
-    this.balances = new Map<std::string, number>();
-    this.positions = new Map<std::string, DummyAssetDetail>();
+    this.balances = new Map<std:, number>();
+    this.positions = new Map<std:, DummyAssetDetail>();
     this.quoteAssetSymbol = DEFAULT_QUOTE_ASSET;
     this.resetWallet(10000, DEFAULT_QUOTE_ASSET); // Initialize with some default cash
   }
