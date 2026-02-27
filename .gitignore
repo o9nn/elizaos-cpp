@@ -28,6 +28,15 @@ dist/
 coverage/
 package-lock.json
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
 # IDE files
 .vscode/
 .idea/
