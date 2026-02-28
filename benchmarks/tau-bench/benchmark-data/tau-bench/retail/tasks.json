@@ -1,0 +1,215 @@
+[
+  {
+    "task_id": "retail_001",
+    "domain": "retail",
+    "user_instruction": "I want to return my order #ORD-12345. The wireless headphones don't fit well and I'd like a refund.",
+    "user_profile": "Customer: John Smith, Gold membership since 2022, 12 previous orders",
+    "user_goal": "Successfully initiate a return for order ORD-12345",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_order_details",
+        "arguments": {"order_id": "ORD-12345"}
+      },
+      {
+        "tool_name": "initiate_return",
+        "arguments": {"order_id": "ORD-12345", "reason": "Product does not fit well"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "RETURN_WINDOW",
+        "description": "Returns must be initiated within 30 days of delivery",
+        "check_function": "check_return_window",
+        "severity": "error"
+      }
+    ],
+    "ground_truth_response": "I've initiated the return for your order ORD-12345 containing the Wireless Headphones. You'll receive a return shipping label via email at john.smith@example.com. Please ship the item back within 14 days. Once we receive the return, your refund of $149.99 will be processed within 5 business days.",
+    "success_criteria": ["return_initiated"],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "retail_002",
+    "domain": "retail",
+    "user_instruction": "Can you cancel my order ORD-12346? I found a better deal elsewhere.",
+    "user_profile": "Customer: John Smith, Gold membership",
+    "user_goal": "Successfully cancel the processing order and initiate refund",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_order_details",
+        "arguments": {"order_id": "ORD-12346"}
+      },
+      {
+        "tool_name": "cancel_order",
+        "arguments": {"order_id": "ORD-12346", "reason": "Customer found better deal"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "ORDER_MODIFY",
+        "description": "Only pending/processing orders can be cancelled",
+        "check_function": "check_order_modifiable",
+        "severity": "error"
+      }
+    ],
+    "ground_truth_response": "I've cancelled your order ORD-12346 for the Laptop Stand. Your full refund of $87.19 will be processed within 5 business days and credited to your original payment method.",
+    "success_criteria": ["order_cancelled"],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "retail_003",
+    "domain": "retail",
+    "user_instruction": "I need to change the shipping address for my order ORD-12346. The new address is 456 Oak Avenue, Los Angeles, CA 90001.",
+    "user_profile": "Customer: John Smith, Gold membership",
+    "user_goal": "Update shipping address for the order",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_order_details",
+        "arguments": {"order_id": "ORD-12346"}
+      },
+      {
+        "tool_name": "update_shipping_address",
+        "arguments": {
+          "order_id": "ORD-12346",
+          "address": {
+            "street": "456 Oak Avenue",
+            "city": "Los Angeles",
+            "state": "CA",
+            "zip": "90001"
+          }
+        }
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "I've updated the shipping address for your order ORD-12346 to 456 Oak Avenue, Los Angeles, CA 90001. Your order will be delivered to this new address.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "retail_004",
+    "domain": "retail",
+    "user_instruction": "What's your return policy? I'm thinking about returning something but want to know the details first.",
+    "user_profile": "Customer inquiry",
+    "user_goal": "Provide return policy information",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_return_policy",
+        "arguments": {}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "Our return policy allows returns within 30 days of delivery. Items must be unused and in original packaging. There's no restocking fee, and refunds are processed within 5 business days after we receive the return.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  },
+  {
+    "task_id": "retail_005",
+    "domain": "retail",
+    "user_instruction": "I have a $700 refund request for order ORD-12345 due to a defective product. This is urgent!",
+    "user_profile": "Customer: John Smith, Gold membership",
+    "user_goal": "Process high-value refund with proper authorization",
+    "difficulty": "hard",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_order_details",
+        "arguments": {"order_id": "ORD-12345"}
+      },
+      {
+        "tool_name": "escalate_to_supervisor",
+        "arguments": {"reason": "High-value refund request", "order_id": "ORD-12345", "customer_id": "CUST-001"}
+      },
+      {
+        "tool_name": "process_refund",
+        "arguments": {"order_id": "ORD-12345", "amount": 700, "reason": "Defective product"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "REFUND_AUTH",
+        "description": "Refunds over $500 require supervisor approval",
+        "check_function": "check_refund_authorization",
+        "severity": "error"
+      }
+    ],
+    "ground_truth_response": "I've escalated your refund request to a supervisor for approval since it's over $500. Once approved, your refund of $700 will be processed within 5 business days.",
+    "success_criteria": ["refund_processed"],
+    "initialization_data": {},
+    "max_turns": 15
+  },
+  {
+    "task_id": "retail_006",
+    "domain": "retail",
+    "user_instruction": "Can you check if the Phone Case (PROD-002) is still in stock? I want to buy 5 of them.",
+    "user_profile": "Customer inquiry",
+    "user_goal": "Check product availability",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "check_product_availability",
+        "arguments": {"product_id": "PROD-002", "quantity": 5}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "Great news! The Phone Case is in stock with 200 units available. You can definitely purchase 5 of them. Would you like me to help you with your order?",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  },
+  {
+    "task_id": "retail_007",
+    "domain": "retail",
+    "user_instruction": "I'd like to apply the discount code SAVE20 to my order ORD-12346.",
+    "user_profile": "Customer: John Smith",
+    "user_goal": "Apply discount code to order",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_order_details",
+        "arguments": {"order_id": "ORD-12346"}
+      },
+      {
+        "tool_name": "apply_discount_code",
+        "arguments": {"order_id": "ORD-12346", "code": "SAVE20"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "I've applied the discount code SAVE20 to your order ORD-12346. You'll receive a 20% discount on your purchase.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "retail_008",
+    "domain": "retail",
+    "user_instruction": "Show me all my recent orders please.",
+    "user_profile": "Customer: John Smith (CUST-001)",
+    "user_goal": "List all customer orders",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "list_customer_orders",
+        "arguments": {"customer_id": "CUST-001"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "Here are your recent orders: ORD-12345 (delivered, $238.86) and ORD-12346 (processing, $87.19). Let me know if you need any details about a specific order.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  }
+]
