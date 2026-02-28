@@ -6,7 +6,14 @@
 #include <cstdlib>
 #include <sstream>
 #include <future>
+#ifdef _MSC_VER
+#include <direct.h>  // _getcwd on Windows
+#define getcwd _getcwd
+#define popen _popen
+#define pclose _pclose
+#else
 #include <unistd.h>
+#endif
 
 namespace elizaos {
 
