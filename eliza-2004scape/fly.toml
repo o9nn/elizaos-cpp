@@ -1,0 +1,41 @@
+app = "rs-sdk-demo"
+primary_region = "iad"
+
+[build]
+
+[env]
+NODE_DEBUG = "true"
+BUILD_STARTUP = "false"
+BUILD_STARTUP_UPDATE = "false"
+DB_BACKEND = "sqlite"
+EASY_STARTUP = "true"
+FRIEND_SERVER = "true"
+LOGIN_SERVER = "true"
+NODE_MEMBERS = "true"
+NODE_PORT = "43594"
+NODE_RANDOM_EVENTS = "false"
+NODE_TICKRATE = "400"
+NODE_XPRATE = "25"
+WEBSITE_REGISTRATION = "false"
+WEB_PORT = "8080"
+
+[http_service]
+auto_start_machines = true
+force_https = true
+internal_port = 8080
+min_machines_running = 0
+
+[[mounts]]
+destination = "/opt/server/data"
+source = "lostcity_data"
+
+[[services]]
+internal_port = 43594
+protocol = "tcp"
+
+  [[services.ports]]
+  port = 43594
+
+[[vm]]
+memory = "16gb"
+size = "performance-4x"

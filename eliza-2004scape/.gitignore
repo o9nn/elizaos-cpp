@@ -1,0 +1,16 @@
+node_modules/
+.DS_Store
+runs/
+gateway/agent-state/
+screenshots/
+public-bot/
+public-client/
+
+server.json
+.env
+
+# Bot folders (except template)
+bots/*/
+!bots/_template/
+
+.eliza-db
