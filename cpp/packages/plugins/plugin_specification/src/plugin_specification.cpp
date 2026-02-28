@@ -5,7 +5,9 @@
 #include <filesystem>
 #include <fstream>
 #include <unordered_set>
+#ifndef _MSC_VER
 #include <dlfcn.h>
+#endif
 
 namespace elizaos {
 
