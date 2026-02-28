@@ -6,8 +6,14 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
+#ifdef _MSC_VER
+#include <direct.h>
+#define mkdir(path, mode) _mkdir(path)
+#else
 #include <sys/stat.h>
 #include <sys/types.h>
+#endif
 
 namespace elizaos {
 namespace nextjs_starter {
@@ -64,7 +70,9 @@ public:
     
 private:
     static bool createDirectory(const std::string& path) {
-        return mkdir(path.c_str(), 0755) == 0 || errno == EEXIST;
+        std::error_code ec;
+        std::filesystem::create_directories(path, ec);
+        return !ec;
     }
     
     static bool writeFile(const std::string& path, const std::string& content) {
