@@ -197,7 +197,7 @@ add_subdirectory(cpp/packages/integration/auto_fun/packages/types)
 # ============================================================================
 # Additional External Modules
 # ============================================================================
-add_subdirectory(cpp/external/LiveVideoChat)
+# LiveVideoChat already included as cpp/external/livevideochat above
 add_subdirectory(cpp/external/aum_tracker)
 add_subdirectory(cpp/external/mobile)
 add_subdirectory(cpp/external/sandbox_template_cloud)
