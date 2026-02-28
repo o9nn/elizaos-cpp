@@ -59,7 +59,7 @@ jobs:
         TOTAL=0
         
         # Include paths
-        INCLUDES="-I include -I cpp -I cpp/core/include -I cpp/agentloop/include -I cpp/agentmemory/include -I cpp/agentcomms/include -I cpp/agentlogger/include"
+        INCLUDES="-I include -I cpp/include -I cpp -I cpp/packages/core/core/src -I cpp/packages/core/agentloop/src -I cpp/packages/core/agentmemory/src -I cpp/packages/infrastructure/agentcomms/src -I cpp/packages/infrastructure/agentlogger/src"
         
         # Compile flags (syntax check only, suppress warnings for speed)
         FLAGS="-std=c++17 -fsyntax-only -w"
@@ -73,7 +73,7 @@ jobs:
         echo "" >> build_results/errors.log
         
         # Process each module
-        for dir in cpp/*/; do
+        for dir in cpp/packages/core/*/ cpp/packages/infrastructure/*/ cpp/packages/applications/*/ cpp/packages/plugins/*/ cpp/packages/starters/*/ cpp/packages/integration/*/ cpp/external/*/ cpp/generated/*/; do
           MODULE=$(basename "$dir")
           echo "=== Module: $MODULE ==="
           
@@ -235,14 +235,14 @@ jobs:
         echo "| Module | Files | Status |" >> MODULE_STATUS.md
         echo "|--------|-------|--------|" >> MODULE_STATUS.md
         
-        for dir in cpp/*/; do
+        for dir in cpp/packages/core/*/ cpp/packages/infrastructure/*/ cpp/packages/applications/*/ cpp/packages/plugins/*/ cpp/packages/starters/*/ cpp/packages/integration/*/ cpp/external/*/ cpp/generated/*/; do
           MODULE=$(basename "$dir")
           FILE_COUNT=$(find "$dir" -name "*.cpp" -type f 2>/dev/null | wc -l)
           
           # Quick syntax check on first file
           FIRST_FILE=$(find "$dir" -name "*.cpp" -type f 2>/dev/null | head -1)
           if [ -n "$FIRST_FILE" ]; then
-            g++ -std=c++17 -fsyntax-only -w -I include -I cpp "$FIRST_FILE" 2>/dev/null
+            g++ -std=c++17 -fsyntax-only -w -I include -I cpp/include -I cpp "$FIRST_FILE" 2>/dev/null
             if [ $? -eq 0 ]; then
               STATUS="✅ OK"
             else

@@ -1,9 +1,6 @@
 name: Sync Repositories
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   workflow_call:
     inputs:
@@ -31,9 +28,12 @@ jobs:
       id: determine-branch
       run: |
         BASE_BRANCH="${{ inputs.org_name }}"
+        if [ -z "$BASE_BRANCH" ]; then
+          BASE_BRANCH="elizaOS"
+        fi
         BRANCH="$BASE_BRANCH"
         VERSION=1
-        while git ls-remote --exit-code --heads origin "$BRANCH"; do
+        while git ls-remote --exit-code --heads origin "$BRANCH" 2>/dev/null; do
           VERSION=$((VERSION + 1))
           BRANCH="${BASE_BRANCH}-v${VERSION}"
         done
@@ -42,7 +42,11 @@ jobs:
 
     - name: Create or switch to branch
       run: |
-        git checkout -b $BRANCH_NAME
+        if [ -z "$BRANCH_NAME" ]; then
+          echo "Error: BRANCH_NAME is empty, using fallback"
+          BRANCH_NAME="elizaOS-sync-$(date +%Y%m%d)"
+        fi
+        git checkout -b "$BRANCH_NAME"
 
     - name: Clean untracked files
       run: |
@@ -100,4 +104,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/o9nn/elizaos-cpp.git" $BRANCH_NAME
+        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/o9nn/elizaos-cpp.git" "$BRANCH_NAME"

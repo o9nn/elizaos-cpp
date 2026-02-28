@@ -64,28 +64,46 @@ jobs:
         if [[ "$RUNNER_OS" == "Windows" ]]; then
           echo "Windows platform detected"
           if command -v cl &> /dev/null; then
-            echo "✓ MSVC compiler (cl.exe) found in PATH"
+            echo "MSVC compiler (cl.exe) found in PATH"
             cl.exe /? 2>&1 | head -n 3 || true
           else
-            echo "✗ MSVC compiler (cl.exe) NOT found in PATH"
+            echo "MSVC compiler (cl.exe) NOT found in PATH"
           fi
         elif [[ "$RUNNER_OS" == "macOS" ]]; then
           echo "macOS platform detected"
           if command -v clang++ &> /dev/null; then
-            echo "✓ Clang++ compiler found in PATH"
+            echo "Clang++ compiler found in PATH"
             clang++ --version | head -n 1
           else
-            echo "✗ Clang++ compiler NOT found in PATH"
+            echo "Clang++ compiler NOT found in PATH"
           fi
         else
           echo "Linux platform detected"
           if command -v g++ &> /dev/null; then
-            echo "✓ G++ compiler found in PATH"
+            echo "G++ compiler found in PATH"
             g++ --version | head -n 1
           else
-            echo "✗ G++ compiler NOT found in PATH"
+            echo "G++ compiler NOT found in PATH"
           fi
         fi
+        echo "==================================="
+
+    - name: Verify directory structure
+      shell: bash
+      run: |
+        echo "=== Verifying directory structure ==="
+        echo "Top-level directories:"
+        ls -d cpp/packages/core/* cpp/packages/infrastructure/* cpp/packages/applications/* 2>/dev/null || echo "packages structure not found"
+        echo ""
+        echo "External modules:"
+        ls -d cpp/external/*/ 2>/dev/null | head -20 || echo "external structure not found"
+        echo ""
+        echo "Generated modules:"
+        ls -d cpp/generated/*/ 2>/dev/null | head -15 || echo "generated structure not found"
+        echo ""
+        echo "Include directories:"
+        ls include/elizaos/*.hpp 2>/dev/null | wc -l
+        ls cpp/include/elizaos/*.hpp 2>/dev/null | wc -l
         echo "==================================="
 
     - name: Configure CMake
@@ -121,45 +139,41 @@ jobs:
         echo "=== ElizaOS C++ Implementation Status ==="
         echo ""
         
-        # Count total modules
-        TOTAL_MODULES=$(find cpp -maxdepth 1 -type d | grep -v "^cpp$" | wc -l)
+        # Count modules across all locations
+        PKG_MODULES=$(find cpp/packages -mindepth 2 -maxdepth 2 -type d 2>/dev/null | wc -l)
+        EXT_MODULES=$(find cpp/external -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+        GEN_MODULES=$(find cpp/generated -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+        TOTAL_MODULES=$((PKG_MODULES + EXT_MODULES + GEN_MODULES))
         
-        # Count placeholder implementations
-        PLACEHOLDER_COUNT=$(find cpp -name "placeholder.cpp" | wc -l)
+        # Count modules with CMakeLists.txt (buildable)
+        BUILDABLE=$(find cpp/packages cpp/external cpp/generated -name "CMakeLists.txt" -maxdepth 3 2>/dev/null | wc -l)
         
-        # Count real implementations (modules with substantial code)
-        REAL_IMPL_COUNT=$((TOTAL_MODULES - PLACEHOLDER_COUNT))
+        # Count total source files
+        TOTAL_CPP=$(find cpp -name "*.cpp" -type f 2>/dev/null | wc -l)
+        TOTAL_HPP=$(find cpp include -name "*.hpp" -type f 2>/dev/null | wc -l)
         
-        # Calculate percentage
+        echo "Implementation Progress:"
+        echo "   Package Modules: $PKG_MODULES"
+        echo "   External Modules: $EXT_MODULES"
+        echo "   Generated Modules: $GEN_MODULES"
+        echo "   Total Modules: $TOTAL_MODULES"
+        echo "   Buildable (with CMakeLists.txt): $BUILDABLE"
+        echo "   Total C++ source files: $TOTAL_CPP"
+        echo "   Total C++ header files: $TOTAL_HPP"
+        echo ""
+        
         if [ $TOTAL_MODULES -gt 0 ]; then
-          COMPLETION_PCT=$((REAL_IMPL_COUNT * 100 / TOTAL_MODULES))
-        else
-          COMPLETION_PCT=0
+          COMPLETION_PCT=$((BUILDABLE * 100 / TOTAL_MODULES))
+          echo "Build Coverage: $COMPLETION_PCT%"
         fi
         
-        echo "📊 Implementation Progress:"
-        echo "   Total Modules: $TOTAL_MODULES"
-        echo "   Implemented: $REAL_IMPL_COUNT ($COMPLETION_PCT%)"
-        echo "   Placeholders: $PLACEHOLDER_COUNT"
         echo ""
+        echo "Buildable Modules:"
+        find cpp/packages -name "CMakeLists.txt" -maxdepth 3 2>/dev/null | sed 's|/CMakeLists.txt||' | sort
+        find cpp/external -name "CMakeLists.txt" -maxdepth 2 2>/dev/null | sed 's|/CMakeLists.txt||' | sort
         
-        echo "🚧 Placeholder Modules Remaining:"
-        find cpp -name "placeholder.cpp" | sed 's|cpp/||' | sed 's|/src/placeholder.cpp||' | sort || echo "None"
         echo ""
-        
-        echo "✅ Fully Implemented Modules:"
-        # Find modules without placeholders that have substantial implementations
-        for dir in cpp/*/; do
-          if [ ! -f "$dir/src/placeholder.cpp" ] && [ -d "$dir" ]; then
-            basename "$dir"
-          fi
-        done | sort
-        echo ""
-        
-        # Set output for use in other steps
-        echo "COMPLETION_PCT=$COMPLETION_PCT" >> $GITHUB_ENV
-        echo "PLACEHOLDER_COUNT=$PLACEHOLDER_COUNT" >> $GITHUB_ENV
-        echo "REAL_IMPL_COUNT=$REAL_IMPL_COUNT" >> $GITHUB_ENV
+        echo "COMPLETION_PCT=${COMPLETION_PCT:-0}" >> $GITHUB_ENV
 
   lint:
     runs-on: ubuntu-latest
@@ -176,18 +190,7 @@ jobs:
       with:
         cmake-version: '3.20'
 
-    - name: Check C++ compiler availability
-      run: |
-        echo "=== Checking C++ Compiler Availability ==="
-        if command -v g++ &> /dev/null; then
-          echo "✓ G++ compiler found in PATH"
-          g++ --version | head -n 1
-        else
-          echo "✗ G++ compiler NOT found in PATH"
-        fi
-        echo "==================================="
-
-    - name: Configure CMake with strict warnings
+    - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
 
     - name: Build with warnings check
