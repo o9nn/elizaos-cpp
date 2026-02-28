@@ -18,7 +18,18 @@ using u8 = std::uint8_t;
 using u16 = std::uint16_t;
 using u32 = std::uint32_t;
 using u64 = std::uint64_t;
+#ifdef _MSC_VER
+struct uint128_idl_t {
+    uint64_t low = 0;
+    uint64_t high = 0;
+    uint128_idl_t() = default;
+    uint128_idl_t(uint64_t v) : low(v), high(0) {}
+    operator bool() const { return low || high; }
+};
+using u128 = uint128_idl_t;
+#else
 using u128 = __uint128_t;
+#endif
 using i8 = std::int8_t;
 using i16 = std::int16_t;
 using i32 = std::int32_t;
