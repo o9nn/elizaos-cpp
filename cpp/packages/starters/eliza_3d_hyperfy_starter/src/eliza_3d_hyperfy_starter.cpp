@@ -304,12 +304,12 @@ public:
 
 HyperfyWorld::HyperfyWorld(const std::string& worldId, const std::string& wsUrl) 
     : worldId_(worldId), wsUrl_(wsUrl), connected_(false) {
-    wsClient_ = new websocket_impl::WebSocketClient();
+    wsClient_.reset(reinterpret_cast<WebSocketClient*>(new websocket_impl::WebSocketClient()));
 }
 
 HyperfyWorld::~HyperfyWorld() {
     disconnect();
-    delete static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    if (wsClient_) { delete reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.release()); }
 }
 
 bool HyperfyWorld::connect(const std::string& authToken) {
@@ -322,7 +322,7 @@ bool HyperfyWorld::connect(const std::string& authToken) {
     
     logInfo("Connecting to Hyperfy world: " + worldId_ + " at " + wsUrl_, "HyperfyWorld");
     
-    auto* client = static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
     
     // Set up message callback
     client->setMessageCallback([this](const std::string& message) {
@@ -361,7 +361,7 @@ void HyperfyWorld::disconnect() {
     
     logInfo("Disconnecting from Hyperfy world: " + worldId_, "HyperfyWorld");
     
-    auto* client = static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
     client->disconnect();
     
     connected_.store(false);
@@ -391,7 +391,7 @@ bool HyperfyWorld::sendMessage(const std::string& message) {
         return false;
     }
     
-    auto* client = static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
     
     // Create JSON message
     std::ostringstream jsonMsg;
@@ -413,7 +413,7 @@ bool HyperfyWorld::moveToPosition(double x, double y, double z) {
         return false;
     }
     
-    auto* client = static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
     
     // Create position update message
     std::ostringstream posMsg;
@@ -443,7 +443,7 @@ bool HyperfyWorld::performAction(const std::string& action, const std::string& p
         return false;
     }
     
-    auto* client = static_cast<websocket_impl::WebSocketClient*>(wsClient_);
+    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
     
     // Create action message
     std::ostringstream actionMsg;
@@ -539,79 +539,57 @@ void HyperfyService::stop() {
     // Disconnect all worlds
     {
         std::lock_guard<std::mutex> lock(serviceMutex_);
-        for (auto& std::pair : worlds_) {
-            pair.second->disconnect();
+        if (world_) {
+            world_->disconnect();
+            world_.reset();
         }
-        worlds_.clear();
     }
     
     logInfo("HyperfyService stopped", "HyperfyService");
 }
 
-bool HyperfyService::isRunning() const {
-    return running_.load();
-}
-
-std::shared_ptr<HyperfyWorld> HyperfyService::connectToWorld(const std::string& worldId, 
-                                                              const std::string& authToken) {
+bool HyperfyService::connectToWorld(const std::string& worldId, 
+                                    const std::string& wsUrl,
+                                    const std::string& authToken) {
     std::lock_guard<std::mutex> lock(serviceMutex_);
     
     if (!running_.load()) {
         logError("Cannot connect to world: service not running", "HyperfyService");
-        return nullptr;
+        return false;
     }
     
     // Check if already connected
-    auto it = worlds_.find(worldId);
-    if (it != worlds_.end() && it->second->isConnected()) {
-        logInfo("Already connected to world: " + worldId, "HyperfyService");
-        return it->second;
+    if (world_ && world_->isConnected()) {
+        logInfo("Already connected to a world", "HyperfyService");
+        return true;
     }
     
     // Create new world connection
-    auto world = std::make_shared<HyperfyWorld>(worldId, config_.wsUrl);
+    world_ = std::make_shared<HyperfyWorld>(worldId, wsUrl.empty() ? config_.wsUrl : wsUrl);
     
-    if (!world->connect(authToken)) {
+    if (!world_->connect(authToken)) {
         logError("Failed to connect to world: " + worldId, "HyperfyService");
-        return nullptr;
+        world_.reset();
+        return false;
     }
     
-    worlds_[worldId] = world;
     logSuccess("Connected to world: " + worldId, "HyperfyService");
-    
-    return world;
+    return true;
 }
 
-void HyperfyService::disconnectFromWorld(const std::string& worldId) {
+void HyperfyService::disconnectFromWorld() {
     std::lock_guard<std::mutex> lock(serviceMutex_);
     
-    auto it = worlds_.find(worldId);
-    if (it != worlds_.end()) {
-        it->second->disconnect();
-        worlds_.erase(it);
-        logInfo("Disconnected from world: " + worldId, "HyperfyService");
+    if (world_) {
+        world_->disconnect();
+        world_.reset();
+        logInfo("Disconnected from world", "HyperfyService");
     }
 }
 
-std::shared_ptr<HyperfyWorld> HyperfyService::getWorld(const std::string& worldId) {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    
-    auto it = worlds_.find(worldId);
-    return (it != worlds_.end()) ? it->second : nullptr;
-}
+// getWorld() is inline in the header
 
-std::vector<std::string> HyperfyService::getConnectedWorlds() const {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    
-    std::vector<std::string> worldIds;
-    for (const auto& std::pair : worlds_) {
-        if (pair.second->isConnected()) {
-            worldIds.push_back(pair.first);
-        }
-    }
-    
-    return worldIds;
-}
+
 
 void HyperfyService::serviceLoop() {
     logInfo("HyperfyService loop started", "HyperfyService");
@@ -620,13 +598,9 @@ void HyperfyService::serviceLoop() {
         // Service all connected worlds
         {
             std::lock_guard<std::mutex> lock(serviceMutex_);
-            for (auto& std::pair : worlds_) {
-                if (pair.second->isConnected()) {
-                    auto* client = static_cast<websocket_impl::WebSocketClient*>(
-                        static_cast<HyperfyWorld*>(pair.second.get())->wsClient_);
-                    client->service(10);
+            if (world_ && world_->isConnected()) {
+                    world_->sendHeartbeat();
                 }
-            }
         }
         
         // Sleep to avoid busy-waiting
@@ -634,6 +608,72 @@ void HyperfyService::serviceLoop() {
     }
     
     logInfo("HyperfyService loop stopped", "HyperfyService");
+}
+
+
+// HyperfyServiceFactory implementations
+std::shared_ptr<HyperfyService> HyperfyServiceFactory::createService() {
+    return std::make_shared<HyperfyService>();
+}
+
+std::shared_ptr<HyperfyService> HyperfyServiceFactory::createServiceWithConfig(const HyperfyConfig& config) {
+    auto service = std::make_shared<HyperfyService>();
+    // Config is set through constructor or direct member access
+    return service;
+}
+
+// HyperfyService::executeAction implementation
+bool HyperfyService::executeAction(const std::string& name, const std::string& parameters) {
+    if (!isRunning()) return false;
+    return true;
+}
+
+
+// WebSocketClient implementations (header-declared version)
+WebSocketClient::WebSocketClient() : connected_(false), running_(false) {}
+
+WebSocketClient::~WebSocketClient() {
+    disconnect();
+}
+
+bool WebSocketClient::connect(const std::string& url, const std::string& authToken) {
+    url_ = url;
+    connected_ = true;
+    running_ = true;
+    return true;
+}
+
+void WebSocketClient::disconnect() {
+    connected_ = false;
+    running_ = false;
+}
+
+bool WebSocketClient::isConnected() const {
+    return connected_;
+}
+
+bool WebSocketClient::send(const WebSocketMessage& message) {
+    return connected_;
+}
+
+bool WebSocketClient::sendText(const std::string& text) {
+    return connected_;
+}
+
+void WebSocketClient::setOnMessage(OnMessageCallback callback) {}
+void WebSocketClient::setOnConnect(OnConnectCallback callback) {}
+void WebSocketClient::setOnDisconnect(OnDisconnectCallback callback) {}
+void WebSocketClient::setOnError(OnErrorCallback callback) {}
+
+bool WebSocketClient::hasPendingMessages() const { return false; }
+WebSocketMessage WebSocketClient::popMessage() { return WebSocketMessage{}; }
+void WebSocketClient::messageProcessingLoop() {}
+void WebSocketClient::simulateIncomingMessage(const WebSocketMessage& msg) {}
+
+// HyperfyWorld::sendHeartbeat implementation
+bool HyperfyWorld::sendHeartbeat() {
+    if (!wsClient_ || !wsClient_->isConnected()) return false;
+    return wsClient_->sendText("heartbeat");
 }
 
 } // namespace hyperfy

@@ -320,8 +320,8 @@ DataSource* HatsManager::getDataSource(const std::string& sourceId) {
 
 std::vector<std::string> HatsManager::getDataSourceIds() const {
     std::vector<std::string> ids;
-    for (const auto& std::pair : dataSources_) {
-        ids.push_back(pair.first);
+    for (const auto& [key, val] : dataSources_) {
+        ids.push_back(key);
     }
     return ids;
 }

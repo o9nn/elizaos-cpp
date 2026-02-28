@@ -5,6 +5,7 @@ add_library(elizaos-elizas_world STATIC
 
 target_include_directories(elizaos-elizas_world PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-elizas_world 

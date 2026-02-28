@@ -244,7 +244,7 @@ CompletionResponse EasyCompletionClient::text_completion(const std::string& text
             }
         }
         
-    } catch (const json::std::exception& e) {
+    } catch (const std::exception& e) {
         result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
@@ -315,7 +315,7 @@ CompletionResponse EasyCompletionClient::chat_completion(const std::vector<ChatM
             }
         }
         
-    } catch (const json::std::exception& e) {
+    } catch (const std::exception& e) {
         result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
@@ -431,12 +431,12 @@ const CompletionConfig& EasyCompletionClient::get_config() const {
 std::string compose_prompt(const std::string& template_str, const std::unordered_map<std::string, std::string>& variables) {
     std::string result = template_str;
     
-    for (const auto& std::pair : variables) {
-        std::string placeholder = "{{" + pair.first + "}}";
+    for (const auto& [key, val] : variables) {
+        std::string placeholder = "{{" + key + "}}";
         size_t pos = 0;
         while ((pos = result.find(placeholder, pos)) != std::string::npos) {
-            result.replace(pos, placeholder.length(), pair.second);
-            pos += pair.second.length();
+            result.replace(pos, placeholder.length(), val);
+            pos += val.length();
         }
     }
     

@@ -1,38 +1,22 @@
-#include "eliza/packages/cli/src/utils/eliza-paths.h"
+// eliza_paths.cpp - Stub implementation
+#include "elizaos/core.hpp"
+#include <string>
+#include <filesystem>
 
-std::string getElizaBaseDir(std::string cwd)
-{
-    return path->join(cwd, std::string(".eliza"));
-};
+namespace elizaos {
+namespace eliza {
 
+std::string getElizaDataPath() {
+    return std::filesystem::current_path().string() + "/.eliza";
+}
 
-std::string getElizaDbDir(std::string cwd)
-{
-    return path->join(getElizaBaseDir(cwd), std::string(".elizadb"));
-};
+std::string getElizaConfigPath() {
+    return getElizaDataPath() + "/config";
+}
 
+std::string getElizaLogsPath() {
+    return getElizaDataPath() + "/logs";
+}
 
-std::string getElizaDataDir(std::string cwd)
-{
-    return path->join(getElizaBaseDir(cwd), std::string("data"));
-};
-
-
-std::string getElizaUploadsDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("uploads"));
-};
-
-
-std::string getElizaGeneratedDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("generated"));
-};
-
-
-std::string getElizaCharactersDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("characters"));
-};
-
-
+} // namespace eliza
+} // namespace elizaos

@@ -45,7 +45,7 @@ Registry::~Registry() {
 }
 
 std::future<bool> Registry::refreshRegistry() {
-    return std::async(std::launch::std::async, [this]() {
+    return std::async(std::launch::async, [this]() {
         logInfo("Refreshing registry data...", "registry");
         
         // First try to load from remote if enabled

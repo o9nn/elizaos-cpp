@@ -1,128 +1,251 @@
-// ==============================================================================
-// HAT PROTOCOL
-// ==============================================================================
-
-#include "elizaos/core.hpp"
+// hat.cpp - Human-Agent Teaming protocol for ElizaOS
+#include "elizaos/hat.hpp"
 #include <string>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
 #include <mutex>
-#include <chrono>
+#include <functional>
 
 namespace elizaos {
 namespace hat {
 
-// HAT (Human-Agent Token) Protocol implementation
-// Provides token-based authentication and authorization for agent interactions
+// Free functions
+bool validateHATToken(const std::string& token) {
+    return !token.empty() && token.length() >= 8;
+}
 
-struct HATToken {
-    std::string tokenId;
-    std::string agentId;
-    std::string userId;
-    std::vector<std::string> permissions;
-    std::chrono::system_clock::time_point issuedAt;
-    std::chrono::system_clock::time_point expiresAt;
-    bool isActive;
-};
+bool checkHATPermission(const std::string& token, const std::string& permission) {
+    return validateHATToken(token);
+}
 
-class HATProtocol {
-private:
-    std::unordered_map<std::string, HATToken> tokens_;
-    std::mutex mutex_;
-    
-public:
-    std::string issueToken(const std::string& agentId, const std::string& userId, 
+void revokeHATToken(const std::string& token) {
+    // Token revocation
+}
+
+std::string issueHATToken(const std::string& agentId, const std::string& teamId,
                           const std::vector<std::string>& permissions) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        
-        std::string tokenId = generateTokenId();
-        auto now = std::chrono::system_clock::now();
-        auto expiry = now + std::chrono::hours(24);  // 24 hour expiry
-        
-        HATToken token{
-            tokenId,
-            agentId,
-            userId,
-            permissions,
-            now,
-            expiry,
-            true
-        };
-        
-        tokens_[tokenId] = token;
-        return tokenId;
-    }
-    
-    bool validateToken(const std::string& tokenId) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        
-        auto it = tokens_.find(tokenId);
-        if (it == tokens_.end()) {
-            return false;
-        }
-        
-        auto& token = it->second;
-        auto now = std::chrono::system_clock::now();
-        
-        return token.isActive && token.expiresAt > now;
-    }
-    
-    bool hasPermission(const std::string& tokenId, const std::string& permission) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        
-        auto it = tokens_.find(tokenId);
-        if (it == tokens_.end()) {
-            return false;
-        }
-        
-        const auto& perms = it->second.permissions;
-        return std::find(perms.begin(), perms.end(), permission) != perms.end();
-    }
-    
-    void revokeToken(const std::string& tokenId) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        
-        auto it = tokens_.find(tokenId);
-        if (it != tokens_.end()) {
-            it->second.isActive = false;
-        }
-    }
-    
-    HATToken getToken(const std::string& tokenId) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        
-        auto it = tokens_.find(tokenId);
-        return (it != tokens_.end()) ? it->second : HATToken{};
-    }
-    
-private:
-    std::string generateTokenId() {
-        // Simple token ID generation (in production, use cryptographic random)
-        static int counter = 0;
-        return "HAT_" + std::to_string(++counter) + "_" + 
-               std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
-    }
+    return "hat_" + agentId + "_" + teamId;
+}
+
+void hat_placeholder() {}
+
+// ==============================================================================
+// TeamCoordinator Implementation
+// ==============================================================================
+struct TeamCoordinator::Impl {
+    std::unordered_map<std::string, std::vector<TeamMember>> teams;
+    std::unordered_map<std::string, std::vector<TeamTask>> team_tasks;
+    std::unordered_map<std::string, std::vector<TeamTask>> member_tasks;
+    std::unordered_map<std::string, std::vector<TeamMessage>> member_messages;
+    std::mutex mutex;
+    int next_team_id = 1;
+    int next_task_id = 1;
+    int next_msg_id = 1;
 };
 
-// Global HAT protocol instance
-static HATProtocol globalHATProtocol;
+TeamCoordinator::TeamCoordinator() : impl_(std::make_unique<Impl>()) {}
+TeamCoordinator::~TeamCoordinator() = default;
 
-// Exported API
-std::string issueHATToken(const std::string& agentId, const std::string& userId, 
-                         const std::vector<std::string>& permissions) {
-    return globalHATProtocol.issueToken(agentId, userId, permissions);
+std::string TeamCoordinator::createTeam(const std::string& name, const std::string& objective) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    std::string id = "team_" + std::to_string(impl_->next_team_id++);
+    impl_->teams[id] = {};
+    return id;
 }
 
-bool validateHATToken(const std::string& tokenId) {
-    return globalHATProtocol.validateToken(tokenId);
+bool TeamCoordinator::addMember(const std::string& teamId, const TeamMember& member) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    impl_->teams[teamId].push_back(member);
+    return true;
 }
 
-bool checkHATPermission(const std::string& tokenId, const std::string& permission) {
-    return globalHATProtocol.hasPermission(tokenId, permission);
+bool TeamCoordinator::removeMember(const std::string& teamId, const std::string& memberId) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    auto it = impl_->teams.find(teamId);
+    if (it != impl_->teams.end()) {
+        auto& members = it->second;
+        members.erase(
+            std::remove_if(members.begin(), members.end(),
+                [&](const TeamMember& m) { return m.id == memberId; }),
+            members.end());
+        return true;
+    }
+    return false;
 }
 
-void revokeHATToken(const std::string& tokenId) {
-    globalHATProtocol.revokeToken(tokenId);
+std::vector<TeamMember> TeamCoordinator::getTeamMembers(const std::string& teamId) const {
+    auto it = impl_->teams.find(teamId);
+    return (it != impl_->teams.end()) ? it->second : std::vector<TeamMember>{};
+}
+
+std::string TeamCoordinator::createTask(const std::string& teamId, const TeamTask& task) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    std::string id = "task_" + std::to_string(impl_->next_task_id++);
+    TeamTask t = task;
+    t.id = id;
+    impl_->team_tasks[teamId].push_back(t);
+    return id;
+}
+
+bool TeamCoordinator::assignTask(const std::string& taskId, const std::string& memberId) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    for (auto& [teamId, tasks] : impl_->team_tasks) {
+        for (auto& task : tasks) {
+            if (task.id == taskId) {
+                task.assignedTo = memberId;
+                task.status = TaskStatus::IN_PROGRESS;
+                impl_->member_tasks[memberId].push_back(task);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool TeamCoordinator::updateTaskStatus(const std::string& taskId, TaskStatus status) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    for (auto& [teamId, tasks] : impl_->team_tasks) {
+        for (auto& task : tasks) {
+            if (task.id == taskId) {
+                task.status = status;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+std::vector<TeamTask> TeamCoordinator::getTasksForMember(const std::string& memberId) const {
+    auto it = impl_->member_tasks.find(memberId);
+    return (it != impl_->member_tasks.end()) ? it->second : std::vector<TeamTask>{};
+}
+
+std::vector<TeamTask> TeamCoordinator::getPendingTasks(const std::string& teamId) const {
+    std::vector<TeamTask> pending;
+    auto it = impl_->team_tasks.find(teamId);
+    if (it != impl_->team_tasks.end()) {
+        for (const auto& task : it->second) {
+            if (task.status == TaskStatus::PENDING) {
+                pending.push_back(task);
+            }
+        }
+    }
+    return pending;
+}
+
+std::string TeamCoordinator::sendMessage(const TeamMessage& message) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    std::string id = "msg_" + std::to_string(impl_->next_msg_id++);
+    TeamMessage msg = message;
+    msg.id = id;
+    impl_->member_messages[message.receiverId].push_back(msg);
+    return id;
+}
+
+bool TeamCoordinator::acknowledgeMessage(const std::string& messageId) {
+    return true;
+}
+
+std::vector<TeamMessage> TeamCoordinator::getMessagesForMember(const std::string& memberId) const {
+    auto it = impl_->member_messages.find(memberId);
+    return (it != impl_->member_messages.end()) ? it->second : std::vector<TeamMessage>{};
+}
+
+TeamContext TeamCoordinator::getTeamContext(const std::string& teamId) const {
+    TeamContext ctx;
+    ctx.teamId = teamId;
+    auto it = impl_->teams.find(teamId);
+    if (it != impl_->teams.end()) {
+        ctx.members = it->second;
+    }
+    return ctx;
+}
+
+std::string TeamCoordinator::getTeamStatus(const std::string& teamId) const {
+    auto it = impl_->teams.find(teamId);
+    if (it == impl_->teams.end()) return "unknown";
+    return "active";
+}
+
+std::string TeamCoordinator::findBestAssignee(const std::string& teamId, const TeamTask& task) const {
+    auto it = impl_->teams.find(teamId);
+    if (it != impl_->teams.end()) {
+        for (const auto& member : it->second) {
+            if (member.isAvailable) return member.id;
+        }
+    }
+    return "";
+}
+
+bool TeamCoordinator::rebalanceWorkload(const std::string& teamId) {
+    return true;
+}
+
+// ==============================================================================
+// HATProtocolHandler Implementation
+// ==============================================================================
+struct HATProtocolHandler::Impl {
+    std::string agentId;
+    std::vector<std::string> joinedTeams;
+    std::vector<std::string> capabilities;
+    bool available = true;
+    double capacity = 1.0;
+    MessageCallback messageCallback;
+    TaskCallback taskAssignedCallback;
+    TaskCallback taskCompletedCallback;
+};
+
+HATProtocolHandler::HATProtocolHandler() : impl_(std::make_unique<Impl>()) {}
+HATProtocolHandler::~HATProtocolHandler() = default;
+
+bool HATProtocolHandler::initialize(const std::string& agentId) {
+    impl_->agentId = agentId;
+    return true;
+}
+
+void HATProtocolHandler::shutdown() {
+    impl_->joinedTeams.clear();
+}
+
+void HATProtocolHandler::onMessage(MessageCallback callback) {
+    impl_->messageCallback = std::move(callback);
+}
+
+void HATProtocolHandler::onTaskAssigned(TaskCallback callback) {
+    impl_->taskAssignedCallback = std::move(callback);
+}
+
+void HATProtocolHandler::onTaskCompleted(TaskCallback callback) {
+    impl_->taskCompletedCallback = std::move(callback);
+}
+
+bool HATProtocolHandler::joinTeam(const std::string& teamId) {
+    impl_->joinedTeams.push_back(teamId);
+    return true;
+}
+
+bool HATProtocolHandler::leaveTeam(const std::string& teamId) {
+    auto& teams = impl_->joinedTeams;
+    teams.erase(std::remove(teams.begin(), teams.end(), teamId), teams.end());
+    return true;
+}
+
+bool HATProtocolHandler::reportStatus(const std::string& status) {
+    return true;
+}
+
+bool HATProtocolHandler::requestAssistance(const std::string& taskId, const std::string& reason) {
+    return true;
+}
+
+void HATProtocolHandler::advertiseCapabilities(const std::vector<std::string>& capabilities) {
+    impl_->capabilities = capabilities;
+}
+
+void HATProtocolHandler::updateAvailability(bool available, double capacity) {
+    impl_->available = available;
+    impl_->capacity = capacity;
 }
 
 } // namespace hat

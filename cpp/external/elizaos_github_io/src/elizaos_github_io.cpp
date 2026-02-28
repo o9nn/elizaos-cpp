@@ -366,7 +366,7 @@ bool DocumentationGenerator::generateNavigation() {
         }
         
         if (current_category_item) {
-            std::string url = page.output_path.filename().replace_extension("").std::string() + ".html";
+            std::string url = page.output_path.filename().replace_extension("").string() + ".html";
             NavigationItem page_item(page.title, "/" + url, static_cast<int>(current_category_item->children.size()));
             current_category_item->children.push_back(page_item);
         }
@@ -413,7 +413,7 @@ bool DocumentationGenerator::loadTheme(const std::string& theme_name) {
 
 bool DocumentationGenerator::loadCustomTheme(const std::filesystem::path& theme_dir) {
     // Load custom theme from directory
-    g_github_logger.log("Loading custom theme from: " + theme_dir.std::string(),
+    g_github_logger.log("Loading custom theme from: " + theme_dir.string(),
                        "", "elizaos_github_io", LogLevel::INFO);
     return true;
 }
@@ -464,7 +464,7 @@ std::string DocumentationGenerator::generateClassDocumentation(const CodeDocumen
     std::stringstream doc;
     doc << "# " << code_doc.class_name << "\n\n";
     doc << code_doc.description << "\n\n";
-    doc << "**Source File:** `" << code_doc.source_file.filename().std::string() << "`\n\n";
+    doc << "**Source File:** `" << code_doc.source_file.filename().string() << "`\n\n";
     
     if (!code_doc.methods.empty()) {
         doc << "## Methods\n\n";
@@ -539,7 +539,7 @@ bool DocumentationGenerator::processMarkdownFiles(const std::filesystem::path& i
                 std::string html_content = markdown_processor_->markdownToHtml(markdown_content);
                 
                 std::string title = frontmatter.count("title") ? 
-                    frontmatter["title"] : entry.path().stem().std::string();
+                    frontmatter["title"] : entry.path().stem().string();
                 
                 DocumentationPage page(title, html_content);
                 page.markdown_content = markdown_content;
@@ -683,13 +683,13 @@ bool GitHubPagesDeployer::cloneRepository(const std::filesystem::path& target_di
         std::string repo_url = "https://" + config_.access_token + "@github.com/" + 
             config_.repository_owner + "/" + config_.repository_name + ".git";
         
-        std::string command = "git clone --branch " + config_.branch + " " + repo_url + " " + target_dir.std::string();
+        std::string command = "git clone --branch " + config_.branch + " " + repo_url + " " + target_dir.string();
         
         // For demo purposes, we'll simulate this
         std::filesystem::create_directories(target_dir);
         std::filesystem::create_directories(target_dir / ".git");
         
-        g_github_logger.log("Repository cloned to: " + target_dir.std::string(),
+        g_github_logger.log("Repository cloned to: " + target_dir.string(),
                            "", "elizaos_github_io", LogLevel::INFO);
         
         return true;
@@ -719,7 +719,7 @@ bool GitHubPagesDeployer::copyFilesToRepo(const std::filesystem::path& source_di
 std::string GitHubPagesDeployer::executeGitCommand(const std::string& command, const std::filesystem::path& working_dir) const {
     // In a real implementation, this would execute the git command
     // For now, we'll simulate successful git operations
-    g_github_logger.log("Executing git command: " + command + " in " + working_dir.std::string(),
+    g_github_logger.log("Executing git command: " + command + " in " + working_dir.string(),
                        "", "elizaos_github_io", LogLevel::INFO);
     return "success";
 }
@@ -822,7 +822,7 @@ bool ElizaOSGitHubIO::disableAutoDeployment() {
 }
 
 bool ElizaOSGitHubIO::watchForChanges(const std::filesystem::path& watch_dir) {
-    g_github_logger.log("File watching enabled for: " + watch_dir.std::string(),
+    g_github_logger.log("File watching enabled for: " + watch_dir.string(),
                        "", "elizaos_github_io", LogLevel::INFO);
     return true;
 }

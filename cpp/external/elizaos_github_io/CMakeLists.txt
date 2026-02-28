@@ -5,6 +5,7 @@ add_library(elizaos-elizaos_github_io STATIC
 
 target_include_directories(elizaos-elizaos_github_io PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-elizaos_github_io 

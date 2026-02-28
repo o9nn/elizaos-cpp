@@ -9,6 +9,7 @@ add_library(elizaos-characters STATIC
 
 target_include_directories(elizaos-characters PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

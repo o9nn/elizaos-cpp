@@ -229,8 +229,8 @@ void SWEAgentManager::setMaxParallelAgents(int maxAgents) {
 std::vector<std::string> SWEAgentManager::getActiveAgents() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> active;
-    for (const auto& std::pair : agents_) {
-        active.push_back(pair.first);
+    for (const auto& [key, val] : agents_) {
+        active.push_back(key);
     }
     return active;
 }
@@ -238,8 +238,8 @@ std::vector<std::string> SWEAgentManager::getActiveAgents() const {
 std::unordered_map<std::string, std::string> SWEAgentManager::getAgentStatuses() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::unordered_map<std::string, std::string> statuses;
-    for (const auto& std::pair : agents_) {
-        statuses[pair.first] = pair.second->getStatus();
+    for (const auto& [key, val] : agents_) {
+        statuses[key] = val->getStatus();
     }
     return statuses;
 }

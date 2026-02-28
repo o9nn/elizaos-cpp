@@ -810,8 +810,8 @@ std::vector<CharacterProfile> CharacterManager::getAllCharacters() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     std::vector<CharacterProfile> result;
-    for (const auto& std::pair : characters_) {
-        result.push_back(pair.second);
+    for (const auto& [key, val] : characters_) {
+        result.push_back(val);
     }
     
     // Also get std::any characters only in memory
@@ -928,8 +928,8 @@ std::vector<CharacterTemplate> CharacterManager::getAllTemplates() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     std::vector<CharacterTemplate> result;
-    for (const auto& std::pair : templates_) {
-        result.push_back(pair.second);
+    for (const auto& [key, val] : templates_) {
+        result.push_back(val);
     }
     
     return result;
@@ -950,9 +950,9 @@ CharacterProfile CharacterManager::createFromTemplate(const std::string& templat
 void CharacterManager::evolveAllCharacters(float timeDelta) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
-    for (auto& std::pair : characters_) {
-        pair.second.evolvePersonality(timeDelta);
-        saveCharacterToMemory(pair.second);
+    for (auto& [key, val] : characters_) {
+        val.evolvePersonality(timeDelta);
+        saveCharacterToMemory(val);
     }
     
     logger_->log("Evolved all characters with time delta: " + std::to_string(timeDelta), 
@@ -963,9 +963,9 @@ void CharacterManager::saveAllCharacters(const std::string& directory) const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     int saved = 0;
-    for (const auto& std::pair : characters_) {
-        std::string filename = directory + "/" + pair.second.name + "_" + pair.first + ".txt";
-        if (pair.second.exportToFile(filename)) {
+    for (const auto& [key, val] : characters_) {
+        std::string filename = directory + "/" + val.name + "_" + key + ".txt";
+        if (val.exportToFile(filename)) {
             saved++;
         }
     }
@@ -1003,8 +1003,8 @@ std::string CharacterManager::getCharacterAnalytics() const {
     
     auto stats = getTraitCategoryStats();
     ss << "Trait category distribution:" << std::endl;
-    for (const auto& std::pair : stats) {
-        ss << "  " << traitCategoryToString(pair.first) << ": " << pair.second << std::endl;
+    for (const auto& [key, val] : stats) {
+        ss << "  " << traitCategoryToString(key) << ": " << val << std::endl;
     }
     
     return ss.str();

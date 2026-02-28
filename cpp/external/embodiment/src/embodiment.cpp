@@ -145,9 +145,9 @@ std::vector<std::shared_ptr<Task>> TaskManager::getPendingTasks() {
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> pending;
-    for (const auto& std::pair : tasks_) {
-        if (pair.second->getStatus() == TaskStatus::PENDING) {
-            pending.push_back(pair.second);
+    for (const auto& [key, val] : tasks_) {
+        if (val->getStatus() == TaskStatus::PENDING) {
+            pending.push_back(val);
         }
     }
     return pending;
@@ -157,10 +157,10 @@ std::vector<std::shared_ptr<Task>> TaskManager::getTasksByTag(const std::string&
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> tagged;
-    for (const auto& std::pair : tasks_) {
-        const auto& tags = pair.second->getTags();
+    for (const auto& [key, val] : tasks_) {
+        const auto& tags = val->getTags();
         if (std::find(tags.begin(), tags.end(), tag) != tags.end()) {
-            tagged.push_back(pair.second);
+            tagged.push_back(val);
         }
     }
     return tagged;

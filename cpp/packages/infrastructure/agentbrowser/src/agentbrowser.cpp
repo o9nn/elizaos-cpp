@@ -215,27 +215,24 @@ std::optional<std::string> AgentBrowser::getPageTitle() {
     if (!initialized_.load()) {
         return std::nullopt;
     }
-    
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "Sample Page - " + browser_utils::extractDomain(currentUrl_);
+    return "Page Title";
 }
 
 std::optional<std::string> AgentBrowser::getPageText() {
     if (!initialized_.load()) {
         return std::nullopt;
     }
-    
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "Sample Page\nThis is a functional implementation of AgentBrowser.";
+    return "Page text content";
 }
 
 std::optional<std::string> AgentBrowser::getPageHTML() {
     if (!initialized_.load()) {
         return std::nullopt;
     }
-    
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "<html><body><h1>Sample Page</h1><p>This is a functional implementation.</p></body></html>";
+    return "<html><body></body></html>";
 }
 
 std::vector<std::string> AgentBrowser::getLinks() {
@@ -266,10 +263,6 @@ std::vector<std::string> AgentBrowser::getLinks() {
     
     return links;
 }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    return {"https://example.com/link1", "https://example.com/link2"};
-}
 
 std::vector<std::string> AgentBrowser::getImages() {
     if (!initialized_.load()) {
@@ -297,10 +290,6 @@ std::vector<std::string> AgentBrowser::getImages() {
     }
     
     return images;
-}
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    return {"https://example.com/image1.jpg"};
 }
 
 std::optional<WebElement> AgentBrowser::findElement(const std::string& selector, SelectorType type) {

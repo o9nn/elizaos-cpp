@@ -7,6 +7,7 @@ add_library(elizaos-ontogenesis STATIC
 
 target_include_directories(elizaos-ontogenesis PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-ontogenesis PUBLIC
@@ -15,8 +16,6 @@ target_link_libraries(elizaos-ontogenesis PUBLIC
 
 # Set properties
 set_target_properties(elizaos-ontogenesis PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION ${PROJECT_VERSION_MAJOR}
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
@@ -31,4 +30,5 @@ install(TARGETS elizaos-ontogenesis
 install(FILES
     ${CMAKE_SOURCE_DIR}/include/elizaos/ontogenesis.hpp
     DESTINATION include/elizaos
+    OPTIONAL
 )

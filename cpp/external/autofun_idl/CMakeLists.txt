@@ -5,6 +5,7 @@ add_library(elizaos-autofun_idl STATIC
 
 target_include_directories(elizaos-autofun_idl PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-autofun_idl 

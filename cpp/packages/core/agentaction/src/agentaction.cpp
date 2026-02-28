@@ -104,8 +104,8 @@ std::vector<JsonValue> AgentAction::searchActions(const std::string& search_text
             JsonValue metadata_map;
             if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
                 const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
-                for (const auto& std::pair : customMeta.customData) {
-                    metadata_map[pair.first] = pair.second;
+                for (const auto& [key, val] : customMeta.customData) {
+                    metadata_map[key] = val;
                 }
             }
             action_data["metadata"] = metadata_map;
@@ -179,8 +179,8 @@ std::vector<JsonValue> AgentAction::getActionHistory(int n_results) {
         JsonValue metadata_map;
         if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
             const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
-            for (const auto& std::pair : customMeta.customData) {
-                metadata_map[pair.first] = pair.second;
+            for (const auto& [key, val] : customMeta.customData) {
+                metadata_map[key] = val;
             }
         }
         action_data["metadata"] = metadata_map;
@@ -279,8 +279,8 @@ JsonValue AgentAction::getActionFromMemory(const std::string& action_name) {
                 
                 // Convert metadata to JsonValue
                 JsonValue metadata_map;
-                for (const auto& std::pair : customMeta.customData) {
-                    metadata_map[pair.first] = pair.second;
+                for (const auto& [key, val] : customMeta.customData) {
+                    metadata_map[key] = val;
                 }
                 action_data["metadata"] = metadata_map;
                 

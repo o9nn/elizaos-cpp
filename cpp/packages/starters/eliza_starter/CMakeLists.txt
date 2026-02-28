@@ -5,6 +5,7 @@ add_library(elizaos-eliza_starter STATIC
 
 target_include_directories(elizaos-eliza_starter PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-eliza_starter 
@@ -22,6 +23,7 @@ add_executable(eliza_starter_demo
 
 target_include_directories(eliza_starter_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(eliza_starter_demo
@@ -43,6 +45,7 @@ add_executable(eliza_starter_example
 
 target_include_directories(eliza_starter_example PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(eliza_starter_example
@@ -57,6 +60,7 @@ add_executable(eliza_starter_integration
 
 target_include_directories(eliza_starter_integration PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(eliza_starter_integration

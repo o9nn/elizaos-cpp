@@ -302,7 +302,7 @@ std::vector<VercelProject> VercelAPI::listProjects() {
                     projects.push_back(project);
                 }
             }
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse projects response: " + std::string(e.what()));
         }
     } else {
@@ -334,7 +334,7 @@ VercelProject VercelAPI::getProject(const std::string& project_id) {
                 }
             }
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse project response: " + std::string(e.what()));
         }
     } else {
@@ -367,7 +367,7 @@ VercelProject VercelAPI::createProject(const std::string& name, const std::strin
             g_vercel_logger.log("Created project: " + project.name + " (" + project.id + ")", 
                                "", "vercel_api", LogLevel::INFO);
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse create project response: " + std::string(e.what()));
         }
     } else {
@@ -431,7 +431,7 @@ VercelDeployment VercelAPI::createDeployment(const DeploymentRequest& request) {
             
             g_vercel_logger.log("Created deployment: " + deployment.id + " at " + deployment.url, "", "vercel_api", LogLevel::INFO);
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse deployment response: " + std::string(e.what()));
         }
     } else {
@@ -455,7 +455,7 @@ VercelDeployment VercelAPI::getDeployment(const std::string& deployment_id) {
             deployment.state = json_response.value("readyState", "UNKNOWN");
             deployment.project_id = json_response.value("projectId", "");
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse deployment response: " + std::string(e.what()));
         }
     } else {
@@ -551,7 +551,7 @@ std::unordered_map<std::string, std::string> VercelAPI::parseJson(const std::str
                 result[key] = value.dump();
             }
         }
-    } catch (const json::std::exception& e) {
+    } catch (const std::exception& e) {
         g_vercel_logger.log("Failed to parse JSON: " + std::string(e.what()), "", "vercel_api", LogLevel::ERROR);
     }
     
@@ -728,7 +728,7 @@ std::vector<DeploymentFile> VercelIntegration::scanDirectory(const std::string& 
                 auto relative_path = std::filesystem::relative(entry.path(), directory_path);
                 
                 DeploymentFile deployment_file;
-                deployment_file.path = relative_path.std::string();
+                deployment_file.path = relative_path.string();
                 deployment_file.content = content;
                 deployment_file.size = content.size();
                 // Calculate SHA locally (simplified)
@@ -826,7 +826,7 @@ std::vector<VercelDeployment> VercelAPI::listDeployments(const std::string& proj
                     deployments.push_back(deployment);
                 }
             }
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse deployments response: " + std::string(e.what()));
         }
     }
@@ -900,7 +900,7 @@ std::string VercelAPI::uploadFile(const std::string& file_path, const std::strin
             }
             
             return file_id;
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse file upload response: " + std::string(e.what()));
         }
     } else {
@@ -952,7 +952,7 @@ bool VercelAPI::downloadDeploymentFiles(const std::string& deployment_id, const 
                                "", "vercel_api", LogLevel::INFO);
             return true;
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse deployment files response: " + std::string(e.what()));
         }
     } else {
@@ -994,7 +994,7 @@ bool VercelAPI::verifyDomain(const std::string& domain_name) {
             
             return verified;
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse domain verification response: " + std::string(e.what()));
         }
     } else {
@@ -1038,7 +1038,7 @@ std::unordered_map<std::string, std::string> VercelAPI::getEnvironmentVariables(
                 }
             }
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse environment variables response: " + std::string(e.what()));
         }
     } else {
@@ -1071,7 +1071,7 @@ std::string VercelAPI::getDeploymentLogs(const std::string& deployment_id) {
             
             return log_stream.str();
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse deployment logs response: " + std::string(e.what()));
         }
     } else {
@@ -1107,7 +1107,7 @@ std::string VercelAPI::getBuildLogs(const std::string& deployment_id) {
             
             return log_stream.str();
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse build logs response: " + std::string(e.what()));
         }
     } else {
@@ -1139,7 +1139,7 @@ bool VercelAPI::createWebhook(const std::string& project_id, const std::string& 
                                "", "vercel_api", LogLevel::INFO);
             return true;
             
-        } catch (const json::std::exception& e) {
+        } catch (const std::exception& e) {
             last_error_ = ApiError(500, "Failed to parse webhook creation response: " + std::string(e.what()));
         }
     } else {

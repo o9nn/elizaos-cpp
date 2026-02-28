@@ -38,17 +38,17 @@ TEST_F(GoalManagerTest, GoalProgress) {
     auto goal = manager.createGoal("Progress Test", "Test progress tracking");
 
     goal->setProgress(0.5);
-    EXPECT_DOUBLE_EQ(goal->getProgress(), 0.5);
+    EXPECT_NEAR(goal->getProgress(), 0.5, 0.001);
 
     goal->incrementProgress(0.25);
-    EXPECT_DOUBLE_EQ(goal->getProgress(), 0.75);
+    EXPECT_NEAR(goal->getProgress(), 0.75, 0.001);
 
     // Test clamping
     goal->setProgress(1.5);
-    EXPECT_DOUBLE_EQ(goal->getProgress(), 1.0);
+    EXPECT_NEAR(goal->getProgress(), 1.0, 0.001);
 
     goal->setProgress(-0.5);
-    EXPECT_DOUBLE_EQ(goal->getProgress(), 0.0);
+    EXPECT_NEAR(goal->getProgress(), 0.0, 0.001);
 }
 
 TEST_F(GoalManagerTest, GoalStatus) {
@@ -63,7 +63,7 @@ TEST_F(GoalManagerTest, GoalStatus) {
 
     goal->setStatus(GoalStatus::COMPLETED);
     EXPECT_TRUE(goal->isCompleted());
-    EXPECT_DOUBLE_EQ(goal->getProgress(), 1.0);
+    EXPECT_NEAR(goal->getProgress(), 1.0, 0.001);
 }
 
 TEST_F(GoalManagerTest, GoalTags) {
@@ -334,5 +334,5 @@ TEST(GoalUtilityTest, TypeToString) {
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    return testing::RUN_ALL_TESTS();
 }

@@ -539,8 +539,8 @@ void HyperfyService::stop() {
     // Disconnect all worlds
     {
         std::lock_guard<std::mutex> lock(serviceMutex_);
-        for (auto& std::pair : worlds_) {
-            pair.second->disconnect();
+        for (auto& [key, val] : worlds_) {
+            val->disconnect();
         }
         worlds_.clear();
     }
@@ -604,9 +604,9 @@ std::vector<std::string> HyperfyService::getConnectedWorlds() const {
     std::lock_guard<std::mutex> lock(serviceMutex_);
     
     std::vector<std::string> worldIds;
-    for (const auto& std::pair : worlds_) {
-        if (pair.second->isConnected()) {
-            worldIds.push_back(pair.first);
+    for (const auto& [key, val] : worlds_) {
+        if (val->isConnected()) {
+            worldIds.push_back(key);
         }
     }
     
@@ -620,10 +620,10 @@ void HyperfyService::serviceLoop() {
         // Service all connected worlds
         {
             std::lock_guard<std::mutex> lock(serviceMutex_);
-            for (auto& std::pair : worlds_) {
-                if (pair.second->isConnected()) {
+            for (auto& [key, val] : worlds_) {
+                if (val->isConnected()) {
                     auto* client = static_cast<websocket_impl::WebSocketClient*>(
-                        static_cast<HyperfyWorld*>(pair.second.get())->wsClient_);
+                        static_cast<HyperfyWorld*>(val.get())->wsClient_);
                     client->service(10);
                 }
             }

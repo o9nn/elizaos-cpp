@@ -598,7 +598,7 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                                                             // UUID Utils
 
-                                                                                                                                            const auto uuidSchema = z.std::string().uuid().ZodType<UUID>;
+                                                                                                                                            const auto uuidSchema = z.string().uuid().ZodType<UUID>;
 
                                                                                                                                             /**
                                                                                                                                             * Validates a UUID value.

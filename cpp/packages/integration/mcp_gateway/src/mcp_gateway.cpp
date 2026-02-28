@@ -40,8 +40,8 @@ void MCPGateway::reconnectServer(const std::string& serverName) {
 std::vector<std::string> MCPGateway::listServers() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> serverList;
-    for (const auto& std::pair : servers_) {
-        serverList.push_back(pair.first);
+    for (const auto& [key, val] : servers_) {
+        serverList.push_back(key);
     }
     return serverList;
 }
@@ -62,8 +62,8 @@ void MCPGateway::unregisterTool(const std::string& toolName) {
 std::vector<MCPTool> MCPGateway::listTools() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<MCPTool> toolList;
-    for (const auto& std::pair : tools_) {
-        toolList.push_back(pair.second);
+    for (const auto& [key, val] : tools_) {
+        toolList.push_back(val);
     }
     return toolList;
 }
@@ -71,9 +71,9 @@ std::vector<MCPTool> MCPGateway::listTools() const {
 std::vector<MCPTool> MCPGateway::listToolsByNamespace(const std::string& namespace_) const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<MCPTool> filtered;
-    for (const auto& std::pair : tools_) {
-        if (pair.second.namespace_ == namespace_) {
-            filtered.push_back(pair.second);
+    for (const auto& [key, val] : tools_) {
+        if (val.namespace_ == namespace_) {
+            filtered.push_back(val);
         }
     }
     return filtered;
@@ -160,8 +160,8 @@ void MCPGateway::unregisterResource(const std::string& uri) {
 std::vector<MCPResource> MCPGateway::listResources() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<MCPResource> resourceList;
-    for (const auto& std::pair : resources_) {
-        resourceList.push_back(pair.second);
+    for (const auto& [key, val] : resources_) {
+        resourceList.push_back(val);
     }
     return resourceList;
 }
@@ -240,8 +240,8 @@ void MCPGateway::stopHealthMonitoring() {
 std::unordered_map<std::string, std::string> MCPGateway::getServerHealth() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::unordered_map<std::string, std::string> health;
-    for (const auto& std::pair : servers_) {
-        health[pair.first] = "healthy"; // Placeholder
+    for (const auto& [key, val] : servers_) {
+        health[key] = "healthy"; // Placeholder
     }
     return health;
 }

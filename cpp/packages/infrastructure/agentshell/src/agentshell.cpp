@@ -174,8 +174,8 @@ std::vector<std::string> AgentShell::getAvailableCommands() const {
     std::lock_guard<std::mutex> lock(commandsMutex_);
     std::vector<std::string> commands;
     
-    for (const auto& std::pair : commandHandlers_) {
-        commands.push_back(pair.first);
+    for (const auto& [key, val] : commandHandlers_) {
+        commands.push_back(key);
     }
     
     std::sort(commands.begin(), commands.end());

@@ -4,6 +4,7 @@ add_library(elizaos-otc_agent STATIC
 
 target_include_directories(elizaos-otc_agent PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-otc_agent

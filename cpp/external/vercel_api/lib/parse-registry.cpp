@@ -29,7 +29,7 @@ std::future<std::vector<std::string>> getGitHubBranches(
     const std::string& repo, 
     const Octokit& octokit) {
     
-    return std::async(std::launch::std::async, [owner, repo]() {
+    return std::async(std::launch::async, [owner, repo]() {
         // Placeholder implementation
         // In a real implementation, this would call the GitHub API
         std::vector<std::string> branches;
@@ -50,7 +50,7 @@ std::future<std::optional<PackageInfo>> fetchPackageJSON(
     const std::string& ref, 
     const Octokit& octokit) {
     
-    return std::async(std::launch::std::async, [owner, repo, ref]() -> std::optional<PackageInfo> {
+    return std::async(std::launch::async, [owner, repo, ref]() -> std::optional<PackageInfo> {
         // Placeholder implementation
         // In a real implementation, this would fetch package.json from GitHub
         try {
@@ -71,7 +71,7 @@ std::future<GitTagInfo> getLatestGitTags(
     const std::string& repo, 
     const Octokit& octokit) {
     
-    return std::async(std::launch::std::async, [owner, repo]() {
+    return std::async(std::launch::async, [owner, repo]() {
         GitTagInfo info;
         info.repo = owner + "/" + repo;
         
@@ -91,7 +91,7 @@ std::future<GitTagInfo> getLatestGitTags(
 }
 
 std::future<NpmInfo> inspectNpm(const std::string& pkgName) {
-    return std::async(std::launch::std::async, [pkgName]() {
+    return std::async(std::launch::async, [pkgName]() {
         NpmInfo info;
         info.repo = pkgName;
         
@@ -120,7 +120,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(
     const std::string& gitRef, 
     const Octokit& octokit) {
     
-    return std::async(std::launch::std::async, [npmId, gitRef, &octokit]() {
+    return std::async(std::launch::async, [npmId, gitRef, &octokit]() {
         VersionInfo versionInfo;
         
         auto parsed = parseGitRef(gitRef);
@@ -183,7 +183,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(
 }
 
 std::future<CachedRegistry> parseRegistry(const std::string& githubToken) {
-    return std::async(std::launch::std::async, [githubToken]() {
+    return std::async(std::launch::async, [githubToken]() {
         CachedRegistry registry;
         
         // Set timestamp

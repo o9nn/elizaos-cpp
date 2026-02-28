@@ -5,6 +5,7 @@ add_library(elizaos-ljspeechtools STATIC
 
 target_include_directories(elizaos-ljspeechtools PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 # Try to find audio processing libraries

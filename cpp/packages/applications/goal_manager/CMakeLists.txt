@@ -15,6 +15,7 @@ add_library(elizaos-goal_manager STATIC ${SOURCES})
 # Include directories
 target_include_directories(elizaos-goal_manager PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 # Link dependencies

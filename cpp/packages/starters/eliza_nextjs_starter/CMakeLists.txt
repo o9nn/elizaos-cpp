@@ -5,6 +5,7 @@ add_library(elizaos-eliza_nextjs_starter STATIC
 
 target_include_directories(elizaos-eliza_nextjs_starter PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-eliza_nextjs_starter 

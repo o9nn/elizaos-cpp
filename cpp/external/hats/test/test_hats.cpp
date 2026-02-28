@@ -66,12 +66,12 @@ TEST_F(HatsTest, CsvDataSource) {
     CsvDataSource source(config);
     
     // Test connection
-    EXPECT_EQ(source.connect(), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.connect() == HatsStatus::SUCCESS);
     EXPECT_TRUE(source.isConnected());
     
     // Test data loading
     DataSet data;
-    EXPECT_EQ(source.loadData(data), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.loadData(data) == HatsStatus::SUCCESS);
     EXPECT_EQ(data.size(), 3); // 3 rows of data
     
     // Check first row
@@ -80,7 +80,7 @@ TEST_F(HatsTest, CsvDataSource) {
     EXPECT_EQ(std::get<std::string>(data[0]["city"]), "New York");
     
     // Test disconnection
-    EXPECT_EQ(source.disconnect(), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.disconnect() == HatsStatus::SUCCESS);
     EXPECT_FALSE(source.isConnected());
 }
 
@@ -93,12 +93,12 @@ TEST_F(HatsTest, JsonDataSource) {
     JsonDataSource source(config);
     
     // Test connection
-    EXPECT_EQ(source.connect(), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.connect() == HatsStatus::SUCCESS);
     EXPECT_TRUE(source.isConnected());
     
     // Test data loading
     DataSet data;
-    EXPECT_EQ(source.loadData(data), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.loadData(data) == HatsStatus::SUCCESS);
     EXPECT_EQ(data.size(), 2); // 2 rows of JSON data
     
     // Check first row
@@ -107,7 +107,7 @@ TEST_F(HatsTest, JsonDataSource) {
     EXPECT_EQ(std::get<std::string>(data[0]["city"]), "New York");
     
     // Test disconnection
-    EXPECT_EQ(source.disconnect(), HatsStatus::SUCCESS);
+    EXPECT_TRUE(source.disconnect() == HatsStatus::SUCCESS);
     EXPECT_FALSE(source.isConnected());
 }
 
@@ -137,7 +137,7 @@ TEST_F(HatsTest, DataProcessor) {
     processor.addStep(filterStep);
     
     DataSet output;
-    EXPECT_EQ(processor.process(testData, output), HatsStatus::SUCCESS);
+    EXPECT_TRUE(processor.process(testData, output) == HatsStatus::SUCCESS);
     EXPECT_EQ(output.size(), 2); // Alice and Charlie (age >= 30)
     
     // Test sort operation
@@ -146,7 +146,7 @@ TEST_F(HatsTest, DataProcessor) {
     sortStep.operation = ProcessingOperation::SORT;
     processor.addStep(sortStep);
     
-    EXPECT_EQ(processor.process(testData, output), HatsStatus::SUCCESS);
+    EXPECT_TRUE(processor.process(testData, output) == HatsStatus::SUCCESS);
     EXPECT_EQ(output.size(), 3);
     // Check if sorting worked - just verify all records are there
     // (The exact order depends on which field is used for sorting)
@@ -176,15 +176,15 @@ TEST_F(HatsTest, HatsManager) {
     csvConfig.parameters["hasHeader"] = "true";
     
     auto csvSource = hats_utils::createDataSource(csvConfig);
-    EXPECT_NE(csvSource, nullptr);
+    EXPECT_TRUE(csvSource != nullptr);
     
-    EXPECT_EQ(manager.registerDataSource(std::move(csvSource)), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.registerDataSource(std::move(csvSource)) == HatsStatus::SUCCESS);
     EXPECT_EQ(manager.getRegisteredSourceCount(), 1);
     EXPECT_TRUE(manager.isSourceRegistered("csv_source"));
     
     // Test loading from source
     DataSet data;
-    EXPECT_EQ(manager.loadFromSource("csv_source", data), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.loadFromSource("csv_source", data) == HatsStatus::SUCCESS);
     EXPECT_EQ(data.size(), 3);
     
     // Test processing data
@@ -198,11 +198,11 @@ TEST_F(HatsTest, HatsManager) {
     steps.push_back(filterStep);
     
     DataSet processedData;
-    EXPECT_EQ(manager.processData("csv_source", steps, processedData), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.processData("csv_source", steps, processedData) == HatsStatus::SUCCESS);
     EXPECT_EQ(processedData.size(), 2); // Alice and Charlie
     
     // Test unregistering source
-    EXPECT_EQ(manager.unregisterDataSource("csv_source"), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.unregisterDataSource("csv_source") == HatsStatus::SUCCESS);
     EXPECT_EQ(manager.getRegisteredSourceCount(), 0);
     EXPECT_FALSE(manager.isSourceRegistered("csv_source"));
 }
@@ -224,7 +224,7 @@ TEST_F(HatsTest, MultipleDataSources) {
     csvConfig.parameters["hasHeader"] = "true";
     
     auto csvSource = hats_utils::createDataSource(csvConfig);
-    EXPECT_EQ(manager.registerDataSource(std::move(csvSource)), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.registerDataSource(std::move(csvSource)) == HatsStatus::SUCCESS);
     
     // Register JSON source
     DataSourceConfig jsonConfig;
@@ -233,13 +233,13 @@ TEST_F(HatsTest, MultipleDataSources) {
     jsonConfig.location = jsonFile;
     
     auto jsonSource = hats_utils::createDataSource(jsonConfig);
-    EXPECT_EQ(manager.registerDataSource(std::move(jsonSource)), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.registerDataSource(std::move(jsonSource)) == HatsStatus::SUCCESS);
     
     EXPECT_EQ(manager.getRegisteredSourceCount(), 2);
     
     // Load from multiple sources
     std::vector<std::string> sourceIds = {"csv_source", "json_source"};
     DataSet mergedData;
-    EXPECT_EQ(manager.loadFromMultipleSources(sourceIds, mergedData), HatsStatus::SUCCESS);
+    EXPECT_TRUE(manager.loadFromMultipleSources(sourceIds, mergedData) == HatsStatus::SUCCESS);
     EXPECT_EQ(mergedData.size(), 5); // 3 from CSV + 2 from JSON
 }

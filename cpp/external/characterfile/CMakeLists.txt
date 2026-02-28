@@ -5,6 +5,7 @@ add_library(elizaos-characterfile STATIC
 
 target_include_directories(elizaos-characterfile PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-characterfile

@@ -5,6 +5,7 @@ add_library(elizaos-easycompletion STATIC
 
 target_include_directories(elizaos-easycompletion PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-easycompletion 

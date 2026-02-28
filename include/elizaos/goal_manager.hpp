@@ -13,6 +13,7 @@
 #include <chrono>
 #include <mutex>
 #include <optional>
+#include <ostream>
 
 namespace elizaos {
 
@@ -272,6 +273,19 @@ std::string goalPriorityToString(GoalPriority priority);
 GoalPriority stringToGoalPriority(const std::string& str);
 std::string goalTypeToString(GoalType type);
 GoalType stringToGoalType(const std::string& str);
+
+// Stream operators for gtest compatibility
+inline std::ostream& operator<<(std::ostream& os, GoalPriority p) {
+    return os << goalPriorityToString(p);
+}
+
+inline std::ostream& operator<<(std::ostream& os, GoalStatus s) {
+    return os << goalStatusToString(s);
+}
+
+inline std::ostream& operator<<(std::ostream& os, GoalType t) {
+    return os << goalTypeToString(t);
+}
 
 } // namespace elizaos
 

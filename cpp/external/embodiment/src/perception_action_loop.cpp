@@ -62,17 +62,17 @@ bool PerceptionActionLoop::initialize() {
     // Initialize all sensory interfaces
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
-    for (auto& std::pair : sensoryInterfaces_) {
-        if (!pair.second->initialize()) {
-            elogError("Failed to initialize sensory interface: " + pair.first);
+    for (auto& [key, val] : sensoryInterfaces_) {
+        if (!val->initialize()) {
+            elogError("Failed to initialize sensory interface: " + key);
             return false;
         }
     }
     
     // Initialize all motor interfaces
-    for (auto& std::pair : motorInterfaces_) {
-        if (!pair.second->initialize()) {
-            elogError("Failed to initialize motor interface: " + pair.first);
+    for (auto& [key, val] : motorInterfaces_) {
+        if (!val->initialize()) {
+            elogError("Failed to initialize motor interface: " + key);
             return false;
         }
     }
@@ -92,12 +92,12 @@ void PerceptionActionLoop::shutdown() {
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
     // Shutdown all interfaces
-    for (auto& std::pair : sensoryInterfaces_) {
-        pair.second->shutdown();
+    for (auto& [key, val] : sensoryInterfaces_) {
+        val->shutdown();
     }
     
-    for (auto& std::pair : motorInterfaces_) {
-        pair.second->shutdown();
+    for (auto& [key, val] : motorInterfaces_) {
+        val->shutdown();
     }
     
     elogInfo("Perception-Action Loop shutdown complete");
@@ -272,15 +272,15 @@ std::vector<std::shared_ptr<SensoryData>> PerceptionActionLoop::gatherSensoryDat
     
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
-    for (const auto& std::pair : sensoryInterfaces_) {
-        if (!pair.second->isActive()) continue;
+    for (const auto& [key, val] : sensoryInterfaces_) {
+        if (!val->isActive()) continue;
         
         try {
-            auto buffer = pair.second->readDataBuffer(10); // Read up to 10 items
+            auto buffer = val->readDataBuffer(10); // Read up to 10 items
             allData.insert(allData.end(), buffer.begin(), buffer.end());
         } catch (const std::exception& e) {
             
-            elogError("Error reading from sensory interface " + pair.first + ": " + e.what());
+            elogError("Error reading from sensory interface " + key + ": " + e.what());
         }
     }
     
@@ -348,15 +348,15 @@ void PerceptionActionLoop::executeActions(const std::vector<std::shared_ptr<Moto
     
     for (const auto& action : actions) {
         // Find appropriate motor interface for this action type
-        for (const auto& std::pair : motorInterfaces_) {
-            if (!pair.second->isActive()) continue;
+        for (const auto& [key, val] : motorInterfaces_) {
+            if (!val->isActive()) continue;
             
-            if (pair.second->canExecute(action)) {
+            if (val->canExecute(action)) {
                 try {
-                    pair.second->executeAction(action);
+                    val->executeAction(action);
                 } catch (const std::exception& e) {
                     
-                    elogError("Error executing action via " + pair.first + ": " + e.what());
+                    elogError("Error executing action via " + key + ": " + e.what());
                 }
                 break; // Action executed, move to next
             }

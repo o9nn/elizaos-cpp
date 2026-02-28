@@ -5,6 +5,7 @@ add_library(elizaos-registry STATIC
 
 target_include_directories(elizaos-registry PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-registry 

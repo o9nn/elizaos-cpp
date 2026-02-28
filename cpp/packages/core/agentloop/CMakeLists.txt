@@ -4,6 +4,7 @@ add_library(elizaos-agentloop STATIC
 
 target_include_directories(elizaos-agentloop PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-agentloop 

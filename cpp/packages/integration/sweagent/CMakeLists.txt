@@ -6,6 +6,7 @@ add_library(elizaos-sweagent STATIC
 
 target_include_directories(elizaos-sweagent PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-sweagent

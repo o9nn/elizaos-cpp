@@ -24,19 +24,19 @@ PluginVersion PluginVersion::parse(const std::string& versionStr) {
 }
 
 // PluginConfig implementation
-void PluginConfig::std::set(const std::string& key, const std::string& value) {
+void PluginConfig::set(const std::string& key, const std::string& value) {
     values_[key] = value;
 }
 
-void PluginConfig::std::set(const std::string& key, int value) {
+void PluginConfig::set(const std::string& key, int value) {
     values_[key] = value;
 }
 
-void PluginConfig::std::set(const std::string& key, double value) {
+void PluginConfig::set(const std::string& key, double value) {
     values_[key] = value;
 }
 
-void PluginConfig::std::set(const std::string& key, bool value) {
+void PluginConfig::set(const std::string& key, bool value) {
     values_[key] = value;
 }
 
@@ -154,8 +154,8 @@ bool PluginRegistry::hasPlugin(const std::string& pluginId) const {
 
 std::vector<std::string> PluginRegistry::getRegisteredPluginIds() const {
     std::vector<std::string> ids;
-    for (const auto& std::pair : factories_) {
-        ids.push_back(pair.first);
+    for (const auto& [key, val] : factories_) {
+        ids.push_back(key);
     }
     return ids;
 }
@@ -229,8 +229,8 @@ bool PluginManager::resumePlugin(const std::string& pluginId) {
 
 std::vector<std::string> PluginManager::getLoadedPluginIds() const {
     std::vector<std::string> ids;
-    for (const auto& std::pair : plugins_) {
-        ids.push_back(pair.first);
+    for (const auto& [key, val] : plugins_) {
+        ids.push_back(key);
     }
     return ids;
 }
@@ -242,8 +242,8 @@ bool PluginManager::checkPluginHealth(const std::string& pluginId) const {
 
 void PluginManager::setAgentState(std::shared_ptr<State> state) {
     agentState_ = state;
-    for (auto& std::pair : contexts_) {
-        pair.second->setAgentState(state);
+    for (auto& [key, val] : contexts_) {
+        val->setAgentState(state);
     }
 }
 

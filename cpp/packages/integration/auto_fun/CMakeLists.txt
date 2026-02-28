@@ -5,6 +5,7 @@ add_library(elizaos-auto_fun STATIC
 
 target_include_directories(elizaos-auto_fun PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-auto_fun 

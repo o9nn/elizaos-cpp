@@ -1,10 +1,12 @@
-#include "eliza-starter/src/character.h"
+// character.cpp - Stub implementation
+// Original TypeScript transpilation was broken, replaced with minimal stub
+#include "elizaos/core.hpp"
 
-std::shared_ptr<Character> character = utils::assign(object{
-}, defaultCharacter);
+namespace elizaos {
+namespace characters {
 
-void Main(void)
-{
-}
+// Placeholder - needs proper implementation from TypeScript source
+void character_placeholder() {}
 
-MAIN
+} // namespace characters
+} // namespace elizaos

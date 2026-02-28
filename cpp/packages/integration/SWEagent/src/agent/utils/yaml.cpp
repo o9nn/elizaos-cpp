@@ -131,7 +131,7 @@ std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str) 
     const std::unordered_map<std::string, std::any> result = {};
     const auto pairs = str.split(", ");
 
-    for (const auto& std::pair : pairs)
+    for (const auto& [key, val] : pairs)
         if (pair.includes(': ')) {
             const auto [key, value] = pair.split(": ");
             result[key.trim()] = parseValue(value.trim());
@@ -184,7 +184,7 @@ YamlData parseValue(const std::string& value) {
     if (value.startsWith('{') && value.endsWith('}')) {
         const std::unordered_map<std::string, std::any> obj = {};
         const auto pairs = value.slice(1, -1).split(",");
-        for (const auto& std::pair : pairs)
+        for (const auto& [key, val] : pairs)
             const auto [key, val] = pair.split(":").std::map((s) => s.trim());
             obj[key] = parseValue(val);
         }

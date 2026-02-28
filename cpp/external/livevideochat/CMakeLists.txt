@@ -6,6 +6,7 @@ add_library(elizaos-livevideochat STATIC
 
 target_include_directories(elizaos-livevideochat PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-livevideochat 

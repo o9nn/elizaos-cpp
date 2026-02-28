@@ -5,6 +5,7 @@ add_library(elizaos-agentbrowser STATIC
 
 target_include_directories(elizaos-agentbrowser PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-agentbrowser 

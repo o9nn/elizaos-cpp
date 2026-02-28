@@ -6,6 +6,7 @@ add_library(elizaos-eliza STATIC
 
 target_include_directories(elizaos-eliza PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

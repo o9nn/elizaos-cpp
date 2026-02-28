@@ -2,6 +2,7 @@
 // Provides gamification, challenges, achievements, and leaderboards
 
 #include "elizaos/core.hpp"
+#include "elizaos/classified.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -143,9 +144,9 @@ public:
         std::vector<Challenge> active;
         
         auto now = std::chrono::system_clock::now();
-        for (const auto& std::pair : challenges_) {
-            if (pair.second.isActive && pair.second.expiresAt > now) {
-                active.push_back(pair.second);
+        for (const auto& [key, val] : challenges_) {
+            if (val.isActive && val.expiresAt > now) {
+                active.push_back(val);
             }
         }
         
@@ -250,8 +251,8 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         std::vector<Achievement> all;
         
-        for (const auto& std::pair : achievements_) {
-            all.push_back(pair.second);
+        for (const auto& [key, val] : achievements_) {
+            all.push_back(val);
         }
         
         return all;
@@ -330,11 +331,11 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         
         std::vector<LeaderboardEntry> entries;
-        for (const auto& std::pair : playerStats_) {
+        for (const auto& [key, val] : playerStats_) {
             entries.push_back({
-                pair.second.playerId,
-                pair.second.playerId,  // In real system, fetch player name
-                pair.second.totalPoints,
+                val.playerId,
+                val.playerId,  // In real system, fetch player name
+                val.totalPoints,
                 0  // Will be std::set after sorting
             });
         }
@@ -469,5 +470,24 @@ PlayerStats getPlayerStats(const std::string& playerId) {
     return ClassifiedGameSystem::getInstance().getPlayerStats(playerId);
 }
 
+
 } // namespace classified
+
+
+// ClassifiedGame class implementations (in namespace elizaos, not classified)
+ClassifiedGame::ClassifiedGame() {}
+
+bool ClassifiedGame::initialize() {
+    classified::initializeGameSystem();
+    return true;
+}
+
+void ClassifiedGame::runGame() {
+    classified::initializeGameSystem();
+}
+
+void ClassifiedGame::shutdown() {
+    // Cleanup game system
+}
+
 } // namespace elizaos

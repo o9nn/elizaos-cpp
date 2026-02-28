@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <thread>
+#include <atomic>
 #include "elizaos/brandkit.hpp"
 #include <string>
 #include <unordered_map>
@@ -95,10 +97,10 @@ TEST_F(BrandKitTest, GetInvalidColorReturnsDefault) {
 TEST_F(BrandKitTest, GetAllColors) {
     auto colors = BrandKit::getAllColors();
     EXPECT_FALSE(colors.empty());
-    EXPECT_GE(colors.size(), 11); // At least 11 colors defined
+    EXPECT_TRUE(colors.size() >= 11u); // At least 11 colors defined
     
     // Check that primary color exists
-    EXPECT_NE(colors.find("primary"), colors.end());
+    EXPECT_TRUE(colors.find("primary") != colors.end());
     EXPECT_EQ(colors["primary"].hex, "#6366F1");
     EXPECT_EQ(colors["primary"].rgb, "rgb(99, 102, 241)");
 }
@@ -162,7 +164,7 @@ TEST_F(BrandKitTest, GetInvalidFontReturnsEmpty) {
 TEST_F(BrandKitTest, GetAllFonts) {
     auto fonts = BrandKit::getAllFonts();
     EXPECT_FALSE(fonts.empty());
-    EXPECT_GE(fonts.size(), 4); // At least 4 fonts defined
+    EXPECT_TRUE(fonts.size() >= 4u); // At least 4 fonts defined
     
     // Check that all fonts have required fields
     for (const auto& font : fonts) {
@@ -232,7 +234,7 @@ TEST_F(BrandKitTest, GetInvalidAssetReturnsEmpty) {
 TEST_F(BrandKitTest, GetAllAssets) {
     auto assets = BrandKit::getAllAssets();
     EXPECT_FALSE(assets.empty());
-    EXPECT_GE(assets.size(), 6); // At least 6 assets defined
+    EXPECT_TRUE(assets.size() >= 6u); // At least 6 assets defined
     
     // Check that all assets have required fields
     for (const auto& asset : assets) {
@@ -275,10 +277,8 @@ TEST_F(BrandKitTest, CSSVariablesContainAllColors) {
     
     for (const auto& [colorName, colorData] : colors) {
         std::string varName = "--color-" + colorName;
-        EXPECT_NE(css.find(varName), std::string::npos) 
-            << "CSS should contain variable: " << varName;
-        EXPECT_NE(css.find(colorData.hex), std::string::npos)
-            << "CSS should contain color value: " << colorData.hex;
+        EXPECT_TRUE(css.find(varName) != std::string::npos); // CSS should contain variable: 
+        EXPECT_TRUE(css.find(colorData.hex) != std::string::npos); // CSS should contain color value: 
     }
 }
 
@@ -288,10 +288,8 @@ TEST_F(BrandKitTest, CSSVariablesContainAllFonts) {
     
     for (const auto& font : fonts) {
         std::string varName = "--font-" + font.name;
-        EXPECT_NE(css.find(varName), std::string::npos)
-            << "CSS should contain variable: " << varName;
-        EXPECT_NE(css.find(font.family), std::string::npos)
-            << "CSS should contain font family: " << font.family;
+        EXPECT_TRUE(css.find(varName) != std::string::npos); // CSS should contain variable: 
+        EXPECT_TRUE(css.find(font.family) != std::string::npos); // CSS should contain font family: 
     }
 }
 
@@ -323,10 +321,8 @@ TEST_F(BrandKitTest, JSONConfigContainsAllColors) {
     auto colors = BrandKit::getAllColors();
     
     for (const auto& [colorName, colorData] : colors) {
-        EXPECT_NE(json.find("\"" + colorName + "\""), std::string::npos)
-            << "JSON should contain color: " + colorName;
-        EXPECT_NE(json.find(colorData.hex), std::string::npos)
-            << "JSON should contain color value: " + colorData.hex;
+        EXPECT_TRUE(json.find("\"" + colorName + "\"") != std::string::npos); // JSON should contain color: " + colorName
+        EXPECT_TRUE(json.find(colorData.hex) != std::string::npos); // JSON should contain color value: " + colorData.hex
     }
 }
 
@@ -335,10 +331,8 @@ TEST_F(BrandKitTest, JSONConfigContainsAllFonts) {
     auto fonts = BrandKit::getAllFonts();
     
     for (const auto& font : fonts) {
-        EXPECT_NE(json.find("\"" + font.name + "\""), std::string::npos)
-            << "JSON should contain font: " + font.name;
-        EXPECT_NE(json.find(font.family), std::string::npos)
-            << "JSON should contain font family: " + font.family;
+        EXPECT_TRUE(json.find("\"" + font.name + "\"") != std::string::npos); // JSON should contain font: " + font.name
+        EXPECT_TRUE(json.find(font.family) != std::string::npos); // JSON should contain font family: " + font.family
     }
 }
 
@@ -390,8 +384,8 @@ TEST_F(BrandKitTest, ConcurrentColorAccess) {
         });
     }
     
-    for (auto& std::thread : threads) {
-        thread.join();
+    for (auto& t : threads) {
+        t.join();
     }
     
     EXPECT_EQ(successCount.load(), 1000);
@@ -410,8 +404,8 @@ TEST_F(BrandKitTest, ConcurrentCSSGeneration) {
         });
     }
     
-    for (auto& std::thread : threads) {
-        thread.join();
+    for (auto& t : threads) {
+        t.join();
     }
     
     EXPECT_EQ(successCount.load(), 10);
@@ -451,5 +445,5 @@ TEST_F(BrandKitTest, CompleteWorkflow) {
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    return testing::RUN_ALL_TESTS();
 }

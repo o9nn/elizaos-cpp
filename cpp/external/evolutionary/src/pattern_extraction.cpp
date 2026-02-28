@@ -490,7 +490,7 @@ Individual OptimizationPipeline::runPipeline(const State& state) {
 }
 
 std::future<Individual> OptimizationPipeline::runPipelineAsync(const State& state) {
-    return std::async(std::launch::std::async, [this, state]() {
+    return std::async(std::launch::async, [this, state]() {
         return runPipeline(state);
     });
 }
@@ -518,8 +518,8 @@ Individual OptimizationPipeline::runStage(const Stage& stage, const State& state
         
         // Fill rest of population with variants of the input
         for (size_t i = 1; i < stage.config.populationSize; ++i) {
-            Individual std::variant = input.mutate(0.1);
-            initialPopulation.addIndividual(std::variant);
+            Individual variant = input.mutate(0.1);
+            initialPopulation.addIndividual(variant);
         }
         
         optimizer.setPopulation(initialPopulation);

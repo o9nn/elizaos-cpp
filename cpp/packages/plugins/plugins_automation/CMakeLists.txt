@@ -5,6 +5,7 @@ add_library(elizaos-plugins_automation STATIC
 
 target_include_directories(elizaos-plugins_automation PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-plugins_automation 

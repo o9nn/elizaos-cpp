@@ -4,6 +4,7 @@ add_library(elizaos-workgroups
 
 target_include_directories(elizaos-workgroups PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-workgroups

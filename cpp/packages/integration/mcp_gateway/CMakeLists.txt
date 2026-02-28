@@ -6,6 +6,7 @@ add_library(elizaos-mcp_gateway STATIC
 
 target_include_directories(elizaos-mcp_gateway PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-mcp_gateway

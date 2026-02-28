@@ -151,7 +151,7 @@ std::future<std::vector<TokenHolding>> calculateHoldings(Connection connection, 
     const auto scores = fetchTokenScores(tokenAddresses);
     std::cout << "Fetched scores:" << scores << std::endl;
 
-    for (const auto& std::pair : marketData.pairs)
+    for (const auto& [key, val] : marketData.pairs)
         if (!pair.baseToken.address || seenPairs.has(pair.baseToken.address)) {
             continue;
         }

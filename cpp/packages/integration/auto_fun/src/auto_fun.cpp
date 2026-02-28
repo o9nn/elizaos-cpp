@@ -166,8 +166,8 @@ Result<BondingCurve> AutoFunClient::getBondingCurve(const Pubkey& token_mint) co
 
 std::vector<BondingCurve> AutoFunClient::getAllBondingCurves() const {
     std::vector<BondingCurve> curves;
-    for (const auto& std::pair : bonding_curves_) {
-        curves.push_back(pair.second);
+    for (const auto& [key, val] : bonding_curves_) {
+        curves.push_back(val);
     }
     return curves;
 }

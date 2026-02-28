@@ -5,6 +5,7 @@ add_library(elizaos-autonomous_starter STATIC
 
 target_include_directories(elizaos-autonomous_starter PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-autonomous_starter 
@@ -22,6 +23,7 @@ add_executable(autonomous_starter_demo
 
 target_include_directories(autonomous_starter_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(autonomous_starter_demo
@@ -40,6 +42,7 @@ add_executable(autonomous_starter_tests
 
 target_include_directories(autonomous_starter_tests PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(autonomous_starter_tests

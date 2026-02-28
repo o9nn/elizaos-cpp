@@ -339,8 +339,8 @@ std::vector<std::shared_ptr<PluginInterface>> PluginRegistry::getAllPlugins() co
     std::lock_guard<std::mutex> lock(pluginsMutex_);
     std::vector<std::shared_ptr<PluginInterface>> result;
     
-    for (const auto& std::pair : plugins_) {
-        result.push_back(pair.second);
+    for (const auto& [key, val] : plugins_) {
+        result.push_back(val);
     }
     
     return result;
@@ -369,7 +369,7 @@ std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std::string& d
                 // Try to load metadata from plugin file
                 // This is a simplified implementation
                 PluginMetadata metadata;
-                metadata.name = entry.path().stem().std::string();
+                metadata.name = entry.path().stem().string();
                 metadata.author = "Unknown";
                 metadata.version = PluginVersion{1, 0, 0};
                 discovered.push_back(metadata);
@@ -440,8 +440,8 @@ std::vector<std::string> PluginRegistry::getDependencyOrder() const {
         order.push_back(pluginName);
     };
     
-    for (const auto& std::pair : plugins_) {
-        visit(pair.first);
+    for (const auto& [key, val] : plugins_) {
+        visit(key);
     }
     
     return order;
@@ -455,8 +455,8 @@ JsonValue PluginRegistry::getStatistics() const {
     
     // Count by capability
     std::unordered_map<PluginCapability, int> capabilityCounts;
-    for (const auto& std::pair : plugins_) {
-        for (const auto& cap : pair.second->getCapabilities()) {
+    for (const auto& [key, val] : plugins_) {
+        for (const auto& cap : val->getCapabilities()) {
             capabilityCounts[cap]++;
         }
     }
@@ -662,12 +662,12 @@ JsonValue PluginManager::getExecutionStats() const {
     size_t totalExecutions = 0;
     size_t totalErrors = 0;
     
-    for (const auto& std::pair : executionCounts_) {
-        totalExecutions += pair.second;
+    for (const auto& [key, val] : executionCounts_) {
+        totalExecutions += val;
     }
     
-    for (const auto& std::pair : errorCounts_) {
-        totalErrors += pair.second;
+    for (const auto& [key, val] : errorCounts_) {
+        totalErrors += val;
     }
     
     stats["totalExecutions"] = std::string(std::to_string(totalExecutions));
@@ -758,8 +758,8 @@ std::vector<std::string> PluginFactory::getRegisteredPlugins() {
     std::lock_guard<std::mutex> lock(creatorsMutex_);
     
     std::vector<std::string> plugins;
-    for (const auto& std::pair : creators_) {
-        plugins.push_back(pair.first);
+    for (const auto& [key, val] : creators_) {
+        plugins.push_back(key);
     }
     
     return plugins;

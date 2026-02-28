@@ -6,6 +6,7 @@ add_library(elizaos-agentmemory STATIC
 
 target_include_directories(elizaos-agentmemory PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-agentmemory 

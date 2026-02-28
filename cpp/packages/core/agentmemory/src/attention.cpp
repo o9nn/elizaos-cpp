@@ -418,8 +418,8 @@ std::vector<std::shared_ptr<Memory>> AttentionAllocator::prioritizeMemories(cons
               });
     
     std::vector<std::shared_ptr<Memory>> result;
-    for (const auto& std::pair : memoryPriorities) {
-        result.push_back(pair.first);
+    for (const auto& [key, val] : memoryPriorities) {
+        result.push_back(key);
     }
     
     return result;

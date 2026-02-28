@@ -5,6 +5,7 @@ add_library(elizaos-discord_summarizer STATIC
 
 target_include_directories(elizaos-discord_summarizer PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(elizaos-discord_summarizer 

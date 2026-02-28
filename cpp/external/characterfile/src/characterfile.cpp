@@ -232,7 +232,7 @@ std::vector<std::string> CharacterFileLoader::getSupportedExtensions() const {
 
 bool CharacterFileLoader::isCharacterFile(const std::string& filename) {
     auto extensions = getSupportedExtensions();
-    std::string ext = std::filesystem::path(filename).extension().std::string();
+    std::string ext = std::filesystem::path(filename).extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
@@ -262,13 +262,13 @@ std::vector<CharacterProfile> CharacterFileLoader::loadFromDirectory(const std::
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-            if (entry.is_regular_file() && isCharacterFile(entry.path().std::string())) {
-                auto character = loadFromFile(entry.path().std::string());
+            if (entry.is_regular_file() && isCharacterFile(entry.path().string())) {
+                auto character = loadFromFile(entry.path().string());
                 if (character) {
                     characters.push_back(*character);
                 }
             } else if (entry.is_directory() && recursive) {
-                auto subCharacters = loadFromDirectory(entry.path().std::string(), recursive);
+                auto subCharacters = loadFromDirectory(entry.path().string(), recursive);
                 characters.insert(characters.end(), subCharacters.begin(), subCharacters.end());
             }
         }
@@ -757,10 +757,10 @@ std::vector<std::string> CharacterFileManager::findCharacterFiles(const std::str
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-            if (entry.is_regular_file() && loader_->isCharacterFile(entry.path().std::string())) {
-                files.push_back(entry.path().std::string());
+            if (entry.is_regular_file() && loader_->isCharacterFile(entry.path().string())) {
+                files.push_back(entry.path().string());
             } else if (entry.is_directory() && recursive) {
-                auto subFiles = findCharacterFiles(entry.path().std::string(), recursive);
+                auto subFiles = findCharacterFiles(entry.path().string(), recursive);
                 files.insert(files.end(), subFiles.begin(), subFiles.end());
             }
         }
@@ -925,7 +925,7 @@ std::string createFilename(const std::string& characterName) {
 
 std::string extractNameFromFilename(const std::string& filename) {
     std::filesystem::path path(filename);
-    std::string stem = path.stem().stem().std::string(); // Remove .character.json
+    std::string stem = path.stem().stem().string(); // Remove .character.json
     return stem;
 }
 

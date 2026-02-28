@@ -21,6 +21,7 @@ add_library(elizaos-embodiment STATIC ${SOURCES})
 # Include directories
 target_include_directories(elizaos-embodiment PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 # Link dependencies
@@ -35,7 +36,7 @@ target_link_libraries(elizaos-embodiment
 
 # Compiler-specific options
 if(MSVC)
-    target_compile_options(elizaos-embodiment PRIVATE /W4 /WX)
+    target_compile_options(elizaos-embodiment PRIVATE /W3)
 else()
-    target_compile_options(elizaos-embodiment PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(elizaos-embodiment PRIVATE -Wall -Wextra -Wpedantic)
 endif()

@@ -279,8 +279,8 @@ std::vector<CharacterProfile> CharacterJsonLoader::loadFromDirectory(const std::
         
         for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
             if (entry.is_regular_file()) {
-                std::string filepath = entry.path().std::string();
-                std::string extension = entry.path().extension().std::string();
+                std::string filepath = entry.path().string();
+                std::string extension = entry.path().extension().string();
                 
                 // Check for JSON files
                 if (extension == ".json" || filepath.find(".character.json") != std::string::npos) {

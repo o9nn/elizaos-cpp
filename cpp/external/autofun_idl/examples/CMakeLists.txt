@@ -5,6 +5,7 @@ add_executable(autofun_idl_demo
 
 target_include_directories(autofun_idl_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
 target_link_libraries(autofun_idl_demo 

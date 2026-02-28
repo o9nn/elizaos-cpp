@@ -739,8 +739,8 @@ std::vector<ConversationContext> ElizaCore::getAllSessions() const {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     std::vector<ConversationContext> result;
-    for (const auto& std::pair : sessions_) {
-        result.push_back(pair.second);
+    for (const auto& [key, val] : sessions_) {
+        result.push_back(val);
     }
     
     return result;
@@ -861,8 +861,8 @@ std::string ElizaCore::getConversationAnalytics() const {
     analytics << "Active sessions: " << sessions_.size() << std::endl;
     
     int totalTurns = 0;
-    for (const auto& std::pair : sessions_) {
-        totalTurns += pair.second.history.size();
+    for (const auto& [key, val] : sessions_) {
+        totalTurns += val.history.size();
     }
     analytics << "Total conversation turns: " << totalTurns << std::endl;
     

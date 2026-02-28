@@ -166,15 +166,15 @@ CIPipeline::CIPipeline() : buildCommand_("make"), testCommand_("make test"), dep
 CIPipeline::~CIPipeline() {}
 
 std::future<bool> CIPipeline::buildPlugin(const std::string& /* pluginPath */) {
-    return std::async(std::launch::std::async, []() { return true; });
+    return std::async(std::launch::async, []() { return true; });
 }
 
 std::future<bool> CIPipeline::testPlugin(const std::string& /* pluginName */) {
-    return std::async(std::launch::std::async, []() { return true; });
+    return std::async(std::launch::async, []() { return true; });
 }
 
 std::future<bool> CIPipeline::deployPlugin(const std::string& /* pluginName */, const std::string& /* target */) {
-    return std::async(std::launch::std::async, []() { return true; });
+    return std::async(std::launch::async, []() { return true; });
 }
 
 void CIPipeline::setBuildCommand(const std::string& command) { buildCommand_ = command; }

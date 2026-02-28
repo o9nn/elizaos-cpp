@@ -197,6 +197,8 @@ namespace elizaos {
             void handleIncomingMessage(const WebSocketMessage& msg);
             void handleWorldStateUpdate(const std::string& payload);
             void handlePositionUpdate(const std::string& payload);
+            void handleWebSocketMessage(const std::string& message);
+            std::string escapeJson(const std::string& input);
 
         public:
             HyperfyWorld(const std::string& worldId, const std::string& wsUrl);
