@@ -1,0 +1,74 @@
+import path from 'path';
+
+export function getIp(req: Request): string | null {
+    const forwardedFor = req.headers.get('cf-connecting-ip') || req.headers.get('x-forwarded-for');
+    if (!forwardedFor) {
+        return null;
+    }
+    return forwardedFor.split(',')[0].trim();
+}
+
+export const MIME_TYPES = new Map<string, string>([
+    ['.js', 'application/javascript'],
+    ['.mjs', 'application/javascript'],
+    ['.css', 'text/css'],
+    ['.html', 'text/html'],
+    ['.wasm', 'application/wasm'],
+    ['.sf2', 'application/octet-stream'],
+    ['.jpg', 'image/jpeg'],
+    ['.jpeg', 'image/jpeg'],
+    ['.gif', 'image/gif'],
+    ['.png', 'image/png'],
+]);
+
+export function escapeHtml(text: string): string {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+export function timeAgo(ms: number): string {
+    const seconds = Math.floor((Date.now() - ms) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+}
+
+export function formatDuration(ms: number): string {
+    const seconds = Math.floor(ms / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSecs = seconds % 60;
+    if (minutes < 60) return `${minutes}m ${remainingSecs}s`;
+    const hours = Math.floor(minutes / 60);
+    const remainingMins = minutes % 60;
+    return `${hours}h ${remainingMins}m`;
+}
+
+export function getMimeType(filePath: string): string {
+    const ext = path.extname(filePath);
+    if (ext === '.png') return 'image/png';
+    if (ext === '.jpg' || ext === '.jpeg') return 'image/jpeg';
+    if (ext === '.json') return 'application/json';
+    if (ext === '.jsonl') return 'application/jsonl';
+    if (ext === '.html') return 'text/html';
+    return MIME_TYPES.get(ext) ?? 'application/octet-stream';
+}
+
+// Skill names for hiscores (index = stat id, hiscore type = index + 1)
+export const SKILL_NAMES = [
+    'Attack', 'Defence', 'Strength', 'Hitpoints', 'Ranged', 'Prayer', 'Magic',
+    'Cooking', 'Woodcutting', 'Fletching', 'Fishing', 'Firemaking', 'Crafting',
+    'Smithing', 'Mining', 'Herblore', 'Agility', 'Thieving', null, null, 'Runecraft'
+];
+
+export const ENABLED_SKILLS = SKILL_NAMES
+    .map((name, i) => name ? { id: i, name } : null)
+    .filter(Boolean) as { id: number; name: string }[];
