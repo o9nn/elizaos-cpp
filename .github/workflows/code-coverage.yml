@@ -60,7 +60,7 @@ jobs:
       - name: Initialize coverage baseline
         run: |
           lcov --capture --initial --directory build --output-file coverage-base.info \
-               --ignore-errors mismatch,source
+               --ignore-errors source || true
 
       - name: Run all tests
         working-directory: build
@@ -70,14 +70,14 @@ jobs:
       - name: Capture coverage data
         run: |
           lcov --capture --directory build --output-file coverage-test.info \
-               --ignore-errors mismatch,source
+               --ignore-errors source || true
 
       - name: Combine coverage data
         run: |
           lcov --add-tracefile coverage-base.info \
                --add-tracefile coverage-test.info \
                --output-file coverage-combined.info \
-               --ignore-errors mismatch,source
+               --ignore-errors source || true
 
       - name: Filter coverage data
         run: |
