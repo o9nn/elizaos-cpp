@@ -15,7 +15,19 @@ namespace auto_fun {
 using Pubkey = std::string;
 using u8 = std::uint8_t;
 using u64 = std::uint64_t;
+#ifdef _MSC_VER
+// MSVC does not support __uint128_t; use a struct-based fallback
+struct uint128_t {
+    uint64_t low = 0;
+    uint64_t high = 0;
+    uint128_t() = default;
+    uint128_t(uint64_t v) : low(v), high(0) {}
+    operator bool() const { return low || high; }
+};
+using u128 = uint128_t;
+#else
 using u128 = __uint128_t;
+#endif
 using i64 = std::int64_t;
 using f64 = double;
 
