@@ -43,7 +43,7 @@ int main() {
     std::cout << "  - Duration: " << synthesized_audio.duration_seconds << " seconds" << std::endl;
     
     // Test dataset preparation
-    std::string temp_dir = std::filesystem::temp_directory_path() / "elizaos_demo";
+    std::string temp_dir = (std::filesystem::temp_directory_path() / "elizaos_demo").string();
     std::filesystem::create_directories(temp_dir + "/input");
     
     std::cout << "  - Running dataset pipeline..." << std::endl;
