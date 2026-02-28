@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>2004Scape Bot Client</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <link id="favicon" rel="icon" type="image/png" href="/favicon-disconnected.ico">
+
+    <style>
+        html {
+            touch-action: manipulation;
+        }
+
+        body,
+        td,
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: white;
+        }
+
+        body {
+            margin: 0px 0px;
+            overflow: auto;
+            background-color: black;
+        }
+
+        #game {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+
+        canvas {
+            width: 765px;
+            height: 503px;
+            display: block;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+            z-index: -1;
+        }
+
+        html:-webkit-full-screen {
+            background-color: black !important;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        .green {
+            text-decoration: none;
+            color: #04A800;
+        }
+
+        #controls {
+            margin-top: 3px;
+            margin-bottom: 10px;
+        }
+
+        #controls > a, #controls select, #controls optgroup, #controls optgroup > option, #controls input, #controls button {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
+
+        select {
+            text-decoration: none;
+            background-color: black;
+            color: #04A800;
+            border: none;
+        }
+
+        #mobilekeyboard-container {
+            display: none;
+        }
+
+        /* Bot Controls Styling */
+        #bot-controls {
+            margin-top: 10px;
+            padding: 10px;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        #bot-controls input {
+            background: #111;
+            color: #04A800;
+            border: 1px solid #04A800;
+            padding: 4px 8px;
+            margin: 2px;
+        }
+
+        #bot-controls button {
+            background: #04A800;
+            color: black;
+            border: none;
+            padding: 4px 12px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        #bot-controls button:hover {
+            background: #06D000;
+        }
+
+        #bot-controls label {
+            color: #04A800;
+            margin-right: 5px;
+        }
+
+        .bot-status {
+            color: #04A800;
+            margin-top: 5px;
+            font-size: 11px;
+        }
+    </style>
+
+    <script>
+        function toggleFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            } else {
+                let element = document.getElementById('canvas');
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
+        }
+
+        function saveScreenshot() {
+            document.getElementById('screenshot').download = 'screenshot-' + Math.floor(Date.now() / 1000) + '.png';
+            document.getElementById('screenshot').href = document.getElementById('canvas').toDataURL('image/png').replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        }
+
+        function loadSettings() {
+            // Load username from URL ?bot= param, or generate random if none
+            const urlParams = new URLSearchParams(window.location.search);
+            const botUsername = urlParams.get('bot');
+            const usernameField = document.getElementById('bot-username');
+
+            if (botUsername) {
+                usernameField.value = botUsername;
+            } else if (!usernameField.value) {
+                // Generate random if no URL param and field is empty
+                const newUsername = 'b' + Math.random().toString(36).substring(2, 7);
+                usernameField.value = newUsername;
+                // Update URL with new username (without reload)
+                updateUrlWithBot(newUsername);
+            }
+
+            // Load password from URL ?password= param or localStorage
+            const urlPassword = urlParams.get('password');
+            const savedPass = localStorage.getItem('bot_password');
+            if (urlPassword) {
+                document.getElementById('bot-password').value = urlPassword;
+            } else if (savedPass) {
+                document.getElementById('bot-password').value = savedPass;
+            }
+
+            // Store URL params for auto-initialization after client loads
+            window.urlParams = {
+                password: urlPassword,
+                fps: urlParams.has('fps') ? parseInt(urlParams.get('fps'), 10) : null
+            };
+        }
+
+        // Auto-initialize based on URL params (called after client is ready)
+        async function autoInitFromUrlParams() {
+            // Read URL params directly (loadSettings may not have run yet)
+            const urlParams = new URLSearchParams(window.location.search);
+            const params = {
+                password: urlParams.get('password'),
+                fps: urlParams.has('fps') ? parseInt(urlParams.get('fps'), 10) : null
+            };
+
+            const client = window.gameClient;
+            if (!client) return;
+
+            // If password param provided, auto-login
+            if (params.password) {
+                // Get username from URL or generate random
+                const username = urlParams.get('bot') || 'b' + Math.random().toString(36).substring(2, 7);
+                document.getElementById('bot-status').textContent = 'Auto-logging in as ' + username + '...';
+
+                // Wait for autoLogin to be available
+                while (!client.autoLogin) {
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                // Wait for client to be fully loaded (100%) before attempting login
+                while (!client.lastProgressPercent || client.lastProgressPercent < 100) {
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                // Brief delay for final initialization after 100%
+                await new Promise(r => setTimeout(r, 500));
+
+                await client.autoLogin(username, params.password);
+
+                // Wait for ingame state
+                while (!client.ingame) {
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                // Set FPS if specified
+                if (params.fps && client.setTargetedFramerate) {
+                    client.setTargetedFramerate(params.fps);
+                    console.log('[Bot] Set FPS to', params.fps);
+                }
+            }
+        }
+
+        // Update URL with bot username without page reload
+        function updateUrlWithBot(username) {
+            const url = new URL(window.location);
+            url.searchParams.set('bot', username);
+            window.history.replaceState({}, '', url);
+        }
+
+        // Sync username field changes to URL
+        function syncUsernameToUrl() {
+            const username = document.getElementById('bot-username').value.trim();
+            if (username) {
+                updateUrlWithBot(username);
+            }
+        }
+
+        // Update URL with goal without page reload
+        function updateUrlWithGoal(goal) {
+            const url = new URL(window.location);
+            if (goal) {
+                url.searchParams.set('goal', goal);
+            } else {
+                url.searchParams.delete('goal');
+            }
+            window.history.replaceState({}, '', url);
+        }
+
+        function setSize(size) {
+            let canvas = document.getElementById('canvas');
+            if (size == null) { size = document.getElementById('size').value; }
+            switch (size) {
+                default:
+                case '1':
+                case '2':
+                case '3':
+                    canvas.style.width = (765 * parseInt(size)) + 'px';
+                    canvas.style.height = (503 * parseInt(size)) + 'px';
+                    canvas.style.maxWidth = 'none';
+                    break;
+                case 'auto':
+                    canvas.style.width = '100%';
+                    canvas.style.height = 'auto';
+                    let maxWidth = ((window.innerHeight - 120) / 503) * 765;
+                    canvas.style.maxWidth = maxWidth + 'px';
+                    break;
+            }
+            document.getElementById('size').value = size;
+            localStorage.setItem('canvasSize', size);
+        }
+
+        // Favicon switching based on bot connection and activity state
+        let faviconIsActive = false;
+        let faviconIsConnected = false;
+
+        function updateFavicon() {
+            const favicon = document.getElementById('favicon');
+            if (favicon) {
+                if (faviconIsActive) {
+                    favicon.href = '/favicon-active.ico';
+                } else if (faviconIsConnected) {
+                    favicon.href = '/favicon.ico';
+                } else {
+                    favicon.href = '/favicon-disconnected.ico';
+                }
+            }
+        }
+
+        function setFaviconConnected(connected) {
+            faviconIsConnected = connected;
+            updateFavicon();
+        }
+
+        function setFaviconActive(active) {
+            faviconIsActive = active;
+            updateFavicon();
+        }
+
+        window.setFaviconConnected = setFaviconConnected;
+        window.setFaviconActive = setFaviconActive;
+    </script>
+</head>
+
+<body>
+    <center>
+        <div id="game">
+            <canvas id="canvas" width="765" height="503">
+                Your browser is not capable of running our web client.
+            </canvas>
+        </div>
+
+        <div class="centered" id="controls">
+            <select id="size" name="size" onchange="setSize();">
+                <optgroup>
+                <option value="1" id="1">1x Size</option>
+                <option value="2" id="2">2x Size</option>
+                <option value="3" id="3">3x Size</option>
+                <option value="auto" id="auto">Auto Sizing</option>
+                </optgroup>
+            </select> |
+            <a class="green" href="#" id="fullscreen" onclick="toggleFullscreen();">Go Fullscreen</a> |
+            <a class="green" href="#" id="screenshot" onclick="saveScreenshot();">Take screenshot</a> |
+            <a class="green" href="https://2004.lostcity.rs/worldmap">Map</a> |
+            <a class="green" href="/hiscores">Hiscores</a> |
+            <a class="green" href="https://discord.gg/3DcuU5cMJN" target="_blank">Discord</a> |
+            <a class="green" href="https://github.com/LostCityRS" target="_blank">GitHub</a> |
+            <span class="green" id="player-count">0 online</span>
+        </div>
+
+        <!-- Bot Controls -->
+        <div id="bot-controls">
+            <div>
+                <span id="login-controls">
+                    <input type="text" id="bot-username" placeholder="username" value="" onblur="syncUsernameToUrl();" onchange="syncUsernameToUrl();">
+                    <button onclick="randomUsername();" title="Generate random name" style="background:#333;color:#04A800;padding:4px 8px;">🎲</button>
+                    <input type="password" id="bot-password" placeholder="password" value="test">
+                    <button onclick="quickLogin();" style="background:#04A800;">Login</button>
+                </span>
+                <span id="tutorial-controls" style="display: none;">
+                    <button onclick="skipTutorial();">Skip Tutorial</button>
+                </span>
+            </div>
+            <div class="bot-status" id="bot-status">Ready</div>
+        </div>
+
+        <!-- SDK Panel container -->
+        <div id="sdk-panel-container"></div>
+    </center>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#04A800';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Bot Client Loading...', canvas.width / 2, canvas.height / 2);
+        }
+    </script>
+
+    <script type="module">
+        import { Client } from './bot/client.js';
+
+        <% if (per_deployment_token) { %>
+            document.cookie = 'per_deployment_token="<%= per_deployment_token %>"; Domain=' + window.location.hostname;
+        <% } %>
+
+        // Store client instance globally for bot control
+        let clientInstance = null;
+
+        (() => {
+            clientInstance = new Client(<%= nodeid %>, <%= lowmem %>, <%= members %>);
+            window.gameClient = clientInstance;
+            // Auto-initialize from URL params (login, fps)
+            autoInitFromUrlParams();
+        })();
+
+        // Generate a short random username (keep it very short)
+        function generateUsername() {
+            const rand = Math.random().toString(36).substring(2, 7);
+            return 'b' + rand; // e.g. "b3kf2" (6 chars)
+        }
+
+
+        // Generate new random username and sync to URL
+        window.randomUsername = function() {
+            const username = generateUsername();
+            document.getElementById('bot-username').value = username;
+            updateUrlWithBot(username);
+            document.getElementById('bot-status').textContent = 'Generated: ' + username;
+            return username;
+        };
+
+        // Quick login - uses entered username or generates random if empty
+        window.quickLogin = async function() {
+            let username = document.getElementById('bot-username').value.trim();
+            if (!username) {
+                username = generateUsername();
+                document.getElementById('bot-username').value = username;
+            }
+            // Always sync username to URL
+            updateUrlWithBot(username);
+            const password = document.getElementById('bot-password').value || 'test';
+
+            document.getElementById('bot-status').textContent = 'Logging in as ' + username + '...';
+
+            if (clientInstance && clientInstance.autoLogin) {
+                try {
+                    await clientInstance.autoLogin(username, password);
+                    document.getElementById('bot-status').textContent = '';
+                } catch (e) {
+                    document.getElementById('bot-status').textContent = 'Login error: ' + e.message;
+                }
+            } else {
+                document.getElementById('bot-status').textContent = 'Client not ready, retrying...';
+                setTimeout(() => window.quickLogin(), 1000);
+            }
+        };
+
+        // Fully autonomous auto-login function
+        window.autoLogin = async function() {
+            const username = document.getElementById('bot-username').value;
+            const password = document.getElementById('bot-password').value;
+
+            if (!username || !password) {
+                document.getElementById('bot-status').textContent = 'Error: Please enter username and password';
+                return;
+            }
+
+            // Sync username to URL, save password to localStorage
+            updateUrlWithBot(username);
+            localStorage.setItem('bot_password', password);
+
+            // Use the fully autonomous autoLogin method
+            if (clientInstance && clientInstance.autoLogin) {
+                document.getElementById('bot-status').textContent = 'Logging in as ' + username + '...';
+                try {
+                    await clientInstance.autoLogin(username, password);
+                    document.getElementById('bot-status').textContent = 'Login initiated for ' + username;
+                } catch (e) {
+                    document.getElementById('bot-status').textContent = 'Login error: ' + e.message;
+                }
+            } else {
+                document.getElementById('bot-status').textContent = 'Client not ready. Please wait...';
+                // Retry after a short delay
+                setTimeout(() => window.autoLogin(), 1000);
+            }
+        };
+
+        // Create account and login function
+        window.createAndLogin = async function() {
+            const username = document.getElementById('bot-username').value || generateUsername();
+            const password = document.getElementById('bot-password').value || 'botpass123';
+
+            // Update the input fields with generated/provided values
+            document.getElementById('bot-username').value = username;
+            document.getElementById('bot-password').value = password;
+
+            document.getElementById('bot-status').textContent = 'Logging in as ' + username + '... (new accounts auto-register)';
+
+            // Sync username to URL, save password to localStorage
+            updateUrlWithBot(username);
+            localStorage.setItem('bot_password', password);
+
+            // Use fully autonomous login (server auto-registers new accounts)
+            if (clientInstance && clientInstance.autoLogin) {
+                try {
+                    await clientInstance.autoLogin(username, password);
+                    document.getElementById('bot-status').textContent = 'Login initiated for ' + username;
+                } catch (e) {
+                    document.getElementById('bot-status').textContent = 'Login error: ' + e.message;
+                }
+            } else {
+                document.getElementById('bot-status').textContent = 'Client not ready. Please wait...';
+                setTimeout(() => window.createAndLogin(), 1000);
+            }
+        };
+
+        // Tutorial skip functions
+        let skipTutorialInterval = null;
+
+        window.talkToGuide = function() {
+            if (clientInstance && clientInstance.findNpcByName && clientInstance.talkToNpc) {
+                const guideIndex = clientInstance.findNpcByName('RuneScape Guide');
+                if (guideIndex >= 0) {
+                    clientInstance.talkToNpc(guideIndex);
+                }
+            }
+        };
+
+        // Skip tutorial step using primitive client methods
+        function doSkipTutorialStep() {
+            if (!clientInstance) {
+                return { success: false, message: 'Client not ready' };
+            }
+
+            // If dialog is open, interact with it
+            if (clientInstance.isDialogOpen && clientInstance.isDialogOpen()) {
+                if (clientInstance.isWaitingForDialog && clientInstance.isWaitingForDialog()) {
+                    return { success: false, message: 'Waiting for dialog response...' };
+                }
+
+                const options = clientInstance.getDialogOptions ? clientInstance.getDialogOptions() : [];
+                if (options.length > 0) {
+                    // Look for affirmative option
+                    for (let i = 0; i < options.length; i++) {
+                        const text = options[i].text.toLowerCase();
+                        if (text.includes('yes')) {
+                            clientInstance.clickDialogOption(i + 1);
+                            return { success: true, message: `Selected: ${options[i].text}` };
+                        }
+                    }
+                    // No clear yes option, click option 1
+                    clientInstance.clickDialogOption(1);
+                    return { success: true, message: `Selected: ${options[0]?.text || 'option 1'}` };
+                }
+
+                // Click continue
+                if (clientInstance.clickDialogOption(0)) {
+                    return { success: true, message: 'Clicked continue' };
+                }
+                return { success: false, message: 'Dialog open but cannot interact' };
+            }
+
+            // Find and talk to tutorial NPC
+            const names = ['RuneScape Guide', 'Guide', 'Tutorial'];
+            for (const name of names) {
+                const idx = clientInstance.findNpcByName ? clientInstance.findNpcByName(name) : -1;
+                if (idx >= 0) {
+                    clientInstance.talkToNpc(idx);
+                    return { success: true, message: `Talking to ${name}` };
+                }
+            }
+
+            return { success: false, message: 'No tutorial NPC found nearby' };
+        }
+
+        window.skipTutorial = async function() {
+            if (!clientInstance) {
+                document.getElementById('bot-status').textContent = 'Client not ready';
+                return;
+            }
+
+            // Auto-retry up to 5 times with delays
+            for (let attempt = 0; attempt < 5; attempt++) {
+                const result = doSkipTutorialStep();
+                document.getElementById('bot-status').textContent = result.message;
+
+                if (result.message.includes('Waiting')) {
+                    await new Promise(r => setTimeout(r, 800));
+                    continue;
+                }
+
+                if (result.success) {
+                    await new Promise(r => setTimeout(r, 600));
+                    continue;
+                }
+
+                break;
+            }
+        };
+
+        // Auto-repeat skip tutorial - keeps clicking through dialogs
+        window.autoSkipTutorial = function() {
+            if (skipTutorialInterval) {
+                clearInterval(skipTutorialInterval);
+                skipTutorialInterval = null;
+                document.getElementById('bot-status').textContent = 'Auto-skip stopped';
+                return;
+            }
+
+            document.getElementById('bot-status').textContent = 'Auto-skip started (click again to stop)';
+            skipTutorialInterval = setInterval(() => {
+                if (clientInstance) {
+                    const result = doSkipTutorialStep();
+                    document.getElementById('bot-status').textContent = 'Auto: ' + result.message;
+                }
+            }, 600);
+        };
+
+        // Show current dialog state
+        window.showDialogState = function() {
+            if (!clientInstance) {
+                document.getElementById('bot-status').textContent = 'Client not ready';
+                return;
+            }
+
+            const isDialog = clientInstance.isDialogOpen ? clientInstance.isDialogOpen() : false;
+            const chatId = clientInstance.getChatInterface ? clientInstance.getChatInterface() : -1;
+            const waiting = clientInstance.isWaitingForDialog ? clientInstance.isWaitingForDialog() : false;
+            const options = clientInstance.getDialogOptions ? clientInstance.getDialogOptions() : [];
+
+            let msg = `Dialog: ${isDialog ? 'OPEN' : 'closed'} | Interface: ${chatId} | Waiting: ${waiting}`;
+            if (options.length > 0) {
+                msg += '\nOptions: ' + options.map(o => o.index + ': ' + o.text).join(', ');
+            }
+
+            document.getElementById('bot-status').textContent = msg;
+            console.log('Dialog state:', { isDialog, chatId, waiting, options });
+        };
+
+        // Click specific dialog option (1-5) or continue (0)
+        window.clickDialog = function(optionIndex) {
+            if (!clientInstance || !clientInstance.clickDialogOption) {
+                document.getElementById('bot-status').textContent = 'Client not ready';
+                return;
+            }
+
+            const result = clientInstance.clickDialogOption(optionIndex);
+            document.getElementById('bot-status').textContent = result
+                ? `Clicked dialog option ${optionIndex}`
+                : `Failed to click option ${optionIndex}`;
+        };
+
+        window.listNpcs = function() {
+            if (clientInstance && clientInstance.getNearbyNpcs) {
+                const npcs = clientInstance.getNearbyNpcs();
+                if (npcs.length === 0) {
+                    document.getElementById('bot-status').textContent = 'No NPCs nearby';
+                } else {
+                    const npcList = npcs.slice(0, 5).map(n => n.name + ' (#' + n.index + ')').join(', ');
+                    const more = npcs.length > 5 ? ' +' + (npcs.length - 5) + ' more' : '';
+                    document.getElementById('bot-status').textContent = 'NPCs: ' + npcList + more;
+                    console.log('All nearby NPCs:', npcs);
+                }
+            } else {
+                document.getElementById('bot-status').textContent = 'Client not ready';
+            }
+        };
+
+        window.captureScreenshot = async function() {
+            const canvas = document.getElementById('canvas');
+            if (!canvas) {
+                document.getElementById('bot-status').textContent = 'Canvas not found';
+                return;
+            }
+
+            try {
+                const dataUrl = canvas.toDataURL('image/png');
+                const response = await fetch('/api/screenshot', {
+                    method: 'POST',
+                    body: dataUrl
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('bot-status').textContent = 'Screenshot saved: ' + result.filename;
+                    console.log('Screenshot saved:', result.filename);
+                } else {
+                    document.getElementById('bot-status').textContent = 'Screenshot failed: ' + result.error;
+                }
+            } catch (e) {
+                document.getElementById('bot-status').textContent = 'Screenshot error: ' + e.message;
+            }
+        };
+
+        // Update button visibility based on game state
+        function updateButtonVisibility() {
+            const loginControls = document.getElementById('login-controls');
+            const tutorialControls = document.getElementById('tutorial-controls');
+            const botControls = document.getElementById('bot-controls');
+
+            const isLoggedIn = clientInstance?.ingame;
+            const isInTutorial = isLoggedIn && clientInstance.findNpcByName?.('RuneScape Guide') >= 0;
+
+            // Hide login when logged in
+            if (loginControls) {
+                loginControls.style.display = isLoggedIn ? 'none' : 'inline';
+            }
+
+            // Show skip tutorial only when in tutorial
+            if (tutorialControls) {
+                tutorialControls.style.display = isInTutorial ? 'inline' : 'none';
+            }
+
+            // Hide the entire bot-controls box when nothing to show
+            if (botControls) {
+                const showControls = !isLoggedIn || isInTutorial;
+                botControls.style.display = showControls ? 'inline-block' : 'none';
+            }
+
+            // Update favicon based on login state
+            setFaviconConnected(isLoggedIn);
+        }
+
+        // Check visibility every second
+        setInterval(updateButtonVisibility, 1000);
+
+        // Poll player count every 30 seconds
+        async function updatePlayerCount() {
+            try {
+                const response = await fetch('/playercount');
+                const data = await response.json();
+                const count = data.count ?? 0;
+                document.getElementById('player-count').textContent = count + ' online';
+            } catch {
+                // Ignore errors
+            }
+        }
+        updatePlayerCount();
+        setInterval(updatePlayerCount, 30000);
+
+        loadSettings();
+    </script>
+</body>
+
+</html>
