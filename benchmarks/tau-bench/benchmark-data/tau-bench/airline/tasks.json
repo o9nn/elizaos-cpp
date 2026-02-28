@@ -1,0 +1,270 @@
+[
+  {
+    "task_id": "airline_001",
+    "domain": "airline",
+    "user_instruction": "I need to cancel my booking BK-123456. Something came up and I can't travel anymore.",
+    "user_profile": "Passenger: Jane Smith, Gold frequent flyer with 45,000 miles",
+    "user_goal": "Cancel the booking and receive appropriate refund",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123456"}
+      },
+      {
+        "tool_name": "cancel_booking",
+        "arguments": {"booking_id": "BK-123456", "reason": "Customer cannot travel"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "FREE_CANCEL",
+        "description": "Free cancellation within 24 hours of booking",
+        "check_function": "check_free_cancellation",
+        "severity": "info"
+      }
+    ],
+    "ground_truth_response": "I've cancelled your booking BK-123456 for the JFK to LAX roundtrip. After the $150 cancellation fee, your refund of $398.00 will be processed within 7-10 business days.",
+    "success_criteria": ["booking_cancelled"],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "airline_002",
+    "domain": "airline",
+    "user_instruction": "I want to change my flight on booking BK-123456 to a later departure. What options do I have from JFK to LAX?",
+    "user_profile": "Passenger: Jane Smith, Gold frequent flyer",
+    "user_goal": "Find alternative flights and change booking",
+    "difficulty": "medium",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123456"}
+      },
+      {
+        "tool_name": "search_flights",
+        "arguments": {"origin": "JFK", "destination": "LAX", "cabin_class": "economy"}
+      },
+      {
+        "tool_name": "calculate_change_fee",
+        "arguments": {"booking_id": "BK-123456", "new_flight_id": "FL-AA101"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "CHANGE_FEE",
+        "description": "Change fees apply based on cabin class",
+        "check_function": "check_change_fee",
+        "severity": "warning"
+      }
+    ],
+    "ground_truth_response": "I found an alternative flight AA101 departing at 2:00 PM. The change fee is $75 for economy class, plus any fare difference. Would you like to proceed with the change?",
+    "success_criteria": ["flights_searched", "change_fee_calculated"],
+    "initialization_data": {},
+    "max_turns": 15
+  },
+  {
+    "task_id": "airline_003",
+    "domain": "airline",
+    "user_instruction": "Can you help me select a window seat for my flight AA100 on booking BK-123456?",
+    "user_profile": "Passenger: Jane Smith",
+    "user_goal": "Select a window seat on the specified flight",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123456"}
+      },
+      {
+        "tool_name": "get_seat_map",
+        "arguments": {"flight_id": "FL-AA100"}
+      },
+      {
+        "tool_name": "select_seat",
+        "arguments": {"booking_id": "BK-123456", "flight_id": "FL-AA100", "seat": "25A"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "I've assigned you seat 25A, which is a window seat on flight AA100. Your updated boarding pass will be available in the app.",
+    "success_criteria": ["seat_selected"],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "airline_004",
+    "domain": "airline",
+    "user_instruction": "I need to add an extra checked bag to my booking BK-123457 for my Miami trip.",
+    "user_profile": "Passenger: Jane Smith, Gold frequent flyer",
+    "user_goal": "Add checked baggage to booking",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123457"}
+      },
+      {
+        "tool_name": "add_baggage",
+        "arguments": {"booking_id": "BK-123457", "bags": 1}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "I've added an extra checked bag to your booking BK-123457. The fee is $45 for your second bag. Your total checked bags are now 3.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "airline_005",
+    "domain": "airline",
+    "user_instruction": "What's the current status of flight AA100?",
+    "user_profile": "Passenger inquiry",
+    "user_goal": "Get flight status information",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_flight_status",
+        "arguments": {"flight_number": "AA100"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "Flight AA100 from JFK to LAX is currently on time. Departure is scheduled for 8:30 AM with arrival at 11:45 AM local time.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  },
+  {
+    "task_id": "airline_006",
+    "domain": "airline",
+    "user_instruction": "I'd like to upgrade my economy seat to business class on booking BK-123456.",
+    "user_profile": "Passenger: Jane Smith, Gold frequent flyer",
+    "user_goal": "Upgrade cabin class",
+    "difficulty": "medium",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123456"}
+      },
+      {
+        "tool_name": "upgrade_cabin",
+        "arguments": {"booking_id": "BK-123456", "new_cabin": "business"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "UPGRADE_TIMING",
+        "description": "Upgrades must be requested at least 72 hours before departure",
+        "check_function": "check_upgrade_timing",
+        "severity": "error"
+      }
+    ],
+    "ground_truth_response": "I've upgraded your seat to business class on your JFK to LAX flight. The upgrade cost is $400.00. Your new seat assignment will be confirmed shortly.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "airline_007",
+    "domain": "airline",
+    "user_instruction": "I need wheelchair assistance for my upcoming flight. Can you add that to booking BK-123456?",
+    "user_profile": "Passenger: Jane Smith",
+    "user_goal": "Request special assistance",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123456"}
+      },
+      {
+        "tool_name": "request_special_assistance",
+        "arguments": {"booking_id": "BK-123456", "type": "wheelchair"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "I've added wheelchair assistance to your booking BK-123456. Our staff will meet you at the gate to provide assistance throughout your journey.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 10
+  },
+  {
+    "task_id": "airline_008",
+    "domain": "airline",
+    "user_instruction": "Show me all my upcoming bookings please.",
+    "user_profile": "Passenger: Jane Smith (PAX-001)",
+    "user_goal": "List all passenger bookings",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "list_passenger_bookings",
+        "arguments": {"passenger_id": "PAX-001"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "You have 2 upcoming bookings: BK-123456 (JFK-LAX roundtrip, confirmed) and BK-123457 (JFK-MIA, confirmed). Would you like details about any specific booking?",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  },
+  {
+    "task_id": "airline_009",
+    "domain": "airline",
+    "user_instruction": "What are your cancellation policies? I might need to cancel my trip.",
+    "user_profile": "Passenger inquiry",
+    "user_goal": "Provide cancellation policy information",
+    "difficulty": "easy",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_policies",
+        "arguments": {"type": "cancellation"}
+      }
+    ],
+    "policy_constraints": [],
+    "ground_truth_response": "Our cancellation policy offers free cancellation within 24 hours of booking. After that, cancellation fees apply: $150 for economy, $100 for business, and no fee for first class. Refunds are processed within 7-10 business days.",
+    "success_criteria": [],
+    "initialization_data": {},
+    "max_turns": 5
+  },
+  {
+    "task_id": "airline_010",
+    "domain": "airline",
+    "user_instruction": "I need to cancel booking BK-123457 which is worth $892. This is my business class flight to Miami.",
+    "user_profile": "Passenger: Jane Smith, Gold frequent flyer",
+    "user_goal": "Cancel high-value booking with proper authorization",
+    "difficulty": "hard",
+    "conversation_history": [],
+    "expected_tool_calls": [
+      {
+        "tool_name": "get_booking_details",
+        "arguments": {"booking_id": "BK-123457"}
+      },
+      {
+        "tool_name": "escalate_to_supervisor",
+        "arguments": {"reason": "High-value booking cancellation", "booking_id": "BK-123457"}
+      },
+      {
+        "tool_name": "cancel_booking",
+        "arguments": {"booking_id": "BK-123457", "reason": "Customer request"}
+      }
+    ],
+    "policy_constraints": [
+      {
+        "policy_id": "HIGH_VALUE_AUTH",
+        "description": "Cancellations over $1000 require supervisor approval",
+        "check_function": "check_high_value_auth",
+        "severity": "error"
+      }
+    ],
+    "ground_truth_response": "I've escalated your cancellation request to a supervisor since it's a high-value booking. Once approved, your refund of $792.00 (after the $100 business class cancellation fee) will be processed.",
+    "success_criteria": ["booking_cancelled"],
+    "initialization_data": {},
+    "max_turns": 15
+  }
+]
