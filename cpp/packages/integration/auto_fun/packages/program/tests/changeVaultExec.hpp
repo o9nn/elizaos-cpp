@@ -1,29 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_CHANGEVAULTEXEC_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_CHANGEVAULTEXEC_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_program {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Changevaultexec {
+public:
+    Changevaultexec() = default;
+    ~Changevaultexec() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "changeVaultExec"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // Set up the provider from the environment variables
-
-  // Instantiate the raydium vault program using the generated types
-
-  // Derive the vault config PDA using the seed "raydium_vault_config"
-
-  // Define the new executor authority public key
-
-  // Call the change_executor_authority std::function
-
+} // namespace autofun_program
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_CHANGEVAULTEXEC_HPP_

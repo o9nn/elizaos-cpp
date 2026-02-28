@@ -1,88 +1,35 @@
-#include "redis.hpp"
-#include "util.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_MANAGER_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_MANAGER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class WebsocketManager {
+public:
+    WebsocketManager() = default;
+    ~WebsocketManager() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "websocket_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Import the correct type from Hono
-
-// Interface for our client metadata, not extending WSContext
-struct ClientMetadata {
-    std::string clientId;
-    bool isAlive;
-    std::unordered_set<std::string> rooms;
-    WSContext; // Reference to the Hono WebSocket context ws;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class WebSocketManager {
-  // Maps clientId to our metadata object
-  private clients: Map<std::string, ClientMetadata> = new Map();
-  // Local cache of room -> Set<clientId> (for efficient local broadcasting)
-  private localRoomClients: Map<std::string, Set<string>> = new Map();
-  private heartbeatInterval: NodeJS.Timeout | null = null;
-  redisCache: RedisCacheService | null = null;
-
-  // --- Redis Key Helper ---
-  private std::async redisKey(rawKey: std::string): Promise<string> {
-    if (!this.redisCache) {
-      this.redisCache = await getGlobalRedisCache();
-    }
-    return this.redisCache.getKey(rawKey);
-  }
-
-  // --- Initialization ---
-
-    // Listen for cross-cluster pub/sub
-
-      // logger.info(`📣 Received Redis message on ${ch}:`, message);
-
-  // --- Connection Handling (Called by Hono route/adapter) ---
-
-  // --- Message Handling (Called by Hono route/adapter or event listener) ---
-      // Convert message data to std::string for JSON parsing
-      // Extract clientId from the parsed message
-
-          // Heartbeat handled by isAlive flag std::set above
-
-  // Helper for room events to avoid repetition
-
-  // --- Close/Error Handling (Called by Hono route/adapter) ---
-    // Iterate to find the clientId associated with the closing ws context
-
-      // Pass only clientId for cleanup
-
-    // Iterate to find the clientId
-    // Trigger cleanup using the context (which eventually finds the clientId again)
-
-  // --- Heartbeat (Define before used) ---
-
-          // Call cleanup with only clientId
-          // Call cleanup with only clientId
-
-  // --- Room Management ---
-
-  // --- Client Cleanup (Internal, handles local and Redis state) ---
-
-    // 1. Remove client from local data structures
-
-    // 2. Remove client from Redis
-
-  // --- Broadcasting ---
-
-  // --- Send Direct Message to Client ---
-
-  // --- Graceful Shutdown ---
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_MANAGER_HPP_

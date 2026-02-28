@@ -1,9 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC___TESTS___UNIT_INSTALLPLUGINFROMREGISTRY_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC___TESTS___UNIT_INSTALLPLUGINFROMREGISTRY_TEST_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "vitest.h"
-#include "../../actions/installPluginFromRegistry.h"
-#include "../../services/pluginManagerService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INSTALLPLUGINFROMREGISTRY_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INSTALLPLUGINFROMREGISTRY_TEST_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class InstallpluginfromregistryTest {
+public:
+    InstallpluginfromregistryTest() = default;
+    ~InstallpluginfromregistryTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "installPluginFromRegistry_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INSTALLPLUGINFROMREGISTRY_TEST_HPP_

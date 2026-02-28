@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_SERVICES_CHROME-SERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_SERVICES_CHROME-SERVICE_H
-#include "core.h"
-#include "../enum/discrub-setting.h"
-#include "../enum/resolution-type.h"
-#include "../enum/sort-direction.h"
-#include "../features/app/app-types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_CHROME_SERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_CHROME_SERVICE_HPP_
 
-typedef std::function<std::any(std::string)> ChromeCallback;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_services {
 
-extern std::function<void(std::string, std::shared_ptr<ChromeCallback>)> sendChromeMessage;
-extern array<object> defaultSettings;
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> initializeSettings;
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> getSettings;
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>(std::string, std::string)> setSetting;
-#endif
+class ChromeService {
+public:
+    ChromeService() = default;
+    ~ChromeService() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "chrome_service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_CHROME_SERVICE_HPP_

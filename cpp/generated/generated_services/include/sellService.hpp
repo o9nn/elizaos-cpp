@@ -1,41 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../base/BaseTradeService.h"
-#include "../validation/TokenValidationService.h"
-#include "../calculation/tradeCalculation.h"
-#include "../../types.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../../utils/bignumber.h"
-#include "../../utils/wallet.h"
-#include "../tradeMemoryService.h"
-#include "../walletService.h"
-#include "../dataService.h"
-#include "../analyticsService.h"
-#include "../../utils/wallet.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SELLSERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SELLSERVICE_HPP_
 
-class SellService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SellService : public BaseTradeService, public std::enable_shared_from_this<SellService> {
+namespace elizaos {
+namespace generated_services {
+
+class Sellservice {
 public:
-    using std::enable_shared_from_this<SellService>::shared_from_this;
-    object pendingSells = object{};
+    Sellservice() = default;
+    ~Sellservice() = default;
 
-    std::shared_ptr<TokenValidationService> validationService;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "sellService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<TradeCalculationService> calculationService;
-
-    std::shared_ptr<TradeMemoryService> tradeMemoryService;
-
-    SellService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService, std::shared_ptr<TradeMemoryService> tradeMemoryService);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<void>> handleSellSignal(std::any params);
-    virtual std::shared_ptr<Promise<void>> updateExpectedOutAmount(std::any signal);
-    virtual std::shared_ptr<Promise<object>> executeSell(std::any signal);
-    SellService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SELLSERVICE_HPP_

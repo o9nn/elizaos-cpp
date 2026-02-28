@@ -1,62 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_SESSIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_SESSIONS_H
-#include "core.h"
-#include "../lib/base-client.h"
-#include "../types/sessions.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSIONS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSIONS_HPP_
 
-class SessionMessageQueryParams;
-class SessionsService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SessionMessageQueryParams : public object, public std::enable_shared_from_this<SessionMessageQueryParams> {
+namespace elizaos {
+namespace generated_misc {
+
+class Sessions {
 public:
-    using std::enable_shared_from_this<SessionMessageQueryParams>::shared_from_this;
-    std::string limit;
+    Sessions() = default;
+    ~Sessions() = default;
 
-    std::string before;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "sessions"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string after;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-template <typename P0>
-std::any toTimestampString(P0 value, std::string paramName);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::any validateRequiredParam(std::any value, std::string paramName);
-
-class SessionsService : public BaseApiClient, public std::enable_shared_from_this<SessionsService> {
-public:
-    using std::enable_shared_from_this<SessionsService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<SessionsHealthResponse>>> checkHealth();
-    virtual std::shared_ptr<Promise<std::shared_ptr<CreateSessionResponse>>> createSession(std::shared_ptr<CreateSessionParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> getSession(std::string sessionId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> sendMessage(std::string sessionId, std::shared_ptr<SendMessageParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> getMessages(std::string sessionId, std::shared_ptr<GetMessagesParams> params = undefined);
-    virtual std::shared_ptr<Promise<object>> deleteSession(std::string sessionId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ListSessionsResponse>>> listSessions();
-    SessionsService(std::shared_ptr<ApiClientConfig> config);
-};
-
-template <typename P0>
-std::any toTimestampString(P0 value, std::string paramName)
-{
-    if (!value) return undefined;
-    double timestamp;
-    if (is<Date>(value)) {
-        timestamp = value->getTime();
-    } else if (type_of(value) == std::string("string")) {
-        auto date = std::make_shared<Date>(value);
-        timestamp = date->getTime();
-        if (isNaN(timestamp)) {
-            console->warn(std::string("Invalid date std::string for ") + paramName + std::string(": ") + value + string_empty);
-            return undefined;
-        }
-    } else if (type_of(value) == std::string("number")) {
-        timestamp = value;
-    } else {
-        console->warn(std::string("Invalid type for ") + paramName + std::string(": ") + type_of(value) + string_empty);
-        return undefined;
-    }
-    return timestamp->toString();
-};
-
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSIONS_HPP_

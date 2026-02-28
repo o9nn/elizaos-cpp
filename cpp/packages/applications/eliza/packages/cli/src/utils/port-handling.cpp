@@ -1,35 +1,26 @@
 #include "port-handling.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<bool> isPortFree(double port) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return new Promise((resolve) => {;
-        const auto server = net.createServer();
-
-        server.once("error", () => resolve(false));
-        server.once("listening", () => {
-            server.close();
-            resolve(true);
-            });
-
-            server.listen(port);
-            });
-
+bool PortHandling::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<double> findNextAvailablePort(double startPort) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    auto port = startPort;
-    while (!(await isPortFree(port))) {
-        port++;
-    }
-    return port;
-
+void PortHandling::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json PortHandling::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

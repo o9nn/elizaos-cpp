@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ML_ANOMALY-DETECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ML_ANOMALY-DETECTION_H
-#include "core.h"
-#include "@tensorflow/tfjs-node.h"
-#include "isolation-forest.h"
-#include "density-clustering.h"
-#include "../monitoring/logger.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ANOMALY_DETECTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ANOMALY_DETECTION_HPP_
 
-class AnomalyDetector;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AnomalyDetector : public object, public std::enable_shared_from_this<AnomalyDetector> {
+namespace elizaos {
+namespace generated_misc {
+
+class AnomalyDetection {
 public:
-    using std::enable_shared_from_this<AnomalyDetector>::shared_from_this;
-    std::shared_ptr<tf::LayersModel> autoencoder;
+    AnomalyDetection() = default;
+    ~AnomalyDetection() = default;
 
-    std::shared_ptr<IsolationForest> isolationForest;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "anomaly_detection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<DBSCAN> dbscan;
-
-    double threshold = 0.95;
-
-    AnomalyDetector();
-    virtual void initialize();
-    virtual void buildAutoencoder();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<AnomalyResult>>>> detectAnomalies(array<array<double>> data);
-    virtual std::shared_ptr<Promise<array<double>>> detectWithAutoencoder(array<array<double>> data);
-    virtual std::shared_ptr<Promise<array<double>>> detectWithIsolationForest(array<array<double>> data);
-    virtual array<double> detectWithDBSCAN(array<array<double>> data);
-    virtual array<std::shared_ptr<AnomalyResult>> ensembleResults(array<array<double>> results);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ANOMALY_DETECTION_HPP_

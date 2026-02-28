@@ -1,65 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_ENTITY-TRACKER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_ENTITY-TRACKER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITY_TRACKER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITY_TRACKER_HPP_
 
-class EntityTracker;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class EntityTracker : public object, public std::enable_shared_from_this<EntityTracker> {
+namespace elizaos {
+namespace generated_misc {
+
+class EntityTracker {
 public:
-    using std::enable_shared_from_this<EntityTracker>::shared_from_this;
-    std::shared_ptr<WorldState> worldState;
+    EntityTracker() = default;
+    ~EntityTracker() = default;
 
-    double POSITION_THRESHOLD = 100;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "entity_tracker"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double MISSING_THRESHOLD = 5000;
-
-    double CLEANUP_THRESHOLD = 60000;
-
-    EntityTracker(std::string worldId);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> updateEntities(array<std::shared_ptr<DetectedObject>> detectedObjects, array<std::shared_ptr<PersonInfo>> people, std::shared_ptr<Map<std::string, string>> faceProfiles = undefined, std::shared_ptr<IAgentRuntime> runtime = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> trackPerson(std::shared_ptr<PersonInfo> person, std::any faceProfileId, double timestamp);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> trackObject(std::shared_ptr<DetectedObject> obj, double timestamp);
-    template <typename P1>
-    std::any findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, std::string faceProfileId = undefined);
-    virtual double calculateDistance(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
-    virtual void updateWorldState(std::shared_ptr<Set<string>> seenEntityIds, double timestamp);
-    virtual std::shared_ptr<Promise<void>> syncWithRuntime(std::shared_ptr<IAgentRuntime> runtime, array<std::shared_ptr<TrackedEntity>> frameEntities);
-    virtual std::shared_ptr<WorldState> getWorldState();
-    virtual array<std::shared_ptr<TrackedEntity>> getActiveEntities();
-    virtual std::any getEntity(std::string entityId);
-    virtual array<object> getRecentlyLeft();
-    virtual boolean assignNameToEntity(std::string entityId, std::string name);
-    virtual object getStatistics();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-template <typename P1>
-std::any EntityTracker::findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, std::string faceProfileId)
-{
-    auto currentTime = Date->now();
-    auto bestMatch = nullptr;
-    auto minDistance = Infinity;
-    for (auto& entity : this->worldState->entities->values())
-    {
-        if (entity["entityType"] != entityType) {
-            continue;
-        }
-        if (currentTime - entity["lastSeen"] > this->MISSING_THRESHOLD) {
-            continue;
-        }
-        if (AND((AND((entityType == std::string("person")), (faceProfileId))), (entity["attributes"]["faceId"]))) {
-            if (entity["attributes"]["faceId"] == faceProfileId) {
-                return entity;
-            }
-        }
-        auto distance = this->calculateDistance(entity["lastPosition"], boundingBox);
-        if (AND((distance < this->POSITION_THRESHOLD), (distance < minDistance))) {
-            minDistance = distance;
-            bestMatch = entity;
-        }
-    }
-    return bestMatch;
-}
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITY_TRACKER_HPP_

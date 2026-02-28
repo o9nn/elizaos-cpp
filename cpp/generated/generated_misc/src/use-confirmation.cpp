@@ -1,47 +1,26 @@
-#include "eliza/packages/client/src/hooks/use-confirmation.h"
+#include "use-confirmation.hpp"
 
-std::any useConfirmation()
-{
-    auto [confirmationState, setConfirmationState] = useState<object>(object{
-        object::pair{std::string("open"), false}, 
-        object::pair{std::string("options"), nullptr}, 
-        object::pair{std::string("onConfirm"), nullptr}
-    });
-    auto confirm = useCallback([=](auto options, auto onConfirm) mutable
-    {
-        setConfirmationState(object{
-            object::pair{std::string("open"), true}, 
-            object::pair{std::string("options"), std::string("options")}, 
-            object::pair{std::string("onConfirm"), std::string("onConfirm")}
-        });
-    }
-    , array<any>());
-    shared handleOpenChange = useCallback([=](auto open) mutable
-    {
-        if (!open) {
-            setConfirmationState(object{
-                object::pair{std::string("open"), false}, 
-                object::pair{std::string("options"), nullptr}, 
-                object::pair{std::string("onConfirm"), nullptr}
-            });
-        }
-    }
-    , array<any>());
-    auto handleConfirm = useCallback([=]() mutable
-    {
-        if (confirmationState->onConfirm) {
-            confirmationState->onConfirm();
-        }
-        handleOpenChange(false);
-    }
-    , array<any>{ confirmationState->onConfirm, handleOpenChange });
-    return object{
-        object::pair{std::string("confirm"), std::string("confirm")}, 
-        object::pair{std::string("isOpen"), confirmationState->open}, 
-        object::pair{std::string("onOpenChange"), handleOpenChange}, 
-        object::pair{std::string("onConfirm"), handleConfirm}, 
-        object::pair{std::string("options"), confirmationState->options}
-    };
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool UseConfirmation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void UseConfirmation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseConfirmation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

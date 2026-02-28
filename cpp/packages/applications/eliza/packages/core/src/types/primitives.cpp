@@ -1,22 +1,26 @@
 #include "primitives.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-UUID asUUID(const std::string& id) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
-            throw std::runtime_error(`Invalid UUID format: ${id}`);
-        }
-        return id;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Primitives::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Primitives::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Primitives::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

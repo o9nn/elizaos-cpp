@@ -1,72 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TEE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TEE_H
-#include "core.h"
-#include "./primitives.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEE_HPP_
 
-class TeeAgent;
-enum struct TEEMode;
-class RemoteAttestationQuote;
-class DeriveKeyAttestationData;
-class RemoteAttestationMessage;
-enum struct TeeType;
-class TeePluginConfig;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TeeAgent : public object, public std::enable_shared_from_this<TeeAgent> {
+namespace elizaos {
+namespace generated_misc {
+
+class Tee {
 public:
-    using std::enable_shared_from_this<TeeAgent>::shared_from_this;
-    std::string id;
+    Tee() = default;
+    ~Tee() = default;
 
-    std::string agentId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tee"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string agentName;
-
-    double createdAt;
-
-    std::string publicKey;
-
-    std::string attestation;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-enum struct TEEMode {
-    OFF = std::string("OFF"), LOCAL = std::string("LOCAL"), DOCKER = std::string("DOCKER"), PRODUCTION = std::string("PRODUCTION")
-};
-class RemoteAttestationQuote : public object, public std::enable_shared_from_this<RemoteAttestationQuote> {
-public:
-    using std::enable_shared_from_this<RemoteAttestationQuote>::shared_from_this;
-    std::string quote;
+} // namespace generated_misc
+} // namespace elizaos
 
-    double timestamp;
-};
-
-class DeriveKeyAttestationData : public object, public std::enable_shared_from_this<DeriveKeyAttestationData> {
-public:
-    using std::enable_shared_from_this<DeriveKeyAttestationData>::shared_from_this;
-    std::string agentId;
-
-    std::string publicKey;
-
-    std::string subject;
-};
-
-class RemoteAttestationMessage : public object, public std::enable_shared_from_this<RemoteAttestationMessage> {
-public:
-    using std::enable_shared_from_this<RemoteAttestationMessage>::shared_from_this;
-    std::string agentId;
-
-    double timestamp;
-
-    object message;
-};
-
-enum struct TeeType {
-    TDX_DSTACK = std::string("tdx_dstack")
-};
-class TeePluginConfig : public object, public std::enable_shared_from_this<TeePluginConfig> {
-public:
-    using std::enable_shared_from_this<TeePluginConfig>::shared_from_this;
-    std::string vendor;
-
-    Metadata vendorConfig;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEE_HPP_

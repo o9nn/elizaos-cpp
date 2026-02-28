@@ -1,40 +1,35 @@
-#include ".components/token-table.hpp"
-#include ".utils/env.hpp"
-#include ".utils/profileUtils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_PROFILE_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_PROFILE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Profile {
+public:
+    Profile() = default;
+    ~Profile() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "profile"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct EditableProfileHeaderProps {
-    UserProfileData | null user;
-    bool isCurrentUser;
-    bool isEditingName;
-    (value: boolean) => void setIsEditingName;
-    std::string editingDisplayName;
-    (value: std::string) => void setEditingDisplayName;
-    std::string editingProfilePictureUrl;
-    () => void onSaveName;
-    () => void onCancelNameEdit;
-    () => void onUploadClick;
-    () => void onGenerateClick;
-    bool isUploading;
-    bool isGenerating;
-    bool isSaving;
-    std::string | null editError;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-using Tab = std::variant<"held", "created">;
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_PROFILE_HPP_

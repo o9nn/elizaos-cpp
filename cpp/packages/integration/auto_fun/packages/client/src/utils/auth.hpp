@@ -1,49 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_AUTH_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_AUTH_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Auth {
+public:
+    Auth() = default;
+    ~Auth() = default;
 
-/**
- * Sanitizes a token by removing std::any surrounding quotes
- * Can be used to clean tokens from localStorage
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "auth"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-  // Explicitly handle the std::string "null" or "undefined"
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // Remove quotes if present
-
-/**
- * Retrieves the authentication token from localStorage and ensures it's properly formatted
- * (without quotes)
- */
-  return sanitizeToken(authToken);
-
-/**
- * Parses a JWT token and extracts its payload
- */
-  // Basic check for JWT structure
-
-    // JWT structure: header.payload.signature
-
-    // Check if payload part exists
-
-/**
- * Checks if a JWT token is expired
- * @returns true if token is expired or invalid, false if still valid
- */
-  // Check if token is a valid-looking JWT std::string
-
-    // exp is in seconds, Date.now() is in milliseconds
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_AUTH_HPP_

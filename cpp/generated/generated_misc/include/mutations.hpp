@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_MUTATIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_MUTATIONS_H
-#include "core.h"
-#include "@/lib/date-utils.h"
-#include "@/lib/data/db.h"
-#include "@/lib/data/schema.h"
-#include "@date-fns/utc.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MUTATIONS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MUTATIONS_HPP_
 
-std::shared_ptr<Promise<void>> storeDailySummary(std::string username, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<void>> storeRepoSummary(std::string repoId, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType);
+namespace elizaos {
+namespace generated_misc {
 
-#endif
+class Mutations {
+public:
+    Mutations() = default;
+    ~Mutations() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "mutations"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MUTATIONS_HPP_

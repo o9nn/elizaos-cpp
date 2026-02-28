@@ -1,59 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_CACHEMANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_CACHEMANAGER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHEMANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHEMANAGER_HPP_
 
-template <typename T>
-class CacheEntry;
-class CacheManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename T>
-class CacheEntry : public object, public std::enable_shared_from_this<CacheEntry<T>> {
+namespace elizaos {
+namespace generated_misc {
+
+class Cachemanager {
 public:
-    using std::enable_shared_from_this<CacheEntry<T>>::shared_from_this;
-    T value;
+    Cachemanager() = default;
+    ~Cachemanager() = default;
 
-    double timestamp;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cacheManager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double expiry;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CacheManager : public object, public std::enable_shared_from_this<CacheManager> {
-public:
-    using std::enable_shared_from_this<CacheManager>::shared_from_this;
-    std::shared_ptr<Map<std::string, std::shared_ptr<CacheEntry<any>>>> cache = std::make_shared<Map>();
+} // namespace generated_misc
+} // namespace elizaos
 
-    double defaultTTL = 60000;
-
-    template <typename T>
-    std::shared_ptr<Promise<any>> get(std::string key);
-    template <typename T>
-    std::shared_ptr<Promise<void>> std::set(std::string key, T value, double ttl = this->defaultTTL);
-    virtual std::shared_ptr<Promise<void>> delete(std::string key);
-    virtual std::shared_ptr<Promise<void>> clear();
-};
-
-template <typename T>
-std::shared_ptr<Promise<any>> CacheManager::get(std::string key)
-{
-    auto entry = this->cache->get(key);
-    if (!entry) return nullptr;
-    if (Date->now() > entry->expiry) {
-        this->cache->delete(key);
-        return nullptr;
-    }
-    return as<T>(entry->value);
-}
-
-template <typename T>
-std::shared_ptr<Promise<void>> CacheManager::std::set(std::string key, T value, double ttl)
-{
-    auto entry = object{
-        object::pair{std::string("value"), std::string("value")}, 
-        object::pair{std::string("timestamp"), Date->now()}, 
-        object::pair{std::string("expiry"), Date->now() + ttl}
-    };
-    this->cache->std::set(key, entry);
-    return std::shared_ptr<Promise<void>>();
-}
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHEMANAGER_HPP_

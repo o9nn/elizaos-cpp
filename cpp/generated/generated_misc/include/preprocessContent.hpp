@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
-#include "core.h"
-#include "./types.h"
-#include "../data/tags.h"
-#include "path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PREPROCESSCONTENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PREPROCESSCONTENT_HPP_
 
-std::string preprocessFilePathContent(std::string content);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string preprocessTextContent(std::string content);
+namespace elizaos {
+namespace generated_misc {
 
-std::string preprocessCodeContent(std::string content);
+class Preprocesscontent {
+public:
+    Preprocesscontent() = default;
+    ~Preprocesscontent() = default;
 
-std::string preprocessLabelContent(std::string content);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "preprocessContent"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-MatchContent preprocessContent(MatchContent content);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PREPROCESSCONTENT_HPP_

@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
-#include "core.h"
-#include "zod.h"
-#include "./types.h"
-#include "@elizaos/core.h"
-using coreValidateUuid = validateUuid;
-using coreStringToUuid = stringToUuid;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_UUID_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_UUID_HPP_
 
-extern std::any uuidSchema;
-std::any validateUuid(std::any value);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename P0>
-std::shared_ptr<UUID> stringToUuid(P0 target);
+namespace elizaos {
+namespace generated_ui {
 
-template <typename P0>
-std::shared_ptr<UUID> stringToUuid(P0 target)
-{
-    return coreStringToUuid(target);
+class Uuid {
+public:
+    Uuid() = default;
+    ~Uuid() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "uuid"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_ui
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_UUID_HPP_

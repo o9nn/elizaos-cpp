@@ -1,24 +1,26 @@
 #include "sidebar.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void useSidebar() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto context = React.useContext(SidebarContext);
-        if (!context) {
-            throw std::runtime_error('useSidebar must be used within a SidebarProvider.');
-        }
-
-        return context;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Sidebar::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Sidebar::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Sidebar::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

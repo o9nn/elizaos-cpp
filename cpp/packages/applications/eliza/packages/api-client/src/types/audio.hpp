@@ -1,64 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AUDIO_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AUDIO_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Audio {
+public:
+    Audio() = default;
+    ~Audio() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "audio"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct SpeechConversationParams {
-    std::variant<std::vector<uint8_t>, std::string> audio;
-    std::optional<std::string> format;
-    std::optional<std::string> language;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct SpeechGenerateParams {
-    std::string text;
-    std::optional<std::string> voice;
-    std::optional<std::string> language;
-    std::optional<double> speed;
-    std::optional<double> pitch;
-};
-
-struct AudioSynthesizeParams {
-    UUID messageId;
-    std::optional<std::string> voice;
-    std::optional<std::string> format;
-};
-
-struct TranscribeParams {
-    std::variant<std::vector<uint8_t>, std::string> audio;
-    std::optional<std::string> format;
-    std::optional<std::string> language;
-};
-
-struct SpeechResponse {
-    std::optional<std::string> text;
-    std::optional<std::string> audio;
-    std::optional<double> duration;
-};
-
-struct TranscriptionResponse {
-    std::string text;
-    std::optional<std::string> language;
-    std::optional<double> confidence;
-    std::string word;
-    double start;
-    double end;
-    std::optional<double> confidence;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AUDIO_HPP_

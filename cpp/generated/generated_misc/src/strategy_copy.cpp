@@ -1,18 +1,26 @@
-#include "spartan/src/plugins/autonomous-trader/strategies/strategy_copy.h"
+#include "strategy_copy.hpp"
 
-void copyStrategy(std::shared_ptr<IAgentRuntime> runtime)
-{
-    auto service = std::async([=]() { acquireService(runtime, std::string("TRADER_STRATEGY"), std::string("copy trading strategy")); });
-    auto infoService = std::async([=]() { acquireService(runtime, std::string("TRADER_DATAPROVIDER"), std::string("copy trading info")); });
-    auto me = object{
-        object::pair{std::string("name"), std::string("Copy trading strategy")}
-    };
-    auto hndl = std::async([=]() { service["register_strategy"](me); });
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool StrategyCopy::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-void onWalletEvent(std::any runtime, std::any strategyService, std::any hndl)
-{
-};
+void StrategyCopy::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json StrategyCopy::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

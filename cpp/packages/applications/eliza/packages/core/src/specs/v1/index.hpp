@@ -1,46 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
-// this just imported dotenv, settings will handle wrapping this
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-* from './messages';
-//* from "./models";
-* from './posts';
-//* from "./providers";
-//* from "./relationships";
-* from './runtime';
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/*
-*/
-
-// Core types
-* from './types';
-
-// Adapters created for v1 -> v2 compatibility
-// Export only the adapter functions and V1 types to avoid conflicts
-
-// Existing exports
-* from './messages';
-* from './posts';
-* from './runtime';
-
-// TODO: Implement the remaining adapters:
-// - action/handler
-// - database
-// - knowledge / memory
-// - relationships
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_INDEX_HPP_

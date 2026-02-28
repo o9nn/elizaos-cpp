@@ -1,24 +1,26 @@
-#include "elizas-list/src/lib/rateLimit.h"
+#include "rateLimit.hpp"
 
-std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(std::string key, double limit, double window)
-{
-    auto current = std::async([=]() { rateLimitRedis->incr(key); });
-    if (current == 1) {
-        std::async([=]() { rateLimitRedis->expire(key, window); });
-    }
-    return current <= limit;
+namespace elizaos {
+namespace generated_misc {
+
+bool Ratelimit::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<double>> RateLimiter::getRemainingLimit(std::string key)
-{
-    auto current = std::async([=]() { rateLimitRedis->get(key); });
-    return 100 - (parseInt(OR((current), (std::string("0")))));
+void Ratelimit::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::any rateLimitRedis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
-
-void Main(void)
-{
+nlohmann::json Ratelimit::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-MAIN
+} // namespace generated_misc
+} // namespace elizaos

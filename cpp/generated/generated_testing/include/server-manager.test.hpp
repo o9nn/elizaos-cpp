@@ -1,14 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_TESTS_UNIT_UTILS_SERVER-MANAGER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_TESTS_UNIT_UTILS_SERVER-MANAGER_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "../../../src/commands/dev/utils/server-manager.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SERVER_MANAGER_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SERVER_MANAGER_TEST_HPP_
 
-extern object mockServerState;
-extern std::any mockStartServerProcess;
-extern std::any mockStopServerProcess;
-extern std::any mockRestartServerProcess;
-extern std::any mockIsServerRunning;
-extern std::any mockGetServerProcess;
-extern std::any mockExistsSync;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class ServerManagerTest {
+public:
+    ServerManagerTest() = default;
+    ~ServerManagerTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "server_manager_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SERVER_MANAGER_TEST_HPP_

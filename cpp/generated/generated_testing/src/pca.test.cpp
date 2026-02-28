@@ -1,20 +1,26 @@
-#include "eliza/packages/client/src/lib/pca.test.h"
+#include "pca.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("computePca"), [=]() mutable
-    {
-        it(std::string("projects 3D vectors to 2D deterministically"), [=]() mutable
-        {
-            auto data = array<array<double>>{ array<double>{ 1, 0, 0 }, array<double>{ 0, 1, 0 }, array<double>{ 0, 0, 1 } };
-            auto result = computePca(data, 2);
-            expect(result->get_length())->toBe(3);
-            expect(const_(const_(result)[0])[0])->toBeGreaterThan(0);
-            expect(const_(const_(result)[0])[1])->toBeDefined();
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool PcaTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void PcaTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PcaTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

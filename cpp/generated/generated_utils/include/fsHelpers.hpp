@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_FSHELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_FSHELPERS_H
-#include "core.h"
-#include "fs/promises.h"
-#include "path.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_FSHELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_FSHELPERS_HPP_
 
-void ensureDir(std::string dirPath);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void writeToFile(std::string filePath, std::string data);
+namespace elizaos {
+namespace generated_utils {
 
-std::any getRepoFilePath(std::string outputDir, std::string repoId, std::string dataType, std::string intervalType, std::string fileName);
+class Fshelpers {
+public:
+    Fshelpers() = default;
+    ~Fshelpers() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "fsHelpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_FSHELPERS_HPP_

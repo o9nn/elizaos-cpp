@@ -1,43 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-STARTER_SRC___TESTS___E2E_STARTER-PLUGIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-STARTER_SRC___TESTS___E2E_STARTER-PLUGIN_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTER_PLUGIN_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTER_PLUGIN_HPP_
 
-typedef  UUID;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestSuite;
-class Memory;
-class State;
+namespace elizaos {
+namespace generated_plugins {
 
-class TestSuite : public object, public std::enable_shared_from_this<TestSuite> {
+class StarterPlugin {
 public:
-    using std::enable_shared_from_this<TestSuite>::shared_from_this;
-    std::string name;
+    StarterPlugin() = default;
+    ~StarterPlugin() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "starter_plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<object> tests;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Memory : public object, public std::enable_shared_from_this<Memory> {
-public:
-    using std::enable_shared_from_this<Memory>::shared_from_this;
-    UUID entityId;
+} // namespace generated_plugins
+} // namespace elizaos
 
-    UUID roomId;
-
-    object content;
-};
-
-class State : public object, public std::enable_shared_from_this<State> {
-public:
-    using std::enable_shared_from_this<State>::shared_from_this;
-    Record<std::string, any> values;
-
-    Record<std::string, any> data;
-
-    std::string text;
-};
-
-extern std::shared_ptr<TestSuite> StarterPluginTestSuite;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTER_PLUGIN_HPP_

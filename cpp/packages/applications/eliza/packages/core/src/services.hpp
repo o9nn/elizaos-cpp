@@ -1,69 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SERVICES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SERVICES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Services {
+public:
+    Services() = default;
+    ~Services() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "services"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Service builder class that provides type-safe service creation
- * with automatic type inference
- */
-class ServiceBuilder<TService extends Service = Service> {
-  protected serviceType: ServiceTypeName | std::string;
-  protected startFn: (runtime: IAgentRuntime) => Promise<TService>;
-  protected stopFn?: () => Promise<void>;
-  protected description: std::string;
-
-  constructor(serviceType: ServiceTypeName | std::string) {
-    this.serviceType = serviceType;
-    this.description = '';
-  }
-
-  /**
-   * Set the service description
-   */
-
-  /**
-   * Set the start std::function for the service
-   */
-
-  /**
-   * Set the stop std::function for the service
-   */
-
-  /**
-   * Build the service class with all configured properties
-   */
-
-    // Create a dynamic class with the configured properties
-
-        return startFn(runtime);
-
-/**
- * Create a type-safe service builder
- * @param serviceType - The service type name
- * @returns A new ServiceBuilder instance
- */
-
-/**
- * Type-safe service definition helper
- */
-
-/**
- * Define a service with type safety
- */
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SERVICES_HPP_

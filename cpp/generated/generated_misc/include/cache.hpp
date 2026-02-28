@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_CACHE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_CACHE_H
-#include "core.h"
-#include "@/types.h"
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHE_HPP_
 
-extern std::any CACHE_FILE;
-extern double CACHE_DURATION;
-std::any getCachedData();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void setCachedData(array<std::shared_ptr<TokenHolding>> holdings);
+namespace elizaos {
+namespace generated_misc {
 
-boolean shouldRefreshCache();
+class Cache {
+public:
+    Cache() = default;
+    ~Cache() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cache"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CACHE_HPP_

@@ -1,40 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_CODEAREAHELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_CODEAREAHELPERS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEAREAHELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEAREAHELPERS_HPP_
 
-typedef std::any WorkItemType;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_utils {
 
-template <typename RET>
-RET categorizeWorkItem(std::string text);
+class Codeareahelpers {
+public:
+    Codeareahelpers() = default;
+    ~Codeareahelpers() = default;
 
-std::any extractAreaFromPath(std::string path);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "codeAreaHelpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-boolean isRootConfigFile(std::string path);
-
-std::shared_ptr<Map<std::string, double>> buildAreaMap(array<object> files);
-
-template <typename RET>
-RET categorizeWorkItem(std::string text)
-{
-    auto lowercaseText = text->toLowerCase();
-    if (OR((OR((lowercaseText->startsWith(std::string("feat"))), (lowercaseText->includes(std::string("feature"))))), (lowercaseText->includes(std::string("add "))))) {
-        return std::string("feature");
-    }
-    if (OR((OR((lowercaseText->startsWith(std::string("fix"))), (lowercaseText->includes(std::string("fix"))))), (lowercaseText->includes(std::string("bug"))))) {
-        return std::string("bugfix");
-    }
-    if (OR((lowercaseText->startsWith(std::string("docs"))), (lowercaseText->includes(std::string("document"))))) {
-        return std::string("docs");
-    }
-    if (OR((OR((OR((lowercaseText->startsWith(std::string("refactor"))), (lowercaseText->includes(std::string("refactor"))))), (lowercaseText->includes(std::string("clean"))))), (lowercaseText->includes(std::string("cleanup"))))) {
-        return std::string("refactor");
-    }
-    if (OR((lowercaseText->startsWith(std::string("test"))), (lowercaseText->includes(std::string("test"))))) {
-        return std::string("tests");
-    }
-    return std::string("other");
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_utils
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEAREAHELPERS_HPP_

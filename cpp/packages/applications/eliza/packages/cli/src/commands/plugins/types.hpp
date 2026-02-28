@@ -1,112 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
-/**
- * Plugin command options for different subcommands
- */
-struct ListPluginsOptions {
-    std::optional<bool> all;
-    std::optional<bool> v0;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct AddPluginOptions {
-    std::optional<bool> skipEnvPrompt;
-    std::optional<bool> skipVerification;
-    std::optional<std::string> branch;
-    std::optional<std::string> tag;
-};
-
-struct UpgradePluginOptions {
-    std::optional<std::string> apiKey;
-    std::optional<bool> skipTests;
-    std::optional<bool> skipValidation;
-};
-
-struct GeneratePluginOptions {
-    std::optional<std::string> apiKey;
-    std::optional<bool> skipTests;
-    std::optional<bool> skipValidation;
-    std::optional<bool> skipPrompts;
-    std::optional<std::string> specFile;
-};
-
-/**
- * Plugin registry interfaces
- */
-struct PluginRegistryInfo {
-    std::optional<{> git;
-    std::string repo;
-    std::optional<{> v0;
-    std::string version;
-    std::string branch;
-    std::optional<{> v1;
-    std::string version;
-    std::string branch;
-    std::optional<{> npm;
-    std::string repo;
-    std::optional<std::string> v0;
-    std::optional<std::string> v1;
-    { supports;
-    bool v0;
-    bool v1;
-};
-
-struct PluginRegistry {
-    std::unordered_map<std::string, PluginRegistryInfo> registry;
-};
-
-/**
- * Environment variable configuration
- */
-struct EnvVarConfig {
-    std::string type;
-    std::string description;
-    std::optional<bool> required;
-    std::optional<std::string> default;
-    std::optional<bool> sensitive;
-};
-
-/**
- * Plugin migration result
- */
-struct MigrationResult {
-    bool success;
-    std::optional<std::string> branchName;
-    std::optional<std::string> repoPath;
-    std::optional<Error> error;
-};
-
-/**
- * Plugin generation result
- */
-struct GenerationResult {
-    bool success;
-    std::optional<std::string> pluginName;
-    std::optional<std::string> pluginPath;
-    std::optional<Error> error;
-};
-
-/**
- * Directory information from detection
- */
-struct DirectoryInfo {
-    std::string type;
-    bool hasPackageJson;
-};
-
-/**
- * Package.json dependencies
- */
-using Dependencies = std::unordered_map<std::string, std::string>;
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_TYPES_HPP_

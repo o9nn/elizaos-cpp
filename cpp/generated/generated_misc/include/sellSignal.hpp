@@ -1,44 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_SELLSIGNAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_SELLSIGNAL_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../schemas.h"
-#include "../types.h"
-#include "../../degenTrader/types.h"
-#include "../../degenTrader/utils/wallet.h"
-#include "../../degenTrader/types.h"
-#include "../../degenTrader/types/trading.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELLSIGNAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELLSIGNAL_HPP_
 
-class ISellSignalOutput;
-class SellSignal;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::string rolePrompt;
-extern std::string template;
-class ISellSignalOutput : public object, public std::enable_shared_from_this<ISellSignalOutput> {
+namespace elizaos {
+namespace generated_misc {
+
+class Sellsignal {
 public:
-    using std::enable_shared_from_this<ISellSignalOutput>::shared_from_this;
-    std::string recommended_sell;
+    Sellsignal() = default;
+    ~Sellsignal() = default;
 
-    std::string recommend_sell_address;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "sellSignal"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double marketcap;
-
-    std::string reason;
-
-    std::string sell_amount;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class SellSignal : public object, public std::enable_shared_from_this<SellSignal> {
-public:
-    using std::enable_shared_from_this<SellSignal>::shared_from_this;
-    std::string apiKey;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::shared_ptr<IAgentRuntime> runtime;
-
-    SellSignal(std::shared_ptr<IAgentRuntime> runtime);
-    virtual std::shared_ptr<Promise<boolean>> generateSignal();
-    virtual std::any getBalance();
-};
-
-using _default = SellSignal;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELLSIGNAL_HPP_

@@ -1,37 +1,26 @@
-#include "eliza/packages/plugin-sql/src/pglite/adapter.h"
+#include "adapter.hpp"
 
-PgliteDatabaseAdapter::PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PGliteClientManager> manager) : BaseDrizzleAdapter(agentId) {
-    this->manager = manager;
-    this->db = drizzle(as<any>(this->manager->getConnection()));
+namespace elizaos {
+namespace generated_misc {
+
+bool Adapter::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<void>> PgliteDatabaseAdapter::runMigrations()
-{
-    logger->debug(std::string("PgliteDatabaseAdapter: Migrations are handled by the migration service"));
-    return std::shared_ptr<Promise<void>>();
+void Adapter::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::shared_ptr<Promise<void>> PgliteDatabaseAdapter::init()
-{
-    logger->debug(std::string("PGliteDatabaseAdapter initialized, skipping automatic migrations."));
-    return std::shared_ptr<Promise<void>>();
+nlohmann::json Adapter::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<Promise<boolean>> PgliteDatabaseAdapter::isReady()
-{
-    return !this->manager->isShuttingDown();
-}
-
-void PgliteDatabaseAdapter::close()
-{
-    std::async([=]() { this->manager->close(); });
-}
-
-std::any PgliteDatabaseAdapter::getConnection()
-{
-    return this->manager->getConnection();
-}
-
-PgliteDatabaseAdapter::PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId) : BaseDrizzleAdapter(agentId) {
-}
-
+} // namespace generated_misc
+} // namespace elizaos

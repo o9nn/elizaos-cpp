@@ -1,9 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_USER_GETUSERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_USER_GETUSERS_H
-#include "core.h"
-#include "next.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETUSERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETUSERS_HPP_
 
-extern array<object> mockUsers;
-std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Getusers {
+public:
+    Getusers() = default;
+    ~Getusers() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "getUsers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETUSERS_HPP_

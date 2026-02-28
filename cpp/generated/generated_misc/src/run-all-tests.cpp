@@ -1,22 +1,26 @@
-#include "eliza/packages/cli/src/commands/test/actions/run-all-tests.h"
+#include "run-all-tests.hpp"
 
-std::shared_ptr<Promise<void>> runAllTests(std::any testPath, std::shared_ptr<TestCommandOptions> options)
-{
-    auto projectInfo = getProjectType(testPath);
-    if (!options->skipBuild) {
-        auto componentResult = std::async([=]() { runComponentTests(testPath, options, projectInfo); });
-        if (componentResult->failed) {
-            logger->error(std::string("Component tests failed. Continuing to e2e tests..."));
-        }
-    }
-    auto e2eResult = std::async([=]() { runE2eTests(testPath, options, projectInfo); });
-    if (e2eResult->failed) {
-        logger->error(std::string("E2E tests failed."));
-        process->exit(1);
-    }
-    logger->success(std::string("All tests passed successfully!"));
-    process->exit(0);
-    return std::shared_ptr<Promise<void>>();
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool RunAllTests::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void RunAllTests::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json RunAllTests::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

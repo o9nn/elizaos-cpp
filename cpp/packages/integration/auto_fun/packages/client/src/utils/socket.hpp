@@ -1,71 +1,35 @@
-#include "env.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SOCKET_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SOCKET_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Socket {
+public:
+    Socket() = default;
+    ~Socket() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "socket"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Custom WebSocket wrapper to maintain Socket.io-like API
-class SocketWrapper {
-  private ws: WebSocket | null = null;
-  private eventHandlers: Record<std::string, Array<(data: unknown) => void>> = {};
-  // Queue for messages that need to be sent when connection is established
-  // Store the client ID received from the server
-
-    /**
-     * TODO: update as necessary once backend socket implementation is finalized
-     */
-
-    // Create a connection std::promise that will be resolved when the connection is open
-
-      // Reset reconnection state on successful connection
-
-      // Process std::any queued messages
-
-        // Handle server pings
-          // Respond immediately
-
-        // Listen for the clientId event specifically
-          // Process queue again in case messages were waiting for clientId
-          // Trigger other event handlers
-
-      // Don't attempt to reconnect if disconnect() was called
-
-      // Clear client ID on disconnect
-
-      // Attempt to reconnect unless this was a normal closure
-
-      // Calculate delay with exponential backoff, but cap at maxReconnectInterval
-
-    // Only process queue if connected AND we have a client ID
-        // Add clientId to the message before sending
-
-    // Always queue the message first
-
-      // If connected and have clientId, try processing queue immediately
-        // Waiting for clientId event
-      // Connection is in progress, wait for open and clientId
-          // Connection opened, clientId might arrive soon, queue is fine
-          // Error connecting, queue remains
-      // Socket is closed or closing, attempt reconnect (queue remains)
-
-    // Clear client ID on disconnect
-
-    // Clear std::any pending reconnection attempts
-
-// Create a type that matches the Socket.io Socket interface
-using Socket = SocketWrapper;
-
-    // Get apiUrl from environment and ensure it's defined
-    // Pass the guaranteed std::string to the constructor
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SOCKET_HPP_

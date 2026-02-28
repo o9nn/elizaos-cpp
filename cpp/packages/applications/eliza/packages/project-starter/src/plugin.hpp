@@ -1,73 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_PLUGIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_PLUGIN_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Plugin {
+public:
+    Plugin() = default;
+    ~Plugin() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Define the configuration schema for the plugin with the following properties:
- *
- * @param {string} EXAMPLE_PLUGIN_VARIABLE - The name of the plugin (min length of 1, std::optional)
- * @returns {object} - The configured schema object
- */
-
-/**
- * Example HelloWorld action
- * This demonstrates the simplest possible action structure
- */
-/**
- * Represents an action that responds with a simple hello world message.
- *
- * @typedef {Object} Action
- * @property {string} name - The name of the action
- * @property {std::string[]} similes - The related similes of the action
- * @property {string} description - Description of the action
- * @property {Function} validate - Validation std::function for the action
- * @property {Function} handler - The std::function that handles the action
- * @property {Object[]} examples - Array of examples for the action
- */
-
-    // Always valid
-
-      // Simple response content
-
-      // Call back with the hello world message
-      await callback(responseContent);
-
-/**
- * Example Hello World Provider
- * This demonstrates the simplest possible provider implementation
- */
-
-class StarterService extends Service {
-  static serviceType = 'starter';
-  capabilityDescription =
-    'This is a starter service which is attached to the agent through the starter plugin.';
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-    // get the service from the runtime
-
-  // Set lowest priority so real models take precedence
-
-      // Set all environment variables at once
-        // send a response
-        // print the keys
-        // print the keys
-        // print the keys
-        // print the keys
-
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_PLUGIN_HPP_

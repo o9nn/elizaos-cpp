@@ -1,127 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_API_SEARCH_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_API_SEARCH_H
-#include "core.h"
-#include "../shared.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_HPP_
 
-class TokenMarketSearchParams;
-class TokenMarketSearchResponse;
-class TokenResult;
-class MarketResult;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TokenMarketSearchParams : public object, public std::enable_shared_from_this<TokenMarketSearchParams> {
+namespace elizaos {
+namespace generated_misc {
+
+class Search {
 public:
-    using std::enable_shared_from_this<TokenMarketSearchParams>::shared_from_this;
-    std::any chain;
+    Search() = default;
+    ~Search() = default;
 
-    std::string keyword;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "search"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any target;
-
-    std::any sort_by;
-
-    std::any sort_type;
-
-    boolean verify_token;
-
-    std::string markets;
-
-    double offset;
-
-    double limit;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TokenMarketSearchResponse : public object, public std::enable_shared_from_this<TokenMarketSearchResponse> {
-public:
-    using std::enable_shared_from_this<TokenMarketSearchResponse>::shared_from_this;
-    boolean success;
+} // namespace generated_misc
+} // namespace elizaos
 
-    object data;
-};
-
-class TokenResult : public object, public std::enable_shared_from_this<TokenResult> {
-public:
-    using std::enable_shared_from_this<TokenResult>::shared_from_this;
-    std::string name;
-
-    std::string symbol;
-
-    std::string address;
-
-    std::string network;
-
-    double fdv;
-
-    double market_cap;
-
-    double liquidity;
-
-    double volume_24h_change_percent;
-
-    double price;
-
-    double price_change_24h_percent;
-
-    double buy_24h;
-
-    double buy_24h_change_percent;
-
-    double sell_24h;
-
-    double sell_24h_change_percent;
-
-    double trade_24h;
-
-    double trade_24h_change_percent;
-
-    double unique_wallet_24h;
-
-    double unique_view_24h_change_percent;
-
-    std::string last_trade_human_time;
-
-    double last_trade_unix_time;
-
-    std::string creation_time;
-
-    double volume_24h_usd;
-
-    std::string logo_uri;
-};
-
-class MarketResult : public object, public std::enable_shared_from_this<MarketResult> {
-public:
-    using std::enable_shared_from_this<MarketResult>::shared_from_this;
-    std::string name;
-
-    std::string address;
-
-    double liquidity;
-
-    std::string source;
-
-    double trade_24h;
-
-    double trade_24h_change_percent;
-
-    double unique_wallet_24h;
-
-    double unique_wallet_24h_change_percent;
-
-    std::string last_trade_human_time;
-
-    double last_trade_unix_time;
-
-    std::string base_mint;
-
-    std::string quote_mint;
-
-    double amount_base;
-
-    double amout_quote;
-
-    std::string creation_time;
-
-    double volume_24h_usd;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_HPP_

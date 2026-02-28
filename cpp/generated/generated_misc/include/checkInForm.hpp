@@ -1,67 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_FORMS_CHECKINFORM_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_FORMS_CHECKINFORM_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINFORM_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINFORM_HPP_
 
-class DiscordComponent;
-class DiscordActionRow;
-class DiscordTextInput;
-class DiscordSelectMenu;
-class DiscordButton;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DiscordComponent : public object, public std::enable_shared_from_this<DiscordComponent> {
+namespace elizaos {
+namespace generated_misc {
+
+class Checkinform {
 public:
-    using std::enable_shared_from_this<DiscordComponent>::shared_from_this;
-    double type;
+    Checkinform() = default;
+    ~Checkinform() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "checkInForm"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class DiscordActionRow : public DiscordComponent, public std::enable_shared_from_this<DiscordActionRow> {
-public:
-    using std::enable_shared_from_this<DiscordActionRow>::shared_from_this;
-    double type;
+} // namespace generated_misc
+} // namespace elizaos
 
-    array<std::shared_ptr<DiscordComponent>> components;
-};
-
-class DiscordTextInput : public DiscordComponent, public std::enable_shared_from_this<DiscordTextInput> {
-public:
-    using std::enable_shared_from_this<DiscordTextInput>::shared_from_this;
-    double type;
-
-    std::string custom_id;
-
-    std::string value;
-
-    double style;
-};
-
-class DiscordSelectMenu : public DiscordComponent, public std::enable_shared_from_this<DiscordSelectMenu> {
-public:
-    using std::enable_shared_from_this<DiscordSelectMenu>::shared_from_this;
-    double type;
-
-    std::string custom_id;
-
-    std::string placeholder;
-
-    array<object> options;
-
-    boolean required;
-};
-
-class DiscordButton : public DiscordComponent, public std::enable_shared_from_this<DiscordButton> {
-public:
-    using std::enable_shared_from_this<DiscordButton>::shared_from_this;
-    double type;
-
-    double style;
-
-    std::string custom_id;
-
-    std::string label;
-};
-
-std::shared_ptr<Promise<void>> sendCheckInReportForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = undefined, object serverInfo = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINFORM_HPP_

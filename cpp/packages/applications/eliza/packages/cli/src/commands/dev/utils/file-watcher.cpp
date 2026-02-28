@@ -1,42 +1,26 @@
 #include "file-watcher.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::vector<std::string> findTsFiles(const std::string& dir, const std::string& watchDir) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    std::vector<std::string> results = [];
-
-    try {
-        const auto entries = readdirSync(dir, { withFileTypes: true });
-
-        for (const auto& entry : entries)
-            const auto fullPath = path.join(dir, entry.name);
-            if (
-            entry.isDirectory() &&;
-            !entry.name.startsWith(".") &&;
-            entry.name != "node_modules" &&;
-            entry.name != "dist";
-            ) {
-                results = results.concat(findTsFiles(fullPath, watchDir));
-                } else if (;
-                entry.isFile() &&;
-                (entry.name.endsWith(".ts") ||;
-                entry.name.endsWith(".js") ||;
-                entry.name.endsWith(".tsx") ||;
-                entry.name.endsWith(".jsx"));
-                ) {
-                    results.push_back(path.relative(watchDir, fullPath));
-                }
-            }
-            } catch (error) {
-                // Ignore errors for directories we can't read
-            }
-
-            return results;
-
+bool FileWatcher::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void FileWatcher::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json FileWatcher::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

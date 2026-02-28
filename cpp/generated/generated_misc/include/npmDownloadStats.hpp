@@ -1,96 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_NPMDOWNLOADSTATS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_NPMDOWNLOADSTATS_H
-#include "core.h"
-#include "axios.h"
-using axios = _default;
-#include "xlsx.h"
-#include "chalk.h"
-using chalk = _default;
-#include "ora.h"
-using ora = _default;
-#include "fs-extra.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
-#include "dotenv.h"
-using dotenv = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_NPMDOWNLOADSTATS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_NPMDOWNLOADSTATS_HPP_
 
-class PackageInfo;
-class VersionDownloads;
-class PackageDownloads;
-class NpmDownloadStatsGenerator;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PackageInfo : public object, public std::enable_shared_from_this<PackageInfo> {
+namespace elizaos {
+namespace generated_misc {
+
+class Npmdownloadstats {
 public:
-    using std::enable_shared_from_this<PackageInfo>::shared_from_this;
-    std::string name;
+    Npmdownloadstats() = default;
+    ~Npmdownloadstats() = default;
 
-    array<string> versions;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "npmDownloadStats"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    std::string repository;
-
-    array<string> maintainers;
-
-    array<string> keywords;
-
-    std::string license;
-
-    std::string createdDate;
-
-    std::string modifiedDate;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class VersionDownloads : public object, public std::enable_shared_from_this<VersionDownloads> {
-public:
-    using std::enable_shared_from_this<VersionDownloads>::shared_from_this;
-    std::string packageName;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string version;
-
-    double downloads;
-
-    std::string downloadsPeriod;
-};
-
-class PackageDownloads : public object, public std::enable_shared_from_this<PackageDownloads> {
-public:
-    using std::enable_shared_from_this<PackageDownloads>::shared_from_this;
-    std::string packageName;
-
-    double totalDownloads;
-
-    std::string downloadsPeriod;
-
-    double weeklyDownloads;
-
-    double monthlyDownloads;
-
-    double yearlyDownloads;
-};
-
-class NpmDownloadStatsGenerator : public object, public std::enable_shared_from_this<NpmDownloadStatsGenerator> {
-public:
-    using std::enable_shared_from_this<NpmDownloadStatsGenerator>::shared_from_this;
-    std::string NPM_REGISTRY_URL = std::string("https://registry.npmjs.org");
-
-    std::string NPM_DOWNLOADS_URL = std::string("https://api.npmjs.org/downloads");
-
-    std::string OUTPUT_DIR = std::string("./assets");
-
-    std::string OUTPUT_FILE = std::string("elizaos-npm-download-stats.xlsx");
-
-    virtual std::shared_ptr<Promise<void>> main();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PackageInfo>>>> fetchOrganizationPackages();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PackageDownloads>>>> fetchPackageDownloads(array<std::shared_ptr<PackageInfo>> packages);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<VersionDownloads>>>> fetchVersionDownloads(array<std::shared_ptr<PackageInfo>> packages);
-    virtual std::shared_ptr<Promise<object>> getDownloadStats(std::string packageName, std::string period);
-    virtual std::shared_ptr<Promise<void>> generateExcelReport(array<std::shared_ptr<PackageInfo>> packages, array<std::shared_ptr<PackageDownloads>> packageDownloads, array<std::shared_ptr<VersionDownloads>> versionDownloads);
-    virtual void printSummary(array<std::shared_ptr<PackageInfo>> packages, array<std::shared_ptr<PackageDownloads>> packageDownloads);
-    virtual std::shared_ptr<Promise<void>> delay(double ms);
-};
-
-std::shared_ptr<Promise<void>> main();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_NPMDOWNLOADSTATS_HPP_

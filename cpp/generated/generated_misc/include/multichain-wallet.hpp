@@ -1,34 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-RELAY_SRC_UTILS_MULTICHAIN-WALLET_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-RELAY_SRC_UTILS_MULTICHAIN-WALLET_H
-#include "core.h"
-#include "viem.h"
-#include "viem/chains.h"
-#include "viem/accounts.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MULTICHAIN_WALLET_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MULTICHAIN_WALLET_HPP_
 
-class MultiChainWallet;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern Record<double, std::shared_ptr<Chain>> CHAIN_MAP;
-extern Record<double, string> DEFAULT_RPC_URLS;
-class MultiChainWallet : public object, public std::enable_shared_from_this<MultiChainWallet> {
+namespace elizaos {
+namespace generated_misc {
+
+class MultichainWallet {
 public:
-    using std::enable_shared_from_this<MultiChainWallet>::shared_from_this;
-    std::shared_ptr<Account> account;
+    MultichainWallet() = default;
+    ~MultichainWallet() = default;
 
-    double currentChainId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "multichain_wallet"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Map<double, std::shared_ptr<WalletClient>>> walletClients = std::make_shared<Map>();
-
-    std::string defaultRpcUrl;
-
-    MultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl = undefined, double initialChainId = base->id);
-    virtual std::shared_ptr<WalletClient> getWalletClient(double chainId);
-    virtual std::shared_ptr<Promise<double>> getChainId();
-    virtual std::shared_ptr<Promise<void>> switchChain(double chainId);
-    virtual std::shared_ptr<Promise<string>> address();
-    virtual std::shared_ptr<WalletClient> getCurrentWalletClient();
-    virtual std::shared_ptr<Account> getAccount();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<MultiChainWallet> createMultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl = undefined);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MULTICHAIN_WALLET_HPP_

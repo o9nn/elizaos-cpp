@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_MONITORING_METRICS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_MONITORING_METRICS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_METRICS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_METRICS_HPP_
 
-class MetricsService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class MetricsService : public object, public std::enable_shared_from_this<MetricsService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Metrics {
 public:
-    using std::enable_shared_from_this<MetricsService>::shared_from_this;
-    static Record<std::string, double> metrics;
+    Metrics() = default;
+    ~Metrics() = default;
 
-    static void recordApiLatency(std::string path, double latency);
-    static void recordProjectView(std::string projectId, std::string userId = undefined);
-    static std::any getMetrics();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "metrics"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_METRICS_HPP_

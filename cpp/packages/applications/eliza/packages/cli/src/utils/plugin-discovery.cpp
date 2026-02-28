@@ -1,31 +1,26 @@
 #include "plugin-discovery.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<std::optional<CachedRegistry>> fetchPluginRegistry() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        try {
-            const auto resp = fetch(;
-            "https://raw.githubusercontent.com/elizaos-plugins/registry/refs/heads/main/generated-registry.json"
-            );
-            if (!resp.ok) {
-                std::cerr << "Failed to fetch plugin registry: " + resp.statusText << std::endl;
-                throw std::runtime_error(`Failed to fetch registry: ${resp.statusText}`);
-            }
-            const auto raw = resp.json();
-            return raw;
-            } catch {
-                return nullptr;
-            }
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool PluginDiscovery::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void PluginDiscovery::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PluginDiscovery::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

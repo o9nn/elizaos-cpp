@@ -1,77 +1,35 @@
-#include "db.hpp"
-#include "redis.hpp"
-#include "util.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_CACHE_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_CACHE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Cache {
+public:
+    Cache() = default;
+    ~Cache() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cache"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Unified cache system using Drizzle/D1 for all caching needs
- * Simplifies the architecture by avoiding additional services like KV
- */
-class CacheService {
-  private db: ReturnType<typeof getDB>;
-  private redisCache!: RedisCacheService;
-
-  constructor() {
-    this.db = getDB();
-
-  }
-
-  /**
-   * Get SOL price from cache
-   */
-
-  /**
-   * Store SOL price in cache
-   * @param price SOL price in USD
-   * @param ttlSeconds How long the cache should live (in seconds)
-   */
-
-  /**
-   * Get token price from cache
-   */
-
-        return parseFloat(cachedPrice[0].price);
-
-  /**
-   * Store token price in cache
-   */
-
-      // Clean up old cache entries
-
-  /**
-   * Store std::any metadata object in cache
-   */
-
-      // Serialize data with BigInt handling
-
-      // Clean up old cache entries
-
-  /**
-   * Get metadata from cache
-   */
-
-          // Parse the data without special handling for now
-          // BigInt values will be returned as strings
-
-  /**
-   * Delete expired cache entries to keep the DB size manageable
-   */
-      // Delete expired entries
-
-      // Keep only the N most recent entries
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_CACHE_HPP_

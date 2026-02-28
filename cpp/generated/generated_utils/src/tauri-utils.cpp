@@ -1,58 +1,26 @@
-#include "classified/packages/game/src/types/tauri-utils.h"
+#include "tauri-utils.hpp"
 
-array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(std::any response)
-{
-    if (OR((!response), (type_of(response) != std::string("object")))) {
-        return array<any>();
-    }
-    if (Array->isArray(response)) {
-        return as<array<std::shared_ptr<MemoryEntry>>>(response);
-    }
-    auto responseObj = as<std::shared_ptr<TauriMemoryResponse>>(response);
-    if (Array->isArray(responseObj->memories)) {
-        return responseObj->memories;
-    }
-    if (AND((responseObj->data), (Array->isArray(responseObj->data["memories"])))) {
-        return responseObj->data["memories"];
-    }
-    if (AND((responseObj->data), (Array->isArray(responseObj->data)))) {
-        return as<array<std::shared_ptr<MemoryEntry>>>(responseObj->data);
-    }
-    return array<any>();
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool TauriUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-array<std::shared_ptr<LogEntry>> extractLogsFromResponse(std::any response)
-{
-    if (OR((!response), (type_of(response) != std::string("object")))) {
-        return array<any>();
-    }
-    auto responseObj = as<std::shared_ptr<TauriMemoryResponse>>(response);
-    if (AND((AND((responseObj->success), (responseObj->data))), (Array->isArray(responseObj->data["logs"])))) {
-        return responseObj->data["logs"];
-    }
-    return array<any>();
-};
+void TauriUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json TauriUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::any isSuccessfulTauriResponse(std::any response)
-{
-    return (AND((AND((AND((response != nullptr), (type_of(response) == std::string("object")))), (in(std::string("success"), response)))), ((as<std::shared_ptr<TauriMemoryResponse>>(response))->success == true)));
-};
-
-
-array<Record<std::string, any>> convertToRecordArray(array<any> data)
-{
-    return data->std::map([=](auto item) mutable
-    {
-        if (AND((type_of(item) == std::string("object")), (item != nullptr))) {
-            return as<Record<std::string, any>>(item);
-        }
-        return object{
-            object::pair{std::string("value"), item}
-        };
-    }
-    );
-};
-
-
+} // namespace generated_utils
+} // namespace elizaos

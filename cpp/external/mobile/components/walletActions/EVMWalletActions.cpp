@@ -1,76 +1,26 @@
 #include "EVMWalletActions.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace mobile {
 
-void EVMWalletActions() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto [result, setResult] = useState<std::string | nullptr>(nullptr);
-    const auto { wallets } = useEmbeddedEthereumWallet();
-    const auto wallet = wallets.[0];
-
-    const auto signMessage = std::async () => {;
-        const auto provider = wallet.getProvider.();
-        if (!provider) return;
-
-        const auto message = "Hello World";
-        const auto signature = provider.request({;
-            method: "personal_sign",
-            params: [message, wallet.address],
-            });
-            setResult(signature);
-            };
-            const auto signTransaction = std::async () => {;
-                const auto provider = wallet.getProvider.();
-                if (!provider) return;
-
-                // Sign transaction (will be signed and populated)
-                try {
-                    const auto { signature } = provider.request({;
-                        method: "eth_signTransaction",
-                        params: [
-                        {
-                            from: wallet.address,
-                            to: "0x0000000000000000000000000000000000000000",
-                            value: "1",
-                            },
-                            ],
-                            });
-                            setResult(signature);
-                            } catch (error) {
-                                setResult(/* JSON.stringify */ std::string(error));
-                            }
-                            };
-                            const auto signAndSendTransaction = std::async () => {;
-                                const auto provider = wallet.getProvider.();
-                                if (!provider) return;
-                                const auto response = provider.request({;
-                                    method: "eth_sendTransaction",
-                                    params: [
-                                    {
-                                        from: wallet.address,
-                                        to: "0x0000000000000000000000000000000000000000",
-                                        value: "1",
-                                        },
-                                        ],
-                                        });
-                                        setResult(/* JSON.stringify */ std::string(response));
-                                        };
-                                        return (;
-                                        <View>;
-                                        <Text>EVM Wallet Actions</Text>;
-                                        <Button title="Sign Message" onPress={signMessage} />;
-                                        <Button title="Sign Transaction" onPress={signTransaction} />;
-                                        <Button;
-                                        title="Sign And Send Transaction";
-                                    onPress={signAndSendTransaction}
-                                    />;
-                                {result && <Text>{result}</Text>}
-                                </View>;
-                                );
-
+bool Evmwalletactions::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Evmwalletactions::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Evmwalletactions::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace mobile
 } // namespace elizaos

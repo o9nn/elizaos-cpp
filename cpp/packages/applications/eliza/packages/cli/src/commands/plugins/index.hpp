@@ -1,49 +1,35 @@
-#include "actions/generate.hpp"
-#include "actions/install.hpp"
-#include "actions/list.hpp"
-#include "actions/remove.hpp"
-#include "actions/upgrade.hpp"
-#include "types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Import actions
-
-// Import types
-
-    // Show help automatically if no subcommand is specified
-
-      await listAvailablePlugins(opts);
-
-      await addPlugin(pluginArg, opts);
-
-      await listInstalledPlugins();
-
-      await removePlugin(plugin);
-
-    await upgradePlugin(pluginPath, opts);
-
-    await generatePlugin(opts);
-
-// Re-for backward compatibility
-* from './actions/install';
-* from './actions/remove';
-* from './actions/list';
-* from './actions/upgrade';
-* from './actions/generate';
-* from './types';
-* from './utils/naming';
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_INDEX_HPP_

@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ANXIETY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ANXIETY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Anxiety {
+public:
+    Anxiety() = default;
+    ~Anxiety() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "anxiety"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Represents an anxiety provider that provides examples and guidance for an AI roleplaying as a character.
- * The anxiety provider offers suggestions on how to reduce verbosity and eagerness in responses based on the channel type.
- * Randomly selects and returns three anxiety examples for the AI to follow.
- *
- * @type {Provider}
- */
-/**
- * Function that provides anxiety-related guidance for the AI based on the channel type.
- * @param {IAgentRuntime} _runtime - The runtime environment for the AI agent
- * @param {Memory} message - The message containing information about the channel type
- * @returns {Object} - Object containing randomized anxiety examples, anxiety text, and formatted data
- */
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    // randomize the examples and choose 3
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ANXIETY_HPP_

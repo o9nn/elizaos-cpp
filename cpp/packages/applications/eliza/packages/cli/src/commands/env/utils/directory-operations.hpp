@@ -1,30 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_DIRECTORY_OPERATIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_DIRECTORY_OPERATIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class DirectoryOperations {
+public:
+    DirectoryOperations() = default;
+    ~DirectoryOperations() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "directory_operations"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Delete a directory with error handling
- * @param dir Directory path to delete
- * @param actions Action log collection to update
- * @param label Description label for this operation
- * @returns Success or failure
- */
-std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_DIRECTORY_OPERATIONS_HPP_

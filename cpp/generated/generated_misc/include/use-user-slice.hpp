@@ -1,15 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_USER_USE-USER-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_USER_USE-USER-SLICE_H
-#include "core.h"
-#include "../../app/store.h"
-#include "./user-slice.h"
-using setIsLoadingAction = setIsLoading;
-using setTokenAction = setToken;
-using setCurrentUserAction = setCurrentUser;
-using getUserDataAction = getUserData;
-using getUserDataManaullyAction = getUserDataManaully;
-#include "../../app/hooks.h"
-#include "../../classes/user.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_USER_SLICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_USER_SLICE_HPP_
 
-extern std::function<object()> useUserSlice;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class UseUserSlice {
+public:
+    UseUserSlice() = default;
+    ~UseUserSlice() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_user_slice"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_USER_SLICE_HPP_

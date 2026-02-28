@@ -1,102 +1,26 @@
-#include "SWEagent/src/environment/hooks/abstract.h"
+#include "abstract.hpp"
 
-void EnvHook::onInit(std::shared_ptr<EnvironmentInstance> _env)
-{
+namespace elizaos {
+namespace generated_misc {
+
+bool Abstract::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void EnvHook::onStartDeployment()
-{
+void Abstract::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void EnvHook::onInstallEnvStarted()
-{
+nlohmann::json Abstract::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void EnvHook::onClose()
-{
-}
-
-void EnvHook::onEnvironmentStartup()
-{
-}
-
-void CombinedEnvHooks::addHook(std::shared_ptr<EnvHook> hook)
-{
-    this->hooks->push(hook);
-}
-
-void CombinedEnvHooks::onInit(std::shared_ptr<EnvironmentInstance> env)
-{
-    for (auto& hook : this->hooks)
-    {
-        try
-        {
-            hook->onInit(env);
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Hook error in onInit:"), error);
-        }
-    }
-}
-
-void CombinedEnvHooks::onStartDeployment()
-{
-    for (auto& hook : this->hooks)
-    {
-        try
-        {
-            hook->onStartDeployment();
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Hook error in onStartDeployment:"), error);
-        }
-    }
-}
-
-void CombinedEnvHooks::onInstallEnvStarted()
-{
-    for (auto& hook : this->hooks)
-    {
-        try
-        {
-            hook->onInstallEnvStarted();
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Hook error in onInstallEnvStarted:"), error);
-        }
-    }
-}
-
-void CombinedEnvHooks::onClose()
-{
-    for (auto& hook : this->hooks)
-    {
-        try
-        {
-            hook->onClose();
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Hook error in onClose:"), error);
-        }
-    }
-}
-
-void CombinedEnvHooks::onEnvironmentStartup()
-{
-    for (auto& hook : this->hooks)
-    {
-        try
-        {
-            hook->onEnvironmentStartup();
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Hook error in onEnvironmentStartup:"), error);
-        }
-    }
-}
-
+} // namespace generated_misc
+} // namespace elizaos

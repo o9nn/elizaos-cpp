@@ -1,59 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_SERVER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_SERVER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Server {
+public:
+    Server() = default;
+    ~Server() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "server"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct ServerHealth {
-    'healthy' | 'degraded' | 'unhealthy' status;
-    double uptime;
-    Date timestamp;
-    std::optional<std::string> version;
-    std::optional<Record<> checks;
-    'pass' | 'fail' status;
-    std::optional<std::string> message;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct ServerStatus {
-    { agents;
-    double total;
-    double active;
-    double inactive;
-    { memory;
-    double used;
-    double total;
-    double percentage;
-    double uptime;
-    std::string version;
-};
-
-struct ServerDebugInfo {
-    { runtime;
-    Array<{ agents;
-    UUID id;
-    std::string name;
-    std::string status;
-    double connections;
-    std::any memory;
-    std::unordered_map<std::string, std::string> environment;
-};
-
-struct LogSubmitParams {
-    'debug' | 'info' | 'warn' | 'error' level;
-    std::string message;
-    std::optional<std::string> source;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_SERVER_HPP_

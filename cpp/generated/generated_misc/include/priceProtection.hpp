@@ -1,38 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_PRICEPROTECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_PRICEPROTECTION_H
-#include "core.h"
-#include "./database.h"
-#include "@/config/chains.h"
-#include "./marketDataService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICEPROTECTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICEPROTECTION_HPP_
 
-class ValidationResult;
-class PriceProtectionService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ValidationResult : public object, public std::enable_shared_from_this<ValidationResult> {
+namespace elizaos {
+namespace generated_misc {
+
+class Priceprotection {
 public:
-    using std::enable_shared_from_this<ValidationResult>::shared_from_this;
-    boolean isValid;
+    Priceprotection() = default;
+    ~Priceprotection() = default;
 
-    double currentPrice;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "priceProtection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double priceAtQuote;
-
-    double deviation;
-
-    double deviationBps;
-
-    double maxAllowedDeviationBps;
-
-    std::string reason;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class PriceProtectionService : public object, public std::enable_shared_from_this<PriceProtectionService> {
-public:
-    using std::enable_shared_from_this<PriceProtectionService>::shared_from_this;
-    std::shared_ptr<MarketDataService> marketDataService;
+} // namespace generated_misc
+} // namespace elizaos
 
-    PriceProtectionService();
-    virtual std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateQuotePrice(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain, double priceAtQuote, double maxDeviationBps);
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICEPROTECTION_HPP_

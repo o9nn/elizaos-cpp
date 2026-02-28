@@ -1,15 +1,26 @@
-#include "elizas-world/src/lib/posthog.h"
+#include "posthog.hpp"
 
-void Main(void)
-{
-    std::string("use client");
-    if (type_of(window) != std::string("undefined")) {
-        posthog->init(OR((process->env->NEXT_PUBLIC_POSTHOG_KEY), (std::string("phc_BrBxTeQxtL24ebiwkSKxLL93wvoCJ5ayJ7Q5PbeJQdp"))), object{
-            object::pair{std::string("api_host"), OR((process->env->NEXT_PUBLIC_POSTHOG_HOST), (std::string("https://us.i.posthog.com")))}, 
-            object::pair{std::string("capture_pageview"), false}, 
-            object::pair{std::string("persistence"), std::string("memory")}
-        });
-    }
+namespace elizaos {
+namespace generated_misc {
+
+bool Posthog::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Posthog::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Posthog::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,65 +1,26 @@
-#include "otaku/src/plugins/plugin-bootstrap/src/templates/reflection.h"
+#include "reflection.hpp"
 
-std::string reflectionTemplate = std::string("# Task: Generate Agent Reflection, Extract Facts and Relationships\
-\
-{{providers}}\
-\
-# Examples:\
-{{evaluationExamples}}\
-\
-# Entities in Room\
-{{entitiesInRoom}}\
-\
-# Existing Relationships\
-{{existingRelationships}}\
-\
-# Current Context:\
-Agent Name: {{agentName}}\
-Room Type: {{roomType}}\
-Message Sender: {{senderName}} (ID: {{senderId}})\
-\
-{{recentMessages}}\
-\
-# Known Facts:\
-{{knownFacts}}\
-\
-# Instructions:\
-1. Generate a self-reflective thought on the conversation about your performance and interaction quality.\
-2. Extract new facts from the conversation.\
-3. Identify and describe relationships between entities.\
-  - The sourceEntityId is the UUID of the entity initiating the interaction.\
-  - The targetEntityId is the UUID of the entity being interacted with.\
-  - Relationships are one-direction, so a friendship would be two entity relationships where each entity is both the source and the target of the other.\
-\
-Do NOT include std::any thinking, reasoning, or <think> sections in your response. \
-Go directly to the XML response format without std::any preamble or explanation.\
-\
-Generate a response in the following format:\
-<response>\
-  <thought>a self-reflective thought on the conversation</thought>\
-  <facts>\
-    <fact>\
-      <claim>factual statement</claim>\
-      <type>fact|opinion|status</type>\
-      <in_bio>false</in_bio>\
-      <already_known>false</already_known>\
-    </fact>\
-    <!-- Add more facts as needed -->\
-  </facts>\
-  <relationships>\
-    <relationship>\
-      <sourceEntityId>entity_initiating_interaction</sourceEntityId>\
-      <targetEntityId>entity_being_interacted_with</targetEntityId>\
-      <tags>group_interaction,voice_interaction,dm_interaction,additional_tag1,additional_tag2</tags>\
-    </relationship>\
-    <!-- Add more relationships as needed -->\
-  </relationships>\
-</response>\
-\
-IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include std::any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Reflection::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Reflection::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Reflection::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_ACCEPTAUTHORITY_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_ACCEPTAUTHORITY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_program {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Acceptauthority {
+public:
+    Acceptauthority() = default;
+    ~Acceptauthority() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "acceptAuthority"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // IMPORTANT: Set up the Anchor provider.
-  // This MUST be configured with the keypair of the PENDING authority.
-
-  // Instantiate the program using the IDL and programId.
-
-  // Derive the PDA for the "config" account.
-
-  // Define accounts for the accept_authority instruction
-
-  // Send the accept_authority transaction.
-    // Fetch the current config state to check pending authority *before* sending
-
-      // No need for .signers() explicitly here as AnchorProvider handles the wallet signer
-
-    // Verify the change
-
-    // Potentially log more details if available
+} // namespace autofun_program
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_ACCEPTAUTHORITY_HPP_

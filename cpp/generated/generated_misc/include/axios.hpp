@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_AXIOS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_AXIOS_H
-#include "core.h"
-#include "axios.h"
-using axios = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AXIOS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AXIOS_HPP_
 
-extern std::string baseURL;
-extern std::any axiosInstance;
-extern std::function<std::any(std::any, object)> get;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Axios {
+public:
+    Axios() = default;
+    ~Axios() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "axios"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AXIOS_HPP_

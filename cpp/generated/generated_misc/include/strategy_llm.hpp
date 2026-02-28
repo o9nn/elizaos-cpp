@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTONOMOUS-TRADER_STRATEGIES_STRATEGY_LLM_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTONOMOUS-TRADER_STRATEGIES_STRATEGY_LLM_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../utils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STRATEGY_LLM_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STRATEGY_LLM_HPP_
 
-extern std::string buyTemplate;
-void llmStrategy(std::shared_ptr<IAgentRuntime> runtime);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void generateBuySignal(std::any runtime, std::any strategyService, std::any hndl);
+namespace elizaos {
+namespace generated_misc {
 
-void onPriceDelta();
+class StrategyLlm {
+public:
+    StrategyLlm() = default;
+    ~StrategyLlm() = default;
 
-void onSentimentDelta();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "strategy_llm"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-void onVol24hDelta();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-void onLiquidDelta();
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STRATEGY_LLM_HPP_

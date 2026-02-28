@@ -1,110 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_AGENTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_AGENTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "agents/twitter/twitterAgent.hpp"
-#include "db.hpp"
-#include "logger.hpp"
-#include "uploader.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Agents {
+public:
+    Agents() = default;
+    ~Agents() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agents"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// 
-
-// Define the router with environment typing
-
-    // ** ADD Log: Check the agents data before sending **
-
-    // Return in the format expected by the frontend { agents: [...] }
-
-    // Require authentication
-
-    // Basic UUID check (simplified)
-
-    // Find the agent to check ownership
-
-    // Check if the authenticated user is the owner of this agent link
-
-    // Delete the agent
-
-      // This might happen if the agent was deleted between the select and delete calls
-
-    // TODO: Emit WebSocket event for agent removal?
-
-    // Require authentication
-
-    // Step 1: Attempt to fetch Twitter user info
-
-      // Try to fetch user profile - ADD description to fields
-
-          // Extract description
-
-    // Step 2: Upload profile image if a valid URL was fetched
-                // Use twitterUserId which should be unique
-
-                // Use uploadWithS3 (which uses S3)
-
-    // Step 3: Check if this Twitter user is already connected to this token
-
-    // *** NEW: Check if Twitter user is connected to ANY OTHER token ***
-            // Optionally select ticker from joined tokens table for the error message
-
-    // *** END NEW CHECK ***
-
-    // Step 4: Check if the owner is the token creator to mark as official
-
-    // Process Token Data Response - Check the result structure now
-
-    // *** Logs removed for brevity, check based on tokenData ***
-
-    // Step 5: Create new agent
-
-    // *** ADD LOG: Log data before insert ***
-
-    // *** ADD LOG: Log raw insert result ***
-
-      // *** ADD LOG: Log specific insert failure condition ***
-
-    // TODO: Emit WebSocket event for new agent?
-
-    // Step 6: Initialize the Twitter Agent class (Commented out)
-    /*
-      // Example: Start monitoring or perform initial setup
-    */
-
-// GET /agents/:id - Fetch specific agent details
-// PUT /agents/:id - Update agent settings (e.g., status)
-// DELETE /agents/:id - Remove an agent link
-
-// Example PUT route structure (needs logic for auth, validation, cleanup)
-    // ... (Authentication & Authorization logic as before) ...
-    // ... (Fetch agent & check ownership) ...
-    // ... (Parse body for allowed update fields like status) ...
-    // ... (Update DB) ...
-    // ... (Perform actions based on update, e.g., stop/start monitoring - commented out) ...
-    /*
-    */
-
-// Example DELETE route structure (needs logic for auth, validation, cleanup)
-    // ... (Authentication & Authorization logic as before) ...
-    // ... (Fetch agent & check ownership) ...
-    // ... (Perform cleanup actions - commented out) ...
-     /*
-        // Need full agent data to instantiate class
-        // Decide whether to proceed with deletion despite cleanup error
-    */
-    // ... (Delete from DB) ...
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_AGENTS_HPP_

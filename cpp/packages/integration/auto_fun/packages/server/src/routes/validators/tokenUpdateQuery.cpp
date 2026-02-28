@@ -1,12 +1,26 @@
 #include "tokenUpdateQuery.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-void parseUpdateTokenRequest(const std::any& raw) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    mint: std::string; body: UpdateTokenBody; userId: std::string
+bool Tokenupdatequery::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Tokenupdatequery::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Tokenupdatequery::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_server
 } // namespace elizaos

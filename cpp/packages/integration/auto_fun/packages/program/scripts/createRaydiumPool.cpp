@@ -1,16 +1,26 @@
 #include "createRaydiumPool.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_program {
 
-std::future<void> main() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Setup provider
-    const auto provider = anchor.AnchorProvider.env();
-    anchor.setProvider(provider);
-
+bool Createraydiumpool::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Createraydiumpool::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Createraydiumpool::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_program
 } // namespace elizaos

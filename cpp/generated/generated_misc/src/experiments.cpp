@@ -1,64 +1,26 @@
-#include "elizas-list/src/lib/ab-testing/experiments.h"
+#include "experiments.hpp"
 
-std::shared_ptr<Promise<string>> ABTestingService::assignVariant(std::string experimentId, std::string userId)
-{
-    auto experiment = std::async([=]() { ABTestingService::getExperiment(experimentId); });
-    if (!experiment) throw std::any(std::make_shared<Error>(std::string("Experiment not found")));
-    auto existingVariant = std::async([=]() { redis->get(std::string("ab:") + experimentId + std::string(":") + userId + string_empty); });
-    if (existingVariant) return existingVariant;
-    auto std::variant = ABTestingService::selectVariant(experiment->variants);
-    std::async([=]() { redis->std::set(std::string("ab:") + experimentId + std::string(":") + userId + string_empty, variant->id); });
-    std::async([=]() { ABTestingService::trackAssignment(experimentId, userId, variant->id); });
-    return variant->id;
+namespace elizaos {
+namespace generated_misc {
+
+bool Experiments::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void ABTestingService::trackConversion(std::string experimentId, std::string userId, std::string conversionType, double value)
-{
-    auto variantId = std::async([=]() { redis->get(std::string("ab:") + experimentId + std::string(":") + userId + string_empty); });
-    if (!variantId) return std::shared_ptr<Promise<void>>();
-    std::async([=]() { Promise->all(std::tuple<std::any, any>{ redis->hincrby(std::string("ab:conversions:") + experimentId + std::string(":") + variantId + string_empty, conversionType, 1), AND((value), (redis->hincrbyfloat(std::string("ab:values:") + experimentId + std::string(":") + variantId + string_empty, conversionType, value))) }); });
+void Experiments::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::any ABTestingService::getResults(std::string experimentId)
-{
-    auto experiment = std::async([=]() { ABTestingService::getExperiment(experimentId); });
-    if (!experiment) throw std::any(std::make_shared<Error>(std::string("Experiment not found")));
-    auto results = std::async([=]() { Promise->all(experiment->variants->std::map([=](auto std::variant) mutable
-    {
-        auto [assignments, conversions, values] = std::async([=]() { Promise->all(std::tuple<std::any, std::any, any>{ redis->get(std::string("ab:assignments:") + experimentId + std::string(":") + std::variant["id"] + string_empty), redis->hgetall(std::string("ab:conversions:") + experimentId + std::string(":") + std::variant["id"] + string_empty), redis->hgetall(std::string("ab:values:") + experimentId + std::string(":") + std::variant["id"] + string_empty) }); });
-        return object{
-            object::pair{std::string("variantId"), std::variant["id"]}, 
-            object::pair{std::string("assignments"), parseInt(OR((assignments), (std::string("0"))))}, 
-            object::pair{std::string("conversions"), std::string("conversions")}, 
-            object::pair{std::string("values"), std::string("values")}
-        };
-    }
-    )); });
-    return ABTestingService::calculateStatistics(results);
+nlohmann::json Experiments::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::any ABTestingService::calculateStatistics(array<any> results)
-{
-    return results->std::map([=](auto result) mutable
-    {
-        return (utils::assign(object{
-            , 
-            object::pair{std::string("statistics"), object{
-                object::pair{std::string("conversionRate"), result["conversions"] / result["assignments"]}, 
-                object::pair{std::string("confidenceInterval"), this::calculateConfidenceInterval(result["conversions"], result["assignments"])}, 
-                object::pair{std::string("pValue"), this::calculatePValue(results, result)}
-            }}
-        }, result));
-    }
-    );
-}
-
-std::any redis = std::make_shared<Redis>(object{
-    object::pair{std::string("url"), process->env->REDIS_URL}
-});
-
-void Main(void)
-{
-}
-
-MAIN
+} // namespace generated_misc
+} // namespace elizaos

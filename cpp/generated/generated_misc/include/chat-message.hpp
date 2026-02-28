@@ -1,48 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_CHAT-MESSAGE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_CHAT-MESSAGE_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_MESSAGE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_MESSAGE_HPP_
 
-class ChatMessageAction;
-class ChatMessage;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ChatMessageAction : public object, public std::enable_shared_from_this<ChatMessageAction> {
+namespace elizaos {
+namespace generated_misc {
+
+class ChatMessage {
 public:
-    using std::enable_shared_from_this<ChatMessageAction>::shared_from_this;
-    std::string type;
+    ChatMessage() = default;
+    ~ChatMessage() = default;
 
-    std::string content;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "chat_message"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    Record<std::string, any> data;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ChatMessage : public object, public std::enable_shared_from_this<ChatMessage> {
-public:
-    using std::enable_shared_from_this<ChatMessage>::shared_from_this;
-    std::string id;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string name;
-
-    std::any text;
-
-    std::string senderId;
-
-    std::string roomId;
-
-    double createdAt;
-
-    std::string source;
-
-    boolean isLoading;
-
-    std::string thought;
-
-    boolean isUserMessage;
-
-    std::string serverMessageId;
-
-    object content;
-
-    array<std::shared_ptr<ChatMessageAction>> actions;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_MESSAGE_HPP_

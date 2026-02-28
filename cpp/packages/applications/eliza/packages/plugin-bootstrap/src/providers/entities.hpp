@@ -1,30 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ENTITIES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ENTITIES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Entities {
+public:
+    Entities() = default;
+    ~Entities() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "entities"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Provider for fetching entities related to the current conversation.
- * @type { Provider }
- */
-    // Get entities details
-    // Format entities for display
-    // Find sender name
-    // Create formatted text with header
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ENTITIES_HPP_

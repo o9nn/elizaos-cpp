@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_SWAP_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_SWAP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "use-config-account.hpp"
-#include "use-mev-protection.hpp"
-#include "use-slippage.hpp"
-#include "use-transaction-speed.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UseSwap {
+public:
+    UseSwap() = default;
+    ~UseSwap() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_swap"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct SwapParams {
-    std::string style;
-    double amount;
-    std::string tokenAddress;
-    std::optional<IToken> token;
-    double reserveToken;
-    double reserveLamport;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-    /** If token is currently migration, or has failed or if status does not exist, we should never even get here */
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_SWAP_HPP_

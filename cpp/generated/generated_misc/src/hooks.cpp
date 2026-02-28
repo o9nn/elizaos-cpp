@@ -1,10 +1,26 @@
-#include "discrub-ext/src/app/hooks.h"
+#include "hooks.hpp"
 
-std::function<std::shared_ptr<AppDispatch>()> useAppDispatch = useDispatch;
-std::shared_ptr<TypedUseSelectorHook<std::shared_ptr<RootState>>> useAppSelector = useSelector;
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Hooks::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Hooks::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Hooks::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

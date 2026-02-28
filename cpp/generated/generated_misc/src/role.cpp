@@ -1,17 +1,26 @@
-#include "discrub-ext/src/classes/role.h"
+#include "role.hpp"
 
-Role::Role(object opts) {
-    this->id = opts["id"];
-    this->name = opts["name"];
-    this->color = opts["color"];
-    this->hoist = opts["hoist"];
-    this->icon = opts["icon"];
-    this->unicode_emoji = opts["unicode_emoji"];
-    this->position = opts["position"];
-    this->permissions = opts["permissions"];
-    this->managed = opts["managed"];
-    this->mentionable = opts["mentionable"];
-    this->tags = opts["tags"];
-    this->flags = opts["flags"];
+namespace elizaos {
+namespace generated_misc {
+
+bool Role::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Role::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Role::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

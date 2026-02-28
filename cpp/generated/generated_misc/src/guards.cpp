@@ -1,24 +1,26 @@
-#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/guards.h"
+#include "guards.hpp"
 
-boolean AgentActivityLock::isActive()
-{
-    return this->count > 0;
+namespace elizaos {
+namespace generated_misc {
+
+bool Guards::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void AgentActivityLock::enter()
-{
-    this->count++;
+void Guards::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void AgentActivityLock::exit()
-{
-    this->count = Math->max(0, this->count - 1);
+nlohmann::json Guards::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<AgentActivityLock> agentActivityLock = std::make_shared<AgentActivityLock>();
-
-void Main(void)
-{
-}
-
-MAIN
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_QUICK-STATS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_QUICK-STATS_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
-#include "../utils/log.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_QUICK_STATS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_QUICK_STATS_HPP_
 
-extern std::shared_ptr<AgentLogger> logger;
-std::shared_ptr<Promise<string>> quickStats(std::string directory = std::string("."));
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-array<string> findTrajFiles(std::string directory);
+namespace elizaos {
+namespace generated_ui {
 
-#endif
+class QuickStats {
+public:
+    QuickStats() = default;
+    ~QuickStats() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "quick_stats"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_QUICK_STATS_HPP_

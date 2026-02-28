@@ -1,43 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PRIMITIVES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PRIMITIVES_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRIMITIVES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRIMITIVES_HPP_
 
-typedef  UUID;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef object Media;
+namespace elizaos {
+namespace generated_misc {
 
-typedef Record<std::string, any> Metadata;
-
-class Content;
-enum struct ContentType;
-
-UUID asUUID(std::string id);
-
-class Content : public object, public std::enable_shared_from_this<Content> {
+class Primitives {
 public:
-    using std::enable_shared_from_this<Content>::shared_from_this;
-    std::string thought;
+    Primitives() = default;
+    ~Primitives() = default;
 
-    std::string text;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "primitives"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<string> actions;
-
-    array<string> providers;
-
-    std::string source;
-
-    std::string target;
-
-    std::string url;
-
-    UUID inReplyTo;
-
-    array<Media> attachments;
-
-    std::string channelType;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-enum struct ContentType {
-    IMAGE = std::string("image"), VIDEO = std::string("video"), AUDIO = std::string("audio"), DOCUMENT = std::string("document"), LINK = std::string("link")
-};
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRIMITIVES_HPP_

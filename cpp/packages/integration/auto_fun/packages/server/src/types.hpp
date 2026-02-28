@@ -1,66 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
-/**
- * Media generation types
- */
-struct MediaGeneration {
-    std::string id;
-    std::string mint;
-    std::string type;
-    std::string prompt;
-    std::string mediaUrl;
-    std::optional<std::string> negativePrompt;
-    std::optional<double> numInferenceSteps;
-    std::optional<double> seed;
-    std::optional<double> numFrames;
-    std::optional<double> fps;
-    std::optional<double> motionBucketId;
-    std::optional<double> duration;
-    std::optional<double> durationSeconds;
-    std::optional<double> bpm;
-    std::optional<std::string> creator;
-    std::string timestamp;
-    std::optional<double> dailyGenerationCount;
-    std::optional<std::string> lastGenerationReset;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-using TTokenStatus = ;
-
-struct IToken {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string mint;
-    std::string creator;
-    TTokenStatus status;
-    std::string createdAt;
-    double tokenPriceUSD;
-    double marketCapUSD;
-    double volume24h;
-};
-
-struct ITokenHolder {
-    std::string id;
-    std::string mint;
-    std::string address;
-    double amount;
-    double percentage;
-    std::string lastUpdated;
-};
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TYPES_HPP_

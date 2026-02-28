@@ -1,44 +1,26 @@
-#include "elizaos.github.io/src/lib/pipelines/summarize/mutations.h"
+#include "mutations.hpp"
 
-std::shared_ptr<Promise<void>> storeDailySummary(std::string username, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType)
-{
-    auto id = string_empty + username + std::string("_") + intervalType + std::string("_") + date + string_empty;
-    std::async([=]() { db->insert(userSummaries)->values(object{
-        object::pair{std::string("id"), std::string("id")}, 
-        object::pair{std::string("username"), std::string("username")}, 
-        object::pair{std::string("date"), std::string("date")}, 
-        object::pair{std::string("summary"), std::string("summary")}, 
-        object::pair{std::string("intervalType"), std::string("intervalType")}, 
-        object::pair{std::string("lastUpdated"), ((std::make_shared<UTCDate>()))->toISOString()}
-    })->onConflictDoUpdate(object{
-        object::pair{std::string("target"), userSummaries->id}, 
-        object::pair{std::string("set"), object{
-            object::pair{std::string("summary"), std::string("summary")}, 
-            object::pair{std::string("lastUpdated"), ((std::make_shared<UTCDate>()))->toISOString()}
-        }}
-    }); });
-    return std::shared_ptr<Promise<void>>();
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Mutations::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<Promise<void>> storeRepoSummary(std::string repoId, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType)
-{
-    auto id = string_empty + repoId + std::string("_") + intervalType + std::string("_") + date + string_empty;
-    std::async([=]() { db->insert(repoSummaries)->values(object{
-        object::pair{std::string("id"), std::string("id")}, 
-        object::pair{std::string("repoId"), std::string("repoId")}, 
-        object::pair{std::string("date"), std::string("date")}, 
-        object::pair{std::string("summary"), std::string("summary")}, 
-        object::pair{std::string("intervalType"), std::string("intervalType")}, 
-        object::pair{std::string("lastUpdated"), ((std::make_shared<UTCDate>()))->toISOString()}
-    })->onConflictDoUpdate(object{
-        object::pair{std::string("target"), repoSummaries->id}, 
-        object::pair{std::string("set"), object{
-            object::pair{std::string("summary"), std::string("summary")}, 
-            object::pair{std::string("lastUpdated"), ((std::make_shared<UTCDate>()))->toISOString()}
-        }}
-    }); });
-    return std::shared_ptr<Promise<void>>();
-};
+void Mutations::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Mutations::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

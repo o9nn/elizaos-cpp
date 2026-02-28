@@ -1,66 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC___TESTS___CYPRESS_COMPONENT_PANELCOMPONENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC___TESTS___CYPRESS_COMPONENT_PANELCOMPONENT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "frontend/index.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Panelcomponent {
+public:
+    Panelcomponent() = default;
+    ~Panelcomponent() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "PanelComponent"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Time response interface
-struct TimeResponse {
-    std::string timestamp;
-    double unix;
-    std::string formatted;
-    std::string timezone;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Enhanced Panel Component with time display
-
-  // Get the Panel component from the exported panels
-
-      // Updated to match the corrected text in the component
-
-      // Set up ELIZA_CONFIG for API testing
-
-      // Wait for API call
-
-      // Check panel content
-
-      // Check time display
-
-      // Wait for failed API call
-
-      // Check error display
-
-        // Use simpler delay approach
-
-      // Check loading state
-
-      // Wait for data
-
-      // Verify panel can be used in the agent UI
-
-      // Create a mock agent UI container
-
-      // Verify integration
-
-      // Simulate multiple panels
-
-      // Check initial panel
-
-      // Switch to second panel
-
-      // Switch back
-
+} // namespace eliza_plugin_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC___TESTS___CYPRESS_COMPONENT_PANELCOMPONENT_HPP_

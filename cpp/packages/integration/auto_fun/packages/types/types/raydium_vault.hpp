@@ -1,25 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_TYPES_TYPES_RAYDIUM_VAULT_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_TYPES_TYPES_RAYDIUM_VAULT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_types {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class RaydiumVault {
+public:
+    RaydiumVault() = default;
+    ~RaydiumVault() = default;
 
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/raydium_vault.json`.
- */
-using RaydiumVault = {
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "raydium_vault"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace autofun_types
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_TYPES_TYPES_RAYDIUM_VAULT_HPP_

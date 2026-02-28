@@ -1,13 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-transaction-speed.h"
+#include "use-transaction-speed.hpp"
 
-std::function<std::any()> useTransactionSpeed = [=]() mutable
-{
-    auto [transactionSpeed, setTransactionSpeed] = useLocalStorage<TTransactionSpeed>(std::string("use-transaction-speed"), std::string("turbo"));
-    return as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ transactionSpeed, setTransactionSpeed });
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseTransactionSpeed::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseTransactionSpeed::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseTransactionSpeed::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

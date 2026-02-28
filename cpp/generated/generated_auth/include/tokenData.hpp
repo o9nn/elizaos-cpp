@@ -1,267 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_TYPES_TOKENDATA_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_TYPES_TOKENDATA_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENDATA_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENDATA_HPP_
 
-class MigrationData;
-class WithdrawnAmountsData;
-class PoolInfoData;
-class TokenData;
-class TokenDBData;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class MigrationData : public object, public std::enable_shared_from_this<MigrationData> {
+namespace elizaos {
+namespace generated_auth {
+
+class Tokendata {
 public:
-    using std::enable_shared_from_this<MigrationData>::shared_from_this;
-    object withdraw;
+    Tokendata() = default;
+    ~Tokendata() = default;
 
-    object createPool;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tokenData"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    object lockLP;
-
-    object sendNft;
-
-    object depositNft;
-
-    object finalize;
-
-    boolean lock;
-
-    std::string lastStep;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class WithdrawnAmountsData : public object, public std::enable_shared_from_this<WithdrawnAmountsData> {
-public:
-    using std::enable_shared_from_this<WithdrawnAmountsData>::shared_from_this;
-    double withdrawnSol;
+} // namespace generated_auth
+} // namespace elizaos
 
-    double withdrawnTokens;
-};
-
-class PoolInfoData : public object, public std::enable_shared_from_this<PoolInfoData> {
-public:
-    using std::enable_shared_from_this<PoolInfoData>::shared_from_this;
-    std::string id;
-
-    std::string lpMint;
-
-    std::string baseVault;
-
-    std::string quoteVault;
-};
-
-class TokenData : public object, public std::enable_shared_from_this<TokenData> {
-public:
-    using std::enable_shared_from_this<TokenData>::shared_from_this;
-    std::string id;
-
-    std::string name;
-
-    std::string ticker;
-
-    std::string url;
-
-    std::string image;
-
-    std::string twitter;
-
-    std::string telegram;
-
-    std::string farcaster;
-
-    std::string website;
-
-    std::string discord;
-
-    std::string description;
-
-    std::string mint;
-
-    std::string creator;
-
-    std::string nftMinted;
-
-    std::string lockId;
-
-    std::string lockedAmount;
-
-    std::shared_ptr<Date> lockedAt;
-
-    std::shared_ptr<Date> harvestedAt;
-
-    std::string status;
-
-    std::shared_ptr<Date> createdAt;
-
-    std::string lastUpdated;
-
-    std::shared_ptr<Date> completedAt;
-
-    std::shared_ptr<Date> withdrawnAt;
-
-    std::shared_ptr<Date> migratedAt;
-
-    std::string marketId;
-
-    std::string baseVault;
-
-    std::string quoteVault;
-
-    double withdrawnAmount;
-
-    double reserveAmount;
-
-    double reserveLamport;
-
-    double virtualReserves;
-
-    double liquidity;
-
-    double currentPrice;
-
-    double marketCapUSD;
-
-    double tokenPriceUSD;
-
-    double solPriceUSD;
-
-    double curveProgress;
-
-    double curveLimit;
-
-    double priceChange24h;
-
-    double price24hAgo;
-
-    double volume24h;
-
-    double inferenceCount;
-
-    std::shared_ptr<Date> lastVolumeReset;
-
-    std::shared_ptr<Date> lastPriceUpdate;
-
-    double holderCount;
-
-    std::string txId;
-
-    std::shared_ptr<MigrationData> migration;
-
-    std::any withdrawnAmounts;
-
-    std::shared_ptr<PoolInfoData> poolInfo;
-
-    std::string lockLpTxId;
-
-    std::string tokenSupply;
-
-    double tokenSupplyUiAmount;
-
-    double tokenDecimals;
-
-    std::shared_ptr<Date> lastSupplyUpdate;
-};
-
-class TokenDBData : public object, public std::enable_shared_from_this<TokenDBData> {
-public:
-    using std::enable_shared_from_this<TokenDBData>::shared_from_this;
-    std::string id;
-
-    std::string name;
-
-    std::string ticker;
-
-    std::string url;
-
-    std::string image;
-
-    std::string twitter;
-
-    std::string telegram;
-
-    std::string farcaster;
-
-    std::string website;
-
-    std::string discord;
-
-    std::string description;
-
-    std::string mint;
-
-    std::string creator;
-
-    std::string nftMinted;
-
-    std::string lockId;
-
-    std::string lockedAmount;
-
-    std::shared_ptr<Date> lockedAt;
-
-    std::shared_ptr<Date> harvestedAt;
-
-    std::string status;
-
-    std::shared_ptr<Date> createdAt;
-
-    std::shared_ptr<Date> lastUpdated;
-
-    std::shared_ptr<Date> completedAt;
-
-    std::shared_ptr<Date> withdrawnAt;
-
-    std::shared_ptr<Date> migratedAt;
-
-    std::string marketId;
-
-    std::string baseVault;
-
-    std::string quoteVault;
-
-    double withdrawnAmount;
-
-    double reserveAmount;
-
-    double reserveLamport;
-
-    double virtualReserves;
-
-    double liquidity;
-
-    double currentPrice;
-
-    double marketCapUSD;
-
-    double tokenPriceUSD;
-
-    double solPriceUSD;
-
-    double curveProgress;
-
-    double curveLimit;
-
-    double priceChange24h;
-
-    double price24hAgo;
-
-    double volume24h;
-
-    double inferenceCount;
-
-    std::shared_ptr<Date> lastVolumeReset;
-
-    std::shared_ptr<Date> lastPriceUpdate;
-
-    double holderCount;
-
-    std::string txId;
-
-    std::string migration;
-
-    std::string withdrawnAmounts;
-
-    std::string poolInfo;
-
-    std::string lockLpTxId;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENDATA_HPP_

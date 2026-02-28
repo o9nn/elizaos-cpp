@@ -1,67 +1,26 @@
 #include "evaluators.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-void formatEvaluatorNames(const std::vector<Evaluator>& evaluators) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return "evaluators.std::map((evaluator: Evaluator) => " + """ + evaluator.name + """;
-
+bool Evaluators::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return evaluators;
-    .std::map((evaluator) => {
-        return evaluator.examples;
-        .std::map((example) => {
-            const auto exampleNames = Array.from({ length: 5 }, () =>;
-            uniqueNamesGenerator({ dictionaries: [names] })
-            );
-
-            auto formattedPrompt = example.prompt;
-            auto formattedOutcome = example.outcome;
-
-            exampleNames.forEach((name, index) => {
-                const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
-                formattedPrompt = formattedPrompt.replaceAll(placeholder, name);
-                formattedOutcome = formattedOutcome.replaceAll(placeholder, name);
-                });
-
-                const auto formattedMessages = example.messages;
-                .std::map((message: ActionExample) => {
-                    auto messageString = message.name + ": " + message.content.text;
-                    exampleNames.forEach((name, index) => {
-                        const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
-                        messageString = messageString.replaceAll(placeholder, name);
-                        });
-                        return (;
-                        messageString +;
-                        (message.content.action || message.content.actions;
-                        "? " + " (" + std::to_string(message.content.action || message.content.actions.join(", ")) + ")";
-                        : "")
-                        );
-                        });
-                        .join("\n");
-
-                        return "Prompt:\n" + formattedPrompt + "\n\nMessages:\n" + formattedMessages + "\n\nOutcome:\n" + formattedOutcome;
-                        });
-                        .join("\n\n");
-                        });
-                        .join("\n\n");
-
+void Evaluators::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void formatEvaluators(const std::vector<Evaluator>& evaluators) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return evaluators;
-    ".std::map((evaluator: Evaluator) => " + """ + evaluator.name + ": " + evaluator.description + """
-    .join(",\n");
-
+nlohmann::json Evaluators::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos

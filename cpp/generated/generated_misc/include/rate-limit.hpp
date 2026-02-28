@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_RATE-LIMIT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_RATE-LIMIT_H
-#include "core.h"
-#include "express-rate-limit.h"
-using rateLimit = _default;
-#include "@elizaos/core.h"
-#include "../api/shared/validation.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RATE_LIMIT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RATE_LIMIT_HPP_
 
-extern std::function<std::any()> createApiRateLimit;
-extern std::function<std::any()> createFileSystemRateLimit;
-extern std::function<std::any()> createUploadRateLimit;
-extern std::function<std::any()> createChannelValidationRateLimit;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class RateLimit {
+public:
+    RateLimit() = default;
+    ~RateLimit() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "rate_limit"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RATE_LIMIT_HPP_

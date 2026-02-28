@@ -1,9 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_RESPONSE-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_RESPONSE-UTILS_H
-#include "core.h"
-#include "express.h"
-using express = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_RESPONSE_UTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_RESPONSE_UTILS_HPP_
 
-extern std::function<void(std::any, double, std::string, std::string, std::string)> sendError;
-extern std::function<void(std::any, std::any, double)> sendSuccess;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_utils {
+
+class ResponseUtils {
+public:
+    ResponseUtils() = default;
+    ~ResponseUtils() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "response_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_RESPONSE_UTILS_HPP_

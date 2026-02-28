@@ -1,29 +1,26 @@
-#include "elizaos.github.io/src/lib/data/db-nextjs.h"
+#include "db-nextjs.hpp"
 
-std::shared_ptr<Database::Database> sqlite;
-std::any db = drizzle(sqlite, object{
-    object::pair{std::string("schema"), std::string("schema")}
-});
+namespace elizaos {
+namespace generated_database {
 
-void Main(void)
-{
-    try
-    {
-        sqlite = std::make_shared<Database>(path->join(process->cwd(), std::string("data/db.sqlite")), object{
-            object::pair{std::string("fileMustExist"), false}
-        });
-        sqlite->pragma(std::string("journal_mode = WAL"));
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Failed to initialize database:"), error);
-        process->exit(1);
-    }
-    process->on(std::string("exit"), [=]() mutable
-    {
-        sqlite->close();
-    }
-    );
+bool DbNextjs::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void DbNextjs::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json DbNextjs::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_database
+} // namespace elizaos

@@ -1,68 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SCHEMAS_CHARACTER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SCHEMAS_CHARACTER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Character {
+public:
+    Character() = default;
+    ~Character() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// UUID validation schema
-
-// Message content schema matching the Content interface
-
-// MessageExample schema
-
-// DirectoryItem schema
-
-// Knowledge item can be a std::string, object with path, or DirectoryItem
-
-// TemplateType schema - can be std::string or std::function (we'll validate as std::string for JSON)
-
-// Style configuration schema
-
-// Settings schema - flexible object
-
-// Secrets schema
-
-// Main Character schema
-
-// Validation result type
-struct CharacterValidationResult {
-    bool success;
-    std::optional<Character> data;
-    std::string message;
-    std::optional<std::vector<z::ZodIssue>> issues;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Safely validates character data using Zod schema
- * @param data - Raw character data to validate
- * @returns Validation result with success flag and either data or error
- */
-CharacterValidationResult validateCharacter(const std::any& data);
-
-/**
- * Safely parses JSON std::string and validates as character
- * @param jsonString - JSON std::string to parse and validate
- * @returns Validation result with success flag and either data or error
- */
-CharacterValidationResult parseAndValidateCharacter(const std::string& jsonString);
-
-/**
- * Type guard to check if data is a valid Character
- * @param data - Data to check
- * @returns True if data is a valid Character
- */
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SCHEMAS_CHARACTER_HPP_

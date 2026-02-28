@@ -1,31 +1,26 @@
 #include "directory-operations.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!existsSync(dir)) {
-        "actions.skipped.push_back(" + label + " (not found)";
-        return false;
-    }
-
-    try {
-        rimraf(dir);
-        if (!existsSync(dir)) {
-            actions.deleted.push_back(label);
-            return true;
-            } else {
-                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
-                return false;
-            }
-            } catch (error) {
-                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
-                return false;
-            }
-
+bool DirectoryOperations::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void DirectoryOperations::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json DirectoryOperations::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

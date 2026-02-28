@@ -1,78 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_FACTORY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_FACTORY_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Factory {
+public:
+    Factory() = default;
+    ~Factory() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "factory"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-using DatabaseType = std::variant<'postgres', 'pglite'>;
-
-// Type helpers for cross-database compatibility
-// Since Pglite uses PostgreSQL dialect, we use the same types for both
-using TableFn = PgTableFn;
-using UuidColumn = ReturnType<typeof pgUuid>;
-using TextColumn = ReturnType<typeof pgText>;
-using JsonColumn = ReturnType<typeof pgJsonb>;
-using BooleanColumn = ReturnType<typeof pgBoolean>;
-using TimestampColumn = ReturnType<typeof pgTimestamp>;
-using IntegerColumn = ReturnType<typeof pgInteger>;
-
-/**
- * Schema factory to create database-specific column types
- * Since Pglite is PostgreSQL-compatible, we use the same constructs for both
- */
-class SchemaFactory {
-  constructor(public dbType: DatabaseType) {}
-
-    // Both postgres and pglite use pgTable
-
-    // Both postgres and pglite support native UUID
-    return pgUuid(name);
-
-    return pgText(name);
-
-    // Both postgres and pglite support JSONB
-    return pgJsonb(name);
-
-    return pgBoolean(name);
-
-    return pgTimestamp(name, options);
-
-    return pgInteger(name);
-
-    // Pglite may not support pgvector extension yet
-    // For compatibility, we'll store as JSONB for pglite
-      return pgJsonb(name);
-    return pgVector(name, { dimensions });
-
-    // Both postgres and pglite support arrays
-
-    // Both postgres and pglite support CHECK constraints
-    return pgCheck(name, sql);
-
-    return pgIndex(name);
-
-    return pgForeignKey(config);
-
-  // Helper for timestamp defaults
-    // Both postgres and pglite support NOW()
-
-  // Helper for random UUID generation
-    // Pglite may not have gen_random_uuid() extension
-      // Will use application-level UUID generation
-
-// Global factory instance - will be std::set based on database type
-
-void setDatabaseType(DatabaseType dbType);
-
-SchemaFactory getSchemaFactory();
-
+} // namespace eliza_plugin_sql
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_FACTORY_HPP_

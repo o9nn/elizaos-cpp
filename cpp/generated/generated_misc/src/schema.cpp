@@ -1,9 +1,26 @@
-#include "eliza/packages/cli/src/utils/registry/schema.h"
+#include "schema.hpp"
 
-std::any registrySchema = z->record(z->std::string(), z->std::string());
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Schema::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Schema::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Schema::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

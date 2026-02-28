@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_TESTING_TIMEOUT-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_TESTING_TIMEOUT-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUT_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUT_MANAGER_HPP_
 
-class TestTimeoutManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestTimeoutManager : public object, public std::enable_shared_from_this<TestTimeoutManager> {
+namespace elizaos {
+namespace generated_misc {
+
+class TimeoutManager {
 public:
-    using std::enable_shared_from_this<TestTimeoutManager>::shared_from_this;
-    static std::shared_ptr<TestTimeoutManager> instance;
+    TimeoutManager() = default;
+    ~TimeoutManager() = default;
 
-    std::shared_ptr<Map<std::string, std::shared_ptr<NodeJS::Timeout>>> timeouts = std::make_shared<Map>();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "timeout_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Map<std::string, double>> testStartTimes = std::make_shared<Map>();
-
-    static std::shared_ptr<TestTimeoutManager> getInstance();
-    virtual void startTimeout(std::string testName, double duration = 30000);
-    virtual void clearTimeout(std::string testName);
-    virtual void clearAll();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::shared_ptr<TestTimeoutManager> testTimeout;
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUT_MANAGER_HPP_

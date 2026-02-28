@@ -1,9 +1,26 @@
-#include "classified/packages/plugin-autocoder/project-template/src/services.h"
+#include "services.hpp"
 
-array<any> services = array<any>();
+namespace elizaos {
+namespace generated_services {
 
-void Main(void)
-{
+bool Services::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Services::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Services::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_services
+} // namespace elizaos

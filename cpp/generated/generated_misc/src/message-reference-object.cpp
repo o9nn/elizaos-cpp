@@ -1,2 +1,26 @@
-#include "discrub-ext/src/types/message-reference-object.h"
+#include "message-reference-object.hpp"
 
+namespace elizaos {
+namespace generated_misc {
+
+bool MessageReferenceObject::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void MessageReferenceObject::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json MessageReferenceObject::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

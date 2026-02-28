@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_APP_USE-APP-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_APP_USE-APP-SLICE_H
-#include "core.h"
-#include "../../app/store.h"
-#include "./app-slice.h"
-using setDiscrubPausedAction = setDiscrubPaused;
-using setDiscrubCancelledAction = setDiscrubCancelled;
-using setIsModifyingAction = setIsModifying;
-using setModifyEntityAction = setModifyEntity;
-using setStatusAction = setStatus;
-using resetStatusAction = resetStatus;
-using resetModifyAction = resetModify;
-using checkDiscrubPausedAction = checkDiscrubPaused;
-using setTimeoutMessageAction = setTimeoutMessage;
-using setSettingsAction = setSettings;
-#include "./app-types.h"
-#include "../../classes/message.h"
-using Message = _default;
-#include "../../app/hooks.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_APP_SLICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_APP_SLICE_HPP_
 
-extern std::function<object()> useAppSlice;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class UseAppSlice {
+public:
+    UseAppSlice() = default;
+    ~UseAppSlice() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_app_slice"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_APP_SLICE_HPP_

@@ -1,2 +1,26 @@
-#include "discrub-ext/src/enum/resolution-type.h"
+#include "resolution-type.hpp"
 
+namespace elizaos {
+namespace generated_misc {
+
+bool ResolutionType::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void ResolutionType::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ResolutionType::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

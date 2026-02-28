@@ -1,21 +1,26 @@
 #include "roles.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreGetUserServerRole(runtime, entityId, serverId);
-
+bool Roles::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime runtime, const std::string& entityId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreFindWorldsForOwner(runtime, entityId);
-
+void Roles::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Roles::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

@@ -1,33 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SCRIPTS_GENERATE_COVERAGE_REPORT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SCRIPTS_GENERATE_COVERAGE_REPORT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class GenerateCoverageReport {
+public:
+    GenerateCoverageReport() = default;
+    ~GenerateCoverageReport() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "generate_coverage_report"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct CoverageReport {
-    double totalFiles;
-    double testedFiles;
-    std::vector<std::string> untestedFiles;
-    double coverage;
-    { byCategory;
-    { total: number; tested: number; untested: std::string[] } commands;
-    { total: number; tested: number; untested: std::string[] } utils;
-    { total: number; tested: number; untested: std::string[] } types;
-    { total: number; tested: number; untested: std::string[] } other;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::future<CoverageReport> generateCoverageReport();
-
-std::future<void> main();
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SCRIPTS_GENERATE_COVERAGE_REPORT_HPP_

@@ -1,58 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DIRECTORY_DETECTION_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DIRECTORY_DETECTION_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "user-environment.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class DirectoryDetection {
+public:
+    DirectoryDetection() = default;
+    ~DirectoryDetection() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "directory_detection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct DirectoryInfo {
-    bool hasPackageJson;
-    bool hasElizaOSDependencies;
-    std::optional<std::string> packageName;
-    double elizaPackageCount;
-    std::optional<std::string> monorepoRoot;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct PackageJson {
-    std::optional<std::string> name;
-    std::optional<std::vector<std::string>> keywords;
-    std::optional<std::string> main;
-    std::optional<std::string> packageType;
-    std::optional<std::string> pluginType;
-};
-
-/**
- * Detects the type of directory and provides comprehensive information about it
- * @param dir The directory path to analyze
- * @returns DirectoryInfo object with detection results
- */
-DirectoryInfo detectDirectoryType(const std::string& dir);
-
-/**
- * Checks if a package.json indicates an ElizaOS plugin
- */
-bool isElizaOSPlugin(PackageJson packageJson);
-
-/**
- * Checks if a package.json and directory structure indicates an ElizaOS project
- */
-bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::optional<std::string> monorepoRoot);
-
-/**
- * Checks if the directory is suitable for ElizaOS package updates
- */
-bool isValidForUpdates(DirectoryInfo info);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DIRECTORY_DETECTION_HPP_

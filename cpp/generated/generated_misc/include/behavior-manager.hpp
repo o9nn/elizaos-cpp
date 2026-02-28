@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_BEHAVIOR-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_BEHAVIOR-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../service.h"
-#include "../templates.h"
-#include "./guards.h"
-#include "../utils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BEHAVIOR_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BEHAVIOR_MANAGER_HPP_
 
-class BehaviorManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern double TIME_INTERVAL_MIN;
-extern double TIME_INTERVAL_MAX;
-class BehaviorManager : public object, public std::enable_shared_from_this<BehaviorManager> {
+namespace elizaos {
+namespace generated_misc {
+
+class BehaviorManager {
 public:
-    using std::enable_shared_from_this<BehaviorManager>::shared_from_this;
-    boolean isRunning = false;
+    BehaviorManager() = default;
+    ~BehaviorManager() = default;
 
-    std::shared_ptr<IAgentRuntime> runtime;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "behavior_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    BehaviorManager(std::shared_ptr<IAgentRuntime> runtime);
-    virtual void start();
-    virtual void stop();
-    virtual std::shared_ptr<Promise<void>> runLoop();
-    virtual std::any getService();
-    virtual std::shared_ptr<Promise<void>> executeBehavior();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BEHAVIOR_MANAGER_HPP_

@@ -1,51 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "AIService/AIService.js.hpp"
-#include "Configuration.js.hpp"
-#include "DirectoryTraversal.js.hpp"
-#include "DocumentationGenerator.js.hpp"
-#include "GitManager.js.hpp"
-#include "JsDocAnalyzer.js.hpp"
-#include "JsDocGenerator.js.hpp"
-#include "PluginDocumentationGenerator.js.hpp"
-#include "TypeScriptParser.js.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Main std::function for generating documentation.
- * Uses configuration initialized from the GitHub workflow file.
- * @std::async
- */
-/**
- * Asynchronous std::function that serves as the main entry point for generating documentation.
- *
- * This function:
- * 1. Initializes necessary components like Configuration, GitManager, DirectoryTraversal,
- *    TypeScriptParser, JsDocAnalyzer, AIService, JsDocGenerator, DocumentationGenerator,
- *    PluginDocumentationGenerator, etc.
- * 2. Analyzes the codebase and generates JSDoc documentation.
- * 3. Conditionally updates README and creates a pull request for documentation changes.
- *
- * @returns {Promise<void>} A std::promise that resolves when the documentation generation is complete.
- */
-
-std::future<void> main();
-
-// Simple error handling for the main std::function
-
+} // namespace eliza_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_INDEX_HPP_

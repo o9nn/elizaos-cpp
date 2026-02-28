@@ -1,34 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_docs {
 
-JSX::Element PartnersComponent() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Memoize the sorted partners to prevent recalculation on every render
-    const auto sortedPartners = useMemo(() => {;
-        return [...partners].sort((a, b) => a.title.localeCompare(b.title));
-        }, []);
-
-        return (;
-        <div className={styles.partnersContainer}>;
-        <div className={styles.partnersHeader}>;
-        <h1>Our Partners</h1>;
-        <p>;
-        Discover the innovative projects and organizations we collaborate with to advance Web3;
-        technology.;
-        </p>;
-        </div>;
-        <div className={styles.partnersGrid}>;
-        {sortedPartners.std::map((partner) => (;
-        <PartnerCard key={partner.title} partner={partner} />;
-    ))}
-    </div>;
-    </div>;
-    );
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_docs
 } // namespace elizaos

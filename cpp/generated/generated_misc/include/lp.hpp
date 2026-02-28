@@ -1,34 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_LP_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_LP_H
-#include "core.h"
-#include "./primitives.h"
-#include "./service.h"
-#include "./token.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LP_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LP_HPP_
 
-typedef object PoolInfo;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef object LpPositionDetails;
+namespace elizaos {
+namespace generated_misc {
 
-typedef object TransactionResult;
-
-class ILpService;
-
-class ILpService : public Service, public std::enable_shared_from_this<ILpService> {
+class Lp {
 public:
-    using std::enable_shared_from_this<ILpService>::shared_from_this;
-    static std::any override;
+    Lp() = default;
+    ~Lp() = default;
 
-    std::string serviceType = std::string("lp");
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "lp"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string capabilityDescription = std::string("Provides standardized access to DEX liquidity pools.");
-
-    virtual std::string getDexName() = 0;
-    virtual std::shared_ptr<Promise<array<PoolInfo>>> getPools(std::string tokenAMint = undefined, std::string tokenBMint = undefined) = 0;
-    virtual std::shared_ptr<Promise<any>> addLiquidity(object params) = 0;
-    virtual std::shared_ptr<Promise<any>> removeLiquidity(object params) = 0;
-    virtual std::shared_ptr<Promise<any>> getLpPositionDetails(std::string userAccountPublicKey, std::string poolOrPositionIdentifier) = 0;
-    virtual std::shared_ptr<Promise<Record<std::string, Partial<PoolInfo>>>> getMarketDataForPools(array<string> poolIds) = 0;
-    ILpService(std::shared_ptr<IAgentRuntime> runtime = undefined);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LP_HPP_

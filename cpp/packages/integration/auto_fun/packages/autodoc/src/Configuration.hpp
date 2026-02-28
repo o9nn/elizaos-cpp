@@ -1,60 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_CONFIGURATION_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_CONFIGURATION_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Configuration {
+public:
+    Configuration() = default;
+    ~Configuration() = default;
 
-// Configuration.ts
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "Configuration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Gets the repository root path by going up two levels from the current file
- * This assumes the code is in src/ directory of the package
- */
-
-struct ConfigurationData {
-    { rootDirectory;
-    std::string; // Full path from filesystem root absolute;
-    std::string; // Path relative to repository root relative;
-    std::vector<std::string> excludedDirectories;
-    Repository repository;
-    std::string commitMessage;
-    std::string pullRequestTitle;
-    std::string pullRequestDescription;
-    std::vector<std::string> pullRequestLabels;
-    std::vector<std::string> pullRequestReviewers;
-    std::vector<std::string> excludedFiles;
-    bool generateJsDoc;
-    bool generateReadme;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Represents a configuration object that holds various settings for a project.
- * Handles both absolute and relative paths for different operations.
- */
-class Configuration implements Omit<ConfigurationData, "rootDirectory"> {
-  private _rootDirectory!: ConfigurationData["rootDirectory"];
-  private readonly repoRoot: std::string;
-  private _branch = "develop";
-  private _generateJsDoc = true;
-  private _generateReadme = false;
-
-  public excludedDirectories: std::string[] = [];
-  public repository: Repository = {
-    owner: "elizaOS",
-    name: "eliza",
-    pullNumber: undefined,
-  };
-
-    // First try to get from environment variables
-
-    // Handle other inputs
-
-
+} // namespace autofun_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_CONFIGURATION_HPP_

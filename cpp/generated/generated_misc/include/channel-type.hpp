@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_CHANNEL-TYPE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_CHANNEL-TYPE_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_TYPE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_TYPE_HPP_
 
-enum struct ChannelType;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-enum struct ChannelType {
-    GUILD_TEXT = 0, DM = 1, GUILD_VOICE = 2, GROUP_DM = 3, GUILD_CATEGORY = 4, GUILD_ANNOUNCEMENT = 5, ANNOUNCEMENT_THREAD = 10, PUBLIC_THREAD = 11, PRIVATE_THREAD = 12, GUILD_STAGE_VOICE = 13, GUILD_DIRECTORY = 14, GUILD_FORUM = 15, GUILD_MEDIA = 16
+namespace elizaos {
+namespace generated_misc {
+
+class ChannelType {
+public:
+    ChannelType() = default;
+    ~ChannelType() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "channel_type"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
-#endif
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_TYPE_HPP_

@@ -1,26 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_EDIT_OVERLAY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_EDIT_OVERLAY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentMemoryEditOverlay {
+public:
+    AgentMemoryEditOverlay() = default;
+    ~AgentMemoryEditOverlay() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_memory_edit_overlay"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct MemoryEditOverlayProps {
-    bool isOpen;
-    Memory memory;
-    UUID agentId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_EDIT_OVERLAY_HPP_

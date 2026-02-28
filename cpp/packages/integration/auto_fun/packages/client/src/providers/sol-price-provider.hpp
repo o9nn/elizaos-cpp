@@ -1,19 +1,35 @@
-#include "use-sol-price-context.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PROVIDERS_SOL_PRICE_PROVIDER_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PROVIDERS_SOL_PRICE_PROVIDER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class SolPriceProvider {
+public:
+    SolPriceProvider() = default;
+    ~SolPriceProvider() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "sol_price_provider"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-void SolPriceProvider({ children: ReactNode } { children });
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PROVIDERS_SOL_PRICE_PROVIDER_HPP_

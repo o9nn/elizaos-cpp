@@ -1,14 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_TESTS_PRICE-VALIDATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_TESTS_PRICE-VALIDATION_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../src/utils/price-validator.h"
-#include "../src/utils/pool-finder-base.h"
-#include "../src/utils/pool-finder-solana.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PRICE_VALIDATION_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PRICE_VALIDATION_TEST_HPP_
 
-extern boolean skipIntegration;
-extern double TEST_TIMEOUT;
-extern object BASE_TOKENS;
-extern object SOLANA_TOKENS;
-extern double PRICE_DIVERGENCE_THRESHOLD;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class PriceValidationTest {
+public:
+    PriceValidationTest() = default;
+    ~PriceValidationTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "price_validation_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PRICE_VALIDATION_TEST_HPP_

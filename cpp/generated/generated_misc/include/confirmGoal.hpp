@@ -1,46 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_ACTIONS_CONFIRMGOAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_ACTIONS_CONFIRMGOAL_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/goalService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIRMGOAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIRMGOAL_HPP_
 
-class PendingGoalData;
-class ConfirmationResponse;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PendingGoalData : public object, public std::enable_shared_from_this<PendingGoalData> {
+namespace elizaos {
+namespace generated_misc {
+
+class Confirmgoal {
 public:
-    using std::enable_shared_from_this<PendingGoalData>::shared_from_this;
-    std::string name;
+    Confirmgoal() = default;
+    ~Confirmgoal() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "confirmGoal"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any taskType;
-
-    std::any priority;
-
-    boolean urgent;
-
-    std::string dueDate;
-
-    std::any recurring;
-
-    array<string> tags;
-
-    Record<std::string, any> metadata;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ConfirmationResponse : public object, public std::enable_shared_from_this<ConfirmationResponse> {
-public:
-    using std::enable_shared_from_this<ConfirmationResponse>::shared_from_this;
-    boolean isConfirmation;
+} // namespace generated_misc
+} // namespace elizaos
 
-    boolean shouldProceed;
-
-    std::string modifications;
-};
-
-extern std::string extractConfirmationTemplate;
-std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::any pendingTask, std::shared_ptr<State> state);
-
-extern std::shared_ptr<Action> confirmGoalAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIRMGOAL_HPP_

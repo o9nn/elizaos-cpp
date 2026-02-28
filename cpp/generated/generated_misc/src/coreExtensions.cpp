@@ -1,88 +1,26 @@
-#include "classified/packages/plugin-plugin-manager/src/coreExtensions.h"
+#include "coreExtensions.hpp"
 
-void extendRuntimeWithEventUnregistration(std::shared_ptr<IAgentRuntime> runtime)
-{
-    auto extendedRuntime = as<any>(runtime);
-    if (!extendedRuntime["unregisterEvent"]) {
-        extendedRuntime["unregisterEvent"] = [=](std::string event, std::function<std::shared_ptr<Promise<void>>(std::any)> handler) mutable
-        {
-            auto handlers = this["events"]["get"](event);
-            if (handlers) {
-                auto filteredHandlers = handlers["filter"]([=](auto h) mutable
-                {
-                    return h != handler;
-                }
-                );
-                if (filteredHandlers["length"] > 0) {
-                    this["events"]["set"](event, filteredHandlers);
-                } else {
-                    this["events"]["delete"](event);
-                }
-            }
-        };
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Coreextensions::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-void extendRuntimeWithComponentUnregistration(std::shared_ptr<IAgentRuntime> runtime)
-{
-    auto extendedRuntime = as<any>(runtime);
-    if (!extendedRuntime["unregisterAction"]) {
-        extendedRuntime["unregisterAction"] = [=](std::string actionName) mutable
-        {
-            auto index = this["actions"]["findIndex"]([=](auto a) mutable
-            {
-                return a["name"] == actionName;
-            }
-            );
-            if (index != -1) {
-                this["actions"]["splice"](index, 1);
-            }
-        };
-    }
-    if (!extendedRuntime["unregisterProvider"]) {
-        extendedRuntime["unregisterProvider"] = [=](std::string providerName) mutable
-        {
-            auto index = this["providers"]["findIndex"]([=](auto p) mutable
-            {
-                return p["name"] == providerName;
-            }
-            );
-            if (index != -1) {
-                this["providers"]["splice"](index, 1);
-            }
-        };
-    }
-    if (!extendedRuntime["unregisterEvaluator"]) {
-        extendedRuntime["unregisterEvaluator"] = [=](std::string evaluatorName) mutable
-        {
-            auto index = this["evaluators"]["findIndex"]([=](auto e) mutable
-            {
-                return e["name"] == evaluatorName;
-            }
-            );
-            if (index != -1) {
-                this["evaluators"]["splice"](index, 1);
-            }
-        };
-    }
-    if (!extendedRuntime["unregisterService"]) {
-        extendedRuntime["unregisterService"] = [=](std::string serviceType) mutable
-        {
-            auto service = this["services"]["get"](serviceType);
-            if (service) {
-                std::async([=]() { service["stop"](); });
-                this["services"]["delete"](serviceType);
-            }
-        };
-    }
-};
+void Coreextensions::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Coreextensions::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-void applyRuntimeExtensions(std::shared_ptr<IAgentRuntime> runtime)
-{
-    extendRuntimeWithEventUnregistration(runtime);
-    extendRuntimeWithComponentUnregistration(runtime);
-};
-
-
+} // namespace generated_misc
+} // namespace elizaos

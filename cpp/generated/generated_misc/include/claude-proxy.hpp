@@ -1,111 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-INFERENCE_SRC_CLAUDE-PROXY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-INFERENCE_SRC_CLAUDE-PROXY_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./index.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAUDE_PROXY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAUDE_PROXY_HPP_
 
-typedef std::any ClaudeContent;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ClaudeTool;
-class ClaudeMessage;
-class ClaudeMessagesRequest;
-class ClaudeResponse;
-class OpenAIMessage;
-class ClaudeProxy;
+namespace elizaos {
+namespace generated_misc {
 
-class ClaudeTool : public object, public std::enable_shared_from_this<ClaudeTool> {
+class ClaudeProxy {
 public:
-    using std::enable_shared_from_this<ClaudeTool>::shared_from_this;
-    std::string name;
+    ClaudeProxy() = default;
+    ~ClaudeProxy() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "claude_proxy"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any input_schema;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ClaudeMessage : public object, public std::enable_shared_from_this<ClaudeMessage> {
-public:
-    using std::enable_shared_from_this<ClaudeMessage>::shared_from_this;
-    std::any role;
+} // namespace generated_misc
+} // namespace elizaos
 
-    ClaudeContent content;
-};
-
-class ClaudeMessagesRequest : public object, public std::enable_shared_from_this<ClaudeMessagesRequest> {
-public:
-    using std::enable_shared_from_this<ClaudeMessagesRequest>::shared_from_this;
-    std::string model;
-
-    array<std::shared_ptr<ClaudeMessage>> messages;
-
-    std::string system;
-
-    double max_tokens;
-
-    array<string> stop_sequences;
-
-    boolean stream;
-
-    double temperature;
-
-    double top_p;
-
-    double top_k;
-
-    array<std::shared_ptr<ClaudeTool>> tools;
-
-    object tool_choice;
-};
-
-class ClaudeResponse : public object, public std::enable_shared_from_this<ClaudeResponse> {
-public:
-    using std::enable_shared_from_this<ClaudeResponse>::shared_from_this;
-    std::string id;
-
-    std::string type;
-
-    std::string role;
-
-    std::string model;
-
-    array<object> content;
-
-    std::string stop_reason;
-
-    object usage;
-};
-
-class OpenAIMessage : public object, public std::enable_shared_from_this<OpenAIMessage> {
-public:
-    using std::enable_shared_from_this<OpenAIMessage>::shared_from_this;
-    std::any role;
-
-    std::any content;
-
-    array<object> tool_calls;
-
-    std::string tool_call_id;
-};
-
-class ClaudeProxy : public object, public std::enable_shared_from_this<ClaudeProxy> {
-public:
-    using std::enable_shared_from_this<ClaudeProxy>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
-
-    ClaudeProxy(std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> processRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> makeAnthropicProxyRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::shared_ptr<Promise<InferenceProvider>> selectProvider();
-    virtual std::shared_ptr<Promise<boolean>> isProviderAvailable(InferenceProvider provider);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleOpenAIRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleGroqRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleOllamaRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual array<std::shared_ptr<OpenAIMessage>> convertClaudeToOpenAI(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::string convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual std::string formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, std::string system = undefined);
-    virtual std::shared_ptr<ClaudeResponse> formatClaudeResponse(std::string text, std::string model);
-};
-
-std::any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAUDE_PROXY_HPP_

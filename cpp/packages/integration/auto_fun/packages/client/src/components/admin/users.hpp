@@ -1,59 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_USERS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_USERS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Users {
+public:
+    Users() = default;
+    ~Users() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "users"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Type definitions
-struct User {
-    std::string id;
-    std::string address;
-    std::string | null name;
-    std::string createdAt;
-    std::optional<std::string> lastActive;
-    double points;
-    double rewardPoints;
-    std::optional<bool> suspended;
-    std::vector<TokenCreated> tokensCreated;
-    std::vector<TokenHeld> tokensHeld;
-    std::vector<Transaction> transactions;
-    double totalVolume;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct TokenCreated {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string mint;
-    std::string createdAt;
-};
-
-struct TokenHeld {
-    std::string mint;
-    std::string name;
-    std::string ticker;
-    double balance;
-};
-
-struct Transaction {
-    std::string id;
-    std::string type;
-    std::string token;
-    std::string amount;
-    std::string date;
-};
-
-void AdminUsersList();
-
-void AdminUserDetails({ address: std::string } { address });
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_USERS_HPP_

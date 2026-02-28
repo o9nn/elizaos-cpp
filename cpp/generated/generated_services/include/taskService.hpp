@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_SERVICES_TASKSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_SERVICES_TASKSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./dbCompatibility.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TASKSERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TASKSERVICE_HPP_
 
-class TaskService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TaskService : public object, public std::enable_shared_from_this<TaskService> {
+namespace elizaos {
+namespace generated_services {
+
+class Taskservice {
 public:
-    using std::enable_shared_from_this<TaskService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Taskservice() = default;
+    ~Taskservice() = default;
 
-    TaskService(std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> getTasks(object params = undefined);
-    virtual std::shared_ptr<Promise<any>> createTask(object params);
-    virtual std::shared_ptr<Promise<boolean>> updateTask(std::shared_ptr<UUID> taskId, object updates);
-    virtual std::shared_ptr<Task> normalizeTask(std::shared_ptr<Task> task);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> searchTasksByName(std::string name, object params = undefined);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "taskService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<TaskService> createTaskService(std::shared_ptr<IAgentRuntime> runtime);
+} // namespace generated_services
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TASKSERVICE_HPP_

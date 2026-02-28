@@ -1,43 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_STATE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_STATE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
-#include "v2.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class State {
+public:
+    State() = default;
+    ~State() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "state"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Represents the state of a conversation or context
- * This is a v1 compatibility wrapper for v2 State
- */
-using State = StateFromTypes;
-
-/**
- * Default empty state with required properties
- */
-
-/**
- * Converts v2 State to v1 compatible State
- * Uses the V2 State interface from core-plugin-v2
- */
-State fromV2State(StateV2 stateV2);
-
-/**
- * Converts v1 State to v2 State
- * Creates a state object conforming to V2 State interface
- */
-StateV2 toV2State(State state);
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_STATE_HPP_

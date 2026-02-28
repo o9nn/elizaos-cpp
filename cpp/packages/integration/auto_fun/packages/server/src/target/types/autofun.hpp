@@ -1,25 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TARGET_TYPES_AUTOFUN_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TARGET_TYPES_AUTOFUN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Autofun {
+public:
+    Autofun() = default;
+    ~Autofun() = default;
 
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Note that this is only a type helper and is not the actual IDL. The original
- * IDL can be found at `target/idl/autofun.json`.
- */
-using Autofun = {
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "autofun"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_TARGET_TYPES_AUTOFUN_HPP_

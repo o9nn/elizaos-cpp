@@ -1,18 +1,26 @@
 #include "config-utils.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<RuntimeSettings> loadEnvConfig() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto envInfo = UserEnvironment.getInstanceInfo();
-    if (envInfo.paths.envFilePath) {
-        dotenv.config({ path: envInfo.paths.envFilePath });
-    }
-    return process.env;
-
+bool ConfigUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void ConfigUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ConfigUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

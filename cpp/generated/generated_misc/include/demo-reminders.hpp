@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_SCRIPTS_DEMO-REMINDERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_SCRIPTS_DEMO-REMINDERS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/todoService.h"
-#include "../services/reminderService.h"
-#include "uuid.h"
-using uuidv4 = v4;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DEMO_REMINDERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DEMO_REMINDERS_HPP_
 
-std::any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void monitorReminders(std::shared_ptr<IAgentRuntime> runtime, double duration = 60000);
+namespace elizaos {
+namespace generated_misc {
 
-void cleanupDemo(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<UUID> testUserId);
+class DemoReminders {
+public:
+    DemoReminders() = default;
+    ~DemoReminders() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "demo_reminders"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DEMO_REMINDERS_HPP_

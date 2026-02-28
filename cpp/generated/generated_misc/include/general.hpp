@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_GENERAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_GENERAL_H
-#include "core.h"
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERAL_HPP_
 
-extern array<std::shared_ptr<CodingRule>> PYTHON_CODING_RULES;
-extern array<std::shared_ptr<CodingRule>> TYPESCRIPT_CODING_RULES;
-extern std::shared_ptr<CodingGuidelines> GENERAL_CODING_GUIDELINES;
-extern std::shared_ptr<CodingGuidelines> TYPESCRIPT_CODING_GUIDELINES;
-object validateAgainstRules(std::string code, std::shared_ptr<CodingGuidelines> guidelines);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename P1>
-array<std::shared_ptr<CodingRule>> getApplicableRules(std::string filePath, P1 language = undefined);
+namespace elizaos {
+namespace generated_misc {
 
-template <typename P1>
-array<std::shared_ptr<CodingRule>> getApplicableRules(std::string filePath, P1 language)
-{
-    auto lang = OR((language), (((filePath->endsWith(std::string(".py"))) ? std::string("python") : std::string("typescript"))));
-    return (lang == std::string("python")) ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
+class General {
+public:
+    General() = default;
+    ~General() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "general"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERAL_HPP_

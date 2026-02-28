@@ -1,65 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_LIVEVIDEOCHAT_SRC_SIMLICLIENT_HPP_
+#define ELIZAOS_CPP_EXTERNAL_LIVEVIDEOCHAT_SRC_SIMLICLIENT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace LiveVideoChat {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Simliclient {
+public:
+    Simliclient() = default;
+    ~Simliclient() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "SimliClient"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct SimliClientConfig {
-    std::string apiKey;
-    std::string faceID;
-    bool handleSilence;
-    React.RefObject<HTMLVideoElement> videoRef;
-    React.RefObject<HTMLAudioElement> audioRef;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class SimliClient extends EventEmitter {
-  private pc: RTCPeerConnection | null = null
-  private dc: RTCDataChannel | null = null
-  private dcInterval: NodeJS.Timeout | null = null
-  private candidateCount: number = 0
-  private prevCandidateCount: number = -1
-  private apiKey: std::string = ''
-  private faceID: std::string = ''
-  private handleSilence: boolean = true
-  private videoRef: React.RefObject<HTMLVideoElement> | null = null
-  private audioRef: React.RefObject<HTMLAudioElement> | null = null
-
-  constructor() {
-    super()
-    if (typeof window !== 'undefined') {
-      window.addEventListener('beforeunload', this.handleBeforeUnload)
-      window.addEventListener('pagehide', this.handlePageHide)
-    }
-  }
-
-    // console.log('Server running: ', config.iceServers)
-
-      // console.log('Track event: ', evt.track.kind)
-
-      // console.log('Received message: ', evt.data)
-
-          // console.log(this.pc?.iceGatheringState, this.candidateCount)
-
-    // close data channel
-
-    // close transceivers
-
-    // close local audio / video
-
-    // close peer connection
-
-    // Cleanup
-
-      // The page is being cached for bfcache
-      // The page is being unloaded
-
+} // namespace LiveVideoChat
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_LIVEVIDEOCHAT_SRC_SIMLICLIENT_HPP_

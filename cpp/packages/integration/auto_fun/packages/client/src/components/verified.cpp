@@ -1,27 +1,26 @@
 #include "verified.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void Verified() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!isVerified) return null;
-    return (;
-    <Fragment>;
-    <Tooltip anchorSelect="#verified">;
-    <span>Verified</span>;
-    </Tooltip>;
-
-    <img;
-    src="/verified.svg";
-    id="verified";
-    className="size-4 lg:size-5 select-none"
-    />;
-    </Fragment>;
-    );
-
+bool Verified::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Verified::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Verified::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

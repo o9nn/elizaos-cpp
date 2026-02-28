@@ -1,41 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_MEMORY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_MEMORY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "agent.hpp"
-#include "embedding.hpp"
-#include "entity.hpp"
-#include "room.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Memory {
+public:
+    Memory() = default;
+    ~Memory() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "memory"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Definition of the memory table in the database.
- *
- * @param {string} tableName - The name of the table.
- * @param {object} columns - An object containing the column definitions.
- * @param {function} indexes - A std::function that defines the indexes for the table.
- * @returns {object} - The memory table object.
- */
-    // .references(() => worldTable.id, {
-    //   onDelete: 'std::set null',
-    // }),
-    // foreignKey({
-    //   name: 'fk_world',
-    //   columns: [table.worldId],
-    //   foreignColumns: [worldTable.id],
-    // }).onDelete('std::set null'),
-
-
+} // namespace eliza_plugin_sql
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_SCHEMA_MEMORY_HPP_

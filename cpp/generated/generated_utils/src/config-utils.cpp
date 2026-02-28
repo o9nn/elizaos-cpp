@@ -1,14 +1,26 @@
-#include "eliza/packages/cli/src/commands/start/utils/config-utils.h"
+#include "config-utils.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<RuntimeSettings>>> loadEnvConfig()
-{
-    auto envInfo = std::async([=]() { UserEnvironment->getInstanceInfo(); });
-    if (envInfo->paths->envFilePath) {
-        dotenv->config(object{
-            object::pair{std::string("path"), envInfo->paths->envFilePath}
-        });
-    }
-    return as<std::shared_ptr<RuntimeSettings>>(process->env);
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool ConfigUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void ConfigUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ConfigUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

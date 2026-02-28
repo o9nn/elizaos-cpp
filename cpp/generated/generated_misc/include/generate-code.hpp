@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC_ACTIONS_GENERATE-CODE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC_ACTIONS_GENERATE-CODE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/CodeGenerationService.h"
-#include "../types/index.h"
-#include "@elizaos/plugin-forms.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_CODE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_CODE_HPP_
 
-extern std::shared_ptr<Action> generateCodeAction;
-std::shared_ptr<Promise<string>> extractProjectType(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> _state = undefined);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-array<string> extractRequirements(std::string text);
+namespace elizaos {
+namespace generated_misc {
 
-array<string> extractAPIs(std::string text);
+class GenerateCode {
+public:
+    GenerateCode() = default;
+    ~GenerateCode() = default;
 
-std::any extractProjectName(std::string text);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "generate_code"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::string getNextStepPrompt(std::any form, std::string completedStepId);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::any extractProjectData(std::any formData);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_CODE_HPP_

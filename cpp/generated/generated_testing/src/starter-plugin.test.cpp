@@ -1,8 +1,26 @@
-#include "eliza/packages/project-starter/src/__tests__/e2e/starter-plugin.test.h"
+#include "starter-plugin.test.hpp"
 
-void Main(void)
-{
-    string_empty + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + string_empty;
+namespace elizaos {
+namespace generated_testing {
+
+bool StarterPluginTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void StarterPluginTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json StarterPluginTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

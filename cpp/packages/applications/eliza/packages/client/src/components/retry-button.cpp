@@ -1,30 +1,26 @@
 #include "retry-button.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void RetryButton() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <Tooltip>;
-    <TooltipTrigger asChild>;
-    <Button;
-    variant="ghost";
-    size="icon";
-    "className={" + "text-muted-foreground " + className;
-    onClick={onClick}
-    >;
-    <RotateCcw className="size-3" />;
-    </Button>;
-    </TooltipTrigger>;
-    <TooltipContent side="bottom">;
-    <p>Retry message</p>;
-    </TooltipContent>;
-    </Tooltip>;
-    );
-
+bool RetryButton::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void RetryButton::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json RetryButton::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

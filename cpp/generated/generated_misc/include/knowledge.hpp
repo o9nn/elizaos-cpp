@@ -1,34 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_KNOWLEDGE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_KNOWLEDGE_H
-#include "core.h"
-#include "./memory.h"
-#include "./primitives.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_KNOWLEDGE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_KNOWLEDGE_HPP_
 
-typedef object KnowledgeItem;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-enum struct KnowledgeScope;
-enum struct CacheKeyPrefix;
-class DirectoryItem;
-class ChunkRow;
+namespace elizaos {
+namespace generated_misc {
 
-enum struct KnowledgeScope {
-    SHARED = std::string("shared"), PRIVATE = std::string("private")
-};
-enum struct CacheKeyPrefix {
-    KNOWLEDGE = std::string("knowledge")
-};
-class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
+class Knowledge {
 public:
-    using std::enable_shared_from_this<DirectoryItem>::shared_from_this;
-    std::string directory;
+    Knowledge() = default;
+    ~Knowledge() = default;
 
-    boolean shared;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "knowledge"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ChunkRow : public object, public std::enable_shared_from_this<ChunkRow> {
-public:
-    using std::enable_shared_from_this<ChunkRow>::shared_from_this;
-    std::string id;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_KNOWLEDGE_HPP_

@@ -1,49 +1,26 @@
 #include "tsc-validator.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, bool strict = true) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto tsconfigPath = path.join(projectPath, "tsconfig.json");
-
-    if (!existsSync(tsconfigPath)) {
-        return {
-            success: false,
-            "errors: [" + "No tsconfig.json found at " + tsconfigPath
-            warnings: [],
-            };
-        }
-
-        try {
-            const auto args = ["--noEmit"];
-            if (strict) {
-                args.push_back("--strict");
-            }
-
-            const auto { stdout, stderr } = execa("tsc", args, {;
-                cwd: projectPath,
-                reject: false,
-                });
-
-                const auto hasErrors = (std::find(stderr.begin(), stderr.end(), "error TS") != stderr.end()) || (std::find(stdout.begin(), stdout.end(), "error TS") != stdout.end());
-
-                return {
-                    success: !hasErrors,
-                    errors: hasErrors ? [stderr || stdout] : [],
-                    warnings: (std::find(stderr.begin(), stderr.end(), "warning") != stderr.end()) ? [stderr] : [],
-                    };
-                    } catch (error: std::any) {
-                        std::cerr << "TypeScript validation failed:" << error << std::endl;
-                        return {
-                            success: false,
-                            "errors: [" + "TypeScript validation error: " + error.message
-                            warnings: [],
-                            };
-                        }
-
+bool TscValidator::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void TscValidator::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json TscValidator::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

@@ -1,30 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMOJI_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMOJI_H
-#include "core.h"
-#include "./user.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMOJI_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMOJI_HPP_
 
-class Emoji;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Emoji : public object, public std::enable_shared_from_this<Emoji> {
+namespace elizaos {
+namespace generated_misc {
+
+class Emoji {
 public:
-    using std::enable_shared_from_this<Emoji>::shared_from_this;
-    std::any id;
+    Emoji() = default;
+    ~Emoji() = default;
 
-    std::any name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "emoji"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<std::shared_ptr<Snowflake>> roles;
-
-    std::shared_ptr<User> user;
-
-    boolean require_colons;
-
-    boolean managed;
-
-    boolean animated;
-
-    boolean available;
-
-    Emoji(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMOJI_HPP_

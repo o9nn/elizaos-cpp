@@ -1,50 +1,26 @@
 #include "state.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-State fromV2State(StateV2 stateV2) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Create a new state object starting with default values
-    const State state = {;
-        ...DEFAULT_STATE,
-        ...stateV2.values,
-        ...stateV2.data,
-        text: stateV2.text,
-        };
-
-        // Add std::any other properties from the v2 state
-        for (const int key in stateV2) {
-            if (key != 'values' && key != 'data' && key != 'text') {
-                state[key] = stateV2[key];
-            }
-        }
-
-        return state;
-
+bool State::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-StateV2 toV2State(State state) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Create a base v2 state structure
-    const StateV2 stateV2 = {;
-        values: {},
-        data: {},
-        text: state.text || "",
-        };
-
-        // Add std::any properties from v1 state as-is to preserve them
-        for (const int key in state) {
-            if (key != 'text') {
-                stateV2[key] = state[key];
-            }
-        }
-
-        return stateV2;
-
+void State::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json State::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

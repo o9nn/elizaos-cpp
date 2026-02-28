@@ -1,89 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_CHANNEL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_CHANNEL_H
-#include "core.h"
-#include "../types/default-reaction-object.h"
-#include "../types/forum-tag-object.h"
-#include "../types/overwrite-object.h"
-#include "../types/thread-member-object.h"
-#include "../types/thread-metadata.h"
-#include "./user.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_HPP_
 
-class Channel;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Channel : public object, public std::enable_shared_from_this<Channel> {
+namespace elizaos {
+namespace generated_misc {
+
+class Channel {
 public:
-    using std::enable_shared_from_this<Channel>::shared_from_this;
-    std::shared_ptr<Snowflake> id;
+    Channel() = default;
+    ~Channel() = default;
 
-    double type;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "channel"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Snowflake> guild_id;
-
-    double position;
-
-    array<OverwriteObject> permission_overwrites;
-
-    std::any name;
-
-    std::any topic;
-
-    boolean nsfw;
-
-    std::any last_message_id;
-
-    double bitrate;
-
-    double user_limit;
-
-    double rate_limit_per_user;
-
-    array<std::shared_ptr<User>> recipients;
-
-    std::any icon;
-
-    std::shared_ptr<Snowflake> owner_id;
-
-    std::shared_ptr<Snowflake> application_id;
-
-    boolean managed;
-
-    std::any parent_id;
-
-    std::any last_pin_timestamp;
-
-    std::any rtc_region;
-
-    double video_quality_mode;
-
-    double message_count;
-
-    double member_count;
-
-    ThreadMetaData thread_metadata;
-
-    ThreadMemberObject member;
-
-    double default_auto_archive_duration;
-
-    std::string permissions;
-
-    double flags;
-
-    double total_message_sent;
-
-    array<ForumTagObject> available_tags;
-
-    array<std::shared_ptr<Snowflake>> applied_tags;
-
-    std::any default_reaction_emoji;
-
-    double default_thread_rate_limit_per_user;
-
-    std::any default_sort_order;
-
-    double default_forum_layout;
-
-    Channel(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHANNEL_HPP_

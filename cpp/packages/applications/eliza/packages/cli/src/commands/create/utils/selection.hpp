@@ -1,54 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_SELECTION_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_SELECTION_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Selection {
+public:
+    Selection() = default;
+    ~Selection() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "selection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Returns a list of available databases for project initialization without requiring external API calls.
- */
-
-/**
- * Gets available AI models for selection during project creation.
- */
-std::vector<AIModelOption> getAvailableAIModels();
-
-/**
- * Gets available database options for selection during project creation.
- */
-std::vector<DatabaseOption> getAvailableDatabases();
-
-/**
- * Prompts user to select a database type with interactive UI.
- */
-std::future<std::string> selectDatabase();
-
-/**
- * Prompts user to select an AI model with interactive UI.
- */
-std::future<std::string> selectAIModel();
-
-/**
- * Gets available embedding models for selection when primary AI model doesn't support embeddings.
- */
-std::vector<AIModelOption> getAvailableEmbeddingModels();
-
-/**
- * Prompts user to select an embedding model when the primary AI model doesn't support embeddings.
- */
-std::future<std::string> selectEmbeddingModel();
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_SELECTION_HPP_

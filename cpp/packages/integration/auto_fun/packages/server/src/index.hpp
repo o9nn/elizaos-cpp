@@ -1,82 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "allowedOrigins.hpp"
-#include "auth/auth.hpp"
-#include "cron.hpp"
-#include "env.hpp"
-#include "mcap.hpp"
-#include "middleware/rateLimiter.hpp"
-#include "redis.hpp"
-#include "routes/admin.hpp"
-#include "routes/admin/pregenerated.hpp"
-#include "routes/agents.hpp"
-#include "routes/auth.hpp"
-#include "routes/chat.hpp"
-#include "routes/files.hpp"
-#include "routes/generation.hpp"
-#include "routes/migration.hpp"
-#include "routes/share.hpp"
-#include "routes/swap.hpp"
-#include "routes/token.hpp"
-#include "routes/user.hpp"
-#include "routes/webhooks.hpp"
-#include "util.hpp"
-#include "websocket-manager.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
- // Import the cron task runner
- // Assuming Env type is defined and includes Redis vars
-
- // Import the new router
-
-struct AppVariables {
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Setup Solana connection
-
-// --- Middleware ---
-
-// CORS Middleware (from original index.ts)
-
-  // --- Mount the API sub-router ---
-
-// --- Special Cron Trigger Route ---
-// Use a non-standard path and require a secret header
-
-// Mount this route directly on the main app, outside /api if desired
-
-  // The lock mechanism inside runCronTasks will prevent overlaps.
-
-  // Return immediately to the cron runner
-
-// --- Root and Maintenance Routes ---
-
-// --- Not Found Handler ---
-
-// --- Error Handler ---
-  // Avoid leaking stack traces in production
-
-  // --- Initialize Services ---
-
-  // Initialize WebSocketManager with Redis
-
-// --- Create Bun WebSocket handlers ---
-// --- Add WebSocket Upgrade Route ---
-
-// Export fetch and websocket handlers for Bun
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_INDEX_HPP_

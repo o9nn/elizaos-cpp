@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
-#include "core.h"
-#include "@/src/characters/eliza.h"
-#include "@/src/utils.h"
-using copyTemplateUtil = copyTemplate;
-#include "path.h"
-#include "node:fs/promises.h"
-using fs = _default;
-#include "@clack/prompts.h"
-#include "yoctocolors.h"
-using colors = _default;
-#include "../utils.h"
-#include "./setup.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CREATORS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CREATORS_HPP_
 
-std::shared_ptr<Promise<void>> createPlugin(std::string pluginName, std::string targetDir, boolean isNonInteractive = false);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<void>> createAgent(std::string agentName, std::string targetDir, boolean isNonInteractive = false);
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<void>> createTEEProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel = undefined, boolean isNonInteractive = false);
+class Creators {
+public:
+    Creators() = default;
+    ~Creators() = default;
 
-std::shared_ptr<Promise<void>> createProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel = undefined, boolean isNonInteractive = false);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "creators"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-#endif
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CREATORS_HPP_

@@ -1,29 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_AGENT_UPDATE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_AGENT_UPDATE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UseAgentUpdate {
+public:
+    UseAgentUpdate() = default;
+    ~UseAgentUpdate() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_agent_update"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * A custom hook for handling Agent updates with specific handling for JSONb fields.
- * This hook builds on usePartialUpdate but adds Agent-specific convenience methods
- * organized by the UI tabs (Basic Info, Content, Style, Plugins, etc.).
- *
- * @param initialAgent The initial Agent object
- * @returns Object with agent state and update methods
- */
-void useAgentUpdate(Agent initialAgent);
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_AGENT_UPDATE_HPP_

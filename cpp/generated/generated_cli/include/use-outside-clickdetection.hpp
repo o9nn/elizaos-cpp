@@ -1,7 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-OUTSIDE-CLICKDETECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-OUTSIDE-CLICKDETECTION_H
-#include "core.h"
-#include "react.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_USE_OUTSIDE_CLICKDETECTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_USE_OUTSIDE_CLICKDETECTION_HPP_
 
-extern std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_cli {
+
+class UseOutsideClickdetection {
+public:
+    UseOutsideClickdetection() = default;
+    ~UseOutsideClickdetection() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_outside_clickdetection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_cli
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_USE_OUTSIDE_CLICKDETECTION_HPP_

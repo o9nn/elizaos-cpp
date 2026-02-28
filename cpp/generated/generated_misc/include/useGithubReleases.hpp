@@ -1,78 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_LANDER_SRC_HOOKS_USEGITHUBRELEASES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_LANDER_SRC_HOOKS_USEGITHUBRELEASES_H
-#include "core.h"
-#include "react.h"
-#include "../utils/repository.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEGITHUBRELEASES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEGITHUBRELEASES_HPP_
 
-class GitHubAsset;
-class GitHubRelease;
-class DownloadLink;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class GitHubAsset : public object, public std::enable_shared_from_this<GitHubAsset> {
+namespace elizaos {
+namespace generated_misc {
+
+class Usegithubreleases {
 public:
-    using std::enable_shared_from_this<GitHubAsset>::shared_from_this;
-    double id;
+    Usegithubreleases() = default;
+    ~Usegithubreleases() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "useGithubReleases"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string label;
-
-    std::string content_type;
-
-    double size;
-
-    double download_count;
-
-    std::string browser_download_url;
-
-    std::string created_at;
-
-    std::string updated_at;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class GitHubRelease : public object, public std::enable_shared_from_this<GitHubRelease> {
-public:
-    using std::enable_shared_from_this<GitHubRelease>::shared_from_this;
-    double id;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string tag_name;
-
-    std::string name;
-
-    std::string body;
-
-    boolean draft;
-
-    boolean prerelease;
-
-    std::string created_at;
-
-    std::string published_at;
-
-    array<std::shared_ptr<GitHubAsset>> assets;
-
-    std::string html_url;
-
-    std::string tarball_url;
-
-    std::string zipball_url;
-};
-
-class DownloadLink : public object, public std::enable_shared_from_this<DownloadLink> {
-public:
-    using std::enable_shared_from_this<DownloadLink>::shared_from_this;
-    std::any platform;
-
-    std::any architecture;
-
-    std::string filename;
-
-    std::string size;
-
-    std::string downloadUrl;
-
-    std::any type;
-};
-
-extern std::function<object()> useGithubReleases;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEGITHUBRELEASES_HPP_

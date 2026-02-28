@@ -1,60 +1,26 @@
 #include "grid-list-switcher.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void GridListSwitcher() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto [activeTab, setActiveTab] = useViewMode();
-
-    const auto toggleViewMode = [&]() {;
-        setActiveTab(activeTab == "grid" ? "list" : "grid");
-        };
-
-        return (;
-        <>;
-    {/* Two buttons shown on sm screens and larger */}
-    <div className="hidden sm:flex items-center gap-1">
-    <Button;
-    variant={activeTab == "grid" ? "primary" : "outline"}
-    onClick={() => setActiveTab("grid")}
-    aria-label="grid";
-    className="p-2";
-    >;
-    <Grid color="#eee" size={24} />;
-    </Button>;
-    <Button;
-    variant={activeTab == "list" ? "primary" : "outline"}
-    onClick={() => setActiveTab("list")}
-    className="p-2";
-    aria-label="list";
-    >;
-    <List className="size-6" />;
-    </Button>;
-    </div>;
-
-    {/* Single toggle button shown below sm screens */}
-    <div className="block sm:hidden">
-    <Button;
-    variant="outline";
-    onClick={toggleViewMode}
-    aria-label={
-        activeTab == "grid" ? "Switch to list view" : "Switch to grid view"
-    }
-    className="p-2";
-    >;
-    {activeTab == "grid" ? (;
-    <Grid color="#eee" size={24} /> // Show Grid icon when grid is active;
-    ) : (
-    <List className="size-6" /> // Show List icon when list is active;
-    )}
-    </Button>;
-    </div>;
-    </>;
-    );
-
+bool GridListSwitcher::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void GridListSwitcher::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json GridListSwitcher::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

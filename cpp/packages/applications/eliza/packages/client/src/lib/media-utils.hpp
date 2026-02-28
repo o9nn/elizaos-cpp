@@ -1,61 +1,35 @@
-#pragma once
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_LIB_MEDIA_UTILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_LIB_MEDIA_UTILS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <variant>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class MediaUtils {
+public:
+    MediaUtils() = default;
+    ~MediaUtils() = default;
 
-/**
- * Utility functions for parsing and handling media URLs in chat messages
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "media_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-struct MediaInfo {
-    std::string url;
-    std::variant<'image', 'video', 'unknown'> type;
-    bool isEmbed;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Common image extensions
-
-// Common video extensions
-
-// Video platforms that support embedding
-
-/**
- * Extracts the file extension from a URL
- */
-std::string getFileExtension(const std::string& url);
-
-/**
- * Checks if a URL points to an image
- */
-bool isImageUrl(const std::string& url);
-
-/**
- * Checks if a URL points to a video file
- */
-bool isVideoFileUrl(const std::string& url);
-
-/**
- * Checks if a URL is from a supported video platform
- */
-void getVideoPlatformInfo(const std::string& url); | null {
-
-/**
- * Parses URLs from text and identifies media types
- */
-std::vector<MediaInfo> parseMediaFromText(const std::string& text);
-
-/**
- * Removes media URLs from text to avoid duplication in display
- */
-std::string removeMediaUrlsFromText(const std::string& text, const std::vector<MediaInfo>& mediaInfos);
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_LIB_MEDIA_UTILS_HPP_

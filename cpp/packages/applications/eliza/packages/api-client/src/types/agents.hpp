@@ -1,70 +1,35 @@
-#include "base.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AGENTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AGENTS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Agents {
+public:
+    Agents() = default;
+    ~Agents() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agents"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct Agent {
-    UUID id;
-    std::string name;
-    std::optional<std::string> description;
-    'active' | 'inactive' | 'stopped' status;
-    Date createdAt;
-    Date updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct AgentCreateParams {
-    std::string name;
-    std::optional<std::string> description;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-};
-
-struct AgentUpdateParams {
-    std::optional<std::string> name;
-    std::optional<std::string> description;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-};
-
-struct AgentWorld {
-    UUID id;
-    std::string name;
-    std::optional<std::string> description;
-    std::optional<std::vector<Agent>> agents;
-};
-
-struct AgentWorldSettings {
-    UUID worldId;
-    std::unordered_map<std::string, std::any> settings;
-};
-
-struct AgentPanel {
-    std::string id;
-    std::string name;
-    std::string url;
-    std::string type;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-};
-
-struct AgentLog {
-    UUID id;
-    UUID agentId;
-    'debug' | 'info' | 'warn' | 'error' level;
-    std::string message;
-    Date timestamp;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_AGENTS_HPP_

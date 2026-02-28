@@ -1,43 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_ROLES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_ROLES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "roles.hpp"
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Roles {
+public:
+    Roles() = default;
+    ~Roles() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "roles"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Interface representing the ownership state of servers.
- * @property {Object.<std::string, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
- */
-struct ServerOwnershipState {
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Retrieve the server role of a specified user entity within a given server.
- *
- * @param {IAgentRuntime} runtime - The runtime object containing necessary configurations and services.
- * @param {string} entityId - The unique identifier of the user entity.
- * @param {string} serverId - The unique identifier of the server.
- * @returns {Promise<Role>} The role of the user entity within the server, resolved as a Promise.
- */
-std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId);
-
-/**
- * Finds a server where the given user is the owner
- */
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_ROLES_HPP_

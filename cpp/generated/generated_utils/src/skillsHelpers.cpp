@@ -1,55 +1,26 @@
-#include "elizaos.github.io/src/lib/skillsHelpers.h"
+#include "skillsHelpers.hpp"
 
-object calculateLevelStats(double xp)
-{
-    if (xp < 0) {
-        return object{
-            object::pair{std::string("level"), 1}, 
-            object::pair{std::string("xpToNextLevel"), Math->floor((1 / 4) * xpSum(1))}, 
-            object::pair{std::string("progress"), 0}
-        };
-    }
-    auto level = 1;
-    auto maxLevel = 99;
-    while (level < maxLevel)
-    {
-        auto nextLevelXP = Math->floor((1 / 4) * xpSum(level));
-        if (xp < nextLevelXP) {
-            auto xpToNextLevel = nextLevelXP - xp;
-            auto currentLevelXP = Math->floor((1 / 4) * xpSum(level - 1));
-            auto progress = (xp - currentLevelXP) / (nextLevelXP - currentLevelXP);
-            return object{
-                object::pair{std::string("level"), std::string("level")}, 
-                object::pair{std::string("xpToNextLevel"), std::string("xpToNextLevel")}, 
-                object::pair{std::string("progress"), std::string("progress")}
-            };
-        }
-        level++;
-    }
-    return object{
-        object::pair{std::string("level"), maxLevel}, 
-        object::pair{std::string("xpToNextLevel"), 0}, 
-        object::pair{std::string("progress"), 0}
-    };
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool Skillshelpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-double xpSum(double level)
-{
-    auto total = 0;
-    for (auto i = 1; i <= level; i++)
-    {
-        total += Math->floor(i + 150 * Math->pow(2, i / 10));
-    }
-    return total;
-};
+void Skillshelpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Skillshelpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-double xpForLevel(double level)
-{
-    if (level <= 1) return 0;
-    if (level > 99) level = 99;
-    return Math->floor((1 / 4) * xpSum(level - 1));
-};
-
-
+} // namespace generated_utils
+} // namespace elizaos

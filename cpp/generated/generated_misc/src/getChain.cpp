@@ -1,59 +1,26 @@
-#include "otc-agent/src/lib/getChain.h"
+#include "getChain.hpp"
 
-std::shared_ptr<Chain> getChain()
-{
-    auto network = getCurrentNetwork();
-    if (network == std::string("mainnet")) return base;
-    if (network == std::string("testnet")) return baseSepolia;
-    if (network == std::string("local")) return anvil;
-    return base;
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::string getRpcUrl()
-{
-    auto config = getEvmConfig();
-    return config->rpc;
-};
-
-
-std::string getRpcUrlForChain(std::string chainType)
-{
-    static switch_type __switch1068_1734 = {
-        { std::any(std::string("base")), 1 },
-        { std::any(std::string("base-sepolia")), 2 },
-        { std::any(std::string("bsc")), 3 },
-        { std::any(std::string("bsc-testnet")), 4 },
-        { std::any(std::string("localhost")), 5 },
-        { std::any(std::string("anvil")), 6 }
-    };
-    switch (__switch1068_1734[chainType])
-    {
-    case 1:
-        return OR((process->env->NEXT_PUBLIC_BASE_RPC_URL), (std::string("https://mainnet.base.org")));
-    case 2:
-        return OR((process->env->NEXT_PUBLIC_BASE_RPC_URL), (std::string("https://sepolia.base.org")));
-    case 3:
-        return (OR((process->env->NEXT_PUBLIC_BSC_RPC_URL), (std::string("https://bsc-dataseed1.binance.org"))));
-    case 4:
-        return (OR((process->env->NEXT_PUBLIC_BSC_RPC_URL), (std::string("https://data-seed-prebsc-1-s1.binance.org:8545"))));
-    case 5:
-    case 6:
-        return OR((process->env->NEXT_PUBLIC_RPC_URL), (std::string("http://127.0.0.1:8545")));
-    default:
-        return getRpcUrl();
-    }
-};
-
-
-std::shared_ptr<Chain> anvil = utils::assign(object{
-    , 
-    object::pair{std::string("id"), 31337}, 
-    object::pair{std::string("name"), std::string("Anvil")}
-}, localhost);
-
-void Main(void)
-{
+bool Getchain::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Getchain::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Getchain::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

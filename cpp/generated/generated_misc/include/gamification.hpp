@@ -1,111 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_GAMIFICATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_GAMIFICATION_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../lib/base-client.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GAMIFICATION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GAMIFICATION_HPP_
 
-class LeaderboardEntry;
-class LeaderboardResponse;
-class UserSummary;
-class ReferralStats;
-class ReferralCodeResponse;
-class GamificationService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class LeaderboardEntry : public object, public std::enable_shared_from_this<LeaderboardEntry> {
+namespace elizaos {
+namespace generated_misc {
+
+class Gamification {
 public:
-    using std::enable_shared_from_this<LeaderboardEntry>::shared_from_this;
-    double rank;
+    Gamification() = default;
+    ~Gamification() = default;
 
-    std::string userId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "gamification"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double points;
-
-    double level;
-
-    std::string levelName;
-
-    std::string username;
-
-    std::string avatar;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class LeaderboardResponse : public object, public std::enable_shared_from_this<LeaderboardResponse> {
-public:
-    using std::enable_shared_from_this<LeaderboardResponse>::shared_from_this;
-    std::any scope;
+} // namespace generated_misc
+} // namespace elizaos
 
-    array<std::shared_ptr<LeaderboardEntry>> entries;
-
-    double userRank;
-
-    double limit;
-};
-
-class UserSummary : public object, public std::enable_shared_from_this<UserSummary> {
-public:
-    using std::enable_shared_from_this<UserSummary>::shared_from_this;
-    std::string userId;
-
-    double allTimePoints;
-
-    double weeklyPoints;
-
-    double streakDays;
-
-    double level;
-
-    std::string levelName;
-
-    object nextMilestone;
-
-    std::any lastLoginDate;
-
-    double swapsCompleted;
-};
-
-class ReferralStats : public object, public std::enable_shared_from_this<ReferralStats> {
-public:
-    using std::enable_shared_from_this<ReferralStats>::shared_from_this;
-    double totalReferrals;
-
-    double activatedReferrals;
-
-    double totalPointsEarned;
-};
-
-class ReferralCodeResponse : public object, public std::enable_shared_from_this<ReferralCodeResponse> {
-public:
-    using std::enable_shared_from_this<ReferralCodeResponse>::shared_from_this;
-    std::string code;
-
-    std::shared_ptr<ReferralStats> stats;
-
-    std::string referralLink;
-};
-
-class GamificationService : public BaseApiClient, public std::enable_shared_from_this<GamificationService> {
-public:
-    using std::enable_shared_from_this<GamificationService>::shared_from_this;
-    template <typename P1>
-    std::shared_ptr<Promise<std::shared_ptr<LeaderboardResponse>>> getLeaderboard(std::shared_ptr<UUID> agentId, P1 scope = std::string("weekly"), double limit = 50, std::shared_ptr<UUID> userId = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<UserSummary>>> getUserSummary(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ReferralCodeResponse>>> getReferralCode(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId);
-    GamificationService(std::shared_ptr<ApiClientConfig> config);
-};
-
-template <typename P1>
-std::shared_ptr<Promise<std::shared_ptr<LeaderboardResponse>>> GamificationService::getLeaderboard(std::shared_ptr<UUID> agentId, P1 scope, double limit, std::shared_ptr<UUID> userId)
-{
-    auto params = object{
-        object::pair{std::string("scope"), std::string("scope")}, 
-        object::pair{std::string("limit"), limit->toString()}
-    };
-    if (userId) {
-        params->userId = userId;
-    }
-    return this->get<std::shared_ptr<LeaderboardResponse>>(std::string("/api/agents/") + agentId + std::string("/plugins/gamification/leaderboard"), object{
-        object::pair{std::string("params"), std::string("params")}
-    });
-}
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GAMIFICATION_HPP_

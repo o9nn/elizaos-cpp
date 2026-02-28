@@ -1,43 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_UTILS_PACKAGE_UTILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_UTILS_PACKAGE_UTILS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "types.hpp"
-#include "version-utils.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class PackageUtils {
+public:
+    PackageUtils() = default;
+    ~PackageUtils() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "package_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Check for available updates
- */
-std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies);
-
-/**
- * Display update summary
- */
-void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates);
-
-/**
- * Update package.json with new versions
- */
-std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates);
-
-/**
- * Install dependencies using the detected package manager
- */
-std::future<void> installDependencies(const std::string& cwd);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_UTILS_PACKAGE_UTILS_HPP_

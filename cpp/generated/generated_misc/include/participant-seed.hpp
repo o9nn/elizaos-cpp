@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_PARTICIPANT-SEED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_PARTICIPANT-SEED_H
-#include "core.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PARTICIPANT_SEED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PARTICIPANT_SEED_HPP_
 
-extern std::any participantTestAgentId;
-extern std::any participantTestEntityId;
-extern std::any participantTestRoomId;
-extern std::any participantTestWorldId;
-extern std::shared_ptr<Agent> participantTestAgent;
-extern std::shared_ptr<Entity> participantTestEntity;
-extern std::shared_ptr<World> participantTestWorld;
-extern std::shared_ptr<Room> participantTestRoom;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class ParticipantSeed {
+public:
+    ParticipantSeed() = default;
+    ~ParticipantSeed() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "participant_seed"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PARTICIPANT_SEED_HPP_

@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_UTILS_PLUGIN-TEMPLATES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_UTILS_PLUGIN-TEMPLATES_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_TEMPLATES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_TEMPLATES_HPP_
 
-extern std::function<std::string(std::string, std::string, std::shared_ptr<Record<std::string, any>>)> generateActionCode;
-extern std::function<std::string(std::string, std::string, std::shared_ptr<Record<std::string, any>>)> generateProviderCode;
-extern std::function<std::string(std::string, std::string, array<string>)> generateServiceCode;
-extern std::function<std::string(std::string, std::string, array<string>)> generateEvaluatorCode;
-extern std::function<std::string(std::string, std::any)> generatePluginIndex;
-extern std::function<std::string(std::string, std::string)> generateTestCode;
-extern std::function<std::string(std::string, std::string, std::shared_ptr<Record<std::string, any>>)> actionTemplate;
-extern std::function<std::string(std::string, std::string, std::shared_ptr<Record<std::string, any>>)> providerTemplate;
-extern std::function<std::string(std::string, std::string, array<string>)> serviceTemplate;
-extern std::function<std::string(std::string, std::string, array<string>)> evaluatorTemplate;
-extern std::function<std::string(std::string, std::any)> pluginIndexTemplate;
-extern std::function<std::string(std::string, std::string)> testTemplate;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_plugins {
+
+class PluginTemplates {
+public:
+    PluginTemplates() = default;
+    ~PluginTemplates() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin_templates"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_plugins
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_TEMPLATES_HPP_

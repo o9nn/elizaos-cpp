@@ -1,6 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_HELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_HELPERS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_HELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_HELPERS_HPP_
 
-extern std::function<std::string(std::string, double)> truncateAddress;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_utils {
+
+class Helpers {
+public:
+    Helpers() = default;
+    ~Helpers() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "helpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_HELPERS_HPP_

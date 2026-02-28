@@ -1,31 +1,26 @@
-#include "autonomous-starter/src/plugin-bootstrap/providers/time.h"
+#include "time.hpp"
 
-std::shared_ptr<Provider> timeProvider = object{
-    object::pair{std::string("name"), std::string("TIME")}, 
-    object::pair{std::string("get"), [=](auto _runtime, auto _message) mutable
-    {
-        auto currentDate = std::make_shared<Date>();
-        auto options = object{
-            object::pair{std::string("timeZone"), std::string("UTC")}, 
-            object::pair{std::string("dateStyle"), as<std::shared_ptr<const>>(std::string("full"))}, 
-            object::pair{std::string("timeStyle"), as<std::shared_ptr<const>>(std::string("long"))}
-        };
-        auto humanReadable = ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), options)))->format(currentDate);
-        return object{
-            object::pair{std::string("data"), object{
-                object::pair{std::string("time"), currentDate}
-            }}, 
-            object::pair{std::string("values"), object{
-                object::pair{std::string("time"), humanReadable}
-            }}, 
-            object::pair{std::string("text"), std::string("The current date and time is ") + humanReadable + std::string(". Please use this as your reference for std::any time-based operations or responses.")}
-        };
-    }
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Time::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Time::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Time::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

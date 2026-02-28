@@ -1,44 +1,26 @@
-#include "elizas-list/src/lib/analytics/visualization.h"
+#include "visualization.hpp"
 
-std::shared_ptr<ChartConfiguration> AnalyticsVisualization::generateTimeSeriesChart(array<std::shared_ptr<TimeSeriesDataPoint>> data)
-{
-    return object{
-        object::pair{std::string("type"), std::string("line")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("labels"), data->std::map([=](auto d) mutable
-            {
-                return d->date;
-            }
-            )}, 
-            object::pair{std::string("datasets"), array<object>{ object{
-                object::pair{std::string("label"), std::string("Views")}, 
-                object::pair{std::string("data"), data->std::map([=](auto d) mutable
-                {
-                    return d->value;
-                }
-                )}
-            } }}
-        }}, 
-        object::pair{std::string("options"), object{
-            object::pair{std::string("responsive"), true}
-        }}
-    };
+namespace elizaos {
+namespace generated_misc {
+
+bool Visualization::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<ChartConfiguration> AnalyticsVisualization::generateHeatmap(std::shared_ptr<InteractionData> data)
-{
-    return object{
-        object::pair{std::string("type"), std::string("bar")}, 
-        object::pair{std::string("data"), object{
-            object::pair{std::string("labels"), Object->keys(data)}, 
-            object::pair{std::string("datasets"), array<object>{ object{
-                object::pair{std::string("label"), std::string("Interactions")}, 
-                object::pair{std::string("data"), Object->values(data)}
-            } }}
-        }}, 
-        object::pair{std::string("options"), object{
-            object::pair{std::string("responsive"), true}
-        }}
-    };
+void Visualization::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Visualization::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

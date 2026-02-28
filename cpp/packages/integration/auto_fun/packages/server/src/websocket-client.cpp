@@ -1,17 +1,26 @@
 #include "websocket-client.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-WebSocketClient getWebSocketClient() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!wsClient) {
-        wsClient = new WebSocketClient();
-    }
-    return wsClient;
-
+bool WebsocketClient::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void WebsocketClient::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json WebsocketClient::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_server
 } // namespace elizaos

@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_S3CLIENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_S3CLIENT_H
-#include "core.h"
-#include "@aws-sdk/client-s3.h"
-#include "./util.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_API_INCLUDE_S3CLIENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_API_INCLUDE_S3CLIENT_HPP_
 
-extern std::string PUBLIC_STORAGE_BASE_URL;
-extern std::string DEFAULT_MINIO_ENDPOINT;
-extern std::string DEFAULT_MINIO_ACCESS_KEY;
-extern std::string DEFAULT_MINIO_SECRET_KEY;
-extern std::string DEFAULT_MINIO_BUCKET;
-extern std::string DEFAULT_MINIO_REGION;
-extern std::any s3ClientInstance;
-extern boolean isUsingMinio;
-extern std::any resolvedBucketName;
-extern std::any resolvedPublicBaseUrl;
-extern boolean isInitialized;
-std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client> client, std::string bucketName);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<object>> getS3Client();
+namespace elizaos {
+namespace generated_api {
 
-#endif
+class S3client {
+public:
+    S3client() = default;
+    ~S3client() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "s3Client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_api
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_API_INCLUDE_S3CLIENT_HPP_

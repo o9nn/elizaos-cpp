@@ -1,32 +1,26 @@
-#include "eliza/packages/plugin-sql/src/schema/serverAgent.h"
+#include "serverAgent.hpp"
 
-std::any serverAgentsTable = pgTable(std::string("server_agents"), object{
-    object::pair{std::string("serverId"), uuid(std::string("server_id"))->notNull()->references([=]() mutable
-    {
-        return messageServerTable->id;
-    }
-    , object{
-        object::pair{std::string("onDelete"), std::string("cascade")}
-    })}, 
-    object::pair{std::string("agentId"), uuid(std::string("agent_id"))->notNull()->references([=]() mutable
-    {
-        return agentTable->id;
-    }
-    , object{
-        object::pair{std::string("onDelete"), std::string("cascade")}
-    })}
-}, [=](auto table) mutable
-{
-    return (object{
-        object::pair{std::string("pk"), primaryKey(object{
-            object::pair{std::string("columns"), array<any>{ table["serverId"], table["agentId"] }}
-        })}
-    });
-}
-);
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Serveragent::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Serveragent::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Serveragent::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,11 +1,26 @@
-#include "vercel-api/next.config.h"
+#include "next.config.hpp"
 
-std::shared_ptr<NextConfig> nextConfig = object{
-    object::pair{std::string("experimental"), object{}}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool NextConfig::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void NextConfig::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json NextConfig::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

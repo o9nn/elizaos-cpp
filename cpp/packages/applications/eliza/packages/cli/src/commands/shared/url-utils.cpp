@@ -1,25 +1,26 @@
 #include "url-utils.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::string getAgentRuntimeUrl(OptionValues opts) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    opts.remoteUrl.replace(/\/$/, "") || // Use the flag if provided;
-    process.env.AGENT_RUNTIME_URL.replace(/\/$/, "") || // Fallback to env var;
-    "http://localhost:" + std::to_string(opts.port || process.env.SERVER_PORT || "3000")
-    );
-
+bool UrlUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::string getAgentsBaseUrl(OptionValues opts) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return std::to_string(getAgentRuntimeUrl(opts)) + "/api/agents";
-
+void UrlUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json UrlUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

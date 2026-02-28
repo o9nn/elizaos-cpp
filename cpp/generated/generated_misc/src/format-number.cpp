@@ -1,12 +1,26 @@
-#include "elizaos.github.io/src/lib/format-number.h"
+#include "format-number.hpp"
 
-std::string formatCompactNumber(double number, double maximumFractionDigits)
-{
-    auto formatter = Intl::NumberFormat(std::string("en"), object{
-        object::pair{std::string("notation"), std::string("compact")}, 
-        object::pair{std::string("maximumFractionDigits"), std::string("maximumFractionDigits")}
-    });
-    return formatter->format(number);
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool FormatNumber::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void FormatNumber::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json FormatNumber::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

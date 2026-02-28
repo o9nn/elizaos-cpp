@@ -1,34 +1,26 @@
-#include "otc-agent/src/hooks/useDeploymentValidation.h"
+#include "useDeploymentValidation.hpp"
 
-void useDeploymentValidation()
-{
-    useEffect([=]() mutable
-    {
-        if (process->env->NODE_ENV == std::string("development")) return;
-        auto chains = array<std::shared_ptr<Chain>>{ std::string("base"), std::string("solana") };
-        auto missing = array<string>();
-        for (auto& chain : chains)
-        {
-            auto config = getChainConfig(chain);
-            if (isEVMChain(chain)) {
-                if (!config->contracts->otc) missing->push(string_empty + chain + std::string(" (OTC Contract)"));
-            }
-            if (isSolanaChain(chain)) {
-                if (!config->contracts->otc) missing->push(string_empty + chain + std::string(" (Desk Address)"));
-            }
-        }
-        if (missing->get_length() > 0) {
-            console->error(std::string("❌ CRITICAL: Missing deployment configuration for: ") + missing->join(std::string(", ")) + std::string(". ") + std::string("Please ensure deployment JSONs are present in src/config/deployments/ or env vars are set."));
-        }
-    }
-    , array<any>());
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-
-void Main(void)
-{
-    std::string("use client");
+bool Usedeploymentvalidation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Usedeploymentvalidation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Usedeploymentvalidation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

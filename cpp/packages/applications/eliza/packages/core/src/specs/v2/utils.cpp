@@ -1,70 +1,26 @@
 #include "utils.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-void upgradeDoubleToTriple(auto tpl) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreUpgradeDoubleToTriple(tpl);
-
+bool Utils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::optional<UUID> validateUuid(const std::any& value) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreValidateUuid(value);
-
+void Utils::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-UUID stringToUuid(const std::variant<std::string, double>& target) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreStringToUuid(target);
-
+nlohmann::json Utils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::string truncateToCompleteSentence(const std::string& text, double maxLength) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreTruncateToCompleteSentence(text, maxLength);
-
-}
-
-std::optional<std::unordered_map<std::string, std::any>> parseKeyValueXml(const std::string& text) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreParseKeyValueXml(text);
-
-}
-
-std::optional<std::unordered_map<std::string, std::any>> parseJSONObjectFromText(const std::string& text) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreParseJSONObjectFromText(text);
-
-}
-
-std::optional<bool> parseBooleanFromText(const std::string& text) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreParseBooleanFromText(text);
-
-}
-
-std::function<std::any(std::string, std::any)> safeReplacer() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreSafeReplacer();
-
-}
-
-std::future<std::string> trimTokens(const std::string& text, double maxTokens, CoreIAgentRuntime runtime) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreTrimTokens(text, maxTokens, runtime);
-
-}
-
+} // namespace eliza_core
 } // namespace elizaos

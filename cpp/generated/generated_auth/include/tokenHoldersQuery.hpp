@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_TOKENHOLDERSQUERY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_TOKENHOLDERSQUERY_H
-#include "core.h"
-#include "./global.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENHOLDERSQUERY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENHOLDERSQUERY_HPP_
 
-class RawHoldersQuery;
-class ParsedHoldersQuery;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class RawHoldersQuery : public object, public std::enable_shared_from_this<RawHoldersQuery> {
+namespace elizaos {
+namespace generated_auth {
+
+class Tokenholdersquery {
 public:
-    using std::enable_shared_from_this<RawHoldersQuery>::shared_from_this;
-    std::string limit;
+    Tokenholdersquery() = default;
+    ~Tokenholdersquery() = default;
 
-    std::string page;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tokenHoldersQuery"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ParsedHoldersQuery : public object, public std::enable_shared_from_this<ParsedHoldersQuery> {
-public:
-    using std::enable_shared_from_this<ParsedHoldersQuery>::shared_from_this;
-    std::string mint;
+} // namespace generated_auth
+} // namespace elizaos
 
-    double limit;
-
-    double page;
-
-    double offset;
-};
-
-std::shared_ptr<ParsedHoldersQuery> parseHoldersQuery(std::any mintParam, std::shared_ptr<RawHoldersQuery> query);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENHOLDERSQUERY_HPP_

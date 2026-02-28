@@ -1,21 +1,26 @@
 #include "db.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-void getDB() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!dbInstance) {
-        // Use DATABASE_URL from environment or the default local URL
-        const auto connectionString = process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
-        std::cout << "[DB] Connecting to database: " + std::to_string(connectionString == DEFAULT_DATABASE_URL ? "DEFAULT LOCAL DB" : "ENV VAR DB") << std::endl;
-        const auto poolInstance = new Pool({ connectionString });
-        dbInstance = drizzle(poolInstance, { schema });
-    }
-    return dbInstance;
-
+bool Db::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Db::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Db::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_server
 } // namespace elizaos

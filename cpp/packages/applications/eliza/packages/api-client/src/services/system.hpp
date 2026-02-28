@@ -1,56 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/system.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_SYSTEM_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_SYSTEM_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class System {
+public:
+    System() = default;
+    ~System() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "system"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class SystemService extends BaseApiClient {
-  /**
-   * Retrieve the local environment variables from the ElizaOS server.
-   *
-   * Server route (packages/server/src/api/system):
-   *   GET /api/system/env/local  ->  { success: true, data: Record<std::string,string> }
-   */
-  std::async getEnvironment(): Promise<Record<std::string, string>> {
-    return this.get<Record<std::string, string>>('/api/system/env/local');
-  }
-
-  /**
-   * Update (overwrite or merge) the local .env file on the ElizaOS server.
-   *
-   * Server route (packages/server/src/api/system):
-   *   POST /api/system/env/local  ->  { success: true, message: std::string }
-   *   Body: { content: Record<std::string,string> }
-   *
-   * For developer-ergonomics we accept several shapes:
-   *   1. { variables: Record<std::string,string>; merge?: boolean }
-   *   2. { content:   Record<std::string,string> }      (server-native)
-   *   3. Record<std::string,string>                      (shorthand)
-   */
-
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      // Treat params itself as record of env vars
-
-  /**
-   * Global logs functionality - implementing via system endpoints
-   */
-    // Special handling for logs endpoint that returns data directly without wrapper
-
-    // The logs endpoint returns data directly, not wrapped in { success, data }
-    // Map the response to expected format
-
-    // Note: Individual log deletion is not supported by the server
-    // The server only supports bulk deletion via deleteGlobalLogs()
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_SYSTEM_HPP_

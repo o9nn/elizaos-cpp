@@ -1,33 +1,26 @@
 #include "actions.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::string formatActionNames(const std::vector<Action>& actions) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!actions.length) return '';
-
-    // Create a shuffled copy instead of mutating the original array
-    return [...actions];
-    .sort(() => Math.random() - 0.5);
-    .std::map((action) => action.name);
-    .join(", ");
-
+bool Actions::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::string formatActions(const std::vector<Action>& actions) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!actions.length) return '';
-
-    // Create a shuffled copy instead of mutating the original array
-    return [...actions];
-    .sort(() => Math.random() - 0.5);
-    ".std::map((action) => " + action.name + ": " + action.description
-    .join(",\n");
-
+void Actions::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Actions::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

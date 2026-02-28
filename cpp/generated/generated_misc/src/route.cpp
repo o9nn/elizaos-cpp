@@ -1,15 +1,26 @@
-#include "otc-agent/src/app/api/solana/idl/route.h"
+#include "route.hpp"
 
-std::any GET()
-{
-    auto idlPath = path->join(process->cwd(), std::string("solana"), std::string("otc-program"), std::string("target"), std::string("idl"), std::string("otc.json"));
-    auto data = std::async([=]() { fs::readFile(idlPath, std::string("utf8")); });
-    return std::make_shared<NextResponse>(data, object{
-        object::pair{std::string("status"), 200}, 
-        object::pair{std::string("headers"), object{
-            object::pair{std::string("content-type"), std::string("application/json")}
-        }}
-    });
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Route::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Route::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Route::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

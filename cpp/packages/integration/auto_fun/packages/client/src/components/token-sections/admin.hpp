@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_ADMIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_ADMIN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "audio-player.hpp"
-#include "copy-button.hpp"
-#include "icons.hpp"
-#include "loader.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Admin {
+public:
+    Admin() = default;
+    ~Admin() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "admin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-using FormData = {
-
-// Define the token data type to match the backend schema
-struct TokenData {
-    std::string id;
-    std::string mint;
-    std::string name;
-    std::string creator;
-    std::string website;
-    std::string twitter;
-    std::string telegram;
-    std::string discord;
-    std::string farcaster;
-    bool hidden;
-    bool featured;
-    bool verified;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Use admin addresses from environment
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_ADMIN_HPP_

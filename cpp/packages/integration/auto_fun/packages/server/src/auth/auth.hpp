@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_AUTH_AUTH_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_AUTH_AUTH_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "db.hpp"
-#include "env.hpp"
-#include "redis.hpp"
-#include "routes/user.hpp"
-#include "session.hpp"
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Auth {
+public:
+    Auth() = default;
+    ~Auth() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "auth"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Define the AuthTokenData interface here to fix TypeScript errors
-struct AuthTokenData {
-    std::string publicKey;
-    std::string tokenId;
-    double timestamp;
-    std::optional<std::vector<std::string>> privileges;
-    std::optional<double> expiresAt;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-  struct ContextVariableMap {
-};
-
-using AppContext = Context<{
-
-struct AuthTokenData {
-    std::string publicKey;
-    std::string tokenId;
-    double timestamp;
-    std::optional<std::vector<std::string>> privileges;
-    std::optional<double> expiresAt;
-};
-
-          // jwt is not used now by the backend at all
-
-std::future<std::string> createJwtToken(const std::string& publicKey);
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_AUTH_AUTH_HPP_

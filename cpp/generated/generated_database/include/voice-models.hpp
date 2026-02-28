@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_VOICE-MODELS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_VOICE-MODELS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_VOICE_MODELS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_VOICE_MODELS_HPP_
 
-class VoiceModel;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class VoiceModel : public object, public std::enable_shared_from_this<VoiceModel> {
+namespace elizaos {
+namespace generated_database {
+
+class VoiceModels {
 public:
-    using std::enable_shared_from_this<VoiceModel>::shared_from_this;
-    std::string value;
+    VoiceModels() = default;
+    ~VoiceModels() = default;
 
-    std::string label;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "voice_models"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any provider;
-
-    std::any gender;
-
-    std::string language;
-
-    array<string> features;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern Record<std::string, string> providerPluginMap;
-extern array<std::shared_ptr<VoiceModel>> noVoiceModel;
-extern array<std::shared_ptr<VoiceModel>> localVoiceModels;
-extern array<std::shared_ptr<VoiceModel>> elevenLabsVoiceModels;
-extern array<std::shared_ptr<VoiceModel>> openAIVoiceModels;
-extern std::function<array<std::shared_ptr<VoiceModel>>()> getAllVoiceModels;
-extern std::function<array<std::shared_ptr<VoiceModel>>(std::any)> getVoiceModelsByProvider;
-extern std::function<std::shared_ptr<VoiceModel>(std::string)> getVoiceModelByValue;
-extern std::function<std::string(std::string)> getRequiredPluginForProvider;
-extern std::function<array<string>()> getAllRequiredPlugins;
-#endif
+} // namespace generated_database
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_VOICE_MODELS_HPP_

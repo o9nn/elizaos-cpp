@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_ADMIN_PREGENERATED_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_ADMIN_PREGENERATED_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "db.hpp"
-#include "generation.hpp"
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Pregenerated {
+public:
+    Pregenerated() = default;
+    ~Pregenerated() = default;
 
- // Import SQL type
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "pregenerated"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
- // Assuming Token type exists or adjust as needed
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// --- GET /api/admin/pregenerated - List Pre-generated Tokens ---
-
-    // Fetch tokens with pagination and sorting
-
-    // Count total items matching filters
-
-// --- DELETE /api/admin/pregenerated/:id - Delete a Token ---
-
-// --- POST /api/admin/pregenerated/generate - Generate More Tokens ---
-    // Trigger the generation std::function (can run in background)
-    // Consider adding a count parameter if needed
-    // Assuming checkAndReplenishTokens handles generation logic appropriately
-
-// --- PUT /api/admin/pregenerated/:id - Edit a Token ---
-
-    // Validate request body
-
-    // Ensure there's something to update
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_ADMIN_PREGENERATED_HPP_

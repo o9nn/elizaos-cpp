@@ -1,50 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_ALERT_DIALOG_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_ALERT_DIALOG_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "alert-dialog.hpp"
-#include "button.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AlertDialog {
+public:
+    AlertDialog() = default;
+    ~AlertDialog() = default;
 
-/// <reference types="cypress" />
-/// <reference path="../../../cypress/support/types.d.ts" />
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "alert_dialog"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    // Open dialog
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    // Open the dialog
-
-    // Wait for dialog to appear and ensure it's visible
-
-    // Try clicking the specific action button using a more precise selector
-
-    // Dialog should close
-
-    // Dialog should close
-
-    // Try to close with ESC
-
-        // Simulate std::async operation
-
-    // Open the dialog
-
-    // Wait for dialog content to appear
-
-    // Click the action button within the dialog
-
-    // Open first dialog
-
-    // Open second dialog
-
-    // Focus should be within dialog
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_ALERT_DIALOG_HPP_

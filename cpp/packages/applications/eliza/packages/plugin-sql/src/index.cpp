@@ -1,30 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-IDatabaseAdapter createDatabaseAdapter(std::optional<std::any> config, UUID agentId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (config.postgresUrl) {
-        if (!globalSingletons.postgresConnectionManager) {
-            globalSingletons.postgresConnectionManager = new PostgresConnectionManager(;
-            config.postgresUrl;
-            );
-        }
-        return new PgDatabaseAdapter(agentId, globalSingletons.postgresConnectionManager);
-    }
-
-    // Only resolve PGLite directory when we're actually using PGLite
-    const auto dataDir = resolvePgliteDir(config.dataDir);
-
-    if (!globalSingletons.pgLiteClientManager) {
-        globalSingletons.pgLiteClientManager = new PGliteClientManager({ dataDir });
-    }
-
-    return new PgliteDatabaseAdapter(agentId, globalSingletons.pgLiteClientManager);
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_plugin_sql
 } // namespace elizaos

@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_ENTITIES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_ENTITIES_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../lib/base-client.h"
-#include "../types/entities.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITIES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITIES_HPP_
 
-class EntitiesService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class EntitiesService : public BaseApiClient, public std::enable_shared_from_this<EntitiesService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Entities {
 public:
-    using std::enable_shared_from_this<EntitiesService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<Entity>>> getEntity(std::shared_ptr<UUID> entityId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Entity>>> createEntity(std::shared_ptr<EntityCreateParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Entity>>> updateEntity(std::shared_ptr<UUID> entityId, std::shared_ptr<EntityUpdateParams> params);
-    EntitiesService(std::shared_ptr<ApiClientConfig> config);
+    Entities() = default;
+    ~Entities() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "entities"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ENTITIES_HPP_

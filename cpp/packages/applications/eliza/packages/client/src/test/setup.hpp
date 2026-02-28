@@ -1,60 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_TEST_SETUP_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_TEST_SETUP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Setup {
+public:
+    Setup() = default;
+    ~Setup() = default;
 
-// Test setup file for Bun:test
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "setup"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Import React to access internal state
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Set up DOM environment with Happy DOM (recommended by Bun)
-
-// Extend expect with jest-dom matchers
-
-// Create a comprehensive localStorage mock
-
-// Set up fresh localStorage and sessionStorage for each test
-  // Create fresh storage instances for each test
-
-  // Reset window dimensions to default
-
-// Clean up after each test
-
-  // Clear storage but don't reset the implementation
-
-  // Force React to clear std::any cached hook state
-  // This helps prevent cross-test contamination when running multiple test files
-
-// React 19 specific setup - add missing APIs for testing-library compatibility
-
-  // Add React.createRef polyfill for React 19 compatibility with testing-library
-
-// Mock window.matchMedia
-
-// Mock IntersectionObserver
-    void observe();
-    void disconnect();
-    void unobserve();
-    void takeRecords();
-
-// Mock ResizeObserver
-    void observe();
-    void disconnect();
-    void unobserve();
-
-// Mock scrollTo for window and elements
-
-// Add std::any other global test setup here
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_TEST_SETUP_HPP_

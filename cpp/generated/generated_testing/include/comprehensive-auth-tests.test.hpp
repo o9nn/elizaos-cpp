@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH___TESTS___COMPREHENSIVE-AUTH-TESTS_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH___TESTS___COMPREHENSIVE-AUTH-TESTS_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "@elizaos/core.h"
-#include "../AuthenticationService.js.h"
-#include "../CLIAuthCommands.js.h"
-#include "../AgentPluginAuth.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_COMPREHENSIVE_AUTH_TESTS_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_COMPREHENSIVE_AUTH_TESTS_TEST_HPP_
 
-extern object mockConsole;
-extern std::function<std::any(std::shared_ptr<Record<std::string, string>>)> createMockRuntime;
-extern std::any mockFetch;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class ComprehensiveAuthTestsTest {
+public:
+    ComprehensiveAuthTestsTest() = default;
+    ~ComprehensiveAuthTestsTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "comprehensive_auth_tests_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_COMPREHENSIVE_AUTH_TESTS_TEST_HPP_

@@ -1,59 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <chrono>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEMORY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEMORY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "base.hpp"
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Memory {
+public:
+    Memory() = default;
+    ~Memory() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "memory"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct Memory {
-    UUID id;
-    UUID agentId;
-    std::optional<UUID> roomId;
-    std::string type;
-    std::any content;
-    std::optional<std::vector<double>> embedding;
-    std::chrono::system_clock::time_point createdAt;
-    std::chrono::system_clock::time_point updatedAt;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct Room {
-    UUID id;
-    UUID agentId;
-    std::string name;
-    std::optional<std::string> type;
-    std::chrono::system_clock::time_point createdAt;
-    std::chrono::system_clock::time_point updatedAt;
-};
-
-struct MemoryUpdateParams {
-    std::optional<std::any> content;
-};
-
-struct RoomCreateParams {
-    std::string name;
-    std::optional<std::string> type;
-};
-
-struct WorldCreateParams {
-    UUID serverId;
-    std::string name;
-    std::optional<std::string> description;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEMORY_HPP_

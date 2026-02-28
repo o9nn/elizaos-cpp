@@ -1,62 +1,26 @@
-#include "elizas-world/src/lib/cache.h"
+#include "cache.hpp"
 
-std::any getCachedData()
-{
-    try
-    {
-        if (!fs->existsSync(CACHE_FILE)) {
-            return nullptr;
-        }
-        auto data = JSON->parse(fs->readFileSync(CACHE_FILE, std::string("utf-8")));
-        return object{
-            object::pair{std::string("holdings"), data["holdings"]}, 
-            object::pair{std::string("lastUpdated"), std::make_shared<Date>(data["lastUpdated"])}
-        };
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error reading cache:"), error);
-        return nullptr;
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-void setCachedData(array<std::shared_ptr<TokenHolding>> holdings)
-{
-    try
-    {
-        auto dir = path->dirname(CACHE_FILE);
-        if (!fs->existsSync(dir)) {
-            fs->mkdirSync(dir, object{
-                object::pair{std::string("recursive"), true}
-            });
-        }
-        fs->writeFileSync(CACHE_FILE, JSON->stringify(object{
-            object::pair{std::string("holdings"), std::string("holdings")}, 
-            object::pair{std::string("lastUpdated"), std::make_shared<Date>()}
-        }));
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error writing cache:"), error);
-    }
-};
-
-
-boolean shouldRefreshCache()
-{
-    auto cached = getCachedData();
-    if (!cached) return true;
-    auto now = std::make_shared<Date>();
-    return now->getTime() - cached["lastUpdated"]->getTime() > CACHE_DURATION;
-};
-
-
-std::any CACHE_FILE = path->join(process->cwd(), std::string("data"), std::string("cache.json"));
-double CACHE_DURATION = 60 * 1000;
-
-void Main(void)
-{
+bool Cache::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Cache::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Cache::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

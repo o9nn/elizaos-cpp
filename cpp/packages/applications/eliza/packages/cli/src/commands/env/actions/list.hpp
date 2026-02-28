@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_LIST_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_LIST_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
-#include "utils/file-operations.hpp"
-#include "utils/validation.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class List {
+public:
+    List() = default;
+    ~List() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "list"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Displays system information and lists local environment variables, masking sensitive values.
- *
- * Prints details about the current platform, architecture, CLI version, and package manager. Shows environment variables from the project's `.env` file, masking sensitive values, or provides guidance if the file is missing. Includes a link to the web UI for editing variables.
- */
-std::future<void> listEnvVars();
-
-/**
- * Handle the list command with options
- */
-std::future<void> handleListCommand(ListEnvOptions options);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_LIST_HPP_

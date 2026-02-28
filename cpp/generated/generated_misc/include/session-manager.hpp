@@ -1,43 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_SESSION-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_SESSION-MANAGER_H
-#include "core.h"
-#include "@browserbasehq/stagehand.h"
-#include "./logger.js.h"
-#include "./playwright-installer.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_MANAGER_HPP_
 
-class BrowserSession;
-class SessionManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BrowserSession : public object, public std::enable_shared_from_this<BrowserSession> {
+namespace elizaos {
+namespace generated_misc {
+
+class SessionManager {
 public:
-    using std::enable_shared_from_this<BrowserSession>::shared_from_this;
-    std::string id;
+    SessionManager() = default;
+    ~SessionManager() = default;
 
-    std::string clientId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "session_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Stagehand> stagehand;
-
-    std::shared_ptr<Date> createdAt;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class SessionManager : public object, public std::enable_shared_from_this<SessionManager> {
-public:
-    using std::enable_shared_from_this<SessionManager>::shared_from_this;
-    std::shared_ptr<Logger> logger;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::shared_ptr<PlaywrightInstaller> playwrightInstaller;
-
-    std::shared_ptr<Map<std::string, std::shared_ptr<BrowserSession>>> sessions = std::make_shared<Map>();
-
-    double maxSessionsPerClient = 3;
-
-    SessionManager(std::shared_ptr<Logger> logger_, std::shared_ptr<PlaywrightInstaller> playwrightInstaller_);
-    virtual std::shared_ptr<Promise<std::shared_ptr<BrowserSession>>> createSession(std::string sessionId, std::string clientId);
-    virtual std::any getSession(std::string sessionId);
-    virtual std::shared_ptr<Promise<void>> destroySession(std::string sessionId);
-    virtual array<std::shared_ptr<BrowserSession>> getClientSessions(std::string clientId);
-    virtual std::shared_ptr<Promise<void>> cleanupClientSessions(std::string clientId);
-    virtual std::shared_ptr<Promise<void>> cleanup();
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_MANAGER_HPP_

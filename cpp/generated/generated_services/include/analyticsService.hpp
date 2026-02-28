@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_ANALYTICSSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_ANALYTICSSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../types/index.h"
-#include "uuid.h"
-using uuidv4 = v4;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_ANALYTICSSERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_ANALYTICSSERVICE_HPP_
 
-class AnalyticsService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AnalyticsService : public object, public std::enable_shared_from_this<AnalyticsService> {
+namespace elizaos {
+namespace generated_services {
+
+class Analyticsservice {
 public:
-    using std::enable_shared_from_this<AnalyticsService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Analyticsservice() = default;
+    ~Analyticsservice() = default;
 
-    AnalyticsService(std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<double>> scoreTechnicalSignals(std::any signals);
-    virtual std::shared_ptr<Promise<double>> scoreSocialMetrics(std::any metrics);
-    virtual std::shared_ptr<Promise<double>> scoreMarketMetrics(object metrics);
-    virtual std::shared_ptr<Promise<void>> trackSlippageImpact(std::string tokenAddress, std::string expectedAmount, std::string actualAmount, double slippageBps, boolean isSell);
-    virtual double calculateRSI(array<double> prices, double period);
-    virtual object calculateMACD(array<double> prices);
-    virtual double calculateEMA(array<double> prices, double period);
-    virtual std::shared_ptr<Promise<void>> trackTradeExecution(object data);
-    virtual std::shared_ptr<Promise<any>> addTradePerformance(std::shared_ptr<TradePerformanceData> data, boolean isSimulation);
-    virtual std::shared_ptr<Promise<void>> updateTokenStatistics(std::string tokenAddress, object data);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "analyticsService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_ANALYTICSSERVICE_HPP_

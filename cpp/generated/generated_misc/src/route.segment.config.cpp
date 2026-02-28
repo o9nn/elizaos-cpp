@@ -1,11 +1,26 @@
-#include "elizas-world/src/app/api/tokens/route.segment.config.h"
+#include "route.segment.config.hpp"
 
-double revalidate = 0;
-std::string fetchCache = std::string("force-no-store");
-std::string dynamic = std::string("force-dynamic");
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool RouteSegmentConfig::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void RouteSegmentConfig::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json RouteSegmentConfig::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

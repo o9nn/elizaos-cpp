@@ -1,40 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_REGISTRY_SCHEMA_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_REGISTRY_SCHEMA_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Schema {
+public:
+    Schema() = default;
+    ~Schema() = default;
 
-// src/utils/registry/schema.ts
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "schema"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Defines the possible types of plugins:
- * - "adapter"
- * - "client"
- * - "plugin"
- */
-using PluginType = std::string;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// TODO: we should handle this better later
-/**
- * Function that determines the type of plugin based on the name provided.
- * @param {string} name - The name of the plugin.
- * @returns {PluginType} The type of plugin ('adapter', 'client', or 'plugin').
- */
-PluginType getPluginType(const std::string& name);
-
-/**
- * Type definition for the Registry type which is inferred from the registrySchema
- */
-using Registry = z::infer<typeof registrySchema>;
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_REGISTRY_SCHEMA_HPP_

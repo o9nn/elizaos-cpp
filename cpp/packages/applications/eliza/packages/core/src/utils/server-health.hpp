@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_UTILS_SERVER_HEALTH_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_UTILS_SERVER_HEALTH_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class ServerHealth {
+public:
+    ServerHealth() = default;
+    ~ServerHealth() = default;
 
-/**
- * Server health check utilities for waiting for servers to be ready
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "server_health"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-struct ServerHealthOptions {
-    double port;
-    std::optional<std::string> endpoint;
-    std::optional<double> maxWaitTime;
-    std::optional<double> pollInterval;
-    std::optional<double> requestTimeout;
-    std::optional<std::string> host;
-    std::optional<std::string> protocol;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Wait for server to be ready by polling health endpoint
- * @param options - Configuration options for server health check
- */
-std::future<void> waitForServerReady(ServerHealthOptions options);
-
-/**
- * Simple ping check for server availability (no stabilization wait)
- * @param options - Configuration options for server ping
- */
-std::future<bool> pingServer(ServerHealthOptions options);
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_UTILS_SERVER_HEALTH_HPP_

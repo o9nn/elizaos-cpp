@@ -1,258 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_POST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_POST_H
-#include "core.h"
-#include "./service.h"
-#include "./primitives.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_POST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_POST_HPP_
 
-class PostMedia;
-class PostLocation;
-class PostAuthor;
-class PostEngagement;
-class PostContent;
-class PostInfo;
-class PostCreateOptions;
-class PostSearchOptions;
-class PostAnalytics;
-class IPostService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PostMedia : public object, public std::enable_shared_from_this<PostMedia> {
+namespace elizaos {
+namespace generated_misc {
+
+class Post {
 public:
-    using std::enable_shared_from_this<PostMedia>::shared_from_this;
-    std::shared_ptr<UUID> id;
+    Post() = default;
+    ~Post() = default;
 
-    std::string url;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "post"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any type;
-
-    std::string mimeType;
-
-    double size;
-
-    double width;
-
-    double height;
-
-    double duration;
-
-    std::string thumbnail;
-
-    std::string description;
-
-    std::string altText;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class PostLocation : public object, public std::enable_shared_from_this<PostLocation> {
-public:
-    using std::enable_shared_from_this<PostLocation>::shared_from_this;
-    std::string name;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string address;
-
-    object coordinates;
-
-    std::string placeId;
-};
-
-class PostAuthor : public object, public std::enable_shared_from_this<PostAuthor> {
-public:
-    using std::enable_shared_from_this<PostAuthor>::shared_from_this;
-    std::shared_ptr<UUID> id;
-
-    std::string username;
-
-    std::string displayName;
-
-    std::string avatar;
-
-    boolean verified;
-
-    double followerCount;
-
-    double followingCount;
-
-    std::string bio;
-
-    std::string website;
-};
-
-class PostEngagement : public object, public std::enable_shared_from_this<PostEngagement> {
-public:
-    using std::enable_shared_from_this<PostEngagement>::shared_from_this;
-    double likes;
-
-    double shares;
-
-    double comments;
-
-    double views;
-
-    boolean hasLiked;
-
-    boolean hasShared;
-
-    boolean hasCommented;
-
-    boolean hasSaved;
-};
-
-class PostContent : public object, public std::enable_shared_from_this<PostContent> {
-public:
-    using std::enable_shared_from_this<PostContent>::shared_from_this;
-    std::string text;
-
-    std::string html;
-
-    array<std::shared_ptr<PostMedia>> media;
-
-    std::shared_ptr<PostLocation> location;
-
-    array<string> tags;
-
-    array<std::shared_ptr<UUID>> mentions;
-
-    array<object> links;
-
-    object poll;
-};
-
-class PostInfo : public object, public std::enable_shared_from_this<PostInfo> {
-public:
-    using std::enable_shared_from_this<PostInfo>::shared_from_this;
-    std::shared_ptr<UUID> id;
-
-    std::shared_ptr<PostAuthor> author;
-
-    std::shared_ptr<PostContent> content;
-
-    std::string platform;
-
-    std::string platformId;
-
-    std::string url;
-
-    std::shared_ptr<Date> createdAt;
-
-    std::shared_ptr<Date> editedAt;
-
-    std::shared_ptr<Date> scheduledAt;
-
-    std::shared_ptr<PostEngagement> engagement;
-
-    std::any visibility;
-
-    std::shared_ptr<UUID> replyTo;
-
-    object std::thread;
-
-    array<object> crossPosted;
-};
-
-class PostCreateOptions : public object, public std::enable_shared_from_this<PostCreateOptions> {
-public:
-    using std::enable_shared_from_this<PostCreateOptions>::shared_from_this;
-    array<string> platforms;
-
-    std::shared_ptr<Date> scheduledAt;
-
-    std::any visibility;
-
-    std::shared_ptr<UUID> replyTo;
-
-    boolean std::thread;
-
-    std::shared_ptr<PostLocation> location;
-
-    array<string> tags;
-
-    array<std::shared_ptr<UUID>> mentions;
-
-    boolean enableComments;
-
-    boolean enableSharing;
-
-    std::string contentWarning;
-
-    boolean sensitive;
-};
-
-class PostSearchOptions : public object, public std::enable_shared_from_this<PostSearchOptions> {
-public:
-    using std::enable_shared_from_this<PostSearchOptions>::shared_from_this;
-    std::string query;
-
-    std::shared_ptr<UUID> author;
-
-    std::string platform;
-
-    array<string> tags;
-
-    array<std::shared_ptr<UUID>> mentions;
-
-    std::shared_ptr<Date> since;
-
-    std::shared_ptr<Date> before;
-
-    double limit;
-
-    double offset;
-
-    boolean hasMedia;
-
-    boolean hasLocation;
-
-    std::any visibility;
-
-    std::any sortBy;
-};
-
-class PostAnalytics : public object, public std::enable_shared_from_this<PostAnalytics> {
-public:
-    using std::enable_shared_from_this<PostAnalytics>::shared_from_this;
-    std::shared_ptr<UUID> postId;
-
-    std::string platform;
-
-    double impressions;
-
-    double reach;
-
-    std::shared_ptr<PostEngagement> engagement;
-
-    double clicks;
-
-    double shares;
-
-    double saves;
-
-    object demographics;
-
-    array<object> topPerformingHours;
-};
-
-class IPostService : public Service, public std::enable_shared_from_this<IPostService> {
-public:
-    using std::enable_shared_from_this<IPostService>::shared_from_this;
-    static std::any override;
-
-    std::string serviceType = ServiceType["POST"];
-
-    std::string capabilityDescription = std::string("Social media posting and content management capabilities");
-
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createPost(std::shared_ptr<PostContent> content, std::shared_ptr<PostCreateOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getPosts(std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<PostInfo>>> getPost(std::shared_ptr<UUID> postId) = 0;
-    virtual std::shared_ptr<Promise<void>> editPost(std::shared_ptr<UUID> postId, std::shared_ptr<PostContent> content) = 0;
-    virtual std::shared_ptr<Promise<void>> deletePost(std::shared_ptr<UUID> postId) = 0;
-    virtual std::shared_ptr<Promise<void>> likePost(std::shared_ptr<UUID> postId, boolean like) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sharePost(std::shared_ptr<UUID> postId, std::string comment = undefined) = 0;
-    virtual std::shared_ptr<Promise<void>> savePost(std::shared_ptr<UUID> postId, boolean save) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> commentOnPost(std::shared_ptr<UUID> postId, std::shared_ptr<PostContent> content) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getComments(std::shared_ptr<UUID> postId, std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> schedulePost(std::shared_ptr<PostContent> content, std::shared_ptr<Date> scheduledAt, std::shared_ptr<PostCreateOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<PostAnalytics>>> getPostAnalytics(std::shared_ptr<UUID> postId) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getTrendingPosts(std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> searchPosts(std::string query, std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    IPostService(std::shared_ptr<IAgentRuntime> runtime = undefined);
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_POST_HPP_

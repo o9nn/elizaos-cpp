@@ -1,18 +1,26 @@
-#include "discrub-ext/src/classes/embed.h"
+#include "embed.hpp"
 
-Embed::Embed(object opts) {
-    this->title = opts["title"];
-    *reinterpret_cast<long*>(&this->type) = static_cast<long>(opts["type"]);
-    this->description = opts["description"];
-    this->url = opts["url"];
-    this->timestamp = opts["timestamp"];
-    this->color = opts["color"];
-    this->footer = opts["footer"];
-    this->image = opts["image"];
-    this->thumbnail = opts["thumbnail"];
-    this->video = opts["video"];
-    this->provider = opts["provider"];
-    this->author = opts["author"];
-    this->fields = opts["fields"];
+namespace elizaos {
+namespace generated_misc {
+
+bool Embed::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Embed::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Embed::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

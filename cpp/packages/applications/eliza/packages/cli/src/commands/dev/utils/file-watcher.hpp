@@ -1,62 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_FILE_WATCHER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_FILE_WATCHER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class FileWatcher {
+public:
+    FileWatcher() = default;
+    ~FileWatcher() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_watcher"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Default watcher configuration
- */
-
-/**
- * Find TypeScript/JavaScript files in a directory
- */
-std::vector<std::string> findTsFiles(const std::string& dir, const std::string& watchDir);
-
-/**
- * Sets up file watching for the given directory
- *
- * Watches for changes to TypeScript and JavaScript files, with debouncing to prevent rapid rebuilds.
- */
-    // Get the absolute path of the directory
-
-    // Use a simpler approach - watch the src directory directly
-
-    // Merge config with defaults
-
-    // Create a more direct and simple watcher pattern
-
-    // Manually find TypeScript files to verify we should be watching them
-
-    // On ready handler
-
-        // Try an alternative approach with explicit file patterns
-
-    // Set up file change handler
-      // Only react to specific file types
-
-      // Debounce the onChange handler to avoid multiple rapid rebuilds
-
-    // Add an error handler
-
-    // Ensure proper cleanup on process exit
-
-/**
- * Create a debounced file change handler
- */
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_FILE_WATCHER_HPP_

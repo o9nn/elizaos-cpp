@@ -1,28 +1,26 @@
-#include "otc-agent/src/lib/plugin-otc-desk/providers/ai16z.h"
+#include "ai16z.hpp"
 
-std::shared_ptr<Provider> tokenProvider = object{
-    object::pair{std::string("name"), std::string("AI16Z_HISTORY")}, 
-    object::pair{std::string("description"), std::string("[OPTIONAL] Historical information about $elizaOS and $ai16z rebrand - use only when user specifically asks about ai16z or elizaOS history")}, 
-    object::pair{std::string("position"), 100}, 
-    object::pair{std::string("dynamic"), true}, 
-    object::pair{std::string("get"), [=]() mutable
-    {
-        auto text = std::string("ai16z started in October 2024 as a playful, meme‑inspired decentralized autonomous organization (DAO) and governance token on the Solana blockchain. It parodied the name of venture capital firm “a16z” (Andreessen Horowitz) and intended to build autonomous investor‑like AI agents. \
-It aimed to integrate AI into treasury management, investment decision‑making, and venture operations using autonomous agents. \
-Token holders of AI16Z could propose and vote on investment ideas, buybacks, and other DAO governance functions. The system included a fictional AI agent (e.g., “Marc AIndreessen”) to evaluate proposals via reputation scoring. \
-In short: ai16z was both the name of the project and the ticker symbol of its governance token, intended to power AI‑driven DAO activity on Solana.\
-On January 28, 2025, due to confusion with the established VC firm Andreessen Horowitz, ai16z officially rebranded to elizaOS. Andreessen Horowitz had expressed concerns over brand mix‑ups. \
-The DAO token continued to trade under the ticker AI16Z, until the rebrand. The rebrand was positioned as a step toward broader collaboration and expansion under a distinct identity. \
-elizaOS is an open source platform for building, deploying, and managing autonomous AI agents. It's available at https://github.com/elizaos/eliza or https://elizaos.ai");
-        return object{
-            object::pair{std::string("text"), std::string("text")}
-        };
-    }
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Ai16z::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Ai16z::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Ai16z::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

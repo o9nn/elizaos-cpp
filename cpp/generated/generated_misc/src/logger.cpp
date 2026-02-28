@@ -1,38 +1,26 @@
-#include "test_hybrid/src/logger.h"
+#include "logger.hpp"
 
-Logger::Logger(std::string prefix) {
-    this->prefix = prefix;
+namespace elizaos {
+namespace generated_misc {
+
+bool Logger::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void Logger::log(std::string level, std::string message)
-{
-    auto timestamp = ((std::make_shared<Date>()))->toISOString();
-    console->log(std::string("[") + timestamp + std::string("] [") + this->prefix + std::string("] [") + level + std::string("] ") + message + string_empty);
+void Logger::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void Logger::info(std::string message)
-{
-    this->log(std::string("INFO"), message);
+nlohmann::json Logger::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void Logger::warn(std::string message)
-{
-    this->log(std::string("WARN"), message);
-}
-
-void Logger::error(std::string message)
-{
-    this->log(std::string("ERROR"), message);
-}
-
-void Logger::debug(std::string message)
-{
-    this->log(std::string("DEBUG"), message);
-}
-
-std::shared_ptr<Logger> createLogger(std::string prefix)
-{
-    return std::make_shared<Logger>(prefix);
-};
-
-
+} // namespace generated_misc
+} // namespace elizaos

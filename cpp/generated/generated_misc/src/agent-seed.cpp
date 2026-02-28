@@ -1,19 +1,26 @@
-#include "eliza/packages/plugin-sql/src/__tests__/integration/seed/agent-seed.h"
+#include "agent-seed.hpp"
 
-std::shared_ptr<Agent> testAgent = object{
-    object::pair{std::string("name"), std::string("Integration Test Agent")}, 
-    object::pair{std::string("username"), std::string("test_agent")}, 
-    object::pair{std::string("bio"), std::string("A test agent for integration tests")}, 
-    object::pair{std::string("enabled"), true}, 
-    object::pair{std::string("settings"), object{
-        object::pair{std::string("testSetting"), std::string("test value")}
-    }}, 
-    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool AgentSeed::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void AgentSeed::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json AgentSeed::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

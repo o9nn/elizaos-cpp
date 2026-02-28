@@ -1,11 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_CONFIG-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_CONFIG-UTILS_H
-#include "core.h"
-#include "@/src/utils.h"
-#include "@elizaos/core.h"
-#include "dotenv.h"
-using dotenv = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CONFIG_UTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CONFIG_UTILS_HPP_
 
-std::shared_ptr<Promise<std::shared_ptr<RuntimeSettings>>> loadEnvConfig();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_utils {
+
+class ConfigUtils {
+public:
+    ConfigUtils() = default;
+    ~ConfigUtils() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "config_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CONFIG_UTILS_HPP_

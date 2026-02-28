@@ -1,159 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH_PLATFORMINTEGRATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH_PLATFORMINTEGRATION_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "./AuthenticationService.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PLATFORMINTEGRATION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PLATFORMINTEGRATION_HPP_
 
-class PlatformAuthConfig;
-class ClientSession;
-class KeyDistributionRequest;
-class KeyDistributionResponse;
-class PlatformIntegrationService;
-class PlatformIntegrationFactory;
-class PlatformAuthUtils;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PlatformAuthConfig : public object, public std::enable_shared_from_this<PlatformAuthConfig> {
+namespace elizaos {
+namespace generated_misc {
+
+class Platformintegration {
 public:
-    using std::enable_shared_from_this<PlatformAuthConfig>::shared_from_this;
-    std::string platformId;
+    Platformintegration() = default;
+    ~Platformintegration() = default;
 
-    std::any clientType;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "PlatformIntegration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any distributionMode;
-
-    boolean allowTestKeys;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ClientSession : public object, public std::enable_shared_from_this<ClientSession> {
-public:
-    using std::enable_shared_from_this<ClientSession>::shared_from_this;
-    std::string sessionId;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::any clientType;
-
-    std::string platformId;
-
-    std::any authStatus;
-
-    std::shared_ptr<Date> lastActivity;
-
-    array<string> validatedKeys;
-};
-
-class KeyDistributionRequest : public object, public std::enable_shared_from_this<KeyDistributionRequest> {
-public:
-    using std::enable_shared_from_this<KeyDistributionRequest>::shared_from_this;
-    std::string sessionId;
-
-    std::string provider;
-
-    std::any keyType;
-
-    array<string> clientCapabilities;
-};
-
-class KeyDistributionResponse : public object, public std::enable_shared_from_this<KeyDistributionResponse> {
-public:
-    using std::enable_shared_from_this<KeyDistributionResponse>::shared_from_this;
-    boolean success;
-
-    std::string apiKey;
-
-    std::any keyType;
-
-    array<string> capabilities;
-
-    std::shared_ptr<Date> expiresAt;
-
-    std::string error;
-};
-
-class PlatformIntegrationService : public object, public std::enable_shared_from_this<PlatformIntegrationService> {
-public:
-    using std::enable_shared_from_this<PlatformIntegrationService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
-
-    std::shared_ptr<AuthenticationService> authService;
-
-    std::shared_ptr<Map<std::string, std::shared_ptr<ClientSession>>> activeSessions = std::make_shared<Map<std::string, std::shared_ptr<ClientSession>>>();
-
-    array<object> keyDistributionLog = array<object>();
-
-    PlatformIntegrationService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<PlatformAuthConfig> config);
-    template <typename P1>
-    std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> registerSession(std::string sessionId, P1 clientType, std::string platformId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeKey(std::shared_ptr<KeyDistributionRequest> request);
-    virtual std::shared_ptr<Promise<object>> validateDistributedKey(std::string sessionId, std::string provider, std::string apiKey);
-    virtual std::shared_ptr<Promise<object>> invalidateSession(std::string sessionId);
-    virtual std::shared_ptr<Promise<object>> getSessionStatus(std::string sessionId);
-    virtual object getAnalytics();
-    virtual double cleanupExpiredSessions();
-    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeTestKey(std::string provider, std::string clientType);
-    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeProductionKey(std::string provider, std::shared_ptr<ClientSession> session);
-};
-
-class PlatformIntegrationFactory : public object, public std::enable_shared_from_this<PlatformIntegrationFactory> {
-public:
-    using std::enable_shared_from_this<PlatformIntegrationFactory>::shared_from_this;
-    static std::shared_ptr<PlatformIntegrationService> createForCLI(std::shared_ptr<IAgentRuntime> runtime);
-    static std::shared_ptr<PlatformIntegrationService> createForGUI(std::shared_ptr<IAgentRuntime> runtime);
-    static std::shared_ptr<PlatformIntegrationService> createForAgent(std::shared_ptr<IAgentRuntime> runtime);
-};
-
-class PlatformAuthUtils : public object, public std::enable_shared_from_this<PlatformAuthUtils> {
-public:
-    using std::enable_shared_from_this<PlatformAuthUtils>::shared_from_this;
-    static std::string generateSessionId();
-    static boolean isValidSessionId(std::string sessionId);
-    template <typename P0>
-    static array<string> getClientCapabilities(P0 clientType);
-    static boolean isProviderCompatible(array<string> providerCapabilities, array<string> clientCapabilities);
-};
-
-template <typename P1>
-std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationService::registerSession(std::string sessionId, P1 clientType, std::string platformId)
-{
-    logger->debug(std::string("Registering session ") + sessionId + std::string(" for ") + clientType + std::string(" client"));
-    auto session = object{
-        object::pair{std::string("sessionId"), std::string("sessionId")}, 
-        object::pair{std::string("clientType"), std::string("clientType")}, 
-        object::pair{std::string("platformId"), std::string("platformId")}, 
-        object::pair{std::string("authStatus"), nullptr}, 
-        object::pair{std::string("lastActivity"), std::make_shared<Date>()}, 
-        object::pair{std::string("validatedKeys"), array<any>()}
-    };
-    this->activeSessions->std::set(sessionId, session);
-    try
-    {
-        session->authStatus = std::async([=]() { this->authService->getAuthStatus(); });
-    }
-    catch (const std::any& error)
-    {
-        logger->warn(std::string("Failed to get initial auth status for session ") + sessionId + std::string(":"), error);
-    }
-    return session;
-}
-
-template <typename P0>
-array<string> PlatformAuthUtils::getClientCapabilities(P0 clientType)
-{
-    static switch_type __switch12683_13063 = {
-        { std::any(std::string("cli")), 1 },
-        { std::any(std::string("gui")), 2 },
-        { std::any(std::string("agent")), 3 }
-    };
-    switch (__switch12683_13063[clientType])
-    {
-    case 1:
-        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("validation"), std::string("testing") };
-    case 2:
-        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("image_description"), std::string("validation"), std::string("monitoring") };
-    case 3:
-        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("image_description"), std::string("reasoning") };
-    default:
-        return array<any>();
-    }
-}
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PLATFORMINTEGRATION_HPP_

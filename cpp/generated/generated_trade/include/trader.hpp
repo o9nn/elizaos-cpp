@@ -1,56 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_API_TRADER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_API_TRADER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TRADE_INCLUDE_TRADER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TRADE_INCLUDE_TRADER_HPP_
 
-class GainersLosersParams;
-class GainersLosersResponse;
-class TraderTransactionsSeekParams;
-class TraderTransactionsSeekResponse;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class GainersLosersParams : public object, public std::enable_shared_from_this<GainersLosersParams> {
+namespace elizaos {
+namespace generated_trade {
+
+class Trader {
 public:
-    using std::enable_shared_from_this<GainersLosersParams>::shared_from_this;
-    std::any type;
+    Trader() = default;
+    ~Trader() = default;
 
-    std::string sort_by;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "trader"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any sort_type;
-
-    double offset;
-
-    double limit;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class GainersLosersResponse : public object, public std::enable_shared_from_this<GainersLosersResponse> {
-public:
-    using std::enable_shared_from_this<GainersLosersResponse>::shared_from_this;
-    boolean success;
+} // namespace generated_trade
+} // namespace elizaos
 
-    object data;
-};
-
-class TraderTransactionsSeekParams : public object, public std::enable_shared_from_this<TraderTransactionsSeekParams> {
-public:
-    using std::enable_shared_from_this<TraderTransactionsSeekParams>::shared_from_this;
-    std::string address;
-
-    double offset;
-
-    double limit;
-
-    std::any tx_type;
-
-    double before_time;
-
-    double after_time;
-};
-
-class TraderTransactionsSeekResponse : public object, public std::enable_shared_from_this<TraderTransactionsSeekResponse> {
-public:
-    using std::enable_shared_from_this<TraderTransactionsSeekResponse>::shared_from_this;
-    boolean success;
-
-    object data;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TRADE_INCLUDE_TRADER_HPP_

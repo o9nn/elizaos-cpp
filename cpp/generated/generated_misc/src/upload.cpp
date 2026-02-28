@@ -1,97 +1,26 @@
-#include "eliza/packages/server/src/upload.h"
+#include "upload.hpp"
 
-std::string generateSecureFilename(std::string originalName)
-{
-    auto uniqueSuffix = string_empty + Date->now() + std::string("-") + Math->round(Math->random() * 1000000000) + string_empty;
-    auto sanitizedName = sanitizeFilename(originalName);
-    return string_empty + uniqueSuffix + std::string("-") + sanitizedName + string_empty;
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-boolean validateAudioFile(std::shared_ptr<Express::Multer::File> file)
-{
-    return ALLOWED_AUDIO_MIME_TYPES->includes(as<any>(file->mimetype));
-};
-
-
-boolean validateMediaFile(std::shared_ptr<Express::Multer::File> file)
-{
-    return ALLOWED_MEDIA_MIME_TYPES->includes(as<any>(file->mimetype));
-};
-
-
-std::any storage = multer->memoryStorage();
-std::function<std::any()> agentAudioUpload = [=]() mutable
-{
-    return multer(object{
-        object::pair{std::string("storage"), std::string("storage")}, 
-        object::pair{std::string("limits"), object{
-            object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 
-            object::pair{std::string("files"), 1}
-        }}, 
-        object::pair{std::string("fileFilter"), [=](auto req, auto file, auto cb) mutable
-        {
-            if (ALLOWED_AUDIO_MIME_TYPES->includes(as<any>(file["mimetype"]))) {
-                cb(nullptr, true);
-            } else {
-                cb(std::make_shared<Error>(std::string("Invalid audio file type")), false);
-            }
-        }
-        }
-    });
-};
-std::function<std::any()> agentMediaUpload = [=]() mutable
-{
-    return multer(object{
-        object::pair{std::string("storage"), std::string("storage")}, 
-        object::pair{std::string("limits"), object{
-            object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 
-            object::pair{std::string("files"), 1}
-        }}, 
-        object::pair{std::string("fileFilter"), [=](auto req, auto file, auto cb) mutable
-        {
-            if (ALLOWED_MEDIA_MIME_TYPES->includes(as<any>(file["mimetype"]))) {
-                cb(nullptr, true);
-            } else {
-                cb(std::make_shared<Error>(std::string("Invalid media file type")), false);
-            }
-        }
-        }
-    });
-};
-std::function<std::any()> channelUpload = [=]() mutable
-{
-    return multer(object{
-        object::pair{std::string("storage"), std::string("storage")}, 
-        object::pair{std::string("limits"), object{
-            object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 
-            object::pair{std::string("files"), 1}
-        }}, 
-        object::pair{std::string("fileFilter"), [=](auto req, auto file, auto cb) mutable
-        {
-            if (ALLOWED_MEDIA_MIME_TYPES->includes(as<any>(file["mimetype"]))) {
-                cb(nullptr, true);
-            } else {
-                cb(std::make_shared<Error>(std::string("Invalid file type")), false);
-            }
-        }
-        }
-    });
-};
-std::function<std::any()> genericUpload = [=]() mutable
-{
-    return multer(object{
-        object::pair{std::string("storage"), std::string("storage")}, 
-        object::pair{std::string("limits"), object{
-            object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 
-            object::pair{std::string("files"), 1}
-        }}
-    });
-};
-std::function<std::any()> upload = genericUpload;
-
-void Main(void)
-{
+bool Upload::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Upload::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Upload::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,49 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace mobile {
 
-void Index() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto { user } = usePrivy();
-    if ((Constants.expoConfig.extra.privyAppId as std::string).length != 25) {
-        return (;
-        <SafeAreaView>;
-        <View;
-        style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}
-        >;
-        "<Text>You have not std::set a valid " + "privyAppId";
-        </View>;
-        </SafeAreaView>;
-        );
-    }
-    if (
-    !(Constants.expoConfig.extra.privyClientId).startsWith(;
-    "client-";
-    );
-    ) {
-        return (;
-        <SafeAreaView>;
-        <View;
-        style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}
-        >;
-        "<Text>You have not std::set a valid " + "privyClientId";
-        </View>;
-        </SafeAreaView>;
-        );
-    }
-    return !user ? <LoginScreen /> : <UserScreen />;
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace mobile
 } // namespace elizaos

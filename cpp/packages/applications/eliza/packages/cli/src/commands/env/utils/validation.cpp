@@ -1,21 +1,26 @@
 #include "validation.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::string maskedValue(const std::string& value) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!value) return '';
-
-    // If the value looks like a token/API key (longer than 20 chars, no spaces), mask it
-    if (value.length > 20 && !value.includes(' ')) {
-        return std::to_string(value.substring(0, 4)) + "..." + std::to_string(value.substring(value.size() - 4));
-    }
-
-    return value;
-
+bool Validation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Validation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Validation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

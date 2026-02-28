@@ -1,35 +1,26 @@
-#include "eliza/packages/cli/src/utils/port-handling.h"
+#include "port-handling.hpp"
 
-std::shared_ptr<Promise<boolean>> isPortFree(double port)
-{
-    return std::make_shared<Promise>([=](auto resolve) mutable
-    {
-        shared server = net->createServer();
-        server->once(std::string("error"), [=]() mutable
-        {
-            return resolve(false);
-        }
-        );
-        server->once(std::string("listening"), [=]() mutable
-        {
-            server->close();
-            resolve(true);
-        }
-        );
-        server->listen(port);
-    }
-    );
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool PortHandling::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<Promise<double>> findNextAvailablePort(double startPort)
-{
-    auto port = startPort;
-    while (!(std::async([=]() { isPortFree(port); })))
-    {
-        port++;
-    }
-    return port;
-};
+void PortHandling::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json PortHandling::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

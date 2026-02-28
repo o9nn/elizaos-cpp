@@ -1,80 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/agents.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AGENTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AGENTS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Agents {
+public:
+    Agents() = default;
+    ~Agents() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agents"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class AgentsService extends BaseApiClient {
-  /**
-   * List all agents with minimal details
-   */
-  std::async listAgents(): Promise<{ agents: Agent[] }> {
-    return this.get<{ agents: Agent[] }>('/api/agents');
-  }
-
-  /**
-   * Get specific agent details
-   */
-
-  /**
-   * Create a new agent
-   */
-
-  /**
-   * Update an existing agent
-   */
-
-  /**
-   * Delete an agent
-   */
-
-  /**
-   * Start an existing agent
-   */
-
-  /**
-   * Stop a running agent
-   */
-
-  /**
-   * Get all available worlds
-   */
-
-  /**
-   * Add agent to a world
-   */
-
-  /**
-   * Update agent's world settings
-   */
-
-  /**
-   * Get agent's plugin panels
-   */
-
-  /**
-   * Get agent logs
-   */
-
-  /**
-   * Delete a specific log entry
-   */
-
-  /**
-   * Get agents associated with a server
-   */
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AGENTS_HPP_

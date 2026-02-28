@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_AUDIOUTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_AUDIOUTILS_H
-#include "core.h"
-#include "@elizaos/core.h"
-using coreGetWavHeader = getWavHeader;
-using corePrependWavHeader = prependWavHeader;
-#include "node:stream.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_AUDIOUTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_AUDIOUTILS_HPP_
 
-std::shared_ptr<Buffer> getWavHeader(double audioLength, double sampleRate, double channelCount = 1, double bitsPerSample = 16);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-Readable prependWavHeader(Readable readable, double audioLength, double sampleRate, double channelCount = 1, double bitsPerSample = 16);
+namespace elizaos {
+namespace generated_utils {
 
-#endif
+class Audioutils {
+public:
+    Audioutils() = default;
+    ~Audioutils() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "audioUtils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_AUDIOUTILS_HPP_

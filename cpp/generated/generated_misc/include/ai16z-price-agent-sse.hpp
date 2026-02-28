@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_MCP-GATEWAY_EXAMPLE-AGENTS_AI16Z-PRICE-AGENT-SSE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_MCP-GATEWAY_EXAMPLE-AGENTS_AI16Z-PRICE-AGENT-SSE_H
-#include "core.h"
-#include "@anthropic-ai/sdk.h"
-using Anthropic = _default;
-#include "@modelcontextprotocol/sdk/client/index.js.h"
-#include "@modelcontextprotocol/sdk/client/sse.js.h"
-#include "viem.h"
-#include "viem/accounts.h"
-#include "x402-fetch.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AI16Z_PRICE_AGENT_SSE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AI16Z_PRICE_AGENT_SSE_HPP_
 
-extern std::string DEFAULT_WALLET_KEY;
-extern std::string GATEWAY_SSE_URL;
-extern std::string GATEWAY_MESSAGE_URL;
-std::shared_ptr<Promise<void>> main();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Ai16zPriceAgentSse {
+public:
+    Ai16zPriceAgentSse() = default;
+    ~Ai16zPriceAgentSse() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ai16z_price_agent_sse"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AI16Z_PRICE_AGENT_SSE_HPP_

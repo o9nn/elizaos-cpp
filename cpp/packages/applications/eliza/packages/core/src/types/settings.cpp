@@ -1,10 +1,26 @@
 #include "settings.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool Settings::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Settings::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Settings::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

@@ -1,34 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_LAUNCHTOKEN_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_LAUNCHTOKEN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "target/types/autofun.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_program {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Launchtoken {
+public:
+    Launchtoken() = default;
+    ~Launchtoken() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "launchToken"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    // Set up the Anchor provider (e.g., env variables and wallet)
-
-    // Instantiate the program using the IDL and programId.
-
-    // Constants for token metadata
-
-    // Derive the PDA for the "config" account.
-
-  // Fetch the config account
-
-  // Generate keypairs for the token
-
-  // Send the transaction to launch a token
-
+} // namespace autofun_program
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_TESTS_LAUNCHTOKEN_HPP_

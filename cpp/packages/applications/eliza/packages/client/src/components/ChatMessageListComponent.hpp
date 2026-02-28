@@ -1,43 +1,35 @@
-#include "chat.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHATMESSAGELISTCOMPONENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHATMESSAGELISTCOMPONENT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Chatmessagelistcomponent {
+public:
+    Chatmessagelistcomponent() = default;
+    ~Chatmessagelistcomponent() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ChatMessageListComponent"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct ChatMessageListComponentProps {
-    std::vector<UiMessage> messages;
-    bool isLoadingMessages;
-    ChannelType.GROUP | ChannelType.DM chatType;
-    std::string currentClientEntityId;
-    std::optional<Agent> targetAgentData;
-    std::vector<std::optional<Agent>> allAgents;
-    std::string | null animatedMessageId;
-    React.RefObject<HTMLDivElement | null> scrollRef;
-    std::optional<React.RefObject<HTMLDivElement | null>; // Optional content ref for StickToBottom> contentRef;
-    bool isAtBottom;
-    () => void scrollToBottom;
-    () => void disableAutoScroll;
-    UUID | undefined finalChannelId;
-    std::optional<(agentId: UUID) => Partial<Agent> | undefined> getAgentInMessage;
-    std::optional<std::unordered_map<UUID, std::string | null>> agentAvatarMap;
-    (messageId: std::string) => void onDeleteMessage;
-    (messageText: std::string) => void onRetryMessage;
-    std::optional<UUID | null> selectedGroupAgentId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-  // Filter messages based on selected agent in group chat
-        // Show user messages and messages from selected agent
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHATMESSAGELISTCOMPONENT_HPP_

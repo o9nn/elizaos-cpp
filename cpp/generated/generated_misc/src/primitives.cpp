@@ -1,18 +1,26 @@
-#include "eliza/packages/core/src/types/primitives.h"
+#include "primitives.hpp"
 
-UUID asUUID(std::string id)
-{
-    if (OR((!id), (!(new RegExp(std::string("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))->test(id)))) {
-        throw std::any(std::make_shared<Error>(std::string("Invalid UUID format: ") + id + string_empty));
-    }
-    return as<UUID>(id);
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-
-void Main(void)
-{
-    string_empty + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + string_empty;
+bool Primitives::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Primitives::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Primitives::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

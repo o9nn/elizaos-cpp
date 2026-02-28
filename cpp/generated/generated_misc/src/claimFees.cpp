@@ -1,44 +1,26 @@
-#include "auto.fun/packages/server/src/claimFees.h"
+#include "claimFees.hpp"
 
-std::shared_ptr<Promise<string>> claimFees(std::shared_ptr<PublicKey> nftMint, std::shared_ptr<PublicKey> poolId, std::shared_ptr<Connection> connection, std::shared_ptr<PublicKey> claimer, std::shared_ptr<WebSocketClient> websocket, std::shared_ptr<Token> token)
-{
-    try
-    {
-        auto wallet = Keypair->fromSecretKey(Uint8Array->from(JSON->parse(process->env->EXECUTOR_PRIVATE_KEY)));
-        auto provider = std::make_shared<AnchorProvider>(connection, std::make_shared<Wallet>(wallet), AnchorProvider->defaultOptions());
-        auto program = std::make_shared<Program<std::shared_ptr<RaydiumVault>>>(as<any>(raydium_vault_IDL), provider);
-        auto txSignature = string_empty;
-        try
-        {
-            txSignature = std::async([=]() { claim(as<any>(program), wallet, nftMint, poolId, connection, claimer, token); });
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Error during claim attempt:"), error);
-        }
-        if (!txSignature) {
-            throw std::any(std::make_shared<Error>(std::string("Failed to claim after multiple attempts.")));
-        }
-        websocket->to(std::string("claimer:") + claimer->toBase58() + string_empty)["emit"](std::string("claim"), object{
-            object::pair{std::string("txSignature"), std::string("txSignature")}, 
-            object::pair{std::string("poolId"), poolId->toBase58()}, 
-            object::pair{std::string("claimer"), claimer->toBase58()}
-        });
-        console->log(std::string("Transaction Signature:"), txSignature);
-        return txSignature;
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error during claim:"), error);
-        throw std::any(error);
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::shared_ptr<RaydiumVault> raydium_vault_IDL = JSON->parse(JSON->stringify(raydium_vault_IDL_JSON));
-
-void Main(void)
-{
+bool Claimfees::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Claimfees::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Claimfees::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

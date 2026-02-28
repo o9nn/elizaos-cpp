@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_BASE_BASETRADESERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_BASE_BASETRADESERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../walletService.h"
-#include "../dataService.h"
-#include "../analyticsService.h"
-#include "../../types/trading.h"
-#include "../../config/trading.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BASETRADESERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BASETRADESERVICE_HPP_
 
-class BaseTradeService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BaseTradeService : public object, public std::enable_shared_from_this<BaseTradeService> {
+namespace elizaos {
+namespace generated_services {
+
+class Basetradeservice {
 public:
-    using std::enable_shared_from_this<BaseTradeService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Basetradeservice() = default;
+    ~Basetradeservice() = default;
 
-    std::shared_ptr<WalletService> walletService;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "BaseTradeService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<DataService> dataService;
-
-    std::shared_ptr<AnalyticsService> analyticsService;
-
-    std::shared_ptr<TradingConfig> tradingConfig;
-
-    BaseTradeService(std::shared_ptr<IAgentRuntime> runtime_, std::shared_ptr<WalletService> walletService_, std::shared_ptr<DataService> dataService_, std::shared_ptr<AnalyticsService> analyticsService_);
-    virtual std::any getWalletService();
-    virtual std::any getDataService();
-    virtual std::any getAnalyticsService();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BASETRADESERVICE_HPP_

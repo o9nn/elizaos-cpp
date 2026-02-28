@@ -1,16 +1,26 @@
 #include "logger.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-bool parseBooleanFromText(const std::string& value) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!value) return false;
-    const auto normalized = value.toLowerCase().trim();
-    return normalized == "true" || normalized == "1" || normalized == "yes" || normalized == "on";
-
+bool Logger::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Logger::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Logger::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

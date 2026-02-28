@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_TEAMMEMBERUPDATE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_TEAMMEMBERUPDATE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../../../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEAMMEMBERUPDATE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEAMMEMBERUPDATE_HPP_
 
-class IDiscordService;
-class ReportChannelConfig;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class IDiscordService : public Service, public std::enable_shared_from_this<IDiscordService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Teammemberupdate {
 public:
-    using std::enable_shared_from_this<IDiscordService>::shared_from_this;
-    object client;
+    Teammemberupdate() = default;
+    ~Teammemberupdate() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "teamMemberUpdate"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ReportChannelConfig : public object, public std::enable_shared_from_this<ReportChannelConfig> {
-public:
-    using std::enable_shared_from_this<ReportChannelConfig>::shared_from_this;
-    std::string serverId;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string channelId;
-};
-
-std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<TeamMemberUpdate> update);
-
-std::shared_ptr<Promise<boolean>> storeTeamMemberUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<TeamMemberUpdate> update);
-
-std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message);
-
-extern std::shared_ptr<Action> teamMemberUpdatesAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEAMMEMBERUPDATE_HPP_

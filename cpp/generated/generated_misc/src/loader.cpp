@@ -1,53 +1,26 @@
-#include "eliza/packages/cli/src/commands/start/utils/loader.h"
+#include "loader.hpp"
 
-std::any tryLoadFile(std::string filePath)
-{
-    return serverTryLoadFile(filePath);
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(std::string url)
-{
-    return serverLoadCharactersFromUrl(url);
-};
-
-
-std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(std::any character)
-{
-    return serverJsonToCharacter(character);
-};
-
-
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(std::string filePath)
-{
-    return serverLoadCharacter(filePath);
-};
-
-
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(std::string characterPath)
-{
-    return serverLoadCharacterTryPath(characterPath);
-};
-
-
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(std::string charactersArg)
-{
-    auto loadedCharacters = std::async([=]() { serverLoadCharacters(charactersArg); });
-    if (loadedCharacters->length == 0) {
-        logger->info(std::string("No characters found, using default character"));
-        return array<any>{ defaultCharacter };
-    }
-    return loadedCharacters;
-};
-
-
-std::function<std::any()> hasValidRemoteUrls = [=]() mutable
-{
-    return serverHasValidRemoteUrls();
-};
-
-void Main(void)
-{
+bool Loader::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Loader::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Loader::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

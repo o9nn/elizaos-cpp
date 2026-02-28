@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TEST_HYBRID_SRC_LOGGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TEST_HYBRID_SRC_LOGGER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOGGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOGGER_HPP_
 
-class Logger;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Logger : public object, public std::enable_shared_from_this<Logger> {
+namespace elizaos {
+namespace generated_misc {
+
+class Logger {
 public:
-    using std::enable_shared_from_this<Logger>::shared_from_this;
-    std::string prefix;
+    Logger() = default;
+    ~Logger() = default;
 
-    Logger(std::string prefix = std::string("ElizaOS"));
-    virtual void log(std::string level, std::string message);
-    virtual void info(std::string message);
-    virtual void warn(std::string message);
-    virtual void error(std::string message);
-    virtual void debug(std::string message);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "logger"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Logger> createLogger(std::string prefix = undefined);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOGGER_HPP_

@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_SERVER-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_SERVER-MANAGER_H
-#include "core.h"
-#include "node:child_process.h"
-#include "node:child_process.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SERVER_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SERVER_MANAGER_HPP_
 
-class DevServerManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DevServerManager : public ServerProcess, public std::enable_shared_from_this<DevServerManager> {
+namespace elizaos {
+namespace generated_misc {
+
+class ServerManager {
 public:
-    using std::enable_shared_from_this<DevServerManager>::shared_from_this;
-    std::any process = nullptr;
+    ServerManager() = default;
+    ~ServerManager() = default;
 
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<void>> start(array<string> args = array<string>());
-    virtual std::shared_ptr<Promise<void>> restart(array<string> args = array<string>());
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "server_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::any serverInstance;
-std::shared_ptr<DevServerManager> getServerManager();
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<void>> stopServer();
-
-std::shared_ptr<Promise<void>> startServer(array<string> args = array<string>());
-
-std::shared_ptr<Promise<void>> restartServer(array<string> args = array<string>());
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SERVER_MANAGER_HPP_

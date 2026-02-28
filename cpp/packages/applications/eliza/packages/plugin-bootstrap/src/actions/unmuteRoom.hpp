@@ -1,45 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_UNMUTEROOM_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_UNMUTEROOM_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Unmuteroom {
+public:
+    Unmuteroom() = default;
+    ~Unmuteroom() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "unmuteRoom"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Template for determining if an agent should unmute a previously muted room.
- * * @type { std::string }
- */
-/**
- * Template for deciding if {{agentName}} should unmute a previously muted room.
- *
- * @type {string}
- */
-
-/**
- * Action to unmute a room, allowing the agent to consider responding to messages again.
- *
- * @name UNMUTE_ROOM
- * @similes ["UNMUTE_CHAT", "UNMUTE_CONVERSATION", "UNMUTE_ROOM", "UNMUTE_THREAD"]
- * @description Unmutes a room, allowing the agent to consider responding to messages again.
- *
- * @param {IAgentRuntime} runtime - The agent runtime to access runtime functionalities.
- * @param {Memory} message - The message containing information about the room.
- * @returns {Promise<boolean>} A boolean value indicating if the room was successfully unmuted.
- */
-    std::future<bool> _shouldUnmute(State state);
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_UNMUTEROOM_HPP_

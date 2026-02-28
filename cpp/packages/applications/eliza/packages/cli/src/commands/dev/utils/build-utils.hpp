@@ -1,47 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_BUILD_UTILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_BUILD_UTILS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class BuildUtils {
+public:
+    BuildUtils() = default;
+    ~BuildUtils() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "build_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Build a single package
- */
-std::future<BuildResult> buildPackage(const std::string& packagePath, bool isPlugin);
-
-/**
- * Build core packages in a monorepo
- */
-
-/**
- * Perform a full rebuild based on the development context
- *
- * Handles building in different contexts: monorepo, project, or plugin.
- */
-std::future<void> performRebuild(DevContext context);
-
-/**
- * Perform initial build setup
- */
-std::future<void> performInitialBuild(DevContext context);
-
-/**
- * Create development context from current working directory
- */
-DevContext createDevContext(const std::string& cwd);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_BUILD_UTILS_HPP_

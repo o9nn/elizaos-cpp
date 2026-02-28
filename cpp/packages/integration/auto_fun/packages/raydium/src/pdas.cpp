@@ -1,47 +1,26 @@
 #include "pdas.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_raydium {
 
-anchor.web3.PublicKey getVaultConfig(anchor.web3.PublicKey programId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return anchor.web3.PublicKey.findProgramAddressSync(;
-    [Buffer.from(VAULT_CONFIG_SEED)],
-    programId,
-    )[0];
-
+bool Pdas::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-anchor.web3.PublicKey getUserPosition(anchor.web3.PublicKey programId, anchor.web3.PublicKey positionNft) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return anchor.web3.PublicKey.findProgramAddressSync(;
-    [Buffer.from(POSITION_SEED), positionNft.toBuffer()],
-    programId,
-    )[0];
-
+void Pdas::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-anchor.web3.PublicKey getNftTokenFaucet(anchor.web3.PublicKey programId, anchor.web3.PublicKey positionNft) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return anchor.web3.PublicKey.findProgramAddressSync(;
-    [Buffer.from(NFT_FAUCET_SEED), positionNft.toBuffer()],
-    programId,
-    )[0];
-
+nlohmann::json Pdas::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-anchor.web3.PublicKey getLockedLiquidity(anchor.web3.PublicKey positionNft, anchor.web3.PublicKey lockingProgram = LOCKING_PROGRAM) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return anchor.web3.PublicKey.findProgramAddressSync(;
-    [Buffer.from(LOCKED_CP_LIQUIDITY_SEED), positionNft.toBuffer()],
-    lockingProgram,
-    )[0];
-
-}
-
+} // namespace autofun_raydium
 } // namespace elizaos

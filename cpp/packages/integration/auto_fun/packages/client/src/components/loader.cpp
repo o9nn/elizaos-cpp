@@ -1,30 +1,26 @@
 #include "loader.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void Loader(auto isFullscreen) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div;
-    className={twMerge([;
-    "flex items-center justify-center h-[50vh]",
-    isFullscreen;
-    ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2";
-    : "",
-    className ? className : "",
-    ])}
-    >;
-    <img;
-    className="h-[60px] w-auto select-none animate-wiggle animate-infinite animate-duration-[400ms] animate-ease-linear";
-    alt="logo";
-    src="/dice.svg";
-    />;
-    </div>;
-    );
-
+bool Loader::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Loader::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Loader::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

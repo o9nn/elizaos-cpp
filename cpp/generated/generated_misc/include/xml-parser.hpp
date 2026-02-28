@@ -1,110 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_XML-PARSER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_XML-PARSER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_XML_PARSER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_XML_PARSER_HPP_
 
-class OTCQuote;
-class QuoteAccepted;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class OTCQuote : public object, public std::enable_shared_from_this<OTCQuote> {
+namespace elizaos {
+namespace generated_misc {
+
+class XmlParser {
 public:
-    using std::enable_shared_from_this<OTCQuote>::shared_from_this;
-    std::string quoteId;
+    XmlParser() = default;
+    ~XmlParser() = default;
 
-    std::string beneficiary;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "xml_parser"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string tokenAmount;
-
-    std::string tokenAmountFormatted;
-
-    std::string tokenSymbol;
-
-    std::any tokenChain;
-
-    double apr;
-
-    double lockupMonths;
-
-    double lockupDays;
-
-    double pricePerToken;
-
-    double priceUsd;
-
-    double totalValueUsd;
-
-    double totalUsd;
-
-    double discountBps;
-
-    double discountPercent;
-
-    double discountUsd;
-
-    double finalPriceUsd;
-
-    std::string paymentCurrency;
-
-    std::string paymentAmount;
-
-    std::string paymentSymbol;
-
-    double ethPrice;
-
-    std::string createdAt;
-
-    std::string status;
-
-    std::string message;
-
-    std::string consignmentId;
-
-    boolean isFixedPrice;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class QuoteAccepted : public object, public std::enable_shared_from_this<QuoteAccepted> {
-public:
-    using std::enable_shared_from_this<QuoteAccepted>::shared_from_this;
-    std::string quoteId;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string offerId;
-
-    std::string transactionHash;
-
-    std::string tokenAmount;
-
-    std::string tokenAmountFormatted;
-
-    std::string tokenSymbol;
-
-    std::string tokenName;
-
-    std::string paidAmount;
-
-    std::string paymentCurrency;
-
-    double discountBps;
-
-    double discountPercent;
-
-    std::string totalSaved;
-
-    std::string finalPrice;
-
-    std::string status;
-
-    std::string timestamp;
-
-    std::string message;
-};
-
-std::any extractXMLFromMessage(std::string messageText);
-
-std::any parseOTCQuoteXML(std::string xmlString);
-
-std::any parseQuoteAcceptedXML(std::string xmlString);
-
-boolean messageContainsQuote(std::string messageText);
-
-object parseMessageXML(std::string messageText);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_XML_PARSER_HPP_

@@ -1,38 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_GET_PACKAGE_INFO_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_GET_PACKAGE_INFO_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "user-environment.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class GetPackageInfo {
+public:
+    GetPackageInfo() = default;
+    ~GetPackageInfo() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "get_package_info"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Get the current version of a package from the monorepo
- */
-/**
- * Retrieves the version of a specified package.
- *
- * @param {string} packageName - The name of the package to retrieve the version for.
- * @returns {Promise<string>} A std::promise that resolves with the version of the package.
- */
-std::future<std::string> getPackageVersion(const std::string& packageName);
-
-/**
- * Get local packages available in the monorepo
- */
-
-std::future<PackageJson> getPackageInfo();
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_GET_PACKAGE_INFO_HPP_

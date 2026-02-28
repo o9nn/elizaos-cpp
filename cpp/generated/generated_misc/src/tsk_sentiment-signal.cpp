@@ -1,47 +1,26 @@
-#include "spartan/src/plugins/degenIntel/tasks/tsk_sentiment-signal.h"
+#include "tsk_sentiment-signal.hpp"
 
-void setupSentimentGenerator(std::any runtime)
-{
-    worldId = runtime["agentId"];
-    auto tasks = std::async([=]() { runtime["getTasks"](object{
-        object::pair{std::string("tags"), array<string>{ std::string("queue"), std::string("repeat"), std::string("plugin_trader") }}
-    }); });
-    for (auto& task : tasks)
-    {
-        std::async([=]() { runtime["deleteTask"](task["id"]); });
-    }
-    runtime["registerTaskWorker"](object{
-        object::pair{std::string("name"), std::string("TRADER_SYNC_SENTIMENT")}, 
-        object::pair{std::string("validate"), [=](auto _runtime, auto _message, auto _state) mutable
-        {
-            return true;
-        }
-        }, 
-        object::pair{std::string("execute"), [=](auto runtime, auto _options, auto task) mutable
-        {
-            try
-            {
-                console->log(std::string("PLUGIN_TRADER_SENTIMENT"));
-                runtime["emitEvent"](std::string("PLUGIN_TRADER_SENTIMENT"), object{});
-            }
-            catch (const std::any& error)
-            {
-                logger->error(std::string("Failed to sync sentiment"), error);
-            }
-        }
-        }
-    });
-    runtime["createTask"](object{
-        object::pair{std::string("name"), std::string("TRADER_SYNC_SENTIMENT")}, 
-        object::pair{std::string("description"), std::string("calculate sentiment")}, 
-        object::pair{std::string("worldId"), std::string("worldId")}, 
-        object::pair{std::string("metadata"), object{
-            object::pair{std::string("createdAt"), Date->now()}, 
-            object::pair{std::string("updatedAt"), Date->now()}, 
-            object::pair{std::string("updateInterval"), 1000 * 60 * 5}
-        }}, 
-        object::pair{std::string("tags"), array<string>{ std::string("queue"), std::string("repeat"), std::string("plugin_trader"), std::string("immediate") }}
-    });
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool TskSentimentSignal::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void TskSentimentSignal::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json TskSentimentSignal::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

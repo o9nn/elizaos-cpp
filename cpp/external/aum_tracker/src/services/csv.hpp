@@ -1,74 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_SERVICES_CSV_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_SERVICES_CSV_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Csv {
+public:
+    Csv() = default;
+    ~Csv() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "csv"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct WalletEntry {
-    std::string id;
-    std::string solana_public_key;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct UniqueWallet {
-    std::string address;
-    std::vector<std::string> ids;
-};
-
-class CSVService {
-  private csvPath: std::string;
-  private walletEntries: WalletEntry[] = [];
-  private uniqueWallets: UniqueWallet[] = [];
-  private isLoaded: boolean = false;
-
-  constructor(csvFileName: std::string = "wallets.csv") {
-    this.csvPath = path.join(process.cwd(), "data", csvFileName);
-  }
-
-  // Load and parse CSV file
-
-      // Skip header line
-
-        // Add to entries
-
-        // Track unique wallets
-
-      // Create unique wallets array
-
-  // Get all wallet entries
-
-  // Get unique wallet addresses
-
-  // Get wallet addresses only (for processing)
-
-  // Get wallets for batch processing
-
-  // Get statistics
-
-  // Find wallet by address
-
-  // Find wallet by ID
-
-  // Get wallets with multiple IDs
-
-  // Validate CSV file exists and is readable
-
-      // Check first few data rows for basic format
-
-  // Reload CSV file (useful for development)
-
-  // Export processed data to JSON (for debugging)
-
-// Export singleton instance
-
-// Export utility functions
-
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_SERVICES_CSV_HPP_

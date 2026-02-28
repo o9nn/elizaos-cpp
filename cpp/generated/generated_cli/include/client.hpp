@@ -1,36 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_CLIENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_CLIENT_H
-#include "core.h"
-#include "./types/base.h"
-#include "./services/agents.h"
-#include "./services/messaging.h"
-#include "./services/memory.h"
-#include "./services/audio.h"
-#include "./services/media.h"
-#include "./services/server.h"
-#include "./services/system.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLIENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLIENT_HPP_
 
-class ElizaClient;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ElizaClient : public object, public std::enable_shared_from_this<ElizaClient> {
+namespace elizaos {
+namespace generated_cli {
+
+class Client {
 public:
-    using std::enable_shared_from_this<ElizaClient>::shared_from_this;
-    std::shared_ptr<AgentsService> agents;
+    Client() = default;
+    ~Client() = default;
 
-    std::shared_ptr<MessagingService> messaging;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<MemoryService> memory;
-
-    std::shared_ptr<AudioService> audio;
-
-    std::shared_ptr<MediaService> media;
-
-    std::shared_ptr<ServerService> server;
-
-    std::shared_ptr<SystemService> system;
-
-    ElizaClient(std::shared_ptr<ApiClientConfig> config);
-    static std::shared_ptr<ElizaClient> create(std::shared_ptr<ApiClientConfig> config);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_cli
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLIENT_HPP_

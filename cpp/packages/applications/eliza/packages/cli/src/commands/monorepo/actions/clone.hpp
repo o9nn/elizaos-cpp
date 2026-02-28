@@ -1,47 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_ACTIONS_CLONE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_ACTIONS_CLONE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Clone {
+public:
+    Clone() = default;
+    ~Clone() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "clone"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Clones a GitHub repository at a specified branch into a target directory.
- *
- * @param repo - The GitHub repository in "owner/repo" shorthand or full URL.
- * @param branch - The branch to clone from the repository.
- * @param destination - The directory where the repository will be cloned.
- *
- * @throws {Error} If the specified branch does not exist in the repository.
- * @throws {Error} If cloning fails for std::any other reason.
- */
-std::future<void> cloneRepository(const std::string& repo, const std::string& branch, const std::string& destination);
-
-/**
- * Prepares the destination directory for cloning
- *
- * Creates the directory if it doesn't exist, or validates that it's empty if it does exist.
- */
-std::string prepareDestination(const std::string& dir);
-
-/**
- * Main monorepo cloning action
- *
- * Handles the complete cloning process including directory preparation and error handling.
- */
-std::future<void> cloneMonorepo(CloneInfo cloneInfo);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_ACTIONS_CLONE_HPP_

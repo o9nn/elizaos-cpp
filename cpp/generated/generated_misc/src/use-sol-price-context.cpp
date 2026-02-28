@@ -1,17 +1,26 @@
-#include "auto.fun/packages/client/src/providers/use-sol-price-context.h"
+#include "use-sol-price-context.hpp"
 
-std::function<std::any()> useSolPriceContext = [=]() mutable
-{
-    return useContext(SolPriceContext);
-};
-std::any SolPriceContext = createContext<std::shared_ptr<SolPriceContextType>>(object{
-    object::pair{std::string("solPrice"), undefined}, 
-    object::pair{std::string("isLoading"), false}, 
-    object::pair{std::string("error"), nullptr}
-});
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseSolPriceContext::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseSolPriceContext::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseSolPriceContext::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

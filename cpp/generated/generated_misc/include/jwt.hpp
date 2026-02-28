@@ -1,53 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
-#include "core.h"
-#include "jsonwebtoken.h"
-using jwt = _default;
-#include "express.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_JWT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_JWT_HPP_
 
-class AuthTokenPayload;
-class AuthenticatedRequest;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::string JWT_SECRET;
-class AuthTokenPayload : public object, public std::enable_shared_from_this<AuthTokenPayload> {
+namespace elizaos {
+namespace generated_misc {
+
+class Jwt {
 public:
-    using std::enable_shared_from_this<AuthTokenPayload>::shared_from_this;
-    std::string userId;
+    Jwt() = default;
+    ~Jwt() = default;
 
-    std::string email;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "jwt"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string username;
-
-    boolean isAdmin;
-
-    double iat;
-
-    double exp;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class AuthenticatedRequest : public Request, public std::enable_shared_from_this<AuthenticatedRequest> {
-public:
-    using std::enable_shared_from_this<AuthenticatedRequest>::shared_from_this;
-    std::string userId;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string userEmail;
-
-    std::string username;
-
-    boolean isAdmin;
-
-    boolean isServerAuthenticated;
-};
-
-std::string generateAuthToken(std::string userId, std::string email, std::string username, boolean isAdmin = undefined);
-
-std::any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
-
-std::any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<NextFunction> next);
-
-std::any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
-
-std::any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_JWT_HPP_

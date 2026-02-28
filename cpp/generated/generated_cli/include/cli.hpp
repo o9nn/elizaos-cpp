@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_CLI_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_CLI_H
-#include "core.h"
-#include "commander.h"
-#include "path.h"
-#include "fs.h"
-#include "./validators.h"
-#include "./config.h"
-#include "./general.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_HPP_
 
-extern std::any program;
-std::shared_ptr<Promise<array<string>>> findProjectFiles();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns);
+namespace elizaos {
+namespace generated_cli {
 
-std::shared_ptr<Promise<array<string>>> findFilesInDir(std::string dir);
+class Cli {
+public:
+    Cli() = default;
+    ~Cli() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cli"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_cli
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_HPP_

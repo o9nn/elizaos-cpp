@@ -1,11 +1,26 @@
-#include "elizas-list/src/lib/prisma.h"
+#include "prisma.hpp"
 
-object globalForPrisma = as<object>(as<any>(global));
-std::any prisma = OR((globalForPrisma["prisma"]), (std::make_shared<PrismaClient>()));
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
-    if (process->env->NODE_ENV != std::string("production")) globalForPrisma["prisma"] = prisma;
+bool Prisma::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Prisma::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Prisma::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

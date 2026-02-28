@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_COMPARE-RUNS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_COMPARE-RUNS_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPARE_RUNS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPARE_RUNS_HPP_
 
-std::shared_ptr<Set<string>> getResolved(std::string filePath);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Set<string>> getSubmitted(std::string filePath);
+namespace elizaos {
+namespace generated_misc {
 
-void statsSingle(std::string filePath);
+class CompareRuns {
+public:
+    CompareRuns() = default;
+    ~CompareRuns() = default;
 
-void compareMany(array<string> paths);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "compare_runs"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-void comparePair(std::string newPath, std::string oldPath, boolean showSame = false);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::shared_ptr<Promise<void>> compareRuns(array<string> paths, boolean showSame = false);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPARE_RUNS_HPP_

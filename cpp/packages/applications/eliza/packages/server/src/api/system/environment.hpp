@@ -1,49 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SYSTEM_ENVIRONMENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SYSTEM_ENVIRONMENT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Environment {
+public:
+    Environment() = default;
+    ~Environment() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "environment"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-using EnvVars = std::unordered_map<std::string, std::string>;
-
-/**
- * Parse an .env file and return the key-value pairs
- * @param filePath Path to the .env file
- * @returns Object containing the key-value pairs
- */
-std::future<EnvVars> parseEnvFile(const std::string& filePath);
-
-std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj);
-
-std::string getLocalEnvPath();
-
-/**
- * Resolves the path to the nearest `.env` file.
- *
- * If no `.env` file is found when traversing up from the starting directory,
- * a path to `.env` in the starting directory is returned.
- *
- * @param startDir - The directory to start searching from. Defaults to the
- *   current working directory.
- * @returns The resolved path to the `.env` file.
- */
-
-/**
- * Environment configuration management
- */
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SYSTEM_ENVIRONMENT_HPP_

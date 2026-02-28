@@ -1,16 +1,26 @@
-#include "otc-agent/src/lib/entityId.h"
+#include "entityId.hpp"
 
-boolean isSolanaAddress(std::string address)
-{
-    return (AND((AND((!address->startsWith(std::string("0x"))), (address->get_length() >= 32))), (address->get_length() <= 44)));
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Entityid::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::string walletToEntityId(std::string address)
-{
-    auto trimmed = address->trim();
-    auto normalized = (isSolanaAddress(trimmed)) ? trimmed : trimmed->toLowerCase();
-    return as<string>(stringToUuid(normalized));
-};
+void Entityid::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Entityid::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

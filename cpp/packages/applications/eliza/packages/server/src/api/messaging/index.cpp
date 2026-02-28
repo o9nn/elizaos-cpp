@@ -1,34 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router messagingRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto router = express.Router();
-
-        if (!serverInstance) {
-            throw std::runtime_error('ServerInstance is required for messaging router');
-        }
-
-        // Mount core messaging functionality at root level
-        router.use("/", createMessagingCoreRouter(serverInstance));
-
-        // Mount server management functionality
-        router.use("/", createServersRouter(serverInstance));
-
-        // Mount channel management functionality
-        router.use("/", createChannelsRouter(agents, serverInstance));
-
-        return router;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

@@ -1,46 +1,26 @@
 #include "logs-page.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void LogsPage() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto [logLevel, setLogLevel] = useState("all");
-
-    return (;
-    <div className="container mx-auto p-6 h-full flex flex-col">;
-    <div className="flex items-center justify-between mb-6">;
-    <h1 className="text-2xl font-bold">System Logs</h1>;
-    <div className="flex items-center gap-4">;
-    <div className="flex items-center gap-2">;
-    <Label htmlFor="log-level">Log Level</Label>;
-    <Select value={logLevel} onValueChange={setLogLevel}>;
-    <SelectTrigger id="log-level" className="w-32">;
-    <SelectValue placeholder="Select level" />;
-    </SelectTrigger>;
-    <SelectContent>;
-    <SelectItem value="all">All</SelectItem>;
-    <SelectItem value="info">Info</SelectItem>;
-    <SelectItem value="warn">Warning</SelectItem>;
-    <SelectItem value="error">Error</SelectItem>;
-    <SelectItem value="debug">Debug</SelectItem>;
-    </SelectContent>;
-    </Select>;
-    </div>;
-    <Button variant="outline" onClick={() => window.location.reload()}>;
-    Refresh;
-    </Button>;
-    </div>;
-    </div>;
-
-    <div className="flex-1 border rounded-lg overflow-hidden">;
-    <AgentLogViewer level={logLevel} />;
-    </div>;
-    </div>;
-    );
-
+bool LogsPage::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void LogsPage::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json LogsPage::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

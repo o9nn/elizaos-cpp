@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
-#include "core.h"
-#include "drizzle-orm/node-postgres.h"
-#include "drizzle-orm/pglite.h"
-using drizzlePglite = drizzle;
-#include "pg.h"
-#include "@electric-sql/pglite.h"
-#include "@elizaos/core.h"
-#include "./schema.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONNECTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONNECTION_HPP_
 
-typedef std::any DatabaseConnection;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ConnectionOptions;
+namespace elizaos {
+namespace generated_misc {
 
-class ConnectionOptions : public object, public std::enable_shared_from_this<ConnectionOptions> {
+class Connection {
 public:
-    using std::enable_shared_from_this<ConnectionOptions>::shared_from_this;
-    std::string postgresUrl;
+    Connection() = default;
+    ~Connection() = default;
 
-    std::string dataDir;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "connection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::any db;
-extern std::any pgPool;
-extern std::any pgliteConnection;
-std::shared_ptr<Promise<DatabaseConnection>> createDatabaseConnection(std::shared_ptr<ConnectionOptions> options);
+} // namespace generated_misc
+} // namespace elizaos
 
-DatabaseConnection getDatabase();
-
-std::shared_ptr<Promise<void>> closeDatabase();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONNECTION_HPP_

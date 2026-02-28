@@ -1,47 +1,26 @@
-#include "spartan/src/plugins/degenTrader/services/calculation/scoring.h"
+#include "scoring.hpp"
 
-std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals)
-{
-    auto tokenMap = std::make_shared<Map<std::string, std::shared_ptr<TokenSignal>>>();
-    for (auto& signal : signals)
-    {
-        if (tokenMap->has(signal->address)) {
-            auto existing = tokenMap->get(signal->address);
-            existing->reasons->push(const_(signal->reasons)[0]);
-            existing->score += signal->score;
-        } else {
-            tokenMap->std::set(signal->address, signal);
-        }
-    }
-    auto scoredTokens = std::async([=]() { Promise->all(Array->from(tokenMap->values())->std::map([=](auto token) mutable
-    {
-        auto score = 0;
-        if (token->technicalSignals) {
-            score += std::async([=]() { this->analyticsService->scoreTechnicalSignals(token->technicalSignals); });
-        }
-        if (token->socialMetrics) {
-            score += std::async([=]() { this->analyticsService->scoreSocialMetrics(token->socialMetrics); });
-        }
-        score += std::async([=]() { this->analyticsService->scoreMarketMetrics(object{
-            object::pair{std::string("marketCap"), token->marketCap}, 
-            object::pair{std::string("volume24h"), token->volume24h}, 
-            object::pair{std::string("liquidity"), token->liquidity}
-        }); });
-        token->score = score;
-        return token;
-    }
-    )); });
-    return scoredTokens->filter([=](auto token) mutable
-    {
-        return AND((AND((token->score >= 60), (token->liquidity >= 50000))), (token->volume24h >= 100000));
-    }
-    )->sort([=](auto a, auto b) mutable
-    {
-        return b->score - a->score;
-    }
-    );
+namespace elizaos {
+namespace generated_misc {
+
+bool Scoring::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-ScoringService::ScoringService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService) : BaseTradeService(runtime, walletService, dataService, analyticsService) {
+void Scoring::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Scoring::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

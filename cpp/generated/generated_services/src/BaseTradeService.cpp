@@ -1,21 +1,26 @@
-#include "spartan/src/plugins/degenTrader/services/base/BaseTradeService.h"
+#include "BaseTradeService.hpp"
 
-BaseTradeService::BaseTradeService(std::shared_ptr<IAgentRuntime> runtime_, std::shared_ptr<WalletService> walletService_, std::shared_ptr<DataService> dataService_, std::shared_ptr<AnalyticsService> analyticsService_) : runtime(runtime_), walletService(walletService_), dataService(dataService_), analyticsService(analyticsService_)  {
-    this->tradingConfig = DEFAULT_CONFIG;
+namespace elizaos {
+namespace generated_services {
+
+bool Basetradeservice::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::any BaseTradeService::getWalletService()
-{
-    return this->walletService;
+void Basetradeservice::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::any BaseTradeService::getDataService()
-{
-    return this->dataService;
+nlohmann::json Basetradeservice::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::any BaseTradeService::getAnalyticsService()
-{
-    return this->analyticsService;
-}
-
+} // namespace generated_services
+} // namespace elizaos

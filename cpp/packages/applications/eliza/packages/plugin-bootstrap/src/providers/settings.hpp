@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_SETTINGS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_SETTINGS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Settings {
+public:
+    Settings() = default;
+    ~Settings() = default;
 
-// File: /swarm/shared/settings/provider.ts
-// Updated to use world metadata instead of cache
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "settings"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Formats a setting value for display, respecting privacy flags
- */
-  return String(setting.value);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Generates a status message based on the current settings state
- */
-std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state);
-
-/**
- * Creates an settings provider with the given configuration
- * Updated to use world metadata instead of cache
- */
-      // Parallelize the initial database operations to improve performance
-      // These operations can run simultaneously as they don't depend on each other
-
-        // In onboarding mode, use the user's world directly
-        // Look for worlds with settings metadata, or create one if none exists
-
-          // If user has worlds but none have settings, use the first one and initialize settings
-
-        // Fetch world settings based on the server ID
-        // For non-onboarding, we need to get the world associated with the room
-
-          // Once we have the serverId, get the settings
-
-      // If no server found after recovery attempts
-
-      // Generate the status message based on the settings
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_SETTINGS_HPP_

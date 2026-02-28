@@ -1,53 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___E2E_PROJECT_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___E2E_PROJECT_TEST_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROJECT_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROJECT_TEST_HPP_
 
-class ProjectTestSuite;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ProjectTestSuite : public TestSuite, public std::enable_shared_from_this<ProjectTestSuite> {
+namespace elizaos {
+namespace generated_testing {
+
+class ProjectTest {
 public:
-    using std::enable_shared_from_this<ProjectTestSuite>::shared_from_this;
-    std::string name = std::string("project");
+    ProjectTest() = default;
+    ~ProjectTest() = default;
 
-    std::string description = std::string("E2E tests for project-specific features");
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "project_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<object> tests = array<object>{ object{
-        object::pair{std::string("name"), std::string("Project runtime environment test")}, 
-        object::pair{std::string("fn"), [=](auto runtime) mutable
-        {
-            try
-            {
-                if (!runtime["character"]) {
-                    throw std::any(std::make_shared<Error>(std::string("Character not loaded in runtime")));
-                }
-                auto character = runtime["character"];
-                if (!character["name"]) {
-                    throw std::any(std::make_shared<Error>(std::string("Character name is missing")));
-                }
-                if (character["name"] != std::string("Eliza")) {
-                    throw std::any(std::make_shared<Error>(std::string("Expected character name 'Eliza', got '") + character["name"] + std::string("'")));
-                }
-                if (!character["system"]) {
-                    throw std::any(std::make_shared<Error>(std::string("Character system prompt is missing")));
-                }
-                if (!Array->isArray(character["bio"])) {
-                    throw std::any(std::make_shared<Error>(std::string("Character bio should be an array")));
-                }
-                if (!Array->isArray(character["messageExamples"])) {
-                    throw std::any(std::make_shared<Error>(std::string("Character message examples should be an array")));
-                }
-                if (AND((character["plugins"]), (!Array->isArray(character["plugins"])))) {
-                    throw std::any(std::make_shared<Error>(std::string("Character plugins should be an array")));
-                }
-            }
-            catch (const std::any& error)
-            {
-                throw std::any(std::make_shared<Error>(std::string("Project runtime environment test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
-            }
-        }
-        }
-    } };
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROJECT_TEST_HPP_

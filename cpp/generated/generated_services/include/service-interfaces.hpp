@@ -1,50 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TYPES_SERVICE-INTERFACES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TYPES_SERVICE-INTERFACES_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_INTERFACES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_INTERFACES_HPP_
 
-class TodoReminderService;
-class TodoNotificationService;
-class TodoDailyResetService;
-class ContentWithText;
-class ServiceClass;
-class MockFunction;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TodoReminderService : public object, public std::enable_shared_from_this<TodoReminderService> {
+namespace elizaos {
+namespace generated_services {
+
+class ServiceInterfaces {
 public:
-    using std::enable_shared_from_this<TodoReminderService>::shared_from_this;
-    virtual std::shared_ptr<Promise<void>> checkTasksForReminders() = 0;
+    ServiceInterfaces() = default;
+    ~ServiceInterfaces() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "service_interfaces"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TodoNotificationService : public object, public std::enable_shared_from_this<TodoNotificationService> {
-public:
-    using std::enable_shared_from_this<TodoNotificationService>::shared_from_this;
-    virtual std::shared_ptr<Promise<void>> sendNotification(std::string message, std::string roomId) = 0;
-};
+} // namespace generated_services
+} // namespace elizaos
 
-class TodoDailyResetService : public object, public std::enable_shared_from_this<TodoDailyResetService> {
-public:
-    using std::enable_shared_from_this<TodoDailyResetService>::shared_from_this;
-    virtual std::shared_ptr<Promise<double>> resetDailyTasks() = 0;
-};
-
-class ContentWithText : public object, public std::enable_shared_from_this<ContentWithText> {
-public:
-    using std::enable_shared_from_this<ContentWithText>::shared_from_this;
-    std::string text;
-};
-
-class ServiceClass : public object, public std::enable_shared_from_this<ServiceClass> {
-public:
-    using std::enable_shared_from_this<ServiceClass>::shared_from_this;
-    std::string serviceType;
-
-    std::string serviceName;
-};
-
-class MockFunction : public object, public std::enable_shared_from_this<MockFunction> {
-public:
-    using std::enable_shared_from_this<MockFunction>::shared_from_this;
-    object mock;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_INTERFACES_HPP_

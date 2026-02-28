@@ -1,30 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMMANDS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMMANDS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_COMMANDS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_COMMANDS_HPP_
 
-namespace global {
-    namespace Cypress {
-        class Chainable;
-    }
-}
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-namespace global {
-    namespace Cypress {
-        class Chainable : public object, public std::enable_shared_from_this<Chainable> {
-        public:
-            using std::enable_shared_from_this<Chainable>::shared_from_this;
-            virtual std::shared_ptr<Chainable<void>> waitForApp() = 0;
-            virtual std::shared_ptr<Chainable<void>> login(std::string email, std::string password) = 0;
-            virtual std::shared_ptr<Chainable<void>> connectWebSocket() = 0;
-            virtual std::shared_ptr<Chainable<void>> cleanupTestData() = 0;
-            virtual std::shared_ptr<Chainable<std::shared_ptr<JQuery<std::shared_ptr<HTMLElement>>>>> getByTestId(std::string testId) = 0;
-            virtual std::shared_ptr<Chainable<any>> waitForApi(std::string alias, double timeout = undefined) = 0;
-        };
+namespace elizaos {
+namespace generated_cli {
 
-    }
-}
-namespace global {
-    namespace Cypress {
-    }
-}
-#endif
+class Commands {
+public:
+    Commands() = default;
+    ~Commands() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "commands"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_cli
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_COMMANDS_HPP_

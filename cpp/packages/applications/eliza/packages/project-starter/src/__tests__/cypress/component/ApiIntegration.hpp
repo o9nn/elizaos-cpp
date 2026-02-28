@@ -1,79 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_COMPONENT_APIINTEGRATION_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_COMPONENT_APIINTEGRATION_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Apiintegration {
+public:
+    Apiintegration() = default;
+    ~Apiintegration() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ApiIntegration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Example component that fetches data from an API using React state
- */
-
-      // Wait for the API call
-
-      // Check data is displayed
-
-      // Wait for the failed API call
-
-      // Check error is displayed
-
-      // Network errors might not trigger the wait, so we check for error directly
-
-      // Create a component that can change agent ID
-
-      // Click to change agent
-
-      // Test empty response
-
-      // Test null items
-      // Create a new mount point for the second test
-
-/**
- * API TESTING PATTERNS IN CYPRESS
- *
- * 1. INTERCEPTING REQUESTS
- *    cy.intercept() allows you to:
- *    - Mock responses
- *    - Delay responses
- *    - Force errors
- *    - Validate request data
- *
- * 2. WAITING FOR REQUESTS
- *    Use aliases with .as() and cy.wait() to ensure
- *    requests complete before making assertions
- *
- * 3. ERROR SCENARIOS
- *    Test all error cases:
- *    - Server errors (4xx, 5xx)
- *    - Network failures
- *    - Timeout scenarios
- *    - Invalid responses
- *
- * 4. LOADING STATES
- *    Always test loading indicators
- *    Use delays to ensure they appear
- *
- * 5. DATA UPDATES
- *    Test how components handle:
- *    - Prop changes
- *    - Refetching
- *    - Cache invalidation
- *
- * NOTE: This example uses plain React state instead of React Query
- * to avoid dependency optimization issues in the test environment.
- * In production, you would typically use React Query or similar
- * libraries for better caching and request management.
- */
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_COMPONENT_APIINTEGRATION_HPP_

@@ -1,30 +1,26 @@
-#include "elizas-list/src/lib/email.h"
+#include "email.hpp"
 
-void sendProjectNotification(std::string to, object project)
-{
-    auto html = render(ProjectNotification(object{
-        object::pair{std::string("project"), std::string("project")}
-    }));
-    std::async([=]() { transporter->sendMail(object{
-        object::pair{std::string("from"), std::string(""ELIZAS LIST" <notifications@elizaslist.dev>")}, 
-        object::pair{std::string("to"), std::string("to")}, 
-        object::pair{std::string("subject"), std::string("New Project: ") + project["name"] + string_empty}, 
-        object::pair{std::string("html"), std::string("html")}
-    }); });
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::any transporter = createTransport(object{
-    object::pair{std::string("host"), process->env->SMTP_HOST}, 
-    object::pair{std::string("port"), parseInt(OR((process->env->SMTP_PORT), (std::string("587"))))}, 
-    object::pair{std::string("auth"), object{
-        object::pair{std::string("user"), process->env->SMTP_USER}, 
-        object::pair{std::string("pass"), process->env->SMTP_PASS}
-    }}
-});
-
-void Main(void)
-{
+bool Email::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Email::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Email::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

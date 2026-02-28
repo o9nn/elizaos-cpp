@@ -1,115 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_AGENT_CHAT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_AGENT_CHAT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentChat {
+public:
+    AgentChat() = default;
+    ~AgentChat() = default;
 
-/**
- * E2E Tests for Agent Chat Functionality
- *
- * These tests verify the chat interface and agent interactions
- * in the running application.
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_chat"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    // Visit the dashboard
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    // Navigate to chat or agents section
-
-      // Look for chat-related elements
-
-      // Look for input field
-
-      // Look for send button
-
-      // Type message
-
-      // Click send
-
-      // Verify message appears in chat
-
-      // Type message and press Enter
-
-      // Verify message appears
-
-      // Get input element
-
-      // Type and send
-
-      // Verify input is cleared
-
-      // Send a simple message
-
-      // Wait for agent response
-      // Look for typical agent response indicators
-
-      // Send message
-
-      // Look for typing indicator
-
-      // Typing indicator should disappear after response
-
-      // Send multiple messages
-
-        // Wait a bit between messages
-
-      // Verify all messages are visible
-
-      // Send multiple messages to create scroll
-
-      // Check that the latest message is in view
-
-      // Intercept API calls and force error
-
-      // Send message
-
-      // Should show error message
-
-      // Try to send empty message
-
-      // Should not create std::any new message elements
-
-/**
- * CHAT TESTING PATTERNS
- *
- * 1. MESSAGE FLOW
- *    - Test sending messages
- *    - Verify message display
- *    - Check input clearing
- *    - Test keyboard shortcuts
- *
- * 2. AGENT INTERACTION
- *    - Wait for responses
- *    - Check typing indicators
- *    - Verify response format
- *    - Test conversation context
- *
- * 3. UI BEHAVIOR
- *    - Auto-scroll to latest
- *    - Maintain history
- *    - Handle long messages
- *    - Responsive layout
- *
- * 4. ERROR CASES
- *    - Network failures
- *    - Empty messages
- *    - Rate limiting
- *    - Session timeouts
- *
- * TIPS:
- * - Use generous timeouts for agent responses
- * - Test real-world scenarios
- * - Verify accessibility features
- * - Check mobile interactions
- */
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_AGENT_CHAT_HPP_

@@ -1,54 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_VALIDATION_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_VALIDATION_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Validation {
+public:
+    Validation() = default;
+    ~Validation() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "validation"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Validates and retrieves an agent runtime from the agents std::map
- */
-
-/**
- * Validates a UUID parameter and returns it as UUID type or null if invalid
- */
-  return validateUuid(agentId);
-
-/**
- * Validates a room ID parameter
- */
-  return validateUuid(roomId);
-
-/**
- * Enhanced channel ID validation with security logging
- * Validates a channel ID parameter with additional security checks
- */
-  // Basic UUID validation
-
-    // Log invalid channel ID attempts for security monitoring
-
-  // Additional security check: ensure channel ID doesn't contain suspicious patterns
-
-/**
- * Validates a memory ID parameter
- */
-  return validateUuid(memoryId);
-
-/**
- * Validates a world ID parameter
- */
-  return validateUuid(worldId);
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_VALIDATION_HPP_

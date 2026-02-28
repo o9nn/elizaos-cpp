@@ -1,69 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNDASHBOARD_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNDASHBOARD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Moderndashboard {
+public:
+    Moderndashboard() = default;
+    ~Moderndashboard() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ModernDashboard"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct DashboardProps {
-    std::optional<std::any> initialData;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-      // Initialize performance chart
-      void initPerformanceChart();
-
-      // Update dashboard with data
-      std::future<void> updateDashboard(auto data);
-
-      // Update performance chart
-      void updatePerformanceChart();
-
-      // Load assets data
-      std::future<void> loadAssets();
-
-      // Display assets in table
-      void displayAssets(auto assets);
-
-      // Create asset table row
-      void createAssetRow(auto asset);
-
-      // Load wallets data
-      std::future<void> loadWallets();
-
-      // Display wallets in table
-      void displayWallets(auto wallets);
-
-      // Create wallet table row
-      void createWalletRow(auto wallet);
-
-      // Copy address to clipboard
-        // Could add a toast notification here
-
-      // Filter assets
-
-      // Filter wallets
-
-      // Check for existing running refresh jobs
-      std::future<void> checkForRunningJobs();
-
-      // Lightweight refresh - just fetch current data without triggering prefetch
-      std::future<void> lightweightRefresh();
-
-      // Initialize on load
-
-        // Auto-refresh every 5 minutes (lightweight)
-
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNDASHBOARD_HPP_

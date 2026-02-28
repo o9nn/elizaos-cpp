@@ -1,18 +1,26 @@
-#include "discrub-ext/src/classes/attachment.h"
+#include "attachment.hpp"
 
-Attachment::Attachment(object opts) {
-    this->id = opts["id"];
-    this->filename = opts["filename"];
-    this->description = opts["description"];
-    this->content_type = opts["content_type"];
-    this->size = opts["size"];
-    this->url = opts["url"];
-    this->proxy_url = opts["proxy_url"];
-    this->height = opts["height"];
-    this->width = opts["width"];
-    this->ephemeral = opts["ephemeral"];
-    this->duration_secs = opts["duration_secs"];
-    this->waveform = opts["waveform"];
-    this->flags = opts["flags"];
+namespace elizaos {
+namespace generated_misc {
+
+bool Attachment::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Attachment::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Attachment::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

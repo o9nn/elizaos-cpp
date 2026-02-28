@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___INTEGRATION_SOCKETIO-MESSAGE-FLOW_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___INTEGRATION_SOCKETIO-MESSAGE-FLOW_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "socket.io-client.h"
-using ioClient = io;
-using ClientSocket = Socket;
-#include "../../index.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/plugin-sql.h"
-#include "node:path.h"
-using path = _default;
-#include "node:fs.h"
-using fs = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SOCKETIO_MESSAGE_FLOW_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SOCKETIO_MESSAGE_FLOW_TEST_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class SocketioMessageFlowTest {
+public:
+    SocketioMessageFlowTest() = default;
+    ~SocketioMessageFlowTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "socketio_message_flow_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_SOCKETIO_MESSAGE_FLOW_TEST_HPP_

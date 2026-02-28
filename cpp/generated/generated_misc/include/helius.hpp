@@ -1,60 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "ws.h"
-using WebSocket = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_HELIUS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_HELIUS_HPP_
 
-class HeliusWebSocket;
-class IToken;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class HeliusWebSocket : public object, public std::enable_shared_from_this<HeliusWebSocket> {
+namespace elizaos {
+namespace generated_misc {
+
+class Helius {
 public:
-    using std::enable_shared_from_this<HeliusWebSocket>::shared_from_this;
-    std::string apiKey;
+    Helius() = default;
+    ~Helius() = default;
 
-    std::shared_ptr<IAgentRuntime> runtime;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "helius"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any ws = nullptr;
-
-    std::shared_ptr<Map<std::string, double>> subscriptions = std::make_shared<Map>();
-
-    std::any pingInterval = nullptr;
-
-    HeliusWebSocket(std::string apiKey_, std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<void>> connect();
-    virtual std::shared_ptr<Promise<any>> subscribeToWallet(std::string walletAddress);
-    virtual std::shared_ptr<Promise<boolean>> unsubscribeFromWallet(std::string walletAddress);
-    virtual void startPing();
-    virtual void cleanup();
-    virtual void disconnect();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class IToken : public object, public std::enable_shared_from_this<IToken> {
-public:
-    using std::enable_shared_from_this<IToken>::shared_from_this;
-    std::string symbol;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string name;
-
-    std::string address;
-
-    double decimals;
-
-    double totalSupply;
-
-    double marketCap;
-
-    double volume24h;
-
-    double price;
-
-    double price24hAgo;
-
-    double priceChange24h;
-
-    double curveProgress;
-};
-
-extern std::shared_ptr<Provider> heliusProvider;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_HELIUS_HPP_

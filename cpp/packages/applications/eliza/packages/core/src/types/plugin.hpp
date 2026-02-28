@@ -1,56 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_PLUGIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_PLUGIN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Plugin {
+public:
+    Plugin() = default;
+    ~Plugin() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-using Route = std::variant<{
-
-/**
- * Plugin for extending agent functionality
- */
-
-using PluginEvents = std::vector<{
-
-struct Plugin {
-    std::string name;
-    std::string description;
-    std::string name;
-    std::optional<std::vector<Action>> actions;
-    std::optional<std::vector<Provider>> providers;
-    std::optional<std::vector<Evaluator>> evaluators;
-    std::optional<IDatabaseAdapter> adapter;
-    std::optional<PluginEvents> events;
-    std::optional<std::vector<Route>> routes;
-    std::optional<std::vector<TestSuite>> tests;
-    std::optional<std::vector<std::string>> dependencies;
-    std::optional<std::vector<std::string>> testDependencies;
-    std::optional<double> priority;
-    std::optional<std::any> schema;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct ProjectAgent {
-    Character character;
-    std::optional<std::vector<Plugin>> plugins;
-    std::optional<std::variant<TestSuite, std::vector<TestSuite>>> tests;
-};
-
-struct Project {
-    std::vector<ProjectAgent> agents;
-};
-
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_PLUGIN_HPP_

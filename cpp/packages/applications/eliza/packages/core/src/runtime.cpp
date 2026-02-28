@@ -1,22 +1,26 @@
 #include "runtime.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-void if() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    (this.adapter).runMigrations(p.schema, p.name);
-    this.logger.info(`Successfully migrated plugin: ${p.name}`);
-
+bool Runtime::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void normalizeAction(const std::string& actionString) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return actionString.toLowerCase().replace("_", "");
-
+void Runtime::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Runtime::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

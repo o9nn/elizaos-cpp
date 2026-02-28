@@ -1,42 +1,26 @@
-#include "elizas-list/src/lib/analytics/predictive.h"
+#include "predictive.hpp"
 
-PredictiveAnalytics::PredictiveAnalytics() {
-    this->mlPredictor = std::make_shared<MLPredictor>();
-    this->initialize();
+namespace elizaos {
+namespace generated_misc {
+
+bool Predictive::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void PredictiveAnalytics::initialize()
-{
-    std::async([=]() { this->mlPredictor->loadModel(); });
+void Predictive::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::shared_ptr<Promise<object>> PredictiveAnalytics::predictProjectSuccess(std::string projectId)
-{
-    try
-    {
-        auto features = std::async([=]() { this->extractProjectFeatures(projectId); });
-        auto score = std::async([=]() { this->mlPredictor->predictEngagement(features); });
-        return object{
-            object::pair{std::string("score"), std::string("score")}, 
-            object::pair{std::string("factors"), this->analyzeContributingFactors(features)}, 
-            object::pair{std::string("recommendations"), this->generateRecommendations(features, score)}
-        };
-    }
-    catch (const std::any& error)
-    {
-        logger["error"](std::string("Error predicting project success:"), error);
-        throw std::any(error);
-    }
+nlohmann::json Predictive::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<Promise<object>> PredictiveAnalytics::predictUserEngagement(std::string userId)
-{
-    auto userFeatures = std::async([=]() { this->extractUserFeatures(userId); });
-    auto likelihood = std::async([=]() { this->mlPredictor->predictEngagement(userFeatures); });
-    return object{
-        object::pair{std::string("likelihood"), std::string("likelihood")}, 
-        object::pair{std::string("nextActions"), this->suggestNextActions(userFeatures)}, 
-        object::pair{std::string("interests"), std::async([=]() { this->predictUserInterests(userFeatures); })}
-    };
-}
-
+} // namespace generated_misc
+} // namespace elizaos

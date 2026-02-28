@@ -1,36 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_ACTIONS_UPDATEGOAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_ACTIONS_UPDATEGOAL_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/goalService.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEGOAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEGOAL_HPP_
 
-class GoalSelection;
-class GoalUpdate;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class GoalSelection : public object, public std::enable_shared_from_this<GoalSelection> {
+namespace elizaos {
+namespace generated_misc {
+
+class Updategoal {
 public:
-    using std::enable_shared_from_this<GoalSelection>::shared_from_this;
-    std::string goalId;
+    Updategoal() = default;
+    ~Updategoal() = default;
 
-    std::string goalName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "updateGoal"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean isFound;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class GoalUpdate : public object, public std::enable_shared_from_this<GoalUpdate> {
-public:
-    using std::enable_shared_from_this<GoalUpdate>::shared_from_this;
-    std::string name;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string description;
-};
-
-extern std::string extractGoalTemplate;
-extern std::string extractUpdateTemplate;
-std::shared_ptr<Promise<std::shared_ptr<GoalSelection>>> extractGoalSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<GoalData>> availableGoals);
-
-std::shared_ptr<Promise<any>> extractGoalUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<GoalData> goal);
-
-extern std::shared_ptr<Action> updateGoalAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEGOAL_HPP_

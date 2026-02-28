@@ -1,39 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_CONSTANTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_CONSTANTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Constants {
+public:
+    Constants() = default;
+    ~Constants() = default;
 
-/**
- * Shared constants for the API server
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "constants"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Maximum file size allowed for uploads (50MB)
- * Used across various endpoints including audio processing,
- * media uploads, and multer configurations
- */
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Maximum file size in human-readable format
- */
-
-/**
- * Valid MIME types for audio files
- */
-
-/**
- * Valid MIME types for media files (includes audio, images, documents)
- */
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_CONSTANTS_HPP_

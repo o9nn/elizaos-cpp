@@ -1,13 +1,26 @@
-#include "trust_scoreboard/src/utils/helpers.h"
+#include "helpers.hpp"
 
-std::function<std::string(std::string, double)> truncateAddress = [=](auto address, auto length = 4) mutable
-{
-    if (!address) return string_empty;
-    return string_empty + address->slice(0, length) + std::string("...") + address->slice(-length) + string_empty;
-};
+namespace elizaos {
+namespace generated_utils {
 
-void Main(void)
-{
+bool Helpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Helpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Helpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

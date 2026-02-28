@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYTICS_ADVANCED-VISUALIZATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYTICS_ADVANCED-VISUALIZATION_H
-#include "core.h"
-#include "chart.js.h"
-#include "d3.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADVANCED_VISUALIZATION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADVANCED_VISUALIZATION_HPP_
 
-class AdvancedVisualization;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AdvancedVisualization : public object, public std::enable_shared_from_this<AdvancedVisualization> {
+namespace elizaos {
+namespace generated_misc {
+
+class AdvancedVisualization {
 public:
-    using std::enable_shared_from_this<AdvancedVisualization>::shared_from_this;
-    static std::shared_ptr<ChartConfiguration> generateSegmentationSunburst(array<any> segments);
-    static std::shared_ptr<ChartConfiguration> generatePredictionGraph(array<any> predictions);
-    static std::any generateNetworkGraph(std::any data);
+    AdvancedVisualization() = default;
+    ~AdvancedVisualization() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "advanced_visualization"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADVANCED_VISUALIZATION_HPP_

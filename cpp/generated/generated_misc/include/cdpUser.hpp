@@ -1,80 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_FRONTEND_LIB_CDPUSER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_FRONTEND_LIB_CDPUSER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CDPUSER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CDPUSER_HPP_
 
-class CdpAuthMethod;
-class CdpSmsMethod;
-class CdpAuthenticationMethods;
-class CdpUser;
-class CdpUserInfoOptions;
-class CdpUserInfo;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CdpAuthMethod : public object, public std::enable_shared_from_this<CdpAuthMethod> {
+namespace elizaos {
+namespace generated_misc {
+
+class Cdpuser {
 public:
-    using std::enable_shared_from_this<CdpAuthMethod>::shared_from_this;
-    std::string email;
+    Cdpuser() = default;
+    ~Cdpuser() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cdpUser"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CdpSmsMethod : public object, public std::enable_shared_from_this<CdpSmsMethod> {
-public:
-    using std::enable_shared_from_this<CdpSmsMethod>::shared_from_this;
-    std::string phoneNumber;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string countryCode;
-};
-
-class CdpAuthenticationMethods : public object, public std::enable_shared_from_this<CdpAuthenticationMethods> {
-public:
-    using std::enable_shared_from_this<CdpAuthenticationMethods>::shared_from_this;
-    std::shared_ptr<CdpAuthMethod> email;
-
-    std::shared_ptr<CdpAuthMethod> oauth;
-
-    std::shared_ptr<CdpAuthMethod> google;
-
-    std::shared_ptr<CdpSmsMethod> sms;
-};
-
-class CdpUser : public object, public std::enable_shared_from_this<CdpUser> {
-public:
-    using std::enable_shared_from_this<CdpUser>::shared_from_this;
-    std::string userId;
-
-    std::string email;
-
-    std::string name;
-
-    std::string displayName;
-
-    std::shared_ptr<CdpAuthenticationMethods> authenticationMethods;
-};
-
-class CdpUserInfoOptions : public object, public std::enable_shared_from_this<CdpUserInfoOptions> {
-public:
-    using std::enable_shared_from_this<CdpUserInfoOptions>::shared_from_this;
-    boolean isSignedIn;
-};
-
-class CdpUserInfo : public object, public std::enable_shared_from_this<CdpUserInfo> {
-public:
-    using std::enable_shared_from_this<CdpUserInfo>::shared_from_this;
-    std::string email;
-
-    std::string username;
-
-    std::string phoneNumber;
-};
-
-std::any extractEmailFromCdpUser(std::any user, boolean isSignedIn);
-
-std::any extractUsernameFromCdpUser(std::any user, std::string emailForFallback = undefined);
-
-std::any extractPhoneFromCdpUser(std::any user);
-
-std::any generateEmailFromPhone(std::string phone);
-
-std::shared_ptr<CdpUserInfo> resolveCdpUserInfo(std::any user, std::shared_ptr<CdpUserInfoOptions> options = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CDPUSER_HPP_

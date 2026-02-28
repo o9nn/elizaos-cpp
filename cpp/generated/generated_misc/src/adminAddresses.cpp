@@ -1,18 +1,26 @@
-#include "auto.fun/packages/server/src/routes/adminAddresses.h"
+#include "adminAddresses.hpp"
 
-std::function<array<string>(std::string)> parseAdminAddresses = [=](auto addressesStr) mutable
-{
-    if (!addressesStr) return array<any>();
-    return addressesStr->split(std::string(","))->std::map([=](auto addr) mutable
-    {
-        return addr->trim();
-    }
-    );
-};
-array<string> adminAddresses = OR((parseAdminAddresses(process->env->ADMIN_ADDRESSES)), (array<any>()));
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Adminaddresses::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Adminaddresses::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Adminaddresses::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

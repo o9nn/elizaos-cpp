@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___TEST-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___TEST-UTILS_H
-#include "core.h"
-#include "bun:test.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_UTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_UTILS_HPP_
 
-typedef std::any MockRuntime;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_utils {
 
-MockRuntime createMockRuntime(Partial<MockRuntime> overrides = object{});
+class TestUtils {
+public:
+    TestUtils() = default;
+    ~TestUtils() = default;
 
-Partial<std::shared_ptr<Memory>> createMockMemory(Partial<std::shared_ptr<Memory>> overrides = object{});
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "test_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-Partial<std::shared_ptr<State>> createMockState(Partial<std::shared_ptr<State>> overrides = object{});
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::any createMockService(Partial<Record<std::string, any>> overrides = object{});
+} // namespace generated_utils
+} // namespace elizaos
 
-std::any setupActionTest(object options = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_UTILS_HPP_

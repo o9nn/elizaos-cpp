@@ -1,69 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC_FRONTEND_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC_FRONTEND_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Define the interface for the ELIZA_CONFIG
-struct ElizaConfig {
-    std::string agentId;
-    std::string apiBase;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Define the interface for time response
-struct TimeResponse {
-    std::string timestamp;
-    double unix;
-    std::string formatted;
-    std::string timezone;
-};
-
-/**
- * Time display component that fetches from backend
- */
-void TimeDisplay({ apiBase: std::string } { apiBase });
-
-/**
- * Main Example route component
- */
-void ExampleRoute();
-
-/**
- * Example provider component
- */
-void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: std::string } apiBase });
-
-// Initialize the application - no router needed for iframe
-
-// Define types for integration with agent UI system
-struct AgentPanel {
-    std::string name;
-    std::string path;
-    React.ComponentType<any> component;
-    std::optional<std::string> icon;
-    std::optional<bool> public;
-    std::optional<std::string; // Optional short label for mobile> shortLabel;
-};
-
-struct PanelProps {
-    std::string agentId;
-};
-
-/**
- * Example panel component for the plugin system
- */
-
-// Export the panel configuration for integration with the agent UI
-
-* from './utils';
-
+} // namespace eliza_plugin_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_STARTER_SRC_FRONTEND_INDEX_HPP_

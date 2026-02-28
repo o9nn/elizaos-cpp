@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_STATE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_STATE_H
-#include "core.h"
-#include "./types.h"
-using StateFromTypes = State;
-#include "@elizaos/core-plugin-v2.h"
-using StateV2 = State;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATE_HPP_
 
-typedef StateFromTypes State;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_misc {
 
-extern Partial<State> DEFAULT_STATE;
-State fromV2State(std::shared_ptr<StateV2> stateV2);
+class State {
+public:
+    State() = default;
+    ~State() = default;
 
-std::shared_ptr<StateV2> toV2State(State state);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "state"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-#endif
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATE_HPP_

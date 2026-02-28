@@ -1,35 +1,26 @@
-#include "elizas-list/src/utils/projectUtils.h"
+#include "projectUtils.hpp"
 
-std::function<array<any>(array<any>, std::any)> sortProjects = [=](auto projects, P1 sortBy) mutable
-{
-    return (array<any>{ projects })->sort([=](auto a, auto b) mutable
-    {
-        if (sortBy == std::string("date")) {
-            return ((std::make_shared<Date>(b->addedOn)))->getTime() - ((std::make_shared<Date>(a->addedOn)))->getTime();
-        }
-        return a->name->localeCompare(b->name);
-    }
-    );
-};
-std::function<std::string()> generateProjectId = [=]() mutable
-{
-    return std::string("proj_") + Date->now() + std::string("_") + Math->random()->toString(36)->substr(2, 9) + string_empty;
-};
-std::function<array<string>(std::any)> validateProject = [=](auto project) mutable
-{
-    auto errors = array<string>();
-    if (!project->name->trim()) errors->push(std::string("Project name is required"));
-    if (!project->description->trim()) errors->push(std::string("Description is required"));
-    if (!project->github->trim()) errors->push(std::string("GitHub URL is required"));
-    if (!project->image->trim()) errors->push(std::string("Image is required"));
-    if (!project->author->name->trim()) errors->push(std::string("Author name is required"));
-    if (!project->author->github->trim()) errors->push(std::string("Author GitHub is required"));
-    if (!project->tags->length) errors->push(std::string("At least one tag is required"));
-    return errors;
-};
+namespace elizaos {
+namespace generated_utils {
 
-void Main(void)
-{
+bool Projectutils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Projectutils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Projectutils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

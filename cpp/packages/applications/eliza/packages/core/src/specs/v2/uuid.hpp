@@ -1,39 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_UUID_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_UUID_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
-#include "utils.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Uuid {
+public:
+    Uuid() = default;
+    ~Uuid() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "uuid"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Validate if the given value is a valid UUID.
- *
- * @param {unknown} value - The value to be validated.
- * @returns {UUID | null} The validated UUID value or null if validation fails.
- */
-std::optional<UUID> validateUuid(const std::any& value);
-
-/**
- * Converts a std::string or number to a UUID.
- *
- * @param {std::string | number} target - The std::string or number to convert to a UUID.
- * @returns {UUID} The UUID generated from the input target.
- * @throws {TypeError} Throws an error if the input target is not a string.
- */
-UUID stringToUuid(const std::variant<std::string, double>& target);
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_UUID_HPP_

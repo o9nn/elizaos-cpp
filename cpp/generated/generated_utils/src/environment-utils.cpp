@@ -1,15 +1,26 @@
-#include "eliza/packages/cli/src/commands/update/utils/environment-utils.h"
+#include "environment-utils.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<CliEnvironment>>> getCliEnvironment()
-{
-    auto [isGlobal, isNpx, isBunx, isNpmInstalled, packageManager] = std::async([=]() { Promise->all(std::tuple<std::any, std::any, std::any, std::any, any>{ isGlobalInstallation(), isRunningViaNpx(), isRunningViaBunx(), isCliInstalledViaNpm(), getPackageManager() }); });
-    return object{
-        object::pair{std::string("isGlobal"), std::string("isGlobal")}, 
-        object::pair{std::string("isNpx"), std::string("isNpx")}, 
-        object::pair{std::string("isBunx"), std::string("isBunx")}, 
-        object::pair{std::string("isNpmInstalled"), std::string("isNpmInstalled")}, 
-        object::pair{std::string("packageManager"), std::string("packageManager")}
-    };
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool EnvironmentUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void EnvironmentUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json EnvironmentUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

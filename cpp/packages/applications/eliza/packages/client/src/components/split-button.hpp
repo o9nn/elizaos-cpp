@@ -1,37 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_SPLIT_BUTTON_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_SPLIT_BUTTON_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class SplitButton {
+public:
+    SplitButton() = default;
+    ~SplitButton() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "split_button"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct SplitButtonOption {
-    std::string label;
-    std::optional<std::string> description;
-    std::optional<std::string> value;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct SplitButtonProps {
-    std::vector<SplitButtonOption> options;
-    std::optional<std::string> defaultValue;
-    std::optional<std::string> value;
-    std::optional<std::string> std::variant;
-    std::optional<std::string> className;
-    std::optional<std::string> buttonClassName;
-    std::optional<std::string> dropdownClassName;
-    std::optional<bool> disabled;
-};
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_SPLIT_BUTTON_HPP_

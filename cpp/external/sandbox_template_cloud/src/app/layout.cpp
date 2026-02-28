@@ -1,22 +1,26 @@
 #include "layout.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace sandbox_template_cloud {
 
-void RootLayout() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <html lang="en">;
-    <body;
-    "className={" + geistSans.variable + " " + geistMono.variable + " antialiased";
-    >;
-    {children}
-    </body>;
-    </html>;
-    );
-
+bool Layout::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Layout::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Layout::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace sandbox_template_cloud
 } // namespace elizaos

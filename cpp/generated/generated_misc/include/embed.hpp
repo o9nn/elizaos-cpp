@@ -1,47 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMBED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMBED_H
-#include "core.h"
-#include "../types/embed-footer-object.h"
-#include "../types/embed-image-object.h"
-#include "../types/embed-thumbnail-object.h"
-#include "../types/embed-video-object.h"
-#include "../types/embed-provider-object.h"
-#include "../types/embed-author-object.h"
-#include "../types/embed-field-object.h"
-#include "../enum/embed-type.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBED_HPP_
 
-class Embed;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Embed : public object, public std::enable_shared_from_this<Embed> {
+namespace elizaos {
+namespace generated_misc {
+
+class Embed {
 public:
-    using std::enable_shared_from_this<Embed>::shared_from_this;
-    std::string title;
+    Embed() = default;
+    ~Embed() = default;
 
-    EmbedType type;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "embed"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    std::string url;
-
-    std::string timestamp;
-
-    double color;
-
-    EmbedFooterObject footer;
-
-    EmbedImageObject image;
-
-    EmbedThumbnailObject thumbnail;
-
-    EmbedVideoObject video;
-
-    EmbedProviderObject provider;
-
-    EmbedAuthorObject author;
-
-    array<EmbedFieldObject> fields;
-
-    Embed(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBED_HPP_

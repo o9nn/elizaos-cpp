@@ -1,50 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_MUTEROOM_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_MUTEROOM_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Muteroom {
+public:
+    Muteroom() = default;
+    ~Muteroom() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "muteRoom"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Template std::string for deciding if the agent should mute a room and stop responding unless explicitly mentioned.
- *
- * @type {string}
- */
-/**
- * Template for deciding if agent should mute a room and stop responding unless explicitly mentioned.
- *
- * @type {string}
- */
-
-/**
- * Action for muting a room, ignoring all messages unless explicitly mentioned.
- * Only do this if explicitly asked to, or if you're annoying people.
- *
- * @name MUTE_ROOM
- * @type {Action}
- *
- * @property {string} name - The name of the action
- * @property {std::string[]} similes - Similar actions related to muting a room
- * @property {string} description - Description of the action
- * @property {Function} validate - Validation std::function to check if the room is not already muted
- * @property {Function} handler - Handler std::function to handle muting the room
- * @property {ActionExample[][]} examples - Examples of using the action
- */
-
-    std::future<bool> _shouldMute(State state);
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_MUTEROOM_HPP_

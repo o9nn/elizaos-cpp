@@ -1,29 +1,26 @@
-#include "plugin-specification/core-plugin-v2/__tests__/search.test.h"
+#include "search.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("BM25 search"), [=]() mutable
-    {
-        it(std::string("indexes documents and finds matches"), [=]() mutable
-        {
-            auto docs = array<object>{ object{
-                object::pair{std::string("text"), std::string("hello world")}
-            }, object{
-                object::pair{std::string("text"), std::string("another document")}
-            }, object{
-                object::pair{std::string("text"), std::string("world of javascript")}
-            } };
-            auto bm = std::make_shared<BM25>(docs, object{
-                object::pair{std::string("fieldBoosts"), object{
-                    object::pair{std::string("text"), 1}
-                }}
-            });
-            auto results = bm->search(std::string("world"));
-            expect(const_(results)[0]->index)->toBe(0);
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool SearchTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void SearchTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json SearchTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

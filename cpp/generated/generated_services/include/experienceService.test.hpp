@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_TESTS_EXPERIENCESERVICE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_TESTS_EXPERIENCESERVICE_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../service.js.h"
-#include "../types.js.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_EXPERIENCESERVICE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_EXPERIENCESERVICE_TEST_HPP_
 
-extern std::any mockRuntime;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_services {
+
+class ExperienceserviceTest {
+public:
+    ExperienceserviceTest() = default;
+    ~ExperienceserviceTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "experienceService_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_EXPERIENCESERVICE_TEST_HPP_

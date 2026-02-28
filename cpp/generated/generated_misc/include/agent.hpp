@@ -1,14 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT_H
-#include "core.h"
-#include "dotenv.h"
-using dotenv = _default;
-#include "@elizaos/core.h"
-#include "./plugin-otc-desk.h"
-#include "./plugin-groq.h"
-#include "@elizaos/plugin-sql.h"
-using sqlPlugin = plugin;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_HPP_
 
-extern std::shared_ptr<Character> character;
-extern object agent;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Agent {
+public:
+    Agent() = default;
+    ~Agent() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_HPP_

@@ -1,23 +1,26 @@
 #include "scam-flag.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void Verified() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!isHidden) return null;
-    return (;
-    <Fragment>;
-    <Tooltip anchorSelect="#verified">;
-    <span>Scam</span>;
-    </Tooltip>;
-
-    <img src="/warning.svg" id="verified" className="size-5 select-none" />;
-    </Fragment>;
-    );
-
+bool ScamFlag::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void ScamFlag::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ScamFlag::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

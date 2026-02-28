@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
-#include "@elizaos/core.h"
-#include "./response-utils.h"
-#include "./validation.h"
-#include "express-rate-limit.h"
-using rateLimit = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MIDDLEWARE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MIDDLEWARE_HPP_
 
-extern std::function<std::function<void(std::any, std::any, std::any)>(std::shared_ptr<Map<std::any, any>>)> agentExistsMiddleware;
-extern std::function<std::function<void(std::any, std::any, std::any)>(std::string)> validateUuidMiddleware;
-extern std::function<std::function<void(std::any, std::any, std::any)>()> validateChannelIdMiddleware;
-extern std::function<std::function<void(std::any, std::any, std::any)>()> securityMiddleware;
-extern std::function<std::function<std::any(std::any, std::any, std::any)>()> validateContentTypeMiddleware;
-extern std::function<std::any()> createApiRateLimit;
-extern std::function<std::any()> createFileSystemRateLimit;
-extern std::function<std::any()> createUploadRateLimit;
-extern std::function<std::any()> createChannelValidationRateLimit;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Middleware {
+public:
+    Middleware() = default;
+    ~Middleware() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "middleware"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MIDDLEWARE_HPP_

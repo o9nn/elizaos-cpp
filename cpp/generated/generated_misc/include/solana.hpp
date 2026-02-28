@@ -1,15 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_SOLANA_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_SOLANA_H
-#include "core.h"
-#include "@autodotfun/types/idl/autofun.json.h"
-#include "@coral-xyz/anchor.h"
-#include "@metaplex-foundation/umi-bundle-defaults.h"
-#include "@solana/web3.js.h"
-#include "@autodotfun/types/types/autofun.h"
-#include "./util.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_HPP_
 
-extern std::shared_ptr<Autofun> idl;
-std::any initSolanaConfig();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::any(std::any, std::any)> getProgram;
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Solana {
+public:
+    Solana() = default;
+    ~Solana() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "solana"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_HPP_

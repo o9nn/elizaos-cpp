@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_AUTO-INSTALL-BUN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_AUTO-INSTALL-BUN_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./bun-exec.h"
-#include "node:os.h"
-#include "node:path.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUTO_INSTALL_BUN_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUTO_INSTALL_BUN_HPP_
 
-extern double INSTALLATION_VERIFICATION_DELAY_MS;
-void updatePathForBun();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<boolean>> isBunInstalled();
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<boolean>> autoInstallBun();
+class AutoInstallBun {
+public:
+    AutoInstallBun() = default;
+    ~AutoInstallBun() = default;
 
-boolean shouldAutoInstall();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "auto_install_bun"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-#endif
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUTO_INSTALL_BUN_HPP_

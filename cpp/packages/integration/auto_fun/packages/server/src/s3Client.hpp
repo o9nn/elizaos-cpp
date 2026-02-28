@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_S3CLIENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_S3CLIENT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class S3client {
+public:
+    S3client() = default;
+    ~S3client() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "s3Client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// --- Configuration Constants ---
-
-// --- Singleton Instance Variables ---
-
-// --- Initialization and Client Getter Function ---
-
-/**
- * Checks if the default MinIO bucket exists and creates it if not.
- * Should only be called once during MinIO client initialization.
- */
-std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bucketName);
-
-/**
- * Initializes and returns the shared S3 client instance (MinIO or S3 compatible),
- * bucket name, and public base URL.
- * Prioritizes MinIO if MINIO_ENDPOINT is set.
- */
-
-    // Read all potential config vars
-
-        // --- Priority 1: Use MinIO if MINIO_ENDPOINT is explicitly std::set ---
-
-        // --- Priority 2: Use Generic S3 if all S3_* vars are std::set (and MINIO_ENDPOINT wasn't) ---
-
-            // Determine public base URL
-                 // Fallback: Construct base url - consider adding S3_PUBLIC_BASE_URL env var
-
-        // --- Priority 3: Fallback to Default MinIO if no specific config found ---
-
-        // Final check after configuration attempts
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_S3CLIENT_HPP_

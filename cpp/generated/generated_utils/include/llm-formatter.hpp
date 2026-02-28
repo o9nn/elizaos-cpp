@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_LLM-FORMATTER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_LLM-FORMATTER_H
-#include "core.h"
-#include "@/app/[interval]/[[...date]]/queries.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_LLM_FORMATTER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_LLM_FORMATTER_HPP_
 
-class FormatOptions;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class FormatOptions : public object, public std::enable_shared_from_this<FormatOptions> {
+namespace elizaos {
+namespace generated_utils {
+
+class LlmFormatter {
 public:
-    using std::enable_shared_from_this<FormatOptions>::shared_from_this;
-    boolean includeStats;
+    LlmFormatter() = default;
+    ~LlmFormatter() = default;
 
-    boolean includeSummary;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "llm_formatter"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean includePrData;
-
-    boolean includeIssueData;
-
-    boolean includeDetailedContributorSummaries;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::string sanitizeBodyText(std::any text, double maxLength = 500);
+} // namespace generated_utils
+} // namespace elizaos
 
-std::string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, std::any summaryContent, std::shared_ptr<FormatOptions> options);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_LLM_FORMATTER_HPP_

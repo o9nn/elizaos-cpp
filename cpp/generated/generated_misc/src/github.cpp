@@ -1,14 +1,26 @@
-#include "elizas-list/src/utils/github.h"
+#include "github.hpp"
 
-std::any fetchGitHubData(std::string repo)
-{
-    auto [owner, repoName] = repo->split(std::string("/"))->slice(-2);
-    auto response = std::async([=]() { fetch(std::string("https://api.github.com/repos/") + owner + std::string("/") + repoName + string_empty, object{
-        object::pair{std::string("headers"), object{
-            object::pair{std::string("Authorization"), std::string("token ") + process->env->GITHUB_TOKEN + string_empty}
-        }}
-    }); });
-    return response->json();
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Github::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Github::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Github::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

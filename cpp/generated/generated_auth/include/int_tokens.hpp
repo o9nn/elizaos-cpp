@@ -1,6 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INTERFACES_INT_TOKENS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INTERFACES_INT_TOKENS_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_INT_TOKENS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_INT_TOKENS_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_auth {
+
+class IntTokens {
+public:
+    IntTokens() = default;
+    ~IntTokens() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "int_tokens"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_auth
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_INT_TOKENS_HPP_

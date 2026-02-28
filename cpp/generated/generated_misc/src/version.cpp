@@ -1,44 +1,26 @@
-#include "classified/packages/agentserver/src/api/system/version.h"
+#include "version.hpp"
 
-std::shared_ptr<VersionInfo> getVersionInfo()
-{
-    auto timestamp = ((std::make_shared<Date>()))->toISOString();
-    try
-    {
-        return object{
-            object::pair{std::string("version"), packageJson->version}, 
-            object::pair{std::string("source"), std::string("server")}, 
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("environment"), OR((process->env->NODE_ENV), (std::string("development")))}, 
-            object::pair{std::string("uptime"), process->uptime()}
-        };
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error getting version info:"), error);
-        return object{
-            object::pair{std::string("version"), std::string("unknown")}, 
-            object::pair{std::string("source"), std::string("server")}, 
-            object::pair{std::string("timestamp"), std::string("timestamp")}, 
-            object::pair{std::string("environment"), OR((process->env->NODE_ENV), (std::string("development")))}, 
-            object::pair{std::string("uptime"), process->uptime()}, 
-            object::pair{std::string("error"), std::string("Failed to retrieve version information")}
-        };
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Version::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<express::Router> createVersionRouter()
-{
-    auto router = express->Router();
-    router->get(std::string("/"), [=](auto _, auto res) mutable
-    {
-        auto versionInfo = getVersionInfo();
-        auto statusCode = (versionInfo->error) ? 500 : 200;
-        res["status"](statusCode)["json"](versionInfo);
-    }
-    );
-    return router;
-};
+void Version::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Version::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

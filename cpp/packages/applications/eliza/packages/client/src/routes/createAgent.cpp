@@ -1,22 +1,26 @@
 #include "createAgent.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void AgentCreatorRoute() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div className="h-full w-full overflow-y-auto">;
-    <div className="min-h-full flex w-full justify-center px-4 sm:px-6 py-4">
-    <div className="w-full max-w-4xl min-w-0">;
-    <AgentCreator />;
-    </div>;
-    </div>;
-    </div>;
-    );
-
+bool Createagent::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Createagent::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Createagent::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

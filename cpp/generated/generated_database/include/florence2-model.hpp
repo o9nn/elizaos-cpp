@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-MODEL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-MODEL_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./types.h"
-#include "./florence2-local.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_FLORENCE2_MODEL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_FLORENCE2_MODEL_HPP_
 
-class Florence2Model;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Florence2Model : public object, public std::enable_shared_from_this<Florence2Model> {
+namespace elizaos {
+namespace generated_database {
+
+class Florence2Model {
 public:
-    using std::enable_shared_from_this<Florence2Model>::shared_from_this;
-    boolean initialized = false;
+    Florence2Model() = default;
+    ~Florence2Model() = default;
 
-    std::shared_ptr<Florence2Local> localModel;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "florence2_model"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    Florence2Model();
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> analyzeTile(std::shared_ptr<ScreenTile> tile);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> analyzeImage(std::shared_ptr<Buffer> imageBuffer);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> mockAnalyze(std::shared_ptr<ScreenTile> tile);
-    virtual std::shared_ptr<Promise<array<object>>> detectUIElements(std::shared_ptr<Buffer> imageBuffer);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> mockAnalyzeBuffer(std::shared_ptr<Buffer> _imageBuffer);
-    virtual std::string mapToUIElementType(std::string label);
-    virtual std::shared_ptr<Promise<object>> generateSceneGraph(array<std::shared_ptr<ScreenTile>> tiles);
-    virtual std::any inferSpatialRelation(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
-    virtual boolean contains(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
-    virtual boolean overlaps(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
-    virtual boolean isInitialized();
-    virtual std::shared_ptr<Promise<void>> dispose();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_database
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_FLORENCE2_MODEL_HPP_

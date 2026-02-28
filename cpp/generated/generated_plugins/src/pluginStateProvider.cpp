@@ -1,12 +1,26 @@
-#include "autonomous-starter/src/plugin-manager/providers/pluginStateProvider.h"
+#include "pluginStateProvider.hpp"
 
-std::shared_ptr<Provider> pluginStateProvider = object{
-    object::pair{std::string("name"), std::string("pluginState")}, 
-    object::pair{std::string("description"), std::string("Provides information about the current state of all plugins including loaded status, missing environment variables, and errors")}, 
-};
+namespace elizaos {
+namespace generated_plugins {
 
-void Main(void)
-{
+bool Pluginstateprovider::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Pluginstateprovider::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Pluginstateprovider::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_plugins
+} // namespace elizaos

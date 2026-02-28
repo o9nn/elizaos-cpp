@@ -1,39 +1,26 @@
 #include "use-user.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void useUser() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto { publicKey } = useWallet();
-    const auto { authQuery } = useAuthentication();
-
-    const auto query = useQuery({;
-        queryKey: ["user", publicKey, authQuery.data],
-        queryFn: std::async () => {
-            if (!publicKey) {
-                return nullptr;
-            }
-
-            const auto authData = authQuery.data;
-            if (authData.authenticated) {
-                return {
-                    user: authData.user,
-                    authenticated: authData.authenticated,
-                    };
-                }
-                return { authenticated: false }
-                },
-                enabled: !!publicKey && authQuery.isSuccess,
-                });
-
-                const std::optional<User> user = query.data.user;
-                const bool authenticated = query.data.authenticated || false;
-
-                return { user, authenticated, isLoading: query?.isPending, query }
-
+bool UseUser::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void UseUser::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseUser::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

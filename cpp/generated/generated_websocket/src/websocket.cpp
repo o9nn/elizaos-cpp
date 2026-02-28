@@ -1,74 +1,26 @@
-#include "elizas-list/src/lib/realtime/websocket.h"
+#include "websocket.hpp"
 
-RealtimeService::RealtimeService(std::shared_ptr<HTTPServer> server) {
-    this->wss = std::make_shared<WebSocketServer>(object{
-        object::pair{std::string("server"), std::string("server")}
-    });
-    this->clients = std::make_shared<Map>();
-    this->setupWebSocket();
-    this->setupRedisSubscriber();
+namespace elizaos {
+namespace generated_websocket {
+
+bool Websocket::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void RealtimeService::setupWebSocket()
-{
-    this->wss->on(std::string("connection"), [=](auto ws, auto req) mutable
-    {
-        shared projectId = ((std::make_shared<URL>(req["url"], std::string("http://") + req["headers"]["host"] + string_empty)))->searchParams->get(std::string("projectId"));
-        if (projectId) {
-            if (!this->clients->has(projectId)) {
-                this->clients->std::set(projectId, std::make_shared<Set>());
-            }
-            this->clients->get(projectId)->add(ws);
-            ws["on"](std::string("close"), [=]() mutable
-            {
-                this->clients->get(projectId)->delete(ws);
-            }
-            );
-        }
-    }
-    );
+void Websocket::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void RealtimeService::setupRedisSubscriber()
-{
-    subClient->subscribe(std::string("project-events"));
-    subClient->on(std::string("message"), [=](auto channel, auto message) mutable
-    {
-        auto event = JSON->parse(message);
-        this->broadcastToProject(event["projectId"], event);
-    }
-    );
+nlohmann::json Websocket::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void RealtimeService::broadcastToProject(std::string projectId, std::any data)
-{
-    auto projectClients = this->clients->get(projectId);
-    if (projectClients) {
-        projectClients->forEach([=](auto client) mutable
-        {
-            if (client->readyState == WebSocket["OPEN"]) {
-                client->send(JSON->stringify(data));
-            }
-        }
-        );
-    }
-}
-
-void RealtimeService::publishEvent(std::string projectId, std::string eventType, std::any data)
-{
-    std::async([=]() { pubClient->publish(std::string("project-events"), JSON->stringify(object{
-        object::pair{std::string("projectId"), std::string("projectId")}, 
-        object::pair{std::string("type"), eventType}, 
-        object::pair{std::string("data"), std::string("data")}, 
-        object::pair{std::string("timestamp"), std::make_shared<Date>()}
-    })); });
-}
-
-std::any pubClient = std::make_shared<Redis>(process->env->REDIS_URL);
-std::any subClient = std::make_shared<Redis>(process->env->REDIS_URL);
-
-void Main(void)
-{
-}
-
-MAIN
+} // namespace generated_websocket
+} // namespace elizaos

@@ -1,71 +1,35 @@
-#include ".claimFees.hpp"
-#include ".db.hpp"
-#include ".redis.hpp"
-#include ".tokenSupplyHelpers/customWallet.hpp"
-#include ".util.hpp"
-#include ".websocket-client.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_MIGRATION_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_MIGRATION_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Migration {
+public:
+    Migration() = default;
+    ~Migration() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "migration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// middleware to check if the request is authorized
-  await next();
-
-    // Create connection based on the environment setting.
-
-    // Create a wallet using the secret from process.env.
-
-    // Build an Anchor provider.
-
-    // Create an instance of TokenMigrator.
-    // const tokenMigrator = new TokenMigrator(
-    //   connection,
-    //   new Wallet(wallet),
-    //   program,
-    //   autofunProgram as std::any,
-    //   provider,
-    //   redisCache,
-    // );
-
-    // Return a success response.
-
-// claim endpoint
-
-    // requireAuth middleware ensures user exists, but let's double-check
-
-    //check if the user is the creator of the token
-    // std::async () => {
-    // }
-    // Return a success response.
-
-// checkBalance endpoint
-
-    // requireAuth middleware ensures user exists, but let's double-check
-
-    // get the token
-    // check if the user is the creator of the token
-
-    // Create a wallet using the secret from process.env.
-
-    // Create connection based on the environment setting.
-
-// migration add missing tokens
-
-    // check if we have token in the database
-
-    // add token to the database if it is missing
-    // Return a success response.
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_MIGRATION_HPP_

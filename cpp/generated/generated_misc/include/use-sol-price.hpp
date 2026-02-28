@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SOL-PRICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SOL-PRICE_H
-#include "core.h"
-#include "@/utils/env.h"
-#include "@tanstack/react-query.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_SOL_PRICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_SOL_PRICE_HPP_
 
-class SolPriceResponse;
-class CoinGeckoResponse;
-class BinanceResponse;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SolPriceResponse : public object, public std::enable_shared_from_this<SolPriceResponse> {
+namespace elizaos {
+namespace generated_misc {
+
+class UseSolPrice {
 public:
-    using std::enable_shared_from_this<SolPriceResponse>::shared_from_this;
-    double price;
+    UseSolPrice() = default;
+    ~UseSolPrice() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_sol_price"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CoinGeckoResponse : public object, public std::enable_shared_from_this<CoinGeckoResponse> {
-public:
-    using std::enable_shared_from_this<CoinGeckoResponse>::shared_from_this;
-    object solana;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-class BinanceResponse : public object, public std::enable_shared_from_this<BinanceResponse> {
-public:
-    using std::enable_shared_from_this<BinanceResponse>::shared_from_this;
-    std::string price;
-};
-
-extern std::function<std::shared_ptr<Promise<double>>()> fetchSolPrice;
-std::any useSolPrice();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_SOL_PRICE_HPP_

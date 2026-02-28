@@ -1,34 +1,26 @@
 #include "npm-publish.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<void> publishToNpm(const std::string& cwd, PackageJson packageJson, const std::string& npmUsername) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    std::cout << "Publishing user: " + npmUsername << std::endl;
-
-    // Update npmPackage field if it's a placeholder or not std::set
-    if (!packageJson.npmPackage || packageJson.npmPackage == '${NPM_PACKAGE}') {
-        packageJson.npmPackage = packageJson.name;
-        std::cout << "Set npmPackage to: " + packageJson.npmPackage << std::endl;
-
-        // Save updated package.json
-        const auto packageJsonPath = path.join(cwd, "package.json");
-        fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2), "utf-8");
-    }
-
-    // Build the package
-    std::cout << "Building package..." << std::endl;
-    execa("npm", ["run", "build"], { cwd, stdio: "inherit" });
-
-    // Publish to npm with --ignore-scripts to prevent recursion
-    std::cout << "Publishing to npm..." << std::endl;
-    execa("npm", ["publish", "--ignore-scripts"], { cwd, stdio: "inherit" });
-
-    std::cout << "[√] Successfully published " + packageJson.name + "@" + packageJson.version + " to npm" << std::endl;
-
+bool NpmPublish::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void NpmPublish::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json NpmPublish::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

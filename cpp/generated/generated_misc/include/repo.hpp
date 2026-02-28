@@ -1,138 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_REPO_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_REPO_H
-#include "core.h"
-#include "zod.h"
-#include "path.h"
-#include "fs.h"
-#include "child_process.h"
-#include "../utils/github.h"
-#include "../utils/log.h"
-#include "./deployment.h"
-#include "./runtime.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REPO_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REPO_HPP_
 
-typedef z::infer<PreExistingRepoConfigSchema> PreExistingRepoConfig;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef z::infer<LocalRepoConfigSchema> LocalRepoConfig;
+namespace elizaos {
+namespace generated_misc {
 
-typedef z::infer<GithubRepoConfigSchema> GithubRepoConfig;
-
-typedef z::infer<RepoConfigSchema> RepoConfig;
-
-class Repo;
-class PreExistingRepo;
-class LocalRepo;
-class GithubRepo;
-
-extern std::shared_ptr<AgentLogger> logger;
-class Repo : public object, public std::enable_shared_from_this<Repo> {
+class Repo {
 public:
-    using std::enable_shared_from_this<Repo>::shared_from_this;
-    std::string baseCommit;
+    Repo() = default;
+    ~Repo() = default;
 
-    std::string repoName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "repo"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> deployment) = 0;
-    virtual array<string> getResetCommands() = 0;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-array<string> getGitResetCommands(std::string baseCommit);
+} // namespace generated_misc
+} // namespace elizaos
 
-extern std::any PreExistingRepoConfigSchema;
-class PreExistingRepo : public Repo, public std::enable_shared_from_this<PreExistingRepo> {
-public:
-    using std::enable_shared_from_this<PreExistingRepo>::shared_from_this;
-    std::string repoName;
-
-    std::string baseCommit;
-
-    boolean reset;
-
-    PreExistingRepo(PreExistingRepoConfig config);
-    virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> _deployment);
-    virtual array<string> getResetCommands();
-};
-
-extern std::any LocalRepoConfigSchema;
-class LocalRepo : public Repo, public std::enable_shared_from_this<LocalRepo> {
-public:
-    using std::enable_shared_from_this<LocalRepo>::shared_from_this;
-    std::string path;
-
-    std::string baseCommit;
-
-    std::string repoName;
-
-    LocalRepo(LocalRepoConfig config);
-    virtual void checkValidRepo();
-    virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> deployment);
-    virtual array<string> getResetCommands();
-};
-
-extern std::any GithubRepoConfigSchema;
-class GithubRepo : public Repo, public std::enable_shared_from_this<GithubRepo> {
-public:
-    using std::enable_shared_from_this<GithubRepo>::shared_from_this;
-    std::string githubUrl;
-
-    std::string baseCommit;
-
-    double cloneTimeout;
-
-    std::string repoName;
-
-    GithubRepo(GithubRepoConfig config);
-    virtual std::string getUrlWithToken(std::string token);
-    virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> deployment);
-    virtual array<string> getResetCommands();
-};
-
-extern std::any RepoConfigSchema;
-template <typename P2>
-std::shared_ptr<Repo> repoFromSimplifiedInput(std::string input, std::string baseCommit = std::string("HEAD"), P2 type = std::string("auto"));
-
-template <typename P2>
-std::shared_ptr<Repo> repoFromSimplifiedInput(std::string input, std::string baseCommit, P2 type)
-{
-    if (type == std::string("auto")) {
-        if (input->includes(std::string("github.com"))) {
-            type = std::string("github");
-        } else if (fs::existsSync(input)) {
-            type = std::string("local");
-        } else {
-            type = std::string("preexisting");
-        }
-    }
-    static switch_type __switch6933_7354 = {
-        { std::any(std::string("github")), 1 },
-        { std::any(std::string("local")), 2 },
-        { std::any(std::string("preexisting")), 3 }
-    };
-    switch (__switch6933_7354[type])
-    {
-    case 1:
-        return std::make_shared<GithubRepo>(object{
-            object::pair{std::string("githubUrl"), input}, 
-            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
-            object::pair{std::string("type"), std::string("github")}, 
-            object::pair{std::string("cloneTimeout"), 500}
-        });
-    case 2:
-        return std::make_shared<LocalRepo>(object{
-            object::pair{std::string("path"), input}, 
-            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
-            object::pair{std::string("type"), std::string("local")}
-        });
-    case 3:
-        return std::make_shared<PreExistingRepo>(object{
-            object::pair{std::string("repoName"), input}, 
-            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
-            object::pair{std::string("type"), std::string("preexisting")}, 
-            object::pair{std::string("reset"), true}
-        });
-    default:
-        throw std::any(std::make_shared<Error>(std::string("Unknown repo type: ") + type + string_empty));
-    }
-};
-
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REPO_HPP_

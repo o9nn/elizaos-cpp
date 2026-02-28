@@ -1,34 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_AUDIO_PROCESSING_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_AUDIO_PROCESSING_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
-#include "node:fs.h"
-using fs = _default;
-#include "node:os.h"
-using os = _default;
-#include "node:path.h"
-using path = _default;
-#include "../shared/file-utils.js.h"
-#include "../shared/response-utils.js.h"
-#include "../shared/uploads/index.js.h"
-#include "../shared/middleware.js.h"
-#include "../shared/constants.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROCESSING_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROCESSING_HPP_
 
-class AudioRequest;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AudioRequest, public std::enable_shared_from_this<AudioRequest> {
+namespace elizaos {
+namespace generated_misc {
+
+class Processing {
 public:
-    using std::enable_shared_from_this<AudioRequest>::shared_from_this;
-    std::shared_ptr<Express::Multer::File> file;
+    Processing() = default;
+    ~Processing() = default;
 
-    object params;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "processing"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::string validateSecureFilePath(std::string filePath);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<express::Router> createAudioProcessingRouter(std::shared_ptr<Map<std::shared_ptr<UUID>, std::shared_ptr<IAgentRuntime>>> agents);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROCESSING_HPP_

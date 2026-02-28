@@ -1,47 +1,26 @@
 #include "templates.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::function<std::string(State)> createTemplateFunction(TemplateType template) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (typeof template == 'string') {
-        // For std::string templates, just return the std::string
-        return [&]() { return template; };
-        } else {
-            // For std::function templates, wrap it to match the expected signature
-            return [&](state: State) {;
-                // Handle null or undefined state
-                if (!state) {
-                    return "";
-                }
-                return template({ state });
-                };
-            }
-
+bool Templates::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::string processTemplate(TemplateType template, State state) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Handle null/undefined template
-    if (!template) {
-        return "";
-    }
-
-    // Handle null/undefined state
-    if (!state) {
-        return typeof template == "string" ? template : "";
-    }
-
-    if (typeof template == 'string') {
-        return template;
-        } else {
-            return template({ state });
-        }
-
+void Templates::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Templates::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

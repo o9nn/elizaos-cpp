@@ -1,27 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTION_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../action.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_ACTION_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_ACTION_TEST_HPP_
 
-class ActionV2;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::any(double)> createTestUUID;
-class ActionV2 : public object, public std::enable_shared_from_this<ActionV2> {
+namespace elizaos {
+namespace generated_testing {
+
+class ActionTest {
 public:
-    using std::enable_shared_from_this<ActionV2>::shared_from_this;
-    std::string name;
+    ActionTest() = default;
+    ~ActionTest() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "action_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<string> similes;
-
-    array<array<object>> examples;
-
-    std::any handler;
-
-    std::any validate;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_ACTION_TEST_HPP_

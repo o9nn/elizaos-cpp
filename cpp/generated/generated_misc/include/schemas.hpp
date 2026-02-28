@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_SCHEMAS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_SCHEMAS_H
-#include "core.h"
-#include "zod.h"
-#include "./types.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMAS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMAS_HPP_
 
-typedef z::infer<tokenPerformanceSchema> TokenPerformance;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef z::infer<recommenderMetricsSchema> RecommenderMetrics;
+namespace elizaos {
+namespace generated_misc {
 
-typedef z::infer<positionSchema> Position;
+class Schemas {
+public:
+    Schemas() = default;
+    ~Schemas() = default;
 
-typedef z::infer<tokenRecommendationSchema> TokenRecommendation;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "schemas"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-typedef z::infer<recommendationSchema> MessageRecommendation;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
+} // namespace generated_misc
+} // namespace elizaos
 
-extern object TransactionType;
-extern std::any tokenPerformanceSchema;
-extern std::any transactionSchema;
-extern std::any recommenderMetricsSchema;
-extern std::any positionSchema;
-extern std::any tokenRecommendationSchema;
-TokenPerformance transformTokenPerformance(std::any dbToken, std::string chain = std::string("unknown"));
-
-std::shared_ptr<Transaction> transformTransaction(std::any dbTx, std::string positionId = std::string("unknown"), std::string chain = std::string("unknown"));
-
-Position transformPosition(std::any dbPos);
-
-extern std::any recommendationSchema;
-TokenRecommendation transformTokenRecommendation(std::any dbRec);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMAS_HPP_

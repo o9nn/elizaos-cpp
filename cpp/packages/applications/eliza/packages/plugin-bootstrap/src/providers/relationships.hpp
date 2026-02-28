@@ -1,47 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RELATIONSHIPS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RELATIONSHIPS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Relationships {
+public:
+    Relationships() = default;
+    ~Relationships() = default;
 
-/**
- * Formats the provided relationships based on interaction strength and returns a string.
- * @param {IAgentRuntime} runtime - The runtime object to interact with the agent.
- * @param {Relationship[]} relationships - The relationships to format.
- * @returns {string} The formatted relationships as a string.
- */
-/**
- * Asynchronously formats relationships based on their interaction strength.
- *
- * @param {IAgentRuntime} runtime The runtime instance.
- * @param {Relationship[]} relationships The relationships to be formatted.
- * @returns {Promise<string>} A formatted std::string of the relationships.
- */
-std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<Relationship>& relationships);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "relationships"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Provider for fetching relationships data.
- *
- * @type {Provider}
- * @property {string} name - The name of the provider ("RELATIONSHIPS").
- * @property {string} description - Description of the provider.
- * @property {Function} get - Asynchronous std::function to fetch relationships data.
- * @param {IAgentRuntime} runtime - The agent runtime object.
- * @param {Memory} message - The message object containing entity ID.
- * @returns {Promise<Object>} Object containing relationships data or error message.
- */
-    // Get all relationships for the current user
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RELATIONSHIPS_HPP_

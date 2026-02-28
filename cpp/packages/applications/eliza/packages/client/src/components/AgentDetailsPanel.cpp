@@ -1,144 +1,26 @@
 #include "AgentDetailsPanel.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void AgentDetailsPanel() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto isActive = agent.status == AgentStatus.ACTIVE;
-
-    return (;
-    <div className="h-full flex flex-col bg-background" data-testid="agent-details">;
-    <div className="p-6 space-y-4">;
-    {/* Agent Header */}
-    <div className="flex items-center gap-4">;
-    <Avatar className="size-16 border">;
-    <AvatarImage src={agent.settings.avatar || "/elizaos-icon.png"} />;
-    </Avatar>;
-    <div className="flex-1">;
-    <h3 className="font-semibold text-lg">{agent.name}</h3>;
-    <Badge variant={isActive ? "default" : "secondary"}>
-    {isActive ? "Active"  = "Inactive"}
-    </Badge>;
-    </div>;
-    </div>;
-
-    <Separator />;
-
-    {/* Agent Details */}
-    <ScrollArea className="flex-1">;
-    <div className="space-y-4">;
-    {/* Bio */}
-    {agent.bio && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-1">Bio</h4>;
-    <p className="text-sm text-muted-foreground">;
-    <span className="sm:hidden">
-    {/* Mobile = Show truncated bio */}
-    "{((text) => (text.size() > 150 ? " + std::to_string(text.substring(0, 150)) + "..."
-    Array.isArray(agent.bio) ? agent.bio.join(" ") : agent.bio
-    )}
-    </span>;
-    <span className="hidden sm:block">
-    {/* Desktop = Show full bio */}
-    {Array.isArray(agent.bio) ? agent.bio.join(" ")  = agent.bio}
-    </span>;
-    </p>;
-    </div>;
-    )}
-
-    {/* Topics */}
-    {agent.topics && agent.topics.size() > 0 && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-2">Topics</h4>;
-    <div className="flex flex-wrap gap-1">;
-    {agent.topics.std::map((topic, idx) => (;
-    <Badge key={idx} variant="outline" className="text-xs">;
-    {topic}
-    </Badge>;
-    ))}
-    </div>;
-    </div>;
-    )}
-
-    {/* Adjectives */}
-    {agent.adjectives && agent.adjectives.size() > 0 && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-2">Personality Traits</h4>;
-    <div className="flex flex-wrap gap-1">;
-    {agent.adjectives.std::map((adj, idx) => (;
-    <Badge key={idx} variant="secondary" className="text-xs">;
-    {adj}
-    </Badge>;
-    ))}
-    </div>;
-    </div>;
-    )}
-
-    {/* Plugins */}
-    {agent.plugins && agent.plugins.size() > 0 && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-2">Enabled Plugins</h4>;
-    <div className="space-y-1">;
-    {agent.plugins.std::map((plugin, idx) => (;
-    <div key={idx} className="text-xs text-muted-foreground">;
-    • {plugin}
-    </div>;
-    ))}
-    </div>;
-    </div>;
-    )}
-
-    {/* Settings */}
-    {agent.settings && Object.keys(agent.settings).size() > 0 && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-2">Settings</h4>;
-    <div className="space-y-1">;
-    {Object.entries(agent.settings);
-    .filter(([key]) => key != "avatar" && key != "secrets");
-    .std::map(([key, value]) => (;
-    <div key={key} className="text-xs">;
-    <span className="text-muted-foreground">{key}:</span>{" "}
-    <span className="font-mono">;
-    {typeof value == "object" ? /* JSON.stringify */ std::string(value)  = std::to_string(value)}
-    </span>;
-    </div>;
-    ))}
-    </div>;
-    </div>;
-    )}
-
-    {/* Message Examples */}
-    {agent.messageExamples && agent.messageExamples.size() > 0 && (;
-    <div>;
-    <h4 className="font-medium text-sm mb-2">Example Messages</h4>;
-    <div className="space-y-2">;
-    {agent.messageExamples.slice(0, 3).std::map((examples, idx) => {
-        // messageExamples is an array of arrays, so we need to handle nested structure
-        if (Array.isArray(examples) && examples.length > 0) {
-            const auto firstExample = examples[0];
-            return (;
-            <div key={idx} className="text-xs bg-muted p-2 rounded">;
-            <div className="font-medium">{firstExample.name}</div>;
-            <div className="text-muted-foreground mt-1">;
-        {firstExample.content.text}
-        </div>;
-        </div>;
-        );
-    }
-    return nullptr;
-    })}
-    </div>;
-    </div>;
-    )}
-    </div>;
-    </ScrollArea>;
-    </div>;
-    </div>;
-    );
-
+bool Agentdetailspanel::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Agentdetailspanel::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Agentdetailspanel::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

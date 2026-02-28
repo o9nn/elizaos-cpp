@@ -1,29 +1,26 @@
-#include "classified/packages/plugin-personality/src/utils/json-parser.h"
+#include "json-parser.hpp"
 
-std::any extractJsonFromResponse(std::string response)
-{
-    auto cleaned = response->trim();
-    if (cleaned->startsWith(std::string("```json"))) {
-        cleaned = cleaned->substring(7);
-    } else if (cleaned->startsWith(std::string("```"))) {
-        cleaned = cleaned->substring(3);
-    }
-    if (cleaned->endsWith(std::string("```"))) {
-        cleaned = cleaned->substring(0, cleaned->get_length() - 3);
-    }
-    cleaned = cleaned->trim();
-    try
-    {
-        return JSON->parse(cleaned);
-    }
-    catch (const std::any& error)
-    {
-        auto jsonMatch = response->match((new RegExp(std::string("\{[\s\S]*\"))));
-        if (jsonMatch) {
-            return JSON->parse((*const_(jsonMatch))[0]);
-        }
-        throw std::any(error);
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool JsonParser::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void JsonParser::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json JsonParser::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

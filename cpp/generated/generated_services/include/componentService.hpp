@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_SERVICES_COMPONENTSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_SERVICES_COMPONENTSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./dbCompatibility.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_COMPONENTSERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_COMPONENTSERVICE_HPP_
 
-class ComponentService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ComponentService : public object, public std::enable_shared_from_this<ComponentService> {
+namespace elizaos {
+namespace generated_services {
+
+class Componentservice {
 public:
-    using std::enable_shared_from_this<ComponentService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Componentservice() = default;
+    ~Componentservice() = default;
 
-    ComponentService(std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, std::string componentType);
-    virtual std::shared_ptr<Promise<boolean>> createComponent(object params);
-    virtual std::shared_ptr<Promise<boolean>> updateComponent(object params);
-    virtual std::shared_ptr<Component> normalizeComponent(std::shared_ptr<Component> component);
-    virtual void normalizeBooleans(std::any obj);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "componentService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<ComponentService> createComponentService(std::shared_ptr<IAgentRuntime> runtime);
+} // namespace generated_services
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_COMPONENTSERVICE_HPP_

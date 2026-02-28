@@ -1,15 +1,26 @@
 #include "migrateToken.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-void asBN(const std::variant<BN, std::string>& x) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    //   // Redis stored hex strings, so we parse as hex
-    //   return typeof x === "string" ? new BN(x, "hex") : x;
-    //
+bool Migratetoken::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Migratetoken::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Migratetoken::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_server
 } // namespace elizaos

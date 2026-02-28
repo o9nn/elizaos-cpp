@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___PROVIDERS_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___PROVIDERS_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "./test-utils.h"
-#include "@elizaos/core.h"
-#include "../providers/choice.h"
-using choiceProvider = _default;
-#include "../providers/facts.h"
-#include "../providers/providers.h"
-#include "../providers/recentMessages.h"
-#include "../providers/roles.h"
-using roleProvider = _default;
-#include "../providers/settings.h"
-#include "../providers/attachments.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDERS_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDERS_TEST_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class ProvidersTest {
+public:
+    ProvidersTest() = default;
+    ~ProvidersTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "providers_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDERS_TEST_HPP_

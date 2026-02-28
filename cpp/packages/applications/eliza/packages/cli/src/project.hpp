@@ -1,67 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_PROJECT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_PROJECT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Project {
+public:
+    Project() = default;
+    ~Project() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "project"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Interface for a project module that can be loaded.
- */
-struct ProjectModule {
-    std::optional<std::vector<ProjectAgent>> agents;
-    std::optional<Character> character;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Interface for a loaded project.
- */
-struct Project {
-    std::vector<ProjectAgent> agents;
-    std::string dir;
-    std::optional<bool> isPlugin;
-    std::optional<Plugin> pluginModule;
-};
-
-struct LoadedProject {
-    std::vector<AgentRuntime> runtimes;
-    std::string path;
-    std::vector<ProjectAgent> agents;
-};
-
-/**
- * Determine if a loaded module is a plugin
- * @param module The loaded module to check
- * @returns true if this appears to be a plugin
- */
-bool isPlugin(const std::any& module);
-
-/**
- * Extract a Plugin object from a module
- * @param module The module to extract from
- * @returns The plugin object
- */
-Plugin extractPlugin(const std::any& module);
-
-/**
- * Loads a project from the specified directory.
- * @param {string} dir - The directory to load the project from.
- * @returns {Promise<Project>} A std::promise that resolves to the loaded project.
- */
-std::future<Project> loadProject(const std::string& dir);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_PROJECT_HPP_

@@ -1,69 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_DB_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_DB_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Db {
+public:
+    Db() = default;
+    ~Db() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "db"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // New fields
-
-// Fees schema
-
-// Messages schema
-
-// User schema
-
-// MediaGenerations schema
-
-// CachePrices schema
-
-// PreGeneratedTokens schema
-
-// OAuthVerifiers schema
-
-// AccessTokens schema
-
-// TokenAgents schema
-
-// Default local database connection std::string
-
-void getDB();
-
-// Type definitions for common query results
-using Token = typeof schema.tokens.$inferSelect;
-using TokenInsert = typeof schema.tokens.$inferInsert;
-
-using Fee = typeof schema.fees.$inferSelect;
-using FeeInsert = typeof schema.fees.$inferInsert;
-
-using Message = typeof schema.messages.$inferSelect;
-using MessageInsert = typeof schema.messages.$inferInsert;
-
-using User = typeof schema.users.$inferSelect;
-using UserInsert = typeof schema.users.$inferInsert;
-
-using PreGeneratedToken = typeof schema.preGeneratedTokens.$inferSelect;
-using PreGeneratedTokenInsert = typeof schema.preGeneratedTokens.$inferInsert;
-
-using TokenAgent = typeof tokenAgents::$inferSelect;
-using TokenAgentInsert = typeof tokenAgents::$inferInsert;
-
-using Metadata = typeof metadata::$inferSelect;
-using MetadataInsert = typeof metadata::$inferInsert;
-
-// Schema for all tables
-
-// Export schema for type inference
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_DB_HPP_

@@ -1,146 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/base.hpp"
-#include ".types/messaging.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MESSAGING_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MESSAGING_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Messaging {
+public:
+    Messaging() = default;
+    ~Messaging() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "messaging"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class MessagingService extends BaseApiClient {
-  /**
-   * Submit agent replies or system messages
-   */
-  std::async submitMessage(params: MessageSubmitParams): Promise<Message> {
-    return this.post<Message>('/api/messaging/submit', params);
-  }
-
-  /**
-   * Notify message completion
-   */
-
-  /**
-   * Ingest messages from external platforms
-   */
-
-  /**
-   * Create a new channel
-   */
-
-  /**
-   * Create a group channel
-   */
-
-  /**
-   * Find or create a DM channel
-   */
-
-  /**
-   * Get channel details
-   */
-
-  /**
-   * Get channel participants
-   */
-
-  /**
-   * Add agent to channel
-   */
-
-  /**
-   * Remove agent from channel
-   */
-
-  /**
-   * Delete a channel
-   */
-
-  /**
-   * Clear channel history
-   */
-
-  /**
-   * Post a new message to a channel
-   */
-
-  /**
-   * Get channel messages
-   */
-
-  /**
-   * Get a specific message
-   */
-
-  /**
-   * Delete a message from a channel
-   */
-
-  /**
-   * Update a message
-   */
-
-  /**
-   * Search messages
-   */
-
-  /**
-   * List all message servers
-   */
-
-  /**
-   * Get server channels
-   */
-
-  /**
-   * Create a new server
-   */
-
-  /**
-   * Sync server channels
-   */
-
-  /**
-   * Delete a server
-   */
-
-  /**
-   * Update a channel
-   */
-
-  /**
-   * Generate channel title
-   */
-
-  /**
-   * Add user to channel participants (implemented via updateChannel)
-   */
-    // First get current participants
-
-    // Add new user if not already present
-
-  /**
-   * Add multiple users to channel participants (implemented via updateChannel)
-   */
-    // First get current participants
-
-    // Add new users that aren't already present
-
-  /**
-   * Remove user from channel participants (implemented via updateChannel)
-   */
-    // First get current participants
-
-    // Remove user from participants
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MESSAGING_HPP_

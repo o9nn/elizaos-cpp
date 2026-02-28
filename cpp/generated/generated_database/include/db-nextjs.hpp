@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB-NEXTJS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB-NEXTJS_H
-#include "core.h"
-#include "better-sqlite3.h"
-using Database = _default;
-#include "drizzle-orm/better-sqlite3.h"
-#include "path.h"
-using path = _default;
-#include "./schema.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DB_NEXTJS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DB_NEXTJS_HPP_
 
-extern std::shared_ptr<Database::Database> sqlite;
-extern std::any db;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_database {
+
+class DbNextjs {
+public:
+    DbNextjs() = default;
+    ~DbNextjs() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "db_nextjs"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_database
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DB_NEXTJS_HPP_

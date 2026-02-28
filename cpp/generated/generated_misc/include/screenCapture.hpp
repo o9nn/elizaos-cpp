@@ -1,25 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_SRC_UTILS_SCREENCAPTURE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_SRC_UTILS_SCREENCAPTURE_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCREENCAPTURE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCREENCAPTURE_HPP_
 
-class ScreenCaptureCapabilities;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ScreenCaptureCapabilities : public object, public std::enable_shared_from_this<ScreenCaptureCapabilities> {
+namespace elizaos {
+namespace generated_misc {
+
+class Screencapture {
 public:
-    using std::enable_shared_from_this<ScreenCaptureCapabilities>::shared_from_this;
-    boolean available;
+    Screencapture() = default;
+    ~Screencapture() = default;
 
-    boolean displayMedia;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "screenCapture"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean getUserMedia;
-
-    std::string error;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<ScreenCaptureCapabilities> checkScreenCaptureCapabilities();
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<boolean>> testScreenCapture();
-
-std::string getScreenCaptureErrorMessage(std::any error);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCREENCAPTURE_HPP_

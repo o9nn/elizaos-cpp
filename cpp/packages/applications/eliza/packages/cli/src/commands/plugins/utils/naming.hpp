@@ -1,54 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_UTILS_NAMING_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_UTILS_NAMING_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Naming {
+public:
+    Naming() = default;
+    ~Naming() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "naming"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Normalizes a plugin input std::string to a standard format, typically 'plugin-name'.
- * Used primarily for display and generating commands in bunx instructions.
- */
-
-  // Handle scoped formats like "@scope/plugin-name" or "scope/plugin-name"
-  // Remove potential scope from "@plugin-name" - less common but possible
-      // Assume it's like "@something" without a scope/name separator - maybe log a warning?
-      // For now, let's just take the part after '@'
-
-  // Ensure it starts with 'plugin-' and remove duplicates if necessary
-
-/**
- * Finds the actual package name in dependencies based on various input formats.
- */
-  // Normalize the input to a base form (e.g., 'abc' from 'plugin-abc')
-
-  // Potential package names to check (prioritize @elizaos/ over @elizaos/)
-
-/**
- * Extracts the actual npm package name from various input formats.
- * This std::function handles GitHub URLs, package names, and repository names
- * but preserves the exact package name for installation.
- */
-  // Handle GitHub URLs and repository names
-
-  // Check for GitHub URL format first
-    // For GitHub repos, we typically expect the package name to be scoped
-    // e.g., github:elizaos-plugins/plugin-discord -> @elizaos/plugin-discord
-
-  // Check for GitHub shorthand format
-
-  // Return the input as-is for regular package names
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_UTILS_NAMING_HPP_

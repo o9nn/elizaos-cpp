@@ -1,18 +1,26 @@
-#include "auto.fun/packages/autodoc/src/TypeScriptFileIdentifier.h"
+#include "TypeScriptFileIdentifier.hpp"
 
-boolean TypeScriptFileIdentifier::isTypeScriptFile(std::string file)
-{
-    auto extension = path->extname(file);
-    return OR((extension == std::string(".ts")), (extension == std::string(".tsx")));
+namespace elizaos {
+namespace generated_misc {
+
+bool Typescriptfileidentifier::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-array<string> TypeScriptFileIdentifier::getTypeScriptFiles(std::string directory)
-{
-    auto files = fs->readdirSync(directory);
-    return files->filter([=](auto file) mutable
-    {
-        return this->isTypeScriptFile(file);
-    }
-    );
+void Typescriptfileidentifier::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Typescriptfileidentifier::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

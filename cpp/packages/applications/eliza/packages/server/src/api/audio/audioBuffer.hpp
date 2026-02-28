@@ -1,37 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_AUDIO_AUDIOBUFFER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_AUDIO_AUDIOBUFFER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Audiobuffer {
+public:
+    Audiobuffer() = default;
+    ~Audiobuffer() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "audioBuffer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Determines the appropriate MIME type for audio data based on its format.
- * Detects WAV files by checking for the RIFF header signature.
- *
- * @param audioBuffer - The audio data buffer to check
- * @returns The appropriate MIME type std::string
- */
-std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer);
-
-/**
- * Result of audio processing containing the buffer and MIME type
- */
-struct AudioProcessingResult {
-    std::vector<uint8_t> buffer;
-    std::string mimeType;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_AUDIO_AUDIOBUFFER_HPP_

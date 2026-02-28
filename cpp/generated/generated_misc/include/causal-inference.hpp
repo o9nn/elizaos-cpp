@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYSIS_CAUSAL-INFERENCE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYSIS_CAUSAL-INFERENCE_H
-#include "core.h"
-#include "causality-js.h"
-#include "r-script.h"
-#include "../monitoring/logger.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAUSAL_INFERENCE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAUSAL_INFERENCE_HPP_
 
-class CausalInference;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CausalInference : public object, public std::enable_shared_from_this<CausalInference> {
+namespace elizaos {
+namespace generated_misc {
+
+class CausalInference {
 public:
-    using std::enable_shared_from_this<CausalInference>::shared_from_this;
-    std::shared_ptr<DAG> dag;
+    CausalInference() = default;
+    ~CausalInference() = default;
 
-    CausalInference();
-    virtual std::shared_ptr<Promise<std::shared_ptr<CausalAnalysisResult>>> analyzeCausalRelationships(array<Record<std::string, any>> data, array<string> variables, array<string> treatments, array<string> outcomes);
-    virtual std::shared_ptr<Promise<void>> buildDAG(array<Record<std::string, any>> data, array<string> variables);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<CausalEffect>>>> estimateCausalEffects(array<Record<std::string, any>> data, array<string> treatments, array<string> outcomes);
-    virtual std::shared_ptr<Promise<object>> doubleMLEstimation(array<Record<std::string, any>> data, std::string treatment, std::string outcome);
-    virtual std::shared_ptr<Promise<std::shared_ptr<SensitivityAnalysis>>> performSensitivityAnalysis(array<Record<std::string, any>> data, array<std::shared_ptr<CausalEffect>> effects);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "causal_inference"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAUSAL_INFERENCE_HPP_

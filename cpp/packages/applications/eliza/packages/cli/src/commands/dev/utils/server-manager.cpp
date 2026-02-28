@@ -1,41 +1,26 @@
 #include "server-manager.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-DevServerManager getServerManager() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!serverInstance) {
-        serverInstance = new DevServerManager();
-    }
-    return serverInstance;
-
+bool ServerManager::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<void> stopServer() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto server = getServerManager();
-    server.stop();
-
+void ServerManager::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::future<void> startServer(std::vector<std::string> args = {}) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto server = getServerManager();
-    server.start(args);
-
+nlohmann::json ServerManager::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::future<void> restartServer(std::vector<std::string> args = {}) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto server = getServerManager();
-    server.restart(args);
-
-}
-
+} // namespace eliza_cli
 } // namespace elizaos

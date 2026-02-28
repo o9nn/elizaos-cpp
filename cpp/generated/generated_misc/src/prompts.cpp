@@ -1,13 +1,26 @@
-#include "plugin-specification/core-plugin-v2/src/prompts.h"
+#include "prompts.hpp"
 
-std::string shouldRespondTemplate = coreShouldRespondTemplate;
-std::string messageHandlerTemplate = coreMessageHandlerTemplate;
-std::string postCreationTemplate = corePostCreationTemplate;
-std::string booleanFooter = coreBooleanFooter;
-std::string imageDescriptionTemplate = coreImageDescriptionTemplate;
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Prompts::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Prompts::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Prompts::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

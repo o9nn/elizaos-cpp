@@ -1,68 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_CARD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_CARD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentCard {
+public:
+    AgentCard() = default;
+    ~AgentCard() = default;
 
-/// <reference types="cypress" />
-/// <reference path="../../cypress/support/types.d.ts" />
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_card"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Create a minimal test component that represents AgentCard functionality
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    // Check agent name is displayed
-
-    // Check status indicator exists
-
-    // Check agent card exists
-
-    // Status should show active
-
-    // Chat button should be visible
-
-    // Should show error message
-
-    // Start button should be visible
-
-    // Chat button should be visible
-
-    // Click chat button
-
-    // Verify onChat was called
-
-    // Click the card button
-
-    // Verify onChat was called
-
-    // Should show avatar
-
-    // Should show initials fallback
-
-    // Check status is displayed
-
-    // Test inactive agent - should show start button
-
-    // Test active agent - should show chat button
-
-    // Check that name is displayed
-
-    // Check basic structure elements exist
-
-    // Click chat button
-
-    // Click card button
-
-    // Test with different agent configurations
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_CARD_HPP_

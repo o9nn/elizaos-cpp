@@ -1,21 +1,26 @@
 #include "uuid.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::optional<UUID> validateUuid(const std::any& value) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreValidateUuid(value);
-
+bool Uuid::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-UUID stringToUuid(const std::variant<std::string, double>& target) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreStringToUuid(target);
-
+void Uuid::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Uuid::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

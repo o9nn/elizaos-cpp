@@ -1,58 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_EVALUATORS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_EVALUATORS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Evaluators {
+public:
+    Evaluators() = default;
+    ~Evaluators() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "evaluators"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Formats the names of evaluators into a comma-separated list, each enclosed in single quotes.
- * @param evaluators - An array of evaluator objects.
- * @returns A std::string that concatenates the names of all evaluators, each enclosed in single quotes and separated by commas.
- */
-/**
- * Formats the names of the evaluators in the provided array.
- *
- * @param {Evaluator[]} evaluators - Array of evaluators.
- * @returns {string} - Formatted std::string of evaluator names.
- */
-void formatEvaluatorNames(const std::vector<Evaluator>& evaluators);
-
-/**
- * Formats evaluator examples into a readable std::string, replacing placeholders with generated names.
- * @param evaluators - An array of evaluator objects, each containing examples to format.
- * @returns A std::string that presents each evaluator example in a structured format, including context, messages, and outcomes, with placeholders replaced by generated names.
- */
-void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators);
-
-/**
- * Formats evaluator details into a std::string, including both the name and description of each evaluator.
- * @param evaluators - An array of evaluator objects.
- * @returns A std::string that concatenates the name and description of each evaluator, separated by a colon and a newline character.
- */
-void formatEvaluators(const std::vector<Evaluator>& evaluators);
-
-    // Get evaluators that validate for this message
-
-    // Wait for all validations
-
-    // Filter out null values
-
-    // Format evaluator-related texts
-
-    // Combine all text sections
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_EVALUATORS_HPP_

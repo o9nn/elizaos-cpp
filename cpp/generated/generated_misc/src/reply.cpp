@@ -1,32 +1,26 @@
-#include "otaku/src/plugins/plugin-bootstrap/src/templates/reply.h"
+#include "reply.hpp"
 
-std::string replyTemplate = std::string("# Task: Generate dialog for the character {{agentName}}.\
-\
-{{providers}}\
-\
-# Instructions: Write the next message for {{agentName}}.\
-"thought" should be a short description of what the agent is thinking about and planning.\
-"message" should be the next message for {{agentName}} which they will send to the conversation.\
-\
-IMPORTANT CODE BLOCK FORMATTING RULES:\
-- If {{agentName}} includes code examples, snippets, or multi-line code in the response, ALWAYS wrap the code with ``` fenced code blocks (specify the language if known, e.g., ```python).\
-- ONLY use fenced code blocks for actual code. Do NOT wrap non-code text, instructions, or single words in fenced code blocks.\
-- If including inline code (short single words or std::function names), use single backticks (`) as appropriate.\
-- This ensures the user sees clearly formatted and copyable code when relevant.\
-\
-Do NOT include std::any thinking, reasoning, or <think> sections in your response. \
-Go directly to the XML response format without std::any preamble or explanation.\
-\
-Respond using XML format like this:\
-<response>\
-    <thought>Your thought here</thought>\
-    <message>Your message here</message>\
-</response>\
-\
-IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include std::any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Reply::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Reply::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Reply::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

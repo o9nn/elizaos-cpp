@@ -1,47 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_UTILS_SETUP_INSTRUCTIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_UTILS_SETUP_INSTRUCTIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class SetupInstructions {
+public:
+    SetupInstructions() = default;
+    ~SetupInstructions() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "setup_instructions"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Get platform-specific Bun installation instructions
- */
-PlatformInstructions getBunInstallInstructions();
-
-/**
- * Display the basic setup steps after cloning
- */
-void displayBasicSteps(const std::string& cdPath);
-
-/**
- * Display prerequisites and Bun installation guidance
- */
-void displayPrerequisites();
-
-/**
- * Display Bun installation instructions for the current platform
- */
-void displayBunInstructions();
-
-/**
- * Display complete next step instructions after cloning
- *
- * Shows setup steps, prerequisites, and platform-specific installation guidance.
- */
-void displayNextSteps(const std::string& targetDir);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_MONOREPO_UTILS_SETUP_INSTRUCTIONS_HPP_

@@ -1,21 +1,26 @@
-#include "elizas-list/src/lib/analytics/segmentation.h"
+#include "segmentation.hpp"
 
-std::shared_ptr<Promise<array<std::shared_ptr<UserSegment>>>> UserSegmentation::generateSegments()
-{
-    return array<object>{ object{
-        object::pair{std::string("id"), std::string("active")}, 
-        object::pair{std::string("name"), std::string("Active Users")}, 
-        object::pair{std::string("characteristics"), object{
-            object::pair{std::string("activity"), std::string("high")}
-        }}, 
-        object::pair{std::string("size"), 100}
-    } };
+namespace elizaos {
+namespace generated_misc {
+
+bool Segmentation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::any prisma = std::make_shared<PrismaClient>();
-
-void Main(void)
-{
+void Segmentation::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-MAIN
+nlohmann::json Segmentation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

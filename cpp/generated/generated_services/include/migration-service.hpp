@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_MIGRATION-SERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_MIGRATION-SERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./custom-migrator.h"
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MIGRATION_SERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MIGRATION_SERVICE_HPP_
 
-class DatabaseMigrationService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DatabaseMigrationService : public object, public std::enable_shared_from_this<DatabaseMigrationService> {
+namespace elizaos {
+namespace generated_services {
+
+class MigrationService {
 public:
-    using std::enable_shared_from_this<DatabaseMigrationService>::shared_from_this;
-    std::any db = nullptr;
+    MigrationService() = default;
+    ~MigrationService() = default;
 
-    std::shared_ptr<Map<std::string, any>> registeredSchemas = std::make_shared<Map<std::string, any>>();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "migration_service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    DatabaseMigrationService();
-    virtual std::shared_ptr<Promise<void>> initializeWithDatabase(std::shared_ptr<DrizzleDatabase> db);
-    virtual void discoverAndRegisterPluginSchemas(array<std::shared_ptr<Plugin>> plugins);
-    virtual std::shared_ptr<Promise<void>> runAllPluginMigrations();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MIGRATION_SERVICE_HPP_

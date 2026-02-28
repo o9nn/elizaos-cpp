@@ -1,104 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-UTILS_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-UTILS_TEST_H
-#include "core.h"
-#include "@jest/globals.h"
-#include "path.h"
-#include "../src/utils/config.h"
-#include "../src/utils/common.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_TEST_UTILS_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_TEST_UTILS_TEST_HPP_
 
-extern std::string REPO_ROOT;
-template <typename T>
-array<array<T>> chunkArray(array<T> array, double size);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-array<any> flattenArray(array<any> array);
+namespace elizaos {
+namespace generated_testing {
 
-template <typename T>
-array<T> removeDuplicates(array<T> array);
+class TestUtilsTest {
+public:
+    TestUtilsTest() = default;
+    ~TestUtilsTest() = default;
 
-template <typename T>
-T deepClone(T obj);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "test_utils_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-boolean isEqual(std::any obj1, std::any obj2);
-
-template <typename T, typename K>
-Pick<T, K> pick(T obj, array<K> keys);
-
-template <typename T, typename K>
-Omit<T, K> omit(T obj, array<K> keys);
-
-template <typename T>
-array<array<T>> chunkArray(array<T> array, double size)
-{
-    auto chunks = array<array<T>>();
-    for (auto i = 0; i < array->get_length(); i += size)
-    {
-        chunks->push(array->slice(i, i + size));
-    }
-    return chunks;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_testing
+} // namespace elizaos
 
-template <typename T>
-array<T> removeDuplicates(array<T> array)
-{
-    return array<any>{ std::make_shared<Set>(array) };
-};
-
-
-template <typename T>
-T deepClone(T obj)
-{
-    if (OR((obj == nullptr), (type_of(obj) != std::string("object")))) {
-        return obj;
-    }
-    if (is<Date>(obj)) {
-        return as<any>(std::make_shared<Date>(obj->getTime()));
-    }
-    if (Array->isArray(obj)) {
-        return as<any>(obj->std::map([=](auto item) mutable
-        {
-            return deepClone(item);
-        }
-        ));
-    }
-    auto cloned = object{};
-    for (auto& key : keys_(obj))
-    {
-        if ((as<any>(obj))["hasOwnProperty"](key)) {
-            cloned[key] = deepClone(const_((as<any>(obj)))[key]);
-        }
-    }
-    return as<T>(cloned);
-};
-
-
-template <typename T, typename K>
-Pick<T, K> pick(T obj, array<K> keys)
-{
-    shared result = as<Pick<T, K>>(object{});
-    keys->forEach([=](auto key) mutable
-    {
-        if (in(key, obj)) {
-            (*result)[key] = const_(obj)[key];
-        }
-    }
-    );
-    return result;
-};
-
-
-template <typename T, typename K>
-Omit<T, K> omit(T obj, array<K> keys)
-{
-    shared result = as<any>(utils::assign(object{
-    }, obj));
-    keys->forEach([=](auto key) mutable
-    {
-        result.Delete(key);
-    }
-    );
-    return result;
-};
-
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_TEST_UTILS_TEST_HPP_

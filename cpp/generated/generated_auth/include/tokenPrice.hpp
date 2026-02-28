@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_TOKENPRICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_TOKENPRICE_H
-#include "core.h"
-#include "next.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENPRICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENPRICE_HPP_
 
-class TokenPrice;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::string HELIUS_API;
-extern array<string> TOKEN_ADDRESSES;
-class TokenPrice : public object, public std::enable_shared_from_this<TokenPrice> {
+namespace elizaos {
+namespace generated_auth {
+
+class Tokenprice {
 public:
-    using std::enable_shared_from_this<TokenPrice>::shared_from_this;
-    std::string address;
+    Tokenprice() = default;
+    ~Tokenprice() = default;
 
-    double usdPrice;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tokenPrice"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
+} // namespace generated_auth
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENPRICE_HPP_

@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_GITHUBURLSJSON_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_GITHUBURLSJSON_H
-#include "core.h"
-#include "@octokit/rest.h"
-#include "process.h"
-using process = _default;
-#include "dotenv.h"
-using dotenv = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUBURLSJSON_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUBURLSJSON_HPP_
 
-extern std::string ORG_NAME;
-extern std::string TARGET_BRANCH;
-extern boolean TEST_MODE;
-extern std::string TEST_REPO;
-std::shared_ptr<Promise<void>> main();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Githuburlsjson {
+public:
+    Githuburlsjson() = default;
+    ~Githuburlsjson() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "githubUrlsJson"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUBURLSJSON_HPP_

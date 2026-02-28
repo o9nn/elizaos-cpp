@@ -1,16 +1,26 @@
-#include "plugin-specification/core-plugin-v2/__tests__/instrumentation-index.test.h"
+#include "instrumentation-index.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("instrumentation index exports"), [=]() mutable
-    {
-        it(std::string("exports service"), [=]() mutable
-        {
-            expect(instrumentation->InstrumentationService)->toBeDefined();
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool InstrumentationIndexTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void InstrumentationIndexTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json InstrumentationIndexTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

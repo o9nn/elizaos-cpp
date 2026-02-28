@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_WALLETLINKING_READMEUTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_WALLETLINKING_READMEUTILS_H
-#include "core.h"
-#include "zod.h"
-#include "@/lib/walletLinking/chainUtils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_READMEUTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_READMEUTILS_HPP_
 
-typedef z::infer<LinkedWalletSchema> LinkedWallet;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef z::infer<WalletLinkingDataSchema> WalletLinkingData;
+namespace elizaos {
+namespace generated_utils {
 
+class Readmeutils {
+public:
+    Readmeutils() = default;
+    ~Readmeutils() = default;
 
-extern std::any LinkedWalletSchema;
-extern std::any WalletLinkingDataSchema;
-extern std::string WALLET_SECTION_BEGIN_MARKER;
-extern std::string WALLET_SECTION_END_MARKER;
-std::any parseWalletLinkingDataFromReadme(std::string readmeContent);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "readmeUtils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-object generateUpdatedReadmeWithWalletInfo(std::string currentReadme, array<LinkedWallet> wallets);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::string generateReadmeWalletSection(array<LinkedWallet> wallets);
+} // namespace generated_utils
+} // namespace elizaos
 
-std::string getWalletAddressForChain(std::any data, std::string chain);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_READMEUTILS_HPP_

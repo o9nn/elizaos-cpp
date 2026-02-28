@@ -1,104 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_GUILD_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_GUILD_H
-#include "core.h"
-#include "../types/sticker-object.h"
-#include "../types/welcome-screen-object.h"
-#include "./emoji.h"
-#include "./role.h"
-using Role = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_GUILD_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_GUILD_HPP_
 
-class Guild;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Guild : public object, public std::enable_shared_from_this<Guild> {
+namespace elizaos {
+namespace generated_ui {
+
+class Guild {
 public:
-    using std::enable_shared_from_this<Guild>::shared_from_this;
-    std::shared_ptr<Snowflake> id;
+    Guild() = default;
+    ~Guild() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "guild"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any icon;
-
-    std::any icon_hash;
-
-    std::any splash;
-
-    std::any discovery_splash;
-
-    boolean owner;
-
-    std::shared_ptr<Snowflake> owner_id;
-
-    std::string permissions;
-
-    std::any region;
-
-    std::any afk_channel_id;
-
-    double afk_timeout;
-
-    boolean widget_enabled;
-
-    std::any widget_channel_id;
-
-    double verification_level;
-
-    double default_message_notifications;
-
-    double explicit_content_filter;
-
-    array<std::shared_ptr<Role>> roles;
-
-    array<std::shared_ptr<Emoji>> emojis;
-
-    array<string> features;
-
-    double mfa_level;
-
-    std::any application_id;
-
-    std::any system_channel_id;
-
-    double system_channel_flags;
-
-    std::any rules_channel_id;
-
-    std::any max_presences;
-
-    double max_members;
-
-    std::any vanity_url_code;
-
-    std::any description;
-
-    std::any banner;
-
-    double premium_tier;
-
-    double premium_subscription_count;
-
-    std::string preferred_locale;
-
-    std::any public_updates_channel_id;
-
-    double max_video_channel_users;
-
-    double max_stage_video_channel_users;
-
-    double approximate_member_count;
-
-    double approximate_presence_count;
-
-    WelcomeScreenObject welcome_screen;
-
-    double nsfw_level;
-
-    array<StickerObject> stickers;
-
-    boolean premium_progress_bar_enabled;
-
-    std::any safety_alerts_channel_id;
-
-    Guild(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_GUILD_HPP_

@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PUBLISH_ACTIONS_GITHUB-PUBLISH_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PUBLISH_ACTIONS_GITHUB-PUBLISH_H
-#include "core.h"
-#include "@/src/utils.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUB_PUBLISH_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUB_PUBLISH_HPP_
 
-template <typename RET>
-RET publishToGitHubAction(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::shared_ptr<Credentials> credentials, boolean skipRegistry = false, boolean dryRun = false);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename RET>
-RET publishToGitHubAction(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::shared_ptr<Credentials> credentials, boolean skipRegistry, boolean dryRun)
-{
-    console->info(std::string("Publishing to GitHub and registry..."));
-    auto result = std::async([=]() { publishToGitHub(cwd, packageJson, credentials->username, skipRegistry, dryRun); });
-    if (!result) {
-        throw std::any(std::make_shared<Error>(std::string("GitHub publishing failed")));
-    }
-    console->log(std::string("[√] Successfully published plugin ") + packageJson->name + std::string("@") + packageJson->version + std::string(" to GitHub"));
-    return result;
+namespace elizaos {
+namespace generated_misc {
+
+class GithubPublish {
+public:
+    GithubPublish() = default;
+    ~GithubPublish() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "github_publish"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GITHUB_PUBLISH_HPP_

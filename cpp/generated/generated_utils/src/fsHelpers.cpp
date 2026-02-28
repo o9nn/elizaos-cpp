@@ -1,24 +1,26 @@
-#include "elizaos.github.io/src/lib/fsHelpers.h"
+#include "fsHelpers.hpp"
 
-void ensureDir(std::string dirPath)
-{
-    std::async([=]() { fs->mkdir(dirPath, object{
-        object::pair{std::string("recursive"), true}
-    }); });
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool Fshelpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-void writeToFile(std::string filePath, std::string data)
-{
-    std::async([=]() { ensureDir(path->dirname(filePath)); });
-    std::async([=]() { fs->writeFile(filePath, data, std::string("utf-8")); });
-};
+void Fshelpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Fshelpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::any getRepoFilePath(std::string outputDir, std::string repoId, std::string dataType, std::string intervalType, std::string fileName)
-{
-    auto safeRepoId = repoId->replace(std::string("/"), std::string("_"));
-    return path->join(outputDir, safeRepoId, dataType, intervalType, fileName);
-};
-
-
+} // namespace generated_utils
+} // namespace elizaos

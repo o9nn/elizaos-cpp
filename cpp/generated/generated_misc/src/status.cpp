@@ -1,32 +1,26 @@
-#include "SWEagent/src/environment/hooks/status.h"
+#include "status.hpp"
 
-SetStatusEnvironmentHook::SetStatusEnvironmentHook(std::string id, StatusCallback callable) : EnvHook() {
-    this->id = id;
-    this->callable = callable;
+namespace elizaos {
+namespace generated_misc {
+
+bool Status::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void SetStatusEnvironmentHook::update(std::string message)
-{
-    this->callable(this->id, message);
+void Status::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void SetStatusEnvironmentHook::onStartDeployment()
-{
-    this->update(std::string("Starting deployment"));
+nlohmann::json Status::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void SetStatusEnvironmentHook::onInstallEnvStarted()
-{
-    this->update(std::string("Installing environment"));
-}
-
-void SetStatusEnvironmentHook::onEnvironmentStartup()
-{
-    this->update(std::string("Starting environment"));
-}
-
-void SetStatusEnvironmentHook::onClose()
-{
-    this->update(std::string("Closing environment"));
-}
-
+} // namespace generated_misc
+} // namespace elizaos

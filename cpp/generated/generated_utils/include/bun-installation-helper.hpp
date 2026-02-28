@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_BUN-INSTALLATION-HELPER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_BUN-INSTALLATION-HELPER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./emoji-handler.h"
-#include "./bun-exec.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_BUN_INSTALLATION_HELPER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_BUN_INSTALLATION_HELPER_HPP_
 
-class BunInstallationResult;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BunInstallationResult : public object, public std::enable_shared_from_this<BunInstallationResult> {
+namespace elizaos {
+namespace generated_utils {
+
+class BunInstallationHelper {
 public:
-    using std::enable_shared_from_this<BunInstallationResult>::shared_from_this;
-    boolean installed;
+    BunInstallationHelper() = default;
+    ~BunInstallationHelper() = default;
 
-    std::string message;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "bun_installation_helper"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string error;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<std::shared_ptr<BunInstallationResult>>> checkBunInstallation();
+} // namespace generated_utils
+} // namespace elizaos
 
-void displayBunInstallInstructions();
-
-std::string displayBunInstallationTipCompact();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_BUN_INSTALLATION_HELPER_HPP_

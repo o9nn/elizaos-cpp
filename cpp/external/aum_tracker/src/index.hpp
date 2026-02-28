@@ -1,52 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_INDEX_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "components/ModernDashboard.hpp"
-#include "components/ModernLayout.hpp"
-#include "components/TokenDetail.hpp"
-#include "components/WalletDetail.hpp"
-#include "routes/api.hpp"
-#include "scripts/prefetch.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Middleware
-
-// JSX renderer
-
-// Serve static files
-
-// API routes
-
-// Dashboard page
-
-// Wallet detail page
-
-// Token detail page
-
-// Health check
-
-// 404 handler
-
-// Error handler
-
-// Auto-prefetch on startup (full refresh)
-std::future<void> startupPrefetch();
-
-// Start prefetch after a longer delay to allow server to fully initialize
-
-
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_INDEX_HPP_

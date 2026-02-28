@@ -1,10 +1,26 @@
-#include "otc-agent/synpress.config.h"
+#include "synpress.config.hpp"
 
-double OTC_DESK_PORT = parseInt(OR((process->env->OTC_DESK_PORT), (std::string("4444"))));
-std::string BASE_URL = std::string("http://localhost:") + OTC_DESK_PORT + string_empty;
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool SynpressConfig::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void SynpressConfig::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json SynpressConfig::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

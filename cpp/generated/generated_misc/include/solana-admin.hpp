@@ -1,36 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SCRIPTS_SOLANA-ADMIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SCRIPTS_SOLANA-ADMIN_H
-#include "core.h"
-#include "dotenv.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/web3.js.h"
-#include "@solana/spl-token.h"
-#include "bs58.h"
-using bs58 = _default;
-#include "fs.h"
-#include "path.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_ADMIN_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_ADMIN_HPP_
 
-extern std::string SOLANA_RPC;
-extern std::any PROGRAM_ID;
-extern std::any DESK;
-extern double POOL_TYPE_NONE;
-extern std::shared_ptr<Buffer> EMPTY_PYTH_FEED;
-std::shared_ptr<Promise<std::shared_ptr<Connection>>> getConnection();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<std::shared_ptr<Keypair>>> getWallet();
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<std::shared_ptr<anchor::Program>>> getProgram(std::shared_ptr<Connection> connection, std::shared_ptr<Keypair> wallet);
+class SolanaAdmin {
+public:
+    SolanaAdmin() = default;
+    ~SolanaAdmin() = default;
 
-std::shared_ptr<Promise<void>> createTreasury(std::string tokenMintStr);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "solana_admin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Promise<void>> registerToken(std::string tokenMintStr, double priceUsd = undefined);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::shared_ptr<Promise<void>> setPrice(std::string tokenMintStr, double priceUsd);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<void>> showStatus();
-
-void printUsage();
-
-std::shared_ptr<Promise<void>> main();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SOLANA_ADMIN_HPP_

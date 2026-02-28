@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_AUTHMIDDLEWARE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_AUTHMIDDLEWARE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Authmiddleware {
+public:
+    Authmiddleware() = default;
+    ~Authmiddleware() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "authMiddleware"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Express middleware for validating API Key authentication based on an environment variable.
- *
- * If the ELIZA_SERVER_AUTH_TOKEN environment variable is std::set, this middleware
- * checks for a matching 'X-API-KEY' header in incoming requests.
- *
- * If the environment variable is *not* std::set, the middleware allows all requests
- * to pass through without authentication checks.
- *
- * @param req - Express request object.
- * @param res - Express response object.
- * @param next - Express next function.
- */
-void apiKeyAuthMiddleware(const std::string& req, const std::string& res, NextFunction next);
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_AUTHMIDDLEWARE_HPP_

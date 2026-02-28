@@ -1,30 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYTICS_SEGMENTATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ANALYTICS_SEGMENTATION_H
-#include "core.h"
-#include "@prisma/client.h"
-#include "ml-kmeans.h"
-#include "../monitoring/logger.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEGMENTATION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEGMENTATION_HPP_
 
-class UserSegment;
-class UserSegmentation;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::any prisma;
-class UserSegment : public object, public std::enable_shared_from_this<UserSegment> {
+namespace elizaos {
+namespace generated_misc {
+
+class Segmentation {
 public:
-    using std::enable_shared_from_this<UserSegment>::shared_from_this;
-    std::string id;
+    Segmentation() = default;
+    ~Segmentation() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "segmentation"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    Record<std::string, any> characteristics;
-
-    double size;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class UserSegmentation : public object, public std::enable_shared_from_this<UserSegmentation> {
-public:
-    using std::enable_shared_from_this<UserSegmentation>::shared_from_this;
-    static std::shared_ptr<Promise<array<std::shared_ptr<UserSegment>>>> generateSegments();
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEGMENTATION_HPP_

@@ -1,25 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_RESOLVE_IMPORT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_RESOLVE_IMPORT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class ResolveImport {
+public:
+    ResolveImport() = default;
+    ~ResolveImport() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "resolve_import"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Asynchronously resolves an import path by matching it against the base URL and paths defined in the provided configuration.
- *
- * @param {string} importPath - The path of the import to resolve.
- * @param {Pick<ConfigLoaderSuccessResult, "absoluteBaseUrl" | "paths">} config - The configuration object containing the absolute base URL and paths mappings.
- * @returns {string|null} - The resolved absolute path if a match is found, otherwise null.
- */
-std::future<void> resolveImport(const std::string& importPath, Pick<ConfigLoaderSuccessResult config, auto 'absoluteBaseUrl' | 'paths'>);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_RESOLVE_IMPORT_HPP_

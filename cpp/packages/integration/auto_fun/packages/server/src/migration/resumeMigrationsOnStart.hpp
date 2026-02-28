@@ -1,51 +1,35 @@
-#include ".redis.hpp"
-#include ".tokenSupplyHelpers/customWallet.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_RESUMEMIGRATIONSONSTART_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_RESUMEMIGRATIONSONSTART_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Resumemigrationsonstart {
+public:
+    Resumemigrationsonstart() = default;
+    ~Resumemigrationsonstart() = default;
 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
-// 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "resumeMigrationsOnStart"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// // Parse IDLs
-// const idl: Autofun = JSON.parse(JSON.stringify(idlJson));
-// const raydium_vault_IDL: RaydiumVault = JSON.parse(JSON.stringify(raydiumVaultIdlJson));
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// // Load environment
-// const NETWORK = process.env.NETWORK || 'mainnet';
-// const RPC_URL = NETWORK === 'devnet'
-//    ? process.env.DEVNET_SOLANA_RPC_URL!
-//    : process.env.MAINNET_SOLANA_RPC_URL!;
-
-// std::future<void> createMigrator();
-
-// const CONCURRENCY = Number(process.env.MIGRATION_CONCURRENCY ?? '5');
-
-// std::future<void> resumeTick(TokenMigrator migrator);
-
-// std::future<void> startMigrationCron();
-// if (require.main === module) {
-//    startMigrationCron().catch((err) => {
-//       console.error('Migration cron failed to start:', err);
-//       process.exit(1);
-//    });
-// }
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_RESUMEMIGRATIONSONSTART_HPP_

@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINS_HPP_
 
-typedef Record<std::string, string> RawRegistry;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class VersionInfo;
-class CachedRegistry;
+namespace elizaos {
+namespace generated_plugins {
 
-class VersionInfo : public object, public std::enable_shared_from_this<VersionInfo> {
+class Plugins {
 public:
-    using std::enable_shared_from_this<VersionInfo>::shared_from_this;
-    object git;
+    Plugins() = default;
+    ~Plugins() = default;
 
-    object npm;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugins"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    object supports;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CachedRegistry : public object, public std::enable_shared_from_this<CachedRegistry> {
-public:
-    using std::enable_shared_from_this<CachedRegistry>::shared_from_this;
-    std::string lastUpdatedAt;
+} // namespace generated_plugins
+} // namespace elizaos
 
-    Record<std::string, std::shared_ptr<VersionInfo>> registry;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINS_HPP_

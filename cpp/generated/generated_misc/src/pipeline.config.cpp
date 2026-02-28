@@ -1,14 +1,26 @@
-#include "elizaos.github.io/config/pipeline.config.h"
+#include "pipeline.config.hpp"
 
-std::string openrouterApiKey = process->env->OPENROUTER_API_KEY;
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
-    if (!openrouterApiKey) {
-        console->warn(std::string("OPENROUTER_API_KEY is not set"));
-    }
-    satisfies;
-    PipelineConfig;
+bool PipelineConfig::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void PipelineConfig::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PipelineConfig::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

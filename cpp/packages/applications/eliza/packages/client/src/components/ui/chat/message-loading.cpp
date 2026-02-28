@@ -1,58 +1,26 @@
 #include "message-loading.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void MessageLoading() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <svg;
-    role="img";
-    aria-label="Loading animation";
-    width="24";
-    height="24";
-    viewBox="0 0 24 24";
-    xmlns="http://www.w3.org/2000/svg"
-    className="text-foreground";
-    data-testid="loading";
-    >;
-    <circle cx="4" cy="12" r="2" fill="currentColor">;
-    <animate;
-    id="spinner_qFRN";
-    begin="0;spinner_OcgL.end+0.25s";
-    attributeName="cy";
-    calcMode="spline";
-    dur="0.6s";
-    values="12;6;12";
-    keySplines=".33,.66,.66,1;.33,0,.66,.33";
-    />;
-    </circle>;
-    <circle cx="12" cy="12" r="2" fill="currentColor">;
-    <animate;
-    begin="spinner_qFRN.begin+0.1s";
-    attributeName="cy";
-    calcMode="spline";
-    dur="0.6s";
-    values="12;6;12";
-    keySplines=".33,.66,.66,1;.33,0,.66,.33";
-    />;
-    </circle>;
-    <circle cx="20" cy="12" r="2" fill="currentColor">;
-    <animate;
-    id="spinner_OcgL";
-    begin="spinner_qFRN.begin+0.2s";
-    attributeName="cy";
-    calcMode="spline";
-    dur="0.6s";
-    values="12;6;12";
-    keySplines=".33,.66,.66,1;.33,0,.66,.33";
-    />;
-    </circle>;
-    </svg>;
-    );
-
+bool MessageLoading::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void MessageLoading::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json MessageLoading::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

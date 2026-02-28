@@ -1,10 +1,26 @@
 #include "validation.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool Validation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Validation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Validation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

@@ -1,31 +1,26 @@
-#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/events.h"
+#include "events.hpp"
 
-object hyperfyEvents = object{
-    object::pair{hyperfyEventType::MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(std::any)>>{ [=](auto payload) mutable
-    {
-        std::async([=]() { messageReceivedHandler(object{
-            object::pair{std::string("runtime"), payload->runtime}, 
-            object::pair{std::string("message"), payload->message}, 
-            object::pair{std::string("callback"), payload->callback}, 
-            object::pair{std::string("onComplete"), payload->onComplete}
-        }); });
-    }
-     }}, 
-    object::pair{hyperfyEventType::VOICE_MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(std::any)>>{ [=](auto payload) mutable
-    {
-        std::async([=]() { messageReceivedHandler(object{
-            object::pair{std::string("runtime"), payload->runtime}, 
-            object::pair{std::string("message"), payload->message}, 
-            object::pair{std::string("callback"), payload->callback}, 
-            object::pair{std::string("onComplete"), payload->onComplete}
-        }); });
-    }
-     }}, 
-    object::pair{std::string("CONTROL_MESSAGE"), array<any>()}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Events::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Events::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Events::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

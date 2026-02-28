@@ -1,37 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_SERVICES_PROGRESSIONTRACKER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_SERVICES_PROGRESSIONTRACKER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./capabilityProgressionService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROGRESSIONTRACKER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROGRESSIONTRACKER_HPP_
 
-class ProgressionTracker;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ProgressionTracker : public object, public std::enable_shared_from_this<ProgressionTracker> {
+namespace elizaos {
+namespace generated_misc {
+
+class Progressiontracker {
 public:
-    using std::enable_shared_from_this<ProgressionTracker>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Progressiontracker() = default;
+    ~Progressiontracker() = default;
 
-    std::shared_ptr<CapabilityProgressionService> progressionService;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "progressionTracker"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    ProgressionTracker(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<CapabilityProgressionService> progressionService);
-    virtual void stop();
-    virtual void setupEventListeners();
-    virtual std::shared_ptr<Promise<void>> handleShellCommandExecuted(object params);
-    virtual std::shared_ptr<Promise<void>> handleAgentNamed(object _params);
-    virtual std::shared_ptr<Promise<void>> handleGoalCreated(object _params);
-    virtual std::shared_ptr<Promise<void>> handleTodoCreated(object _params);
-    virtual std::shared_ptr<Promise<void>> handleBrowserActionPerformed(object params);
-    virtual std::shared_ptr<Promise<void>> handleFormSubmitted(object params);
-    virtual std::shared_ptr<Promise<void>> handleVisionActionPerformed(object params);
-    virtual std::shared_ptr<Promise<void>> handleMicrophoneUsed(object _params);
-    virtual std::shared_ptr<Promise<void>> handleCapabilityUsed(object params);
-    virtual std::shared_ptr<Promise<void>> trackShellCommand(std::string command, double exitCode);
-    virtual std::shared_ptr<Promise<void>> trackGoalCreation(Record<std::string, any> goalData);
-    virtual std::shared_ptr<Promise<void>> trackTodoCreation(Record<std::string, any> todoData);
-    virtual std::shared_ptr<Promise<void>> trackAgentNaming(std::string name);
-    virtual std::shared_ptr<Promise<void>> trackAction(std::string actionType, Record<std::string, any> details = undefined);
-    virtual Record<std::string, any> getProgressionStatus();
-    virtual void cleanup();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROGRESSIONTRACKER_HPP_

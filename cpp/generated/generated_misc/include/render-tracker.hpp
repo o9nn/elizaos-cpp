@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_RENDER-TRACKER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_RENDER-TRACKER_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RENDER_TRACKER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RENDER_TRACKER_HPP_
 
-typedef object RenderRecord;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_misc {
 
-extern std::shared_ptr<Map<std::string, std::shared_ptr<RenderRecord>>> renderCounts;
-extern object CONFIG;
-std::string summarizeValue(std::any value);
+class RenderTracker {
+public:
+    RenderTracker() = default;
+    ~RenderTracker() = default;
 
-Record<std::string, string> getPropsSnapshot(Record<std::string, any> props);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "render_tracker"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-array<string> findChanges(std::any prev, Record<std::string, string> curr);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-void trackRender(std::string componentName, Record<std::string, any> props = undefined, Record<std::string, any> state = undefined);
+} // namespace generated_misc
+} // namespace elizaos
 
-void useRenderTracker(std::string componentName, Record<std::string, any> props = undefined, Record<std::string, any> state = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RENDER_TRACKER_HPP_

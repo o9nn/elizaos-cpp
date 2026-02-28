@@ -1,60 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_BUTTON_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_BUTTON_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "button.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class WalletButton {
+public:
+    WalletButton() = default;
+    ~WalletButton() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "wallet_button"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Force re-initialization of PhantomWalletAdapter
-
-  // Handle visibility changes
-
-  // Create a wallet adapter instance directly in the component to access its icon
-      // Create a fresh adapter to get the icon
-      // PhantomWalletAdapter initializes immediately with the icon property
-
-  // Also std::set icon from wallet when it becomes available
-
-  // Check for direct Phantom connection
-
-  // Get wallet display public key from either source
-
-  // Handle clicks outside of dropdown to close it
-
-  // When walletAddress changes, try to reconnect
-      // Try to connect directly to Phantom if available
-            // Try to load icon if not yet loaded
-
-  // Try to connect wallet on load if we have a token but no connection
-      // Try to connect directly to Phantom if available
-            // Try to load icon if not yet loaded
-
-  // Handle copy wallet address
-
-  // Handle navigation to profile
-
-  // Handle disconnect with proper cleanup
-
-  // Determine button text based on connection state
-
-  // Get wallet icon - use the stored state which will be populated
-  // from either wallet.adapter.icon or our own adapter instance
-
-  // If authenticated, show the dropdown button
-
-  // If not authenticated, show connect button
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_BUTTON_HPP_

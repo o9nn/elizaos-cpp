@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_INDEX_H
-#include "core.h"
-#include "ses.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "./service.h"
-#include "zod.h"
-#include "./actions/goto.h"
-#include "./actions/use.h"
-#include "./actions/unuse.h"
-#include "./actions/stop.h"
-#include "./actions/walk_randomly.h"
-#include "./actions/ambient.h"
-#include "./actions/perception.h"
-#include "./actions/build.h"
-#include "./actions/reply.h"
-#include "./actions/ignore.h"
-#include "./providers/world.h"
-#include "./providers/emote.h"
-#include "./providers/actions.h"
-#include "./providers/character.h"
-#include "./events.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INDEX_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INDEX_HPP_
 
-extern std::string HYPERFY_WS_URL;
-extern std::any hyperfyPluginConfigSchema;
-extern std::shared_ptr<Plugin> hyperfyPlugin;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INDEX_HPP_

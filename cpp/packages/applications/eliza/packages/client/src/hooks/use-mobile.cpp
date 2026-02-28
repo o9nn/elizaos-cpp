@@ -1,26 +1,26 @@
 #include "use-mobile.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void useIsMobile() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto [isMobile, setIsMobile] = React.useState<boolean | std::nullopt>(std::nullopt);
-
-    React.useEffect(() => {
-        const auto mql = "window.matchMedia(" + "(max-width: " + std::to_string(MOBILE_BREAKPOINT - 1) + "px)";
-        const auto onChange = [&]() {;
-            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-            };
-            mql.addEventListener("change", onChange);
-            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-            return [&]() { return mql.removeEventListener("change", onChange); };
-            }, []);
-
-            return !!isMobile;
-
+bool UseMobile::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void UseMobile::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseMobile::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

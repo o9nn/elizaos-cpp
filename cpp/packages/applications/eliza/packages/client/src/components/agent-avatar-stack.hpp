@@ -1,31 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_AVATAR_STACK_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_AVATAR_STACK_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "ui/avatar.hpp"
-#include "ui/tooltip.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentAvatarStack {
+public:
+    AgentAvatarStack() = default;
+    ~AgentAvatarStack() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_avatar_stack"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct AgentAvatarStackProps {
-    std::vector<UUID> agentIds;
-    std::vector<std::string> agentNames;
-    std::optional<std::string> size;
-    std::optional<double> maxStack;
-    std::optional<bool> showExtraTooltip;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_AVATAR_STACK_HPP_

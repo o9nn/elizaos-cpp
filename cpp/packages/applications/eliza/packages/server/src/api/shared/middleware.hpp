@@ -1,102 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "response-utils.hpp"
-#include "validation.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Middleware {
+public:
+    Middleware() = default;
+    ~Middleware() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "middleware"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Middleware to validate that an agent exists
- */
-      return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
-
-      return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
-
-    // Add runtime to request object for use in route handlers
-
-/**
- * Middleware to validate UUID parameters
- */
-
-    // Use enhanced validation for channel IDs
-
-      // Log security event for invalid IDs
-      return sendError(res, 400, 'INVALID_ID', `Invalid ${paramName} format`);
-
-    // Add validated UUID to request params
-
-/**
- * Enhanced channel ID validation middleware with additional security
- */
-
-      return sendError(res, 400, 'MISSING_CHANNEL_ID', 'Channel ID is required');
-
-      // Rate limit failed attempts to prevent brute force
-      return sendError(res, 400, 'INVALID_CHANNEL_ID', 'Invalid channel ID format');
-
-    // Store validated channel ID
-
-/**
- * Security middleware to add additional API protection
- */
-    // Add security headers specific to API responses
-
-    // Remove potentially sensitive headers
-
-    // Log security-relevant information
-
-    // Log suspicious patterns
-
-    // Check for suspicious request patterns with safe, non-backtracking regexes
-
-    // Use safer std::string matching instead of potentially dangerous regexes
-
-    // Safe SQL injection detection without backtracking regex
-
-    // Check for SQL injection patterns more safely
-
-    // Check for other suspicious patterns
-
-/**
- * Middleware to validate request content type for POST/PUT/PATCH requests
- */
-    // Only validate Content-Type for methods that typically have request bodies
-
-      // Skip validation if request has no body (Content-Length is 0 or undefined)
-        return next();
-
-      // Allow multipart for file uploads, JSON for regular API requests
-
-/**
- * General API rate limiting middleware
- */
-
-/**
- * Strict rate limiting for file system operations
- */
-
-/**
- * Very strict rate limiting for upload operations
- */
-
-/**
- * Rate limiting specifically for channel validation attempts
- * Prevents brute force attacks on channel IDs
- */
-      // Skip rate limiting if channel ID is valid (successful validations)
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_HPP_

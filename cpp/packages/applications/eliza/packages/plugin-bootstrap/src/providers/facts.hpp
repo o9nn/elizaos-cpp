@@ -1,48 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_FACTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_FACTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Facts {
+public:
+    Facts() = default;
+    ~Facts() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "facts"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Formats an array of memories into a single std::string with each memory content text separated by a new line.
- *
- * @param {Memory[]} facts - An array of Memory objects to be formatted.
- * @returns {string} A single std::string containing all memory content text with new lines separating each text.
- */
-/**
- * Formats an array of Memory objects into a std::string, joining them with newlines.
- *
- * @param {Memory[]} facts - An array of Memory objects to format.
- * @returns {string} The formatted std::string with each Memory object's text joined by newlines.
- */
-void formatFacts(const std::vector<Memory>& facts);
-
-/**
- * Function to get key facts that the agent knows.
- * @param {IAgentRuntime} runtime - The runtime environment for the agent.
- * @param {Memory} message - The message object containing relevant information.
- * @param {State} [_state] - Optional state information.
- * @returns {Object} An object containing values, data, and text related to the key facts.
- */
-      // Parallelize initial data fetching operations including recentInteractions
-
-      // join the text of the last 5 messages
-
-      // join the two and deduplicate
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_FACTS_HPP_

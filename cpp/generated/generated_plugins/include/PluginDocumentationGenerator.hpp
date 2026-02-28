@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
-#include "core.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:path.h"
-using path = _default;
-#include "./AIService/AIService.js.h"
-#include "./AIService/generators/FullDocumentationGenerator.js.h"
-#include "./Configuration.js.h"
-#include "./GitManager.js.h"
-#include "./types/index.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINDOCUMENTATIONGENERATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINDOCUMENTATIONGENERATOR_HPP_
 
-class PluginDocumentationGenerator;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PluginDocumentationGenerator : public object, public std::enable_shared_from_this<PluginDocumentationGenerator> {
+namespace elizaos {
+namespace generated_plugins {
+
+class Plugindocumentationgenerator {
 public:
-    using std::enable_shared_from_this<PluginDocumentationGenerator>::shared_from_this;
-    std::shared_ptr<AIService> aiService;
+    Plugindocumentationgenerator() = default;
+    ~Plugindocumentationgenerator() = default;
 
-    std::shared_ptr<GitManager> gitManager;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "PluginDocumentationGenerator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Configuration> configuration;
-
-    std::shared_ptr<FullDocumentationGenerator> fullDocumentationGenerator;
-
-    PluginDocumentationGenerator(std::shared_ptr<AIService> aiService_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_);
-    virtual std::shared_ptr<Promise<void>> generate(array<std::shared_ptr<ASTQueueItem>> existingDocs, std::string branchName = undefined, array<std::shared_ptr<TodoItem>> todoItems = array<std::shared_ptr<TodoItem>>(), array<std::shared_ptr<EnvUsage>> envUsages = array<std::shared_ptr<EnvUsage>>());
-    virtual std::string generateMarkdownContent(std::shared_ptr<PluginDocumentation> docs, std::any packageJson);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_plugins
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGINDOCUMENTATIONGENERATOR_HPP_

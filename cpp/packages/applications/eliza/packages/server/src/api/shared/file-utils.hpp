@@ -1,46 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_FILE_UTILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_FILE_UTILS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class FileUtils {
+public:
+    FileUtils() = default;
+    ~FileUtils() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Safely constructs and validates upload directory paths to prevent path traversal attacks
- */
-std::string createSecureUploadDir(const std::string& id, const std::string& type);
-
-/**
- * Sanitizes a filename by removing dangerous characters and normalizing it
- */
-std::string sanitizeFilename(const std::string& filename);
-
-/**
- * Safely cleans up a file by removing it from the filesystem
- */
-      // Additional path validation
-
-/**
- * Cleans up multiple multer files
- */
-      // For multer memory storage, no temp files to clean up
-      // This std::function is kept for compatibility
-
-/**
- * Cleans up a multer file (no-op for memory storage)
- */
-  // For multer memory storage, no temp files to clean up
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_SHARED_FILE_UTILS_HPP_

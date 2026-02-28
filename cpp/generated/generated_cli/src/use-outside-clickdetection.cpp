@@ -1,29 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-outside-clickdetection.h"
+#include "use-outside-clickdetection.hpp"
 
-std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection = [=](auto refs, auto doOnOutsideClick) mutable
-{
-    useEffect([=]() mutable
-    {
-        shared handleClickOutside = [=](auto event) mutable
-        {
-            for (auto i = 0; i < refs->get_length(); i++)
-            {
-                auto ref = const_(refs)[i];
-                if (AND((AND((AND((ref), (ref->current))), (is<Node>(event->target)))), (ref->current->contains(event->target)))) return;
-            }
-            doOnOutsideClick();
-        };
-        document->addEventListener(std::string("click"), handleClickOutside);
-        return [=]() mutable
-        {
-            document->removeEventListener(std::string("click"), handleClickOutside);
-        };
-    }
-    , array<array<any>>{ refs, doOnOutsideClick });
-};
+namespace elizaos {
+namespace generated_cli {
 
-void Main(void)
-{
+bool UseOutsideClickdetection::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseOutsideClickdetection::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseOutsideClickdetection::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_cli
+} // namespace elizaos

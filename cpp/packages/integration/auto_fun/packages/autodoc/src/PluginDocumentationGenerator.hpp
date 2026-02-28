@@ -1,54 +1,35 @@
-#include "AIService/generators/FullDocumentationGenerator.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Plugindocumentationgenerator {
+public:
+    Plugindocumentationgenerator() = default;
+    ~Plugindocumentationgenerator() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "PluginDocumentationGenerator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Generates comprehensive plugin documentation based on existing JSDoc comments
- */
-/**
- * Class for generating comprehensive plugin documentation
- */
-
-class PluginDocumentationGenerator {
-  private fullDocumentationGenerator: FullDocumentationGenerator;
-  constructor(
-    private aiService: AIService,
-    private gitManager: GitManager,
-    private configuration: Configuration,
-  ) {
-    this.fullDocumentationGenerator = new FullDocumentationGenerator(
-      configuration,
-    );
-  }
-
-  /**
-   * Generates comprehensive plugin documentation
-   * @param {ASTQueueItem[]} existingDocs - Queue of documented items
-   * @param {string} branchName - Current git branch name
-   * @param {TodoItem[]} todoItems - List of TODO items found in the codebase
-   * @param {EnvUsage[]} envUsages - List of environment variable usages
-   */
-    // Read package.json
-    // Generate documentation
-
-    // Generate markdown content
-
-    // Only commit the file if we're in a branch
-      // Use the configuration's relative path to determine the correct README location
-
-      // Commit the file to the correct location
-
-
+} // namespace autofun_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_HPP_

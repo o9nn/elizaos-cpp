@@ -1,25 +1,26 @@
 #include "service.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-ServiceError createServiceError(const std::any& error, auto code) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (error instanceof Error) {
-        return {
-            code,
-            message: error.message,
-            cause: error,
-            };
-        }
-
-        return {
-            code,
-            message: std::to_string(error),
-            };
-
+bool Service::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Service::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Service::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

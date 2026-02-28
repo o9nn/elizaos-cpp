@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_AGENT-TEMPLATES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_AGENT-TEMPLATES_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_TEMPLATES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_TEMPLATES_HPP_
 
-class AgentTemplate;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AgentTemplate : public object, public std::enable_shared_from_this<AgentTemplate> {
+namespace elizaos {
+namespace generated_misc {
+
+class AgentTemplates {
 public:
-    using std::enable_shared_from_this<AgentTemplate>::shared_from_this;
-    std::string id;
+    AgentTemplates() = default;
+    ~AgentTemplates() = default;
 
-    std::string label;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_templates"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    Partial<std::shared_ptr<Agent>> template;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern array<std::shared_ptr<AgentTemplate>> agentTemplates;
-std::any getTemplateById(std::string id);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_TEMPLATES_HPP_

@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_LP_SERVICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_LP_SERVICE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_dummy_services {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
-
-
-
-class DummyLpService {
+class Service {
 public:
-    std::string getDexName();
-    static std::future<DummyLpService> start(IAgentRuntime runtime);
-    static std::future<void> stop(IAgentRuntime runtime);
-    std::future<std::vector<PoolInfo>> getPools(std::optional<std::string> tokenAMint, std::optional<std::string> tokenBMint);
-    Promise<TransactionResult & addLiquidity(std::optional<std::any> params);
-    Promise<TransactionResult & removeLiquidity(const std::any& params);
-    std::variant<Promise<LpPositionDetails, null>> getLpPositionDetails(const std::string& userAccountPublicKey, const std::string& poolOrPositionIdentifier);
-    std::future<std::unordered_map<std::string, std::optional<PoolInfo>>> getMarketDataForPools(const std::vector<std::string>& poolIds);
+    Service() = default;
+    ~Service() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_plugin_dummy_services
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_LP_SERVICE_HPP_

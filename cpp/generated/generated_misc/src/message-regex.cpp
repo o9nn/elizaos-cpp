@@ -1,24 +1,26 @@
-#include "discrub-ext/src/enum/message-regex.h"
+#include "message-regex.hpp"
 
-std::shared_ptr<RegExp> MessageRegex::BOLD = (new RegExp(std::string("\*\*(?<text>[^*]+)(?=(\*\*))\*\*")));
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<RegExp> MessageRegex::LINK = (new RegExp(std::string("(?:(?<name>\[[^\]]+\])(?<url>\([^ )]+)?(?<description>[^[]*(?=(?:'|")\))'\))?)")));
+bool MessageRegex::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<RegExp> MessageRegex::QUOTE = (new RegExp(std::string("`(?<text>[^`]+)(?=(`))`")));
+void MessageRegex::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
-std::shared_ptr<RegExp> MessageRegex::CHANNEL_MENTION = (new RegExp(std::string("<#(?<channel_id>\d+)>")));
+nlohmann::json MessageRegex::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::shared_ptr<RegExp> MessageRegex::HYPER_LINK = (new RegExp(std::string("(^|\s)(http(s)?:\/\/)+[^\s]+(?=[\s])?")));
-
-std::shared_ptr<RegExp> MessageRegex::UNDER_LINE = (new RegExp(std::string("__(?<text>[^_]+)(?=(__))__")));
-
-std::shared_ptr<RegExp> MessageRegex::ITALICS = (new RegExp(std::string("(_|\*)(?<text>[^_*]+)(?=((_|\*)(\s|$)))(_|\*)")));
-
-std::shared_ptr<RegExp> MessageRegex::CODE = (new RegExp(std::string("```(?<text>[^`]+)(?=(```))```")));
-
-std::shared_ptr<RegExp> MessageRegex::USER_MENTION = (new RegExp(std::string("<@(?:&|!)?(?<user_id>[0-9]+)>")));
-
-std::shared_ptr<RegExp> MessageRegex::EMOJI = (new RegExp(std::string("<a:[^<>]+:[0-9]+>|<:[^<>]+:[0-9]+>")));
-
-std::shared_ptr<RegExp> MessageRegex::WINDOWS_INVALID_CHARACTERS = (new RegExp(std::string("\[|<|>|:|"|\/|\\|\||\?|\*|\]")));
-
+} // namespace generated_misc
+} // namespace elizaos

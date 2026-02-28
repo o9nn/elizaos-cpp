@@ -1,12 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CORE_SRC_TEST-UTILS_MOCK-RUNTIME_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CORE_SRC_TEST-UTILS_MOCK-RUNTIME_H
-#include "core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCK_RUNTIME_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCK_RUNTIME_HPP_
 
-Partial<std::shared_ptr<IAgentRuntime>> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = object{});
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Memory> createMockMemory(std::string text, Partial<std::shared_ptr<Memory>> overrides = object{});
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<State> createMockState(Partial<std::shared_ptr<State>> overrides = object{});
+class MockRuntime {
+public:
+    MockRuntime() = default;
+    ~MockRuntime() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "mock_runtime"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCK_RUNTIME_HPP_

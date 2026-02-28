@@ -1,27 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST-UTILS_MOCKS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST-UTILS_MOCKS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-#include "bun:test.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCKS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCKS_HPP_
 
-std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = undefined);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::any createMockDatabaseAdapter(std::any overrides = undefined);
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Request> createMockRequest(Partial<std::shared_ptr<Request>> overrides = undefined);
+class Mocks {
+public:
+    Mocks() = default;
+    ~Mocks() = default;
 
-std::shared_ptr<Response> createMockResponse();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "mocks"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<NextFunction> createMockNext();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::any createMockSocketIO();
+} // namespace generated_misc
+} // namespace elizaos
 
-std::any createMockHttpServer();
-
-std::shared_ptr<Service> createMockService(Partial<std::shared_ptr<Service>> overrides = undefined);
-
-std::shared_ptr<Express::Multer::File> createMockUploadedFile(Partial<std::shared_ptr<Express::Multer::File>> overrides = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MOCKS_HPP_

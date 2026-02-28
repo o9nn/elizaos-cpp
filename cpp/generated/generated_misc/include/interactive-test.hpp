@@ -1,62 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC_INTERACTIVE-TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC_INTERACTIVE-TEST_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "readline.h"
-#include "uuid.h"
-using uuidv4 = v4;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_TEST_HPP_
 
-class TestSession;
-class CodeGenService;
-class E2bService;
-class InteractiveClaudeCodeTester;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestSession : public object, public std::enable_shared_from_this<TestSession> {
+namespace elizaos {
+namespace generated_misc {
+
+class InteractiveTest {
 public:
-    using std::enable_shared_from_this<TestSession>::shared_from_this;
-    std::string sessionId;
+    InteractiveTest() = default;
+    ~InteractiveTest() = default;
 
-    std::shared_ptr<IAgentRuntime> runtime;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "interactive_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string projectPath;
-
-    object currentProject;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CodeGenService : public object, public std::enable_shared_from_this<CodeGenService> {
-public:
-    using std::enable_shared_from_this<CodeGenService>::shared_from_this;
-    virtual std::shared_ptr<Promise<any>> generateCode(std::any request) = 0;
-    virtual std::shared_ptr<Promise<void>> stop() = 0;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-class E2bService : public object, public std::enable_shared_from_this<E2bService> {
-public:
-    using std::enable_shared_from_this<E2bService>::shared_from_this;
-    virtual std::shared_ptr<Promise<any>> executeCode(std::string code, std::any options = undefined) = 0;
-    virtual std::shared_ptr<Promise<void>> stop() = 0;
-};
-
-class InteractiveClaudeCodeTester : public object, public std::enable_shared_from_this<InteractiveClaudeCodeTester> {
-public:
-    using std::enable_shared_from_this<InteractiveClaudeCodeTester>::shared_from_this;
-    std::shared_ptr<TestSession> session;
-
-    std::shared_ptr<Interface> rl;
-
-    InteractiveClaudeCodeTester();
-    virtual void start();
-    virtual void showMainMenu();
-    virtual void handleMenuChoice(std::string choice);
-    virtual void callClaude(std::string prompt);
-    virtual void generateProject(std::string description);
-    virtual void runSandboxCommand(std::string command);
-    virtual void writeFile(std::string filename, std::string content);
-    virtual void readFile(std::string filename);
-    virtual void listFiles(std::string path);
-    virtual void cleanup();
-};
-
-void main();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_TEST_HPP_

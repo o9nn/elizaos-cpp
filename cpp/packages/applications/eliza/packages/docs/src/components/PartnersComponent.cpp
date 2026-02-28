@@ -1,39 +1,26 @@
 #include "PartnersComponent.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_docs {
 
-void PartnerCard() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    "<Link to={" + "/partners/" + partner.slug + "/";
-    <div className={styles.partnerImageContainer}>;
-    <img src={partner.preview} alt={partner.title} className={styles.partnerImage} />;
-    </div>;
-    <div className={styles.partnerContent}>;
-    <h3 className={styles.partnerTitle}>{partner.title}</h3>;
-    <p className={styles.partnerDescription}>{partner.description}</p>;
-    </div>;
-    </Link>;
-    );
-
+bool Partnerscomponent::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-JSX::Element PartnersComponent() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div className={styles.partnersContainer}>;
-    <div className={styles.partnersGrid}>;
-    {sortedPartners.std::map((partner) => (;
-    <PartnerCard key={partner.title} partner={partner} />;
-    ))}
-    </div>;
-    </div>;
-    );
-
+void Partnerscomponent::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Partnerscomponent::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_docs
 } // namespace elizaos

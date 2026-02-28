@@ -1,37 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_CARD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_CARD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "ui/button.hpp"
-#include "ui/card.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class ProfileCard {
+public:
+    ProfileCard() = default;
+    ~ProfileCard() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "profile_card"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct ButtonConfig {
-    std::optional<std::string> label;
-    std::optional<ReactNode> icon;
-    std::optional<std::string> className;
-    std::optional<std::string> size;
-    std::optional<bool> disabled;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct ProfileCardProps {
-    ReactNode title;
-    ReactNode content;
-    std::vector<ButtonConfig> buttons;
-    std::optional<std::string> className;
-};
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_CARD_HPP_

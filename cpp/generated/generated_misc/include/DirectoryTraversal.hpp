@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_DIRECTORYTRAVERSAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_DIRECTORYTRAVERSAL_H
-#include "core.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:path.h"
-using path = _default;
-#include "./Configuration.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORYTRAVERSAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORYTRAVERSAL_HPP_
 
-class DirectoryTraversal;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DirectoryTraversal : public object, public std::enable_shared_from_this<DirectoryTraversal> {
+namespace elizaos {
+namespace generated_misc {
+
+class Directorytraversal {
 public:
-    using std::enable_shared_from_this<DirectoryTraversal>::shared_from_this;
-    std::shared_ptr<Configuration> config;
+    Directorytraversal() = default;
+    ~Directorytraversal() = default;
 
-    array<string> prFiles = array<string>();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "DirectoryTraversal"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    static array<string> FORCED_EXCLUDED_DIRS;
-
-    DirectoryTraversal(std::shared_ptr<Configuration> config_, array<string> prFiles_ = array<string>());
-    virtual std::string getAbsolutePath(std::string filePath);
-    virtual std::string getRelativePath(std::string filePath);
-    virtual array<string> traverse();
-    virtual boolean isExcluded(std::string absolutePath);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORYTRAVERSAL_HPP_

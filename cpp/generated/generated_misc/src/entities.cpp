@@ -1,23 +1,26 @@
-#include "otaku/src/packages/api-client/src/services/entities.h"
+#include "entities.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<Entity>>> EntitiesService::getEntity(std::shared_ptr<UUID> entityId)
-{
-    auto response = std::async([=]() { this->get<object>(std::string("/api/entities/") + entityId + string_empty); });
-    return response["entity"];
+namespace elizaos {
+namespace generated_misc {
+
+bool Entities::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Entity>>> EntitiesService::createEntity(std::shared_ptr<EntityCreateParams> params)
-{
-    auto response = std::async([=]() { this->post<object>(std::string("/api/entities"), params); });
-    return response["entity"];
+void Entities::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Entity>>> EntitiesService::updateEntity(std::shared_ptr<UUID> entityId, std::shared_ptr<EntityUpdateParams> params)
-{
-    auto response = std::async([=]() { this->patch<object>(std::string("/api/entities/") + entityId + string_empty, params); });
-    return response["entity"];
+nlohmann::json Entities::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-EntitiesService::EntitiesService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
-}
-
+} // namespace generated_misc
+} // namespace elizaos

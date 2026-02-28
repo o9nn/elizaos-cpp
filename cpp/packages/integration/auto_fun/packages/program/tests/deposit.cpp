@@ -1,10 +1,26 @@
 #include "deposit.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_program {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool Deposit::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Deposit::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Deposit::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_program
 } // namespace elizaos

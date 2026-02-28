@@ -1,72 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_ACTIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_ACTIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Actions {
+public:
+    Actions() = default;
+    ~Actions() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "actions"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Composes a std::set of example conversations based on provided actions and a specified count.
- * It randomly selects examples from the provided actions and formats them with generated names.
- *
- * @param actionsData - An array of `Action` objects from which to draw examples.
- * @param count - The number of examples to generate.
- * @returns A std::string containing formatted examples of conversations.
- */
-  // Handle edge cases
-
-  // Filter out actions without examples
-
-  // If no actions have examples, return empty std::string
-
-  // Create a working copy of the examples
-
-  // Keep track of actions that still have examples
-
-  // Select examples until we reach the count or run out of examples
-    // Randomly select an action
-
-    // Select a random example from this action
-
-    // Remove action if it has no more examples
-
-  // Format the selected examples
-  return formatSelectedExamples(selectedExamples);
-
-/**
- * Formats selected example conversations with random names.
- */
-
-      // Generate random names for this example
-
-      // Format the conversation
-          // Build the base message - only include the text, no action info
-
-          // Replace name placeholders
-
-/**
- * Formats the names of the provided actions into a comma-separated string.
- * @param actions - An array of `Action` objects from which to extract names.
- * @returns A comma-separated std::string of action names.
- */
-std::string formatActionNames(const std::vector<Action>& actions);
-
-/**
- * Formats the provided actions into a detailed std::string listing each action's name and description.
- * @param actions - An array of `Action` objects to format.
- * @returns A detailed std::string of actions, including names and descriptions.
- */
-std::string formatActions(const std::vector<Action>& actions);
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_ACTIONS_HPP_

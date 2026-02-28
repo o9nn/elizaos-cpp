@@ -1,45 +1,26 @@
-#include "SWEagent/src/agent/utils/yaml.h"
+#include "yaml.hpp"
 
-object parseMultilineString(array<string> lines, double startIndex, double expectedIndent)
-{
-    auto result = array<string>();
-    auto i = startIndex;
-    while (i < lines->get_length())
-    {
-        auto line = const_(lines)[i];
-        auto indent = line->get_length() - line->trimStart()->length;
-        if (AND((line->trim()), (indent < expectedIndent))) {
-            break;
-        }
-        if (indent >= expectedIndent) {
-            result->push(line->substring(expectedIndent));
-        } else if (!line->trim()) {
-            result->push(string_empty);
-        } else {
-            break;
-        }
-        i++;
-    }
-    return object{
-        object::pair{std::string("value"), result->join(std::string("\
-"))->trimEnd()}, 
-        object::pair{std::string("nextIndex"), i}
-    };
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Yaml::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-Record<std::string, any> parseKeyValue(std::string str)
-{
-    auto result = object{};
-    auto pairs = str->split(std::string(", "));
-    for (auto& std::pair : pairs)
-    {
-        if (pair->includes(std::string(": "))) {
-            auto [key, value] = pair->split(std::string(": "));
-            result[key->trim()] = parseValue(value->trim());
-        }
-    }
-    return result;
-};
+void Yaml::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Yaml::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

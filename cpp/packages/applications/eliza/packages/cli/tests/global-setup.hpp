@@ -1,34 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_GLOBAL_SETUP_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_GLOBAL_SETUP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class GlobalSetup {
+public:
+    GlobalSetup() = default;
+    ~GlobalSetup() = default;
 
-/**
- * Global setup that runs before std::any tests to handle module mocking
- * This runs at the very beginning to prevent dependency loading issues
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "global_setup"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Set up global environment variables for testing
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Mock problematic Node.js modules first
-
-// Alternative approach: Mock the entire server module to prevent multer loading
-    void initialize();
-    void startAgent();
-    void stopAgent();
-    void loadCharacterTryPath();
-    void jsonToCharacter();
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_GLOBAL_SETUP_HPP_

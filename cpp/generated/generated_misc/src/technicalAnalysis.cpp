@@ -1,23 +1,26 @@
-#include "spartan/src/plugins/degenTrader/services/calculation/technicalAnalysis.h"
+#include "technicalAnalysis.hpp"
 
-std::any TechnicalAnalysisService::calculateTechnicalSignals(std::any marketData)
-{
-    auto rsi = this->analyticsService->calculateRSI(marketData["priceHistory"], 14);
-    auto macd = this->analyticsService->calculateMACD(marketData["priceHistory"]);
-    auto volatility = (marketData["priceHistory"]["length"] > 1) ? std::any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : std::any(0);
-    auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std::string("increasing") : std::string("stable");
-    auto unusualActivity = marketData["volume24h"] > marketData["marketCap"] * 0.2;
-    return object{
-        object::pair{std::string("rsi"), std::string("rsi")}, 
-        object::pair{std::string("macd"), std::string("macd")}, 
-        object::pair{std::string("volumeProfile"), object{
-            object::pair{std::string("trend"), as<any>(volumeTrend)}, 
-            object::pair{std::string("unusualActivity"), std::string("unusualActivity")}
-        }}, 
-        object::pair{std::string("volatility"), std::string("volatility")}
-    };
+namespace elizaos {
+namespace generated_misc {
+
+bool Technicalanalysis::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-TechnicalAnalysisService::TechnicalAnalysisService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService) : BaseTradeService(runtime, walletService, dataService, analyticsService) {
+void Technicalanalysis::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Technicalanalysis::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

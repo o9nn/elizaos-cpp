@@ -1,34 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_MAIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_MAIN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "layout/root.hpp"
-#include "pages.hpp"
-#include "pages/admin.hpp"
-#include "pages/callback.hpp"
-#include "pages/chat.hpp"
-#include "pages/create.hpp"
-#include "pages/fees.hpp"
-#include "pages/not-found.hpp"
-#include "pages/privacy-policy.hpp"
-#include "pages/profile.hpp"
-#include "pages/support.hpp"
-#include "pages/terms-of-service.hpp"
-#include "pages/testing.hpp"
-#include "pages/token.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Main {
+public:
+    Main() = default;
+    ~Main() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "main"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_MAIN_HPP_

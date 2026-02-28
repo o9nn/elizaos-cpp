@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUM-TRACKER_SRC_SCRIPTS_TOKEN-METADATA-SERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUM-TRACKER_SRC_SCRIPTS_TOKEN-METADATA-SERVICE_H
-#include "core.h"
-#include "../services/background/token-metadata.h"
-using tokenMetadataService = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TOKEN_METADATA_SERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TOKEN_METADATA_SERVICE_HPP_
 
-extern array<string> args;
-extern std::string command;
-void main();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void startContinuousService();
+namespace elizaos {
+namespace generated_services {
 
-void refreshStaleMetadata();
+class TokenMetadataService {
+public:
+    TokenMetadataService() = default;
+    ~TokenMetadataService() = default;
 
-void healthCheck();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "token_metadata_service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-void showQueueStatus();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-void clearQueue();
+} // namespace generated_services
+} // namespace elizaos
 
-void showHelp();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TOKEN_METADATA_SERVICE_HPP_

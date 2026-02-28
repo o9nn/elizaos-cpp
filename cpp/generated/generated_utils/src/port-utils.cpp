@@ -1,24 +1,26 @@
-#include "eliza/packages/cli/src/commands/test/utils/port-utils.h"
+#include "port-utils.hpp"
 
-std::shared_ptr<Promise<boolean>> checkPortAvailable(double port)
-{
-    return std::make_shared<Promise>([=](auto resolve) mutable
-    {
-        shared server = net->createServer();
-        server->once(std::string("error"), [=]() mutable
-        {
-            resolve(false);
-        }
-        );
-        server->once(std::string("listening"), [=]() mutable
-        {
-            server->close();
-            resolve(true);
-        }
-        );
-        server->listen(port);
-    }
-    );
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool PortUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void PortUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PortUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

@@ -1,47 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_SOCKETIO_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_SOCKETIO_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class SocketIORouter {
-  private agents: Map<UUID, IAgentRuntime>;
-  private connections: Map<std::string, UUID>; // socket.id -> agentId (for agent-specific interactions like log streaming, if std::any)
-  private logStreamConnections: Map<std::string, { agentName?: std::string; level?: std::string }>;
-
-    // Emit ENTITY_JOINED event for bootstrap plugin to handle world/entity creation
-
-      // Get the first available runtime (there should typically be one)
-
-    // Special handling for default server ID "0"
-
-      // Check if this is a DM channel and emit ENTITY_JOINED for proper world setup
-
-      // Ensure the channel exists before creating the message
-
-        // Auto-create the channel if it doesn't exist
-          // First verify the server exists
-
-          // Determine if this is likely a DM based on the context
-
-          // For DM channels, we need to determine the participants
-            // Try to extract the other participant from metadata or payload
-
-      // Immediately broadcast the message to all clients in the channel
-
-      // Broadcast to everyone in the channel except the sender
-
-      // Also send back to the sender with the server-assigned ID
-
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_SOCKETIO_INDEX_HPP_

@@ -1,14 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-INFERENCE_SRC___TESTS___CLAUDE-PROXY-OPENAI_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-INFERENCE_SRC___TESTS___CLAUDE-PROXY-OPENAI_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "@elizaos/core.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../claude-proxy.h"
-#include "../index.h"
-#include "@elizaos/plugin-openai.h"
-#include "@elizaos/plugin-sql.h"
-using sqlPlugin = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLAUDE_PROXY_OPENAI_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLAUDE_PROXY_OPENAI_TEST_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_testing {
+
+class ClaudeProxyOpenaiTest {
+public:
+    ClaudeProxyOpenaiTest() = default;
+    ~ClaudeProxyOpenaiTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "claude_proxy_openai_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLAUDE_PROXY_OPENAI_TEST_HPP_

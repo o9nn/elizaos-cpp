@@ -1,2 +1,26 @@
-#include "otc-agent/src/types/chat-message.h"
+#include "chat-message.hpp"
 
+namespace elizaos {
+namespace generated_misc {
+
+bool ChatMessage::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void ChatMessage::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ChatMessage::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

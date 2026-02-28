@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DISPLAY_BANNER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DISPLAY_BANNER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class DisplayBanner {
+public:
+    DisplayBanner() = default;
+    ~DisplayBanner() = default;
 
-// Export std::function to display banner and version
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "display_banner"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Function to get the package version
-// --- Utility: Get local CLI version from package.json ---
-std::string getVersion();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// --- Utility: Get install tag based on CLI version ---
-std::string getCliInstallTag();
-
-// --- Utility: Check if terminal supports UTF-8 ---
-void isUtf8Locale();
-
-// Cache for version check to avoid multiple network calls in same session
-
-// --- Utility: Get latest CLI version with caching ---
-std::future<std::string> getLatestCliVersion(const std::string& currentVersion);
-
-// --- Utility: Display compact, professional update notification ---
-void showUpdateNotification(const std::string& currentVersion, const std::string& latestVersion);
-
-// --- Utility: Global update check that can be called from anywhere ---
-std::future<bool> checkAndShowUpdateNotification(const std::string& currentVersion);
-
-// --- Main: Display banner and version, then check for updates ---
-std::future<void> displayBanner(bool skipUpdateCheck = false);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_DISPLAY_BANNER_HPP_

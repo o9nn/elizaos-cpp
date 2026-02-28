@@ -1,13 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-view-mode.h"
+#include "use-view-mode.hpp"
 
-std::function<std::any()> useViewMode = [=]() mutable
-{
-    auto [viewMode, setViewMode] = useUrlSearchParams<ViewMode>(std::string("view"), std::string("grid"));
-    return as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ viewMode, setViewMode });
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseViewMode::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseViewMode::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseViewMode::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

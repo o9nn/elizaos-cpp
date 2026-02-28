@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_DATABASE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_DATABASE_H
-#include "core.h"
-#include "./types.h"
-using IDatabaseAdapterFromTypes = IDatabaseAdapter;
-#include "@elizaos/core-plugin-v2.h"
-using IDatabaseAdapterV2 = IDatabaseAdapter;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DATABASE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DATABASE_HPP_
 
-typedef IDatabaseAdapterFromTypes IDatabaseAdapter;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_database {
 
-std::shared_ptr<Account> fromV2Entity(std::shared_ptr<Entity> entity);
+class Database {
+public:
+    Database() = default;
+    ~Database() = default;
 
-std::shared_ptr<Entity> toV2Entity(std::shared_ptr<Account> account);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "database"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapterV2);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::shared_ptr<IDatabaseAdapterV2> toV2DatabaseAdapter(IDatabaseAdapter adapterV1);
+} // namespace generated_database
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_DATABASE_HPP_

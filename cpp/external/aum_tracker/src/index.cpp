@@ -1,30 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace aum_tracker {
 
-std::future<void> startupPrefetch() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    std::cout << "🚀 Starting full prefetch on server startup..." << std::endl;
-
-    try {
-        // Create prefetch service with full startup configuration
-        const auto prefetchService = new PrefetchService({;
-            forceRefresh: true, // Always force refresh on startup for fresh data
-            resumeFromFailures: true, // Resume from std::any previous failures
-            // No limit - process all wallets on startup
-            });
-
-            // Run prefetch in background without blocking server start
-            prefetchService.run().catch((error) => {
-                std::cerr << "❌ Startup prefetch failed:" << error << std::endl;
-                });
-                } catch (error) {
-                    std::cerr << "❌ Failed to start auto-prefetch:" << error << std::endl;
-                }
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace aum_tracker
 } // namespace elizaos

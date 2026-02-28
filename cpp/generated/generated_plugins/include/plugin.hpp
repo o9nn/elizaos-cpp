@@ -1,78 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PLUGIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PLUGIN_H
-#include "core.h"
-#include "./agent.h"
-#include "./components.h"
-#include "./database.h"
-#include "./events.h"
-#include "./runtime.h"
-#include "./service.h"
-#include "./testing.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_HPP_
 
-typedef object Route;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef std::any PluginEvents;
+namespace elizaos {
+namespace generated_plugins {
 
-class Plugin;
-class ProjectAgent;
-class Project;
-
-class Plugin : public object, public std::enable_shared_from_this<Plugin> {
+class Plugin {
 public:
-    using std::enable_shared_from_this<Plugin>::shared_from_this;
-    std::string name;
+    Plugin() = default;
+    ~Plugin() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::function<std::shared_ptr<Promise<void>>(Record<std::string, string>, std::shared_ptr<IAgentRuntime>)> init;
-
-    object config;
-
-    array<any> services;
-
-    array<object> componentTypes;
-
-    array<std::shared_ptr<Action>> actions;
-
-    array<std::shared_ptr<Provider>> providers;
-
-    array<std::shared_ptr<Evaluator>> evaluators;
-
-    std::shared_ptr<IDatabaseAdapter> adapter;
-
-    object models;
-
-    PluginEvents events;
-
-    array<Route> routes;
-
-    array<std::shared_ptr<TestSuite>> tests;
-
-    array<string> dependencies;
-
-    array<string> testDependencies;
-
-    double priority;
-
-    std::any schema;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ProjectAgent : public object, public std::enable_shared_from_this<ProjectAgent> {
-public:
-    using std::enable_shared_from_this<ProjectAgent>::shared_from_this;
-    std::shared_ptr<Character> character;
+} // namespace generated_plugins
+} // namespace elizaos
 
-    std::function<std::shared_ptr<Promise<void>>(std::shared_ptr<IAgentRuntime>)> init;
-
-    array<std::shared_ptr<Plugin>> plugins;
-
-    std::any tests;
-};
-
-class Project : public object, public std::enable_shared_from_this<Project> {
-public:
-    using std::enable_shared_from_this<Project>::shared_from_this;
-    array<std::shared_ptr<ProjectAgent>> agents;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_HPP_

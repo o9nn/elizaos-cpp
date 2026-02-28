@@ -1,22 +1,26 @@
 #include "sol-price-provider.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void SolPriceProvider() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto { data: solPrice, isLoading, error } = useSolPrice();
-
-    return (;
-    <SolPriceContext.Provider;
-    value={{ solPrice, isLoading, error: error }}
-    >;
-    {children}
-    </SolPriceContext.Provider>;
-    );
-
+bool SolPriceProvider::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void SolPriceProvider::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json SolPriceProvider::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

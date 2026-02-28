@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_UTILS_CHARACTER-UPDATER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_UTILS_CHARACTER-UPDATER_H
-#include "core.h"
-#include "jsonpath-plus.h"
-#include "@elizaos/core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_UPDATER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_UPDATER_HPP_
 
-std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character> character, array<std::shared_ptr<ModificationOperation>> operations);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void addValue(std::any obj, std::string path, std::any value);
+namespace elizaos {
+namespace generated_misc {
 
-void modifyValue(std::any obj, std::string path, std::any value);
+class CharacterUpdater {
+public:
+    CharacterUpdater() = default;
+    ~CharacterUpdater() = default;
 
-void deleteValue(std::any obj, std::string path);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character_updater"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-boolean validateCharacterStructure(std::any character);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_UPDATER_HPP_

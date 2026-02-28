@@ -1,8 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_TYPEHELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_TYPEHELPERS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TYPEHELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TYPEHELPERS_HPP_
 
-extern std::function<std::any(std::shared_ptr<T>)> isNotNullOrUndefined;
-extern std::function<std::any(array<std::shared_ptr<T>>)> isNotNullOrUndefinedArray;
-extern std::function<std::function<std::any(std::shared_ptr<T>)>(std::shared_ptr<K>)> isNotNullOrUndefinedField;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_utils {
+
+class Typehelpers {
+public:
+    Typehelpers() = default;
+    ~Typehelpers() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "typeHelpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TYPEHELPERS_HPP_

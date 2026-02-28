@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
-#include "core.h"
-#include "@solana/web3.js.h"
-#include "@autodotfun/raydium/src/raydiumVault.h"
-#include "./tokenSupplyHelpers/customWallet.h"
-#include "@coral-xyz/anchor.h"
-#include "@autodotfun/types/types/raydium_vault.h"
-#include "@autodotfun/types/idl/raydium_vault.json.h"
-#include "./websocket-client.h"
-#include "./db.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAIMFEES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAIMFEES_HPP_
 
-extern std::shared_ptr<RaydiumVault> raydium_vault_IDL;
-std::shared_ptr<Promise<string>> claimFees(std::shared_ptr<PublicKey> nftMint, std::shared_ptr<PublicKey> poolId, std::shared_ptr<Connection> connection, std::shared_ptr<PublicKey> claimer, std::shared_ptr<WebSocketClient> websocket, std::shared_ptr<Token> token);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Claimfees {
+public:
+    Claimfees() = default;
+    ~Claimfees() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "claimFees"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CLAIMFEES_HPP_

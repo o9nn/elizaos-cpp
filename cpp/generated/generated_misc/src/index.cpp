@@ -1,24 +1,26 @@
-#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/index.h"
+#include "index.hpp"
 
-std::string HYPERFY_WS_URL = OR((process->env->WS_URL), (std::string("wss://chill.hyperfy.xyz/ws")));
-std::any hyperfyPluginConfigSchema = z->object(object{
-    object::pair{std::string("DEFAULT_HYPERFY_WS_URL"), z->std::string()->url()->std::optional()}
-});
-std::shared_ptr<Plugin> hyperfyPlugin = object{
-    object::pair{std::string("name"), std::string("hyperfy")}, 
-    object::pair{std::string("description"), std::string("Integrates ElizaOS agents with Hyperfy worlds")}, 
-    object::pair{std::string("config"), object{
-        object::pair{std::string("DEFAULT_HYPERFY_WS_URL"), HYPERFY_WS_URL}
-    }}, 
-    , 
-    object::pair{std::string("services"), array<HyperfyService>{ HyperfyService }}, 
-    object::pair{std::string("events"), hyperfyEvents}, 
-    object::pair{std::string("actions"), array<any>{ hyperfyScenePerceptionAction, hyperfyGotoEntityAction, hyperfyUseItemAction, hyperfyUnuseItemAction, hyperfyStopMovingAction, hyperfyWalkRandomlyAction, hyperfyAmbientSpeechAction, hyperfyEditEntityAction, replyAction, ignoreAction }}, 
-    object::pair{std::string("providers"), array<any>{ hyperfyProvider, hyperfyEmoteProvider, hyperfyActionsProvider, characterProvider }}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

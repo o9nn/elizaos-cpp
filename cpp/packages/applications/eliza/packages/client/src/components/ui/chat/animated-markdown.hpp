@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_CHAT_ANIMATED_MARKDOWN_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_CHAT_ANIMATED_MARKDOWN_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "markdown.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AnimatedMarkdown {
+public:
+    AnimatedMarkdown() = default;
+    ~AnimatedMarkdown() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "animated_markdown"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct AnimatedMarkdownProps {
-    std::string children;
-    std::optional<std::string> className;
-    std::optional<std::string> std::variant;
-    std::optional<bool> shouldAnimate;
-    std::optional<std::string> messageId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-  // Reset animation state when message changes
-      // Estimate animation time based on text length (50ms per character roughly)
-
-  // If not animating or animation is complete, render markdown
-
-  // During animation, show AIWriter with plain text
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_UI_CHAT_ANIMATED_MARKDOWN_HPP_

@@ -1,45 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_PROMPTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_PROMPTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class CliPrompts {
+public:
+    CliPrompts() = default;
+    ~CliPrompts() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cli_prompts"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Prompts the user with a text input and std::optional navigation options.
- * @param {string} label - The label to display to the user.
- * @param {string} initial - The initial value for the input (default is an empty std::string).
- * @param {(val: std::string) => true | string} validate - Optional validation std::function for the input.
- * @returns {Promise<string>} The user's input after processing std::any navigation commands.
- */
-
-/**
- * Prompts the user to enter multiple items for a specified field name.
- *
- * @param {string} fieldName - The name of the field being prompted for.
- * @param {std::string[]} initial - The initial values to display and allow the user to modify.
- * @returns {Promise<std::string[]>} The array of strings containing the user-entered values.
- */
-
-/**
- * Asynchronous std::function that prompts the user with a confirmation message and returns a boolean value based on their response.
- * @param {string} message - The message to display for the confirmation prompt.
- * @returns {Promise<boolean>} A Promise that resolves to a boolean value representing the user's confirmation choice.
- */
-
-std::future<bool> confirmAction(const std::string& message);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_PROMPTS_HPP_

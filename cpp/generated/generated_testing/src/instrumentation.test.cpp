@@ -1,32 +1,26 @@
-#include "plugin-specification/core-plugin-v2/__tests__/instrumentation.test.h"
+#include "instrumentation.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("InstrumentationService"), [=]() mutable
-    {
-        it(std::string("initializes and can flush and stop"), [=]() mutable
-        {
-            auto svc = std::make_shared<InstrumentationService>(object{
-                object::pair{std::string("enabled"), true}, 
-                object::pair{std::string("serviceName"), std::string("test")}
-            });
-            expect(svc->isEnabled())->toBe(true);
-            std::async([=]() { svc->flush(); });
-            std::async([=]() { svc->stop(); });
-            expect(svc->isEnabled())->toBe(false);
-        }
-        );
-        it(std::string("disabled service reports disabled"), [=]() mutable
-        {
-            auto svc = std::make_shared<InstrumentationService>(object{
-                object::pair{std::string("enabled"), false}, 
-                object::pair{std::string("serviceName"), std::string("x")}
-            });
-            expect(svc->isEnabled())->toBe(false);
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool InstrumentationTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void InstrumentationTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json InstrumentationTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

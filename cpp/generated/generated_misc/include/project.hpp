@@ -1,50 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_TYPES_PROJECT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_TYPES_PROJECT_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_HPP_
 
-class Project;
-class Collection;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Project : public object, public std::enable_shared_from_this<Project> {
+namespace elizaos {
+namespace generated_misc {
+
+class Project {
 public:
-    using std::enable_shared_from_this<Project>::shared_from_this;
-    std::string id;
+    Project() = default;
+    ~Project() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "project"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    std::string projectUrl;
-
-    std::string github;
-
-    std::string image;
-
-    object author;
-
-    object donation;
-
-    array<string> tags;
-
-    std::string addedOn;
-
-    object metrics;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Collection : public object, public std::enable_shared_from_this<Collection> {
-public:
-    using std::enable_shared_from_this<Collection>::shared_from_this;
-    std::string id;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string name;
-
-    std::string description;
-
-    array<string> projects;
-
-    object curator;
-
-    boolean featured;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_HPP_

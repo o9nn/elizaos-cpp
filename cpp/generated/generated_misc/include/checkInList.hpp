@@ -1,12 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_CHECKINLIST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_CHECKINLIST_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../../../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINLIST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINLIST_HPP_
 
-std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSchedules(std::shared_ptr<IAgentRuntime> runtime);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string formatSchedule(std::shared_ptr<CheckInSchedule> schedule);
+namespace elizaos {
+namespace generated_misc {
 
-extern std::shared_ptr<Action> listCheckInSchedules;
-#endif
+class Checkinlist {
+public:
+    Checkinlist() = default;
+    ~Checkinlist() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "checkInList"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHECKINLIST_HPP_

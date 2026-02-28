@@ -1,44 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI-INTEGRATION-RUNNER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI-INTEGRATION-RUNNER_H
-#include "core.h"
-#include "child_process.h"
-#include "fs.h"
-using fs = promises;
-#include "path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TAURI_INTEGRATION_RUNNER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TAURI_INTEGRATION_RUNNER_HPP_
 
-class TestResult;
-class TauriIntegrationRunner;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestResult : public object, public std::enable_shared_from_this<TestResult> {
+namespace elizaos {
+namespace generated_misc {
+
+class TauriIntegrationRunner {
 public:
-    using std::enable_shared_from_this<TestResult>::shared_from_this;
-    std::string name;
+    TauriIntegrationRunner() = default;
+    ~TauriIntegrationRunner() = default;
 
-    boolean passed;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tauri_integration_runner"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string error;
-
-    double duration;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TauriIntegrationRunner : public object, public std::enable_shared_from_this<TauriIntegrationRunner> {
-public:
-    using std::enable_shared_from_this<TauriIntegrationRunner>::shared_from_this;
-    array<std::shared_ptr<TestResult>> results = array<std::shared_ptr<TestResult>>();
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::any serverProcess = nullptr;
-
-    std::any tauriProcess = nullptr;
-
-    virtual std::shared_ptr<Promise<void>> runAll();
-    virtual std::shared_ptr<Promise<void>> buildTauriApp();
-    virtual std::shared_ptr<Promise<void>> startElizaServer();
-    virtual std::shared_ptr<Promise<void>> startTauriApp();
-    virtual std::shared_ptr<Promise<void>> runIntegrationTests();
-    virtual std::shared_ptr<Promise<void>> runTest(std::string name, std::function<std::shared_ptr<Promise<void>>()> testFn);
-    virtual std::shared_ptr<Promise<void>> generateReport();
-    virtual std::shared_ptr<Promise<void>> cleanup();
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TAURI_INTEGRATION_RUNNER_HPP_

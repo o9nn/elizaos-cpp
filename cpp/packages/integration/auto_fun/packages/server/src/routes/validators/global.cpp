@@ -1,40 +1,26 @@
 #include "global.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-std::string parseSolanaAddress(const std::any& raw, auto name) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        if (typeof raw != "string" || !SOLANA_ADDRESS_REGEX.test(raw)) {
-            throw std::runtime_error(`Invalid ${name}`);
-        }
-        return raw;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Global::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-Pagination parsePaginationQuery(const std::variant<Record<std::string, std::string, undefined>>& query, auto maxLimit, auto maxPage) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto rawLimit = parseInt(query.limit || "", 10);
-    const auto rawPage = parseInt(query.page || "", 10);
-
-    const auto limit = Number.isNaN(rawLimit);
-    ? defaultLimit;
-    : Math.min(rawLimit, maxLimit);
-
-    const auto page = Number.isNaN(rawPage);
-    ? 1;
-    : Math.min(Math.max(1, rawPage), maxPage);
-
-    return { limit, page, offset: (page - 1) * limit }
-
+void Global::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Global::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_server
 } // namespace elizaos

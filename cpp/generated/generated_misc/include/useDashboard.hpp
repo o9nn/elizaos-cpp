@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_HOOKS_USEDASHBOARD_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_HOOKS_USEDASHBOARD_H
-#include "core.h"
-#include "react.h"
-#include "../utils/axios.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEDASHBOARD_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEDASHBOARD_HPP_
 
-class Partner;
-class DashboardData;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::shared_ptr<Promise<any>>()> fetchHighestRankedUsers;
-class Partner : public object, public std::enable_shared_from_this<Partner> {
+namespace elizaos {
+namespace generated_misc {
+
+class Usedashboard {
 public:
-    using std::enable_shared_from_this<Partner>::shared_from_this;
-    double trustScore;
+    Usedashboard() = default;
+    ~Usedashboard() = default;
 
-    std::string avatarUrl;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "useDashboard"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double rank;
-
-    std::string id;
-
-    std::string name;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class DashboardData : public object, public std::enable_shared_from_this<DashboardData> {
-public:
-    using std::enable_shared_from_this<DashboardData>::shared_from_this;
-    array<std::shared_ptr<Partner>> partners;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-extern std::function<object()> useDashboard;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USEDASHBOARD_HPP_

@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-COMMANDS_INTERACTIVE-DUMMY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-COMMANDS_INTERACTIVE-DUMMY_H
-#include "core.h"
-#include "readline.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_DUMMY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_DUMMY_HPP_
 
-class InteractiveDummyCommand;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class InteractiveDummyCommand : public object, public std::enable_shared_from_this<InteractiveDummyCommand> {
+namespace elizaos {
+namespace generated_misc {
+
+class InteractiveDummy {
 public:
-    using std::enable_shared_from_this<InteractiveDummyCommand>::shared_from_this;
-    static std::string PROMPT;
+    InteractiveDummy() = default;
+    ~InteractiveDummy() = default;
 
-    std::shared_ptr<readline::Interface> rl;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "interactive_dummy"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    InteractiveDummyCommand();
-    virtual void start();
-    virtual void send(std::string input);
-    virtual void stop();
-    virtual void run();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_INTERACTIVE_DUMMY_HPP_

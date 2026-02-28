@@ -1,12 +1,26 @@
-#include "classified/packages/plugin-experience/src/providers/experienceProvider.h"
+#include "experienceProvider.hpp"
 
-std::shared_ptr<Provider> experienceProvider = object{
-    object::pair{std::string("name"), std::string("EXPERIENCE")}, 
-    object::pair{std::string("description"), std::string("Provides relevant past experiences and learnings for the current context")}, 
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Experienceprovider::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Experienceprovider::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Experienceprovider::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

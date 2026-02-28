@@ -1,46 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TASK_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TASK_H
-#include "core.h"
-#include "./memory.h"
-#include "./primitives.h"
-#include "./runtime.h"
-#include "./state.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TASK_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TASK_HPP_
 
-typedef object TaskMetadata;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TaskWorker;
-class Task;
+namespace elizaos {
+namespace generated_misc {
 
-class TaskWorker : public object, public std::enable_shared_from_this<TaskWorker> {
+class Task {
 public:
-    using std::enable_shared_from_this<TaskWorker>::shared_from_this;
-    std::string name;
+    Task() = default;
+    ~Task() = default;
 
-    std::function<std::shared_ptr<Promise<void>>(std::shared_ptr<IAgentRuntime>, object, std::shared_ptr<Task>)> execute;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "task"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::function<std::shared_ptr<Promise<boolean>>(std::shared_ptr<IAgentRuntime>, std::shared_ptr<Memory>, std::shared_ptr<State>)> validate;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Task : public object, public std::enable_shared_from_this<Task> {
-public:
-    using std::enable_shared_from_this<Task>::shared_from_this;
-    std::shared_ptr<UUID> id;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string name;
-
-    double updatedAt;
-
-    TaskMetadata metadata;
-
-    std::string description;
-
-    std::shared_ptr<UUID> roomId;
-
-    std::shared_ptr<UUID> worldId;
-
-    std::shared_ptr<UUID> entityId;
-
-    array<string> tags;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TASK_HPP_

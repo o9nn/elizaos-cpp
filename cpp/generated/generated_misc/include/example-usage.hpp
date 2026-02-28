@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_EXAMPLES_EXAMPLE-USAGE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_EXAMPLES_EXAMPLE-USAGE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../index.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXAMPLE_USAGE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXAMPLE_USAGE_HPP_
 
-void createWeatherPlugin(std::shared_ptr<Agent> agent);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void createTodoPlugin(std::shared_ptr<Agent> agent);
+namespace elizaos {
+namespace generated_misc {
 
-void monitorPluginCreation(std::shared_ptr<Agent> agent);
+class ExampleUsage {
+public:
+    ExampleUsage() = default;
+    ~ExampleUsage() = default;
 
-std::any getDatabasePluginSpec();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "example_usage"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::any getSocialMediaPluginSpec();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-void main();
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXAMPLE_USAGE_HPP_

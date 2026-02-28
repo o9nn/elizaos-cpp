@@ -1,12 +1,26 @@
-#include "autonomous-starter/src/plugin-experience/providers/experienceRAG.h"
+#include "experienceRAG.hpp"
 
-std::shared_ptr<Provider> experienceRAGProvider = object{
-    object::pair{std::string("name"), std::string("experienceRAG")}, 
-    object::pair{std::string("description"), std::string("Searches past experiences for relevant learnings and insights")}, 
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Experiencerag::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Experiencerag::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Experiencerag::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

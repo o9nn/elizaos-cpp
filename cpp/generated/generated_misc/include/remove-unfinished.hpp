@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_REMOVE-UNFINISHED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_REMOVE-UNFINISHED_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
-#include "../utils/files.h"
-#include "../utils/log.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REMOVE_UNFINISHED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REMOVE_UNFINISHED_HPP_
 
-class TrajectoryFile;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::shared_ptr<AgentLogger> logger;
-class TrajectoryFile : public object, public std::enable_shared_from_this<TrajectoryFile> {
+namespace elizaos {
+namespace generated_misc {
+
+class RemoveUnfinished {
 public:
-    using std::enable_shared_from_this<TrajectoryFile>::shared_from_this;
-    object info;
+    RemoveUnfinished() = default;
+    ~RemoveUnfinished() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "remove_unfinished"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<void>> removeUnfinished(std::string baseDir, boolean dryRun = true);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_REMOVE_UNFINISHED_HPP_

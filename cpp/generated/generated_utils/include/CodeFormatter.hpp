@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_CODEFORMATTER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_CODEFORMATTER_H
-#include "core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEFORMATTER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEFORMATTER_HPP_
 
-class CodeFormatter;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CodeFormatter : public object, public std::enable_shared_from_this<CodeFormatter> {
+namespace elizaos {
+namespace generated_utils {
+
+class Codeformatter {
 public:
-    using std::enable_shared_from_this<CodeFormatter>::shared_from_this;
-    virtual std::string ensureTypeScriptExtension(std::string filePath);
-    virtual std::string formatApiComponents(std::shared_ptr<FileDocsGroup> fileGroup);
-    virtual std::string formatComponents(std::shared_ptr<FileDocsGroup> fileGroup);
-    virtual std::string formatFilePath(std::string filePath);
-    virtual std::string formatJSDoc(std::string jsDoc, std::string _code = undefined);
-    virtual std::string truncateCodeBlock(std::string code, double maxLength = 8000);
+    Codeformatter() = default;
+    ~Codeformatter() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "CodeFormatter"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_CODEFORMATTER_HPP_

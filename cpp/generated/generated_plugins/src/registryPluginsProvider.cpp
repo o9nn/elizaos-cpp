@@ -1,12 +1,26 @@
-#include "autonomous-starter/src/plugin-manager/providers/registryPluginsProvider.h"
+#include "registryPluginsProvider.hpp"
 
-std::shared_ptr<Provider> registryPluginsProvider = object{
-    object::pair{std::string("name"), std::string("registryPlugins")}, 
-    object::pair{std::string("description"), std::string("Provides list of available plugins from the ElizaOS registry")}, 
-};
+namespace elizaos {
+namespace generated_plugins {
 
-void Main(void)
-{
+bool Registrypluginsprovider::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Registrypluginsprovider::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Registrypluginsprovider::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_plugins
+} // namespace elizaos

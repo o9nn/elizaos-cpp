@@ -1,8 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_ACCEPTAUTHORITY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_ACCEPTAUTHORITY_H
-#include "core.h"
-#include "@coral-xyz/anchor.h"
-#include "@coral-xyz/anchor.h"
-#include "../target/types/autofun.ts.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_ACCEPTAUTHORITY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_ACCEPTAUTHORITY_HPP_
 
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_auth {
+
+class Acceptauthority {
+public:
+    Acceptauthority() = default;
+    ~Acceptauthority() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "acceptAuthority"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_auth
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_ACCEPTAUTHORITY_HPP_

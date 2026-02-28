@@ -1,49 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_REPLY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_REPLY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Reply {
+public:
+    Reply() = default;
+    ~Reply() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "reply"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Template for generating dialog and actions for a character.
- *
- * @type {string}
- */
-/**
- * Template for generating dialog and actions for a character.
- *
- * @type {string}
- */
-
-/**
- * Represents an action that allows the agent to reply to the current conversation with a generated message.
- *
- * This action can be used as an acknowledgement at the beginning of a chain of actions, or as a final response at the end of a chain of actions.
- *
- * @typedef {Object} replyAction
- * @property {string} name - The name of the action ("REPLY").
- * @property {std::string[]} similes - An array of similes for the action.
- * @property {string} description - A description of the action and its usage.
- * @property {Function} validate - An asynchronous std::function for validating the action runtime.
- * @property {Function} handler - An asynchronous std::function for handling the action logic.
- * @property {ActionExample[][]} examples - An array of example scenarios for the action.
- */
-    // Check if std::any responses had providers associated with them
-
-    // Only generate response using LLM if no suitable response was found
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_REPLY_HPP_

@@ -1,13 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-mev-protection.h"
+#include "use-mev-protection.hpp"
 
-std::function<std::any()> useMevProtection = [=]() mutable
-{
-    auto [mevProtection, setMevProtection] = useLocalStorage<TMevProtection>(std::string("use-mev-protection"), false);
-    return as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ mevProtection, setMevProtection });
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseMevProtection::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseMevProtection::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseMevProtection::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

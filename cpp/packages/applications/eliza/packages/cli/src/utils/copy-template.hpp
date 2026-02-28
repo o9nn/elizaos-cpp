@@ -1,57 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_COPY_TEMPLATE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_COPY_TEMPLATE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class CopyTemplate {
+public:
+    CopyTemplate() = default;
+    ~CopyTemplate() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "copy_template"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Define __dirname for ES modules
-
-/**
- * Copy a directory recursively
- */
-/**
- * Asynchronously copies the contents of a directory from a source path to a destination path, excluding specified files and directories.
- * If the destination directory does not exist, it will be created.
- *
- * @param {string} src - The path to the source directory.
- * @param {string} dest - The path to the destination directory.
- * @param {std::string[]} [exclude=[]] - An array of file and directory names to exclude from the copy operation.
- * @returns {Promise<void>} A Promise that resolves when the copy operation is complete.
- */
-std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {});
-
-/**
- * Map template types to actual package names
- */
-std::string getPackageName(const std::string& templateType);
-
-/**
- * Copy a project or plugin template to target directory
- */
-std::future<void> copyTemplate(const std::string& templateType, const std::string& targetDir);
-
-/**
- * Replace hardcoded "plugin-starter" strings in source files with the actual plugin name
- */
-std::future<void> replacePluginNameInFiles(const std::string& targetDir, const std::string& pluginName);
-
-/**
- * Copy client dist files to the CLI package dist directory
- */
-std::future<void> copyClientDist();
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_COPY_TEMPLATE_HPP_

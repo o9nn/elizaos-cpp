@@ -1,28 +1,26 @@
-#include "eliza/packages/cli/tests/unit/basic.test.h"
+#include "basic.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("Basic CLI Tests"), [=]() mutable
-    {
-        it(std::string("should run basic test"), [=]() mutable
-        {
-            expect(true)->toBe(true);
-        }
-        );
-        it(std::string("should have process.env available"), [=]() mutable
-        {
-            expect(process->env)->toBeDefined();
-            expect(type_of(process->env->NODE_ENV))->toBe(std::string("string"));
-        }
-        );
-        it(std::string("should be able to std::set environment variables"), [=]() mutable
-        {
-            process->env->TEST_VAR = std::string("test-value");
-            expect(process->env->TEST_VAR)->toBe(std::string("test-value"));
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool BasicTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void BasicTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json BasicTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

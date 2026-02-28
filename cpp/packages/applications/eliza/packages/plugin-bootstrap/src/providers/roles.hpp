@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ROLES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ROLES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Roles {
+public:
+    Roles() = default;
+    ~Roles() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "roles"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Role provider that retrieves roles in the server based on the provided runtime, message, and state.
- * * @type { Provider }
- * @property { std::string } name - The name of the role provider.
- * @property { std::string } description - A brief description of the role provider.
- * @property { Function } get - Asynchronous std::function that retrieves and processes roles in the server.
- * @param { IAgentRuntime } runtime - The agent runtime object.
- * @param { Memory } message - The message memory object.
- * @param { State } state - The state object.
- * @returns {Promise<ProviderResult>} The result containing roles data, values, and text.
- */
-/**
- * A provider for retrieving and formatting the role hierarchy in a server.
- * @type {Provider}
- */
-
-    // Get world data instead of using cache
-
-    // Get roles from world metadata
-
-    // Group users by role
-
-    // Process roles
-
-      // get the user from the database
-
-      // Skip duplicates (we store both UUID and original ID)
-
-      // Add to appropriate group
-
-    // Format the response
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ROLES_HPP_

@@ -1,52 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_E2E_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_E2E_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class E2e {
+public:
+    E2e() = default;
+    ~E2e() = default;
 
-/// <reference types="cypress" />
-/// <reference types="@testing-library/cypress" />
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "e2e"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// ***********************************************************
-// This example support/e2e.ts is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Import commands.js using ES2015 syntax:
-
-// Alternatively you can use CommonJS syntax:
-
-// Hide fetch/XHR requests from command log to reduce noise
-
-// Prevent Cypress from failing tests on uncaught exceptions
-  // Return false to prevent the error from failing the test
-  // You might want to log these errors for debugging
-
-// Custom error handling for WebSocket errors
-  // Stub console methods to prevent noise in tests
-
-// TypeScript declarations are in ./commands.ts
-
-// Ensure this file is treated as a module
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_E2E_HPP_

@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
-#include "core.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/spl-token.h"
-#include "@coral-xyz/anchor.h"
-#include "@raydium-io/raydium-sdk-v2.h"
-#include "@raydium-io/raydium-sdk-v2.h"
-#include "./pdas.h"
-#include "@autodotfun/types/types/raydium_vault.h"
-#include "./utils.h"
-#include "@autodotfun/server/src/db.h"
-#include "drizzle-orm.h"
-#include "@solana/web3.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUMVAULT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUMVAULT_HPP_
 
-std::any depositToRaydiumVault(std::shared_ptr<anchor::AnchorProvider> provider, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::any changeClaimer(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> new_claimer_address);
+namespace elizaos {
+namespace generated_misc {
 
-std::any emergencyWithdraw(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft);
+class Raydiumvault {
+public:
+    Raydiumvault() = default;
+    ~Raydiumvault() = default;
 
-std::any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> poolId, std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::PublicKey> claimer, std::shared_ptr<Token> token);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "raydiumVault"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::any checkBalance(std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUMVAULT_HPP_

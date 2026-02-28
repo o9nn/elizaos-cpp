@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_REALTIME_WEBSOCKET_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_REALTIME_WEBSOCKET_H
-#include "core.h"
-#include "ws.h"
-using WebSocketServer = Server;
-#include "http.h"
-using HTTPServer = Server;
-#include "../monitoring/logger.h"
-#include "ioredis.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_WEBSOCKET_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_WEBSOCKET_HPP_
 
-class RealtimeService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::any pubClient;
-extern std::any subClient;
-class RealtimeService : public object, public std::enable_shared_from_this<RealtimeService> {
+namespace elizaos {
+namespace generated_websocket {
+
+class Websocket {
 public:
-    using std::enable_shared_from_this<RealtimeService>::shared_from_this;
-    std::shared_ptr<WebSocketServer> wss;
+    Websocket() = default;
+    ~Websocket() = default;
 
-    std::shared_ptr<Map<std::string, std::shared_ptr<Set<std::shared_ptr<WebSocket>>>>> clients;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "websocket"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    RealtimeService(std::shared_ptr<HTTPServer> server);
-    virtual void setupWebSocket();
-    virtual void setupRedisSubscriber();
-    virtual void broadcastToProject(std::string projectId, std::any data);
-    static void publishEvent(std::string projectId, std::string eventType, std::any data);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_websocket
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_WEBSOCKET_HPP_

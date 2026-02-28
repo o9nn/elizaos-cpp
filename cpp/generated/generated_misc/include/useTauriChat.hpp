@@ -1,25 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_SRC_HOOKS_USETAURICHAT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_SRC_HOOKS_USETAURICHAT_H
-#include "core.h"
-#include "react.h"
-#include "../services/TauriService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USETAURICHAT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USETAURICHAT_HPP_
 
-class UseTauriChatReturn;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class UseTauriChatReturn : public object, public std::enable_shared_from_this<UseTauriChatReturn> {
+namespace elizaos {
+namespace generated_misc {
+
+class Usetaurichat {
 public:
-    using std::enable_shared_from_this<UseTauriChatReturn>::shared_from_this;
-    boolean isConnected;
+    Usetaurichat() = default;
+    ~Usetaurichat() = default;
 
-    std::function<std::shared_ptr<Promise<void>>(std::string)> sendMessage;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "useTauriChat"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<std::shared_ptr<TauriMessage>> messages;
-
-    std::any error;
-
-    boolean isLoading;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<UseTauriChatReturn> useTauriChat();
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USETAURICHAT_HPP_

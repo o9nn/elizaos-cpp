@@ -1,41 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Plugins {
+public:
+    Plugins() = default;
+    ~Plugins() = default;
 
-// Raw registry types
-using RawRegistry = std::unordered_map<std::string, std::string>; // <npmName> → "github:owner/repo"
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugins"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-struct VersionInfo {
-    std::optional<{> git;
-    std::string repo;
-    std::optional<{> v0;
-    std::string | null version;
-    std::string | null branch;
-    std::optional<{> v1;
-    std::string | null version;
-    std::string | null branch;
-    std::optional<{> npm;
-    std::string repo;
-    std::optional<std::string | null> v0;
-    std::optional<std::string | null> v1;
-    { supports;
-    bool v0;
-    bool v1;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct CachedRegistry {
-    std::string lastUpdatedAt;
-    std::unordered_map<std::string, VersionInfo> registry;
-};
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_HPP_

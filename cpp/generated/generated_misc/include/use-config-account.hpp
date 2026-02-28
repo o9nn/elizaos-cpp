@@ -1,11 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-CONFIG-ACCOUNT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-CONFIG-ACCOUNT_H
-#include "core.h"
-#include "@/utils/api.h"
-#include "@/utils/program.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/web3.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_CONFIG_ACCOUNT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_CONFIG_ACCOUNT_HPP_
 
-extern array<string> configAccountQueryKey;
-extern std::function<std::shared_ptr<Promise<any>>(std::any)> getConfigAccount;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class UseConfigAccount {
+public:
+    UseConfigAccount() = default;
+    ~UseConfigAccount() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_config_account"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_CONFIG_ACCOUNT_HPP_

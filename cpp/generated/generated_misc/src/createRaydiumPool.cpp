@@ -1,25 +1,26 @@
-#include "auto.fun/packages/program/scripts/createRaydiumPool.h"
+#include "createRaydiumPool.hpp"
 
-void main()
-{
-    auto provider = anchor->AnchorProvider->env();
-    anchor->setProvider(provider);
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-
-void Main(void)
-{
-    main()->then([=]() mutable
-    {
-        return process->exit(0);
-    }
-    )->_catch([=](auto error) mutable
-    {
-        console->error(error);
-        process->exit(1);
-    }
-    );
+bool Createraydiumpool::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Createraydiumpool::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Createraydiumpool::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

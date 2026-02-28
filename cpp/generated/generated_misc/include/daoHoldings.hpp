@@ -1,54 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_DAOHOLDINGS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_PAGES_API_DAOHOLDINGS_H
-#include "core.h"
-#include "next.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DAOHOLDINGS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DAOHOLDINGS_HPP_
 
-class TokenInfo;
-class HeliusResponse;
-class DAOHolding;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TokenInfo : public object, public std::enable_shared_from_this<TokenInfo> {
+namespace elizaos {
+namespace generated_misc {
+
+class Daoholdings {
 public:
-    using std::enable_shared_from_this<TokenInfo>::shared_from_this;
-    std::string name;
+    Daoholdings() = default;
+    ~Daoholdings() = default;
 
-    std::string symbol;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "daoHoldings"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double balance;
-
-    double decimals;
-
-    object price_info;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class HeliusResponse : public object, public std::enable_shared_from_this<HeliusResponse> {
-public:
-    using std::enable_shared_from_this<HeliusResponse>::shared_from_this;
-    object result;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-class DAOHolding : public object, public std::enable_shared_from_this<DAOHolding> {
-public:
-    using std::enable_shared_from_this<DAOHolding>::shared_from_this;
-    double rank;
-
-    std::string name;
-
-    std::string holdings;
-
-    std::string value;
-
-    std::string percentage;
-
-    std::string imageUrl;
-};
-
-std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
-
-std::string formatCurrency(double amount);
-
-std::string calculatePercentage(double amount, double total);
-
-std::string formatTokenAmount(double amount, double decimals = 18);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DAOHOLDINGS_HPP_

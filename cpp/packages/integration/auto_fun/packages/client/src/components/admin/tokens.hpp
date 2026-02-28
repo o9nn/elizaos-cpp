@@ -1,43 +1,35 @@
-#include ".bonding-curve-bar.hpp"
-#include ".button.hpp"
-#include ".ui/table.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_TOKENS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_TOKENS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Tokens {
+public:
+    Tokens() = default;
+    ~Tokens() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tokens"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
- // Add fromNow and resizeImage
-
- // Import env
-
- // Import icons
-
- // Import BondingCurveBar
-
- // Import table components
-
-using SortOrderType = std::variant<"asc", "desc">;
-
-void AdminTokensList();
-
-struct SocialLinks {
-    std::string website;
-    std::string twitter;
-    std::string telegram;
-    std::string discord;
-    std::string farcaster;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-void AdminTokenDetails({ address: std::string } { address });
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_TOKENS_HPP_

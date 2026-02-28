@@ -1,77 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_E2E_SCENARIOS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_E2E_SCENARIOS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "lp/service.hpp"
-#include "test-utils.hpp"
-#include "tokenData/service.hpp"
-#include "wallet/service.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_dummy_services {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Scenarios {
+public:
+    Scenarios() = default;
+    ~Scenarios() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "scenarios"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-        // Check DummyLpService
-
-        // Check DummyTokenDataService
-
-        // Verify pool structure
-
-        // Verify all returned pools contain SOL
-
-        // Create a mock vault object
-
-        // Create a mock vault object
-
-        // Verify underlying tokens
-
-        // Verify LP token balance
-
-        // Verify underlying tokens
-
-        // Verify market data structure
-
-          // Verify reasonable ranges
-
-        // Test that we can work with both pools
-
-        // Get all pools
-
-        // Test operations on each pool
-
-          // Add liquidity
-
-          // Remove liquidity
-
-        // Check DummyWalletService
-
-        // Test initial balance
-
-        // Add funds
-
-        // Get portfolio
-
-        // Find SOL in portfolio
-
-        // Reset wallet to ensure clean state
-
-        // Add SOL to wallet
-
-        // Transfer some SOL
-
-        // Check remaining balance
-
-        // Test insufficient balance
-
-
+} // namespace eliza_plugin_dummy_services
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_E2E_SCENARIOS_HPP_

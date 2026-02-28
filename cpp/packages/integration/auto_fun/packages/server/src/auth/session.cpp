@@ -1,34 +1,26 @@
 #include "session.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_server {
 
-std::future<std::string> createSession(SessionData data) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto redis = getGlobalRedisCache();
-    const auto sid = uuid();
-    "redis.std::set(" + "sid:" + sid
-    return sid;
-
+bool Session::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<std::optional<SessionData>> getSession(const std::string& sid) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto redis = getGlobalRedisCache();
-    const auto raw = "redis.get(" + "sid:" + sid;
-    return raw ? (/* JSON.parse */ raw) : nullptr;
-
+void Session::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::future<void> destroySession(const std::string& sid) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto redis = getGlobalRedisCache();
-    "redis.del(" + "sid:" + sid
-
+nlohmann::json Session::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace autofun_server
 } // namespace elizaos

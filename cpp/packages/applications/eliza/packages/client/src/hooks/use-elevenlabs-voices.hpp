@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_ELEVENLABS_VOICES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_ELEVENLABS_VOICES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UseElevenlabsVoices {
+public:
+    UseElevenlabsVoices() = default;
+    ~UseElevenlabsVoices() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_elevenlabs_voices"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// TODO: Move this to a shared config file, or the 11labs plugin once plugin categories are implemented
-
-struct ElevenLabsVoice {
-    std::string voice_id;
-    std::string name;
-    std::string category;
-    std::optional<std::string> accent;
-    std::optional<std::string> age;
-    std::optional<std::string> description;
-    std::optional<std::string> gender;
-    std::optional<std::string> use_case;
-    std::optional<std::string> preview_url;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-void useElevenLabsVoices();
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_ELEVENLABS_VOICES_HPP_

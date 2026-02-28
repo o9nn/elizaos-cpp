@@ -1,30 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNLAYOUT_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNLAYOUT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Modernlayout {
+public:
+    Modernlayout() = default;
+    ~Modernlayout() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ModernLayout"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct LayoutProps {
-    std::optional<std::string> title;
-    std::any children;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-        * {
-
-        // Utility functions
-
-        
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_MODERNLAYOUT_HPP_

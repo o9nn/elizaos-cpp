@@ -1,12 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_UTILS_DIRECTORY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_PLUGINS_UTILS_DIRECTORY_H
-#include "core.h"
-#include "@/src/utils/directory-detection.h"
-#include "@elizaos/core.h"
-#include "node:fs.h"
-#include "node:path.h"
-using path = _default;
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORY_HPP_
 
-extern std::function<std::shared_ptr<Record<std::string, string>>(std::string)> getDependenciesFromDirectory;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Directory {
+public:
+    Directory() = default;
+    ~Directory() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "directory"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DIRECTORY_HPP_

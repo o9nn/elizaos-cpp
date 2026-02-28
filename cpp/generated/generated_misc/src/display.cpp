@@ -1,37 +1,26 @@
-#include "eliza/packages/cli/src/commands/agent/utils/display.h"
+#include "display.hpp"
 
-std::shared_ptr<Promise<void>> listAgents(std::shared_ptr<OptionValues> opts)
-{
-    try
-    {
-        auto agents = std::async([=]() { getAgents(opts); });
-        auto agentData = agents->std::map([=](auto agent) mutable
-        {
-            return (object{
-                object::pair{std::string("Name"), agent->name}, 
-                object::pair{std::string("ID"), agent->id}, 
-                object::pair{std::string("Status"), OR((agent->status), (std::string("unknown")))}
-            });
-        }
-        );
-        if (opts->json) {
-            console->info(JSON->stringify(agentData, nullptr, 2));
-        } else {
-            console->info(std::string("\
-Available agents:"));
-            if (agentData->get_length() == 0) {
-                console->info(std::string("No agents found"));
-            } else {
-                console->table(agentData);
-            }
-        }
-        return std::shared_ptr<Promise<void>>();
-    }
-    catch (const std::any& error)
-    {
-        std::async([=]() { checkServer(opts); });
-        handleError(error);
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Display::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Display::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Display::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

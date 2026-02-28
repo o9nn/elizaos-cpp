@@ -1,53 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH_CLIAUTHCOMMANDS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC_AUTH_CLIAUTHCOMMANDS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./AuthenticationService.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_CLIAUTHCOMMANDS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_CLIAUTHCOMMANDS_HPP_
 
-class CLICommand;
-class CLIOption;
-class CLIAuthCommands;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CLICommand : public object, public std::enable_shared_from_this<CLICommand> {
+namespace elizaos {
+namespace generated_auth {
+
+class Cliauthcommands {
 public:
-    using std::enable_shared_from_this<CLICommand>::shared_from_this;
-    std::string name;
+    Cliauthcommands() = default;
+    ~Cliauthcommands() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "CLIAuthCommands"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    array<std::shared_ptr<CLIOption>> options;
-
-    std::function<std::shared_ptr<Promise<void>>(std::any, std::shared_ptr<IAgentRuntime>)> handler;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CLIOption : public object, public std::enable_shared_from_this<CLIOption> {
-public:
-    using std::enable_shared_from_this<CLIOption>::shared_from_this;
-    std::string name;
+} // namespace generated_auth
+} // namespace elizaos
 
-    std::string description;
-
-    boolean required;
-
-    std::any type;
-};
-
-class CLIAuthCommands : public object, public std::enable_shared_from_this<CLIAuthCommands> {
-public:
-    using std::enable_shared_from_this<CLIAuthCommands>::shared_from_this;
-    std::shared_ptr<AuthenticationService> authService;
-
-    CLIAuthCommands(std::shared_ptr<IAgentRuntime> runtime);
-    virtual array<std::shared_ptr<CLICommand>> getCommands();
-    virtual std::shared_ptr<Promise<void>> handleAuthStatus();
-    virtual std::shared_ptr<Promise<void>> handleAuthTest();
-    virtual std::shared_ptr<Promise<void>> handleAuthValidate(object args);
-    virtual std::shared_ptr<Promise<void>> handleTestKeys();
-    virtual std::shared_ptr<Promise<void>> handleClearCache();
-    virtual std::shared_ptr<Promise<void>> handleSetup();
-    virtual std::string getStatusIcon(std::string status);
-};
-
-array<std::shared_ptr<CLICommand>> registerAuthCommands(std::shared_ptr<IAgentRuntime> runtime);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_CLIAUTHCOMMANDS_HPP_

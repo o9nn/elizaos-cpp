@@ -1,40 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_PGLITE_ADAPTER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_PGLITE_ADAPTER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "drizzle-orm/pglite.h"
-#include "../base.h"
-#include "../schema/embedding.h"
-#include "./manager.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADAPTER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADAPTER_HPP_
 
-class PgliteDatabaseAdapter;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PgliteDatabaseAdapter : public BaseDrizzleAdapter, public std::enable_shared_from_this<PgliteDatabaseAdapter> {
+namespace elizaos {
+namespace generated_misc {
+
+class Adapter {
 public:
-    using std::enable_shared_from_this<PgliteDatabaseAdapter>::shared_from_this;
-    std::shared_ptr<PGliteClientManager> manager;
+    Adapter() = default;
+    ~Adapter() = default;
 
-    EmbeddingDimensionColumn embeddingDimension = const_(DIMENSION_MAP)[384];
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "adapter"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PGliteClientManager> manager);
-    virtual std::shared_ptr<Promise<void>> runMigrations();
-    template <typename T>
-    std::shared_ptr<Promise<T>> withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation);
-    virtual std::shared_ptr<Promise<void>> init();
-    virtual std::shared_ptr<Promise<boolean>> isReady();
-    virtual void close();
-    virtual std::any getConnection();
-    PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-template <typename T>
-std::shared_ptr<Promise<T>> PgliteDatabaseAdapter::withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation)
-{
-    if (this->manager->isShuttingDown()) {
-        logger->warn(std::string("Database is shutting down"));
-        return as<T>(as<any>(nullptr));
-    }
-    return operation();
-}
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ADAPTER_HPP_

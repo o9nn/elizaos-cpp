@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
-#include "core.h"
-#include "@solana/web3.js.h"
-#include "drizzle-orm.h"
-#include "p-queue.h"
-using PQueue = _default;
-#include "./db.h"
-#include "./logger.h"
-#include "./cron.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_GETALLTOKENS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_GETALLTOKENS_HPP_
 
-std::shared_ptr<Promise<any>> getLastProcessedSlot();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<void>> setLastProcessedSlot(double slot);
+namespace elizaos {
+namespace generated_auth {
 
-std::shared_ptr<Promise<double>> findSlotAtOrBeforeTime(std::shared_ptr<Connection> connection, double targetTs, double low, double high);
+class Getalltokens {
+public:
+    Getalltokens() = default;
+    ~Getalltokens() = default;
 
-std::any processSlot(double slot, std::shared_ptr<Connection> connection);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "getAllTokens"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Promise<void>> processMissedEvents(std::shared_ptr<Connection> connection);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_auth
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_GETALLTOKENS_HPP_

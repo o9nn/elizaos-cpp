@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_DOCUMENTORGANIZER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_DOCUMENTORGANIZER_H
-#include "core.h"
-#include "../../types.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTORGANIZER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTORGANIZER_HPP_
 
-class DocumentOrganizer;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DocumentOrganizer : public object, public std::enable_shared_from_this<DocumentOrganizer> {
+namespace elizaos {
+namespace generated_docs {
+
+class Documentorganizer {
 public:
-    using std::enable_shared_from_this<DocumentOrganizer>::shared_from_this;
-    virtual std::shared_ptr<OrganizedDocs> organizeDocumentation(array<std::shared_ptr<ASTQueueItem>> docs);
-    virtual array<std::shared_ptr<FileDocsGroup>> groupDocsByFile(std::shared_ptr<OrganizedDocs> docs);
+    Documentorganizer() = default;
+    ~Documentorganizer() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "DocumentOrganizer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_docs
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTORGANIZER_HPP_

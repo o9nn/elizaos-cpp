@@ -1,41 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_PREGENERATED_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_PREGENERATED_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Pregenerated {
+public:
+    Pregenerated() = default;
+    ~Pregenerated() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "pregenerated"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Interface matching the PreGeneratedToken from the database
-struct PreGeneratedToken {
-    std::string id;
-    std::string name;
-    std::string ticker;
-    std::string description;
-    std::string prompt;
-    std::string image;
-    std::string createdAt;
-    double used;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Interface for pagination response
-struct PaginatedTokensResponse {
-    std::vector<PreGeneratedToken> tokens;
-    double page;
-    double totalPages;
-    double total;
-    bool hasMore;
-};
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_ADMIN_PREGENERATED_HPP_

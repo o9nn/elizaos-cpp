@@ -1,28 +1,26 @@
-#include "mobile/constants/Colors.h"
+#include "Colors.hpp"
 
-std::string tintColorLight = std::string("#0a7ea4");
-std::string tintColorDark = std::string("#fff");
-object Colors = object{
-    object::pair{std::string("light"), object{
-        object::pair{std::string("text"), std::string("#11181C")}, 
-        object::pair{std::string("background"), std::string("#fff")}, 
-        object::pair{std::string("tint"), tintColorLight}, 
-        object::pair{std::string("icon"), std::string("#687076")}, 
-        object::pair{std::string("tabIconDefault"), std::string("#687076")}, 
-        object::pair{std::string("tabIconSelected"), tintColorLight}
-    }}, 
-    object::pair{std::string("dark"), object{
-        object::pair{std::string("text"), std::string("#ECEDEE")}, 
-        object::pair{std::string("background"), std::string("#151718")}, 
-        object::pair{std::string("tint"), tintColorDark}, 
-        object::pair{std::string("icon"), std::string("#9BA1A6")}, 
-        object::pair{std::string("tabIconDefault"), std::string("#9BA1A6")}, 
-        object::pair{std::string("tabIconSelected"), tintColorDark}
-    }}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Colors::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Colors::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Colors::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

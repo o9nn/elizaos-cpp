@@ -1,56 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_MIGRATIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_MIGRATIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "cron.hpp"
-#include "db.hpp"
-#include "redis.hpp"
-#include "tokenSupplyHelpers.hpp"
-#include "tokenSupplyHelpers/customWallet.hpp"
-#include "util.hpp"
-#include "websocket-client.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Migrations {
+public:
+    Migrations() = default;
+    ~Migrations() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "migrations"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct LockResult {
-    std::string txId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct MigrationStepResult {
-    std::string txId;
-};
-
-using MigrationStepFn = std::function<std::future<MigrationStepResult>(TokenData, auto)>;
-
-struct MigrationStep {
-    std::string name;
-    std::optional<std::string> description;
-    MigrationStepFn fn;
-    std::optional<std::string> eventName;
-};
-
-std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, double retryCount = 3, double delay = 2000);
-
-std::future<bool> acquireMigrationLock(TokenData token);
-std::future<void> releaseMigrationLock(TokenData token);
-std::future<void> saveMigrationState(TokenData token, const std::string& step);
-
-std::future<void> getMigrationState(TokenData token);
-
-std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto retries, auto delay);
-
-std::future<void> checkMigratingTokens(double limit);
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MIGRATION_MIGRATIONS_HPP_

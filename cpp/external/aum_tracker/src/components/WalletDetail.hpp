@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_WALLETDETAIL_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_WALLETDETAIL_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Walletdetail {
+public:
+    Walletdetail() = default;
+    ~Walletdetail() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "WalletDetail"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct WalletDetailProps {
-    std::string address;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-      // Load wallet data
-      std::future<void> loadWalletData();
-      
-      // Load wallet PNL
-      std::future<void> loadWalletPNL();
-      
-      // Update token table
-      void updateTokenTable(auto tokens);
-      
-      // Copy address std::function
-
-      // Initialize on load
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_COMPONENTS_WALLETDETAIL_HPP_

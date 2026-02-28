@@ -1,50 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-LOCAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-LOCAL_H
-#include "core.h"
-#include "@tensorflow/tfjs.h"
-#include "@tensorflow/tfjs-backend-wasm.h"
-#include "@elizaos/core.h"
-#include "./types.h"
-#include "sharp.h"
-using sharp = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FLORENCE2_LOCAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FLORENCE2_LOCAL_HPP_
 
-class Florence2LocalConfig;
-class Florence2Local;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Florence2LocalConfig : public object, public std::enable_shared_from_this<Florence2LocalConfig> {
+namespace elizaos {
+namespace generated_misc {
+
+class Florence2Local {
 public:
-    using std::enable_shared_from_this<Florence2LocalConfig>::shared_from_this;
-    std::string modelPath;
+    Florence2Local() = default;
+    ~Florence2Local() = default;
 
-    std::string modelUrl;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "florence2_local"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string cacheDir;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Florence2Local : public object, public std::enable_shared_from_this<Florence2Local> {
-public:
-    using std::enable_shared_from_this<Florence2Local>::shared_from_this;
-    std::any model = nullptr;
+} // namespace generated_misc
+} // namespace elizaos
 
-    boolean initialized = false;
-
-    std::shared_ptr<Florence2LocalConfig> config;
-
-    double IMAGE_SIZE = 384;
-
-    double VOCAB_SIZE = 51289;
-
-    Florence2Local(std::shared_ptr<Florence2LocalConfig> config = undefined);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> analyzeImage(std::shared_ptr<Buffer> imageBuffer);
-    virtual std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> preprocessImage(std::shared_ptr<Buffer> imageBuffer);
-    virtual std::shared_ptr<Promise<std::shared_ptr<tf::Tensor>>> runInference(std::shared_ptr<tf::Tensor3D> input);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> parseModelOutput(std::shared_ptr<tf::Tensor> predictions);
-    virtual std::string generateCaptionFromFeatures(std::any features);
-    virtual array<string> extractTagsFromCaption(std::string caption);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> enhancedFallback(std::shared_ptr<Buffer> imageBuffer);
-    virtual boolean isInitialized();
-    virtual std::shared_ptr<Promise<void>> dispose();
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FLORENCE2_LOCAL_HPP_

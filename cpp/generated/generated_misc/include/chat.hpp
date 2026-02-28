@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_CHAT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_CHAT_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_HPP_
 
-class Citation;
-class ChatStreamData;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Citation : public object, public std::enable_shared_from_this<Citation> {
+namespace elizaos {
+namespace generated_misc {
+
+class Chat {
 public:
-    using std::enable_shared_from_this<Citation>::shared_from_this;
-    std::string url;
+    Chat() = default;
+    ~Chat() = default;
 
-    std::string content;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "chat"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string title;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class ChatStreamData : public object, public std::enable_shared_from_this<ChatStreamData> {
-public:
-    using std::enable_shared_from_this<ChatStreamData>::shared_from_this;
-    array<std::shared_ptr<Citation>> citations;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHAT_HPP_

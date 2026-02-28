@@ -1,57 +1,35 @@
-#include "elizaos/core.hpp"
-#include "load-plugin.hpp"
-#include "package-manager.hpp"
-#include "plugin-context.hpp"
-#include "plugin-discovery.hpp"
-#include "registry.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_INSTALL_PLUGIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_INSTALL_PLUGIN_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class InstallPlugin {
+public:
+    InstallPlugin() = default;
+    ~InstallPlugin() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "install_plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Get the CLI's installation directory when running globally
- * @returns {string|null} - The path to the CLI's directory or null if not found
- */
-
-/**
- * Verifies if a plugin can be imported
- * @param {string} repository - The plugin repository/package name to import
- * @param {string} context - Description of the installation context for logging
- * @returns {boolean} - Whether the import was successful
- */
-std::future<bool> verifyPluginImport(const std::string& repository, const std::string& context);
-
-/**
- * Attempts to install a plugin in a specific directory
- * @param {string} repository - The plugin repository to install
- * @param {string} versionString - Version std::string for installation
- * @param {string} directory - Directory to install in
- * @param {string} context - Description of the installation context for logging
- * @param {boolean} skipVerification - Whether to skip import verification
- * @returns {boolean} - Whether the installation and import verification was successful
- */
-std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification = false);
-
-/**
- * Asynchronously installs a plugin to a specified directory.
- *
- * @param {string} packageName - The repository URL of the plugin to install.
- * @param {string} cwd - The current working directory where the plugin will be installed.
- * @param {string} versionSpecifier - The specific version of the plugin to install.
- * @param {boolean} skipVerification - Whether to skip import verification.
- * @returns {Promise<boolean>} - A Promise that resolves to true if the plugin is successfully installed, or false otherwise.
- */
-std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification = false);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_INSTALL_PLUGIN_HPP_

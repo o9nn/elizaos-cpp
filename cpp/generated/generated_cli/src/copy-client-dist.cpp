@@ -1,20 +1,26 @@
-#include "eliza/packages/cli/src/scripts/copy-client-dist.h"
+#include "copy-client-dist.hpp"
 
-void main()
-{
-    std::async([=]() { copyClientDist(); });
-};
+namespace elizaos {
+namespace generated_cli {
 
-
-
-void Main(void)
-{
-    main()->_catch([=](auto error) mutable
-    {
-        console->error(std::string("Error running copy-client-dist script:"), error);
-        process->exit(1);
-    }
-    );
+bool CopyClientDist::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void CopyClientDist::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json CopyClientDist::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_cli
+} // namespace elizaos

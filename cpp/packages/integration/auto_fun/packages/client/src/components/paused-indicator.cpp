@@ -1,23 +1,26 @@
 #include "paused-indicator.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void PausedIndicator() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div;
-    className={twMerge([;
-    show ? "opacity-100" : "opacity-0",
-    "flex items-center transition-opacity duration-200 p-1 px-1 gap-0.5 bg-autofun-background-card border text-autofun-text-highlight",
-    ])}
-    >;
-    <Pause />;
-    </div>;
-    );
-
+bool PausedIndicator::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void PausedIndicator::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PausedIndicator::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

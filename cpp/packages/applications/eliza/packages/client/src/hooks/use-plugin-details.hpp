@@ -1,129 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_PLUGIN_DETAILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_PLUGIN_DETAILS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UsePluginDetails {
+public:
+    UsePluginDetails() = default;
+    ~UsePluginDetails() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_plugin_details"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Registry configuration - same as in use-plugins.ts
-
-// Define the structure of plugin secrets requirements
-struct PluginSecret {
-    std::string name;
-    std::optional<std::string> description;
-    bool required;
-    std::optional<std::string> example;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct PluginPackageJson {
-    std::string name;
-    std::string version;
-    std::optional<std::string> description;
-    std::optional<{> elizaos;
-    std::optional<std::vector<PluginSecret>> secrets;
-    std::optional<std::string[]; // Legacy format - just array of secret names> requiredSecrets;
-    std::optional<{> agentConfig;
-    std::optional<std::string> pluginType;
-    std::optional<Record<> pluginParameters;
-    std::string type;
-    std::optional<std::string> description;
-    bool required;
-    std::optional<bool> sensitive;
-    std::optional<std::string> example;
-};
-
-struct PluginDetails {
-    std::string name;
-    std::vector<PluginSecret> requiredSecrets;
-};
-
-// Core plugins that are part of the monorepo and don't need external fetching
-
-// Registry types (same as in use-plugins.ts)
-struct GitVersionInfo {
-    std::string | null version;
-    std::string | null branch;
-};
-
-struct PluginGitInfo {
-    std::string repo;
-    GitVersionInfo v0;
-    GitVersionInfo v1;
-};
-
-struct PluginNpmInfo {
-    std::string repo;
-    std::string | null v0;
-    std::string | null v1;
-};
-
-struct PluginSupport {
-    bool v0;
-    bool v1;
-};
-
-struct PluginInfo {
-    PluginGitInfo git;
-    PluginNpmInfo npm;
-    PluginSupport supports;
-};
-
-struct RegistryResponse {
-    std::string lastUpdatedAt;
-    std::unordered_map<std::string, PluginInfo> registry;
-};
-
-/**
- * Fetch the plugin registry to get GitHub repo information
- */
-std::future<RegistryResponse | null> fetchPluginRegistry();
-
-/**
- * Convert plugin name for registry lookup - handles both @elizaos and @elizaos-plugins formats
- */
-std::string getRegistryPluginName(const std::string& pluginName);
-
-/**
- * Check if a plugin is a core plugin that doesn't need external fetching
- */
-bool isCorePlugin(const std::string& pluginName);
-
-/**
- * Get GitHub repo path from registry data
- */
-
-/**
- * Fetches package.json for a single plugin from GitHub
- */
-std::future<PluginPackageJson | null> fetchPluginPackageJson(const std::string& pluginName, std::string | null repoPath);
-
-/**
- * Extract required secrets from package.json
- */
-std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, PluginPackageJson | null packageJson);
-
-/**
- * Hook to fetch plugin details including required secrets
- */
-void usePluginDetails(const std::vector<std::string>& pluginNames);
-
-/**
- * Hook to get all required secrets for a list of plugins
- */
-void useRequiredSecrets(const std::vector<std::string>& pluginNames);
-
-/**
- * Check if all required secrets are provided
- */
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, Record<std::string providedSecrets, auto std::string | null>); {
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_PLUGIN_DETAILS_HPP_

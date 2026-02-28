@@ -1,49 +1,26 @@
 #include "profile-card.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void ProfileCard(auto content, auto buttons) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    "<Card className={" + "h-full " + std::to_string(className || "");
-    <CardHeader className="pb-2 pt-3">;
-    <CardTitle className="text-base truncate max-w-48">{title}</CardTitle>;
-    </CardHeader>;
-    <CardContent className="p-3">;
-    <div;
-    className="rounded-md bg-muted w-full mb-3 overflow-hidden";
-    style={{ aspectRatio: "1 / 1" }}
-    >;
-    <div className="flex items-center justify-center h-full">;
-    <div className="text-4xl font-bold uppercase h-full flex items-center justify-center w-full">;
-    {content}
-    </div>;
-    </div>;
-    </div>;
-    </CardContent>;
-    <CardFooter className="p-3 pb-4">;
-    <div className="flex items-center gap-2 w-full justify-center">;
-    {buttons.std::map(({ label, icon, action, className, std::variant, size, disabled }, index) => (;
-    <Button;
-    key={index}
-    variant={variant}
-    className={className}
-    onClick={action}
-    size={size}
-    disabled={disabled}
-    >;
-    {icon}
-    {label && <span>{label}</span>}
-    </Button>;
-    ))}
-    </div>;
-    </CardFooter>;
-    </Card>;
-    );
-
+bool ProfileCard::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void ProfileCard::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ProfileCard::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

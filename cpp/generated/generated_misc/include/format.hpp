@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-CLANKER_SRC_UTILS_FORMAT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-CLANKER_SRC_UTILS_FORMAT_H
-#include "core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FORMAT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FORMAT_HPP_
 
-std::string formatUsd(double amount);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string formatPercentage(double value);
+namespace elizaos {
+namespace generated_misc {
 
-std::string shortenAddress(std::string address);
+class Format {
+public:
+    Format() = default;
+    ~Format() = default;
 
-std::string formatTransactionHash(std::string hash);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "format"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-double calculatePriceImpact(std::any inputAmount, std::any outputAmount, double inputPrice, double outputPrice);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::string formatTokenInfo(std::any info);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::string formatGasPrice(std::any gasPrice);
-
-std::string formatCompactUsd(double amount);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FORMAT_HPP_

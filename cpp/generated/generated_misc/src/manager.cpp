@@ -1,38 +1,26 @@
-#include "eliza/packages/plugin-sql/src/pglite/manager.h"
+#include "manager.hpp"
 
-PGliteClientManager::PGliteClientManager(std::shared_ptr<PGliteOptions> options) {
-    this->client = std::make_shared<PGlite>(utils::assign(object{
-        , 
-        object::pair{std::string("extensions"), object{
-            object::pair{std::string("vector"), std::string("vector")}, 
-            object::pair{std::string("fuzzystrmatch"), std::string("fuzzystrmatch")}
-        }}
-    }, options));
-    this->setupShutdownHandlers();
+namespace elizaos {
+namespace generated_misc {
+
+bool Manager::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<PGlite> PGliteClientManager::getConnection()
-{
-    return this->client;
+void Manager::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-boolean PGliteClientManager::isShuttingDown()
-{
-    return this->shuttingDown;
+nlohmann::json Manager::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<Promise<void>> PGliteClientManager::initialize()
-{
-    return std::shared_ptr<Promise<void>>();
-}
-
-std::shared_ptr<Promise<void>> PGliteClientManager::close()
-{
-    this->shuttingDown = true;
-    return std::shared_ptr<Promise<void>>();
-}
-
-void PGliteClientManager::setupShutdownHandlers()
-{
-}
-
+} // namespace generated_misc
+} // namespace elizaos

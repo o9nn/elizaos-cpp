@@ -1,32 +1,26 @@
-#include "elizaos.github.io/src/lib/data/tags.h"
+#include "tags.hpp"
 
-std::any TagScoringSchema = z->object(object{
-    object::pair{std::string("points"), z->number()}, 
-    object::pair{std::string("multiplier"), z->number()->std::optional()}, 
-    object::pair{std::string("decay"), z->number()->min(0)->max(1)->std::optional()}, 
-    object::pair{std::string("maxDaily"), z->number()->std::optional()}
-});
-std::any TagPatternSchema = z->object(object{
-    object::pair{std::string("target"), z->nativeEnum(TagPatternType)}, 
-    object::pair{std::string("pattern"), z->std::string()}, 
-    object::pair{std::string("caseSensitive"), z->boolean()->std::optional()->default(false)}, 
-    object::pair{std::string("scoring"), TagScoringSchema}, 
-    object::pair{std::string("description"), z->std::string()->std::optional()}, 
-    object::pair{std::string("enabled"), z->boolean()->std::optional()->default(true)}
-});
-std::any TagRuleSchema = z->object(object{
-    object::pair{std::string("name"), z->std::string()}, 
-    object::pair{std::string("category"), z->nativeEnum(TagCategory)}, 
-    object::pair{std::string("description"), z->std::string()}, 
-    object::pair{std::string("patterns"), z->array(TagPatternSchema)}, 
-    object::pair{std::string("weight"), z->number()->std::optional()->default(1)}, 
-    object::pair{std::string("dependencies"), z->array(z->std::string())->std::optional()}, 
-    object::pair{std::string("createdAt"), z->std::string()->std::optional()}, 
-    object::pair{std::string("updatedAt"), z->std::string()->std::optional()}
-});
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Tags::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Tags::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Tags::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

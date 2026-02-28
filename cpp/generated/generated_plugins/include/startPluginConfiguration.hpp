@@ -1,12 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-MANAGER_ACTIONS_STARTPLUGINCONFIGURATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-MANAGER_ACTIONS_STARTPLUGINCONFIGURATION_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../types.h"
-#include "../services/pluginConfigurationService.h"
-#include "../services/pluginUserInteractionService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTPLUGINCONFIGURATION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTPLUGINCONFIGURATION_HPP_
 
-extern std::shared_ptr<Action> startPluginConfigurationAction;
-std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, std::string text);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_plugins {
+
+class Startpluginconfiguration {
+public:
+    Startpluginconfiguration() = default;
+    ~Startpluginconfiguration() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "startPluginConfiguration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_plugins
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_STARTPLUGINCONFIGURATION_HPP_

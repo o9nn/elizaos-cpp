@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_JSDOCVALIDATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_JSDOCVALIDATOR_H
-#include "core.h"
-#include "@typescript-eslint/parser.h"
-#include "./AIService/AIService.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCVALIDATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCVALIDATOR_HPP_
 
-class JSDocValidator;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class JSDocValidator : public object, public std::enable_shared_from_this<JSDocValidator> {
+namespace elizaos {
+namespace generated_docs {
+
+class Jsdocvalidator {
 public:
-    using std::enable_shared_from_this<JSDocValidator>::shared_from_this;
-    std::shared_ptr<AIService> aiService;
+    Jsdocvalidator() = default;
+    ~Jsdocvalidator() = default;
 
-    std::shared_ptr<ParserOptions> parserOptions = object{
-        object::pair{std::string("sourceType"), std::string("module")}, 
-        object::pair{std::string("ecmaVersion"), 2020}, 
-        object::pair{std::string("ecmaFeatures"), object{
-            object::pair{std::string("jsx"), true}
-        }}, 
-        object::pair{std::string("range"), true}, 
-        object::pair{std::string("loc"), true}, 
-        object::pair{std::string("tokens"), true}, 
-        object::pair{std::string("comment"), true}
-    };
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "JSDocValidator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    JSDocValidator(std::shared_ptr<AIService> aiService_);
-    virtual std::shared_ptr<Promise<string>> validateAndFixJSDoc(std::string fileName, std::string code, std::string originalComment);
-    virtual boolean isValidTypeScript(std::string code);
-    virtual std::string fixCommonJSDocIssues(std::string comment);
-    virtual std::shared_ptr<Promise<string>> regenerateJSDoc(std::string code);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_docs
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCVALIDATOR_HPP_

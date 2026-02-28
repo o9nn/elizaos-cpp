@@ -1,64 +1,26 @@
-#include "elizas-list/src/lib/monitoring/real-time-monitor.h"
+#include "real-time-monitor.hpp"
 
-RealTimeMonitor::RealTimeMonitor() {
-    this->redis = std::make_shared<Redis>(process->env->REDIS_URL);
-    this->anomalyDetector = std::make_shared<AnomalyDetector>();
-    this->alertThresholds = object{
-        object::pair{std::string("errorRate"), 0.05}, 
-        object::pair{std::string("latency"), 1000}, 
-        object::pair{std::string("userEngagement"), 0.4}
-    };
+namespace elizaos {
+namespace generated_misc {
+
+bool RealTimeMonitor::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void RealTimeMonitor::startMonitoring()
-{
-    std::async([=]() { this->anomalyDetector->initialize(); });
-    this->monitorMetrics();
-    this->monitorErrors();
-    this->monitorUserBehavior();
+void RealTimeMonitor::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void RealTimeMonitor::monitorMetrics()
-{
-    auto metrics = std::async([=]() { MetricsService::getCurrentMetrics(); });
-    auto anomalies = std::async([=]() { this->anomalyDetector->detectAnomalies(this->prepareMetricsData(metrics)); });
-    if (anomalies->some([=](auto a) mutable
-    {
-        return a->isAnomaly;
-    }
-    )) {
-        std::async([=]() { this->handleAnomalies(anomalies); });
-    }
+nlohmann::json RealTimeMonitor::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void RealTimeMonitor::handleAnomalies(array<std::shared_ptr<AnomalyResult>> anomalies)
-{
-    auto criticalAnomalies = anomalies->filter([=](auto a) mutable
-    {
-        return a->score > this->alertThresholds->errorRate * 2;
-    }
-    );
-    if (criticalAnomalies->get_length() > 0) {
-        std::async([=]() { this->triggerAlerts(criticalAnomalies); });
-    }
-    std::async([=]() { this->storeAnomalyData(anomalies); });
-}
-
-void RealTimeMonitor::triggerAlerts(array<std::shared_ptr<AnomalyResult>> anomalies)
-{
-    auto alerts = anomalies->std::map([=](auto anomaly) mutable
-    {
-        return (object{
-            object::pair{std::string("severity"), this->calculateSeverity(anomaly)}, 
-            object::pair{std::string("message"), this->formatAlertMessage(anomaly)}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}
-        });
-    }
-    );
-    std::async([=]() { Promise->all(std::tuple<std::any, std::any, any>{ this->sendSlackAlerts(alerts), this->sendEmailAlerts(alerts), this->triggerPagerDuty(alerts->filter([=](auto a) mutable
-    {
-        return a["severity"] == std::string("critical");
-    }
-    )) }); });
-}
-
+} // namespace generated_misc
+} // namespace elizaos

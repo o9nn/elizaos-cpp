@@ -1,29 +1,26 @@
 #include "messages.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::future<void> getActorDetails(auto roomId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        throw std::runtime_error('getActorDetails is not implemented.');
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Messages::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void formatActors() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!actors || actors.length == 0) {
-        return "No actors available.";
-    }
-    return actors.std::map((actor) => actor.name).join(", ");
-
+void Messages::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Messages::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

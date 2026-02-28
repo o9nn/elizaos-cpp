@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_PACKAGE-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_PACKAGE-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./user-environment.h"
-#include "./bun-installation-helper.h"
-#include "./run-bun.h"
-#include "node:fs.h"
-#include "node:path.h"
-using path = _default;
-#include "execa.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGER_HPP_
 
-std::shared_ptr<Promise<string>> getPackageManager();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<boolean>> isGlobalInstallation();
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<boolean>> isRunningViaNpx();
+class PackageManager {
+public:
+    PackageManager() = default;
+    ~PackageManager() = default;
 
-std::shared_ptr<Promise<boolean>> isRunningViaBunx();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "package_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-array<string> getInstallCommand(boolean isGlobal);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::shared_ptr<Promise<void>> removeFromBunLock(std::string packageName, std::string directory);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<object>> executeInstallation(std::string packageName, std::string versionOrTag = string_empty, std::string directory = process->cwd());
-
-std::string buildGitHubSpecifier(std::string githubSpec, std::string versionOrTag = undefined);
-
-std::shared_ptr<Promise<object>> executeInstallationWithFallback(std::string packageName, std::string versionOrTag = string_empty, std::string directory = process->cwd(), std::string githubFallback = undefined);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGER_HPP_

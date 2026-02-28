@@ -1,34 +1,26 @@
 #include "featured-section.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void FeaturedSection() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto query = useTokens({;
-        sortBy: "featured",
-        sortOrder: "desc",
-        enabled: true,
-        pageSize: 4,
-        hideImported: 1,
-        });
-
-        const auto items = (query.items || []).splice(0, 4);
-
-        if (query.isLoading) {
-            return <Loader />;
-        }
-
-        return (;
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-        {items.std::map((token: IToken) => (
-        <GridItem key={token.mint} token={token} />;
-    ))}
-    </div>;
-    );
-
+bool FeaturedSection::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void FeaturedSection::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json FeaturedSection::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

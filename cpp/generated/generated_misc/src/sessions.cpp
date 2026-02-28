@@ -1,68 +1,26 @@
-#include "otaku/src/packages/api-client/src/services/sessions.h"
+#include "sessions.hpp"
 
-std::any validateRequiredParam(std::any value, std::string paramName)
-{
-    if (OR((!value), (value->trim() == string_empty))) {
-        throw std::any(std::make_shared<Error>(string_empty + paramName + std::string(" is required and cannot be empty")));
-    }
-    return std::any();
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::shared_ptr<Promise<std::shared_ptr<SessionsHealthResponse>>> SessionsService::checkHealth()
-{
-    return this->get<std::shared_ptr<SessionsHealthResponse>>(std::string("/api/messaging/sessions/health"));
+bool Sessions::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<CreateSessionResponse>>> SessionsService::createSession(std::shared_ptr<CreateSessionParams> params)
-{
-    return this->post<std::shared_ptr<CreateSessionResponse>>(std::string("/api/messaging/sessions"), params);
+void Sessions::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> SessionsService::getSession(std::string sessionId)
-{
-    validateRequiredParam(sessionId, std::string("sessionId"));
-    return this->get<std::shared_ptr<SessionInfoResponse>>(std::string("/api/messaging/sessions/") + sessionId + string_empty);
+nlohmann::json Sessions::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> SessionsService::sendMessage(std::string sessionId, std::shared_ptr<SendMessageParams> params)
-{
-    validateRequiredParam(sessionId, std::string("sessionId"));
-    validateRequiredParam(params->content, std::string("content"));
-    return this->post<std::shared_ptr<MessageResponse>>(std::string("/api/messaging/sessions/") + sessionId + std::string("/messages"), params);
-}
-
-std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> SessionsService::getMessages(std::string sessionId, std::shared_ptr<GetMessagesParams> params)
-{
-    validateRequiredParam(sessionId, std::string("sessionId"));
-    auto queryParams = object{};
-    if (params->limit) {
-        queryParams->limit = params->limit->toString();
-    }
-    auto beforeTimestamp = toTimestampString(params->before, std::string("before"));
-    if (beforeTimestamp) {
-        queryParams->before = beforeTimestamp;
-    }
-    auto afterTimestamp = toTimestampString(params->after, std::string("after"));
-    if (afterTimestamp) {
-        queryParams->after = afterTimestamp;
-    }
-    return this->get<std::shared_ptr<GetMessagesResponse>>(std::string("/api/messaging/sessions/") + sessionId + std::string("/messages"), object{
-        object::pair{std::string("params"), queryParams}
-    });
-}
-
-std::shared_ptr<Promise<object>> SessionsService::deleteSession(std::string sessionId)
-{
-    validateRequiredParam(sessionId, std::string("sessionId"));
-    return this->delete<object>(std::string("/api/messaging/sessions/") + sessionId + string_empty);
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ListSessionsResponse>>> SessionsService::listSessions()
-{
-    return this->get<std::shared_ptr<ListSessionsResponse>>(std::string("/api/messaging/sessions"));
-}
-
-SessionsService::SessionsService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
-}
-
+} // namespace generated_misc
+} // namespace elizaos

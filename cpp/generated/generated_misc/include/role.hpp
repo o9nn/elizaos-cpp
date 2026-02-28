@@ -1,38 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_ROLE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_ROLE_H
-#include "core.h"
-#include "../types/role-tags.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLE_HPP_
 
-class Role;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Role : public object, public std::enable_shared_from_this<Role> {
+namespace elizaos {
+namespace generated_misc {
+
+class Role {
 public:
-    using std::enable_shared_from_this<Role>::shared_from_this;
-    std::shared_ptr<Snowflake> id;
+    Role() = default;
+    ~Role() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "role"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double color;
-
-    boolean hoist;
-
-    std::any icon;
-
-    std::any unicode_emoji;
-
-    double position;
-
-    std::string permissions;
-
-    boolean managed;
-
-    boolean mentionable;
-
-    RoleTags tags;
-
-    double flags;
-
-    Role(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLE_HPP_

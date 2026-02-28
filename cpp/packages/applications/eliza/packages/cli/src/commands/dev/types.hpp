@@ -1,80 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
-#include <stdexcept>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Dev command types and interfaces
- */
-
-/**
- * Development server options
- */
-struct DevOptions {
-    std::optional<double> port;
-    std::optional<std::string> configDir;
-    std::optional<std::vector<std::string>> character;
-    std::optional<bool> configure;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Server process management interface
- */
-struct ServerProcess {
-    std::optional<ChildProcess> process;
-};
-
-/**
- * File watcher configuration
- */
-struct WatcherConfig {
-    std::vector<std::string> ignored;
-    bool ignoreInitial;
-    bool persistent;
-    bool followSymlinks;
-    double depth;
-    bool usePolling;
-    double interval;
-};
-
-/**
- * Development context information
- */
-struct DevContext {
-    std::string directory;
-    std::string watchDirectory;
-    bool buildRequired;
-};
-
-/**
- * File change event
- */
-struct FileChangeEvent {
-    std::string type;
-    std::string path;
-};
-
-/**
- * Build result
- */
-struct BuildResult {
-    bool success;
-    double duration;
-    std::optional<std::runtime_error> error;
-};
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_TYPES_HPP_

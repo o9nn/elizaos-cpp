@@ -1,13 +1,26 @@
-#include "auto.fun/packages/program/migrations/deploy.h"
+#include "deploy.hpp"
 
-std::any anchor = require(std::string("@coral-xyz/anchor"));
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
-    module->exports = [=](std::any provider) mutable
-    {
-        anchor["setProvider"](provider);
-    };
+bool Deploy::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Deploy::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Deploy::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

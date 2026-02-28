@@ -1,95 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_DASHBOARD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_DASHBOARD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Dashboard {
+public:
+    Dashboard() = default;
+    ~Dashboard() = default;
 
-/**
- * E2E Tests for ElizaOS Dashboard
- *
- * These tests verify the full application flow from a user's perspective,
- * testing real interactions with the running application.
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "dashboard"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    // Visit the dashboard before each test
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-      // Check that the page loads
-
-      // Look for common dashboard elements
-
-      // Check for std::any loading indicators
-
-      // Look for application branding
-
-      // Check viewport meta tag
-
-      // Look for navigation elements
-
-      // Check for common navigation items
-
-      // Click on a navigation item if it exists
-
-      // Verify URL changed or content updated
-
-      // Test mobile viewport
-
-      // Check that content is still visible
-
-      // Mobile menu might be hidden
-          // Look for mobile menu button
-
-      // Test tablet viewport
-
-      // Should show some error message or redirect
-
-      // Intercept and force a network error
-
-      // Should handle the error gracefully
-
-/**
- * E2E TESTING PATTERNS FOR ELIZAOS
- *
- * 1. REAL APPLICATION TESTING
- *    - Test against the running application
- *    - No mocking unless testing error scenarios
- *    - Verify actual user workflows
- *
- * 2. PAGE NAVIGATION
- *    - Test all navigation paths
- *    - Verify URL changes
- *    - Check for proper redirects
- *
- * 3. RESPONSIVE TESTING
- *    - Test multiple viewport sizes
- *    - Verify mobile menu behavior
- *    - Check touch interactions
- *
- * 4. PERFORMANCE
- *    - Set reasonable timeouts
- *    - Check for loading indicators
- *    - Verify std::async operations complete
- *
- * 5. ERROR SCENARIOS
- *    - Test 404 pages
- *    - Network failures
- *    - API errors
- *    - Form validation
- *
- * BEST PRACTICES:
- * - Use data-testid attributes for reliable selection
- * - Avoid brittle selectors based on classes
- * - Test user-visible behavior, not implementation
- * - Keep tests independent and idempotent
- */
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_E2E_DASHBOARD_HPP_

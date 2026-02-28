@@ -1,82 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
-/**
- * Update command types and interfaces
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Command options for update operations
- */
-struct UpdateOptions {
-    std::optional<bool> dryRun;
-    std::optional<bool> skipBuild;
-    std::optional<bool> skipBunMigration;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Global CLI update options
- */
-struct GlobalUpdateOptions {
-    std::optional<std::string> version;
-    std::optional<bool> skipBunMigration;
-};
-
-/**
- * Version comparison result
- */
-struct VersionCheckResult {
-    bool needsUpdate;
-    std::optional<std::string> error;
-};
-
-/**
- * Package update information
- */
-struct PackageUpdate {
-    std::string current;
-    std::string latest;
-};
-
-/**
- * Update check result
- */
-struct UpdateCheckResult {
-    bool hasUpdates;
-};
-
-/**
- * CLI environment information
- */
-struct CliEnvironment {
-    bool isGlobal;
-    bool isNpx;
-    bool isBunx;
-    bool isNpmInstalled;
-    std::string packageManager;
-};
-
-/**
- * Update context information
- */
-struct UpdateContext {
-    std::string cwd;
-    bool isPlugin;
-    CliEnvironment environment;
-};
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_TYPES_HPP_

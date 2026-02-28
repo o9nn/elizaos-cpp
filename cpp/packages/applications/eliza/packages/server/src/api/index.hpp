@@ -1,56 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "agents.hpp"
-#include "audio.hpp"
-#include "elizaos/core.hpp"
-#include "media.hpp"
-#include "memory.hpp"
-#include "messaging.hpp"
-#include "runtime.hpp"
-#include "shared/middleware.hpp"
-#include "socketio.hpp"
-#include "system.hpp"
-#include "tee.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Import new domain routers
-
-// NOTE: world router has been removed - functionality moved to messaging/spaces
-
-/**
- * Sets up Socket.io server for real-time messaging
- * @param server HTTP Server instance
- * @param agents Map of agent runtimes
- */
-// Global reference to SocketIO router for log streaming
-// let socketIORouter: SocketIORouter | null = null; // This can be removed if router is managed within setupSocketIO scope correctly
-
-SocketIOServer setupSocketIO(http::Server server, const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance);
-
-// Setup log streaming integration with the logger
-void setupLogStreaming(SocketIOServer io, SocketIORouter router);
-
-// Extracted std::function to handle plugin routes
-
-/**
- * Creates an API router with various endpoints and middleware.
- * @param {Map<UUID, IAgentRuntime>} agents - Map of agents with UUID as key and IAgentRuntime as value.
- * @param {AgentServer} [server] - Optional AgentServer instance.
- * @returns {express.Router} The configured API router.
- */
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_API_INDEX_HPP_

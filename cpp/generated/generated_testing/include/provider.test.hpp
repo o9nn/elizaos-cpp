@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___PROVIDER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___PROVIDER_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../provider.h"
-#include "../state.h"
-#include "../state.h"
-#include "../provider.h"
-#include "@elizaos/core-plugin-v2.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDER_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDER_TEST_HPP_
 
-class ProviderV2;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ProviderV2 : public object, public std::enable_shared_from_this<ProviderV2> {
+namespace elizaos {
+namespace generated_testing {
+
+class ProviderTest {
 public:
-    using std::enable_shared_from_this<ProviderV2>::shared_from_this;
-    std::string name;
+    ProviderTest() = default;
+    ~ProviderTest() = default;
 
-    std::string description;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "provider_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean dynamic;
-
-    double position;
-
-    boolean private;
-
-    std::function<std::shared_ptr<Promise<any>>(std::any, std::any, std::any)> get;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::any mockRuntime;
-extern std::any mockMessage;
-#endif
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_PROVIDER_TEST_HPP_

@@ -1,73 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_GLOBAL_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_GLOBAL_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Global {
+public:
+    Global() = default;
+    ~Global() = default;
 
-enum TokenStatus {
-  Active = "active",
-  Migrating = "migrating",
-  Migrated = "migrated",
-  Locked = "locked",
-  Finalized = "finalized",
-}
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "global"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-struct Pagination {
-    double limit;
-    double page;
-    double offset;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-enum SortBy {
-  CreatedAt = "createdAt",
-  MarketCapUSD = "marketCapUSD",
-  Volume24h = "volume24h",
-  HolderCount = "holderCount",
-  CurveProgress = "curveProgress",
-  Featured = "featured",
-  Verified = "verified",
-}
-
-enum FilterBy {
-  Verified = "verified",
-}
-
-enum SortOrder {
-  Asc = "asc",
-  Desc = "desc",
-}
-
-struct RawTokenQuery {
-    std::optional<std::string> page;
-    std::optional<std::string> limit;
-    std::optional<std::string> status;
-    std::optional<std::string> hideImported;
-    std::optional<std::string> creator;
-    std::optional<std::string> search;
-    std::optional<std::string> sortBy;
-    std::optional<std::string> sortOrder;
-};
-
-struct TokenQueryParams {
-    double page;
-    double limit;
-    std::optional<TokenStatus> status;
-    std::optional<0 | 1> hideImported;
-    std::optional<std::string> creator;
-    std::optional<std::string> search;
-    SortBy sortBy;
-    SortOrder sortOrder;
-};
-
-std::string parseSolanaAddress(unknown raw, auto name = "address");
-
-Pagination parsePaginationQuery(Record<std::string query, auto std::string | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_GLOBAL_HPP_

@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_PACKAGE-MANAGERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_PACKAGE-MANAGERS_H
-#include "core.h"
-#include "axios.h"
-using axios = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGERS_HPP_
 
-class PackageInfo;
-class PackageManagerClient;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PackageInfo : public object, public std::enable_shared_from_this<PackageInfo> {
+namespace elizaos {
+namespace generated_misc {
+
+class PackageManagers {
 public:
-    using std::enable_shared_from_this<PackageInfo>::shared_from_this;
-    std::string name;
+    PackageManagers() = default;
+    ~PackageManagers() = default;
 
-    std::string version;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "package_managers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    double downloads;
-
-    std::string repository;
-
-    array<string> dependencies;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class PackageManagerClient : public object, public std::enable_shared_from_this<PackageManagerClient> {
-public:
-    using std::enable_shared_from_this<PackageManagerClient>::shared_from_this;
-    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getNpmInfo(std::string packageName);
-    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getPyPiInfo(std::string packageName);
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PACKAGE_MANAGERS_HPP_

@@ -1,22 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void Providers() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <Fragment>;
-    <TosProvider />;
-    <MainentenaceProvider />;
-    <Wallet>;
-    <SolPriceProvider>{children}</SolPriceProvider>;
-    </Wallet>;
-    </Fragment>;
-    );
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

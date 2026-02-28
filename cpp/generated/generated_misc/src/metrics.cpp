@@ -1,21 +1,26 @@
-#include "elizas-list/src/lib/monitoring/metrics.h"
+#include "metrics.hpp"
 
-Record<std::string, double> MetricsService::metrics = object{};
+namespace elizaos {
+namespace generated_misc {
 
-void MetricsService::recordApiLatency(std::string path, double latency)
-{
-    auto key = std::string("api_latency_") + path + string_empty;
-    MetricsService::metrics[key] = (OR((const_(MetricsService::metrics)[key]), (0))) + latency;
+bool Metrics::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void MetricsService::recordProjectView(std::string projectId, std::string userId)
-{
-    auto key = std::string("project_views_") + projectId + string_empty;
-    MetricsService::metrics[key] = (OR((const_(MetricsService::metrics)[key]), (0))) + 1;
+void Metrics::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::any MetricsService::getMetrics()
-{
-    return MetricsService::metrics;
+nlohmann::json Metrics::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace generated_misc
+} // namespace elizaos

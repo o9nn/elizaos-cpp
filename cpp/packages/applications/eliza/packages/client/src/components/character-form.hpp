@@ -1,47 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHARACTER_FORM_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHARACTER_FORM_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "config/voice-models.hpp"
-#include "missing-secrets-dialog.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class CharacterForm {
+public:
+    CharacterForm() = default;
+    ~CharacterForm() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character_form"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-using InputField = {
-
-using ArrayField = {
-
-enum SECTION_TYPE {
-}
-
-using customComponent = {
-
-using CharacterFormProps = {
-
-// Custom hook to detect container width and determine if labels should be shown
-
-    // Debounced resize handler
-      // Clear existing timer
-
-      // Set new timer
-        // Only update if the value actually changes
-
-        // Only trigger if width actually changed significantly (more than 5px)
-
-    // Initial check with delay to avoid race conditions
-
-    // Cleanup
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_CHARACTER_FORM_HPP_

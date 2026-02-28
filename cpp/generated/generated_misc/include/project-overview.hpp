@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_PROJECT-OVERVIEW_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_PROJECT-OVERVIEW_H
-#include "core.h"
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_OVERVIEW_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_OVERVIEW_HPP_
 
-extern array<std::shared_ptr<EntryPoint>> ENTRY_POINTS;
-extern std::shared_ptr<ClassInfo> MAIN_AGENT_CLASS;
-extern std::shared_ptr<ClassInfo> SWE_ENV_CLASS;
-extern std::shared_ptr<ExecutionEnvironment> EXECUTION_ENVIRONMENT;
-extern std::shared_ptr<ToolsInfo> TOOLS_INFO;
-extern array<std::shared_ptr<Inspector>> INSPECTORS;
-extern std::shared_ptr<ProjectStructure> PROJECT_STRUCTURE;
-extern std::string PROJECT_OVERVIEW;
-std::any getComponentByPath(std::string path);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-array<string> getPythonModules();
+namespace elizaos {
+namespace generated_misc {
 
-extern Record<std::string, string> TYPESCRIPT_EQUIVALENTS;
-#endif
+class ProjectOverview {
+public:
+    ProjectOverview() = default;
+    ~ProjectOverview() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "project_overview"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROJECT_OVERVIEW_HPP_

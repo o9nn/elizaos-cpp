@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_SYSTEM_VERSION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_SYSTEM_VERSION_H
-#include "core.h"
-#include "express.h"
-using express = _default;
-#include "../../../package.json.h"
-using packageJson = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VERSION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VERSION_HPP_
 
-class VersionInfo;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class VersionInfo : public object, public std::enable_shared_from_this<VersionInfo> {
+namespace elizaos {
+namespace generated_misc {
+
+class Version {
 public:
-    using std::enable_shared_from_this<VersionInfo>::shared_from_this;
-    std::string version;
+    Version() = default;
+    ~Version() = default;
 
-    std::string source;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "version"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string timestamp;
-
-    std::string environment;
-
-    double uptime;
-
-    std::string error;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<VersionInfo> getVersionInfo();
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<express::Router> createVersionRouter();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VERSION_HPP_

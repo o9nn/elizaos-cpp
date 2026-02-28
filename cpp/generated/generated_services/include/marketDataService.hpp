@@ -1,38 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_MARKETDATASERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_MARKETDATASERVICE_H
-#include "core.h"
-#include "./database.h"
-#include "@/config/chains.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MARKETDATASERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MARKETDATASERVICE_HPP_
 
-class CoinGeckoPrice;
-class BirdeyeResponse;
-class MarketDataService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CoinGeckoPrice : public object, public std::enable_shared_from_this<CoinGeckoPrice> {
+namespace elizaos {
+namespace generated_services {
+
+class Marketdataservice {
 public:
-    using std::enable_shared_from_this<CoinGeckoPrice>::shared_from_this;
+    Marketdataservice() = default;
+    ~Marketdataservice() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "marketDataService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class BirdeyeResponse : public object, public std::enable_shared_from_this<BirdeyeResponse> {
-public:
-    using std::enable_shared_from_this<BirdeyeResponse>::shared_from_this;
-    object data;
-};
+} // namespace generated_services
+} // namespace elizaos
 
-class MarketDataService : public object, public std::enable_shared_from_this<MarketDataService> {
-public:
-    using std::enable_shared_from_this<MarketDataService>::shared_from_this;
-    std::string coingeckoApiKey;
-
-    std::string birdeyeApiKey;
-
-    MarketDataService();
-    virtual std::shared_ptr<Promise<double>> fetchTokenPrice(std::string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchMarketData(std::string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchEVMData(std::string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchSolanaData(std::string tokenAddress);
-    virtual std::shared_ptr<Promise<void>> refreshTokenData(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<void>> refreshAllTokenData(array<object> tokens);
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_MARKETDATASERVICE_HPP_

@@ -1,10 +1,26 @@
 #include "use-config-account.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool UseConfigAccount::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void UseConfigAccount::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseConfigAccount::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

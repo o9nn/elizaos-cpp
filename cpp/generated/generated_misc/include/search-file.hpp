@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_SEARCH_SEARCH-FILE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_SEARCH_SEARCH-FILE_H
-#include "core.h"
-#include "fs.h"
-#include "path.h"
-#include "commander.h"
-#include "../registry.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_FILE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_FILE_HPP_
 
-void searchFile(std::string searchTerm, std::string filePath = undefined);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void setupCLI();
+namespace elizaos {
+namespace generated_misc {
 
-#endif
+class SearchFile {
+public:
+    SearchFile() = default;
+    ~SearchFile() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "search_file"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SEARCH_FILE_HPP_

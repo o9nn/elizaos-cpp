@@ -1,16 +1,26 @@
 #include "agent-start.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<void> stopAgent(IAgentRuntime runtime, AgentServer server) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    runtime.close();
-    server.unregisterAgent(runtime.agentId);
-    logger.success(`Agent ${runtime.character.name} stopped successfully!`);
-
+bool AgentStart::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void AgentStart::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json AgentStart::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

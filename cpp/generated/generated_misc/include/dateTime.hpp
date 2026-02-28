@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_UTILS_DATETIME_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_UTILS_DATETIME_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DATETIME_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DATETIME_HPP_
 
-boolean isAvailableNow(array<string> workDays, object workHours, std::string timeZone);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHours, std::string timeZone, double frequencyHours = 24);
+namespace elizaos {
+namespace generated_misc {
 
-std::string formatDate(std::shared_ptr<Date> date, std::string timeZone = undefined);
+class Datetime {
+public:
+    Datetime() = default;
+    ~Datetime() = default;
 
-template <typename RET>
-RET getProjectStatus(double completionPercentage, double elapsedTimePercentage);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "dateTime"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-template <typename RET>
-RET getProjectStatus(double completionPercentage, double elapsedTimePercentage)
-{
-    auto difference = completionPercentage - elapsedTimePercentage;
-    if (difference >= -10) {
-        return std::string("ON_TRACK");
-    } else if (difference >= -20) {
-        return std::string("AT_RISK");
-    } else {
-        return std::string("DELAYED");
-    }
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DATETIME_HPP_

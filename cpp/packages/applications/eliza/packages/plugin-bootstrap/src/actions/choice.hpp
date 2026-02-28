@@ -1,115 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_CHOICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_CHOICE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Choice {
+public:
+    Choice() = default;
+    ~Choice() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "choice"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Task: Extract selected task and option from user message
- *
- * Available Tasks:
- * {{#each tasks}}
- * Task ID: {{taskId}} - {{name}}
- * Available options:
- * {{#each options}}
- * - {{name}}: {{description}}
- * {{/each}}
- * - ABORT: Cancel this task
- * {{/each}}
- *
- * Recent Messages:
- * {{recentMessages}}
- *
- * Instructions:
- * 1. Review the user's message and identify which task and option they are selecting
- * 2. Match against the available tasks and their options, including ABORT
- * 3. Return the task ID (shortened UUID) and selected option name exactly as listed above
- * 4. If no clear selection is made, return null for both fields
- *
- * Return in JSON format:
- * ```json
- * {
- *   "taskId": "string" | null,
- *   "selectedOption": "OPTION_NAME" | null
- * }
- * ```
- *
- * Make sure to include the ```json``` tags around the JSON object.
- */
-/**
- * Task: Extract selected task and option from user message
- *
- * Available Tasks:
- * {{#each tasks}}
- * Task ID: {{taskId}} - {{name}}
- * Available options:
- * {{#each options}}
- * - {{name}}: {{description}}
- * {{/each}}
- * - ABORT: Cancel this task
- *
- * {{/each}}
- *
- * Recent Messages:
- * {{recentMessages}}
- *
- * Instructions:
- * 1. Review the user's message and identify which task and option they are selecting
- * 2. Match against the available tasks and their options, including ABORT
- * 3. Return the task ID (shortened UUID) and selected option name exactly as listed above
- * 4. If no clear selection is made, return null for both fields
- *
- * Return in JSON format:
- * ```json
- * {
- *   "taskId": "string" | null,
- *   "selectedOption": "OPTION_NAME" | null
- * }
- * ```
- *
- * Make sure to include the ```json``` tags around the JSON object.
- */
-
-/**
- * Represents an action that allows selecting an option for a pending task that has multiple options.
- * @type {Action}
- * @property {string} name - The name of the action
- * @property {std::string[]} similes - Similar words or phrases for the action
- * @property {string} description - A brief description of the action
- * @property {Function} validate - Asynchronous std::function to validate the action
- * @property {Function} handler - Asynchronous std::function to handle the action
- * @property {ActionExample[][]} examples - Examples demonstrating the usage of the action
- */
-
-      // Get all tasks with options metadata
-
-      // Only validate if there are pending tasks with options
-
-    // Format tasks with their options for the LLM, using shortened UUIDs
-      // Generate a short ID from the task UUID (first 8 characters should be unique enough)
-
-    // format tasks as a std::string
-
-      // Find the task by matching the shortened UUID
-
-      // Find the actual task using the full UUID
-
-    // If no task/option was selected, list available options
-
-      // Create a shortened UUID for display
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_CHOICE_HPP_

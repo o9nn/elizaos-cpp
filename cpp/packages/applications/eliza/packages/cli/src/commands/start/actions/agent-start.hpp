@@ -1,46 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_ACTIONS_AGENT_START_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_ACTIONS_AGENT_START_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "elizaos/plugin-sql.hpp"
-#include "elizaos/server.hpp"
-#include "types.hpp"
-#include "utils/config-utils.hpp"
-#include "utils/dependency-resolver.hpp"
-#include "utils/plugin-utils.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentStart {
+public:
+    AgentStart() = default;
+    ~AgentStart() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_start"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Start an agent with the given configuration
- *
- * Creates and initializes an agent runtime with plugins, handles dependency resolution, runs database migrations, and registers the agent with the server.
- */
-
-  // Type-cast to ensure compatibility with local types
-
-  // Load all requested plugins
-
-  // Resolve dependencies and get final plugin list
-
-  // Discover and run plugin schema migrations
-
-/**
- * Stop an agent and unregister it from the server
- */
-std::future<void> stopAgent(IAgentRuntime runtime, AgentServer server);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_ACTIONS_AGENT_START_HPP_

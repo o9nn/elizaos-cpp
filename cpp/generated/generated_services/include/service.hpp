@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_SERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_SERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-using CoreComponent = Component;
-#include "@elizaos/core.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../service.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_HPP_
 
-extern std::any testUserIdGlobalForService;
-extern std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForSvcTest;
-extern std::function<std::any(std::string, double, std::any, std::any, std::any, double, std::any)> createMockRecForSvcTest;
-extern array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases;
-extern array<std::shared_ptr<TestCase>> resolveTickerTestCases;
-extern array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases;
-extern array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases;
-extern array<std::shared_ptr<TestCase>> evaluatePerfTestCases;
-extern array<std::shared_ptr<TestCase>> getLeaderboardDataTestCases;
-extern std::shared_ptr<TestSuite> serviceTestSuite;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_services {
+
+class Service {
+public:
+    Service() = default;
+    ~Service() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICE_HPP_

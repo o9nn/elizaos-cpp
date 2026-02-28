@@ -1,30 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_TYPES_SYSTEM_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_TYPES_SYSTEM_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SYSTEM_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SYSTEM_HPP_
 
-class SystemEnvironment;
-class LocalEnvironmentUpdateParams;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SystemEnvironment : public object, public std::enable_shared_from_this<SystemEnvironment> {
+namespace elizaos {
+namespace generated_misc {
+
+class System {
 public:
-    using std::enable_shared_from_this<SystemEnvironment>::shared_from_this;
-    std::string nodeVersion;
+    System() = default;
+    ~System() = default;
 
-    std::string platform;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "system"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any environment;
-
-    object features;
-
-    Record<std::string, any> configuration;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class LocalEnvironmentUpdateParams : public object, public std::enable_shared_from_this<LocalEnvironmentUpdateParams> {
-public:
-    using std::enable_shared_from_this<LocalEnvironmentUpdateParams>::shared_from_this;
-    Record<std::string, string> variables;
+} // namespace generated_misc
+} // namespace elizaos
 
-    boolean merge;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SYSTEM_HPP_

@@ -1,41 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMMANDS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMMANDS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Commands {
+public:
+    Commands() = default;
+    ~Commands() = default;
 
-// ***********************************************
-// This file is where you can create custom Cypress commands
-// and overwrite existing commands.
-//
-// For comprehensive examples, visit:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "commands"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Example custom command
-// Cypress.Commands.add('login', (email, password) => { ... })
-
-// Extend Window interface
-  struct Window {
-    std::optional<{> ELIZA_CONFIG;
-    std::string agentId;
-    std::string apiBase;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Custom command to check if element is in dark mode
-
-// Custom command to std::set ELIZA_CONFIG
-
-// TypeScript definitions
-    struct Chainable {
-};
-
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMMANDS_HPP_

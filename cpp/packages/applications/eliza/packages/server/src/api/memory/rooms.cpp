@@ -1,184 +1,26 @@
 #include "rooms.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgentRuntime>& agents) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto router = express.Router();
-
-        // Create a new room for an agent
-        router.post("/:agentId/rooms", std::async (req, res) => {
-            const auto agentId = validateUuid(req.params.agentId);
-            if (!agentId) {
-                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
-            }
-
-            const auto runtime = agents.get(agentId);
-            if (!runtime) {
-                return sendError(res, 404, "NOT_FOUND", "Agent not found");
-            }
-
-            try {
-                const auto { name, type = ChannelType.DM, source = "client", worldId, metadata } = req.body;
-
-                if (!name) {
-                    return sendError(res, 400, "MISSING_PARAM", "Room name is required");
-                }
-
-                const auto roomId = "createUniqueUuid(runtime, " + "room-" + std::to_string(Date.now());
-                const auto serverId = "req.body.serverId || " + "server-" + std::to_string(Date.now());
-
-                auto resolvedWorldId = worldId;
-                if (!resolvedWorldId) {
-                    const auto worldName = "World for " + name;
-                    "resolvedWorldId = createUniqueUuid(runtime, " + "world-" + std::to_string(Date.now());
-
-                    runtime.ensureWorldExists({
-                        id: resolvedWorldId,
-                        name: worldName,
-                        agentId: runtime.agentId,
-                        serverId: serverId,
-                        metadata: metadata,
-                        });
-                    }
-
-                    runtime.ensureRoomExists({
-                        id: roomId,
-                        name: name,
-                        source: source,
-                        type: type,
-                        channelId: roomId,
-                        serverId: serverId,
-                        worldId: resolvedWorldId,
-                        metadata: metadata,
-                        });
-
-                        runtime.addParticipant(runtime.agentId, roomId);
-                        runtime.ensureParticipantInRoom(runtime.agentId, roomId);
-                        runtime.setParticipantUserState(roomId, runtime.agentId, "FOLLOWED");
-
-                        sendSuccess(;
-                        res,
-                        {
-                            id: roomId,
-                            name: name,
-                            agentId: agentId,
-                            createdAt: Date.now(),
-                            source: source,
-                            type: type,
-                            worldId: resolvedWorldId,
-                            serverId: serverId,
-                            metadata: metadata,
-                            },
-                            201;
-                            );
-                            } catch (error) {
-                                std::cerr << "[ROOM CREATE] Error creating room for agent " + agentId + ":" << error << std::endl;
-                                sendError(;
-                                res,
-                                500,
-                                "CREATE_ERROR",
-                                "Failed to create room",
-                                true /* instanceof check */ ? error.message : std::to_string(error)
-                                );
-                            }
-                            });
-
-                            // Get all rooms where an agent is a participant
-                            router.get("/:agentId/rooms", std::async (req, res) => {
-                                const auto agentId = validateUuid(req.params.agentId);
-                                if (!agentId) {
-                                    return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
-                                }
-
-                                const auto runtime = agents.get(agentId);
-                                if (!runtime) {
-                                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
-                                }
-
-                                try {
-                                    const auto worlds = runtime.getAllWorlds();
-                                    const auto participantRoomIds = runtime.getRoomsForParticipant(agentId);
-                                    const std::vector<Room> agentRooms = [];
-
-                                    for (const auto& world : worlds)
-                                        const auto worldRooms = runtime.getRooms(world.id);
-                                        for (const auto& room : worldRooms)
-                                            if (participantRoomIds.includes(room.id)) {
-                                                agentRooms.push_back({
-                                                    ...room,
-                                                    });
-                                                }
-                                            }
-                                        }
-
-                                        sendSuccess(res, { rooms: agentRooms });
-                                        } catch (error) {
-                                            std::cerr << "[ROOMS LIST] Error retrieving rooms for agent " + agentId + ":" << error << std::endl;
-                                            sendError(;
-                                            res,
-                                            500,
-                                            "RETRIEVAL_ERROR",
-                                            "Failed to retrieve agent rooms",
-                                            true /* instanceof check */ ? error.message : std::to_string(error)
-                                            );
-                                        }
-                                        });
-
-                                        // Get room details
-                                        router.get("/:agentId/rooms/:roomId", std::async (req: CustomRequest, res: express.Response) => {
-                                            const auto agentId = validateUuid(req.params.agentId);
-                                            const auto roomId = validateUuid(req.params.roomId);
-
-                                            if (!agentId || !roomId) {
-                                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID or room ID format");
-                                            }
-
-                                            // Get runtime
-                                            const auto runtime = agents.get(agentId);
-                                            if (!runtime) {
-                                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
-                                            }
-
-                                            try {
-                                                const auto room = runtime.getRoom(roomId);
-                                                if (!room) {
-                                                    return sendError(res, 404, "NOT_FOUND", "Room not found");
-                                                }
-
-                                                // Enrich room data with world name
-                                                auto worldName: std::string | std::nullopt;
-                                                if (room.worldId) {
-                                                    const auto world = runtime.getWorld(room.worldId);
-                                                    worldName = world.name;
-                                                }
-
-                                                sendSuccess(res, {
-                                                    ...room,
-                                                    ...(worldName && { worldName }),
-                                                    });
-                                                    } catch (error) {
-                                                        std::cerr << "[ROOM DETAILS] Error retrieving room " + roomId + " for agent " + agentId + ":" << error << std::endl;
-                                                        sendError(;
-                                                        res,
-                                                        500,
-                                                        "RETRIEVAL_ERROR",
-                                                        "Failed to retrieve room details",
-                                                        true /* instanceof check */ ? error.message : std::to_string(error)
-                                                        );
-                                                    }
-                                                    });
-
-                                                    return router;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Rooms::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Rooms::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Rooms::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTFILEIDENTIFIER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTFILEIDENTIFIER_H
-#include "core.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TYPESCRIPTFILEIDENTIFIER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TYPESCRIPTFILEIDENTIFIER_HPP_
 
-class TypeScriptFileIdentifier;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TypeScriptFileIdentifier : public object, public std::enable_shared_from_this<TypeScriptFileIdentifier> {
+namespace elizaos {
+namespace generated_misc {
+
+class Typescriptfileidentifier {
 public:
-    using std::enable_shared_from_this<TypeScriptFileIdentifier>::shared_from_this;
-    virtual boolean isTypeScriptFile(std::string file);
-    virtual array<string> getTypeScriptFiles(std::string directory);
+    Typescriptfileidentifier() = default;
+    ~Typescriptfileidentifier() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "TypeScriptFileIdentifier"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TYPESCRIPTFILEIDENTIFIER_HPP_

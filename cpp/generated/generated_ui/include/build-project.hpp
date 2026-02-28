@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_BUILD-PROJECT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_BUILD-PROJECT_H
-#include "core.h"
-#include "node:fs.h"
-#include "node:path.h"
-#include "@elizaos/core.h"
-#include "execa.h"
-#include "./directory-detection.h"
-#include "./run-bun.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_PROJECT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_PROJECT_HPP_
 
-void buildProject(std::string cwd = process->cwd(), boolean isPlugin = false);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_ui {
+
+class BuildProject {
+public:
+    BuildProject() = default;
+    ~BuildProject() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "build_project"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_PROJECT_HPP_

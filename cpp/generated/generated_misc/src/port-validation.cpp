@@ -1,12 +1,26 @@
-#include "eliza/packages/cli/src/utils/port-validation.h"
+#include "port-validation.hpp"
 
-double validatePort(std::string value)
-{
-    auto port = Number->parseInt(value, 10);
-    if (OR((OR((Number->isNaN(port)), (port <= 0))), (port > 65535))) {
-        throw std::any(std::make_shared<Error>(std::string("Port must be a number between 1 and 65535")));
-    }
-    return port;
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool PortValidation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void PortValidation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PortValidation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

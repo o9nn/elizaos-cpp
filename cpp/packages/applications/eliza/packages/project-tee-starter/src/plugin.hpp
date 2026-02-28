@@ -1,49 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_TEE_STARTER_SRC_PLUGIN_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_TEE_STARTER_SRC_PLUGIN_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_tee_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Plugin {
+public:
+    Plugin() = default;
+    ~Plugin() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Create a custom TEE Client to make calls to the TEE through the Dstack SDK.
-
-/**
- * Define the configuration schema for the plugin with the following properties:
- *
- * @param {string} WALLET_SECRET_SALT - The secret salt for the wallet (min length of 1, std::optional)
- * @returns {object} - The configured schema object
- */
-
-class StarterService extends Service {
-  static serviceType = 'starter';
-  capabilityDescription = 'This is a starter service, can be customized for Mr. TEE.';
-  private teeClient: TappdClient;
-  private secretSalt: std::string;
-  constructor(protected runtime: IAgentRuntime) {
-    super(runtime);
-    this.teeClient = new TappdClient();
-    this.secretSalt = process.env.WALLET_SECRET_SALT || 'secret_salt';
-  }
-
-      // ECDSA Key
-
-      // ED25519 Key
-
-      // Handle TEE connection errors gracefully
-      // Continue without TEE functionality for testing
-
-      // Set all environment variables at once
-  // Enable this service to run when TEE mode is enabled
-    /* StarterService */
-
-
+} // namespace eliza_project_tee_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_TEE_STARTER_SRC_PLUGIN_HPP_

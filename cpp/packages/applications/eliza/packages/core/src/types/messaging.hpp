@@ -1,54 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_MESSAGING_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_MESSAGING_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Messaging {
+public:
+    Messaging() = default;
+    ~Messaging() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "messaging"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Information describing the target of a message.
- */
-struct TargetInfo {
-    std::string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
-    std::optional<UUID; // Target room ID (platform-specific or runtime-specific)> roomId;
-    std::optional<std::string; // Platform-specific channel/chat ID> channelId;
-    std::optional<std::string; // Platform-specific server/guild ID> serverId;
-    std::optional<UUID; // Target user ID (for DMs)> entityId;
-    std::optional<std::string; // Platform-specific std::thread ID (e.g., Telegram topics)> threadId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Function signature for handlers responsible for sending messages to specific platforms.
- */
-using SendHandlerFunction = (
-
-enum SOCKET_MESSAGE_TYPE {
-  ROOM_JOINING = 1,
-  SEND_MESSAGE = 2,
-  MESSAGE = 3,
-  ACK = 4,
-  THINKING = 5,
-  CONTROL = 6,
-}
-
-/**
- * Interface for control messages sent from the backend to the frontend
- * to manage UI state and interaction capabilities
- */
-struct ControlMessage {
-    'control' type;
-    { payload;
-    'disable_input' | 'enable_input' action;
-    std::optional<std::string> target;
-    UUID roomId;
-};
-
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_MESSAGING_HPP_

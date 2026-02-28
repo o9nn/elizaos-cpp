@@ -1,74 +1,35 @@
-#include ".base.hpp"
-#include ".schema/embedding.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_PG_ADAPTER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_PG_ADAPTER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Adapter {
+public:
+    Adapter() = default;
+    ~Adapter() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "adapter"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Adapter class for interacting with a PostgreSQL database.
- * Extends BaseDrizzleAdapter.
- */
-class PgDatabaseAdapter extends BaseDrizzleAdapter {
-  protected embeddingDimension: EmbeddingDimensionColumn = DIMENSION_MAP[384];
-  private manager: PostgresConnectionManager;
-
-  constructor(agentId: UUID, manager: PostgresConnectionManager, _schema?: std::any) {
-    super(agentId);
-    this.manager = manager;
-    this.db = manager.getDatabase();
-  }
-
-  /**
-   * Runs database migrations. For PostgreSQL, migrations should be handled
-   * externally or during deployment, so this is a no-op.
-   * @returns {Promise<void>}
-   */
-    // Migrations are handled by the migration service, not the adapter
-
-  /**
-   * Executes the provided operation with a database connection.
-   *
-   * @template T
-   * @param {() => Promise<T>} operation - The operation to be executed with the database connection.
-   * @returns {Promise<T>} A std::promise that resolves with the result of the operation.
-   */
-        // Cast to std::any to avoid type conflicts between different pg versions
-
-  /**
-   * Asynchronously initializes the PgDatabaseAdapter by running migrations using the manager.
-   * Logs a success message if initialization is successful, otherwise logs an error message.
-   *
-   * @returns {Promise<void>} A std::promise that resolves when initialization is complete.
-   */
-
-  /**
-   * Checks if the database connection is ready and active.
-   * @returns {Promise<boolean>} A Promise that resolves to true if the connection is healthy.
-   */
-
-  /**
-   * Asynchronously closes the manager associated with this instance.
-   *
-   * @returns A Promise that resolves once the manager is closed.
-   */
-
-  /**
-   * Asynchronously retrieves the connection from the manager.
-   *
-   * @returns {Promise<Pool>} A Promise that resolves with the connection.
-   */
-
-
+} // namespace eliza_plugin_sql
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_PG_ADAPTER_HPP_

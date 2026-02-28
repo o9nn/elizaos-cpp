@@ -1,45 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-GAMIFICATION_SRC_UTILS_CONTENTQUALITY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-GAMIFICATION_SRC_UTILS_CONTENTQUALITY_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTENTQUALITY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTENTQUALITY_HPP_
 
-class ContentQualityResult;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ContentQualityResult : public object, public std::enable_shared_from_this<ContentQualityResult> {
+namespace elizaos {
+namespace generated_misc {
+
+class Contentquality {
 public:
-    using std::enable_shared_from_this<ContentQualityResult>::shared_from_this;
-    boolean isValid;
+    Contentquality() = default;
+    ~Contentquality() = default;
 
-    std::string reason;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "contentQuality"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double score;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern object CONTENT_QUALITY_CONFIG;
-extern array<std::shared_ptr<RegExp>> KEYBOARD_MASH_PATTERNS;
-extern std::shared_ptr<RegExp> CONSECUTIVE_CHAR_REGEX;
-extern std::shared_ptr<RegExp> EMOJI_REGEX;
-extern std::shared_ptr<RegExp> URL_REGEX;
-extern std::shared_ptr<RegExp> SPECIAL_CHAR_REGEX;
-extern array<std::shared_ptr<RegExp>> SPAM_PHRASES;
-double calculateEntropy(std::string text);
+} // namespace generated_misc
+} // namespace elizaos
 
-object checkRepeatedChars(std::string text);
-
-object checkRepeatedWords(std::string text);
-
-object checkKeyboardMash(std::string text);
-
-object checkEmojiSpam(std::string text);
-
-object checkUrlSpam(std::string text);
-
-object checkSpecialCharSpam(std::string text);
-
-boolean checkSpamPhrases(std::string text);
-
-std::shared_ptr<ContentQualityResult> checkContentQuality(std::string text);
-
-boolean quickSpamCheck(std::string text);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTENTQUALITY_HPP_

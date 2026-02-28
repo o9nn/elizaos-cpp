@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___STATE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___STATE_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../types.h"
-#include "../state.h"
-#include "../state.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_STATE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_STATE_TEST_HPP_
 
-class StateV2;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class StateV2 : public object, public std::enable_shared_from_this<StateV2> {
+namespace elizaos {
+namespace generated_testing {
+
+class StateTest {
 public:
-    using std::enable_shared_from_this<StateV2>::shared_from_this;
-    object values;
+    StateTest() = default;
+    ~StateTest() = default;
 
-    object data;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "state_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string text;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::function<std::any(double)> createTestUUID;
-extern array<object> emptyMemoryData;
-#endif
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_STATE_TEST_HPP_

@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEDIA_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEDIA_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Media {
+public:
+    Media() = default;
+    ~Media() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "media"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct MediaUploadParams {
-    std::variant<File, std::vector<uint8_t>> file;
-    std::optional<std::string> filename;
-    std::optional<std::string> contentType;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct MediaUploadResponse {
-    std::string url;
-    std::string type;
-    std::string filename;
-    std::string originalName;
-    double size;
-};
-
-struct ChannelUploadResponse {
-    std::string url;
-    std::string type;
-    std::string filename;
-    std::string originalName;
-    double size;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_MEDIA_HPP_

@@ -1,2 +1,26 @@
-#include "discrub-ext/src/enum/message-type.h"
+#include "message-type.hpp"
 
+namespace elizaos {
+namespace generated_misc {
+
+bool MessageType::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void MessageType::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json MessageType::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

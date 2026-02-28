@@ -1,2 +1,26 @@
-#include "discrub-ext/src/types/guild-member-object.h"
+#include "guild-member-object.hpp"
 
+namespace elizaos {
+namespace generated_ui {
+
+bool GuildMemberObject::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void GuildMemberObject::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json GuildMemberObject::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_ui
+} // namespace elizaos

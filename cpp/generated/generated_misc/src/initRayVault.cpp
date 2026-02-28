@@ -1,45 +1,26 @@
-#include "auto.fun/packages/program/tests/initRayVault.h"
+#include "initRayVault.hpp"
 
-void Main(void)
-{
-    describe(std::string("raydium_vault"), [=]() mutable
-    {
-        auto provider = anchor->AnchorProvider->env();
-        anchor->setProvider(provider);
-        auto nodeWallet = as<std::shared_ptr<NodeWallet>>(provider->wallet);
-        shared signerWallet = anchor->web3->Keypair->fromSecretKey(nodeWallet->payer->secretKey);
-        shared program = as<std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>>>(anchor->workspace->RaydiumVault);
-        it(std::string("Initialize Vault Config"), [=]() mutable
-        {
-            auto vaultConfig = object{
-                object::pair{std::string("executorAuthority"), std::make_shared<anchor->web3->PublicKey>(std::string("autozgbVb1EvhrTZTkpLekJRN4sN5hhGYpMMiY9kQ5S"))}, 
-                object::pair{std::string("emergencyAuthority"), std::make_shared<anchor->web3->PublicKey>(std::string("iGkGbxitDUdFhWSewd9gX2QzwTqJQSoFP5pkwvj25YP"))}, 
-                object::pair{std::string("managerAuthority"), std::make_shared<anchor->web3->PublicKey>(std::string("autozgbVb1EvhrTZTkpLekJRN4sN5hhGYpMMiY9kQ5S"))}
-            };
-            auto [vault] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(vaultConfigSeed) }, program->programId);
-            std::any vaultConfigInfo;
-            try
-            {
-                vaultConfigInfo = std::async([=]() { program->account->vaultConfig->fetch(vault); });
-            }
-            catch (const std::any& error)
-            {
-                std::async([=]() { program->rpc->initialize(vaultConfig, object{
-                    object::pair{std::string("accounts"), object{
-                        object::pair{std::string("payer"), signerWallet->publicKey}, 
-                        object::pair{std::string("vaultConfig"), vault}, 
-                        object::pair{std::string("systemProgram"), anchor->web3->SystemProgram->programId}
-                    }}
-                }); });
-                vaultConfigInfo = std::async([=]() { program->account->vaultConfig->fetch(vault); });
-            }
-            console->log(std::string("executor: "), vaultConfigInfo["executorAuthority"]["toString"]());
-            console->log(std::string("emergency: "), vaultConfigInfo["emergencyAuthority"]["toString"]());
-            console->log(std::string("manager: "), vaultConfigInfo["managerAuthority"]["toString"]());
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_misc {
+
+bool Initrayvault::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Initrayvault::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Initrayvault::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

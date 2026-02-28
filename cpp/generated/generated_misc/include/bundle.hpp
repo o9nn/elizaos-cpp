@@ -1,39 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
-#include "core.h"
-#include "path.h"
-using path = _default;
-#include "fs.h"
-using fs = _default;
-#include "js-yaml.h"
-using yaml = _default;
-#include "./commands.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BUNDLE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BUNDLE_HPP_
 
-class BundleConfig;
-class Bundle;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BundleConfig : public object, public std::enable_shared_from_this<BundleConfig> {
+namespace elizaos {
+namespace generated_misc {
+
+class Bundle {
 public:
-    using std::enable_shared_from_this<BundleConfig>::shared_from_this;
-    Record<std::string, any> tools;
+    Bundle() = default;
+    ~Bundle() = default;
 
-    std::any stateCommand;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "bundle"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Bundle : public object, public std::enable_shared_from_this<Bundle> {
-public:
-    using std::enable_shared_from_this<Bundle>::shared_from_this;
-    std::string path;
+} // namespace generated_misc
+} // namespace elizaos
 
-    array<string> hiddenTools;
-
-    std::shared_ptr<BundleConfig> _config;
-
-    Bundle(object config);
-    virtual void validateTools();
-    virtual std::any get_stateCommand();
-    virtual std::shared_ptr<BundleConfig> get_config();
-    virtual array<std::shared_ptr<Command>> get_commands();
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BUNDLE_HPP_

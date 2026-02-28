@@ -1,38 +1,26 @@
-#include "eliza/packages/cli/src/utils/eliza-paths.h"
+#include "eliza-paths.hpp"
 
-std::string getElizaBaseDir(std::string cwd)
-{
-    return path->join(cwd, std::string(".eliza"));
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool ElizaPaths::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::string getElizaDbDir(std::string cwd)
-{
-    return path->join(getElizaBaseDir(cwd), std::string(".elizadb"));
-};
+void ElizaPaths::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json ElizaPaths::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::string getElizaDataDir(std::string cwd)
-{
-    return path->join(getElizaBaseDir(cwd), std::string("data"));
-};
-
-
-std::string getElizaUploadsDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("uploads"));
-};
-
-
-std::string getElizaGeneratedDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("generated"));
-};
-
-
-std::string getElizaCharactersDir(std::string cwd)
-{
-    return path->join(getElizaDataDir(cwd), std::string("characters"));
-};
-
-
+} // namespace generated_misc
+} // namespace elizaos

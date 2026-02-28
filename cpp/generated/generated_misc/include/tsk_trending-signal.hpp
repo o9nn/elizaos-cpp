@@ -1,41 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_TSK_TRENDING-SIGNAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_TSK_TRENDING-SIGNAL_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../schemas.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TSK_TRENDING_SIGNAL_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TSK_TRENDING_SIGNAL_HPP_
 
-class IBuySignalOutput;
-class BuySignal;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::string DEGEN_WALLET;
-extern std::string _rolePrompt;
-extern std::string _template;
-class IBuySignalOutput : public object, public std::enable_shared_from_this<IBuySignalOutput> {
+namespace elizaos {
+namespace generated_misc {
+
+class TskTrendingSignal {
 public:
-    using std::enable_shared_from_this<IBuySignalOutput>::shared_from_this;
-    std::string recommended_buy;
+    TskTrendingSignal() = default;
+    ~TskTrendingSignal() = default;
 
-    std::string recommend_buy_address;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tsk_trending_signal"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double marketcap;
-
-    std::string reason;
-
-    std::string buy_amount;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class BuySignal : public object, public std::enable_shared_from_this<BuySignal> {
-public:
-    using std::enable_shared_from_this<BuySignal>::shared_from_this;
-    std::string apiKey;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::shared_ptr<IAgentRuntime> runtime;
-
-    BuySignal(std::shared_ptr<IAgentRuntime> runtime);
-    virtual std::shared_ptr<Promise<boolean>> generateSignal();
-    virtual std::any getBalance();
-};
-
-using _default = BuySignal;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TSK_TRENDING_SIGNAL_HPP_

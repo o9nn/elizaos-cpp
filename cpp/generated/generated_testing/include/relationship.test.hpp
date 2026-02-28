@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___RELATIONSHIP_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___RELATIONSHIP_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../relationship.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_RELATIONSHIP_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_RELATIONSHIP_TEST_HPP_
 
-class RelationshipV2;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::any(double)> createTestUUID;
-class RelationshipV2 : public object, public std::enable_shared_from_this<RelationshipV2> {
+namespace elizaos {
+namespace generated_testing {
+
+class RelationshipTest {
 public:
-    using std::enable_shared_from_this<RelationshipV2>::shared_from_this;
-    std::shared_ptr<UUID> id;
+    RelationshipTest() = default;
+    ~RelationshipTest() = default;
 
-    std::shared_ptr<UUID> sourceEntityId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "relationship_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<UUID> targetEntityId;
-
-    std::shared_ptr<UUID> agentId;
-
-    array<string> tags;
-
-    object metadata;
-
-    std::string createdAt;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_RELATIONSHIP_TEST_HPP_

@@ -1,58 +1,35 @@
-#include "service.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_WALLET_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_WALLET_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Wallet {
+public:
+    Wallet() = default;
+    ~Wallet() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "wallet"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Represents a single asset holding within a wallet, including its value.
- * This extends a generic TokenBalance with wallet-specific valuation.
- */
-
-/**
- * Represents the entire portfolio of assets in a wallet.
- */
-struct WalletPortfolio {
-    double totalValueUsd;
-    std::vector<WalletAsset> assets;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Abstract interface for a Wallet Service.
- * Plugins that provide wallet functionality (e.g., for Solana, EVM) should implement this service.
- * It provides a standardized way for other plugins to query the state of a wallet.
- */
-
-  /**
-   * Retrieves the entire portfolio of assets held by the wallet.
-   * @param owner - Optional: The specific wallet address/owner to query if the service manages multiple.
-   * @returns A std::promise that resolves to the wallet's portfolio.
-   */
-
-  /**
-   * Retrieves the balance of a specific asset in the wallet.
-   * @param assetAddress - The mint address or native identifier of the asset.
-   * @param owner - Optional: The specific wallet address/owner to query.
-   * @returns A std::promise that resolves to the user-friendly (decimal-adjusted) balance of the asset held.
-   */
-
-  /**
-   * Transfers SOL from a specified keypair to a given public key.
-   * This is a low-level std::function primarily for Solana-based wallet services.
-   * @param from - The Keypair of the sender.
-   * @param to - The PublicKey of the recipient.
-   * @param lamports - The amount in lamports to transfer.
-   * @returns A std::promise that resolves with the transaction signature.
-   */
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_WALLET_HPP_

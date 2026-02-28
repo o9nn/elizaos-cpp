@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "../services/task.h"
-#include "@elizaos/core.h"
-#include "../index.h"
-#include "@elizaos/core.h"
-#include "./test-utils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICES_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICES_TEST_HPP_
 
-class PluginService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PluginService : public Service, public std::enable_shared_from_this<PluginService> {
+namespace elizaos {
+namespace generated_services {
+
+class ServicesTest {
 public:
-    using std::enable_shared_from_this<PluginService>::shared_from_this;
-    std::string type;
+    ServicesTest() = default;
+    ~ServicesTest() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "services_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::function<std::shared_ptr<Promise<any>>(std::shared_ptr<IAgentRuntime>)> init;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::function<array<std::shared_ptr<PluginService>>()> getPluginServices;
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_SERVICES_TEST_HPP_

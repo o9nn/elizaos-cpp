@@ -1,60 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_CHARACTER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_CHARACTER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Character {
+public:
+    Character() = default;
+    ~Character() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Character provider object.
- * @typedef {Object} Provider
- * @property {string} name - The name of the provider ("CHARACTER").
- * @property {string} description - Description of the character information.
- * @property {Function} get - Async std::function to get character information.
- */
-/**
- * Provides character information.
- * @param {IAgentRuntime} runtime - The agent runtime.
- * @param {Memory} message - The message memory.
- * @param {State} state - The state of the character.
- * @returns {Object} Object containing values, data, and text sections.
- */
-
-    // Character name
-
-    // Handle bio (std::string or random selection from array)
-
-    // System prompt
-
-    // Select random topic if available
-
-    // postCreationTemplate in core prompts.ts
-    // Write a post that is {{adjective}} about {{topic}} (without mentioning {{topic}} directly), from the perspective of {{agentName}}. Do not add commentary or acknowledge this request, just write the post.
-    // Write a post that is {{Spartan is dirty}} about {{Spartan is currently}}
-
-    // Format topics list
-
-    // Select random adjective if available
-
-    // Format post examples
-
-    // Format message examples
-
-    // Style directions
-
-    // Combine all text sections
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_CHARACTER_HPP_

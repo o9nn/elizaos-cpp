@@ -1,18 +1,26 @@
-#include "spartan/src/plugins/plugin-app/src/forms/base.h"
+#include "base.hpp"
 
-form::form() {
-    this->fields = array<any>();
+namespace elizaos {
+namespace generated_misc {
+
+bool Base::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void form::addField(std::any type, std::any name, std::any value, std::any label, std::any validation, std::any options)
-{
-    this->fields["push"](object{
-        object::pair{std::string("type"), std::string("type")}, 
-        object::pair{std::string("name"), std::string("name")}, 
-        object::pair{std::string("value"), std::string("value")}, 
-        object::pair{std::string("label"), std::string("label")}, 
-        object::pair{std::string("validation"), std::string("validation")}, 
-        object::pair{std::string("options"), std::string("options")}
-    });
+void Base::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Base::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

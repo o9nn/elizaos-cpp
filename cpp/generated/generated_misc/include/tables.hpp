@@ -1,39 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_DATABASE_TABLES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_DATABASE_TABLES_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TABLES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TABLES_HPP_
 
-class TableSchema;
-class TaskMetadata;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TableSchema : public object, public std::enable_shared_from_this<TableSchema> {
+namespace elizaos {
+namespace generated_misc {
+
+class Tables {
 public:
-    using std::enable_shared_from_this<TableSchema>::shared_from_this;
-    std::string name;
+    Tables() = default;
+    ~Tables() = default;
 
-    std::string pluginName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tables"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string sql;
-
-    std::string fallbackSql;
-
-    array<string> dependencies;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern array<std::shared_ptr<TableSchema>> GOALS_TABLES;
-class TaskMetadata : public object, public std::enable_shared_from_this<TaskMetadata> {
-public:
-    using std::enable_shared_from_this<TaskMetadata>::shared_from_this;
-    std::string dueDate;
+} // namespace generated_misc
+} // namespace elizaos
 
-    double streak;
-
-    boolean completedToday;
-
-    std::string lastReminderSent;
-
-    double pointsAwarded;
-
-    std::string completedAt;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TABLES_HPP_

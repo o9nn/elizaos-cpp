@@ -1,21 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_TESTS_INTEGRATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_TESTS_INTEGRATION_TEST_H
-#include "core.h"
-#include "vitest.h"
-#include "../index.js.h"
-#include "../service.js.h"
-#include "../types.js.h"
-#include "../evaluators/experienceEvaluator.js.h"
-#include "@elizaos/core.h"
-#include "uuid.h"
-using uuidv4 = v4;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INTEGRATION_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INTEGRATION_TEST_HPP_
 
-extern std::function<std::any()> tuuid;
-extern std::shared_ptr<Provider> mockRAGProvider;
-extern std::shared_ptr<Provider> mockRecentProvider;
-extern std::any mockRuntime;
-extern std::function<std::any(std::string, std::any)> createMockMessage;
-extern std::function<std::any(std::any)> createMockState;
-std::string detectDomain(std::string text);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_testing {
+
+class IntegrationTest {
+public:
+    IntegrationTest() = default;
+    ~IntegrationTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "integration_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_INTEGRATION_TEST_HPP_

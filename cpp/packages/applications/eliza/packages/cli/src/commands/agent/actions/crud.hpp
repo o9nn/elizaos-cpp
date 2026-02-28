@@ -1,56 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_AGENT_ACTIONS_CRUD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_AGENT_ACTIONS_CRUD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "shared.hpp"
-#include "utils.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Crud {
+public:
+    Crud() = default;
+    ~Crud() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "crud"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Safely parse JSON response with error handling
- * @param response - The fetch Response object
- * @returns Parsed JSON data or null if parsing fails
- */
-
-/**
- * Parse error response and throw appropriate error
- * @param response - The fetch Response object
- * @param defaultMessage - Default error message if JSON parsing fails
- */
-std::future<void> handleErrorResponse(const std::string& response, const std::string& defaultMessage);
-
-/**
- * Get command implementation - retrieves and displays agent details
- */
-std::future<void> getAgent(OptionValues opts);
-
-/**
- * Remove command implementation - deletes an agent
- */
-std::future<void> removeAgent(OptionValues opts);
-
-/**
- * Clear memories command implementation - clears all memories for an agent
- */
-std::future<void> clearAgentMemories(OptionValues opts);
-
-/**
- * Set command implementation - updates agent configuration
- */
-std::future<void> setAgentConfig(OptionValues opts);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_AGENT_ACTIONS_CRUD_HPP_

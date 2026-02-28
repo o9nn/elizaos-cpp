@@ -1,29 +1,26 @@
 #include "_layout.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace mobile {
 
-void RootLayout() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    useFonts({
-        Inter_400Regular,
-        Inter_500Medium,
-        Inter_600SemiBold,
-        });
-        return (;
-        <PrivyProvider;
-    appId={Constants.expoConfig.extra.privyAppId}
-    clientId={Constants.expoConfig.extra.privyClientId}
-    >;
-    <Stack>;
-    <Stack.Screen name="index" />;
-    </Stack>;
-    <PrivyElements />;
-    </PrivyProvider>;
-    );
-
+bool Layout::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Layout::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Layout::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace mobile
 } // namespace elizaos

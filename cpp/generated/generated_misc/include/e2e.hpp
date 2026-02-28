@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___CYPRESS_SUPPORT_E2E_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___CYPRESS_SUPPORT_E2E_H
-#include "core.h"
-#include "./commands.h"
-#include "@testing-library/cypress/add-commands.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_E2E_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_E2E_HPP_
 
-namespace global {
-    namespace Cypress {
-        class Chainable;
-    }
-}
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-namespace global {
-    namespace Cypress {
-        class Chainable : public object, public std::enable_shared_from_this<Chainable> {
-        public:
-            using std::enable_shared_from_this<Chainable>::shared_from_this;
-            virtual std::shared_ptr<Chainable<void>> login(std::string username = undefined, std::string password = undefined) = 0;
-            virtual std::shared_ptr<Chainable<void>> waitForApp() = 0;
-            virtual std::shared_ptr<Chainable<void>> navigateToAgent(std::string agentId = undefined) = 0;
-            virtual std::shared_ptr<Chainable<void>> sendChatMessage(std::string message) = 0;
-            virtual std::shared_ptr<Chainable<void>> clearAppData() = 0;
-        };
+namespace elizaos {
+namespace generated_misc {
 
-    }
-}
-namespace global {
-    namespace Cypress {
-    }
-}
-#endif
+class E2e {
+public:
+    E2e() = default;
+    ~E2e() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "e2e"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_E2E_HPP_

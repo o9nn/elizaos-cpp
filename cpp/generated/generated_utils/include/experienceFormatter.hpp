@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_UTILS_EXPERIENCEFORMATTER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_UTILS_EXPERIENCEFORMATTER_H
-#include "core.h"
-#include "../types.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_EXPERIENCEFORMATTER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_EXPERIENCEFORMATTER_HPP_
 
-std::string formatExperienceForDisplay(std::shared_ptr<Experience> experience);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string formatExperienceSummary(std::shared_ptr<Experience> experience);
+namespace elizaos {
+namespace generated_utils {
 
-std::string formatExperienceList(array<std::shared_ptr<Experience>> experiences);
+class Experienceformatter {
+public:
+    Experienceformatter() = default;
+    ~Experienceformatter() = default;
 
-std::string formatPatternSummary(object pattern);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "experienceFormatter"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Map<std::string, array<std::shared_ptr<Experience>>>> groupExperiencesByDomain(array<std::shared_ptr<Experience>> experiences);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-object getExperienceStats(array<std::shared_ptr<Experience>> experiences);
+} // namespace generated_utils
+} // namespace elizaos
 
-std::string getTypeEmoji(ExperienceType type);
-
-std::string formatExperienceForRAG(std::shared_ptr<Experience> experience);
-
-array<string> extractKeywords(std::shared_ptr<Experience> experience);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_EXPERIENCEFORMATTER_HPP_

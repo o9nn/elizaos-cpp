@@ -1,20 +1,26 @@
 #include "elizaos-modules.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::variant<Character, null;
-  export std::function jsonToCharacter(json: std::any): Character;
+bool ElizaosModules::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-declare module '@elizaos/plugin-sql'> loadCharacterTryPath(const std::string& path) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    import type { Plugin } from "@elizaos/core";
-
-    export const plugin: Plugin;
-
+void ElizaosModules::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json ElizaosModules::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

@@ -1,36 +1,26 @@
-#include "otaku/src/plugins/plugin-defillama/src/utils/action-helpers.h"
+#include "action-helpers.hpp"
 
-std::any sanitizeChainName(std::any value)
-{
-    if (!value) {
-        return undefined;
-    }
-    auto trimmed = value->trim();
-    if (!trimmed) {
-        return undefined;
-    }
-    return (CHAIN_NAME_PATTERN->test(trimmed)) ? std::any(trimmed) : std::any(undefined);
-};
+namespace elizaos {
+namespace generated_utils {
 
-
-std::any sanitizeFilterSegment(std::any value)
-{
-    if (!value) {
-        return undefined;
-    }
-    auto trimmed = value->trim()->toLowerCase();
-    if (!trimmed) {
-        return undefined;
-    }
-    return (FILTER_PATTERN->test(trimmed)) ? std::any(trimmed) : std::any(undefined);
-};
-
-
-std::shared_ptr<RegExp> CHAIN_NAME_PATTERN = (new RegExp(std::string("^[A-Za-z0-9 .\-_/()]{2,}")));
-std::shared_ptr<RegExp> FILTER_PATTERN = (new RegExp(std::string("^[a-z\-]{2,}")));
-
-void Main(void)
-{
+bool ActionHelpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void ActionHelpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ActionHelpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

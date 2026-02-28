@@ -1,65 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_AGENTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_AGENTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "button.hpp"
-#include "ui/badge.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Agents {
+public:
+    Agents() = default;
+    ~Agents() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agents"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// 
-
-// --- API Base URL ---
-
-// Storage keys for Twitter auth
-
-// Types for Twitter authentication
-using TwitterCredentials = {
-
-struct CreatorProfile {
-    std::optional<std::string> displayName;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct TokenAgent {
-    std::string id;
-    std::string tokenMint;
-    std::string ownerAddress;
-    std::string twitterUserId;
-    std::string twitterUserName;
-    std::string twitterImageUrl;
-    std::optional<std::string> twitterDescription;
-    std::optional<bool> official;
-    std::optional<double> createdAt;
-};
-
-struct TokenAgentsResponse {
-    std::vector<TokenAgent> agents;
-};
-
-// --- End Expected API Response Types ---
-
-// --- Prop Types ---
-struct AgentsSectionProps {
-    bool isCreator;
-};
-
-struct AgentsComponentContentProps {
-    std::string tokenMint;
-    bool isCreator;
-};
-
-// --- Main Exported Component ---
-// Remove tokenData prop from signature
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TOKEN_SECTIONS_AGENTS_HPP_

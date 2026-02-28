@@ -1,32 +1,26 @@
-#include "classified/packages/game/src/utils/blockOldMessages.h"
+#include "blockOldMessages.hpp"
 
-void blockOldMessages()
-{
-    console->log(std::string("🛡️ Installing WebSocket message blocker..."));
-    shared originalSend = WebSocket["prototype"]->send;
-    WebSocket["prototype"]->send = [=](P0 data) mutable
-    {
-        try
-        {
-            auto message = nullptr;
-            if (type_of(data) == std::string("string")) {
-                message = as<std::shared_ptr<WebSocketMessage>>(JSON->parse(data));
-            }
-            if (AND((message), (message->type == std::string("send_message")))) {
-                auto messageText = OR((OR((message->message["text"]), (message->message["content"]))), (string_empty));
-                if (messageText->includes(std::string("admin has opened the terminal"))) {
-                    console->error(std::string("🚫 BLOCKED problematic message!"), message);
-                    console->trace();
-                    return std::any();
-                }
-            }
-        }
-        catch (const std::any& _e)
-        {
-        }
-        return originalSend->apply(shared_from_this(), array<any>{ data });
-    };
-    console->log(std::string("✅ WebSocket message blocker installed"));
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Blockoldmessages::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Blockoldmessages::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Blockoldmessages::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

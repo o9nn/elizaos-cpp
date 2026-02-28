@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-FORMS_SRC___TESTS___FORMS-SERVICE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-FORMS_SRC___TESTS___FORMS-SERVICE_TEST_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "bun:test.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../services/forms-service.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_FORMS_SERVICE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_FORMS_SERVICE_TEST_HPP_
 
-extern std::function<std::any(std::string)> createMockMemory;
-extern std::function<std::any()> createTypedMockRuntime;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_services {
+
+class FormsServiceTest {
+public:
+    FormsServiceTest() = default;
+    ~FormsServiceTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "forms_service_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_FORMS_SERVICE_TEST_HPP_

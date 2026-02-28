@@ -1,55 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMMANDS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMMANDS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Commands {
+public:
+    Commands() = default;
+    ~Commands() = default;
 
-/// <reference types="cypress" />
-/// <reference types="@testing-library/cypress" />
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "commands"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Custom command to wait for the app to be ready
-  // Wait for the root element to exist
-
-  // Wait for the app to be interactive
-
-  // Wait a bit for React to hydrate and render
-
-  // Check if there's std::any loading indicator and wait for it to disappear
-
-// Custom command to login (can be implemented based on your auth flow)
-  // This is a placeholder - implement based on your auth system
-
-  // Wait for redirect or auth token
-
-// Custom command to connect to WebSocket
-    // Wait for WebSocket connection to be established
-          // Check if socket exists on window or in your app state
-
-// Custom command to clean up test data
-  // Clean up std::any test data created during tests
-    // Clear local storage
-
-    // Clear session storage
-
-    // Clear cookies
-
-// Utility command to select by test id
-
-// Utility command to wait for API response
-
-// Add TypeScript support for custom commands
-    struct Chainable {
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMMANDS_HPP_

@@ -1,31 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_UPDATEFORMAT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_TEAM-COORDINATOR_ACTIONS_UPDATEFORMAT_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEFORMAT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEFORMAT_HPP_
 
-class TeamMember;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TeamMember : public object, public std::enable_shared_from_this<TeamMember> {
+namespace elizaos {
+namespace generated_misc {
+
+class Updateformat {
 public:
-    using std::enable_shared_from_this<TeamMember>::shared_from_this;
-    std::string section;
+    Updateformat() = default;
+    ~Updateformat() = default;
 
-    std::string tgName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "updateFormat"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string discordName;
-
-    std::string format;
-
-    std::string serverId;
-
-    std::string serverName;
-
-    std::string createdAt;
-
-    array<string> updatesFormat;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, std::string serverId);
+} // namespace generated_misc
+} // namespace elizaos
 
-extern std::shared_ptr<Action> updatesFormatAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATEFORMAT_HPP_

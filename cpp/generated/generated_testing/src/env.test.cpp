@@ -1,24 +1,26 @@
-#include "plugin-specification/core-plugin-v2/__tests__/env.test.h"
+#include "env.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("Environment Setup"), [=]() mutable
-    {
-        it(std::string("should verify .env.test file exists"), [=]() mutable
-        {
-            auto possiblePaths = array<any>{ path->join(process->cwd(), std::string(".env.test")), path->join(process->cwd(), std::string("packages/core/.env.test")), path->join(__dirname, std::string("../../.env.test")), path->join(__dirname, std::string("../.env.test")), path->join(__dirname, std::string(".env.test")) };
-            auto existingPaths = possiblePaths->filter([=](auto p) mutable
-            {
-                auto exists = fs->existsSync(p);
-                console->log(std::string("Path ") + p + std::string(" exists: ") + exists + string_empty);
-                return exists;
-            }
-            );
-            expect(existingPaths->get_length())->toBeGreaterThan(0);
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool EnvTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void EnvTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json EnvTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

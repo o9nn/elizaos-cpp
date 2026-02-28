@@ -1,12 +1,26 @@
-#include "autonomous-starter/src/plugin-experience/providers/recentExperiences.h"
+#include "recentExperiences.hpp"
 
-std::shared_ptr<Provider> recentExperiencesProvider = object{
-    object::pair{std::string("name"), std::string("recentExperiences")}, 
-    object::pair{std::string("description"), std::string("Provides recent experiences, statistics, and detected patterns")}, 
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Recentexperiences::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Recentexperiences::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Recentexperiences::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,80 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_TESTING_TEST-HEALTH-MONITOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_TESTING_TEST-HEALTH-MONITOR_H
-#include "core.h"
-#include "node:fs.h"
-#include "node:path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEST_HEALTH_MONITOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEST_HEALTH_MONITOR_HPP_
 
-class TestResult;
-class TestRun;
-class TestHealth;
-class TestHealthMonitor;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestResult : public object, public std::enable_shared_from_this<TestResult> {
+namespace elizaos {
+namespace generated_misc {
+
+class TestHealthMonitor {
 public:
-    using std::enable_shared_from_this<TestResult>::shared_from_this;
-    std::string name;
+    TestHealthMonitor() = default;
+    ~TestHealthMonitor() = default;
 
-    double duration;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "test_health_monitor"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any status;
-
-    std::string error;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TestRun : public object, public std::enable_shared_from_this<TestRun> {
-public:
-    using std::enable_shared_from_this<TestRun>::shared_from_this;
-    std::shared_ptr<Date> date;
+} // namespace generated_misc
+} // namespace elizaos
 
-    double total;
-
-    double passed;
-
-    double failed;
-
-    double skipped;
-
-    double duration;
-
-    array<std::shared_ptr<TestResult>> tests;
-};
-
-class TestHealth : public object, public std::enable_shared_from_this<TestHealth> {
-public:
-    using std::enable_shared_from_this<TestHealth>::shared_from_this;
-    std::shared_ptr<Date> lastRun;
-
-    double totalTests;
-
-    double passedTests;
-
-    double failedTests;
-
-    array<string> flakyTests;
-
-    double averageRuntime;
-
-    array<object> slowestTests;
-
-    array<std::shared_ptr<TestRun>> testHistory;
-};
-
-class TestHealthMonitor : public object, public std::enable_shared_from_this<TestHealthMonitor> {
-public:
-    using std::enable_shared_from_this<TestHealthMonitor>::shared_from_this;
-    std::string healthDataPath;
-
-    double maxHistorySize = 100;
-
-    TestHealthMonitor(std::string dataDir = std::string(".test-health"));
-    virtual void ensureDataDir();
-    virtual void recordTestRun(std::shared_ptr<TestRun> results);
-    virtual void updateFlakyTests(std::shared_ptr<TestHealth> health);
-    virtual std::shared_ptr<TestHealth> getHealth();
-    virtual void saveHealth(std::shared_ptr<TestHealth> health);
-    virtual std::string generateReport();
-    virtual object getTestTrends();
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TEST_HEALTH_MONITOR_HPP_

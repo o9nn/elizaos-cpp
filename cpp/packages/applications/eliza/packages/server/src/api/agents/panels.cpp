@@ -1,55 +1,26 @@
 #include "panels.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router createAgentPanelsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto router = express.Router();
-
-        // Get Agent Panels (public GET routes)
-        router.get("/:agentId/panels", std::async (req, res) => {
-            const auto agentId = validateUuid(req.params.agentId);
-            if (!agentId) {
-                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
-            }
-
-            const auto runtime = agents.get(agentId);
-            if (!runtime) {
-                return sendError(res, 404, "NOT_FOUND", "Agent not found");
-            }
-
-            try {
-                const auto publicPanels = runtime.plugins;
-                .flatMap((plugin) => plugin.routes || []);
-                .filter((route) => route.public == true && route.type == "GET" && route.name);
-                .std::map((route) => ({
-                    name: route.name,
-                    "path: " + "/api" + std::to_string(route.path.startsWith("/") ? route.path : `/${route.path}`) + "?agentId=" + agentId
-                    }));
-
-                    sendSuccess(res, publicPanels);
-                    } catch (error) {
-                        std::cerr << "[AGENT PANELS] Error retrieving panels for agent " + agentId + ":" << error << std::endl;
-                        sendError(;
-                        res,
-                        500,
-                        "PANEL_ERROR",
-                        "Error retrieving agent panels",
-                        true /* instanceof check */ ? error.message : std::to_string(error)
-                        );
-                    }
-                    });
-
-                    return router;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Panels::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Panels::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Panels::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

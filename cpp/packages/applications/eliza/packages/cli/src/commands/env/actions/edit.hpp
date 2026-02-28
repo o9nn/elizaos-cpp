@@ -1,42 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_EDIT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_EDIT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
-#include "utils/file-operations.hpp"
-#include "utils/validation.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Edit {
+public:
+    Edit() = default;
+    ~Edit() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "edit"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Interactive environment variable editor for local .env files.
- *
- * Provides an interactive menu to edit existing variables, add new variables, and delete variables from the local .env file. Supports auto-confirmation mode for non-interactive usage.
- *
- * @param options - Edit command options
- * @param fromMainMenu - Whether this command was called from the main menu (affects return behavior)
- * @returns Promise<boolean> - Whether to return to main menu
- */
-std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu);
-
-/**
- * Helper std::function to add a new environment variable
- * @param envPath Path to the .env file
- * @param envVars Current environment variables
- * @param yes Whether to auto-confirm prompts
- */
-std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_ACTIONS_EDIT_HPP_

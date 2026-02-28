@@ -1,52 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_DATASERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_DATASERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../utils/cacheManager.h"
-#include "../types/trading.h"
-#include "../utils/wallet.h"
-#include "./analyticsService.h"
-#include "./calculation/birdeye.h"
-#include "./calculation/technicalAnalysis.h"
-#include "./calculation/scoring.h"
-#include "./validation/tokenSecurity.h"
-#include "./calculation/tradeCalculation.h"
-#include "./walletService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_DATASERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_DATASERVICE_HPP_
 
-class DataService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DataService : public object, public std::enable_shared_from_this<DataService> {
+namespace elizaos {
+namespace generated_services {
+
+class Dataservice {
 public:
-    using std::enable_shared_from_this<DataService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Dataservice() = default;
+    ~Dataservice() = default;
 
-    std::shared_ptr<WalletService> walletService;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "dataService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<CacheManager> cacheManager;
-
-    std::shared_ptr<BirdeyeService> birdeyeService;
-
-    std::shared_ptr<AnalyticsService> analyticsService;
-
-    std::shared_ptr<TechnicalAnalysisService> technicalAnalysisService;
-
-    std::shared_ptr<ScoringService> scoringService;
-
-    std::shared_ptr<TokenSecurityService> tokenSecurityService;
-
-    std::shared_ptr<TradeCalculationService> tradeCalculationService;
-
-    DataService(std::shared_ptr<IAgentRuntime> runtime_, std::shared_ptr<WalletService> walletService_);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getBirdeyeSignals();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getTwitterSignals();
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getCMCSignals();
-    virtual std::shared_ptr<Promise<object>> getTokenMarketData(std::string tokenAddress);
-    virtual std::shared_ptr<Promise<any>> getTokensMarketData(array<string> tokenAddresses);
-    virtual std::shared_ptr<Promise<array<string>>> getMonitoredTokens();
-    virtual std::shared_ptr<Promise<array<any>>> getPositions();
-    virtual std::any getDefaultRecommendation();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_DATASERVICE_HPP_

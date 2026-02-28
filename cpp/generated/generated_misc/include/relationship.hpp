@@ -1,37 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_RELATIONSHIP_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_RELATIONSHIP_H
-#include "core.h"
-#include "./types.h"
-using RelationshipFromTypes = Relationship;
-#include "@elizaos/core-plugin-v2.h"
-using RelationshipV2 = Relationship;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RELATIONSHIP_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RELATIONSHIP_HPP_
 
-typedef RelationshipFromTypes Relationship;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_misc {
 
-Relationship fromV2Relationship(std::shared_ptr<RelationshipV2> relationshipV2);
+class Relationship {
+public:
+    Relationship() = default;
+    ~Relationship() = default;
 
-std::shared_ptr<RelationshipV2> toV2Relationship(Relationship relationship, std::shared_ptr<UUID> agentId);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "relationship"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-array<Relationship> fromV2Relationships(array<std::shared_ptr<RelationshipV2>> relationshipsV2);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-array<std::shared_ptr<RelationshipV2>> toV2Relationships(array<Relationship> relationships, std::shared_ptr<UUID> agentId);
+} // namespace generated_misc
+} // namespace elizaos
 
-extern object RELATIONSHIP_STATUSES;
-std::string tagsToStatus(array<string> tags);
-
-array<string> statusToTags(std::string status);
-
-Relationship fromV2RelationshipEnhanced(std::shared_ptr<RelationshipV2> relationshipV2);
-
-std::shared_ptr<RelationshipV2> toV2RelationshipEnhanced(Relationship relationship, std::shared_ptr<UUID> agentId);
-
-Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, std::string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = undefined);
-
-boolean areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
-
-array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, std::string status);
-
-array<Relationship> getRelationshipsForUser(array<Relationship> relationships, std::shared_ptr<UUID> userId);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RELATIONSHIP_HPP_

@@ -1,98 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/audio.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AUDIO_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AUDIO_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Audio {
+public:
+    Audio() = default;
+    ~Audio() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "audio"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class AudioService extends BaseApiClient {
-  /**
-   * Make a binary request using BaseApiClient infrastructure
-   */
-  private std::async requestBinary(
-    method: std::string,
-    path: std::string,
-    options?: {
-      body?: std::any;
-      params?: Record<std::string, any>;
-      headers?: Record<std::string, string>;
-    }
-    // Handle empty baseUrl for relative URLs
-      // Fallback for non-browser environments
-
-    // Add query parameters
-
-      // Remove Content-Type header if body is FormData
-
-  /**
-   * Convert audio input to appropriate FormData value
-   */
-
-      // Handle base64 data URLs (e.g., "data:audio/mp3;base64,...")
-
-      // Handle plain base64 strings (try to decode)
-          // If base64 decoding fails, treat as file path or other std::string
-
-      // For file paths or other strings, return as-is (server will handle file reading)
-
-    // Handle Buffer and ArrayBuffer types
-
-    // Cast to std::any for runtime type checking since TypeScript can't narrow the union type properly
-
-      // Handle typed arrays like Uint8Array
-
-  /**
-   * Check if a std::string appears to be base64 encoded
-   */
-    // Basic base64 pattern check (allows padding)
-
-    // Must be at least 4 characters and divisible by 4 (with padding)
-
-  /**
-   * Safe check for Buffer type (works in both Node.js and browser environments)
-   */
-
-  /**
-   * Handle speech conversation
-   */
-
-      // String (file path or other std::string identifier)
-
-  /**
-   * Generate speech from text
-   */
-    // Get the binary audio data using BaseApiClient infrastructure
-
-    // Convert to base64
-
-    // Default format (server should ideally return this in a header)
-
-  /**
-   * Synthesize audio message
-   */
-
-  /**
-   * Transcribe audio to text
-   */
-
-      // String (file path or other std::string identifier)
-
-  /**
-   * Process speech input
-   */
-
-      // String (file path or other std::string identifier)
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_AUDIO_HPP_

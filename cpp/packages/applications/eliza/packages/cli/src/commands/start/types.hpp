@@ -1,86 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "elizaos/server.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Start command options and interfaces
- */
-
-/**
- * Options for starting agents
- */
-struct StartOptions {
-    std::optional<double> port;
-    std::optional<std::string> configDir;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Agent start configuration
- */
-struct AgentStartConfig {
-    Character character;
-    AgentServer server;
-    std::optional<AgentStartOptions> options;
-};
-
-/**
- * Agent start options
- */
-struct AgentStartOptions {
-    std::optional<bool> isTestMode;
-};
-
-/**
- * Plugin validation interface
- */
-struct PluginValidation {
-    bool isValid;
-    std::optional<Plugin> plugin;
-    std::optional<std::string> error;
-};
-
-/**
- * Plugin context information
- */
-struct PluginContext {
-    bool isLocalDevelopment;
-    std::string name;
-    std::optional<std::string> path;
-};
-
-/**
- * Server startup configuration
- */
-struct ServerConfig {
-    double port;
-    std::optional<std::string> configDir;
-    std::optional<bool> skipBuild;
-};
-
-/**
- * Runtime configuration
- */
-struct RuntimeConfig {
-    std::vector<Plugin> plugins;
-    Character character;
-    AgentServer server;
-};
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_TYPES_HPP_

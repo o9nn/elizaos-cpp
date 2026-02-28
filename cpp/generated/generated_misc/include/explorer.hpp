@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_EXPLORER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_EXPLORER_H
-#include "core.h"
-#include "@solana/web3.js.h"
-#include "bs58.h"
-using base58 = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPLORER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPLORER_HPP_
 
-template <typename P1>
-std::any getExplorerUrl(std::string endpoint, P1 viewTypeOrItemAddress, std::string itemType = std::string("address"));
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename P1>
-std::any getExplorerUrl(std::string endpoint, P1 viewTypeOrItemAddress, std::string itemType)
-{
-    auto getClusterUrlParam = [=]() mutable
-    {
-        auto cluster = string_empty;
-        if (endpoint == std::string("localnet")) {
-            cluster = std::string("custom&customUrl=") + encodeURIComponent(std::string("http://127.0.0.1:8899")) + string_empty;
-        } else if (endpoint == std::string("https://api.devnet.solana.com")) {
-            cluster = std::string("devnet");
-        }
-        return (cluster) ? std::any(std::string("?cluster=") + cluster + string_empty) : std::any(string_empty);
-    };
-    return std::string("https://explorer.solana.com/") + itemType + std::string("/") + viewTypeOrItemAddress + string_empty + getClusterUrlParam() + string_empty;
+namespace elizaos {
+namespace generated_misc {
+
+class Explorer {
+public:
+    Explorer() = default;
+    ~Explorer() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "explorer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPLORER_HPP_

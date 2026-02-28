@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_TWITTERPARSER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_TWITTERPARSER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TWITTERPARSER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TWITTERPARSER_HPP_
 
-class TwitterParser;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::string(array<string>)> makeBulletpointList;
-extern array<string> examples;
-extern std::string rolePrompt;
-extern std::string template;
-class TwitterParser : public object, public std::enable_shared_from_this<TwitterParser> {
+namespace elizaos {
+namespace generated_misc {
+
+class Twitterparser {
 public:
-    using std::enable_shared_from_this<TwitterParser>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    Twitterparser() = default;
+    ~Twitterparser() = default;
 
-    std::shared_ptr<UUID> roomId;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "twitterParser"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    TwitterParser(std::shared_ptr<IAgentRuntime> runtime);
-    virtual void fillTimeframe();
-    virtual std::any parseTweets();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-using _default = TwitterParser;
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TWITTERPARSER_HPP_

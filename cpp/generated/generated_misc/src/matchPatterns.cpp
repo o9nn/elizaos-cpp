@@ -1,89 +1,26 @@
-#include "elizaos.github.io/src/lib/matching/matchPatterns.h"
+#include "matchPatterns.hpp"
 
-array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPattern>> patterns, MatchContent content)
-{
-    if (OR((patterns->get_length() == 0), (!content["content"]))) {
-        return array<any>();
-    }
-    auto applicablePatterns = patterns->filter([=](auto pattern) mutable
-    {
-        return static_cast<long>(pattern->target) == static_cast<long>(content["contentType"]);
-    }
-    );
-    if (applicablePatterns->get_length() == 0) {
-        return array<any>();
-    }
-    auto negativePatterns = applicablePatterns->filter([=](auto p) mutable
-    {
-        return p->options->negative;
-    }
-    );
-    for (auto& pattern : negativePatterns)
-    {
-        try
-        {
-            auto matcherFn = getMatcherFunction(pattern);
-            if (!matcherFn(content)) {
-                return array<any>();
-            }
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Error executing negative matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
-        }
-    }
-    auto matchingPatterns = array<std::shared_ptr<TagPattern>>();
-    auto positivePatterns = applicablePatterns->filter([=](auto p) mutable
-    {
-        return !p->options->negative;
-    }
-    );
-    for (auto& pattern : positivePatterns)
-    {
-        try
-        {
-            auto matcherFn = getMatcherFunction(pattern);
-            if (matcherFn(content)) {
-                matchingPatterns->push(pattern);
-            }
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
-        }
-    }
-    return matchingPatterns;
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Matchpatterns::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-boolean matchAnyPattern(array<std::shared_ptr<TagPattern>> patterns, MatchContent content)
-{
-    if (OR((patterns->get_length() == 0), (!content["content"]))) {
-        return false;
-    }
-    auto applicablePatterns = patterns->filter([=](auto pattern) mutable
-    {
-        return static_cast<long>(pattern->target) == static_cast<long>(content["contentType"]);
-    }
-    );
-    if (applicablePatterns->get_length() == 0) {
-        return false;
-    }
-    for (auto& pattern : patterns)
-    {
-        try
-        {
-            auto matcherFn = getMatcherFunction(pattern);
-            if (matcherFn(content)) {
-                return true;
-            }
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" during matchAnyPattern:"), error);
-        }
-    }
-    return false;
-};
+void Matchpatterns::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Matchpatterns::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

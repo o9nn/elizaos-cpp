@@ -1,27 +1,26 @@
-#include "classified/packages/cli/src/utils/env-prompt.h"
+#include "env-prompt.hpp"
 
-std::shared_ptr<Promise<string>> getEnvFilePath()
-{
-    auto service = std::async([=]() { getEnvFileService(); });
-    return service->getFilePath();
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool EnvPrompt::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<Promise<Record<std::string, string>>> readEnvFile()
-{
-    auto service = std::async([=]() { getEnvFileService(); });
-    return service->read();
-};
+void EnvPrompt::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json EnvPrompt::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::shared_ptr<Promise<void>> writeEnvFile(Record<std::string, string> envVars)
-{
-    auto service = std::async([=]() { getEnvFileService(); });
-    std::async([=]() { service->write(envVars, object{
-        object::pair{std::string("preserveComments"), false}, 
-        object::pair{std::string("updateProcessEnv"), true}
-    }); });
-    return std::shared_ptr<Promise<void>>();
-};
-
-
+} // namespace generated_misc
+} // namespace elizaos

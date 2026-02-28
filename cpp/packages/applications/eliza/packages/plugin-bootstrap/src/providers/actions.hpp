@@ -1,61 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ACTIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ACTIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Actions {
+public:
+    Actions() = default;
+    ~Actions() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "actions"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * A provider object that fetches possible response actions based on the provided runtime, message, and state.
- * @type {Provider}
- * @property {string} name - The name of the provider ("ACTIONS").
- * @property {string} description - The description of the provider ("Possible response actions").
- * @property {number} position - The position of the provider (-1).
- * @property {Function} get - Asynchronous std::function that retrieves actions that validate for the given message.
- * @param {IAgentRuntime} runtime - The runtime object.
- * @param {Memory} message - The message memory.
- * @param {State} state - The state object.
- * @returns {Object} An object containing the actions data, values, and combined text sections.
- */
-/**
- * Provider for ACTIONS
- *
- * @typedef {import('./Provider').Provider} Provider
- * @typedef {import('./Runtime').IAgentRuntime} IAgentRuntime
- * @typedef {import('./Memory').Memory} Memory
- * @typedef {import('./State').State} State
- * @typedef {import('./Action').Action} Action
- *
- * @type {Provider}
- * @property {string} name - The name of the provider
- * @property {string} description - Description of the provider
- * @property {number} position - The position of the provider
- * @property {Function} get - Asynchronous std::function to get actions that validate for a given message
- *
- * @param {IAgentRuntime} runtime - The agent runtime
- * @param {Memory} message - The message memory
- * @param {State} state - The state of the agent
- * @returns {Object} Object containing data, values, and text related to actions
- */
-    // Get actions that validate for this message
-
-    // Format action-related texts
-
-    // Create a more detailed actions format with descriptions
-
-    // Combine all text sections - now including actionsWithDescriptions
-
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_ACTIONS_HPP_

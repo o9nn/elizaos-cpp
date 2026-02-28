@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SLIPPAGE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SLIPPAGE_H
-#include "core.h"
-#include "@uidotdev/usehooks.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_USE_SLIPPAGE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_USE_SLIPPAGE_HPP_
 
-typedef double TSlippage;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_ui {
 
-extern std::function<std::any()> useSlippage;
-#endif
+class UseSlippage {
+public:
+    UseSlippage() = default;
+    ~UseSlippage() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_slippage"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_USE_SLIPPAGE_HPP_

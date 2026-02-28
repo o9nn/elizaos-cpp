@@ -1,19 +1,26 @@
 #include "use-sol-price.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void useSolPrice() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return useQuery({;
-        queryKey: ["solPrice"],
-        queryFn: fetchSolPrice,
-        refetchInterval: 60000, // Refresh every minute
-        staleTime: 30000, // Consider data stale after 30 seconds
-        });
-
+bool UseSolPrice::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void UseSolPrice::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseSolPrice::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

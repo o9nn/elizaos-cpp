@@ -1,15 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI-PROMPTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI-PROMPTS_H
-#include "core.h"
-#include "@clack/prompts.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_PROMPTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_PROMPTS_HPP_
 
-extern std::string NAV_BACK;
-extern std::string NAV_NEXT;
-std::shared_ptr<Promise<string>> promptWithNav(std::string label, std::string initial = string_empty, std::function<std::any(std::string)> validate = nullptr);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<array<string>>> promptForMultipleItems(std::string fieldName, array<string> initial = array<string>());
+namespace elizaos {
+namespace generated_cli {
 
-std::shared_ptr<Promise<boolean>> confirmAction(std::string message);
+class CliPrompts {
+public:
+    CliPrompts() = default;
+    ~CliPrompts() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cli_prompts"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_cli
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_CLI_PROMPTS_HPP_

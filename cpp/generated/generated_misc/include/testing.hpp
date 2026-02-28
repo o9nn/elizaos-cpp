@@ -1,25 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TESTING_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_TESTING_H
-#include "core.h"
-#include "./runtime.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TESTING_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TESTING_HPP_
 
-class TestCase;
-class TestSuite;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestCase : public object, public std::enable_shared_from_this<TestCase> {
+namespace elizaos {
+namespace generated_misc {
+
+class Testing {
 public:
-    using std::enable_shared_from_this<TestCase>::shared_from_this;
-    std::string name;
+    Testing() = default;
+    ~Testing() = default;
 
-    std::function<std::any(std::shared_ptr<IAgentRuntime>)> fn;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "testing"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TestSuite : public object, public std::enable_shared_from_this<TestSuite> {
-public:
-    using std::enable_shared_from_this<TestSuite>::shared_from_this;
-    std::string name;
+} // namespace generated_misc
+} // namespace elizaos
 
-    array<std::shared_ptr<TestCase>> tests;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TESTING_HPP_

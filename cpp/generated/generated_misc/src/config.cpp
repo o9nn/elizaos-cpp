@@ -1,22 +1,26 @@
-#include "elizaos.github.io/src/lib/pipelines/summarize/config.h"
+#include "config.hpp"
 
-std::any AISummaryConfigSchema = z->object(object{
-    object::pair{std::string("enabled"), z->boolean()->default(false)}, 
-    object::pair{std::string("defaultModel"), z->std::string()}, 
-    object::pair{std::string("models"), z->object(object{
-        object::pair{std::string("day"), z->std::string()}, 
-        object::pair{std::string("week"), z->std::string()}, 
-        object::pair{std::string("month"), z->std::string()}
-    })}, 
-    object::pair{std::string("apiKey"), z->std::string()}, 
-    object::pair{std::string("endpoint"), z->std::string()->default(std::string("https://openrouter.ai/api/v1/chat/completions"))}, 
-    object::pair{std::string("temperature"), z->number()->default(0.1)}, 
-    object::pair{std::string("max_tokens"), z->number()->default(200)}, 
-    object::pair{std::string("projectContext"), z->std::string()->default(std::string("An open source project on GitHub."))}
-});
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Config::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Config::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Config::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

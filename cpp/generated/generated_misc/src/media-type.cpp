@@ -1,2 +1,26 @@
-#include "discrub-ext/src/enum/media-type.h"
+#include "media-type.hpp"
 
+namespace elizaos {
+namespace generated_misc {
+
+bool MediaType::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void MediaType::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json MediaType::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

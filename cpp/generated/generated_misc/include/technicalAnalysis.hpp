@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_CALCULATION_TECHNICALANALYSIS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_CALCULATION_TECHNICALANALYSIS_H
-#include "core.h"
-#include "../base/BaseTradeService.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TECHNICALANALYSIS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TECHNICALANALYSIS_HPP_
 
-class TechnicalAnalysisService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TechnicalAnalysisService : public BaseTradeService, public std::enable_shared_from_this<TechnicalAnalysisService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Technicalanalysis {
 public:
-    using std::enable_shared_from_this<TechnicalAnalysisService>::shared_from_this;
-    virtual std::any calculateTechnicalSignals(std::any marketData);
-    TechnicalAnalysisService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);
+    Technicalanalysis() = default;
+    ~Technicalanalysis() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "technicalAnalysis"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TECHNICALANALYSIS_HPP_

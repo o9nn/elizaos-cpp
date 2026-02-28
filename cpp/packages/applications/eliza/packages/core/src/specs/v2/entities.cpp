@@ -1,29 +1,26 @@
 #include "entities.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memory message, State state) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const std::any rt = runtime;
-    return coreFindEntityByName(rt, message, state);
-
+bool Entities::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<void> getEntityDetails(auto roomId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreGetEntityDetails({ runtime: runtime, roomId });
-
+void Entities::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void formatEntities() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return coreFormatEntities({ entities: entities });
-
+nlohmann::json Entities::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace eliza_core
 } // namespace elizaos

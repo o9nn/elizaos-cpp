@@ -1,22 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_ACTIONS_CANCELTODO_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_ACTIONS_CANCELTODO_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CANCELTODO_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CANCELTODO_HPP_
 
-class TaskCancellation;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TaskCancellation : public object, public std::enable_shared_from_this<TaskCancellation> {
+namespace elizaos {
+namespace generated_misc {
+
+class Canceltodo {
 public:
-    using std::enable_shared_from_this<TaskCancellation>::shared_from_this;
-    std::string taskId;
+    Canceltodo() = default;
+    ~Canceltodo() = default;
 
-    std::string taskName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cancelTodo"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean isFound;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::string extractCancellationTemplate;
-std::shared_ptr<Promise<std::shared_ptr<TaskCancellation>>> extractTaskCancellation(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<Task>> availableTasks, std::shared_ptr<State> state);
+} // namespace generated_misc
+} // namespace elizaos
 
-extern std::shared_ptr<Action> cancelTodoAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CANCELTODO_HPP_

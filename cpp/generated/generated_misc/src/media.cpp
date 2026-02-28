@@ -1,25 +1,26 @@
-#include "eliza/packages/api-client/src/services/media.h"
+#include "media.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<MediaUploadResponse>>> MediaService::uploadAgentMedia(std::shared_ptr<UUID> agentId, std::shared_ptr<MediaUploadParams> params)
-{
-    auto formData = std::make_shared<FormData>();
-    formData->append(std::string("file"), params->file, params->filename);
-    if (params->contentType) formData->append(std::string("contentType"), params->contentType);
-    if (params->metadata) formData->append(std::string("metadata"), JSON->stringify(params->metadata));
-    return this->request<std::shared_ptr<MediaUploadResponse>>(std::string("POST"), std::string("/api/media/agents/") + agentId + std::string("/upload-media"), object{
-        object::pair{std::string("body"), formData}
-    });
+namespace elizaos {
+namespace generated_misc {
+
+bool Media::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ChannelUploadResponse>>> MediaService::uploadChannelMedia(std::shared_ptr<UUID> channelId, std::shared_ptr<File> file)
-{
-    auto formData = std::make_shared<FormData>();
-    formData->append(std::string("file"), file);
-    return this->request<std::shared_ptr<ChannelUploadResponse>>(std::string("POST"), std::string("/api/messaging/central-channels/") + channelId + std::string("/upload-media"), object{
-        object::pair{std::string("body"), formData}
-    });
+void Media::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-MediaService::MediaService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
+nlohmann::json Media::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace generated_misc
+} // namespace elizaos

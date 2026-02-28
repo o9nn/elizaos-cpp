@@ -1,58 +1,26 @@
-#include "eliza/packages/client/src/hooks/use-elevenlabs-voices.h"
+#include "use-elevenlabs-voices.hpp"
 
-std::any useElevenLabsVoices()
-{
-    auto [apiKey, setApiKey] = useState<any>(nullptr);
-    useEffect([=]() mutable
-    {
-        auto storedKey = localStorage->getItem(std::string("ELEVENLABS_API_KEY"));
-        setApiKey(storedKey);
-    }
-    , array<any>());
-    return useQuery(object{
-        object::pair{std::string("queryKey"), array<string>{ std::string("elevenlabs-voices"), apiKey }}, 
-        object::pair{std::string("queryFn"), [=]() mutable
-        {
-            if (!apiKey) {
-                return elevenLabsVoiceModels;
-            }
-            try
-            {
-                auto response = std::async([=]() { fetch(std::string("https://api.elevenlabs.io/v2/voices"), object{
-                    object::pair{std::string("method"), std::string("GET")}, 
-                    object::pair{std::string("headers"), object{
-                        object::pair{std::string("xi-api-key"), apiKey}
-                    }}
-                }); });
-                if (!response->ok) {
-                    console->error(std::string("Failed to fetch ElevenLabs voices:"), response->statusText);
-                    return elevenLabsVoiceModels;
-                }
-                auto data = std::async([=]() { response->json(); });
-                auto apiVoices = data["voices"]["map"]([=](auto voice) mutable
-                {
-                    return (object{
-                        object::pair{std::string("value"), voice->voice_id}, 
-                        object::pair{std::string("label"), std::string("ElevenLabs - ") + voice->name + string_empty}, 
-                        object::pair{std::string("provider"), std::string("elevenlabs")}, 
-                        object::pair{std::string("gender"), (voice->labels->gender == std::string("female")) ? std::string("female") : std::string("male")}, 
-                        object::pair{std::string("language"), std::string("en")}, 
-                        object::pair{std::string("features"), array<any>{ OR((voice->category), (std::string("professional"))), OR((voice->labels->description), (std::string("natural"))) }}
-                    });
-                }
-                );
-                return apiVoices;
-            }
-            catch (const std::any& error)
-            {
-                console->error(std::string("Error fetching ElevenLabs voices:"), error);
-                return elevenLabsVoiceModels;
-            }
-        }
-        }, 
-        object::pair{std::string("staleTime"), 60 * 60 * 1000}, 
-        object::pair{std::string("refetchOnWindowFocus"), false}
-    });
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool UseElevenlabsVoices::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void UseElevenlabsVoices::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseElevenlabsVoices::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

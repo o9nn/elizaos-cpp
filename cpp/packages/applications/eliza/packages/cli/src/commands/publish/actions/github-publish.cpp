@@ -1,37 +1,26 @@
 #include "github-publish.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        std::cout << "Publishing to GitHub and registry..." << std::endl;
-
-        const auto result = publishToGitHub(;
-        cwd,
-        packageJson,
-        credentials.username,
-        skipRegistry,
-        dryRun;
-        );
-
-        if (!result) {
-            throw std::runtime_error('GitHub publishing failed');
-        }
-
-        console.log(
-        "[√] Successfully published plugin " + packageJson.name + "@" + packageJson.version + " to GitHub";
-        );
-
-        return result;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool GithubPublish::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void GithubPublish::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json GithubPublish::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

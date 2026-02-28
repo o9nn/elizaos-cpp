@@ -1,44 +1,35 @@
-#include "actions/server-start.hpp"
-#include "elizaos/core.hpp"
-#include "elizaos/server.hpp"
-#include "types.hpp"
-#include "utils/config-utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-    await displayBanner();
-      // Load env config first before std::any character loading
-      await loadEnvConfig();
-
-        // Validate and load characters from provided paths
-
-        // Try to load project agents if no character files specified
-
-          // Check if we're in a directory that might contain agents - allow std::any directory with package.json
-          // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
-
-              // Log loaded agent names
-
-      await startAgents({ ...options, characters, projectAgents });
-
-// Re-for backward compatibility
-* from './actions/agent-start';
-* from './actions/server-start';
-* from './types';
-* from './utils/config-utils';
-* from './utils/dependency-resolver';
-* from './utils/plugin-utils';
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_INDEX_HPP_

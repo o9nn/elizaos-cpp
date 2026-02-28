@@ -1,12 +1,26 @@
-#include "elizas-list/src/lib/ml/predictor.h"
+#include "predictor.hpp"
 
-std::any MLPredictor::loadModel()
-{
+namespace elizaos {
+namespace generated_misc {
+
+bool Predictor::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
     return true;
 }
 
-std::any MLPredictor::predictEngagement(std::any features)
-{
-    return Math->random() * 100;
+void Predictor::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Predictor::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

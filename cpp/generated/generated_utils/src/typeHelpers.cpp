@@ -1,30 +1,26 @@
-#include "elizaos.github.io/src/lib/typeHelpers.h"
+#include "typeHelpers.hpp"
 
-std::function<std::any(std::shared_ptr<T>)> isNotNullOrUndefined = template <typename T>
-[=](auto value) mutable
-{
-    return AND((value != nullptr), (value != undefined));
-};
-std::function<std::any(array<std::shared_ptr<T>>)> isNotNullOrUndefinedArray = template <typename T>
-[=](auto value) mutable
-{
-    return value->every([=](auto v) mutable
-    {
-        return isNotNullOrUndefined(v);
-    }
-    );
-};
-std::function<std::function<std::any(std::shared_ptr<T>)>(std::shared_ptr<K>)> isNotNullOrUndefinedField = template <typename T, typename K>
-[=](auto field) mutable
-{
-    return [=](auto value) mutable
-    {
-        return isNotNullOrUndefined(const_(value)[field]);
-    };
-};
+namespace elizaos {
+namespace generated_utils {
 
-void Main(void)
-{
+bool Typehelpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Typehelpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Typehelpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

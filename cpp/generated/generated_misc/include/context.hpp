@@ -1,51 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
-#include "core.h"
-#include "@/lib/pipelines/pipelineConfig.h"
-#include "@/lib/logger.h"
-#include "@/lib/pipelines/types.h"
-#include "./config.h"
-#include "@/lib/date-utils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTEXT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTEXT_HPP_
 
-class SummarizerPipelineContext;
-class CreateContributorSummaryContextOptions;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SummarizerPipelineContext : public RepoPipelineContext, public std::enable_shared_from_this<SummarizerPipelineContext> {
+namespace elizaos {
+namespace generated_misc {
+
+class Context {
 public:
-    using std::enable_shared_from_this<SummarizerPipelineContext>::shared_from_this;
-    std::string outputDir;
+    Context() = default;
+    ~Context() = default;
 
-    std::shared_ptr<AISummaryConfig> aiSummaryConfig;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "context"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<Logger> logger;
-
-    boolean overwrite;
-
-    object dateRange;
-
-    Record<std::shared_ptr<IntervalType>, boolean> enabledIntervals;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CreateContributorSummaryContextOptions : public object, public std::enable_shared_from_this<CreateContributorSummaryContextOptions> {
-public:
-    using std::enable_shared_from_this<CreateContributorSummaryContextOptions>::shared_from_this;
-    std::string repoId;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::shared_ptr<PipelineConfig> config;
-
-    std::shared_ptr<Logger> logger;
-
-    std::string outputDir;
-
-    std::shared_ptr<AISummaryConfig> aiSummaryConfig;
-
-    boolean overwrite;
-
-    object dateRange;
-
-    Record<std::shared_ptr<IntervalType>, boolean> enabledIntervals;
-};
-
-std::shared_ptr<SummarizerPipelineContext> createSummarizerContext(std::shared_ptr<CreateContributorSummaryContextOptions> options);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONTEXT_HPP_

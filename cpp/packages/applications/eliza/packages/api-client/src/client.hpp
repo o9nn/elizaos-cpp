@@ -1,48 +1,35 @@
-#include "services/agents.hpp"
-#include "services/audio.hpp"
-#include "services/media.hpp"
-#include "services/memory.hpp"
-#include "services/messaging.hpp"
-#include "services/server.hpp"
-#include "services/system.hpp"
-#include "types/base.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_CLIENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_CLIENT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Client {
+public:
+    Client() = default;
+    ~Client() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class ElizaClient {
-  public readonly agents: AgentsService;
-  public readonly messaging: MessagingService;
-  public readonly memory: MemoryService;
-  public readonly audio: AudioService;
-  public readonly media: MediaService;
-  public readonly server: ServerService;
-  public readonly system: SystemService;
-
-  constructor(config: ApiClientConfig) {
-    // Initialize all services with the same config
-    this.agents = new AgentsService(config);
-    this.messaging = new MessagingService(config);
-    this.memory = new MemoryService(config);
-    this.audio = new AudioService(config);
-    this.media = new MediaService(config);
-    this.server = new ServerService(config);
-    this.system = new SystemService(config);
-  }
-
-  /**
-   * Create a new ElizaClient instance
-   */
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_CLIENT_HPP_

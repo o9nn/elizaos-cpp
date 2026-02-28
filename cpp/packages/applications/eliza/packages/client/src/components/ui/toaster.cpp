@@ -1,30 +1,26 @@
 #include "toaster.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void Toaster() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto { toasts } = useToast();
-
-    return (;
-    <ToastProvider>;
-    {toasts.std::map(({ id, title, description, action, ...props }) => (;
-    <Toast key={id} {...props}>;
-    <div className="grid gap-1">;
-    {title && <ToastTitle>{title}</ToastTitle>}
-    {description && <ToastDescription>{description}</ToastDescription>}
-    </div>;
-    {action}
-    <ToastClose />;
-    </Toast>;
-    ))}
-    <ToastViewport />;
-    </ToastProvider>;
-    );
-
+bool Toaster::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Toaster::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Toaster::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

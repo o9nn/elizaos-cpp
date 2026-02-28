@@ -1,47 +1,26 @@
-#include "eliza/packages/api-client/src/services/server.h"
+#include "server.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<ServerHealth>>> ServerService::checkHealth()
-{
-    return this->get<std::shared_ptr<ServerHealth>>(std::string("/api/server/health"));
+namespace elizaos {
+namespace generated_misc {
+
+bool Server::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<object>> ServerService::ping()
-{
-    return this->get<object>(std::string("/api/server/ping"));
+void Server::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::shared_ptr<Promise<object>> ServerService::hello()
-{
-    return this->get<object>(std::string("/api/server/hello"));
+nlohmann::json Server::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ServerStatus>>> ServerService::getStatus()
-{
-    return this->get<std::shared_ptr<ServerStatus>>(std::string("/api/server/status"));
-}
-
-std::shared_ptr<Promise<object>> ServerService::stopServer()
-{
-    return this->post<object>(std::string("/api/server/stop"));
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ServerDebugInfo>>> ServerService::getDebugInfo()
-{
-    return this->get<std::shared_ptr<ServerDebugInfo>>(std::string("/api/server/debug/servers"));
-}
-
-std::shared_ptr<Promise<object>> ServerService::submitLogs(array<std::shared_ptr<LogSubmitParams>> logs)
-{
-    return this->post<object>(std::string("/api/server/logs"), object{
-        object::pair{std::string("logs"), std::string("logs")}
-    });
-}
-
-std::shared_ptr<Promise<object>> ServerService::clearLogs()
-{
-    return this->delete<object>(std::string("/api/server/logs"));
-}
-
-ServerService::ServerService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
-}
-
+} // namespace generated_misc
+} // namespace elizaos

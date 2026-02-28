@@ -1,33 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TABLE_VIEW_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TABLE_VIEW_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "bonding-curve-bar.hpp"
-#include "copy-button.hpp"
-#include "skeleton-image.hpp"
-#include "verified.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class TableView {
+public:
+    TableView() = default;
+    ~TableView() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "table_view"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-using SortOrderType = std::string;
-
-struct TableViewProps {
-    std::vector<IToken> data;
-    std::optional<keyof IToken> sortBy;
-    SortOrderType sortOrder;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder);
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_TABLE_VIEW_HPP_

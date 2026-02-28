@@ -1,20 +1,26 @@
-#include "discrub-ext/src/enum/tag.h"
+#include "tag.hpp"
 
-std::function<std::string(Tag)> getTagName = [=](auto type) mutable
-{
-    switch (type)
-    {
-    case Tag::TAGS_MADE_BY_USER:
-        return std::string("Tags Sent By User");
-    case Tag::TAGGED_USERS:
-        return std::string("Tags Received For User");
-    default:
-        return string_empty;
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Tag::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Tag::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Tag::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

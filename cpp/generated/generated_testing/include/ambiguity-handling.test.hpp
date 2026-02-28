@@ -1,11 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___AMBIGUITY-HANDLING_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___AMBIGUITY-HANDLING_TEST_H
-#include "core.h"
-#include "bun:test.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_AMBIGUITY_HANDLING_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_AMBIGUITY_HANDLING_TEST_HPP_
 
-typedef object Content;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_testing {
 
-Content handleAmbiguity(Content responseContent);
+class AmbiguityHandlingTest {
+public:
+    AmbiguityHandlingTest() = default;
+    ~AmbiguityHandlingTest() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ambiguity_handling_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_AMBIGUITY_HANDLING_TEST_HPP_

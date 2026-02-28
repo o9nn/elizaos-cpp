@@ -1,95 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/memory.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEMORY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEMORY_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Memory {
+public:
+    Memory() = default;
+    ~Memory() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "memory"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class MemoryService extends BaseApiClient {
-  /**
-   * Get agent memories
-   */
-  std::async getAgentMemories(agentId: UUID, params?: MemoryParams): Promise<{ memories: Memory[] }> {
-    return this.get<{ memories: Memory[] }>(`/api/memory/${agentId}/memories`, { params });
-  }
-
-  /**
-   * Get room-specific memories
-   */
-
-  /**
-   * Update a memory
-   */
-
-  /**
-   * Clear all agent memories
-   */
-
-  /**
-   * Clear room memories
-   */
-
-  /**
-   * List agent's rooms
-   */
-
-  /**
-   * Get room details
-   */
-
-  /**
-   * Create a room
-   */
-
-  /**
-   * Create world from server
-   */
-
-  /**
-   * Delete a world
-   */
-
-  /**
-   * Clear world memories
-   */
-
-  /**
-   * Delete a specific memory
-   */
-
-  /**
-   * Get agent internal memories
-   */
-
-  /**
-   * Delete agent internal memory
-   */
-
-  /**
-   * Delete all agent internal memories
-   */
-
-  /**
-   * Update agent internal memory
-   */
-
-  /**
-   * Delete group memory (implemented via messaging channel message deletion)
-   */
-
-  /**
-   * Clear group chat (implemented via messaging channel history clearing)
-   */
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEMORY_HPP_

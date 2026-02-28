@@ -1,94 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RECENTMESSAGES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RECENTMESSAGES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Recentmessages {
+public:
+    Recentmessages() = default;
+    ~Recentmessages() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "recentMessages"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Move getRecentInteractions outside the provider
-/**
- * Retrieves the recent interactions between two entities in a specific context.
- *
- * @param {IAgentRuntime} runtime - The agent runtime object.
- * @param {UUID} sourceEntityId - The UUID of the source entity.
- * @param {UUID} targetEntityId - The UUID of the target entity.
- * @param {UUID} excludeRoomId - The UUID of the room to exclude from the search.
- * @returns {Promise<Memory[]>} A std::promise that resolves to an array of Memory objects representing recent interactions.
- */
-/**
- * Retrieves the recent interactions between two entities in different rooms excluding a specific room.
- * @param {IAgentRuntime} runtime - The agent runtime object.
- * @param {UUID} sourceEntityId - The UUID of the source entity.
- * @param {UUID} targetEntityId - The UUID of the target entity.
- * @param {UUID} excludeRoomId - The UUID of the room to exclude from the search.
- * @returns {Promise<Memory[]>} An array of Memory objects representing recent interactions between the two entities.
- */
-  // Find all rooms where sourceEntityId and targetEntityId are participants
-
-  // Check the existing memories in the database
-    // filter out the current room id from rooms
-
-/**
- * A provider object that retrieves recent messages, interactions, and memories based on a given message.
- * @typedef {object} Provider
- * @property {string} name - The name of the provider ("RECENT_MESSAGES").
- * @property {string} description - A description of the provider's purpose ("Recent messages, interactions and other memories").
- * @property {number} position - The position of the provider (100).
- * @property {Function} get - Asynchronous std::function that retrieves recent messages, interactions, and memories.
- * @param {IAgentRuntime} runtime - The runtime context for the agent.
- * @param {Memory} message - The message to retrieve data from.
- * @returns {object} An object containing data, values, and text sections.
- */
-
-      // Parallelize initial data fetching operations including recentInteractions
-
-      // Default to message format if room is not found or type is undefined
-
-      // Format recent messages and posts in parallel
-
-      // Create formatted text with headers
-
-      // If there are no messages at all, and no current message to process, return a specific message.
-
-      // Preload all necessary entities for both types of interactions
-
-      // Only proceed if there are interactions to process
-        // Get unique entity IDs that aren't the runtime agent
-
-        // Create a Set for faster lookup
-
-        // Add entities already fetched in entitiesData to the std::map
-
-        // Get the remaining entities that weren't already loaded
-        // Use Set difference for efficient filtering
-
-        // Only fetch the entities we don't already have
-
-      // Format recent message interactions
-        // Format messages using the pre-fetched entities
-
-      // Format recent post interactions
-        // Combine pre-loaded entities with std::any other entities
-
-        // Add entities from interactionEntityMap that aren't already in entities
-
-      // Process both types of interactions in parallel
-
-      // Combine all text sections
-        // Only add received message and focus headers if there are messages or a current message to process
-
-      // Return a default state in case of error, similar to the empty message list
-
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_PROVIDERS_RECENTMESSAGES_HPP_

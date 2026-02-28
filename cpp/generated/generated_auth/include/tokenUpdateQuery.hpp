@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_TOKENUPDATEQUERY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_VALIDATORS_TOKENUPDATEQUERY_H
-#include "core.h"
-#include "./global.h"
-#include "zod.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENUPDATEQUERY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENUPDATEQUERY_HPP_
 
-typedef z::infer<updateTokenBodySchema> UpdateTokenBody;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_auth {
 
-extern std::any updateTokenBodySchema;
-object parseUpdateTokenRequest(object raw);
+class Tokenupdatequery {
+public:
+    Tokenupdatequery() = default;
+    ~Tokenupdatequery() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "tokenUpdateQuery"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_auth
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKENUPDATEQUERY_HPP_

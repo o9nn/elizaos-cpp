@@ -1,17 +1,26 @@
-#include "eliza/packages/api-client/src/client.h"
+#include "client.hpp"
 
-ElizaClient::ElizaClient(std::shared_ptr<ApiClientConfig> config) {
-    this->agents = std::make_shared<AgentsService>(config);
-    this->messaging = std::make_shared<MessagingService>(config);
-    this->memory = std::make_shared<MemoryService>(config);
-    this->audio = std::make_shared<AudioService>(config);
-    this->media = std::make_shared<MediaService>(config);
-    this->server = std::make_shared<ServerService>(config);
-    this->system = std::make_shared<SystemService>(config);
+namespace elizaos {
+namespace generated_cli {
+
+bool Client::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<ElizaClient> ElizaClient::create(std::shared_ptr<ApiClientConfig> config)
-{
-    return std::make_shared<ElizaClient>(config);
+void Client::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Client::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_cli
+} // namespace elizaos

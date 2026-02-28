@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_EVALUATORS_EXPERIENCEEVALUATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_EVALUATORS_EXPERIENCEEVALUATOR_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../service.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPERIENCEEVALUATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPERIENCEEVALUATOR_HPP_
 
-extern std::shared_ptr<Evaluator> experienceEvaluator;
-std::string extractContext(array<std::shared_ptr<Memory>> messages);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string extractAction(std::string text);
+namespace elizaos {
+namespace generated_misc {
 
-std::string extractError(std::string text);
+class Experienceevaluator {
+public:
+    Experienceevaluator() = default;
+    ~Experienceevaluator() = default;
 
-std::string extractDiscovery(std::string text);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "experienceEvaluator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::string extractLearning(std::string text, std::string type);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::string extractHypothesis(std::string text);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::string detectDomain(std::string text);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EXPERIENCEEVALUATOR_HPP_

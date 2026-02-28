@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_REGISTRY_SCHEMA_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_REGISTRY_SCHEMA_H
-#include "core.h"
-#include "zod.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMA_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMA_HPP_
 
-typedef std::any PluginType;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef z::infer<registrySchema> Registry;
+namespace elizaos {
+namespace generated_misc {
 
+class Schema {
+public:
+    Schema() = default;
+    ~Schema() = default;
 
-extern std::any registrySchema;
-template <typename RET>
-RET getPluginType(std::string name);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "schema"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-template <typename RET>
-RET getPluginType(std::string name)
-{
-    if ((new RegExp(std::string("sq")))->test(name)) return std::string("adapter");
-    if ((new RegExp(std::string("discord|twitter|telegra")))->test(name)) return std::string("client");
-    return std::string("plugin");
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SCHEMA_HPP_

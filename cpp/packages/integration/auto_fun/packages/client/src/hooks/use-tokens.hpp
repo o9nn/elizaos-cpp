@@ -1,38 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_TOKENS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_TOKENS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "use-pagination.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UseTokens {
+public:
+    UseTokens() = default;
+    ~UseTokens() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_tokens"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-using Token = z::infer<typeof TokenSchema>;
-
-using SortOrderType = std::string;
-
-struct UseTokensParams {
-    keyof IToken sortBy;
-    SortOrderType sortOrder;
-    std::optional<double> hideImported;
-    std::optional<std::string> status;
-    std::optional<double> pageSize;
-    std::optional<bool> enabled;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-  /** Prepopulate token cache, that we otherwise need to fetch first on the /token page */
-
-        // Only update if token has a ticker
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_TOKENS_HPP_

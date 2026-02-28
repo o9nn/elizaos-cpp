@@ -1,40 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_PROVIDER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_PROVIDER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "state.hpp"
-#include "types.hpp"
-#include "v2.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Provider {
+public:
+    Provider() = default;
+    ~Provider() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "provider"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Provider for external data/services
- * This is a v1 compatibility wrapper for v2 Provider
- */
-using Provider = ProviderFromTypes;
-
-/**
- * Converts v2 Provider to v1 compatible Provider
- * Uses the V2 Provider interface to ensure proper std::optional field handling
- */
-Provider fromV2Provider(ProviderV2 providerV2);
-
-/**
- * Converts v1 Provider to v2 Provider
- * Creates a Provider object conforming to V2 Provider interface
- */
-ProviderV2 toV2Provider(Provider provider);
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_PROVIDER_HPP_

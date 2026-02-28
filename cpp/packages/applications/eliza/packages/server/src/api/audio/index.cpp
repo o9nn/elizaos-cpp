@@ -1,25 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router audioRouter(const std::unordered_map<UUID, IAgentRuntime>& agents) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto router = express.Router();
-
-    // Mount audio processing (upload, transcription)
-    router.use("/", createAudioProcessingRouter(agents));
-
-    // Mount text-to-speech synthesis
-    router.use("/", createSynthesisRouter(agents));
-
-    // Mount speech conversation functionality
-    router.use("/", createConversationRouter(agents));
-
-    return router;
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

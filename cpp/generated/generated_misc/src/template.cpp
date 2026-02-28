@@ -1,35 +1,26 @@
-#include "spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/template.h"
+#include "template.hpp"
 
-std::string getPriceTemplate = std::string("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
-\
-Here are the cryptocurrency symbol mappings:\
-- bitcoin/btc -> BTC\
-- ethereum/eth -> ETH\
-- solana/sol -> SOL\
-- cardano/ada -> ADA\
-- ripple/xrp -> XRP\
-- dogecoin/doge -> DOGE\
-- polkadot/dot -> DOT\
-- usdc -> USDC\
-- tether/usdt -> USDT\
-\
-IMPORTANT: Response must ALWAYS include both "symbol" and "currency" fields.\
-\
-Example response:\
-```json\
-{\
-    "symbol": "BTC",\
-    "currency": "USD"\
-}\
-```\
-\
-{{recentMessages}}\
-\
-Extract the cryptocurrency from the most recent message. Always include currency (default "USD").\
-Respond with a JSON markdown block containing both symbol and currency.");
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Template::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Template::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Template::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

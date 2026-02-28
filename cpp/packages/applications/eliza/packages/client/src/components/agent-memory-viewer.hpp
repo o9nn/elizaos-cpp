@@ -1,48 +1,35 @@
-#include "agent-memory-edit-overlay.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_VIEWER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_VIEWER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentMemoryViewer {
+public:
+    AgentMemoryViewer() = default;
+    ~AgentMemoryViewer() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_memory_viewer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Number of items to load per batch
-
-struct MemoryContent {
-    std::optional<boolean | string> thought;
-    std::optional<std::string> channelType;
-    std::optional<std::string> source;
-    std::optional<std::string> text;
-    std::optional<{> metadata;
-    std::optional<std::string> fileType;
-    std::optional<std::string> title;
-    std::optional<std::string> filename;
-    std::optional<std::string> path;
-    std::optional<std::string> description;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-enum MemoryType {
-  all = 'all',
-  currentChat = 'currentChat',
-  messagesReceived = 'messagesReceived',
-  messagesSent = 'messagesSent',
-  facts = 'facts',
-}
-
-struct AgentMemoryViewerProps {
-    UUID agentId;
-    std::string agentName;
-    std::optional<UUID; // Renamed from roomId to channelId for clarity> channelId;
-};
-
-void AgentMemoryViewer(auto { agentId, auto agentName, AgentMemoryViewerProps channelId });
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_MEMORY_VIEWER_HPP_

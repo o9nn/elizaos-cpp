@@ -1,2 +1,26 @@
-#include "classified/packages/plugin-autocoder/src/__tests__/e2e/code-generation.test.h"
+#include "code-generation.test.hpp"
 
+namespace elizaos {
+namespace generated_testing {
+
+bool CodeGenerationTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void CodeGenerationTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json CodeGenerationTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

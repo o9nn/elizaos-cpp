@@ -1,21 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_ROLES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_ROLES_H
-#include "core.h"
-#include "@elizaos/core.h"
-using coreGetUserServerRole = getUserServerRole;
-using coreFindWorldsForOwner = findWorldsForOwner;
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLES_HPP_
 
-class ServerOwnershipState;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ServerOwnershipState : public object, public std::enable_shared_from_this<ServerOwnershipState> {
+namespace elizaos {
+namespace generated_misc {
+
+class Roles {
 public:
-    using std::enable_shared_from_this<ServerOwnershipState>::shared_from_this;
-    object servers;
+    Roles() = default;
+    ~Roles() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "roles"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<Role>> getUserServerRole(std::shared_ptr<IAgentRuntime> runtime, std::string entityId, std::string serverId);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<any>> findWorldsForOwner(std::shared_ptr<IAgentRuntime> runtime, std::string entityId);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ROLES_HPP_

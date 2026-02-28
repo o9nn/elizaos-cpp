@@ -1,27 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___TEST-HELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___TEST-HELPERS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "drizzle-orm.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:os.h"
-using os = _default;
-#include "node:path.h"
-using path = _default;
-#include "uuid.h"
-#include "../index.h"
-using sqlPlugin = plugin;
-#include "../migration-service.h"
-#include "../pg/adapter.h"
-#include "../pg/manager.h"
-#include "../pglite/adapter.h"
-#include "../pglite/manager.h"
-#include "./fixtures.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_HELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_HELPERS_HPP_
 
-std::shared_ptr<Promise<object>> createTestDatabase(std::shared_ptr<UUID> testAgentId, array<std::shared_ptr<Plugin>> testPlugins = array<std::shared_ptr<Plugin>>());
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<object>> createIsolatedTestDatabase(std::string testName, array<std::shared_ptr<Plugin>> testPlugins = array<std::shared_ptr<Plugin>>());
+namespace elizaos {
+namespace generated_utils {
 
-#endif
+class TestHelpers {
+public:
+    TestHelpers() = default;
+    ~TestHelpers() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "test_helpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_TEST_HELPERS_HPP_

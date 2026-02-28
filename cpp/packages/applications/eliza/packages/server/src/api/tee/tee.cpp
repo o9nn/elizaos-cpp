@@ -1,95 +1,26 @@
 #include "tee.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    //   const router = express.Router();
-
-    //   // Get all TEE agents
-    //   router.get('/agents', std::async (_req, res) => {
-    //     try {
-    //       const allAgents = [];
-
-    //       for (const agentRuntime of agents.values()) {
-    //         const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
-
-    //         const agents = await teeLogService.getAllAgents();
-    //         allAgents.push(...agents);
-    //       }
-
-    //       const runtime: IAgentRuntime = agents.values().next().value;
-    //       const teeLogService = runtime.getService<ITeeLogService>(ServiceType.TEE);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(allAgents));
-    //       res.json({ agents: allAgents, attestation: attestation });
-    //     } catch (error) {
-    //       logger.error('Failed to get TEE agents:', error);
-    //       res.status(500).json({
-    //         error: 'Failed to get TEE agents',
-    //       });
-    //     }
-    //   });
-
-    //   // Get specific TEE agent
-    //   router.get('/agents/:agentId', std::async (req, res) => {
-    //     try {
-    //       const agentId = req.params.agentId;
-    //       const agentRuntime = agents.get(agentId);
-    //       if (!agentRuntime) {
-    //         res.status(404).json({ error: 'Agent not found' });
-    //         return;
-    //       }
-
-    //       const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
-
-    //       const teeAgent = await teeLogService.getAgent(agentId);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(teeAgent));
-    //       res.json({ agent: teeAgent, attestation: attestation });
-    //     } catch (error) {
-    //       logger.error('Failed to get TEE agent:', error);
-    //       res.status(500).json({
-    //         error: 'Failed to get TEE agent',
-    //       });
-    //     }
-    //   });
-
-    //   // Query TEE logs
-    //   router.post('/logs', std::async (req: express.Request, res: express.Response) => {
-    //     try {
-    //       const query = req.body.query || {};
-    //       const page = Number.parseInt(req.body.page) || 1;
-    //       const pageSize = Number.parseInt(req.body.pageSize) || 10;
-
-    //       const teeLogQuery: TeeLogQuery = {
-    //         agentId: query.agentId || '',
-    //         roomId: query.roomId || '',
-    //         entityId: query.entityId || '',
-    //         type: query.type || '',
-    //         containsContent: query.containsContent || '',
-    //         startTimestamp: query.startTimestamp || undefined,
-    //         endTimestamp: query.endTimestamp || undefined,
-    //       };
-    //       const agentRuntime: IAgentRuntime = agents.values().next().value;
-    //       const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);
-    //       const pageQuery = await teeLogService.getLogs(teeLogQuery, page, pageSize);
-    //       const attestation = await teeLogService.generateAttestation(JSON.stringify(pageQuery));
-    //       res.json({
-    //         logs: pageQuery,
-    //         attestation: attestation,
-    //       });
-    //     } catch (error) {
-    //       logger.error('Failed to get TEE logs:', error);
-    //       res.status(500).json({
-    //         error: 'Failed to get TEE logs',
-    //       });
-    //     }
-    //   });
-
-    //   return router;
-    //
+bool Tee::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Tee::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Tee::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

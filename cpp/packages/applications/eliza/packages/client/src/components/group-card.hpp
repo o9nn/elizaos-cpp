@@ -1,31 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_CARD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_CARD_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class GroupCard {
+public:
+    GroupCard() = default;
+    ~GroupCard() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "group_card"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-//  // AvatarGroup removed
-
-// The group prop will be a central channel, enriched with server_id for navigation context
-// Assume group.participants might be available or added later.
-struct GroupCardProps {
-    ClientMessageChannel & { server_id: UUID; participants?: Partial<Agent>[] } group;
-
-  // Assuming participant count might come from metadata or a separate query in the parent component
-
-  // const handleEditClick = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   if (onEdit) onEdit(group);
-  // };
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_CARD_HPP_

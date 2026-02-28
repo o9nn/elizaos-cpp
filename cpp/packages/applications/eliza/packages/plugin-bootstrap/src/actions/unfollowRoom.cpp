@@ -1,25 +1,26 @@
 #include "unfollowRoom.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-std::future<bool> _shouldUnfollow(State state) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto shouldUnfollowPrompt = composePromptFromState({;
-        state,
-        template: shouldUnfollowTemplate, // Define this template separately
-        });
-
-        const auto response = runtime.useModel(ModelType.TEXT_SMALL, {;
-            prompt: shouldUnfollowPrompt,
-            });
-
-            const auto parsedResponse = parseBooleanFromText(response.trim());
-
-            return parsedResponse;
-
+bool Unfollowroom::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Unfollowroom::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Unfollowroom::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos

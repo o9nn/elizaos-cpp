@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_CAPTCHA-HANDLER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_CAPTCHA-HANDLER_H
-#include "core.h"
-#include "playwright.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAPTCHA_HANDLER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAPTCHA_HANDLER_HPP_
 
-class CaptchaInfo;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class CaptchaInfo : public object, public std::enable_shared_from_this<CaptchaInfo> {
+namespace elizaos {
+namespace generated_misc {
+
+class CaptchaHandler {
 public:
-    using std::enable_shared_from_this<CaptchaInfo>::shared_from_this;
-    std::any type;
+    CaptchaHandler() = default;
+    ~CaptchaHandler() = default;
 
-    std::any siteKey;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "captcha_handler"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<std::shared_ptr<CaptchaInfo>>> detectCaptchaType(std::shared_ptr<Page> page);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<void>> injectCaptchaSolution(std::shared_ptr<Page> page, std::string captchaType, std::string solution);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CAPTCHA_HANDLER_HPP_

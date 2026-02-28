@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_FILE-OPERATIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_FILE-OPERATIONS_H
-#include "core.h"
-#include "@/src/services/env-file.service.h"
-#include "node:fs.h"
-#include "node:path.h"
-using path = _default;
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_OPERATIONS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_OPERATIONS_HPP_
 
-std::shared_ptr<Promise<string>> getGlobalEnvPath();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<any>> getLocalEnvPath();
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<EnvVars>> parseEnvFile(std::string filePath);
+class FileOperations {
+public:
+    FileOperations() = default;
+    ~FileOperations() = default;
 
-std::shared_ptr<Promise<void>> writeEnvFile(std::string filePath, EnvVars envVars);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_operations"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Promise<boolean>> resetEnvFile(std::string filePath);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_OPERATIONS_HPP_

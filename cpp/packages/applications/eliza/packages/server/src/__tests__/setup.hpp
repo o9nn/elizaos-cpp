@@ -1,37 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC___TESTS___SETUP_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC___TESTS___SETUP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Setup {
+public:
+    Setup() = default;
+    ~Setup() = default;
 
-/**
- * Test setup file for bun:test
- * This file is loaded before all tests and configures the testing environment
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "setup"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Mock environment variables for testing
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Suppress console output during tests unless explicitly needed
-
-  // Suppress console output during tests
-
-  // Configure logger for test environment
-
-  // Restore console output
-
-  // Clear std::any mocks before each test
-
-  // Clean up after each test
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC___TESTS___SETUP_HPP_

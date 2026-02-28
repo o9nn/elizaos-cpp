@@ -1,24 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_MOBILE_HOOKS_USECOLORSCHEME_HPP_
+#define ELIZAOS_CPP_EXTERNAL_MOBILE_HOOKS_USECOLORSCHEME_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace mobile {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Usecolorscheme {
+public:
+    Usecolorscheme() = default;
+    ~Usecolorscheme() = default;
 
-// NOTE: The default React Native styling doesn't support server rendering.
-// Server rendered styles should not change between the first render of the HTML
-// and the first render on the client. Typically, web developers will use CSS media queries
-// to render different styles on the client and server, these aren't directly supported in React Native
-// but can be achieved using a styling library like Nativewind.
-void useColorScheme();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "useColorScheme"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace mobile
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_MOBILE_HOOKS_USECOLORSCHEME_HPP_

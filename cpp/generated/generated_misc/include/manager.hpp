@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_PGLITE_MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC_PGLITE_MANAGER_H
-#include "core.h"
-#include "@electric-sql/pglite.h"
-#include "@electric-sql/pglite/contrib/fuzzystrmatch.h"
-#include "@electric-sql/pglite/vector.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MANAGER_HPP_
 
-class PGliteClientManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PGliteClientManager : public IDatabaseClientManager<PGlite>, public std::enable_shared_from_this<PGliteClientManager> {
+namespace elizaos {
+namespace generated_misc {
+
+class Manager {
 public:
-    using std::enable_shared_from_this<PGliteClientManager>::shared_from_this;
-    std::shared_ptr<PGlite> client;
+    Manager() = default;
+    ~Manager() = default;
 
-    boolean shuttingDown = false;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    PGliteClientManager(std::shared_ptr<PGliteOptions> options);
-    virtual std::shared_ptr<PGlite> getConnection();
-    virtual boolean isShuttingDown();
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> close();
-    virtual void setupShutdownHandlers();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MANAGER_HPP_

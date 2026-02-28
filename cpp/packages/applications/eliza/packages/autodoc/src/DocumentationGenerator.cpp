@@ -1,10 +1,26 @@
 #include "DocumentationGenerator.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_autodoc {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool Documentationgenerator::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Documentationgenerator::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Documentationgenerator::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_autodoc
 } // namespace elizaos

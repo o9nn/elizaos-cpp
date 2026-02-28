@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC___TESTS___CLI-INTEGRATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC___TESTS___CLI-INTEGRATION_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "child_process.h"
-#include "fs/promises.h"
-#include "os.h"
-#include "path.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLI_INTEGRATION_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLI_INTEGRATION_TEST_HPP_
 
-class TestEnvironment;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TestEnvironment : public object, public std::enable_shared_from_this<TestEnvironment> {
+namespace elizaos {
+namespace generated_testing {
+
+class CliIntegrationTest {
 public:
-    using std::enable_shared_from_this<TestEnvironment>::shared_from_this;
-    std::string tempDir;
+    CliIntegrationTest() = default;
+    ~CliIntegrationTest() = default;
 
-    std::string envFile;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cli_integration_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<NodeJS::ProcessEnv> originalEnv;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<std::shared_ptr<TestEnvironment>>> createTestEnvironment(boolean withTestKeys = true);
+} // namespace generated_testing
+} // namespace elizaos
 
-std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestEnvironment> env);
-
-std::string execCLICommand(std::string command, std::shared_ptr<TestEnvironment> env);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_CLI_INTEGRATION_TEST_HPP_

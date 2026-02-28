@@ -1,38 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_ARRAYHELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_ARRAYHELPERS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ARRAYHELPERS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ARRAYHELPERS_HPP_
 
-template <typename T, typename K, typename P1>
-Record<K, array<T>> groupBy(array<T> items, P1 keyFn);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename T>
-array<array<T>> chunk(array<T> array, double size);
+namespace elizaos {
+namespace generated_utils {
 
-template <typename T, typename K, typename P1>
-Record<K, array<T>> groupBy(array<T> items, P1 keyFn)
-{
-    return items->reduce([=](auto groups, auto item) mutable
-    {
-        auto key = keyFn(item);
-        groups[key] = OR((const_(groups)[key]), (array<any>()));
-        const_(groups)[key]->push(item);
-        return groups;
-    }
-    , as<Record<K, array<T>>>(object{}));
+class Arrayhelpers {
+public:
+    Arrayhelpers() = default;
+    ~Arrayhelpers() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "arrayHelpers"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_utils
+} // namespace elizaos
 
-template <typename T>
-array<array<T>> chunk(array<T> array, double size)
-{
-    return Array->from(object{
-        object::pair{std::string("length"), Math->ceil(array->get_length() / size)}
-    }, [=](auto _, auto i) mutable
-    {
-        return array->slice(i * size, (i + 1) * size);
-    }
-    );
-};
-
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ARRAYHELPERS_HPP_

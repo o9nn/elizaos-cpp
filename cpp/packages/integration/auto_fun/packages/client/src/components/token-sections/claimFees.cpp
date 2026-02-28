@@ -1,62 +1,26 @@
 #include "claimFees.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void ClaimFees() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto { mutate: claimFees, isPending } = useMutation({;
-            mutationFn: std::async () => {
-                if (!tokenMint) {
-                    throw std::runtime_error("No token found");
-                }
-
-                const auto response = "fetchWithAuth(" + env.apiUrl + "/api/claimFees";
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        },
-                        body: /* JSON.stringify */ std::string({ tokenMint }),
-                        });
-
-                        if (!response.ok) {
-                            throw std::runtime_error("Failed to claim fees");
-                        }
-
-                        return response.json();
-                        },
-                        onSuccess: () => {
-                            toast.success("Fees claimed successfully");
-                            },
-                            onError: (error) => {
-                                std::cerr << "Error claiming fees:" << error << std::endl;
-                                toast.error(;
-                                true /* instanceof check */ ? error.message : "Failed to claim fees",
-                                );
-                                },
-                                });
-
-                                return (;
-                                <div className="flex flex-col gap-2">;
-                                <button;
-                            onClick={() => claimFees()}
-                        disabled={isPending}
-                        className="cursor-pointer text-white text-center bg-transparent gap-x-3 border-2 hover:bg-autofun-background-action-highlight hover:text-black border-autofun-background-action-highlight flex px-8 py-1 mt-2 flex-row w-full items-center justify-center"
-                        >;
-                        <span className="w-full text-center">;
-                    {isPending ? "Claiming..."  = "Claim Fees"}
-                    </span>;
-                    </button>;
-                    </div>;
-                    );
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Claimfees::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Claimfees::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Claimfees::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

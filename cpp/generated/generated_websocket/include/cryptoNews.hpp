@@ -1,14 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-WEB-SEARCH_SRC_ACTIONS_CRYPTONEWS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-WEB-SEARCH_SRC_ACTIONS_CRYPTONEWS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/tavilyService.h"
-#include "../services/coindeskService.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_CRYPTONEWS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_CRYPTONEWS_HPP_
 
-extern double DEFAULT_MAX_CRYPTO_NEWS_CHARS;
-extern object CRYPTO_NEWS_SOURCES;
-std::string MaxTokens(std::string data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::shared_ptr<Action> cryptoNews;
-#endif
+namespace elizaos {
+namespace generated_websocket {
+
+class Cryptonews {
+public:
+    Cryptonews() = default;
+    ~Cryptonews() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cryptoNews"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_websocket
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_WEBSOCKET_INCLUDE_CRYPTONEWS_HPP_

@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_UPLOAD_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_UPLOAD_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "api/shared/constants.js.hpp"
-#include "api/shared/file-utils.js.hpp"
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Upload {
+public:
+    Upload() = default;
+    ~Upload() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "upload"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Helper std::function to generate secure filename
-std::string generateSecureFilename(const std::string& originalName);
-
-// Helper std::function to create upload directory
-std::string ensureUploadDir(const std::string& id, const std::string& type);
-
-// Multer memory storage
-
-// --- Agent-Specific Upload Configuration ---
-
-// --- Channel-Specific Upload Configuration ---
-
-// --- Generic Upload Configuration ---
-
-// Original generic upload (kept for compatibility)
-
-// File validation functions using multer file type
-bool validateAudioFile(Express.Multer.File file);
-
-bool validateMediaFile(Express.Multer.File file);
-
-// Process and save uploaded file to final destination
-    // Ensure upload directory exists
-
-    // Generate secure filename
-
-    // Write file buffer to final destination
-
-    // Construct URL
-
-
+} // namespace eliza_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_SERVER_SRC_UPLOAD_HPP_

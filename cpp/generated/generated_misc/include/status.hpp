@@ -1,35 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_HOOKS_STATUS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_HOOKS_STATUS_H
-#include "core.h"
-#include "./abstract.h"
-#include "../repo.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATUS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATUS_HPP_
 
-typedef std::function<void(std::string, std::string)> StatusCallback;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class SetStatusEnvironmentHook;
+namespace elizaos {
+namespace generated_misc {
 
-class SetStatusEnvironmentHook : public EnvHook, public std::enable_shared_from_this<SetStatusEnvironmentHook> {
+class Status {
 public:
-    using std::enable_shared_from_this<SetStatusEnvironmentHook>::shared_from_this;
-    StatusCallback callable;
+    Status() = default;
+    ~Status() = default;
 
-    std::string id;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "status"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    SetStatusEnvironmentHook(std::string id, StatusCallback callable);
-    virtual void update(std::string message);
-    template <typename P0>
-    void onCopyRepoStarted(P0 repo);
-    virtual void onStartDeployment();
-    virtual void onInstallEnvStarted();
-    virtual void onEnvironmentStartup();
-    virtual void onClose();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-template <typename P0>
-void SetStatusEnvironmentHook::onCopyRepoStarted(P0 repo)
-{
-    auto repoName = (in(std::string("repoName"), repo)) ? std::any(repo["repoName"]) : std::any(std::string("unknown"));
-    this->update(std::string("Copying repo ") + repoName + string_empty);
-}
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STATUS_HPP_

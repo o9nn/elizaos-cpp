@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_PROMPTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_PROMPTS_H
-#include "core.h"
-#include "@elizaos/core.h"
-using coreShouldRespondTemplate = shouldRespondTemplate;
-using coreMessageHandlerTemplate = messageHandlerTemplate;
-using corePostCreationTemplate = postCreationTemplate;
-using coreBooleanFooter = booleanFooter;
-using coreImageDescriptionTemplate = imageDescriptionTemplate;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROMPTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROMPTS_HPP_
 
-extern std::string shouldRespondTemplate;
-extern std::string messageHandlerTemplate;
-extern std::string postCreationTemplate;
-extern std::string booleanFooter;
-extern std::string imageDescriptionTemplate;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Prompts {
+public:
+    Prompts() = default;
+    ~Prompts() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "prompts"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PROMPTS_HPP_

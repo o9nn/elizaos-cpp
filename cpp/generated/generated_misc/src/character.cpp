@@ -1,10 +1,26 @@
-#include "eliza-starter/src/character.h"
+#include "character.hpp"
 
-std::shared_ptr<Character> character = utils::assign(object{
-}, defaultCharacter);
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Character::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Character::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Character::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

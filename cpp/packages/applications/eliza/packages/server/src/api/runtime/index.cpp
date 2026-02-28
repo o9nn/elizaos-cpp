@@ -1,25 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router runtimeRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto router = express.Router();
-
-    // Mount health endpoints at root level
-    router.use("/", createHealthRouter(agents, serverInstance));
-
-    // Mount logging endpoints
-    router.use("/", createLoggingRouter(agents, serverInstance));
-
-    // Mount debug endpoints under /debug
-    router.use("/debug", createDebugRouter(serverInstance));
-
-    return router;
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

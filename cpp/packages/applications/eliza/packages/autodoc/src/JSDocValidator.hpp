@@ -1,88 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_JSDOCVALIDATOR_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_JSDOCVALIDATOR_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Jsdocvalidator {
+public:
+    Jsdocvalidator() = default;
+    ~Jsdocvalidator() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "JSDocValidator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Class for validating and fixing JSDoc comments in TypeScript code.
- */
-class JSDocValidator {
-  private parserOptions: ParserOptions = {
-    sourceType: 'module',
-    ecmaVersion: 2020,
-    ecmaFeatures: {
-      jsx: true,
-    },
-    range: true,
-    loc: true,
-    tokens: true,
-    comment: true,
-  };
-
-  /**
-   * Constructor for the class.
-   *
-   * @param {AIService} aiService - An instance of the AIService class.
-   */
-
-  /**
-   * Validates and fixes JSDoc comments in TypeScript code
-   */
-  /**
-   * Validates and fixes the JSDoc comment in the given file.
-   * @param {string} fileName - The name of the file.
-   * @param {string} code - The code containing the JSDoc comment.
-   * @param {string} originalComment - The original JSDoc comment.
-   * @returns {Promise<string>} The validated and potentially fixed JSDoc comment.
-   */
-    // First try parsing with the original comment
-
-    // Try fixing common JSDoc issues
-
-    // If still invalid, try regenerating with AI
-
-    // Instead of throwing, log the issue and return original
-
-  /**
-   * Checks if the TypeScript code is valid
-   */
-
-  /**
-   * Fixes common JSDoc formatting issues
-   */
-    // First remove std::any backtick code block markers
-
-      // Fix opening format
-
-      // Fix body asterisks and spacing
-
-      // Fix multi-line issues (from bash script insights)
-
-      // Fix closing format
-
-      // Fix indentation
-
-      // Remove trailing spaces
-
-      // Ensure proper spacing around parameter/return tags
-
-      // Fix type definition spacing
-
-      // Normalize newlines
-
-  /**
-   * Regenerates JSDoc using AI with stronger constraints
-   */
-
-
+} // namespace eliza_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_JSDOCVALIDATOR_HPP_

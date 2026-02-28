@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_ACTIONS_COMPLETETODO_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_ACTIONS_COMPLETETODO_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/todoService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPLETETODO_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPLETETODO_HPP_
 
-class TaskCompletion;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TaskCompletion : public object, public std::enable_shared_from_this<TaskCompletion> {
+namespace elizaos {
+namespace generated_misc {
+
+class Completetodo {
 public:
-    using std::enable_shared_from_this<TaskCompletion>::shared_from_this;
-    std::string taskId;
+    Completetodo() = default;
+    ~Completetodo() = default;
 
-    std::string taskName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "completeTodo"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean isFound;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::string extractCompletionTemplate;
-std::shared_ptr<Promise<std::shared_ptr<TaskCompletion>>> extractTaskCompletion(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<TodoData>> availableTasks, std::shared_ptr<State> state);
+} // namespace generated_misc
+} // namespace elizaos
 
-extern std::shared_ptr<Action> completeTodoAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_COMPLETETODO_HPP_

@@ -1,63 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_TYPES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_TYPES_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Types {
+public:
+    Types() = default;
+    ~Types() = default;
 
-/**
- * Environment command options for different subcommands
- */
-struct ListEnvOptions {
-    std::optional<bool> system;
-    std::optional<bool> local;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "types"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct EditEnvOptions {
-    std::optional<bool> yes;
-};
-
-struct ResetEnvOptions {
-    std::optional<bool> yes;
-};
-
-struct InteractiveEnvOptions {
-    std::optional<bool> yes;
-};
-
-/**
- * Reset operation types
- */
-using ResetTarget = std::string;
-using ResetAction = std::string;
-
-/**
- * Reset item configuration
- */
-struct ResetItem {
-    std::string title;
-    ResetTarget value;
-    std::optional<std::string> description;
-    std::optional<bool> selected;
-};
-
-/**
- * Environment variable record type
- */
-using EnvVars = std::unordered_map<std::string, std::string>;
-
-/**
- * Reset operation result tracking
- */
-using ResetActionRecord = std::unordered_map<ResetAction, std::vector<std::string>>;
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_TYPES_HPP_

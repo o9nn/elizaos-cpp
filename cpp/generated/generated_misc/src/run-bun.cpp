@@ -1,39 +1,26 @@
-#include "eliza/packages/cli/src/utils/run-bun.h"
+#include "run-bun.hpp"
 
-std::shared_ptr<Promise<void>> runBunCommand(array<string> args, std::string cwd)
-{
-    auto finalArgs = array<string>{ args };
-    auto isInstallCommand = const_(args)[0] == std::string("install");
-    auto isCI = OR((process->env->CI), (process->env->ELIZA_TEST_MODE == std::string("true")));
-    if (AND((isCI), (isInstallCommand))) {
-        if (!finalArgs->includes(std::string("--frozen-lockfile"))) {
-            finalArgs->push(std::string("--frozen-lockfile"));
-        }
-        console->info(std::string("✅ Using CI-optimized flags for faster installation..."));
-    }
-    try
-    {
-        std::async([=]() { execa(std::string("bun"), finalArgs, object{
-            object::pair{std::string("cwd"), std::string("cwd")}, 
-            object::pair{std::string("stdio"), std::string("inherit")}
-        }); });
-    }
-    catch (const std::any& error)
-    {
-        if (OR((error["code"] == std::string("ENOENT")), (error["message"]["includes"](std::string("bun: command not found"))))) {
-            throw std::any(std::make_shared<Error>(std::string("Bun command not found. ") + displayBunInstallationTipCompact() + string_empty));
-        }
-        if (AND((AND((isCI), (isInstallCommand))), ((OR((error["message"]["includes"](std::string("frozen-lockfile"))), (error["message"]["includes"](std::string("install")))))))) {
-            console->warn(std::string("CI-optimized install failed, retrying with basic args..."));
-            std::async([=]() { execa(std::string("bun"), args, object{
-                object::pair{std::string("cwd"), std::string("cwd")}, 
-                object::pair{std::string("stdio"), std::string("inherit")}
-            }); });
-        } else {
-            throw std::any(error);
-        }
-    }
-    return std::shared_ptr<Promise<void>>();
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool RunBun::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void RunBun::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json RunBun::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

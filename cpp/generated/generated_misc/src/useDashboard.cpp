@@ -1,58 +1,26 @@
-#include "trust_scoreboard/src/hooks/useDashboard.h"
+#include "useDashboard.hpp"
 
-std::function<std::shared_ptr<Promise<any>>()> fetchHighestRankedUsers = [=]() mutable
-{
-    console->log(std::string("sdasdsdadasd=?????????"));
-    try
-    {
-        auto response = std::async([=]() { get(std::string("/user/highestRankedUsers")); });
-        return response->data;
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error fetching highest ranked users:"), error);
-        throw std::any(error);
-    }
-};
-std::function<object()> useDashboard = [=]() mutable
-{
-    auto [data, setData] = useState<any>(nullptr);
-    auto [isLoading, setIsLoading] = useState(true);
-    auto [error, setError] = useState<any>(nullptr);
-    useEffect([=]() mutable
-    {
-        auto fetchDashboard = [=]() mutable
-        {
-            {
-                utils::finally __finally1059_1098([&]() mutable
-                {
-                    setIsLoading(false);
-                });
-                try
-                {
-                    auto partners = std::async([=]() { fetchHighestRankedUsers(); });
-                    setData(object{
-                        object::pair{std::string("partners"), std::string("partners")}
-                    });
-                }
-                catch (const std::any& err)
-                {
-                    setError((is<Error>(err)) ? err : std::make_shared<Error>(std::string("Failed to fetch dashboard data")));
-                }
-            }
-        };
-        fetchDashboard();
-    }
-    , array<any>());
-    return object{
-        object::pair{std::string("data"), std::string("data")}, 
-        object::pair{std::string("isLoading"), std::string("isLoading")}, 
-        object::pair{std::string("error"), std::string("error")}
-    };
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Usedashboard::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Usedashboard::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Usedashboard::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

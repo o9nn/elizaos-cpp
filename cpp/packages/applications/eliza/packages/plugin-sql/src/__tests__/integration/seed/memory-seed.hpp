@@ -1,45 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_MEMORY_SEED_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_MEMORY_SEED_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class MemorySeed {
+public:
+    MemorySeed() = default;
+    ~MemorySeed() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "memory_seed"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Test IDs
-
-// Test data for memory integration tests
-
-// Helper std::function to generate random embedding vectors
-  // Normalize
-
-// Basic memory test objects
-
-// Memory test objects with embeddings
-
-// Document and fragments for testing document operations
-
-// Fragment memories that belong to the document
-
-// Helper std::function to create similar memory for std::vector similarity testing
-  // Only works if baseMemory has an embedding
-
-  // Create a somewhat similar std::vector (higher similarity means more similar)
-
-  // Blend the original std::vector with noise based on similarity
-
-  // Normalize the resulting std::vector
-
-
+} // namespace eliza_plugin_sql
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_MEMORY_SEED_HPP_

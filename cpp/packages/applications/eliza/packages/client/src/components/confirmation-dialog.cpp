@@ -1,39 +1,26 @@
 #include "confirmation-dialog.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto confirmText, auto cancelText, auto onConfirm, auto std::variant) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto handleConfirm = [&]() {;
-        onConfirm();
-        onOpenChange(false);
-        };
-
-        return (;
-        <AlertDialog open={open} onOpenChange={onOpenChange}>;
-        <AlertDialogContent>;
-        <AlertDialogHeader>;
-        <AlertDialogTitle>{title}</AlertDialogTitle>;
-        <AlertDialogDescription>{description}</AlertDialogDescription>;
-        </AlertDialogHeader>;
-        <AlertDialogFooter>;
-        <AlertDialogCancel>{cancelText}</AlertDialogCancel>;
-        <AlertDialogAction;
-    onClick={handleConfirm}
-    className={
-        std::variant == "destructive" ? "bg-destructive text-destructive-foreground" : std::nullopt
-    }
-    >;
-    {confirmText}
-    </AlertDialogAction>;
-    </AlertDialogFooter>;
-    </AlertDialogContent>;
-    </AlertDialog>;
-    );
-
+bool ConfirmationDialog::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void ConfirmationDialog::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ConfirmationDialog::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

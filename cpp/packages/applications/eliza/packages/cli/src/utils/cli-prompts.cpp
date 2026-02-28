@@ -1,49 +1,26 @@
 #include "cli-prompts.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<std::vector<std::string>> promptForMultipleItems(const std::string& fieldName, std::vector<std::string> initial = {}) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto items = [...initial];
-    std::cout << "\n" + fieldName << std::endl;
-    if (initial.length > 0) {
-        std::cout << "Current values:" << std::endl;
-        initial.forEach((item, i) => logger.info(`  ${i + 1}. ${item}`));
-        std::cout << '\nPress Enter to keep existing values << or start typing new ones:' << std::endl;
-    }
-
-    while (true) {
-        const auto val = "promptWithNav(" + "> " + fieldName + ":";
-        if (val == NAV_NEXT) break;
-        if (val == NAV_BACK) {
-            if (items.length == initial.length) return initial; // Return original if no change
-            break;
-        }
-        if (val == 'cancel') return initial;
-        items.push_back(val);
-    }
-    return items;
-
+bool CliPrompts::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<bool> confirmAction(const std::string& message) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto response = clack.confirm({;
-        message,
-        initialValue: false,
-        });
-
-        if (clack.isCancel(response)) {
-            clack.cancel("Operation cancelled.");
-            process.exit(0);
-        }
-
-        return Boolean(response);
-
+void CliPrompts::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json CliPrompts::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

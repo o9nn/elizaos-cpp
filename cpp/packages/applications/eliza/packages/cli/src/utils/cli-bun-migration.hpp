@@ -1,53 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_BUN_MIGRATION_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_BUN_MIGRATION_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class CliBunMigration {
+public:
+    CliBunMigration() = default;
+    ~CliBunMigration() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "cli_bun_migration"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Check if bun is available on the system
- */
-std::future<bool> isBunAvailable();
-
-/**
- * Check if the CLI was installed via npm globally
- * Handles multiple node versions (nvm scenarios)
- */
-std::future<bool> isCliInstalledViaNpm();
-
-/**
- * Remove the CLI from npm global installation
- */
-std::future<void> removeNpmInstallation();
-
-/**
- * Install the CLI using bun globally
- */
-std::future<void> installCliWithBun(const std::string& version);
-
-/**
- * Verify the CLI installation works and returns expected version
- */
-std::future<bool> verifyCliInstallation(const std::string& expectedVersion);
-
-/**
- * Atomic migration: CLI from npm to bun installation
- * Installs bun version first, only removes npm if successful
- */
-std::future<void> migrateCliToBun(const std::string& targetVersion);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_BUN_MIGRATION_HPP_

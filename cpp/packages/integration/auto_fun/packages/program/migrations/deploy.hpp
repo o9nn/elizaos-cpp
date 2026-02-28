@@ -1,25 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_MIGRATIONS_DEPLOY_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_MIGRATIONS_DEPLOY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_program {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Deploy {
+public:
+    Deploy() = default;
+    ~Deploy() = default;
 
-// Migrations are an early feature. Currently, they're nothing more than this
-// single deploy script that's invoked from the CLI, injecting a provider
-// configured from the workspace's Anchor.toml.
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "deploy"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-  // Configure client to use the provider.
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // Add your deploy script here.
-
+} // namespace autofun_program
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_PROGRAM_MIGRATIONS_DEPLOY_HPP_

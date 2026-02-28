@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_SRC_CTX-EMBEDDINGS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_SRC_CTX-EMBEDDINGS_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CTX_EMBEDDINGS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CTX_EMBEDDINGS_HPP_
 
-extern double DEFAULT_CHUNK_TOKEN_SIZE;
-extern double DEFAULT_CHUNK_OVERLAP_TOKENS;
-extern double DEFAULT_CHARS_PER_TOKEN;
-extern object CONTEXT_TARGETS;
-extern std::string SYSTEM_PROMPT;
-extern object SYSTEM_PROMPTS;
-extern std::string CONTEXTUAL_CHUNK_ENRICHMENT_PROMPT_TEMPLATE;
-extern std::string CACHED_CHUNK_PROMPT_TEMPLATE;
-extern std::string CACHED_CODE_CHUNK_PROMPT_TEMPLATE;
-extern std::string CACHED_MATH_PDF_PROMPT_TEMPLATE;
-extern std::string CACHED_TECHNICAL_PROMPT_TEMPLATE;
-extern std::string MATH_PDF_PROMPT_TEMPLATE;
-extern std::string CODE_PROMPT_TEMPLATE;
-extern std::string TECHNICAL_PROMPT_TEMPLATE;
-std::string getContextualizationPrompt(std::string docContent, std::string chunkContent, double minTokens = CONTEXT_TARGETS["DEFAULT"]["MIN_TOKENS"], double maxTokens = CONTEXT_TARGETS["DEFAULT"]["MAX_TOKENS"], std::string promptTemplate = CONTEXTUAL_CHUNK_ENRICHMENT_PROMPT_TEMPLATE);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-object getCachingContextualizationPrompt(std::string chunkContent, std::string contentType = undefined, double minTokens = CONTEXT_TARGETS["DEFAULT"]["MIN_TOKENS"], double maxTokens = CONTEXT_TARGETS["DEFAULT"]["MAX_TOKENS"]);
+namespace elizaos {
+namespace generated_misc {
 
-std::string getPromptForMimeType(std::string mimeType, std::string docContent, std::string chunkContent);
+class CtxEmbeddings {
+public:
+    CtxEmbeddings() = default;
+    ~CtxEmbeddings() = default;
 
-object getCachingPromptForMimeType(std::string mimeType, std::string chunkContent);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ctx_embeddings"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-boolean containsMathematicalContent(std::string content);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-boolean isTechnicalDocumentation(std::string content);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::string getChunkWithContext(std::string chunkContent, std::string generatedContext);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CTX_EMBEDDINGS_HPP_

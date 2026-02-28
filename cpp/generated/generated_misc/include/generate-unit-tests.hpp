@@ -1,41 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SCRIPTS_GENERATE-UNIT-TESTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SCRIPTS_GENERATE-UNIT-TESTS_H
-#include "core.h"
-#include "fs/promises.h"
-#include "path.h"
-#include "fs.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_UNIT_TESTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_UNIT_TESTS_HPP_
 
-class FileToTest;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class FileToTest : public object, public std::enable_shared_from_this<FileToTest> {
+namespace elizaos {
+namespace generated_misc {
+
+class GenerateUnitTests {
 public:
-    using std::enable_shared_from_this<FileToTest>::shared_from_this;
-    std::string sourcePath;
+    GenerateUnitTests() = default;
+    ~GenerateUnitTests() = default;
 
-    std::string testPath;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "generate_unit_tests"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any category;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<array<string>>> findAllSourceFiles(std::string dir, array<string> files = array<string>());
+} // namespace generated_misc
+} // namespace elizaos
 
-template <typename RET>
-RET categorizeFile(std::string filePath);
-
-std::string getTestPath(std::string sourcePath, std::string category);
-
-std::shared_ptr<Promise<string>> generateTestContent(std::string sourcePath);
-
-void main();
-
-template <typename RET>
-RET categorizeFile(std::string filePath)
-{
-    if (filePath->includes(std::string("/commands/"))) return std::string("commands");
-    if (filePath->includes(std::string("/utils/"))) return std::string("utils");
-    if (filePath->includes(std::string("/types/"))) return std::string("types");
-    return std::string("other");
-};
-
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GENERATE_UNIT_TESTS_HPP_

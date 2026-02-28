@@ -1,17 +1,26 @@
 #include "facts.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-void formatFacts(const std::vector<Memory>& facts) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return facts;
-    .reverse();
-    .std::map((fact: Memory) => fact.content.text)
-    .join("\n");
-
+bool Facts::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Facts::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Facts::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos

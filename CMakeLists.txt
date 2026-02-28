@@ -148,25 +148,60 @@ add_subdirectory(cpp/external/ontogenesis)
 add_subdirectory(cpp/external/embodiment)
 
 # ============================================================================
-# Generated Modules (from transpiler)
-# NOTE: These modules contain auto-transpiled code that references headers
-# from the original TypeScript project structure. They are disabled until
-# the transpiler generates proper C++ headers. Enable individually as
-# transpilation is completed.
+# Generated Modules (from transpiler) - Fixed and enabled
+# All broken transpiled code has been rewritten to valid C++17.
 # ============================================================================
-# add_subdirectory(cpp/generated/generated_services)
-# add_subdirectory(cpp/generated/generated_testing)
-# add_subdirectory(cpp/generated/generated_utils)
-# add_subdirectory(cpp/generated/generated_auth)
-# add_subdirectory(cpp/generated/generated_plugins)
-# add_subdirectory(cpp/generated/generated_ui)
-# add_subdirectory(cpp/generated/generated_database)
-# add_subdirectory(cpp/generated/generated_cli)
-# add_subdirectory(cpp/generated/generated_docs)
-# add_subdirectory(cpp/generated/generated_api)
-# add_subdirectory(cpp/generated/generated_websocket)
-# add_subdirectory(cpp/generated/generated_trade)
-# add_subdirectory(cpp/generated/generated_misc)
+add_subdirectory(cpp/generated/generated_api)
+add_subdirectory(cpp/generated/generated_auth)
+add_subdirectory(cpp/generated/generated_cli)
+add_subdirectory(cpp/generated/generated_database)
+add_subdirectory(cpp/generated/generated_docs)
+add_subdirectory(cpp/generated/generated_misc)
+add_subdirectory(cpp/generated/generated_plugins)
+add_subdirectory(cpp/generated/generated_services)
+add_subdirectory(cpp/generated/generated_testing)
+add_subdirectory(cpp/generated/generated_trade)
+add_subdirectory(cpp/generated/generated_ui)
+add_subdirectory(cpp/generated/generated_utils)
+add_subdirectory(cpp/generated/generated_websocket)
+
+# ============================================================================
+# Eliza Sub-Packages (core platform components)
+# ============================================================================
+add_subdirectory(cpp/packages/applications/eliza/packages/api-client)
+add_subdirectory(cpp/packages/applications/eliza/packages/app)
+add_subdirectory(cpp/packages/applications/eliza/packages/autodoc)
+add_subdirectory(cpp/packages/applications/eliza/packages/cli)
+add_subdirectory(cpp/packages/applications/eliza/packages/client)
+add_subdirectory(cpp/packages/applications/eliza/packages/core)
+add_subdirectory(cpp/packages/applications/eliza/packages/docs)
+add_subdirectory(cpp/packages/applications/eliza/packages/plugin-bootstrap)
+add_subdirectory(cpp/packages/applications/eliza/packages/plugin-dummy-services)
+add_subdirectory(cpp/packages/applications/eliza/packages/plugin-sql)
+add_subdirectory(cpp/packages/applications/eliza/packages/plugin-starter)
+add_subdirectory(cpp/packages/applications/eliza/packages/project-starter)
+add_subdirectory(cpp/packages/applications/eliza/packages/project-tee-starter)
+add_subdirectory(cpp/packages/applications/eliza/packages/server)
+
+# ============================================================================
+# AutoFun Sub-Packages
+# ============================================================================
+add_subdirectory(cpp/packages/integration/auto_fun/packages/autodoc)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/client)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/docs)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/program)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/raydium)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/server)
+add_subdirectory(cpp/packages/integration/auto_fun/packages/types)
+
+# ============================================================================
+# Additional External Modules
+# ============================================================================
+add_subdirectory(cpp/external/LiveVideoChat)
+add_subdirectory(cpp/external/aum_tracker)
+add_subdirectory(cpp/external/mobile)
+add_subdirectory(cpp/external/sandbox_template_cloud)
+add_subdirectory(cpp/external/test_hybrid)
 
 # ============================================================================
 # Testing

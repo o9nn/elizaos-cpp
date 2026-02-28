@@ -1,39 +1,26 @@
-#include "spartan/src/plugins/degenTrader/config/trading.h"
+#include "trading.hpp"
 
-object DEFAULT_CONFIG = object{
-    object::pair{std::string("intervals"), object{
-        object::pair{std::string("priceCheck"), 60000}, 
-        object::pair{std::string("walletSync"), 600000}, 
-        object::pair{std::string("performanceMonitor"), 3600000}
-    }}, 
-    object::pair{std::string("thresholds"), object{
-        object::pair{std::string("minLiquidity"), 50000}, 
-        object::pair{std::string("minVolume"), 100000}, 
-        object::pair{std::string("minScore"), 60}
-    }}, 
-    object::pair{std::string("riskLimits"), object{
-        object::pair{std::string("maxPositionSize"), 0.2}, 
-        object::pair{std::string("maxDrawdown"), 0.1}, 
-        object::pair{std::string("stopLossPercentage"), 0.05}, 
-        object::pair{std::string("takeProfitPercentage"), 0.2}
-    }}, 
-    object::pair{std::string("slippageSettings"), object{
-        object::pair{std::string("baseSlippage"), 0.5}, 
-        object::pair{std::string("maxSlippage"), 1}, 
-        object::pair{std::string("liquidityMultiplier"), 1}, 
-        object::pair{std::string("volumeMultiplier"), 1}
-    }}
-};
-object SAFETY_LIMITS = object{
-    object::pair{std::string("MINIMUM_TRADE"), 0.1}, 
-    object::pair{std::string("MAX_SLIPPAGE"), 0.05}, 
-    object::pair{std::string("MIN_LIQUIDITY"), 50000}, 
-    object::pair{std::string("MIN_VOLUME"), 10000}, 
-    object::pair{std::string("MAX_PRICE_CHANGE"), 30}
-};
+namespace elizaos {
+namespace generated_trade {
 
-void Main(void)
-{
+bool Trading::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Trading::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Trading::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_trade
+} // namespace elizaos

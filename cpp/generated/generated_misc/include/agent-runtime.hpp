@@ -1,45 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT-RUNTIME_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT-RUNTIME_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "./agent.h"
-using agent = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_RUNTIME_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_RUNTIME_HPP_
 
-class GlobalElizaState;
-class AgentRuntimeManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class GlobalElizaState : public object, public std::enable_shared_from_this<GlobalElizaState> {
+namespace elizaos {
+namespace generated_misc {
+
+class AgentRuntime {
 public:
-    using std::enable_shared_from_this<GlobalElizaState>::shared_from_this;
-    boolean __elizaMigrationsRan;
+    AgentRuntime() = default;
+    ~AgentRuntime() = default;
 
-    boolean __elizaManagerLogged;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_runtime"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::any __elizaRuntime;
-
-    object logger;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::shared_ptr<GlobalElizaState> globalState;
-class AgentRuntimeManager : public object, public std::enable_shared_from_this<AgentRuntimeManager> {
-public:
-    using std::enable_shared_from_this<AgentRuntimeManager>::shared_from_this;
-    static std::shared_ptr<AgentRuntimeManager> instance;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::any runtime = nullptr;
-
-    boolean hasRunMigrations = false;
-
-    std::any initializationPromise = nullptr;
-
-    AgentRuntimeManager();
-    static std::shared_ptr<AgentRuntimeManager> getInstance();
-    virtual boolean isReady();
-    virtual std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> getRuntime();
-    virtual std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> createRuntime();
-    virtual std::shared_ptr<Promise<void>> ensureBuiltInTables();
-    virtual std::shared_ptr<Promise<std::shared_ptr<Memory>>> handleMessage(std::string roomId, std::string entityId, object content);
-};
-
-extern std::shared_ptr<AgentRuntimeManager> agentRuntime;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENT_RUNTIME_HPP_

@@ -1,54 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_ACTION_VIEWER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_ACTION_VIEWER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentActionViewer {
+public:
+    AgentActionViewer() = default;
+    ~AgentActionViewer() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_action_viewer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Constants
-
-// Enums
-enum ActionType {
-  all = 'all',
-  llm = 'llm',
-  transcription = 'transcription',
-  image = 'image',
-  other = 'other',
-}
-
-// Types
-using AgentLog = {
-
-using ActionCardProps = {
-
-using AgentActionViewerProps = {
-
-// Helper functions
-std::string getModelUsageType(const std::string& modelType);
-
-void formatDate(number | undefined timestamp);
-
-void getModelIcon(auto modelType = '');
-
-void formatTokenUsage(const std::any& usage);
-
-void truncateText(const std::string& text, auto maxLength = 100);
-
-void copyToClipboard(const std::string& text);
-
-void groupActionsByDate(const std::vector<AgentLog>& actions);
-
-// Components
-void ActionCard(auto { action, ActionCardProps onDelete });
-
-void AgentActionViewer(auto { agentId, AgentActionViewerProps roomId });
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_ACTION_VIEWER_HPP_

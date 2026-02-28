@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_FRONTEND_LIB_ACTION-MESSAGE-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_FRONTEND_LIB_ACTION-MESSAGE-UTILS_H
-#include "core.h"
-#include "@/components/action-tool.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ACTION_MESSAGE_UTILS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ACTION_MESSAGE_UTILS_HPP_
 
-std::shared_ptr<ToolPart> convertActionMessageToToolPart(std::any message);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-boolean isActionMessage(std::any message);
+namespace elizaos {
+namespace generated_utils {
 
-#endif
+class ActionMessageUtils {
+public:
+    ActionMessageUtils() = default;
+    ~ActionMessageUtils() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "action_message_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_utils
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UTILS_INCLUDE_ACTION_MESSAGE_UTILS_HPP_

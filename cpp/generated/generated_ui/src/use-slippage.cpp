@@ -1,13 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-slippage.h"
+#include "use-slippage.hpp"
 
-std::function<std::any()> useSlippage = [=]() mutable
-{
-    auto [slippage, setSlippage] = useLocalStorage<TSlippage>(std::string("use-slippage-remember"), 2);
-    return as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ slippage, setSlippage });
-};
+namespace elizaos {
+namespace generated_ui {
 
-void Main(void)
-{
+bool UseSlippage::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseSlippage::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseSlippage::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_ui
+} // namespace elizaos

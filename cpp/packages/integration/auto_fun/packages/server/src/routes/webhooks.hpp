@@ -1,49 +1,35 @@
-#include ".cron.hpp"
-#include ".redis.hpp"
-#include ".tokenSupplyHelpers/monitoring.hpp"
-#include ".util.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_WEBHOOKS_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_WEBHOOKS_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Webhooks {
+public:
+    Webhooks() = default;
+    ~Webhooks() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "webhooks"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-  // const body = await c.req.json();
-  // const swapEvent = WebhookTokenPairEvent.parse(body).data.event;
-
-  // const token0IsSol =
-  //   swapEvent.token0Address === "So11111111111111111111111111111111111111112";
-  // const tokenMint = token0IsSol
-  //   ? swapEvent.token1Address
-  //   : swapEvent.token0Address;
-  // const redisCache = await getGlobalRedisCache();
-  // const txId = swapEvent.transactionHash;
-  // const dedupeKey = `webhook:tx:${txId}`;
-  // const firstSeen = await redisCache.redisPool.useClient((client) =>
-  //   client.std::set(dedupeKey, "1", "EX", 120 * 60, "NX")
-  // );
-  // if (firstSeen === null) {
-  //   // Already processed recently
-  //   logger.log(`Skipping dup tx ${txId}`);
-  //   return c.json({ message: "Duplicate, ignored" }, 200);
-  // }
-  // logger.log(`Enqueuing webhook for ${tokenMint}…`);
-  // queueJob(swapEvent).catch(err => {
-  //   logger.error(`Failed to enqueue swapEvent ${txId}:`, err);
-  // });
-
-// Start monitoring batch
-
-// Status Endpoint
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_WEBHOOKS_HPP_

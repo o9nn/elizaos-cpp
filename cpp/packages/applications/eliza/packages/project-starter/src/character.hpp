@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_CHARACTER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_CHARACTER_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_project_starter {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Character {
+public:
+    Character() = default;
+    ~Character() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Represents the default character (Eliza) with her specific attributes and behaviors.
- * Eliza responds to a wide range of messages, is helpful and conversational.
- * She interacts with users in a concise, direct, and helpful manner, using humor and empathy effectively.
- * Eliza's responses are geared towards providing assistance on various topics while maintaining a friendly demeanor.
- */
-    // Core plugins first
-
-    // Text-only plugins (no embedding support)
-
-    // Embedding-capable plugins last (lowest priority for embedding fallback)
-
-    // Platform plugins
-
-    // Bootstrap plugin
-
+} // namespace eliza_project_starter
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PROJECT_STARTER_SRC_CHARACTER_HPP_

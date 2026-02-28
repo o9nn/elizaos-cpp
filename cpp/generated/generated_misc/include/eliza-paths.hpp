@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_ELIZA-PATHS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_ELIZA-PATHS_H
-#include "core.h"
-#include "node:path.h"
-using path = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ELIZA_PATHS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ELIZA_PATHS_HPP_
 
-std::string getElizaBaseDir(std::string cwd = process->cwd());
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string getElizaDbDir(std::string cwd = process->cwd());
+namespace elizaos {
+namespace generated_misc {
 
-std::string getElizaDataDir(std::string cwd = process->cwd());
+class ElizaPaths {
+public:
+    ElizaPaths() = default;
+    ~ElizaPaths() = default;
 
-std::string getElizaUploadsDir(std::string cwd = process->cwd());
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "eliza_paths"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::string getElizaGeneratedDir(std::string cwd = process->cwd());
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::string getElizaCharactersDir(std::string cwd = process->cwd());
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ELIZA_PATHS_HPP_

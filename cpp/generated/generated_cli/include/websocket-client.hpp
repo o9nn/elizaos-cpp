@@ -1,20 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET-CLIENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET-CLIENT_H
-#include "core.h"
-#include "./redis.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_WEBSOCKET_CLIENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_WEBSOCKET_CLIENT_HPP_
 
-class WebSocketClient;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class WebSocketClient : public object, public std::enable_shared_from_this<WebSocketClient> {
+namespace elizaos {
+namespace generated_cli {
+
+class WebsocketClient {
 public:
-    using std::enable_shared_from_this<WebSocketClient>::shared_from_this;
-    WebSocketClient();
-    virtual std::shared_ptr<Promise<void>> emit(std::string room, std::string event, std::any data);
-    virtual std::shared_ptr<Promise<void>> emitToClient(std::string clientId, std::string event, std::any data);
-    virtual std::any to(std::string room);
+    WebsocketClient() = default;
+    ~WebsocketClient() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "websocket_client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::any wsClient;
-std::shared_ptr<WebSocketClient> getWebSocketClient();
+} // namespace generated_cli
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_CLI_INCLUDE_WEBSOCKET_CLIENT_HPP_

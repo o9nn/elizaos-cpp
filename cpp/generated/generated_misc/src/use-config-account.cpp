@@ -1,26 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-config-account.h"
+#include "use-config-account.hpp"
 
-array<string> configAccountQueryKey = array<string>{ std::string("configAccount") };
-std::function<std::shared_ptr<Promise<any>>(std::any)> getConfigAccount = [=](auto program) mutable
-{
-    return queryClient->ensureQueryData(object{
-        object::pair{std::string("queryKey"), configAccountQueryKey}, 
-        object::pair{std::string("queryFn"), [=]() mutable
-        {
-            if (!program) {
-                throw std::any(std::make_shared<Error>(std::string("missing program")));
-            }
-            auto [configPda, _] = PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(SEED_CONFIG) }, program->programId);
-            auto configAccount = std::async([=]() { program->account->config->fetch(configPda); });
-            return configAccount;
-        }
-        }, 
-        object::pair{std::string("staleTime"), 1000 * 60 * 10}
-    });
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseConfigAccount::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseConfigAccount::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseConfigAccount::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM-CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM-CONFIG_H
-#include "core.h"
-#include "@raydium-io/raydium-sdk-v2.h"
-#include "@solana/spl-token.h"
-#include "@solana/web3.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUM_CONFIG_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUM_CONFIG_HPP_
 
-typedef std::any Cluster;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
+namespace elizaos {
+namespace generated_misc {
 
-extern std::function<std::string()> getRpcUrl;
-extern std::any txVersion;
-extern std::any raydium;
-extern std::function<std::shared_ptr<Promise<any>>(object)> initSdk;
-extern std::function<std::shared_ptr<Promise<any>>()> fetchTokenAccountData;
-#endif
+class RaydiumConfig {
+public:
+    RaydiumConfig() = default;
+    ~RaydiumConfig() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "raydium_config"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RAYDIUM_CONFIG_HPP_

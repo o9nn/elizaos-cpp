@@ -1,56 +1,35 @@
-#include "state.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TEMPLATES_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TEMPLATES_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Templates {
+public:
+    Templates() = default;
+    ~Templates() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "templates"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-/**
- * Template type definition for v1 compatibility
- * A template can be either a std::string or a std::function that takes state and returns a std::string
- * This aligns with V2's TemplateType
- */
-using TemplateType = std::variant<std::string, ((options: { state: State }) => std::string)>;
-
-/**
- * Generic template values interface for typed access to state.values
- * Users can extend this interface for type safety in their templates
- */
-struct TemplateValues {
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Create a template std::function from a v1 template
- * @param template The v1 template (std::string or std::function)
- * @returns A std::function that processes the template with the given state
- */
-
-/**
- * Process a template with the given state
- * @param template The template to process (std::string or std::function)
- * @param state The state to use for processing
- * @returns The processed template std::string
- */
-std::string processTemplate(TemplateType template, State state);
-
-/**
- * Type-safe accessor for template values
- * @param state The state containing the values
- * @param defaultValues Optional default values to use if values are missing
- * @returns The values object with type information
- */
-
-  // First cast state.values to a valid object type to use with spread
-
-  // Create a new object with both default values and state values
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TEMPLATES_HPP_

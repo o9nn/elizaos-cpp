@@ -1,24 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMPONENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_CYPRESS_SUPPORT_COMPONENT_H
-#include "core.h"
-#include "./commands.h"
-#include "@cypress/react.h"
-#include "react.h"
-using React = _default;
-#include "react-router-dom.h"
-#include "@tanstack/react-query.h"
-#include "@/index.css.h"
-#include "@radix-ui/react-direction.h"
-#include "@/components/ui/tooltip.h"
-#include "buffer.h"
-#include "process/browser.h"
-using process = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENT_HPP_
 
-extern std::function<std::any()> createTestQueryClient;
-std::any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options = object{});
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options = object{});
+namespace elizaos {
+namespace generated_ui {
 
-std::any mountRadix(std::shared_ptr<React::ReactNode> component, object options = object{});
+class Component {
+public:
+    Component() = default;
+    ~Component() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "component"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENT_HPP_

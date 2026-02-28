@@ -1,62 +1,26 @@
 #include "OAuth.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace mobile {
 
-void OAuth() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto [error, setError] = useState("");
-        const auto oauth = useLoginWithOAuth({;
-            onError: (err) => {
-                std::cout << err << std::endl;
-                setError(/* JSON.stringify */ std::string(err.message));
-                },
-                });
-                return (;
-                <View>;
-                <View;
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 5,
-                    margin: 10,
-                }}
-                >;
-                {[;
-                "github",
-                "google",
-                "discord",
-                "apple",
-                "twitter",
-                "tiktok",
-                "spotify",
-                "instagram",
-                "linkedin",
-                "line",
-                ].std::map((provider) => (;
-                <View key={provider}>;
-                <Button;
-            "title={" + "Login with " + provider;
-        disabled={oauth.state.status == "loading"}
-        onPress={() => oauth.login({ provider })}
-        ></Button>;
-        </View>;
-        ))}
-        </View>;
-        {error && <Text style={{ color = "red" }}>Error = {error}</Text>}
-        </View>;
-        );
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool Oauth::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Oauth::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Oauth::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace mobile
 } // namespace elizaos

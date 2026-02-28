@@ -1,20 +1,26 @@
 #include "skeleton.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void Skeleton() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div;
-    className={cn("animate-pulse rounded-md bg-primary/10", className)}
-    data-testid={props["data-testid"] || "skeleton"}
-    {...props}
-    />;
-    );
-
+bool Skeleton::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Skeleton::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Skeleton::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

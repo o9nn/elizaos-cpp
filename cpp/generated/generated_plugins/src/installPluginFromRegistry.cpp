@@ -1,20 +1,26 @@
-#include "autonomous-starter/src/plugin-manager/actions/installPluginFromRegistry.h"
+#include "installPluginFromRegistry.hpp"
 
-std::shared_ptr<Action> installPluginFromRegistryAction = object{
-    object::pair{std::string("name"), std::string("installPluginFromRegistry")}, 
-    object::pair{std::string("description"), std::string("Install a plugin from the ElizaOS plugin registry")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("install plugin from registry"), std::string("add plugin from registry"), std::string("download plugin"), std::string("get plugin from registry") }}, 
-    , 
-    object::pair{std::string("validate"), [=](auto runtime) mutable
-    {
-        auto pluginManagerService = runtime->getService(std::string("PLUGIN_MANAGER"));
-        return !!pluginManagerService;
-    }
-    }
-};
+namespace elizaos {
+namespace generated_plugins {
 
-void Main(void)
-{
+bool Installpluginfromregistry::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Installpluginfromregistry::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Installpluginfromregistry::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_plugins
+} // namespace elizaos

@@ -1,36 +1,26 @@
 #include "vanityWorker.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<uint8_t>& publicKey, const std::vector<uint8_t>& secretKey) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // ... (validation logic remains the same)
-    try {
-        if (!privateKey || privateKey.length != 32) return false;
-        if (!publicKey || publicKey.length != 32) return false;
-        if (!secretKey || secretKey.length != 64) return false;
-
-        // Check if secretKey = privateKey + publicKey
-        for (int i = 0; i < 32; i++)
-        if (secretKey[i] != privateKey[i]) return false;
-        for (int i = 0; i < 32; i++)
-        if (secretKey[i + 32] != publicKey[i]) return false;
-
-        // Re-derive public key from private key and check if it matches
-        const auto derivedPublicKey = ed.getPublicKey(privateKey);
-        if (!derivedPublicKey || derivedPublicKey.length != 32) return false;
-        for (int i = 0; i < 32; i++)
-        if (derivedPublicKey[i] != publicKey[i]) return false;
-
-        return true;
-        } catch (e) {
-            std::cerr << "Validation internal error:" << e << std::endl;
-            return false;
-        }
-
+bool Vanityworker::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Vanityworker::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Vanityworker::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

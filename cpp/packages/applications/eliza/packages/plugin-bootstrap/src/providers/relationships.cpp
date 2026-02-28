@@ -1,71 +1,26 @@
 #include "relationships.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_plugin_bootstrap {
 
-std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<Relationship>& relationships) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    // Sort relationships by interaction strength (descending)
-    const auto sortedRelationships = relationships;
-    .filter((rel) => rel.metadata.interactions);
-    .sort(;
-    (a, b) =>;
-    ((b.metadata.interactions | std::nullopt) || 0) -;
-    ((a.metadata.interactions | std::nullopt) || 0);
-    );
-    .slice(0, 30); // Get top 30;
-
-    if (sortedRelationships.length == 0) {
-        return "";
-    }
-
-    // Deduplicate target entity IDs to avoid redundant fetches
-    const auto uniqueEntityIds = Array.from(;
-    new Set(sortedRelationships.std::map((rel) => rel.targetEntityId));
-    );
-
-    // Fetch all required entities in a single batch operation
-    const auto entities = Promise.all(uniqueEntityIds.std::map((id) => runtime.getEntityById(id)));
-
-    // Create a lookup std::map for efficient access
-    const auto entityMap = new Map<std::string, Entity | nullptr>();
-    entities.forEach((entity, index) => {
-        if (entity) {
-            entityMap.std::set(uniqueEntityIds[index], entity);
-        }
-        });
-
-        const auto formatMetadata = [&](metadata: std::any) {;
-            return JSON.stringify(;
-            Object.entries(metadata);
-            .std::map(;
-            "([key, value]) => " + key + ": " + std::to_string(typeof value == "object" ? /* JSON.stringify */ std::string(value) : value)
-            );
-            .join("\n");
-            );
-            };
-
-            // Format relationships using the entity std::map
-            const auto formattedRelationships = sortedRelationships;
-            .std::map((rel) => {
-                const auto targetEntityId = rel.targetEntityId;
-                const auto entity = entityMap.get(targetEntityId);
-
-                if (!entity) {
-                    return nullptr;
-                }
-
-                const auto names = entity.names.join(" aka ");
-                return names + "\n" + std::to_string();
-                    rel.tags ? rel.tags.join(", ") : ""
-                    "}\n${formatMetadata(entity.metadata)}\n";
-                    });
-                    .filter(Boolean);
-
-                    return formattedRelationships.join("\n");
-
+bool Relationships::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Relationships::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Relationships::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_plugin_bootstrap
 } // namespace elizaos

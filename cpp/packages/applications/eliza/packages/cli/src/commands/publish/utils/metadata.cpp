@@ -1,46 +1,26 @@
 #include "metadata.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std::string& cliVersion, const std::string& username) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const PackageMetadata metadata = {;
-        name: packageJson.name,
-        version: packageJson.version,
-        description: packageJson.description || "",
-        type: packageJson.type || "plugin", // plugin or project
-        platform: packageJson.platform || "universal", // node, browser, or universal
-        runtimeVersion: cliVersion, // Compatible CLI/runtime version
-        repository: packageJson.repository.url || "",
-        maintainers: packageJson.maintainers || [username],
-        publishedAt: new Date().toISOString(),
-        publishedBy: username,
-        dependencies: packageJson.dependencies || {},
-        tags: packageJson.keywords || [],
-        license: packageJson.license || "UNLICENSED",
-        };
-
-        // Add npm or GitHub specific data
-        if (packageJson.npmPackage) {
-            metadata.npmPackage = packageJson.npmPackage;
-        }
-
-        if (packageJson.githubRepo) {
-            metadata.githubRepo = packageJson.githubRepo;
-        }
-
-        // Ensure appropriate tag is included based on type
-        if (metadata.type == 'plugin' && !metadata.tags.includes('plugin')) {
-            metadata.tags.push_back("plugin");
-            } else if (metadata.type == "project" && !metadata.(std::find(tags.begin(), tags.end(), "project") != tags.end())) {
-                metadata.tags.push_back("project");
-            }
-
-            return metadata;
-
+bool Metadata::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Metadata::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Metadata::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_cli
 } // namespace elizaos

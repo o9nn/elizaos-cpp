@@ -1,15 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___FILE-STRUCTURE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___FILE-STRUCTURE_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:path.h"
-using path = _default;
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_FILE_STRUCTURE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_FILE_STRUCTURE_TEST_HPP_
 
-boolean fileExists(std::string filePath);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-boolean directoryExists(std::string dirPath);
+namespace elizaos {
+namespace generated_testing {
 
-#endif
+class FileStructureTest {
+public:
+    FileStructureTest() = default;
+    ~FileStructureTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_structure_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_testing
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_FILE_STRUCTURE_TEST_HPP_

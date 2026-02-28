@@ -1,18 +1,26 @@
-#include "spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/validation.h"
+#include "validation.hpp"
 
-std::any isGetPriceContent(std::shared_ptr<GetPriceContent> content)
-{
-    return (AND((type_of(content->symbol) == std::string("string")), (type_of(content->currency) == std::string("string"))));
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::any GetPriceSchema = z->object(object{
-    object::pair{std::string("symbol"), z->std::string()}, 
-    object::pair{std::string("currency"), z->std::string()->default(std::string("USD"))}
-});
-
-void Main(void)
-{
+bool Validation::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Validation::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Validation::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

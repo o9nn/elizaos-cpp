@@ -1,44 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_BASE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_BASE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Base {
+public:
+    Base() = default;
+    ~Base() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "base"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct ApiErrorResponse {
-    { error;
-    std::string code;
-    std::string message;
-    std::optional<std::string> details;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct RequestConfig {
-    std::optional<std::unordered_map<std::string, std::string>> headers;
-    std::optional<std::unordered_map<std::string, std::any>> params;
-    std::optional<double> timeout;
-};
-
-struct PaginationParams {
-    std::optional<double> page;
-    std::optional<double> limit;
-    std::optional<double> offset;
-};
-
-struct ApiClientConfig {
-    std::string baseUrl;
-    std::optional<std::string> apiKey;
-    std::optional<double> timeout;
-    std::optional<std::unordered_map<std::string, std::string>> headers;
-};
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_TYPES_BASE_HPP_

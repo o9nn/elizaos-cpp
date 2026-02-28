@@ -1,34 +1,35 @@
-#include "custom-migrator.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_MIGRATION_SERVICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_MIGRATION_SERVICE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_sql {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class MigrationService {
+public:
+    MigrationService() = default;
+    ~MigrationService() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "migration_service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class DatabaseMigrationService {
-  private db: DrizzleDatabase | null = null;
-  private registeredSchemas = new Map<std::string, any>();
-
-  constructor() {
-    // No longer extending Service, so no need to call super
-  }
-
-      // console.log(`[MIGRATION DEBUG] Processing plugin: ${pluginName}`);
-      // console.log(`[MIGRATION DEBUG] Schema keys:`, Object.keys(schema));
-
-      await runPluginMigrations(this.db!, pluginName, schema);
-
-      // console.log(`[MIGRATION DEBUG] Completed migration for plugin: ${pluginName}`);
-
-
+} // namespace eliza_plugin_sql
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_SQL_SRC_MIGRATION_SERVICE_HPP_

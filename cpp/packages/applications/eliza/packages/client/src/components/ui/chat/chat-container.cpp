@@ -1,48 +1,26 @@
 #include "chat-container.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void ChatContainerRoot(auto className) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <StickToBottom;
-    className={cn("flex overflow-y-auto", className)}
-    resize="smooth";
-    initial="smooth";
-    role="log";
-    {...props}
-    >;
-    {children}
-    </StickToBottom>;
-    );
-
+bool ChatContainer::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void ChatContainerContent(auto className) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <StickToBottom.Content className={cn("flex w-full flex-col", className)} {...props}>;
-    {children}
-    </StickToBottom.Content>;
-    );
-
+void ChatContainer::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void ChatContainerScrollAnchor() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div;
-    className={cn("h-px w-full shrink-0 scroll-mt-4", className)}
-    aria-hidden="true";
-    {...props}
-    />;
-    );
-
+nlohmann::json ChatContainer::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace eliza_client
 } // namespace elizaos

@@ -1,24 +1,26 @@
-#include "elizas-list/src/lib/algolia.h"
+#include "algolia.hpp"
 
-void indexProject(std::any project)
-{
-    std::async([=]() { index->saveObject(utils::assign(object{
-        object::pair{std::string("objectID"), project["id"]}
-    }, project)); });
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-void removeProject(std::string projectId)
-{
-    std::async([=]() { index->deleteObject(projectId); });
-};
-
-
-std::any client = algoliasearch(process->env->NEXT_PUBLIC_ALGOLIA_APP_ID, process->env->ALGOLIA_ADMIN_KEY);
-std::any index = client->initIndex(std::string("projects"));
-
-void Main(void)
-{
+bool Algolia::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Algolia::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Algolia::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

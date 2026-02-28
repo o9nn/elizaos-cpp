@@ -1,35 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_STORE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_STORE_H
-#include "core.h"
-#include "@reduxjs/toolkit.h"
-#include "../features/app/app-slice.h"
-using appReducer = _default;
-#include "../features/channel/channel-slice.h"
-using channelReducer = _default;
-#include "../features/user/user-slice.h"
-using userReducer = _default;
-#include "../features/thread/thread-slice.h"
-using threadReducer = _default;
-#include "../features/dm/dm-slice.h"
-using dmReducer = _default;
-#include "../features/guild/guild-slice.h"
-using guildReducer = _default;
-#include "../features/relationship/relationship-slice.h"
-using relationshipReducer = _default;
-#include "../features/purge/purge-slice.h"
-using purgeReducer = _default;
-#include "../features/export/export-slice.h"
-using exportReducer = _default;
-#include "../features/message/message-slice.h"
-using messageReducer = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STORE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STORE_HPP_
 
-typedef ReturnType<> RootState;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef  AppDispatch;
+namespace elizaos {
+namespace generated_misc {
 
-template <typename ReturnType>
-using AppThunk = ThunkAction<ReturnType, RootState, std::any, std::shared_ptr<Action<string>>>;
+class Store {
+public:
+    Store() = default;
+    ~Store() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "store"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-extern std::any store;
-#endif
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_STORE_HPP_

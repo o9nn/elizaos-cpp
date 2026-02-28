@@ -1,35 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_VOICE-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_VOICE-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../service.h"
-#include "../utils.h"
-#include "./guards.h"
-#include "../events.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VOICE_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VOICE_MANAGER_HPP_
 
-typedef object LiveKitAudioData;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class VoiceManager;
+namespace elizaos {
+namespace generated_misc {
 
-class VoiceManager : public object, public std::enable_shared_from_this<VoiceManager> {
+class VoiceManager {
 public:
-    using std::enable_shared_from_this<VoiceManager>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    VoiceManager() = default;
+    ~VoiceManager() = default;
 
-    std::shared_ptr<Map<std::string, object>> userStates = std::make_shared<Map>();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "voice_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean processingVoice = false;
-
-    std::any transcriptionTimeout = nullptr;
-
-    VoiceManager(std::shared_ptr<IAgentRuntime> runtime);
-    virtual void start();
-    virtual void handleUserBuffer(std::any playerId, std::any buffer);
-    virtual void debouncedProcessTranscription(std::shared_ptr<UUID> playerId);
-    virtual void processTranscription(std::shared_ptr<UUID> playerId);
-    virtual std::any handleMessage(std::string message, std::shared_ptr<UUID> playerId);
-    virtual void playAudio(std::any audioBuffer);
-    virtual std::any getService();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_VOICE_MANAGER_HPP_

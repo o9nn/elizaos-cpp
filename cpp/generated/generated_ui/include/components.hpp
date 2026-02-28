@@ -1,100 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_COMPONENTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_COMPONENTS_H
-#include "core.h"
-#include "./memory.h"
-#include "./primitives.h"
-#include "./runtime.h"
-#include "./state.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENTS_HPP_
 
-typedef std::function<std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>>(std::shared_ptr<Content>, std::any)> HandlerCallback;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef std::function<std::shared_ptr<Promise<any>>(std::shared_ptr<IAgentRuntime>, std::shared_ptr<Memory>, std::shared_ptr<State>, object, HandlerCallback, array<std::shared_ptr<Memory>>)> Handler;
+namespace elizaos {
+namespace generated_ui {
 
-typedef std::function<std::shared_ptr<Promise<boolean>>(std::shared_ptr<IAgentRuntime>, std::shared_ptr<Memory>, std::shared_ptr<State>)> Validator;
-
-class ActionExample;
-class Action;
-class EvaluationExample;
-class Evaluator;
-class ProviderResult;
-class Provider;
-
-class ActionExample : public object, public std::enable_shared_from_this<ActionExample> {
+class Components {
 public:
-    using std::enable_shared_from_this<ActionExample>::shared_from_this;
-    std::string name;
+    Components() = default;
+    ~Components() = default;
 
-    std::shared_ptr<Content> content;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "components"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class Action : public object, public std::enable_shared_from_this<Action> {
-public:
-    using std::enable_shared_from_this<Action>::shared_from_this;
-    array<string> similes;
+} // namespace generated_ui
+} // namespace elizaos
 
-    std::string description;
-
-    array<array<std::shared_ptr<ActionExample>>> examples;
-
-    Handler handler;
-
-    std::string name;
-
-    Validator validate;
-};
-
-class EvaluationExample : public object, public std::enable_shared_from_this<EvaluationExample> {
-public:
-    using std::enable_shared_from_this<EvaluationExample>::shared_from_this;
-    std::string prompt;
-
-    array<std::shared_ptr<ActionExample>> messages;
-
-    std::string outcome;
-};
-
-class Evaluator : public object, public std::enable_shared_from_this<Evaluator> {
-public:
-    using std::enable_shared_from_this<Evaluator>::shared_from_this;
-    boolean alwaysRun;
-
-    std::string description;
-
-    array<string> similes;
-
-    array<std::shared_ptr<EvaluationExample>> examples;
-
-    Handler handler;
-
-    std::string name;
-
-    Validator validate;
-};
-
-class ProviderResult : public object, public std::enable_shared_from_this<ProviderResult> {
-public:
-    using std::enable_shared_from_this<ProviderResult>::shared_from_this;
-    object values;
-
-    object data;
-
-    std::string text;
-};
-
-class Provider : public object, public std::enable_shared_from_this<Provider> {
-public:
-    using std::enable_shared_from_this<Provider>::shared_from_this;
-    std::string name;
-
-    std::string description;
-
-    boolean dynamic;
-
-    double position;
-
-    boolean private;
-
-    std::function<std::shared_ptr<Promise<std::shared_ptr<ProviderResult>>>(std::shared_ptr<IAgentRuntime>, std::shared_ptr<Memory>, std::shared_ptr<State>)> get;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_COMPONENTS_HPP_

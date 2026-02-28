@@ -1,38 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_RAYDIUM_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_RAYDIUM_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Raydium {
+public:
+    Raydium() = default;
+    ~Raydium() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "raydium"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Use the legacy getter for initialization
-
-struct InitSdkOptions {
-    std::optional<bool> loadToken;
-    std::optional<std::any> env;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-    // Set the cluster from env or use default
-
-    // Get connection based on env if provided
-
-    // Create a new instance each time since we're passing potentially different config
-      // urlConfigs: {
-      //   BASE_HOST: '<API_HOST>', // api url configs, currently api doesn't support devnet
-      // },
-
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_RAYDIUM_HPP_

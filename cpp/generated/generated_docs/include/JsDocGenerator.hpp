@@ -1,21 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_JSDOCGENERATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_JSDOCGENERATOR_H
-#include "core.h"
-#include "./AIService/AIService.js.h"
-#include "./types/index.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCGENERATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCGENERATOR_HPP_
 
-class JsDocGenerator;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class JsDocGenerator : public object, public std::enable_shared_from_this<JsDocGenerator> {
+namespace elizaos {
+namespace generated_docs {
+
+class Jsdocgenerator {
 public:
-    using std::enable_shared_from_this<JsDocGenerator>::shared_from_this;
-    std::shared_ptr<AIService> aiService;
+    Jsdocgenerator() = default;
+    ~Jsdocgenerator() = default;
 
-    JsDocGenerator(std::shared_ptr<AIService> aiService_);
-    virtual std::shared_ptr<Promise<string>> generateComment(std::shared_ptr<ASTQueueItem> queueItem);
-    virtual std::shared_ptr<Promise<string>> generateClassComment(std::shared_ptr<ASTQueueItem> queueItem);
-    virtual std::string buildPrompt(std::shared_ptr<ASTQueueItem> queueItem);
-    virtual std::string buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "JsDocGenerator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_docs
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_JSDOCGENERATOR_HPP_

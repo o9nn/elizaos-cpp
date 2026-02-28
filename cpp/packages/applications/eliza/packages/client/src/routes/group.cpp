@@ -1,31 +1,26 @@
 #include "group.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void GroupRoute() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto { channelId: channelIdFromPath } = useParams<{ channelId: std::string }>();
-    const auto [searchParams] = useSearchParams();
-    const auto serverIdFromQuery = searchParams.get("serverId");
-
-    const auto channelId = validateUuid(channelIdFromPath);
-    const auto serverId = validateUuid(serverIdFromQuery || "");
-
-    if (!channelId || !serverId) {
-        return (;
-        <div className="flex flex-1 justify-center items-center">;
-        <p>Missing channel or server information.</p>;
-        </div>;
-        );
-    }
-
-    return (;
-    <ChatComponent key={channelId} chatType="GROUP" contextId={channelId} serverId={serverId} />;
-    );
-
+bool Group::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Group::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Group::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

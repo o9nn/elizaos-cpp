@@ -1,11 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___FIXTURES_HELLO-WORLD-PLUGIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___FIXTURES_HELLO-WORLD-PLUGIN_H
-#include "core.h"
-#include "drizzle-orm/pg-core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_HELLO_WORLD_PLUGIN_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_HELLO_WORLD_PLUGIN_HPP_
 
-extern std::any helloWorldTable;
-extern std::any greetingsTable;
-extern object helloWorldSchema;
-extern std::shared_ptr<Plugin> helloWorldPlugin;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_plugins {
+
+class HelloWorldPlugin {
+public:
+    HelloWorldPlugin() = default;
+    ~HelloWorldPlugin() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "hello_world_plugin"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_plugins
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_HELLO_WORLD_PLUGIN_HPP_

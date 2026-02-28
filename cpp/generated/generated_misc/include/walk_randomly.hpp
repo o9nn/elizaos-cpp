@@ -1,11 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_ACTIONS_WALK_RANDOMLY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_ACTIONS_WALK_RANDOMLY_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../systems/controls.h"
-#include "../service.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_WALK_RANDOMLY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_WALK_RANDOMLY_HPP_
 
-extern double RANDOM_WALK_DEFAULT_INTERVAL;
-extern double RANDOM_WALK_DEFAULT_MAX_DISTANCE;
-extern std::shared_ptr<Action> hyperfyWalkRandomlyAction;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class WalkRandomly {
+public:
+    WalkRandomly() = default;
+    ~WalkRandomly() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "walk_randomly"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_WALK_RANDOMLY_HPP_

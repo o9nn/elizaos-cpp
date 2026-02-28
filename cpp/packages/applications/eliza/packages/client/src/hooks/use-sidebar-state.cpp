@@ -1,51 +1,26 @@
 #include "use-sidebar-state.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void useSidebarState() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto [isVisible, setIsVisible] = useState<boolean>(false);
-
-    // Load sidebar state from localStorage on mount
-    useEffect(() => {
-        try {
-            const auto stored = localStorage.getItem(SIDEBAR_STATE_KEY);
-            if (stored != null) {
-                const auto parsedState = /* JSON.parse */ stored;
-                setIsVisible(parsedState);
-            }
-            } catch (error) {
-                clientLogger.error("Error reading sidebar state from localStorage:", error);
-                // Default to false if there's an error
-                setIsVisible(false);
-            }
-            }, []);
-
-            // Update sidebar state and persist to localStorage
-            const auto setSidebarVisible = useCallback((visible: boolean) => {;
-                setIsVisible(visible);
-
-                try {
-                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std::string(visible));
-                    } catch (error) {
-                        clientLogger.error("Error saving sidebar state to localStorage:", error);
-                    }
-                    }, []);
-
-                    // Toggle std::function for convenience
-                    const auto toggleSidebar = useCallback(() => {;
-                        setSidebarVisible(!isVisible);
-                        }, [isVisible, setSidebarVisible]);
-
-                        return {
-                            isVisible,
-                            setSidebarVisible,
-                            toggleSidebar,
-                            };
-
+bool UseSidebarState::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void UseSidebarState::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseSidebarState::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

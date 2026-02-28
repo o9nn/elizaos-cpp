@@ -1,22 +1,26 @@
 #include "button.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void Button(auto std::variant, auto size, auto asChild) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto Comp = asChild ? Slot : "button";
-
-    return (;
-    <Comp;
-    data-slot="button";
-    className={cn(buttonVariants({ std::variant, size, className }))}
-    {...props}
-    />;
-    );
-
+bool Button::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Button::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Button::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

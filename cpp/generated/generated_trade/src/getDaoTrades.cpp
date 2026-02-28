@@ -1,31 +1,26 @@
-#include "trust_scoreboard/src/pages/api/trades/getDaoTrades.h"
+#include "getDaoTrades.hpp"
 
-std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
-{
-    try
-    {
-        auto URL = string_empty + process->env->DAO_API_URL + string_empty;
-        auto response = std::async([=]() { fetch(URL, object{
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Content-Type"), std::string("application/json")}
-            }}
-        }); });
-        if (!response->ok) {
-            auto error = std::async([=]() { response->json(); });
-            return res->status(response->status)->json(object{
-                object::pair{std::string("error"), OR((error["message"]), (std::string("Failed to fetch users")))}
-            });
-        }
-        auto data = std::async([=]() { response->json(); });
-        return res->status(200)->json(data);
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Error:"), error);
-        return res->status(500)->json(object{
-            object::pair{std::string("error"), std::string("Internal Server Error")}
-        });
-    }
-};
+namespace elizaos {
+namespace generated_trade {
 
+bool Getdaotrades::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Getdaotrades::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Getdaotrades::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_trade
+} // namespace elizaos

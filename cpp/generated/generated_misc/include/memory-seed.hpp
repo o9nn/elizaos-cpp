@@ -1,23 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_MEMORY-SEED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_MEMORY-SEED_H
-#include "core.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MEMORY_SEED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MEMORY_SEED_HPP_
 
-extern std::any memoryTestAgentId;
-extern std::any memoryTestEntityId;
-extern std::any memoryTestRoomId;
-extern std::any memoryTestWorldId;
-extern std::shared_ptr<Agent> memoryTestAgent;
-extern std::shared_ptr<Entity> memoryTestEntity;
-extern std::shared_ptr<World> memoryTestWorld;
-extern std::shared_ptr<Room> memoryTestRoom;
-extern std::function<array<double>(double)> generateEmbedding;
-extern array<std::shared_ptr<Memory>> memoryTestMemories;
-extern array<std::shared_ptr<Memory>> memoryTestMemoriesWithEmbedding;
-extern std::any documentMemoryId;
-extern std::shared_ptr<Memory> memoryTestDocument;
-extern array<std::shared_ptr<Memory>> memoryTestFragments;
-extern std::function<std::any(std::any, double)> createSimilarMemoryVector;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class MemorySeed {
+public:
+    MemorySeed() = default;
+    ~MemorySeed() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "memory_seed"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MEMORY_SEED_HPP_

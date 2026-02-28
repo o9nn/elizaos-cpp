@@ -1,9 +1,26 @@
-#include "elizas-list/src/lib/redis.h"
+#include "redis.hpp"
 
-std::any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Redis::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Redis::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Redis::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

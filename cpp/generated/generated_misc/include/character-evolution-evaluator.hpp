@@ -1,9 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_EVALUATORS_CHARACTER-EVOLUTION-EVALUATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_EVALUATORS_CHARACTER-EVOLUTION-EVALUATOR_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/character-modification-service.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_EVOLUTION_EVALUATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_EVOLUTION_EVALUATOR_HPP_
 
-extern std::string evolutionAnalysisTemplate;
-extern std::shared_ptr<Evaluator> characterEvolutionEvaluator;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class CharacterEvolutionEvaluator {
+public:
+    CharacterEvolutionEvaluator() = default;
+    ~CharacterEvolutionEvaluator() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "character_evolution_evaluator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CHARACTER_EVOLUTION_EVALUATOR_HPP_

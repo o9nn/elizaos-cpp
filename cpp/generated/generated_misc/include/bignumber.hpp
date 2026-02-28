@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_BIGNUMBER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_BIGNUMBER_H
-#include "core.h"
-#include "bignumber.js.h"
-using BigNumber = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BIGNUMBER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BIGNUMBER_HPP_
 
-template <typename P0>
-std::shared_ptr<BigNumber> toBN(P0 value);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::string formatBN(std::shared_ptr<BigNumber> value, double decimals = 18);
+namespace elizaos {
+namespace generated_misc {
 
-template <typename P0>
-std::shared_ptr<BigNumber> toBN(P0 value)
-{
-    try
-    {
-        return std::make_shared<BigNumber>(value);
-    }
-    catch (const std::any& error)
-    {
-        throw std::any(std::make_shared<Error>(std::string("Failed to convert value to BigNumber: ") + value + string_empty));
-    }
+class Bignumber {
+public:
+    Bignumber() = default;
+    ~Bignumber() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "bignumber"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_BIGNUMBER_HPP_

@@ -1,40 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_TOKEN_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_TOKEN_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Token {
+public:
+    Token() = default;
+    ~Token() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "token"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Use admin addresses from environment
-
-// Remove CSS styles
-// const styles = `
-//   .token-ellipsis:before {
-//     float: right;
-//     content: attr(data-tail);
-//   }
-//
-//   .token-ellipsis {
-//     white-space: nowrap;
-//     text-overflow: ellipsis;
-//     overflow: hidden;
-//   }
-// `;
-
-// Add a custom component for middle ellipsis
-void MiddleEllipsis(std::optional<{ text: std::string; suffix: std::string }> { text });
-
-// Helper to safely get tabs object from localStorage
-
-// Helper to safely std::set tabs object in localStorage
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_PAGES_TOKEN_HPP_

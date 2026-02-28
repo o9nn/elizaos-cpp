@@ -1,93 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_COMPONENTS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_COMPONENTS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_core {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Components {
+public:
+    Components() = default;
+    ~Components() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "components"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Example content with associated user for demonstration purposes
- */
-struct ActionExample {
-    std::string name;
-    Content content;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Callback std::function type for handlers
- */
-using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
-
-/**
- * Handler std::function type for processing messages
- */
-using Handler = std::function<std::future<std::any>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
-
-/**
- * Validator std::function type for actions/evaluators
- */
-using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
-
-/**
- * Represents an action the agent can perform
- */
-struct Action {
-    std::optional<std::vector<std::string>> similes;
-    std::string description;
-    std::optional<std::vector<std::vector<ActionExample>>> examples;
-    Handler handler;
-    std::string name;
-    Validator validate;
-};
-
-/**
- * Example for evaluating agent behavior
- */
-struct EvaluationExample {
-    std::string prompt;
-    std::vector<ActionExample> messages;
-    std::string outcome;
-};
-
-/**
- * Evaluator for assessing agent responses
- */
-struct Evaluator {
-    std::optional<bool> alwaysRun;
-    std::string description;
-    std::optional<std::vector<std::string>> similes;
-    std::vector<EvaluationExample> examples;
-    Handler handler;
-    std::string name;
-    Validator validate;
-};
-
-struct ProviderResult {
-    std::optional<std::string> text;
-};
-
-/**
- * Provider for external data/services
- */
-struct Provider {
-    std::string name;
-    std::optional<std::string> description;
-    std::optional<bool> dynamic;
-    std::optional<double> position;
-    std::optional<bool> private;
-};
-
-
+} // namespace eliza_core
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CORE_SRC_TYPES_COMPONENTS_HPP_

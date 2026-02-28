@@ -1,58 +1,35 @@
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_WALLET_SERVICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_WALLET_SERVICE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_dummy_services {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Service {
+public:
+    Service() = default;
+    ~Service() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct DummyPositionLot {
-    double price;
-    double quantity;
-    double timestamp;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct DummyAssetDetail {
-    double quantity;
-    number; // Average price of current holdings averagePrice;
-    DummyPositionLot[]; // For FIFO P&L on sell lots;
-};
-
-class DummyWalletService extends Service implements IWalletService {
-  public static override readonly serviceType = ServiceType.WALLET;
-  public readonly capabilityDescription =
-    'Provides standardized access to wallet balances and portfolios.';
-
-  private balances: Map<std::string, number>; // assetSymbolOrAddress -> quantity
-  private positions: Map<std::string, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
-  private quoteAssetSymbol: std::string;
-
-  constructor(runtime: AgentRuntime) {
-    super(runtime);
-    this.balances = new Map<std::string, number>();
-    this.positions = new Map<std::string, DummyAssetDetail>();
-    this.quoteAssetSymbol = DEFAULT_QUOTE_ASSET;
-    this.resetWallet(10000, DEFAULT_QUOTE_ASSET); // Initialize with some default cash
-  }
-    // This is a dummy implementation - no real transfer happens
-
-    // For dummy wallet, we just simulate the transfer
-
-    // Deduct from balance
-
-    // Return a dummy transaction signature
-
-    // No further std::async init in instance.start() currently needed for this simple map-based wallet
-
-      // WalletAsset structure
-
-
+} // namespace eliza_plugin_dummy_services
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_WALLET_SERVICE_HPP_

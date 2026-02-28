@@ -1,17 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_THEME_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_THEME_H
-#include "core.h"
-#include "@mui/material/styles.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_THEME_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_THEME_HPP_
 
-extern std::string primaryMain;
-extern std::string primaryDark;
-extern std::string secondaryMain;
-extern std::string backgroundDefault;
-extern std::string backgroundPaper;
-extern std::string textPrimary;
-extern std::string textSecondary;
-extern object toolTipStyle;
-extern std::shared_ptr<ThemeOptions> theme;
-extern object scrollbarOverrides;
-extern object audioOverrides;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Theme {
+public:
+    Theme() = default;
+    ~Theme() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "theme"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_THEME_HPP_

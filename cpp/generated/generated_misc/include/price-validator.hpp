@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_PRICE-VALIDATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_PRICE-VALIDATOR_H
-#include "core.h"
-#include "@/config/chains.h"
-#include "./retry-cache.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICE_VALIDATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICE_VALIDATOR_HPP_
 
-class PriceValidationResult;
-class CoinGeckoPriceResponse;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class PriceValidationResult : public object, public std::enable_shared_from_this<PriceValidationResult> {
+namespace elizaos {
+namespace generated_misc {
+
+class PriceValidator {
 public:
-    using std::enable_shared_from_this<PriceValidationResult>::shared_from_this;
-    boolean valid;
+    PriceValidator() = default;
+    ~PriceValidator() = default;
 
-    std::string warning;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "price_validator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double aggregatedPrice;
-
-    double poolPrice;
-
-    double divergencePercent;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class CoinGeckoPriceResponse : public object, public std::enable_shared_from_this<CoinGeckoPriceResponse> {
-public:
-    using std::enable_shared_from_this<CoinGeckoPriceResponse>::shared_from_this;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-extern Record<std::string, string> COINGECKO_CHAIN_MAP;
-extern double COINGECKO_CACHE_TTL_MS;
-std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDivergence(std::string tokenAddress, std::shared_ptr<Chain> chain, double poolPriceUsd);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_PRICE_VALIDATOR_HPP_

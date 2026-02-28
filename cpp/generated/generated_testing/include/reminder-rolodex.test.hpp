@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_REMINDER-ROLODEX_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_REMINDER-ROLODEX_TEST_H
-#include "core.h"
-#include "bun:test.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "../services/reminderService.h"
-#include "uuid.h"
-using uuidv4 = v4;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_REMINDER_ROLODEX_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_REMINDER_ROLODEX_TEST_HPP_
 
-class MockRolodexService;
-class LoggerMock;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class MockRolodexService : public object, public std::enable_shared_from_this<MockRolodexService> {
+namespace elizaos {
+namespace generated_testing {
+
+class ReminderRolodexTest {
 public:
-    using std::enable_shared_from_this<MockRolodexService>::shared_from_this;
-    ReturnType<mock> sendMessage;
+    ReminderRolodexTest() = default;
+    ~ReminderRolodexTest() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "reminder_rolodex_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class LoggerMock : public object, public std::enable_shared_from_this<LoggerMock> {
-public:
-    using std::enable_shared_from_this<LoggerMock>::shared_from_this;
-    object mock;
-};
+} // namespace generated_testing
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_TESTING_INCLUDE_REMINDER_ROLODEX_TEST_HPP_

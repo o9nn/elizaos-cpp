@@ -1,27 +1,26 @@
 #include "withdraw.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_raydium {
 
-std::future<> execWithdrawTxSafe(Transaction tx, Connection connection, const std::any& wallet, PublicKey mint, auto maxRetries) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: std::string; logs: std::string[]
+bool Withdraw::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: std::string; logs: std::string[]
+void Withdraw::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::future<> submitWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: std::string
+nlohmann::json Withdraw::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::future<> confirmWithdrawTx(const std::string& signature, Connection connection) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    logs: std::string[]
-}
-
+} // namespace autofun_raydium
 } // namespace elizaos

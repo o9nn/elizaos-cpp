@@ -1,44 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_ACTIONS_UPDATETODO_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-TODO_ACTIONS_UPDATETODO_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATETODO_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATETODO_HPP_
 
-class TaskSelection;
-class TaskUpdate;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class TaskSelection : public object, public std::enable_shared_from_this<TaskSelection> {
+namespace elizaos {
+namespace generated_misc {
+
+class Updatetodo {
 public:
-    using std::enable_shared_from_this<TaskSelection>::shared_from_this;
-    std::string taskId;
+    Updatetodo() = default;
+    ~Updatetodo() = default;
 
-    std::string taskName;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "updateTodo"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    boolean isFound;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class TaskUpdate : public object, public std::enable_shared_from_this<TaskUpdate> {
-public:
-    using std::enable_shared_from_this<TaskUpdate>::shared_from_this;
-    std::string name;
+} // namespace generated_misc
+} // namespace elizaos
 
-    std::string description;
-
-    std::any priority;
-
-    boolean urgent;
-
-    std::any dueDate;
-
-    std::any recurring;
-};
-
-extern std::string extractTaskTemplate;
-extern std::string extractUpdateTemplate;
-std::shared_ptr<Promise<std::shared_ptr<TaskSelection>>> extractTaskSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<Task>> availableTasks);
-
-std::shared_ptr<Promise<any>> extractTaskUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<Task> task);
-
-std::shared_ptr<Promise<std::shared_ptr<Task>>> applyTaskUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Task> task, std::shared_ptr<TaskUpdate> update);
-
-extern std::shared_ptr<Action> updateTodoAction;
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_UPDATETODO_HPP_

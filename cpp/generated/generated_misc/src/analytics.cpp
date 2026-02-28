@@ -1,28 +1,26 @@
-#include "elizas-list/src/lib/analytics.h"
+#include "analytics.hpp"
 
-void Analytics::trackProjectView(std::string projectId, std::string userId)
-{
-    std::async([=]() { prisma["projectView"]["create"](object{
-        object::pair{std::string("data"), object{
-            object::pair{std::string("projectId"), std::string("projectId")}, 
-            object::pair{std::string("userId"), std::string("userId")}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}, 
-            object::pair{std::string("userAgent"), OR((headers()->get(std::string("user-agent"))), (std::string("unknown")))}, 
-            object::pair{std::string("ipAddress"), OR((headers()->get(std::string("x-forwarded-for"))), (std::string("unknown")))}
-        }}
-    }); });
+namespace elizaos {
+namespace generated_misc {
+
+bool Analytics::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void Analytics::trackRelatedProjectClick(std::string sourceProjectId, std::string targetProjectId, std::string userId)
-{
-    std::async([=]() { prisma["projectInteraction"]["create"](object{
-        object::pair{std::string("data"), object{
-            object::pair{std::string("sourceProjectId"), std::string("sourceProjectId")}, 
-            object::pair{std::string("targetProjectId"), std::string("targetProjectId")}, 
-            object::pair{std::string("userId"), std::string("userId")}, 
-            object::pair{std::string("type"), std::string("RELATED_CLICK")}, 
-            object::pair{std::string("timestamp"), std::make_shared<Date>()}
-        }}
-    }); });
+void Analytics::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Analytics::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

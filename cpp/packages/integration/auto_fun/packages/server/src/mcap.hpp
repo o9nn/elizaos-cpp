@@ -1,50 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <any>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MCAP_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MCAP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "cache.hpp"
-#include "raydium.hpp"
-#include "tokenSupplyHelpers.hpp"
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Mcap {
+public:
+    Mcap() = default;
+    ~Mcap() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "mcap"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Constants
-
-// Monitoring metrics
-
-/**
- * Get the current SOL price in USD
- * Prioritizes cache, then Pyth, then fallback APIs
- */
-std::future<double> getSOLPrice();
-
-/**
- * Fetch SOL/USD price directly from Pyth Network
- */
-std::future<double> fetchSOLPriceFromPyth();
-
-/**
- * Calculate token market data using SOL price
- */
-std::future<std::any> calculateTokenMarketData(const std::any& token, double solPrice);
-
-std::future<void> calculateRaydiumTokenMarketData(const std::any& token);
-
-// Export metrics for monitoring - simplified without queue information
-void getMarketDataMetrics();
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_MCAP_HPP_

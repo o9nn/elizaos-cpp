@@ -1,46 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEST_UTILS_PROJECT_UTILS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEST_UTILS_PROJECT_UTILS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class ProjectUtils {
+public:
+    ProjectUtils() = default;
+    ~ProjectUtils() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "project_utils"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Determines the project type using comprehensive directory detection
- */
-DirectoryInfo getProjectType(std::optional<std::string> testPath);
-
-// Note: findMonorepoRoot() has been removed - use UserEnvironment.getInstance().findMonorepoRoot() instead
-// This centralized version looks for packages/core directory instead of lerna.json for better reliability
-
-/**
- * Process filter name to remove extensions consistently
- *
- * Note: Test filtering works in two ways:
- * 1. Matching test suite names (the std::string in describe() blocks)
- * 2. Matching file names (without extension)
- *
- * For best results, use the specific test suite name you want to run.
- * The filter is applied case-insensitively for better user experience.
- */
-std::string processFilterName(std::optional<std::string> name);
-
-/**
- * Install plugin dependencies for testing
- */
-std::future<void> installPluginDependencies(DirectoryInfo projectInfo);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEST_UTILS_PROJECT_UTILS_HPP_

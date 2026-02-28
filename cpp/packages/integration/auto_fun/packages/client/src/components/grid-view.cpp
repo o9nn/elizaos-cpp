@@ -1,20 +1,26 @@
 #include "grid-view.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace autofun_client {
 
-void GridView() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-    {data.std::map((token: IToken, _: number) => {
-        return <GridItem token={token} key={token.mint} />;
-    })}
-    </div>;
-    );
-
+bool GridView::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void GridView::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json GridView::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
 } // namespace elizaos

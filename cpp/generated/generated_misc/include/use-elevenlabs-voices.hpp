@@ -1,27 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE-ELEVENLABS-VOICES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE-ELEVENLABS-VOICES_H
-#include "core.h"
-#include "react.h"
-#include "@tanstack/react-query.h"
-#include "@/config/voice-models.h"
-#include "@/config/voice-models.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_ELEVENLABS_VOICES_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_ELEVENLABS_VOICES_HPP_
 
-class ElevenLabsVoice;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ElevenLabsVoice : public object, public std::enable_shared_from_this<ElevenLabsVoice> {
+namespace elizaos {
+namespace generated_misc {
+
+class UseElevenlabsVoices {
 public:
-    using std::enable_shared_from_this<ElevenLabsVoice>::shared_from_this;
-    std::string voice_id;
+    UseElevenlabsVoices() = default;
+    ~UseElevenlabsVoices() = default;
 
-    std::string name;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_elevenlabs_voices"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string category;
-
-    object labels;
-
-    std::string preview_url;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::any useElevenLabsVoices();
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_ELEVENLABS_VOICES_HPP_

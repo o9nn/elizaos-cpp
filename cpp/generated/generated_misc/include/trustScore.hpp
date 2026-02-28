@@ -1,21 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
-#include "core.h"
-#include "@elizaos/core.h"
-using CoreComponent = Component;
-#include "@elizaos/core.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../service.h"
-#include "../types.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TRUSTSCORE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TRUSTSCORE_HPP_
 
-extern std::any testUserIdGlobalTrustScore;
-extern std::any testWorldId;
-extern std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForTrustScore;
-extern std::function<std::any(std::string, double, std::any, std::any, std::any, double)> createRecForTrustScore;
-extern array<std::shared_ptr<TestCase>> recencyWeightTests;
-extern array<std::shared_ptr<TestCase>> convictionWeightTests;
-extern array<std::shared_ptr<TestCase>> calculateScoreLogicTests;
-extern std::shared_ptr<TestSuite> trustScoreTestSuite;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class Trustscore {
+public:
+    Trustscore() = default;
+    ~Trustscore() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "trustScore"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TRUSTSCORE_HPP_

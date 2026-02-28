@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_FILE-WATCHER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_FILE-WATCHER_H
-#include "core.h"
-#include "chokidar.h"
-using chokidar = _default;
-#include "node:fs.h"
-#include "node:path.h"
-using path = _default;
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_WATCHER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_WATCHER_HPP_
 
-extern std::shared_ptr<WatcherConfig> DEFAULT_WATCHER_CONFIG;
-array<string> findTsFiles(std::string dir, std::string watchDir);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<void>> watchDirectory(std::string dir, std::function<void()> onChange, Partial<std::shared_ptr<WatcherConfig>> config = object{});
+namespace elizaos {
+namespace generated_misc {
 
-std::function<void()> createDebouncedHandler(std::function<void()> handler, double delay = 300);
+class FileWatcher {
+public:
+    FileWatcher() = default;
+    ~FileWatcher() = default;
 
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_watcher"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_FILE_WATCHER_HPP_

@@ -1,69 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_TYPES_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_TYPES_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-using HomepageSortBy = std::variant<"all", "marketCap", "newest", "oldest">;
-
-struct IPagination {
-    double page;
-    double totalPages;
-    double total;
-    bool hasMore;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct ISwap {
-    double amountIn;
-    double amountOut;
-    0 | 1 direction;
-    std::string id;
-    double price;
-    std::string | Date timestamp;
-    std::string tokenMint;
-    std::string txId;
-    std::string type;
-    std::string user;
-};
-
-struct ITokenHolder {
-    std::string id;
-    std::string mint;
-    std::string address;
-    double amount;
-    double percentage;
-    std::string | Date lastUpdated;
-};
-
-using ChartTable = {
-
-using IToken = z.infer<typeof TokenSchema>;
-
-using ConfigAccount = {
-
-// Type definitions for global objects
-
-  struct Window {
-    std::optional<{> solana;
-    std::optional<bool> isPhantom;
-    std::optional<(> signMessage;
-    Uint8Array message;
-    std::string encoding;
-    () => Promise<{ publicKey: std::string }> connect;
-    std::optional<() => Promise<void>> disconnect;
-    std::optional<PublicKey> publicKey;
-    std::optional<(event: std::string, callback: () => void) => void> on;
-    std::optional<(event: std::string, callback: () => void) => void> off;
-};
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_TYPES_INDEX_HPP_

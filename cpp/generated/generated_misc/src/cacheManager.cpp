@@ -1,14 +1,26 @@
-#include "spartan/src/plugins/degenTrader/utils/cacheManager.h"
+#include "cacheManager.hpp"
 
-std::shared_ptr<Promise<void>> CacheManager::delete(std::string key)
-{
-    this->cache->delete(key);
-    return std::shared_ptr<Promise<void>>();
+namespace elizaos {
+namespace generated_misc {
+
+bool Cachemanager::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<void>> CacheManager::clear()
-{
-    this->cache->clear();
-    return std::shared_ptr<Promise<void>>();
+void Cachemanager::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Cachemanager::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

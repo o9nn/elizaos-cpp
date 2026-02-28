@@ -1,60 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_TODODATASERVICE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_TODODATASERVICE_TEST_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "bun:test.h"
-#include "./test-utils.h"
-#include "../schema.ts.h"
-#include "../services/todoService.ts.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TODODATASERVICE_TEST_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TODODATASERVICE_TEST_HPP_
 
-template <typename T>
-using ResolveFn = std::function<void(T)>;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef std::function<void(std::shared_ptr<Error>)> RejectFn;
+namespace elizaos {
+namespace generated_services {
 
-class MockThenable;
-class MockDb;
-
-class MockThenable : public object, public std::enable_shared_from_this<MockThenable> {
+class TododataserviceTest {
 public:
-    using std::enable_shared_from_this<MockThenable>::shared_from_this;
-    ReturnType<mock> from;
+    TododataserviceTest() = default;
+    ~TododataserviceTest() = default;
 
-    ReturnType<mock> where;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "todoDataService_test"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    ReturnType<mock> orderBy;
-
-    ReturnType<mock> limit;
-
-    ReturnType<mock> returning;
-
-    ReturnType<mock> values;
-
-    ReturnType<mock> std::set;
-
-    ReturnType<mock> then;
-
-    ReturnType<mock> execute;
-
-    ReturnType<mock> findFirst;
-
-    ReturnType<mock> all;
-
-    ReturnType<mock> $dynamic;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class MockDb : public object, public std::enable_shared_from_this<MockDb> {
-public:
-    using std::enable_shared_from_this<MockDb>::shared_from_this;
-    ReturnType<mock> insert;
+} // namespace generated_services
+} // namespace elizaos
 
-    ReturnType<mock> select;
-
-    ReturnType<mock> update;
-
-    ReturnType<mock> delete;
-
-    ReturnType<mock> execute;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_TODODATASERVICE_TEST_HPP_

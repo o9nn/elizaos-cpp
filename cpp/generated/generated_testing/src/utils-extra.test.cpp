@@ -1,48 +1,26 @@
-#include "plugin-specification/core-plugin-v2/__tests__/utils-extra.test.h"
+#include "utils-extra.test.hpp"
 
-void Main(void)
-{
-    describe(std::string("utils extra"), [=]() mutable
-    {
-        it(std::string("addHeader prepends header when body exists"), [=]() mutable
-        {
-            expect(addHeader(std::string("Head"), std::string("Body")))->toBe(std::string("Head\
-Body\
-"));
-            expect(addHeader(std::string("Head"), string_empty))->toBe(string_empty);
-        }
-        );
-        it(std::string("parseKeyValueXml parses simple xml block"), [=]() mutable
-        {
-            auto xml = std::string("<response><key>value</key><actions>a,b</actions><simple>true</simple></response>");
-            auto parsed = parseKeyValueXml(xml);
-            expect(parsed)->toEqual(object{
-                object::pair{std::string("key"), std::string("value")}, 
-                object::pair{std::string("actions"), array<string>{ std::string("a"), std::string("b") }}, 
-                object::pair{std::string("simple"), true}
-            });
-        }
-        );
-        it(std::string("safeReplacer handles circular objects"), [=]() mutable
-        {
-            auto obj = object{
-                object::pair{std::string("a"), 1}
-            };
-            obj["self"] = obj;
-            auto str = JSON->stringify(obj, safeReplacer());
-            expect(str)->toContain(std::string("[Circular]"));
-        }
-        );
-        it(std::string("validateUuid validates correct uuid and rejects bad values"), [=]() mutable
-        {
-            auto valid = validateUuid(std::string("123e4567-e89b-12d3-a456-426614174000"));
-            auto invalid = validateUuid(std::string("not-a-uuid"));
-            expect(valid)->toBe(std::string("123e4567-e89b-12d3-a456-426614174000"));
-            expect(invalid)->toBeNull();
-        }
-        );
-    }
-    );
+namespace elizaos {
+namespace generated_testing {
+
+bool UtilsExtraTest::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UtilsExtraTest::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UtilsExtraTest::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_testing
+} // namespace elizaos

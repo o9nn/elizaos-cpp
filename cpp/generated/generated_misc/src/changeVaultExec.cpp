@@ -1,29 +1,26 @@
-#include "auto.fun/packages/program/tests/changeVaultExec.h"
+#include "changeVaultExec.hpp"
 
-void Main(void)
-{
-    ([=]() mutable
-    {
-        auto provider = anchor->AnchorProvider->env();
-        anchor->setProvider(provider);
-        auto raydiumProgram = as<std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>>>(anchor->workspace->RaydiumVault);
-        auto [vaultConfigPDA] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(std::string("raydium_vault_config")) }, raydiumProgram->programId);
-        auto newExecutorAuthority = std::make_shared<anchor->web3->PublicKey>(std::string("autozgbVb1EvhrTZTkpLekJRN4sN5hhGYpMMiY9kQ5S"));
-        try
-        {
-            auto txSignature = std::async([=]() { raydiumProgram->methods->changeExecutorAuthority(newExecutorAuthority)->accounts(object{
-                object::pair{std::string("authority"), provider->wallet->publicKey}, 
-                object::pair{std::string("vaultConfig"), vaultConfigPDA}
-            })->rpc(); });
-            console->log(std::string("Transaction sent successfully!"));
-            console->log(std::string("Signature:"), txSignature);
-        }
-        catch (const std::any& error)
-        {
-            console->error(std::string("Error changing executor authority:"), error);
-        }
-    }
-    )();
+namespace elizaos {
+namespace generated_misc {
+
+bool Changevaultexec::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Changevaultexec::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Changevaultexec::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

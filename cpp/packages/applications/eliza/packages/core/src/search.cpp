@@ -1,10 +1,26 @@
 #include "search.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_core {
 
-// No std::function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+bool Search::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Search::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Search::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
 } // namespace elizaos

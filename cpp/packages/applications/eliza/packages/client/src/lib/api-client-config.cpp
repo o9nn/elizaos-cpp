@@ -1,70 +1,26 @@
 #include "api-client-config.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-ApiClientConfig createApiClientConfig() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto getLocalStorageApiKey = "() => " + "eliza-api-key-" + window.location.origin;
-    const auto apiKey = localStorage.getItem(getLocalStorageApiKey());
-
-    const ApiClientConfig config = {;
-        baseUrl: window.location.origin,
-        timeout: 30000,
-        headers: {
-            Accept: "application/json",
-            },
-            };
-
-            // Only include apiKey if it exists (don't pass undefined)
-            if (apiKey) {
-                config.apiKey = apiKey;
-            }
-
-            return config;
-
+bool ApiClientConfig::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-ElizaClient createElizaClient() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!elizaClientInstance) {
-        elizaClientInstance = ElizaClient.create(createApiClientConfig());
-    }
-    return elizaClientInstance;
-
+void ApiClientConfig::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-ElizaClient getElizaClient() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return createElizaClient();
-
+nlohmann::json ApiClientConfig::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void resetElizaClient() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    elizaClientInstance = nullptr;
-
-}
-
-void updateApiClientApiKey(const std::string& newApiKey) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto getLocalStorageApiKey = "() => " + "eliza-api-key-" + window.location.origin;
-
-    if (newApiKey) {
-        localStorage.setItem(getLocalStorageApiKey(), newApiKey);
-        } else {
-            localStorage.removeItem(getLocalStorageApiKey());
-        }
-
-        // Reset the singleton so it uses the new API key
-        resetElizaClient();
-
-}
-
+} // namespace eliza_client
 } // namespace elizaos

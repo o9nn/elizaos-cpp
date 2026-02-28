@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_MESSAGE-CATEGORY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_MESSAGE-CATEGORY_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_CATEGORY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_CATEGORY_HPP_
 
-enum struct MessageCategory;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-enum struct MessageCategory {
-    PINNED = std::string("pinned"), REACTIONS = std::string("reactions"), THREAD = std::string("thread"), THREAD_STARTER = std::string("threadStarter")
+namespace elizaos {
+namespace generated_misc {
+
+class MessageCategory {
+public:
+    MessageCategory() = default;
+    ~MessageCategory() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "message_category"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
-#endif
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_CATEGORY_HPP_

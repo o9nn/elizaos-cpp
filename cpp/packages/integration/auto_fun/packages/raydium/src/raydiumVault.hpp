@@ -1,32 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "pdas.hpp"
-#include "utils.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_raydium {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Raydiumvault {
+public:
+    Raydiumvault() = default;
+    ~Raydiumvault() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "raydiumVault"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-std::future<void> depositToRaydiumVault(anchor::AnchorProvider provider, anchor.web3.Keypair signerWallet, Program<RaydiumVault> program, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey claimer_address);
-
-std::future<void> changeClaimer(Program<RaydiumVault> program, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey new_claimer_address);
-
-std::future<void> emergencyWithdraw(Program<RaydiumVault> program, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft);
-
-std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey poolId, anchor.web3.Connection connection, anchor.web3.PublicKey claimer, Token token);
-
-std::future<void> checkBalance(anchor.web3.Connection connection, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey claimer_address);
-
+} // namespace autofun_raydium
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_HPP_

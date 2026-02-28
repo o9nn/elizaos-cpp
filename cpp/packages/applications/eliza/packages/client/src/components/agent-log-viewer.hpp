@@ -1,58 +1,35 @@
-#include ".hooks/use-query-hooks.hpp"
-#include "lib/api-client-config.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_LOG_VIEWER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_LOG_VIEWER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class AgentLogViewer {
+public:
+    AgentLogViewer() = default;
+    ~AgentLogViewer() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agent_log_viewer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// Types
-struct LogEntry {
-    double level;
-    double time;
-    std::string msg;
-    std::optional<std::string> agentId;
-    std::optional<std::string> agentName;
-    std::optional<std::string> roomId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct LogResponse {
-    std::vector<LogEntry> logs;
-    double count;
-    double total;
-    std::string level;
-    std::vector<std::string> levels;
-};
-
-struct AgentLogViewerProps {
-    std::optional<std::string> agentName;
-    std::optional<std::string> level;
-};
-
-// Log level mappings
-
-// Helper functions
-std::string getLevelName(double level);
-
-std::string getLevelColor(double level);
-
-std::string formatTimestamp(double timestamp);
-
-void generateLogChart(const std::vector<LogEntry>& logs);
-
-void LogChart({ data: ReturnType<typeof generateLogChart> } { data });
-
-void LoadingIndicator();
-
-void AgentLogViewer(auto { agentName, AgentLogViewerProps level });
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_AGENT_LOG_VIEWER_HPP_

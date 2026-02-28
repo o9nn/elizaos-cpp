@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_ACTIONS_PLUGIN-CREATION-ACTIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC_ACTIONS_PLUGIN-CREATION-ACTIONS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/plugin-creation-service.h"
-#include "zod.h"
-#include "../utils/validation.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_CREATION_ACTIONS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_CREATION_ACTIONS_HPP_
 
-extern std::any PluginSpecificationSchema;
-extern std::shared_ptr<Action> createPluginAction;
-extern std::shared_ptr<Action> checkPluginCreationStatusAction;
-extern std::shared_ptr<Action> cancelPluginCreationAction;
-extern std::shared_ptr<Action> createPluginFromDescriptionAction;
-std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(std::string description, std::shared_ptr<IAgentRuntime> runtime);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_plugins {
+
+class PluginCreationActions {
+public:
+    PluginCreationActions() = default;
+    ~PluginCreationActions() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugin_creation_actions"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_plugins
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_PLUGINS_INCLUDE_PLUGIN_CREATION_ACTIONS_HPP_

@@ -1,27 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_AUTH_SESSION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_AUTH_SESSION_H
-#include "core.h"
-#include "uuid.h"
-using uuid = v4;
-#include "../redis.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_HPP_
 
-class SessionData;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern double SESSION_TTL;
-class SessionData : public object, public std::enable_shared_from_this<SessionData> {
+namespace elizaos {
+namespace generated_misc {
+
+class Session {
 public:
-    using std::enable_shared_from_this<SessionData>::shared_from_this;
-    std::string publicKey;
+    Session() = default;
+    ~Session() = default;
 
-    array<string> privileges;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "session"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double createdAt;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-std::shared_ptr<Promise<string>> createSession(std::shared_ptr<SessionData> data);
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<any>> getSession(std::string sid);
-
-void destroySession(std::string sid);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SESSION_HPP_

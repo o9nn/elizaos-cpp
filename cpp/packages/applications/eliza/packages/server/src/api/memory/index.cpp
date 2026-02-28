@@ -1,25 +1,26 @@
 #include "index.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-express::Router memoryRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto router = express.Router();
-
-    // Mount agent memory management at root level
-    router.use("/", createAgentMemoryRouter(agents));
-
-    // Mount group memory management
-    router.use("/", createGroupMemoryRouter(agents, serverInstance));
-
-    // Mount room management
-    router.use("/", createRoomManagementRouter(agents));
-
-    return router;
-
+bool Index::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void Index::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Index::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

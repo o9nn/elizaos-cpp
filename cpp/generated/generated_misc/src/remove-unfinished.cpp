@@ -1,86 +1,26 @@
-#include "SWEagent/src/run/remove-unfinished.h"
+#include "remove-unfinished.hpp"
 
-std::shared_ptr<Promise<void>> removeUnfinished(std::string baseDir, boolean dryRun)
-{
-    auto basePath = path->resolve(baseDir);
-    auto toRemove = array<string>();
-    auto directories = fs::readdirSync(basePath);
-    auto& __array627_1915 = directories;
-    for (auto __indx627_1915 = 0_N; __indx627_1915 < __array627_1915->get_length(); __indx627_1915++)
-    {
-        auto& dirName = const_(__array627_1915)[__indx627_1915];
-        {
-            shared directory = path->join(basePath, dirName);
-            if (!fs::statSync(directory)->isDirectory()) {
-                continue;
-            }
-            if (!dirName->includes(std::string("__"))) {
-                continue;
-            }
-            auto trajs = fs::readdirSync(directory)->filter([=](auto file) mutable
-            {
-                return file->endsWith(std::string(".traj"));
-            }
-            )->std::map([=](auto file) mutable
-            {
-                return path->join(directory, file);
-            }
-            );
-            if (trajs->get_length() == 0) {
-                logger->info(std::string("No trajectories found in ") + directory + string_empty);
-                continue;
-            }
-            if (trajs->get_length() > 1) {
-                logger->warn(std::string("Found multiple trajectories in ") + directory + std::string(". Skipping."));
-                continue;
-            }
-            try
-            {
-                auto traj = loadFile(const_(trajs)[0]);
-                if (OR((!traj), (type_of(traj) != std::string("object")))) {
-                    logger->warn(std::string("Invalid trajectory format in ") + const_(trajs)[0] + std::string(". Adding to remove list."));
-                    toRemove->push(directory);
-                    continue;
-                }
-                auto submission = OR(((as<std::shared_ptr<TrajectoryFile>>(traj))->info["submission"]), (nullptr));
-                if (submission == nullptr) {
-                    logger->warn(std::string("No submission found in ") + directory + std::string(". Adding to remove list."));
-                    toRemove->push(directory);
-                    continue;
-                }
-            }
-            catch (const std::any& error)
-            {
-                logger->warn(std::string("Error loading trajectory ") + const_(trajs)[0] + std::string(": ") + error + std::string(". Adding to remove list."));
-                toRemove->push(directory);
-                continue;
-            }
-        }
-    }
-    if (dryRun) {
-        logger->info(std::string("Would remove ") + toRemove->get_length() + std::string(" unfinished trajectories."));
-        for (auto& directory : toRemove)
-        {
-            logger->info(directory);
-        }
-    } else {
-        for (auto& directory : toRemove)
-        {
-            logger->info(std::string("Removing ") + directory + string_empty);
-            fs::rmSync(directory, object{
-                object::pair{std::string("recursive"), true}, 
-                object::pair{std::string("force"), true}
-            });
-        }
-    }
-    return std::shared_ptr<Promise<void>>();
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::shared_ptr<AgentLogger> logger = getLogger(std::string("remove_unfinished"));
-
-void Main(void)
-{
+bool RemoveUnfinished::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void RemoveUnfinished::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json RemoveUnfinished::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

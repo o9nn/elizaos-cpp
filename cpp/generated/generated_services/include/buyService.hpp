@@ -1,36 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_BUYSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_BUYSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../base/BaseTradeService.h"
-#include "../validation/TokenValidationService.h"
-#include "../calculation/tradeCalculation.h"
-#include "../../types.h"
-#include "uuid.h"
-using uuidv4 = v4;
-#include "../tradeMemoryService.h"
-#include "../walletService.h"
-#include "../dataService.h"
-#include "../analyticsService.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BUYSERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BUYSERVICE_HPP_
 
-class BuyService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BuyService : public BaseTradeService, public std::enable_shared_from_this<BuyService> {
+namespace elizaos {
+namespace generated_services {
+
+class Buyservice {
 public:
-    using std::enable_shared_from_this<BuyService>::shared_from_this;
-    std::shared_ptr<TokenValidationService> validationService;
+    Buyservice() = default;
+    ~Buyservice() = default;
 
-    std::shared_ptr<TradeCalculationService> calculationService;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "buyService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<TradeMemoryService> tradeMemoryService;
-
-    BuyService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService, std::shared_ptr<TradeMemoryService> tradeMemoryService);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<void>> handleBuySignal(std::any params);
-    virtual std::shared_ptr<Promise<void>> updateExpectedOutAmount(std::shared_ptr<BuySignalMessage> signal);
-    virtual std::shared_ptr<Promise<object>> executeBuy(std::shared_ptr<BuySignalMessage> signal);
-    BuyService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_BUYSERVICE_HPP_

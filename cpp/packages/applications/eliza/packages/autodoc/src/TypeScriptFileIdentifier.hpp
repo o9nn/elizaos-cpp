@@ -1,48 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_TYPESCRIPTFILEIDENTIFIER_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_TYPESCRIPTFILEIDENTIFIER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Typescriptfileidentifier {
+public:
+    Typescriptfileidentifier() = default;
+    ~Typescriptfileidentifier() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "TypeScriptFileIdentifier"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Class representing a TypeScript file identifier.
- */
-/**
- * Check if the given file is a TypeScript file based on its extension.
- * * @param { std::string } file - The file to check.
- * @returns { boolean } Returns true if the file is a TypeScript file (.ts or .tsx), otherwise false.
- */
-/**
- * Retrieves an array of TypeScript files from the specified directory.
- * * @param { std::string } directory - The directory path to search for TypeScript files.
- * @returns {std::string[]} - An array of TypeScript files found in the directory.
- */
-class TypeScriptFileIdentifier {
-  /**
-   * Check if the given file is a TypeScript file based on its extension.
-   *
-   * @param {string} file - The file to check.
-   * @returns {boolean} Returns true if the file is a TypeScript file (.ts or .tsx), otherwise false.
-   */
-  public isTypeScriptFile(file: std::string): boolean {
-    const extension = path.extname(file);
-    return extension === '.ts' || extension === '.tsx';
-  }
-
-  /**
-   * Retrieves an array of TypeScript files from the specified directory.
-   *
-   * @param {string} directory - The directory path to search for TypeScript files.
-   * @returns {std::string[]} - An array of TypeScript files found in the directory.
-   */
-
+} // namespace eliza_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_TYPESCRIPTFILEIDENTIFIER_HPP_

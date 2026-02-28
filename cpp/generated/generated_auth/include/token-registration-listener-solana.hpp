@@ -1,16 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_TOKEN-REGISTRATION-LISTENER-SOLANA_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_TOKEN-REGISTRATION-LISTENER-SOLANA_H
-#include "core.h"
-#include "@solana/web3.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKEN_REGISTRATION_LISTENER_SOLANA_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKEN_REGISTRATION_LISTENER_SOLANA_HPP_
 
-extern boolean isListening;
-extern std::any connection;
-void startSolanaListener();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-void handleProgramLogs(std::shared_ptr<Logs> logs);
+namespace elizaos {
+namespace generated_auth {
 
-void parseRegisterTokenTransaction(std::shared_ptr<VersionedTransactionResponse> tx);
+class TokenRegistrationListenerSolana {
+public:
+    TokenRegistrationListenerSolana() = default;
+    ~TokenRegistrationListenerSolana() = default;
 
-void backfillSolanaEvents(array<string> signatures = undefined);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "token_registration_listener_solana"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-#endif
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_auth
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_AUTH_INCLUDE_TOKEN_REGISTRATION_LISTENER_SOLANA_HPP_

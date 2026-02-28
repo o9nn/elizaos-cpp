@@ -1,21 +1,26 @@
-#include "otaku/src/packages/api-client/src/services/runs.h"
+#include "runs.hpp"
 
-std::shared_ptr<Promise<object>> RunsService::listRuns(std::shared_ptr<UUID> agentId, std::shared_ptr<ListRunsParams> params)
-{
-    return this->get<object>(std::string("/api/agents/") + agentId + std::string("/runs"), object{
-        object::pair{std::string("params"), std::string("params")}
-    });
+namespace elizaos {
+namespace generated_misc {
+
+bool Runs::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<RunDetail>>> RunsService::getRun(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> runId, std::shared_ptr<UUID> roomId)
-{
-    return this->get<std::shared_ptr<RunDetail>>(std::string("/api/agents/") + agentId + std::string("/runs/") + runId + string_empty, object{
-        object::pair{std::string("params"), (roomId) ? std::any(object{
-            object::pair{std::string("roomId"), std::string("roomId")}
-        }) : std::any(undefined)}
-    });
+void Runs::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-RunsService::RunsService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
+nlohmann::json Runs::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace generated_misc
+} // namespace elizaos

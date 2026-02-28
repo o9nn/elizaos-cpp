@@ -1,124 +1,26 @@
-#include "SWEagent/src/run/progress.h"
+#include "progress.hpp"
 
-RunBatchProgressManager::RunBatchProgressManager(double _numInstances, std::string yamlReportPath) {
-    this->yamlReportPath = yamlReportPath;
+namespace elizaos {
+namespace generated_misc {
+
+bool Progress::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-double RunBatchProgressManager::get_nCompleted()
-{
-    auto total = 0;
-    auto& __array1348_1454 = this->instancesByExitStatus->values();
-    for (auto __indx1348_1454 = 0_N; __indx1348_1454 < __array1348_1454->get_length(); __indx1348_1454++)
-    {
-        auto& instances = const_(__array1348_1454)[__indx1348_1454];
-        {
-            total += instances["length"];
-        }
-    }
-    return total;
+void Progress::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void RunBatchProgressManager::updateExitStatusTable()
-{
-    auto sorted = Array->from(this->instancesByExitStatus->entries())->sort([=](auto a, auto b) mutable
-    {
-        return std::get<1>(b)->length - std::get<1>(a)->length;
-    }
-    );
-    console->log(std::string("\
-=== Exit Status Summary ==="));
-    auto& __array1782_1987 = sorted;
-    for (auto __indx1782_1987 = 0_N; __indx1782_1987 < __array1782_1987->get_length(); __indx1782_1987++)
-    {
-        auto& [status, instances] = const_(__array1782_1987)[__indx1782_1987];
-        {
-            auto instancesStr = this->shortenStr(instances->reverse()->join(std::string(", ")), 55);
-            console->log(string_empty + status + std::string(": ") + instances->get_length() + std::string(" - ") + instancesStr + string_empty);
-        }
-    }
+nlohmann::json Progress::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::string RunBatchProgressManager::shortenStr(std::string s, double maxLen, boolean shortenLeft)
-{
-    if (!shortenLeft) {
-        if (s->get_length() > maxLen) {
-            return s->substring(0, maxLen - 3) + std::string("...");
-        }
-    } else {
-        if (s->get_length() > maxLen) {
-            return std::string("...") + s->substring(s->get_length() - maxLen + 3);
-        }
-    }
-    return s->padEnd(maxLen);
-}
-
-void RunBatchProgressManager::updateInstanceStatus(std::string instanceId, std::string message)
-{
-    console->log(std::string("[") + instanceId + std::string("] ") + message + string_empty);
-}
-
-void RunBatchProgressManager::onInstanceStart(std::string instanceId)
-{
-    this->spinnerTasks->std::set(instanceId, object{
-        object::pair{std::string("status"), std::string("Task initialized")}, 
-        object::pair{std::string("startTime"), Date->now()}
-    });
-}
-
-void RunBatchProgressManager::onInstanceEnd(std::string instanceId, std::any exitStatus)
-{
-    if (!this->instancesByExitStatus->has(exitStatus)) {
-        this->instancesByExitStatus->std::set(exitStatus, array<any>());
-    }
-    this->instancesByExitStatus->get(exitStatus)->push(instanceId);
-    this->spinnerTasks->delete(instanceId);
-    this->updateExitStatusTable();
-    if (this->yamlReportPath) {
-        this->saveOverviewDataYaml(this->yamlReportPath);
-    }
-}
-
-void RunBatchProgressManager::onUncaughtException(std::string instanceId, std::shared_ptr<Error> std::exception)
-{
-    this->onInstanceEnd(instanceId, std::string("Uncaught ") + exception->constructor->name + string_empty);
-}
-
-void RunBatchProgressManager::printReport()
-{
-    console->log(std::string("\
-=== Final Report ==="));
-    auto& __array3391_3616 = this->instancesByExitStatus->entries();
-    for (auto __indx3391_3616 = 0_N; __indx3391_3616 < __array3391_3616->get_length(); __indx3391_3616++)
-    {
-        auto& [status, instances] = const_(__array3391_3616)[__indx3391_3616];
-        {
-            console->log(string_empty + status + std::string(": ") + instances["length"] + string_empty);
-            for (auto& instance : instances)
-            {
-                console->log(std::string("  ") + instance + string_empty);
-            }
-        }
-    }
-}
-
-Record<std::string, any> RunBatchProgressManager::getOverviewData()
-{
-    auto instancesByStatus = object{};
-    for (auto& [status, instances] : this->instancesByExitStatus->entries())
-    {
-        instancesByStatus[OR((status), (std::string("unknown")))] = instances;
-    }
-    return object{
-        object::pair{std::string("instances_by_exit_status"), instancesByStatus}, 
-        object::pair{std::string("total_cost"), 0}
-    };
-}
-
-void RunBatchProgressManager::saveOverviewDataYaml(std::string filePath)
-{
-    auto data = this->getOverviewData();
-    fs::writeFileSync(filePath, yaml->dump(data, object{
-        object::pair{std::string("indent"), 4}
-    }));
-}
-
+} // namespace generated_misc
+} // namespace elizaos

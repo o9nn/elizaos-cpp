@@ -1,41 +1,35 @@
-#include "lib/base-client.hpp"
-#include ".types/media.hpp"
-#include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEDIA_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEDIA_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Media {
+public:
+    Media() = default;
+    ~Media() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "media"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class MediaService extends BaseApiClient {
-  /**
-   * Upload media for an agent
-   */
-  std::async uploadAgentMedia(agentId: UUID, params: MediaUploadParams): Promise<MediaUploadResponse> {
-    const formData = new FormData();
-
-    formData.append('file', params.file, params.filename);
-
-    if (params.contentType) formData.append('contentType', params.contentType);
-    if (params.metadata) formData.append('metadata', JSON.stringify(params.metadata));
-
-    return this.request<MediaUploadResponse>('POST', `/api/media/agents/${agentId}/upload-media`, {
-      body: formData,
-    });
-  }
-
-  /**
-   * Upload file to a channel
-   */
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_SERVICES_MEDIA_HPP_

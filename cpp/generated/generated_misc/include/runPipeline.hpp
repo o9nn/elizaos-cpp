@@ -1,40 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_RUNPIPELINE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_RUNPIPELINE_H
-#include "core.h"
-#include "./types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNPIPELINE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNPIPELINE_HPP_
 
-template <typename TInput, typename TOutput, typename TContext>
-std::any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-template <typename TInput, typename TOutput, typename TContext>
-std::any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context)
-{
-    context->logger->info(std::string("Running pipeline"));
-    shared startTime = Date->now();
-    return Promise->resolve(pipeline(input, context))->then([=](auto result) mutable
-    {
-        auto duration = Date->now() - startTime;
-        context->logger->info(std::string("Pipeline completed"), object{
-            object::pair{std::string("durationMs"), duration}
-        });
-        return result;
-    }
-    )->_catch([=](auto error) mutable
-    {
-        if (is<Error>(error)) {
-            context->logger->error(std::string("Pipeline failed"), object{
-                object::pair{std::string("error"), error->message}, 
-                object::pair{std::string("stack"), error->stack}
-            });
-        } else {
-            context->logger->error(std::string("Pipeline failed with unknown error"), object{
-                object::pair{std::string("error"), std::string("error")}
-            });
-        }
-        throw std::any(error);
-    }
-    );
+namespace elizaos {
+namespace generated_misc {
+
+class Runpipeline {
+public:
+    Runpipeline() = default;
+    ~Runpipeline() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "runPipeline"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNPIPELINE_HPP_

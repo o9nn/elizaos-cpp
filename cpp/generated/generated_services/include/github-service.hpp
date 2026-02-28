@@ -1,15 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_SERVICES_GITHUB-SERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_SERVICES_GITHUB-SERVICE_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_GITHUB_SERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_GITHUB_SERVICE_HPP_
 
-typedef object Announcement;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-typedef object Donation;
+namespace elizaos {
+namespace generated_services {
 
+class GithubService {
+public:
+    GithubService() = default;
+    ~GithubService() = default;
 
-extern std::string GITHUB_GIST_URL;
-extern std::string ANNOUNCEMENT_ENDPOINT;
-extern std::string DONATION_ENDPOINT;
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<Announcement>>>()> fetchAnnouncementData;
-extern std::function<std::shared_ptr<Promise<array<std::shared_ptr<Donation>>>>()> fetchDonationData;
-#endif
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "github_service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_GITHUB_SERVICE_HPP_

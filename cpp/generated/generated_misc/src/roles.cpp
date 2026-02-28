@@ -1,14 +1,26 @@
-#include "plugin-specification/core-plugin-v2/src/roles.h"
+#include "roles.hpp"
 
-std::shared_ptr<Promise<Role>> getUserServerRole(std::shared_ptr<IAgentRuntime> runtime, std::string entityId, std::string serverId)
-{
-    return coreGetUserServerRole(as<any>(runtime), entityId, serverId);
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Roles::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::shared_ptr<Promise<any>> findWorldsForOwner(std::shared_ptr<IAgentRuntime> runtime, std::string entityId)
-{
-    return coreFindWorldsForOwner(as<any>(runtime), entityId);
-};
+void Roles::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Roles::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_misc
+} // namespace elizaos

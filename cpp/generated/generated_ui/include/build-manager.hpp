@@ -1,32 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_BUILD-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_BUILD-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../service.h"
-#include "../hyperfy/src/core/utils.js.h"
-#include "lodash-es.h"
-#include "../hyperfy/src/core/extras/appTools.js.h"
-#include "../hyperfy/src/core/utils-client.js.h"
-#include "../utils.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_MANAGER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_MANAGER_HPP_
 
-class BuildManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BuildManager : public object, public std::enable_shared_from_this<BuildManager> {
+namespace elizaos {
+namespace generated_ui {
+
+class BuildManager {
 public:
-    using std::enable_shared_from_this<BuildManager>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
+    BuildManager() = default;
+    ~BuildManager() = default;
 
-    BuildManager(std::shared_ptr<IAgentRuntime> runtime);
-    virtual void translate(std::any entityId, std::tuple<double, double, double> position);
-    virtual void rotate(std::any entityId, std::tuple<double, double, double, double> quaternion);
-    virtual void scale(std::any entityId, std::tuple<double, double, double> scale);
-    virtual void duplicate(std::any entityId);
-    virtual void delete(std::any entityId);
-    virtual void importEntity(std::string url, std::any position = undefined, std::any quaternion = undefined);
-    virtual void addApp(std::any file, std::any transform);
-    virtual void addModel(std::any file, std::any transform);
-    virtual void entityUpdate(std::any entity);
-    virtual std::any getService();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "build_manager"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_ui
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_UI_INCLUDE_BUILD_MANAGER_HPP_

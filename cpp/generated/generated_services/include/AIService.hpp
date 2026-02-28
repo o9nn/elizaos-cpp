@@ -1,30 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_AISERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_AISERVICE_H
-#include "core.h"
-#include "@langchain/openai.h"
-#include "dotenv.h"
-using dotenv = _default;
-#include "../Configuration.js.h"
-#include "../TypeScriptParser.js.h"
-#include "./utils/CodeFormatter.js.h"
-#include "./utils/DocumentOrganizer.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_AISERVICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_AISERVICE_HPP_
 
-class AIService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AIService : public object, public std::enable_shared_from_this<AIService> {
+namespace elizaos {
+namespace generated_services {
+
+class Aiservice {
 public:
-    using std::enable_shared_from_this<AIService>::shared_from_this;
-    std::shared_ptr<Configuration> configuration;
+    Aiservice() = default;
+    ~Aiservice() = default;
 
-    std::shared_ptr<ChatOpenAI> chatModel;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "AIService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<CodeFormatter> codeFormatter;
-
-    std::shared_ptr<ChatOpenAI> chatModelFAQ;
-
-    AIService(std::shared_ptr<Configuration> configuration_);
-    virtual std::shared_ptr<Promise<string>> generateComment(std::string prompt, boolean isFAQ = false);
-    virtual void handleAPIError(std::shared_ptr<Error> error);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_services
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_SERVICES_INCLUDE_AISERVICE_HPP_

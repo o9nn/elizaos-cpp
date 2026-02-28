@@ -1,71 +1,26 @@
 #include "use-version.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void useVersion() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto { toast } = useToast();
-
-        std::async std::function getLatestRelease(repo: std::string) {
-            const auto apiUrl = "https://api.github.com/repos/" + repo + "/releases/latest";
-
-            try {
-                const auto response = fetch(apiUrl, {;
-                    headers: {
-                        Accept: "application/vnd.github.v3+json",
-                        "User-Agent": "fetch-latest-release",
-                        },
-                        });
-
-                        if (!response.ok) {
-                            throw new Error(
-                            "Failed to fetch latest release: " + response.status + " " + response.statusText
-                            );
-                        }
-
-                        const auto data = response.json();
-                        const auto latestVersion = data.tag_name;
-                        return latestVersion;
-                    } catch {}
-                }
-
-                const auto compareVersion = useCallback(std::async () => {;
-                    try {
-                        const auto latestVersion = getLatestRelease("elizaos/eliza");
-                        const auto thisVersion = info.version;
-                        if (latestVersion && thisVersion) {
-                            if (semver.gt(latestVersion.replace('v', ''), thisVersion.replace('v', ''))) {
-                                toast({
-                                    variant: "default",
-                                    "title: " + "New version " + latestVersion + " is available."
-                                    description: "Visit GitHub for more information.",
-                                    action: (
-                                    <NavLink to="https://github.com/elizaos/eliza/releases" target="_blank">
-                                    <ToastAction altText="Update">Update</ToastAction>;
-                                    </NavLink>;
-                                    ),
-                                    });
-                                }
-                            }
-                            } catch (e) {
-                                "clientLogger.error(" + "Unable to retrieve latest version from GitHub: " + e
-                            }
-                            }, [toast]);
-
-                            useEffect(() => {
-                                compareVersion();
-                                }, [compareVersion]);
-
-                                return nullptr;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+bool UseVersion::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void UseVersion::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseVersion::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos

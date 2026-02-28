@@ -1,100 +1,26 @@
 #include "plugin-utils.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-obj is Plugin isValidPluginShape(const std::any& obj) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!obj || typeof obj != 'object' || !obj.name) {
-        return false;
-    }
-    return !!(;
-    obj.init ||;
-    obj.services ||;
-    obj.providers ||;
-    obj.actions ||;
-    obj.evaluators ||;
-    obj.description;
-    );
-
+bool PluginUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& pluginName) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto version = getCliInstallTag();
-    auto pluginModule: std::any;
-    const auto context = detectPluginContext(pluginName);
-
-    if (context.isLocalDevelopment) {
-        try {
-            pluginModule = loadPluginModule(pluginName);
-            if (!pluginModule) {
-                std::cerr << "Failed to load local plugin " + pluginName + "." << std::endl;
-                provideLocalPluginGuidance(pluginName, context);
-                return nullptr;
-            }
-            } catch (error) {
-                std::cerr << "Error loading local plugin " + pluginName + ": " + error << std::endl;
-                provideLocalPluginGuidance(pluginName, context);
-                return nullptr;
-            }
-            } else {
-                try {
-                    pluginModule = loadPluginModule(pluginName);
-                    if (!pluginModule) {
-                        std::cout << "Plugin " + pluginName << "installing..." << std::endl;
-                        installPlugin(pluginName, process.cwd(), version);
-                        pluginModule = loadPluginModule(pluginName);
-                    }
-                    } catch (error) {
-                        std::cerr << "Failed to process plugin " + pluginName + ": " + error << std::endl;
-                        return nullptr;
-                    }
-                }
-
-                if (!pluginModule) {
-                    std::cerr << "Failed to load module for plugin " + pluginName + "." << std::endl;
-                    return nullptr;
-                }
-
-                const auto expectedFunctionName = pluginNam;
-                .replace(/^@elizaos\/plugin-/, "");
-                .replace(/^@elizaos\//, "");
-                ".replace(/-./g, (match) => match[1].toUpperCase())}Plugin";
-
-                const auto exportsToCheck = [;
-                pluginModule[expectedFunctionName],
-                pluginModule.default,
-                ...Object.values(pluginModule),
-                ];
-
-                for (const auto& potentialPlugin : exportsToCheck)
-                    if (isValidPluginShape(potentialPlugin)) {
-                        return potentialPlugin;
-                    }
-                }
-
-                std::cout << "Could not find a valid plugin export in " + pluginName + "." << std::endl;
-                return nullptr;
-
+void PluginUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-PluginValidation validatePlugin(const std::any& plugin) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!plugin) {
-        return { isValid: false, error: 'Plugin is null or undefined' }
-    }
-
-    if (!isValidPluginShape(plugin)) {
-        return { isValid: false, error: 'Plugin does not have valid shape' }
-    }
-
-    return { isValid: true, plugin }
-
+nlohmann::json PluginUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace eliza_cli
 } // namespace elizaos

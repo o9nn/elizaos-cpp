@@ -1,32 +1,26 @@
-#include "trust_scoreboard/src/utils/axios.h"
+#include "axios.hpp"
 
-std::string baseURL = process->env->NEXT_PUBLIC_NEST_API_URL;
-std::any axiosInstance = axios->create(object{
-    object::pair{std::string("baseURL"), std::string("baseURL")}, 
-    object::pair{std::string("headers"), object{
-        object::pair{std::string("Content-Type"), std::string("application/json")}
-    }}
-});
-std::function<std::any(std::any, object)> get = [=](auto url, auto config = object{}) mutable
-{
-    return axiosInstance->get(url, config);
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
-    axiosInstance->interceptors->request->use([=](auto config) mutable
-    {
-        auto token = localStorage->getItem(std::string("accessToken"));
-        if (token) {
-            config["headers"]["Authorization"] = std::string("Bearer ") + token + string_empty;
-        }
-        return config;
-    }
-    , [=](auto error) mutable
-    {
-        return Promise->reject(error);
-    }
-    );
+bool Axios::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Axios::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Axios::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

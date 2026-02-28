@@ -1,42 +1,35 @@
-#include "combobox.hpp"
-#include "elizaos/core.hpp"
-#include "ui/button.hpp"
-#include "ui/card.hpp"
-#include "ui/input.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_PANEL_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_PANEL_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class GroupPanel {
+public:
+    GroupPanel() = default;
+    ~GroupPanel() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "group_panel"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-// This Option type must precisely match what MultiSelectCombobox.tsx expects for its props.
-// Based on MultiSelectCombobox.tsx: { icon: std::string; label: std::string; id?: std::string; }
-struct ComboboxOption {
-    std::string icon;
-    std::string label;
-    std::optional<std::string; // We will always provide agent.id here, which is UUID (std::string)> id;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct GroupPanelProps {
-    () => void onClose;
-    std::optional<UUID> channelId;
-};
-
-struct ChannelParticipantsResponse {
-    bool success;
-    std::optional<std::vector<UUID>> data;
-    std::optional<{ message?: std::string; code?: number | std::string }> error;
-
-using SelectableAgent = Agent & { id: UUID; name: std::string };
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_GROUP_PANEL_HPP_

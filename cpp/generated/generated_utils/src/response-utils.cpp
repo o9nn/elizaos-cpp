@@ -1,27 +1,26 @@
-#include "eliza/packages/server/src/api/shared/response-utils.h"
+#include "response-utils.hpp"
 
-std::function<void(std::any, double, std::string, std::string, std::string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = undefined) mutable
-{
-    res->status(status)->json(object{
-        object::pair{std::string("success"), false}, 
-        object::pair{std::string("error"), utils::assign(object{
-            object::pair{std::string("code"), std::string("code")}, 
-            object::pair{std::string("message"), std::string("message")}
-        }, (AND((details), (object{
-            object::pair{std::string("details"), std::string("details")}
-        }))))}
-    });
-};
-std::function<void(std::any, std::any, double)> sendSuccess = [=](auto res, auto data, auto status = 200) mutable
-{
-    res->status(status)->json(object{
-        object::pair{std::string("success"), true}, 
-        object::pair{std::string("data"), std::string("data")}
-    });
-};
+namespace elizaos {
+namespace generated_utils {
 
-void Main(void)
-{
+bool ResponseUtils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void ResponseUtils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json ResponseUtils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_utils
+} // namespace elizaos

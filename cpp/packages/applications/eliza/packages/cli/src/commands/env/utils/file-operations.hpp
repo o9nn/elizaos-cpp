@@ -1,54 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_FILE_OPERATIONS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_FILE_OPERATIONS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "types.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class FileOperations {
+public:
+    FileOperations() = default;
+    ~FileOperations() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "file_operations"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Get the path to the project's .env file.
- * @returns The path to the .env file
- */
-std::future<std::string> getGlobalEnvPath();
-
-/**
- * Get the path to the local .env file in the current directory
- * @returns The path to the local .env file or null if not found
- */
-std::future<std::string> getLocalEnvPath();
-
-/**
- * Parse an .env file and return the key-value pairs
- * @param filePath Path to the .env file
- * @returns Object containing the key-value pairs
- */
-std::future<EnvVars> parseEnvFile(const std::string& filePath);
-
-/**
- * Write key-value pairs to an .env file
- * @param filePath Path to the .env file
- * @param envVars Object containing the key-value pairs
- */
-std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars);
-
-/**
- * Helper std::function to reset an environment file by keeping keys but clearing values
- * @param filePath Path to the environment file
- * @returns A boolean indicating success/failure
- */
-std::future<bool> resetEnvFile(const std::string& filePath);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_UTILS_FILE_OPERATIONS_HPP_

@@ -1,75 +1,35 @@
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_DOCUMENTORGANIZER_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_DOCUMENTORGANIZER_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Documentorganizer {
+public:
+    Documentorganizer() = default;
+    ~Documentorganizer() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "DocumentOrganizer"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Class representing a DocumentOrganizer.
- */
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class DocumentOrganizer {
-  /**
-   * Organizes the given array of ASTQueueItems into different categories based on their nodeType.
-   * Categories include classes, methods, interfaces, types, functions, and variables.
-   *
-   * @param docs - The array of ASTQueueItems to be organized
-   * @returns An object containing arrays of ASTQueueItems categorized by nodeType
-   */
-  public organizeDocumentation(docs: ASTQueueItem[]): OrganizedDocs {
-    return docs.reduce(
-      (acc: OrganizedDocs, doc) => {
-        // Use nodeType to determine the category
-        switch (doc.nodeType) {
-          case "ClassDeclaration":
-            acc.classes.push(doc);
-            break;
-          case "MethodDefinition":
-          case "TSMethodSignature":
-            acc.methods.push(doc);
-            break;
-          case "TSInterfaceDeclaration":
-            acc.interfaces.push(doc);
-            break;
-          case "TSTypeAliasDeclaration":
-            acc.types.push(doc);
-            break;
-          case "FunctionDeclaration":
-            acc.functions.push(doc);
-            break;
-          case "VariableDeclaration":
-            acc.variables.push(doc);
-            break;
-        }
-        return acc;
-      },
-      {
-        classes: [],
-        methods: [],
-        interfaces: [],
-        types: [],
-        functions: [],
-        variables: [],
-      },
-    );
-  }
-
-  /**
-   * Groups the given organized documentation by file path.
-   *
-   * @param {OrganizedDocs} docs - The organized documentation to group.
-   * @returns {FileDocsGroup[]} An array of grouped documentation based on file paths.
-   */
-    // Get unique file paths
-
-    // Create groups for each file path
-
+} // namespace autofun_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_UTILS_DOCUMENTORGANIZER_HPP_

@@ -1,34 +1,35 @@
-#include ".config/voice-models.hpp"
-#include "ui/button.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PLUGINS_PANEL_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PLUGINS_PANEL_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class PluginsPanel {
+public:
+    PluginsPanel() = default;
+    ~PluginsPanel() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "plugins_panel"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct PluginsPanelProps {
-    Agent characterValue;
-    { setCharacterValue;
-    std::optional<(pluginId: std::string) => void> addPlugin;
-    std::optional<(index: number) => void> removePlugin;
-    std::optional<(plugins: std::string[]) => void> setPlugins;
-    std::optional<<T>(path: std::string, value: T) => void> updateField;
-    std::optional<std::vector<std::string>> initialPlugins;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// Define a type for the essential plugin information
-using EssentialPluginInfo = {
-
-// Map of essential plugins that require confirmation when removing
-
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PLUGINS_PANEL_HPP_

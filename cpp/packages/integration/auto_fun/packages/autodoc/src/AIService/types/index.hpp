@@ -1,56 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_TYPES_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_TYPES_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-/**
- * Interface representing a group of documentation for files.
- *
- * @property {string} filePath - The file path for the group of documentation.
- * @property {ASTQueueItem[]} classes - An array of ASTQueueItem objects representing classes in the file.
- * @property {ASTQueueItem[]} methods - An array of ASTQueueItem objects representing methods in the file.
- * @property {ASTQueueItem[]} interfaces - An array of ASTQueueItem objects representing interfaces in the file.
- * @property {ASTQueueItem[]} types - An array of ASTQueueItem objects representing types in the file.
- * @property {ASTQueueItem[]} functions - An array of ASTQueueItem objects representing functions in the file.
- */
-struct FileDocsGroup {
-    std::string filePath;
-    std::vector<ASTQueueItem> classes;
-    std::vector<ASTQueueItem> methods;
-    std::vector<ASTQueueItem> interfaces;
-    std::vector<ASTQueueItem> types;
-    std::vector<ASTQueueItem> functions;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Interface representing a collection of organized documentation items.
- * @property {ASTQueueItem[]} classes - An array of ASTQueueItem objects representing classes.
- * @property {ASTQueueItem[]} methods - An array of ASTQueueItem objects representing methods.
- * @property {ASTQueueItem[]} interfaces - An array of ASTQueueItem objects representing interfaces.
- * @property {ASTQueueItem[]} types - An array of ASTQueueItem objects representing types.
- * @property {ASTQueueItem[]} functions - An array of ASTQueueItem objects representing functions.
- * @property {ASTQueueItem[]} variables - An array of ASTQueueItem objects representing variables.
- */
-struct OrganizedDocs {
-    std::vector<ASTQueueItem> classes;
-    std::vector<ASTQueueItem> methods;
-    std::vector<ASTQueueItem> interfaces;
-    std::vector<ASTQueueItem> types;
-    std::vector<ASTQueueItem> functions;
-    std::vector<ASTQueueItem> variables;
-};
-
-
+} // namespace autofun_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_AUTODOC_SRC_AISERVICE_TYPES_INDEX_HPP_

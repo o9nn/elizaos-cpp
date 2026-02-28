@@ -1,129 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_ROUTES_API_HPP_
+#define ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_ROUTES_API_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "scripts/prefetch.hpp"
-#include "services/background/token-metadata.hpp"
-#include "services/csv.hpp"
-#include "services/database.hpp"
-#include "services/solana.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace aum_tracker {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Api {
+public:
+    Api() = default;
+    ~Api() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "api"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Global prefetch service instance to track running state
-
-// Middleware
-
-// Helper std::function to handle errors
-
-// Helper std::function to validate wallet address
-
-// Portfolio endpoints
-
-    return handleError(error, c);
-
-    // Calculate data freshness
-
-    return handleError(error, c);
-
-    // Calculate performance metrics
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    // TODO: Implement timeframe-specific PNL calculation
-    // This would require historical snapshots and price data
-
-    return handleError(error, c);
-
-// Wallet endpoints
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    // TODO: Implement timeframe-specific wallet PNL calculation
-
-    return handleError(error, c);
-
-// Token endpoints
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    // Get SOL price from database
-
-    // Aggregate tokens across all wallets
-
-    // Add price data and update metadata from current token_prices table
-        // Update symbol and name with current metadata from token_prices table
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    // Find token price info
-
-    // Find all wallets holding this token
-
-    // Get token PNL data
-
-    return handleError(error, c);
-
-// Token metadata service endpoints
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-// Admin endpoints
-    // Check if refresh is already running
-
-    // Parse query parameters
-
-    // Start refresh process in background
-
-    // Run refresh in background without blocking the response
-        // Clear the global service when done
-
-    return handleError(error, c);
-
-// Admin refresh status endpoint
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-    return handleError(error, c);
-
-// Health endpoint
-
-    return handleError(error, c);
-
-
+} // namespace aum_tracker
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_EXTERNAL_AUM_TRACKER_SRC_ROUTES_API_HPP_

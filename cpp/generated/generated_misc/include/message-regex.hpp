@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_MESSAGE-REGEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_MESSAGE-REGEX_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_REGEX_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_REGEX_HPP_
 
-class MessageRegex;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class MessageRegex : public object, public std::enable_shared_from_this<MessageRegex> {
+namespace elizaos {
+namespace generated_misc {
+
+class MessageRegex {
 public:
-    using std::enable_shared_from_this<MessageRegex>::shared_from_this;
-    static std::shared_ptr<RegExp> BOLD;
+    MessageRegex() = default;
+    ~MessageRegex() = default;
 
-    static std::shared_ptr<RegExp> LINK;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "message_regex"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    static std::shared_ptr<RegExp> QUOTE;
-
-    static std::shared_ptr<RegExp> CHANNEL_MENTION;
-
-    static std::shared_ptr<RegExp> HYPER_LINK;
-
-    static std::shared_ptr<RegExp> UNDER_LINE;
-
-    static std::shared_ptr<RegExp> ITALICS;
-
-    static std::shared_ptr<RegExp> CODE;
-
-    static std::shared_ptr<RegExp> USER_MENTION;
-
-    static std::shared_ptr<RegExp> EMOJI;
-
-    static std::shared_ptr<RegExp> WINDOWS_INVALID_CHARACTERS;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MESSAGE_REGEX_HPP_

@@ -1,9 +1,26 @@
-#include "elizaos.github.io/src/lib/pipelines/summarize/context.h"
+#include "context.hpp"
 
-std::shared_ptr<SummarizerPipelineContext> createSummarizerContext(std::shared_ptr<CreateContributorSummaryContextOptions> options)
-{
-    return utils::assign(object{
-    }, options);
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Context::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Context::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Context::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

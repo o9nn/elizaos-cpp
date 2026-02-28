@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_SERVICES_AGENTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_API-CLIENT_SRC_SERVICES_AGENTS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../lib/base-client.h"
-#include "../types/agents.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENTS_HPP_
 
-class AgentsService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class AgentsService : public BaseApiClient, public std::enable_shared_from_this<AgentsService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Agents {
 public:
-    using std::enable_shared_from_this<AgentsService>::shared_from_this;
-    virtual std::shared_ptr<Promise<object>> listAgents();
-    virtual std::shared_ptr<Promise<std::shared_ptr<Agent>>> getAgent(std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Agent>>> createAgent(std::shared_ptr<AgentCreateParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Agent>>> updateAgent(std::shared_ptr<UUID> agentId, std::shared_ptr<AgentUpdateParams> params);
-    virtual std::shared_ptr<Promise<object>> deleteAgent(std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<object>> startAgent(std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<object>> stopAgent(std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<object>> getWorlds();
-    virtual std::shared_ptr<Promise<object>> addAgentToWorld(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> updateAgentWorldSettings(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId, Record<std::string, any> settings);
-    virtual std::shared_ptr<Promise<object>> getAgentPanels(std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<AgentLog>>>> getAgentLogs(std::shared_ptr<UUID> agentId, std::shared_ptr<AgentLogsParams> params = undefined);
-    virtual std::shared_ptr<Promise<object>> deleteAgentLog(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> logId);
-    virtual std::shared_ptr<Promise<object>> getAgentsForServer(std::shared_ptr<UUID> serverId);
-    virtual std::shared_ptr<Promise<object>> addAgentToServer(std::shared_ptr<UUID> serverId, std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<object>> removeAgentFromServer(std::shared_ptr<UUID> serverId, std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<object>> getServersForAgent(std::shared_ptr<UUID> agentId);
-    AgentsService(std::shared_ptr<ApiClientConfig> config);
+    Agents() = default;
+    ~Agents() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "agents"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AGENTS_HPP_

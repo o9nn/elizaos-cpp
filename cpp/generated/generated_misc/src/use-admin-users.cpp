@@ -1,21 +1,26 @@
-#include "auto.fun/packages/client/src/hooks/use-admin-users.h"
+#include "use-admin-users.hpp"
 
-std::function<object(boolean, double)> useAdminUsers = [=](auto showSuspended = false, auto limit = 50) mutable
-{
-    return usePagination(utils::assign(object{
-        object::pair{std::string("endpoint"), std::string("/api/admin/users")}, 
-        object::pair{std::string("limit"), std::string("limit")}, 
-        object::pair{std::string("itemsPropertyName"), std::string("users")}, 
-        object::pair{std::string("sortBy"), std::string("createdAt")}, 
-        object::pair{std::string("sortOrder"), std::string("desc")}, 
-        object::pair{std::string("useUrlState"), true}
-    }, (AND((showSuspended), (object{
-        object::pair{std::string("suspended"), std::string("true")}
-    })))));
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool UseAdminUsers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void UseAdminUsers::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseAdminUsers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

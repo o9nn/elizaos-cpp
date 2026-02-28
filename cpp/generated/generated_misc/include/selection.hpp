@@ -1,21 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_SELECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_SELECTION_H
-#include "core.h"
-#include "@clack/prompts.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELECTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELECTION_HPP_
 
-std::shared_ptr<Promise<array<string>>> getLocalAvailableDatabases();
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-array<std::shared_ptr<AIModelOption>> getAvailableAIModels();
+namespace elizaos {
+namespace generated_misc {
 
-array<std::shared_ptr<DatabaseOption>> getAvailableDatabases();
+class Selection {
+public:
+    Selection() = default;
+    ~Selection() = default;
 
-std::shared_ptr<Promise<string>> selectDatabase();
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "selection"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Promise<string>> selectAIModel();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-array<std::shared_ptr<AIModelOption>> getAvailableEmbeddingModels();
+} // namespace generated_misc
+} // namespace elizaos
 
-std::shared_ptr<Promise<string>> selectEmbeddingModel();
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SELECTION_HPP_

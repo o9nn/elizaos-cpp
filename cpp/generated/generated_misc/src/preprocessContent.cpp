@@ -1,60 +1,26 @@
-#include "elizaos.github.io/src/lib/matching/preprocessContent.h"
+#include "preprocessContent.hpp"
 
-std::string preprocessFilePathContent(std::string content)
-{
-    return path->normalize(content->trim())->replace((new RegExp(std::string("\\"))), std::string("/"));
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Preprocesscontent::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-std::string preprocessTextContent(std::string content)
-{
-    return content->trim();
-};
+void Preprocesscontent::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Preprocesscontent::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
-std::string preprocessCodeContent(std::string content)
-{
-    return content->trim()->replace((new RegExp(std::string("\r\n"))), std::string("\
-"));
-};
-
-
-std::string preprocessLabelContent(std::string content)
-{
-    return content->trim()->toLowerCase();
-};
-
-
-MatchContent preprocessContent(MatchContent content)
-{
-    std::string processedString;
-    switch (content["contentType"])
-    {
-    case TagPatternType::FILE_PATH:
-        processedString = preprocessFilePathContent(content["content"]);
-        break;
-    case TagPatternType::COMMIT_MESSAGE:
-    case TagPatternType::PR_TITLE:
-    case TagPatternType::PR_DESCRIPTION:
-    case TagPatternType::ISSUE_TITLE:
-    case TagPatternType::ISSUE_BODY:
-    case TagPatternType::COMMENT:
-        processedString = preprocessTextContent(content["content"]);
-        break;
-    case TagPatternType::CODE_CONTENT:
-        processedString = preprocessCodeContent(content["content"]);
-        break;
-    case TagPatternType::LABEL:
-        processedString = preprocessLabelContent(content["content"]);
-        break;
-    default:
-        processedString = content["content"];
-        break;
-    }
-    return utils::assign(object{
-        , 
-        object::pair{std::string("content"), processedString}
-    }, content);
-};
-
-
+} // namespace generated_misc
+} // namespace elizaos

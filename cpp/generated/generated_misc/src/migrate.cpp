@@ -1,94 +1,26 @@
-#include "elizaos.github.io/drizzle/migrate.h"
+#include "migrate.hpp"
 
-std::function<void(std::any, std::any, std::any)> customMigrate = [=](auto db, auto config, auto maxMigrationNumber) mutable
-{
-    auto journalPath = path->join(config["migrationsFolder"], std::string("meta/_journal.json"));
-    if (!fs->existsSync(journalPath)) {
-        throw std::any(std::make_shared<Error>(std::string("Can't find meta/_journal.json file at ") + journalPath + string_empty));
-    }
-    auto journalAsString = fs->readFileSync(journalPath)->toString();
-    auto journal = JSON->parse(journalAsString);
-    auto journalEntries = journal["entries"];
-    if (maxMigrationNumber != undefined) {
-        console->log(std::string("Filtering migrations up to number: ") + maxMigrationNumber + string_empty);
-        journalEntries = journal["entries"]["filter"]([=](auto entry) mutable
-        {
-            return entry["idx"] <= maxMigrationNumber;
-        }
-        );
-    }
-    console->log(std::string("Found ") + journalEntries["length"] + std::string(" migrations to apply."));
-    if (journalEntries["length"] == 0) {
-        console->log(std::string("No migrations to apply."));
-        return;
-    }
-    auto migrationQueries = array<std::shared_ptr<MigrationMeta>>();
-    for (auto& journalEntry : journalEntries)
-    {
-        auto migrationPath = path->join(config["migrationsFolder"], string_empty + journalEntry["tag"] + std::string(".sql"));
-        try
-        {
-            auto query = fs->readFileSync(migrationPath)->toString();
-            auto result = query->split(std::string("--> statement-breakpoint"))->std::map([=](auto it) mutable
-            {
-                return it->trim();
-            }
-            )->filter([=](auto it) mutable
-            {
-                return it->length > 0;
-            }
-            );
-            migrationQueries->push(object{
-                object::pair{std::string("sql"), result}, 
-                object::pair{std::string("bps"), journalEntry["breakpoints"]}, 
-                object::pair{std::string("folderMillis"), journalEntry["when"]}, 
-                object::pair{std::string("hash"), crypto->createHash(std::string("sha256"))->update(query)->digest(std::string("hex"))}
-            });
-        }
-        catch (const std::any& e)
-        {
-            throw std::any(std::make_shared<Error>(std::string("Error reading migration file ") + migrationPath + std::string(": ") + e["message"] + string_empty));
-        }
-    }
-    db["dialect"]["migrate"](migrationQueries, db["session"], config);
-};
-std::string dbPath = OR((process->env->DB_PATH), (std::string("./data/db.sqlite")));
-std::any dbDir = path->dirname(dbPath);
-std::any sqlite = std::make_shared<Database>(dbPath, object{
-    object::pair{std::string("create"), true}
-});
-std::any db = drizzle(sqlite);
-std::string maxMigrationArg = const_(process->argv)[2];
-std::any maxMigration;
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
-    console->log(std::string("Using database at: ") + dbPath + string_empty);
-    if (!fs->existsSync(dbDir)) {
-        fs->mkdirSync(dbDir, object{
-            object::pair{std::string("recursive"), true}
-        });
-    }
-    if (maxMigrationArg) {
-        double parsed = parseInt(maxMigrationArg, 10);
-        if (isNaN(parsed)) {
-            console->error(std::string("Error: Invalid migration number provided: "") + maxMigrationArg + std::string("". Must be an integer."));
-            process->exit(1);
-        }
-        maxMigration = parsed;
-    }
-    try
-    {
-        customMigrate(db, object{
-            object::pair{std::string("migrationsFolder"), std::string("./drizzle")}
-        }, maxMigration);
-        console->log(std::string("Migration complete"));
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Migration failed:"), error);
-        process->exit(1);
-    }
+bool Migrate::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Migrate::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Migrate::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

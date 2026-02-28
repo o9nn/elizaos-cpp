@@ -1,66 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_DOCUMENTATIONGENERATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_DOCUMENTATIONGENERATOR_H
-#include "core.h"
-#include "node:fs.h"
-using fs = _default;
-#include "node:path.h"
-using path = _default;
-#include "@typescript-eslint/types.h"
-#include "./AIService/AIService.js.h"
-#include "./Configuration.js.h"
-#include "./DirectoryTraversal.js.h"
-#include "./GitManager.js.h"
-#include "./JSDocValidator.js.h"
-#include "./JsDocAnalyzer.js.h"
-#include "./JsDocGenerator.js.h"
-#include "./PluginDocumentationGenerator.js.h"
-#include "./TypeScriptParser.js.h"
-#include "./types/index.js.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTATIONGENERATOR_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTATIONGENERATOR_HPP_
 
-class DocumentationGenerator;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DocumentationGenerator : public object, public std::enable_shared_from_this<DocumentationGenerator> {
+namespace elizaos {
+namespace generated_docs {
+
+class Documentationgenerator {
 public:
-    using std::enable_shared_from_this<DocumentationGenerator>::shared_from_this;
-    std::shared_ptr<DirectoryTraversal> directoryTraversal;
+    Documentationgenerator() = default;
+    ~Documentationgenerator() = default;
 
-    std::shared_ptr<TypeScriptParser> typeScriptParser;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "DocumentationGenerator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::shared_ptr<JsDocAnalyzer> jsDocAnalyzer;
-
-    std::shared_ptr<JsDocGenerator> jsDocGenerator;
-
-    std::shared_ptr<GitManager> gitManager;
-
-    std::shared_ptr<Configuration> configuration;
-
-    std::shared_ptr<AIService> aiService;
-
-    array<std::shared_ptr<ASTQueueItem>> missingJsDocQueue = array<std::shared_ptr<ASTQueueItem>>();
-
-    array<std::shared_ptr<ASTQueueItem>> existingJsDocQueue = array<std::shared_ptr<ASTQueueItem>>();
-
-    boolean hasChanges = false;
-
-    std::shared_ptr<Map<std::string, string>> fileContents = std::make_shared<Map>();
-
-    std::string branchName = string_empty;
-
-    std::shared_ptr<Map<std::string, double>> fileOffsets = std::make_shared<Map>();
-
-    array<string> typeScriptFiles = array<string>();
-
-    std::shared_ptr<JSDocValidator> jsDocValidator;
-
-    DocumentationGenerator(std::shared_ptr<DirectoryTraversal> directoryTraversal_, std::shared_ptr<TypeScriptParser> typeScriptParser_, std::shared_ptr<JsDocAnalyzer> jsDocAnalyzer_, std::shared_ptr<JsDocGenerator> jsDocGenerator_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_, std::shared_ptr<AIService> aiService_);
-    virtual std::shared_ptr<Promise<object>> generate(double pullNumber = undefined);
-    virtual void processNode(std::shared_ptr<TSESTree::Node> node, std::string filePath, std::shared_ptr<TSESTree::Program> ast);
-    virtual std::shared_ptr<Promise<void>> updateFileWithJSDoc(std::string filePath, std::string jsDoc, double insertLine);
-    virtual std::string getNodeCode(std::string filePath, std::shared_ptr<TSESTree::Node> node);
-    virtual std::shared_ptr<Promise<string>> getFileContent(std::string contentsUrl);
-    virtual std::shared_ptr<Promise<object>> generatePRContent(double pullNumber = undefined);
-    virtual std::string generateDefaultPRBody();
-    virtual std::shared_ptr<Promise<object>> analyzeCodebase();
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_docs
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DOCS_INCLUDE_DOCUMENTATIONGENERATOR_HPP_

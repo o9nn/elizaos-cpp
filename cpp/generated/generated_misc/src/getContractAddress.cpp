@@ -1,8 +1,26 @@
-#include "otc-agent/src/lib/getContractAddress.h"
+#include "getContractAddress.hpp"
 
-std::shared_ptr<Address> getContractAddress()
-{
-    return as<std::shared_ptr<Address>>(getOtcAddress());
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Getcontractaddress::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Getcontractaddress::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Getcontractaddress::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

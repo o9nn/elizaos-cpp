@@ -1,39 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_DM_CHANNELS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_DM_CHANNELS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "use-query-hooks.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class UseDmChannels {
+public:
+    UseDmChannels() = default;
+    ~UseDmChannels() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_dm_channels"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Create ElizaClient instance
-
-/**
- * Hook to get or create a DM channel between current user and target user (agent)
- * This is the original behavior, usually resulting in a single canonical DM channel.
- */
-void useGetOrCreateDmChannel();
-
-/**
- * Hook to fetch all DM conversations (channels marked as DMs) for a specific agent.
- */
-void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-0000-000000000000' as UUID);
-
-/**
- * Hook to create a new, distinct DM channel (conversation) with an agent.
- */
-void useCreateDmChannel();
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_HOOKS_USE_DM_CHANNELS_HPP_

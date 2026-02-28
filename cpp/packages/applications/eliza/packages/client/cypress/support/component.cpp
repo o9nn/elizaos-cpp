@@ -1,104 +1,26 @@
 #include "component.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void mountWithProviders(ReactNode component, auto options) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto queryClient = createTestQueryClient();
-
-    const auto wrapped = React.createElement(TooltipProvider, {;
-        children: React.createElement(
-        QueryClientProvider,
-        { client: queryClient },
-        React.createElement(;
-        BrowserRouter,
-        {},
-        // Add a div container for portals
-        React.createElement(;
-        "div",
-        {
-            id: "root",
-            style: { width: "100%", height: "100%" },
-            },
-            component,
-            // Portal container for Radix UI
-            React.createElement("div", { id: "radix-portal" })
-            );
-            );
-            ),
-            });
-
-            return mount(wrapped, options);
-
+bool Component::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void mountWithRouter(ReactNode component, auto options) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto queryClient = createTestQueryClient();
-
-    const auto wrapped = React.createElement(TooltipProvider, {;
-        children: React.createElement(
-        QueryClientProvider,
-        { client: queryClient },
-        React.createElement(;
-        BrowserRouter,
-        {},
-        // Add a div container for portals
-        React.createElement(;
-        "div",
-        {
-            id: "root",
-            style: { width: "100%", height: "100%" },
-            },
-            component,
-            // Portal container for Radix UI
-            React.createElement("div", { id: "radix-portal" })
-            );
-            );
-            ),
-            });
-
-            return mount(wrapped, options);
-
+void Component::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void mountRadix(ReactNode component, auto options) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto queryClient = createTestQueryClient();
-
-    const auto wrapped = React.createElement(TooltipProvider, {;
-        children: React.createElement(
-        DirectionProvider,
-        { dir: "ltr" },
-        React.createElement(;
-        QueryClientProvider,
-        { client: queryClient },
-        React.createElement(;
-        BrowserRouter,
-        {},
-        // Add a div container for portals
-        React.createElement(;
-        "div",
-        {
-            id: "root",
-            style: { width: "100%", height: "100%" },
-            },
-            component,
-            // Portal container for Radix UI
-            React.createElement("div", { id: "radix-portal" })
-            );
-            );
-            );
-            ),
-            });
-
-            return mount(wrapped, options);
-
+nlohmann::json Component::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace eliza_client
 } // namespace elizaos

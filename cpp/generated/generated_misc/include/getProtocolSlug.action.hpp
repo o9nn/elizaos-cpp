@@ -1,8 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-DEFILLAMA_SRC_ACTIONS_GETPROTOCOLSLUG_ACTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-DEFILLAMA_SRC_ACTIONS_GETPROTOCOLSLUG_ACTION_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/defillama.service.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETPROTOCOLSLUG_ACTION_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETPROTOCOLSLUG_ACTION_HPP_
 
-extern std::shared_ptr<Action> getProtocolSlugAction;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class GetprotocolslugAction {
+public:
+    GetprotocolslugAction() = default;
+    ~GetprotocolslugAction() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "getProtocolSlug_action"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_GETPROTOCOLSLUG_ACTION_HPP_

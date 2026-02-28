@@ -1,39 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_ATTACHMENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_ATTACHMENT_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ATTACHMENT_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ATTACHMENT_HPP_
 
-class Attachment;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class Attachment : public object, public std::enable_shared_from_this<Attachment> {
+namespace elizaos {
+namespace generated_misc {
+
+class Attachment {
 public:
-    using std::enable_shared_from_this<Attachment>::shared_from_this;
-    std::shared_ptr<Snowflake> id;
+    Attachment() = default;
+    ~Attachment() = default;
 
-    std::string filename;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "attachment"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string description;
-
-    std::string content_type;
-
-    double size;
-
-    std::string url;
-
-    std::string proxy_url;
-
-    std::any height;
-
-    std::any width;
-
-    boolean ephemeral;
-
-    double duration_secs;
-
-    std::string waveform;
-
-    double flags;
-
-    Attachment(object opts);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_ATTACHMENT_HPP_

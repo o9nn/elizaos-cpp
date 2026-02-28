@@ -1,63 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ENV_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ENV_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Env {
+public:
+    Env() = default;
+    ~Env() = default;
 
-/**
- * Environment interface for Cloudflare Workers
- */
-struct Env {
-    std::string NETWORK;
-    std::string DECIMALS;
-    std::string TOKEN_SUPPLY;
-    std::string VIRTUAL_RESERVES;
-    std::string CURVE_LIMIT;
-    std::string EXECUTOR_PRIVATE_KEY;
-    std::string CODEX_API_KEY;
-    std::string API_URL;
-    std::string FAL_API_KEY;
-    std::string LOCAL_DEV;
-    std::string NODE_ENV;
-    std::string JWT_SECRET;
-    std::string RPC_URL;
-    std::string MAINNET_SOLANA_RPC_URL;
-    std::string DEVNET_SOLANA_RPC_URL;
-    std::string DEVNET_PROGRAM_ID;
-    std::string PROGRAM_ID;
-    std::string tokenPubkey;
-    std::string AUTH_TOKEN_SALT;
-    std::string DEVNET_FRONTEND_URL;
-    std::string MAINNET_FRONTEND_URL;
-    std::string TWITTER_BEARER_TOKEN;
-    std::string TWITTER_CLIENT_ID;
-    std::string TWITTER_API_KEY;
-    std::string TWITTER_API_SECRET;
-    std::string TWITTER_ACCESS_TOKEN_SECRET;
-    std::string TWITTER_ACCESS_TOKEN;
-    std::optional<std::string> NEWS_API_KEY;
-    std::optional<std::string> PREGENERATED_TOKENS_COUNT;
-    std::string HELIUS_WEBHOOK_AUTH_TOKEN;
-    std::optional<std::string> ADMIN_ADDRESSES;
-    std::string MANAGER_MULTISIG_ADDRESS;
-    std::string FIXED_FEE;
-    std::string FEE_WALLET;
-    std::string DATABASE_URL;
-    std::string REDIS_HOST;
-    std::string REDIS_PORT;
-    std::string REDIS_PASSWORD;
-    std::optional<std::string> ALLOWED_ORIGINS;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "env"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_ENV_HPP_

@@ -1,26 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_EMBEDDING-SEED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___INTEGRATION_SEED_EMBEDDING-SEED_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBEDDING_SEED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBEDDING_SEED_HPP_
 
-class TestMemory;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-extern std::function<std::any(double)> fixedUuid;
-extern std::any embeddingTestAgentId;
-extern std::any embeddingTestRoomId;
-extern std::any embeddingTestEntityId;
-extern std::any embeddingTestWorldId;
-extern std::function<array<double>(double)> generateRandomVector;
-extern std::any embeddingTestAgent;
-extern std::shared_ptr<Entity> embeddingTestEntity;
-extern std::shared_ptr<Room> embeddingTestRoom;
-class TestMemory : public Memory, public std::enable_shared_from_this<TestMemory> {
+namespace elizaos {
+namespace generated_misc {
+
+class EmbeddingSeed {
 public:
-    using std::enable_shared_from_this<TestMemory>::shared_from_this;
-    std::string type;
+    EmbeddingSeed() = default;
+    ~EmbeddingSeed() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "embedding_seed"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern array<std::shared_ptr<TestMemory>> embeddingTestMemories;
-extern array<any> embeddingTestData;
-extern array<any> embeddingTestMemoriesWithEmbedding;
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_EMBEDDING_SEED_HPP_

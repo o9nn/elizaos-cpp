@@ -1,87 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_AUDIO-CAPTURE-STREAM_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_AUDIO-CAPTURE-STREAM_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "child_process.h"
-#include "events.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUDIO_CAPTURE_STREAM_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUDIO_CAPTURE_STREAM_HPP_
 
-class StreamingAudioConfig;
-class AudioChunk;
-class StreamingAudioCaptureService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class StreamingAudioConfig : public object, public std::enable_shared_from_this<StreamingAudioConfig> {
+namespace elizaos {
+namespace generated_misc {
+
+class AudioCaptureStream {
 public:
-    using std::enable_shared_from_this<StreamingAudioConfig>::shared_from_this;
-    boolean enabled;
+    AudioCaptureStream() = default;
+    ~AudioCaptureStream() = default;
 
-    std::string device;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "audio_capture_stream"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double sampleRate;
-
-    double channels;
-
-    double vadThreshold;
-
-    double silenceTimeout;
-
-    double responseDelay;
-
-    double chunkSize;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class AudioChunk : public object, public std::enable_shared_from_this<AudioChunk> {
-public:
-    using std::enable_shared_from_this<AudioChunk>::shared_from_this;
-    std::shared_ptr<Buffer> data;
+} // namespace generated_misc
+} // namespace elizaos
 
-    double timestamp;
-
-    double energy;
-};
-
-class StreamingAudioCaptureService : public EventEmitter, public std::enable_shared_from_this<StreamingAudioCaptureService> {
-public:
-    using std::enable_shared_from_this<StreamingAudioCaptureService>::shared_from_this;
-    std::shared_ptr<IAgentRuntime> runtime;
-
-    std::shared_ptr<StreamingAudioConfig> config;
-
-    std::any captureProcess = nullptr;
-
-    boolean isCapturing = false;
-
-    array<std::shared_ptr<AudioChunk>> audioBuffer = array<std::shared_ptr<AudioChunk>>();
-
-    boolean isSpeaking = false;
-
-    double lastSpeechTime = 0;
-
-    std::any silenceTimer = nullptr;
-
-    boolean transcriptionInProgress = false;
-
-    std::string currentTranscription = string_empty;
-
-    std::any responseTimer = nullptr;
-
-    StreamingAudioCaptureService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<StreamingAudioConfig> config);
-    virtual std::shared_ptr<Promise<void>> initialize();
-    virtual std::shared_ptr<Promise<void>> startContinuousCapture();
-    virtual void processAudioChunk(std::shared_ptr<Buffer> chunk);
-    virtual double calculateEnergy(std::shared_ptr<Buffer> chunk);
-    virtual std::shared_ptr<Promise<void>> startStreamingTranscription();
-    virtual void endSpeech();
-    virtual std::shared_ptr<Promise<void>> processFinalTranscription();
-    virtual std::shared_ptr<Buffer> getRecentAudioData();
-    virtual std::shared_ptr<Promise<any>> transcribeAudio(std::shared_ptr<Buffer> audioData);
-    virtual std::shared_ptr<Buffer> rawToWav(std::shared_ptr<Buffer> rawData);
-    virtual std::shared_ptr<Promise<void>> generateResponse(std::string transcription);
-    virtual std::shared_ptr<Promise<void>> createAudioMemory(std::string transcription);
-    virtual std::shared_ptr<Promise<void>> stop();
-    virtual boolean isActive();
-    virtual std::string getCurrentTranscription();
-    virtual boolean isSpeechActive();
-    StreamingAudioCaptureService(std::shared_ptr<EventEmitterOptions> options = undefined);
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_AUDIO_CAPTURE_STREAM_HPP_

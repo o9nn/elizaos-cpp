@@ -1,69 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_CHAT_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_CHAT_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "ChatImage.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
-// TODO: Rewrite as chat instead of generation
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
- // Import WebSocket utility
-
- // Import clsx for conditional classes
-
-// --- API Base URL ---
-
-// --- Constants for Chat ---
-using ChatTier = (typeof CHAT_TIERS)[number];
-
-// Helper functions for chat tiers
-
-// --- Chat Types ---
-// Chat Message Type (matches backend structure)
-struct ChatMessage {
-    std::string id;
-    std::string author;
-    std::optional<std::string> displayName;
-    std::optional<std::string> profileImage;
-    std::string tokenMint;
-    std::string message;
-    std::optional<std::string> parentId;
-    ChatTier tier;
-    std::optional<double> replyCount;
-    std::string timestamp;
-    std::optional<bool> isOptimistic;
-    std::optional<std::string> media;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// API Response Types for Chat
-struct EligibleTiersResponse {
-    bool success;
-    std::optional<std::vector<ChatTier>> tiers;
-    std::optional<double> balance;
-    std::optional<std::string> error;
-};
-
-struct GetMessagesResponse {
-    bool success;
-    std::optional<std::vector<ChatMessage>> messages;
-    std::optional<std::string> error;
-};
-
-struct PostMessageResponse {
-    bool success;
-    std::optional<ChatMessage> message;
-    std::optional<std::string> error;
-};
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_CHAT_INDEX_HPP_

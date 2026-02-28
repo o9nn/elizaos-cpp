@@ -1,47 +1,35 @@
-#include "actions.hpp"
-#include "elizaos/core.hpp"
-#include "utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-      // Set non-interactive mode if environment variable is std::set or if -y/--yes flag is present in process.argv
-
-      // Validate and parse options
-
-        await displayBanner();
-
-      // If no name provided, prompt for type first then name
-
-        // Prompt for name
-
-              // Validate project/plugin names differently than agent names
-
-      // Validate project name for non-agent types
-
-      // Handle different project types
-          await createPlugin(projectName!, targetDir, isNonInteractive);
-
-          await createAgent(projectName!, targetDir, isNonInteractive);
-
-          // TEE projects need database and AI model selection
-
-            // Check if selected AI model needs embedding model fallback
-
-          // Regular projects need database and AI model selection
-
-            // Check if selected AI model needs embedding model fallback
-
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_INDEX_HPP_

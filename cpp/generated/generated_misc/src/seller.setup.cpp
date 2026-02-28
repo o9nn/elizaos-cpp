@@ -1,14 +1,26 @@
-#include "otc-agent/tests/wallet-setup/seller.setup.h"
+#include "seller.setup.hpp"
 
-std::string SELLER_SEED = OR((process->env->SELLER_SEED_PHRASE), (std::string("test test test test test test test test test test test junk")));
-std::string PASSWORD = OR((process->env->WALLET_PASSWORD), (std::string("Tester@1234")));
-object sellerSetup = object{
-    object::pair{std::string("walletPassword"), PASSWORD}, 
-    object::pair{std::string("seedPhrase"), SELLER_SEED}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool SellerSetup::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void SellerSetup::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json SellerSetup::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

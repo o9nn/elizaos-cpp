@@ -1,29 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/server.h"
-using serverTryLoadFile = tryLoadFile;
-using serverLoadCharactersFromUrl = loadCharactersFromUrl;
-using serverJsonToCharacter = jsonToCharacter;
-using serverLoadCharacter = loadCharacter;
-using serverLoadCharacterTryPath = loadCharacterTryPath;
-using serverHasValidRemoteUrls = hasValidRemoteUrls;
-using serverLoadCharacters = loadCharacters;
-#include "../../../characters/eliza.h"
-using defaultCharacter = character;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOADER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOADER_HPP_
 
-std::any tryLoadFile(std::string filePath);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(std::string url);
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(std::any character);
+class Loader {
+public:
+    Loader() = default;
+    ~Loader() = default;
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(std::string filePath);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "loader"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(std::string characterPath);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-extern std::function<std::any()> hasValidRemoteUrls;
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(std::string charactersArg);
+} // namespace generated_misc
+} // namespace elizaos
 
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_LOADER_HPP_

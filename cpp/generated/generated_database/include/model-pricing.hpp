@@ -1,28 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_AGENT_UTILS_MODEL-PRICING_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_AGENT_UTILS_MODEL-PRICING_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_MODEL_PRICING_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_MODEL_PRICING_HPP_
 
-class ModelPricing;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class ModelPricing : public object, public std::enable_shared_from_this<ModelPricing> {
+namespace elizaos {
+namespace generated_database {
+
+class ModelPricing {
 public:
-    using std::enable_shared_from_this<ModelPricing>::shared_from_this;
-    double inputCostPer1k;
+    ModelPricing() = default;
+    ~ModelPricing() = default;
 
-    double outputCostPer1k;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "model_pricing"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double maxInputTokens;
-
-    double maxOutputTokens;
-
-    std::string provider;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern Record<std::string, std::shared_ptr<ModelPricing>> MODEL_PRICING;
-double calculateCost(std::string modelName, double inputTokens, double outputTokens);
+} // namespace generated_database
+} // namespace elizaos
 
-object getModelLimits(std::string modelName);
-
-boolean isWithinTokenLimit(std::string modelName, double inputTokens, double outputTokens);
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_DATABASE_INCLUDE_MODEL_PRICING_HPP_

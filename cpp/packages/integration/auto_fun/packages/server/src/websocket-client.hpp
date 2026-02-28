@@ -1,40 +1,35 @@
-#include "redis.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_CLIENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_CLIENT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class WebsocketClient {
+public:
+    WebsocketClient() = default;
+    ~WebsocketClient() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "websocket_client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class WebSocketClient {
-  // No longer needs Durable Object reference
-  // private webSocketDO: DurableObjectNamespace | null = null;
-
-  constructor(/*  - Remove if Env is not used */) {
-    // Initialization logic removed - we use the imported singleton manager
-    // this.webSocketDO = (env as std::any).WEBSOCKET_DO || null;
-  }
-
-  // Send a message to a specific room (token or global)
-
-  // Send a message to a specific client by ID
-
-  // Helper that returns an object with direct emit method for chaining
-
-// Helper std::function to get websocket client instance
-// Since WebSocketClient now just wraps the singleton manager,
-// we might not even need this class/std::function anymore.
-// Code using getWebSocketClient() could potentially just import webSocketManager directly.
-// However, keeping it maintains the existing interface.
-
-WebSocketClient getWebSocketClient();
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_WEBSOCKET_CLIENT_HPP_

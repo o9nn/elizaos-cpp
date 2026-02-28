@@ -1,36 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_SETUP_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_SETUP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Setup {
+public:
+    Setup() = default;
+    ~Setup() = default;
 
-/**
- * Global test setup for CLI package
- * This file runs before all tests to std::set up mocks and globals
- */
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "setup"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-// Mock the entire @elizaos/server package
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Mock socket.io to prevent server startup issues in tests
-
-// Mock express to prevent server startup issues
-
-// Mock body-parser to prevent server startup issues
-
-// Mock helmet for security headers
-
-// Mock cors
-
-// Ensure logger is available globally
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_TESTS_SETUP_HPP_

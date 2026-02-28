@@ -1,43 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_SHARED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-BIRDEYE_SRC_TYPES_SHARED_H
-#include "core.h"
-#include "../utils.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SHARED_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SHARED_HPP_
 
-typedef std::any BirdeyeSupportedChain;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class BaseAddress;
-class WalletAddress;
-class TokenAddress;
-class ContractAddress;
+namespace elizaos {
+namespace generated_misc {
 
-class BaseAddress : public object, public std::enable_shared_from_this<BaseAddress> {
+class Shared {
 public:
-    using std::enable_shared_from_this<BaseAddress>::shared_from_this;
-    std::any type;
+    Shared() = default;
+    ~Shared() = default;
 
-    std::string symbol;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "shared"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    std::string address;
-
-    BirdeyeSupportedChain chain;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-class WalletAddress : public BaseAddress, public std::enable_shared_from_this<WalletAddress> {
-public:
-    using std::enable_shared_from_this<WalletAddress>::shared_from_this;
-    std::string type;
-};
+} // namespace generated_misc
+} // namespace elizaos
 
-class TokenAddress : public BaseAddress, public std::enable_shared_from_this<TokenAddress> {
-public:
-    using std::enable_shared_from_this<TokenAddress>::shared_from_this;
-    std::string type;
-};
-
-class ContractAddress : public BaseAddress, public std::enable_shared_from_this<ContractAddress> {
-public:
-    using std::enable_shared_from_this<ContractAddress>::shared_from_this;
-    std::string type;
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_SHARED_HPP_

@@ -1,28 +1,26 @@
-#include "otc-agent/src/lib/notifications.h"
+#include "notifications.hpp"
 
-std::shared_ptr<Promise<boolean>> sendWelcomeNotification(double fid)
-{
-    try
-    {
-        auto response = std::async([=]() { fetch(std::string("/api/notifications/send"), object{
-            object::pair{std::string("method"), std::string("POST")}, 
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Content-Type"), std::string("application/json")}
-            }}, 
-            object::pair{std::string("body"), JSON->stringify(object{
-                object::pair{std::string("fid"), std::string("fid")}, 
-                object::pair{std::string("title"), std::string("Welcome to Eliza OTC Desk")}, 
-                object::pair{std::string("body"), std::string("Start trading with AI-powered negotiation on Base, BSC, and Solana")}
-            })}
-        }); });
-        auto result = std::async([=]() { response->json(); });
-        return result["state"] == std::string("success");
-    }
-    catch (const std::any& error)
-    {
-        console->error(std::string("Failed to send welcome notification:"), error);
-        return false;
-    }
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Notifications::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Notifications::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Notifications::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

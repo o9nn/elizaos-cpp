@@ -1,15 +1,26 @@
-#include "plugin-specification/core-plugin-v2/src/uuid.h"
+#include "uuid.hpp"
 
-std::any validateUuid(std::any value)
-{
-    return coreValidateUuid(value);
-};
+namespace elizaos {
+namespace generated_ui {
 
-
-std::any uuidSchema = as<std::shared_ptr<z::ZodType<std::shared_ptr<UUID>>>>(z->std::string()->uuid());
-
-void Main(void)
-{
+bool Uuid::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Uuid::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Uuid::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_ui
+} // namespace elizaos

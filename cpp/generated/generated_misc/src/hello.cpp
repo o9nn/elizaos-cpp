@@ -1,10 +1,26 @@
-#include "trust_scoreboard/src/pages/api/hello.h"
+#include "hello.hpp"
 
-void handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse<Data>> res)
-{
-    res->status(200)->json(object{
-        object::pair{std::string("name"), std::string("John Doe")}
-    });
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Hello::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Hello::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Hello::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

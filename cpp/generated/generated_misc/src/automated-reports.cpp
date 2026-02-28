@@ -1,36 +1,26 @@
-#include "elizas-list/src/lib/reporting/automated-reports.h"
+#include "automated-reports.hpp"
 
-ReportGenerator::ReportGenerator() {
-    this->chartGenerator = std::make_shared<ChartJSNodeCanvas>(object{
-        object::pair{std::string("width"), 800}, 
-        object::pair{std::string("height"), 400}, 
-        object::pair{std::string("backgroundColour"), std::string("white")}
-    });
+namespace elizaos {
+namespace generated_misc {
+
+bool AutomatedReports::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Buffer>>> ReportGenerator::generateReport(std::shared_ptr<ReportData> data, std::shared_ptr<ReportConfig> config)
-{
-    try
-    {
-        auto doc = std::make_shared<jsPDF>();
-        std::async([=]() { Promise->all(std::tuple<std::any, std::any, std::shared_ptr<Promise<void>>, any>{ this->addExecutiveSummary(doc, data->summary), this->addStatisticalAnalysis(doc, data->statistics), this->addVisualization(doc, data->visualizations), this->addRecommendations(doc, data->recommendations) }); });
-        this->applyReportStyling(doc, config);
-        return doc->output();
-    }
-    catch (const std::any& error)
-    {
-        logger["error"](std::string("Error generating report:"), error);
-        throw std::any(error);
-    }
+void AutomatedReports::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void ReportGenerator::addVisualization(std::shared_ptr<jsPDF> doc, array<std::shared_ptr<VisualizationData>> visualizations)
-{
-    for (auto& viz : visualizations)
-    {
-        auto chart = std::async([=]() { this->chartGenerator->renderToBuffer(viz->config); });
-        doc->addImage(chart, std::string("PNG"), 10, doc->lastAutoTable->finalY + 10, 190, 100);
-        doc->addPage();
-    }
+nlohmann::json AutomatedReports::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace generated_misc
+} // namespace elizaos

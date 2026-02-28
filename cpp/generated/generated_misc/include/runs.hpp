@@ -1,18 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_RUNS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_RUNS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../lib/base-client.h"
-#include "../types/runs.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNS_HPP_
 
-class RunsService;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class RunsService : public BaseApiClient, public std::enable_shared_from_this<RunsService> {
+namespace elizaos {
+namespace generated_misc {
+
+class Runs {
 public:
-    using std::enable_shared_from_this<RunsService>::shared_from_this;
-    virtual std::shared_ptr<Promise<object>> listRuns(std::shared_ptr<UUID> agentId, std::shared_ptr<ListRunsParams> params = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<RunDetail>>> getRun(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> runId, std::shared_ptr<UUID> roomId = undefined);
-    RunsService(std::shared_ptr<ApiClientConfig> config);
+    Runs() = default;
+    ~Runs() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "runs"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUNS_HPP_

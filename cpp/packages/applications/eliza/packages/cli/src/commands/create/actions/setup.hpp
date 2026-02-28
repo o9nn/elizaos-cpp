@@ -1,50 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Setup {
+public:
+    Setup() = default;
+    ~Setup() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "setup"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Creates necessary project directories.
- */
-std::future<void> createProjectDirectories(const std::string& targetDir);
-
-/**
- * Sets up AI model configuration in the project's .env file based on user selection.
- */
-std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive);
-
-/**
- * Checks if an environment variable has a real value (not a placeholder) in the content
- */
-bool hasValidApiKey(const std::string& content, const std::string& keyName);
-
-/**
- * Sets up embedding model configuration when the primary AI model doesn't support embeddings.
- */
-std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive);
-
-/**
- * Installs dependencies for the specified target directory.
- */
-std::future<void> installDependencies(const std::string& targetDir);
-
-/**
- * Sets up the project environment including database and AI model configuration.
- */
-std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive);
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_HPP_

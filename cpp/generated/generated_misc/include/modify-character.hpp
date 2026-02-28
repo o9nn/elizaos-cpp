@@ -1,19 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PERSONALITY_SRC_ACTIONS_MODIFY-CHARACTER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PERSONALITY_SRC_ACTIONS_MODIFY-CHARACTER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/character-file-manager.h"
-#include "../utils/json-parser.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MODIFY_CHARACTER_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MODIFY_CHARACTER_HPP_
 
-extern std::shared_ptr<Action> modifyCharacterAction;
-std::shared_ptr<Promise<object>> detectModificationIntent(std::shared_ptr<IAgentRuntime> runtime, std::string messageText);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-std::shared_ptr<Promise<any>> parseUserModificationRequest(std::shared_ptr<IAgentRuntime> runtime, std::string messageText);
+namespace elizaos {
+namespace generated_misc {
 
-std::shared_ptr<Promise<object>> evaluateModificationSafety(std::shared_ptr<IAgentRuntime> runtime, std::any modification, std::string requestText);
+class ModifyCharacter {
+public:
+    ModifyCharacter() = default;
+    ~ModifyCharacter() = default;
 
-std::shared_ptr<Promise<boolean>> checkAdminPermissions(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message);
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "modify_character"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-std::string summarizeModification(std::any modification);
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-#endif
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_MODIFY_CHARACTER_HPP_

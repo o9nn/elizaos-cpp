@@ -1,12 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEST_ACTIONS_RUN-ALL-TESTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEST_ACTIONS_RUN-ALL-TESTS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../types.h"
-#include "../utils/project-utils.h"
-#include "./component-tests.h"
-#include "./e2e-tests.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUN_ALL_TESTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUN_ALL_TESTS_HPP_
 
-std::shared_ptr<Promise<void>> runAllTests(std::any testPath, std::shared_ptr<TestCommandOptions> options);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class RunAllTests {
+public:
+    RunAllTests() = default;
+    ~RunAllTests() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "run_all_tests"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_RUN_ALL_TESTS_HPP_

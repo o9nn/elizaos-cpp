@@ -1,85 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_DIALOG_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_DIALOG_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class WalletDialog {
+public:
+    WalletDialog() = default;
+    ~WalletDialog() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "wallet_dialog"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct WalletModalProviderProps {
-    ReactNode children;
-    std::optional<std::string> className;
-    std::optional<std::string> container;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-struct WalletModalProps {
-    std::optional<std::string> className;
-    std::optional<std::string> container;
-};
-
-        // Store selection in localStorage
-
-        // Connect - use a direct approach for Phantom wallet
-
-        // Try direct connection for Phantom wallet
-            // Force disconnect first to ensure a clean connection
-
-              // Wait a moment for connection to register
-
-        // If direct connection failed or this isn't Phantom, try adapter approach
-          // Select and connect via adapter
-
-            // If we're using Phantom and direct connection was successful, ignore adapter errors
-
-        // Wait for the public key to be available with timeout
-
-        // Use direct Phantom publicKey if available, otherwise use adapter
-
-          // Check for direct Phantom publicKey first
-
-          // Check adapter publicKey
-
-        // Convert window.solana.publicKey to std::string if needed
-
-        /** Nonce generation */
-
-        // For signing, prefer direct Phantom signMessage when available
-
-            // Use direct Phantom signing
-            // Handle different signature formats - Phantom may return the signature directly or in an object
-              // Use a type assertion to handle signature property access
-              using PhantomSignatureResponse = {
-
-              // Check if it has a signature property
-
-            // If adapter signing is available, try that as fallback
-          // Use adapter signing
-
-        // Encode the signature for sending to the server
-
-        // Prepare the authentication payload
-
-        // Use token-based authentication with Authorization header instead of cookies
-
-        // Define the expected response type
-        struct AuthResponse {
-    std::string token;
-    std::string message;
-    std::string address;
-};
-
-        // Store the token using the new handler
-          // Generate a fallback token for compatibility
-
-
+} // namespace autofun_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_CLIENT_SRC_COMPONENTS_WALLET_DIALOG_HPP_

@@ -1,23 +1,26 @@
-#include "otaku/src/packages/api-client/src/services/gamification.h"
+#include "gamification.hpp"
 
-std::shared_ptr<Promise<std::shared_ptr<UserSummary>>> GamificationService::getUserSummary(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId)
-{
-    return this->get<std::shared_ptr<UserSummary>>(std::string("/api/agents/") + agentId + std::string("/plugins/gamification/summary"), object{
-        object::pair{std::string("params"), object{
-            object::pair{std::string("userId"), std::string("userId")}
-        }}
-    });
+namespace elizaos {
+namespace generated_misc {
+
+bool Gamification::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ReferralCodeResponse>>> GamificationService::getReferralCode(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId)
-{
-    return this->get<std::shared_ptr<ReferralCodeResponse>>(std::string("/api/agents/") + agentId + std::string("/plugins/gamification/referral"), object{
-        object::pair{std::string("params"), object{
-            object::pair{std::string("userId"), std::string("userId")}
-        }}
-    });
+void Gamification::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-GamificationService::GamificationService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
+nlohmann::json Gamification::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
+} // namespace generated_misc
+} // namespace elizaos

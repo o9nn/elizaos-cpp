@@ -1,34 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_VOICE_MODELS_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_VOICE_MODELS_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class VoiceModels {
+public:
+    VoiceModels() = default;
+    ~VoiceModels() = default;
 
-struct VoiceModel {
-    std::string value;
-    std::string label;
-    std::string provider;
-    std::optional<std::string> gender;
-    std::optional<std::string> language;
-    std::optional<std::vector<std::string>> features;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "voice_models"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-// TODO: ELI2-218 Refactor this to use plugin categories when available
-// This hardcoded mapping will be replaced with a more flexible approach
-// that leverages plugin category metadata once implemented
-
-// No voice option for agents that don't need speech capabilities
-
-  // Filter out empty strings (for "none" provider)
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_CONFIG_VOICE_MODELS_HPP_

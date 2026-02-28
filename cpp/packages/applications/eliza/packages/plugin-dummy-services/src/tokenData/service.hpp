@@ -1,35 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_TOKENDATA_SERVICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_TOKENDATA_SERVICE_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <variant>
 #include <vector>
-#include "elizaos/core.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_plugin_dummy_services {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
-
-
-
-class DummyTokenDataService {
+class Service {
 public:
-    DummyTokenDataService(std::optional<IAgentRuntime> runtime);
-    TokenData generateDummyToken(const std::string& chain, std::optional<std::string> address, std::optional<std::string> query);
-    std::variant<Promise<TokenData, null>> getTokenDetails(const std::string& address, const std::string& chain);
-    std::future<std::vector<TokenData>> getTrendingTokens(auto chain, auto limit, auto _timePeriod);
-    std::future<std::vector<TokenData>> searchTokens(const std::string& query, auto chain, auto limit);
-    std::future<std::vector<TokenData>> getTokensByAddresses(const std::vector<std::string>& addresses, const std::string& chain);
-    static std::future<DummyTokenDataService> start(IAgentRuntime runtime);
-    static std::future<void> stop(IAgentRuntime runtime);
+    Service() = default;
+    ~Service() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "service"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-
+} // namespace eliza_plugin_dummy_services
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_PLUGIN_DUMMY_SERVICES_SRC_TOKENDATA_SERVICE_HPP_

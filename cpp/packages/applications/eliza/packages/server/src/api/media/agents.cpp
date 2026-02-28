@@ -1,76 +1,26 @@
 #include "agents.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_server {
 
-std::future<> saveUploadedFile(Express.Multer.File file, const std::string& agentId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std::string; url: std::string
+bool Agents::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-express::Router createAgentMediaRouter() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        const auto router = express.Router();
-
-        // Media upload endpoint for images and videos using multer
-        router.post("/:agentId/upload-media", upload.single("file"), std::async (req, res) => {
-            logger.debug('[MEDIA UPLOAD] Processing media upload with multer');
-
-            const auto agentId = validateUuid(req.params.agentId);
-            if (!agentId) {
-                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
-            }
-
-            if (!req.file) {
-                return sendError(res, 400, "INVALID_REQUEST", "No media file provided");
-            }
-
-            const auto mediaType = getContentTypeFromMimeType(req.file.mimetype);
-            if (!mediaType) {
-                return sendError(;
-                res,
-                400,
-                "UNSUPPORTED_MEDIA_TYPE",
-                "Unsupported media MIME type: " + req.file.mimetype
-                );
-            }
-
-            try {
-                // Save the uploaded file
-                const auto result = saveUploadedFile(req.file, agentId);
-
-                logger.info(
-                "[MEDIA UPLOAD] Successfully uploaded " + mediaType + ": " + result.filename + ". URL: " + result.url
-                );
-
-                sendSuccess(res, {
-                    url: result.url,
-                    type: mediaType,
-                    filename: result.filename,
-                    originalName: req.file.originalname,
-                    size: req.file.size,
-                    });
-                    } catch (error) {
-                        std::cerr << "[MEDIA UPLOAD] Error processing upload: " + error << std::endl;
-                        sendError(;
-                        res,
-                        500,
-                        "UPLOAD_ERROR",
-                        "Failed to process media upload",
-                        true /* instanceof check */ ? error.message : std::to_string(error)
-                        );
-                    }
-                    });
-
-                    return router;
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+void Agents::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
+nlohmann::json Agents::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_server
 } // namespace elizaos

@@ -1,13 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-CDP_CONSTANTS_TIMEOUTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-CDP_CONSTANTS_TIMEOUTS_H
-#include "core.h"
-#include "viem.h"
-#include "@elizaos/core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUTS_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUTS_HPP_
 
-extern double TX_CONFIRMATION_TIMEOUT;
-extern double BRIDGE_CONFIRMATION_TIMEOUT;
-extern double BRIDGE_POLL_INTERVAL;
-extern double BRIDGE_MAX_POLL_ATTEMPTS;
-void waitForTxConfirmation(std::shared_ptr<PublicClient> publicClient, std::shared_ptr<> hash);
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-#endif
+namespace elizaos {
+namespace generated_misc {
+
+class Timeouts {
+public:
+    Timeouts() = default;
+    ~Timeouts() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "timeouts"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_TIMEOUTS_HPP_

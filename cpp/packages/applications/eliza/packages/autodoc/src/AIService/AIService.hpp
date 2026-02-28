@@ -1,67 +1,35 @@
-#include ".TypeScriptParser.js.hpp"
-#include "utils/CodeFormatter.js.hpp"
-#include "utils/DocumentOrganizer.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_AISERVICE_AISERVICE_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_AISERVICE_AISERVICE_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_autodoc {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Aiservice {
+public:
+    Aiservice() = default;
+    ~Aiservice() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "AIService"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-/**
- * Service for interacting with OpenAI chat API.
- */
-/**
- * Class representing an AI service for generating comments based on prompts.
- */
-
-class AIService {
-  private chatModel: ChatOpenAI;
-  private codeFormatter: CodeFormatter;
-  private chatModelFAQ: ChatOpenAI;
-
-  /**
-   * Constructor for initializing the ChatOpenAI instance.
-   *
-   * @param {Configuration} configuration - The configuration instance to be used
-   * @throws {Error} If OPENAI_API_KEY environment variable is not std::set
-   */
-  constructor(private configuration: Configuration) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not set');
-    }
-    this.chatModel = new ChatOpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    this.chatModelFAQ = new ChatOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-      model: 'gpt-4o',
-    });
-    this.codeFormatter = new CodeFormatter();
-  }
-
-  /**
-   * Generates a comment based on the specified prompt by invoking the chat model.
-   * @param {string} prompt - The prompt for which to generate a comment
-   * @returns {Promise<string>} The generated comment
-   */
-      // First try with generous limit
-
-          // Try with more aggressive truncation
-              // Final attempt with minimal context
-
-  /**
-   * Handle API errors by logging the error message and throwing the error.
-   *
-   *
-   * @param {Error} error The error object to handle
-   * @returns {void}
-   */
-
+} // namespace eliza_autodoc
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_AUTODOC_SRC_AISERVICE_AISERVICE_HPP_

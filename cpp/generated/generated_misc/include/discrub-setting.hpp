@@ -1,10 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_DISCRUB-SETTING_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_ENUM_DISCRUB-SETTING_H
-#include "core.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DISCRUB_SETTING_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DISCRUB_SETTING_HPP_
 
-enum struct DiscrubSetting;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-enum struct DiscrubSetting {
-    REACTIONS_ENABLED = std::string("reactionsEnabled"), SERVER_NICKNAME_LOOKUP = std::string("serverNickNameLookup"), DISPLAY_NAME_LOOKUP = std::string("displayNameLookup"), RANDOM_DELETE_DELAY = std::string("randomDeleteDelay"), RANDOM_SEARCH_DELAY = std::string("randomSearchDelay"), EXPORT_SEPARATE_THREAD_AND_FORUM_POSTS = std::string("exportSeparateThreadAndForumPosts"), EXPORT_ARTIST_MODE = std::string("exportUseArtistMode"), EXPORT_MESSAGE_SORT_ORDER = std::string("exportMessageSortOrder"), EXPORT_PREVIEW_MEDIA = std::string("exportPreviewMedia_2"), EXPORT_DOWNLOAD_MEDIA = std::string("exportDownloadMedia_2"), EXPORT_MESSAGES_PER_PAGE = std::string("exportMessagesPerPage"), EXPORT_IMAGE_RES_MODE = std::string("exportImageResMode")
+namespace elizaos {
+namespace generated_misc {
+
+class DiscrubSetting {
+public:
+    DiscrubSetting() = default;
+    ~DiscrubSetting() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "discrub_setting"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
-#endif
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_DISCRUB_SETTING_HPP_

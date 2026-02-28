@@ -1,47 +1,35 @@
-#include ".types/base.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_LIB_BASE_CLIENT_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_LIB_BASE_CLIENT_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_api_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class BaseClient {
+public:
+    BaseClient() = default;
+    ~BaseClient() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "base_client"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-class ApiError extends Error {
-  constructor(
-    public code: std::string,
-    message: std::string,
-    public details?: std::string,
-    public status?: number
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-
-  /**
-   * Creates a safe response for no-content scenarios (204 responses)
-   * Returns a sensible default based on common API patterns
-   */
-    // For most delete/update operations, return a success indicator
-    // This handles the common case of { success: boolean } return types
-
-    // Handle empty baseUrl for relative URLs
-      // Fallback for non-browser environments
-
-    // Add query parameters
-
-      // Remove Content-Type header if body is FormData
-
-      // Handle empty responses (204 No Content)
-        // For 204 No Content, create a synthetic success response
-          // If JSON parsing fails, treat as success for 2xx responses
-
-
+} // namespace eliza_api_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_API_CLIENT_SRC_LIB_BASE_CLIENT_HPP_

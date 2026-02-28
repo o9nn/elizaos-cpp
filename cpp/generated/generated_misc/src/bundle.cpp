@@ -1,57 +1,26 @@
-#include "SWEagent/src/tools/bundle.h"
+#include "bundle.hpp"
 
-Bundle::Bundle(object config) {
-    this->path = config["path"];
-    this->hiddenTools = OR((config["hiddenTools"]), (array<any>()));
-    this->validateTools();
+namespace elizaos {
+namespace generated_misc {
+
+bool Bundle::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-void Bundle::validateTools()
-{
-    if (!fs->existsSync(this->path)) {
-        throw std::any(std::make_shared<Error>(std::string("Bundle path does not exist: ") + this->path + string_empty));
-    }
-    auto configPath = path->join(this->path, std::string("config.yaml"));
-    if (!fs->existsSync(configPath)) {
-        throw std::any(std::make_shared<Error>(std::string("Bundle config not found: ") + configPath + string_empty));
-    }
-    auto configContent = fs->readFileSync(configPath, std::string("utf-8"));
-    this->_config = as<std::shared_ptr<BundleConfig>>(yaml->load(configContent));
-    if (OR((!this->_config->tools), (type_of(this->_config->tools) != std::string("object")))) {
-        throw std::any(std::make_shared<Error>(std::string("Bundle config must contain tools object")));
-    }
+void Bundle::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-std::any Bundle::get_stateCommand()
-{
-    return this->get_config()->stateCommand;
+nlohmann::json Bundle::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-std::shared_ptr<BundleConfig> Bundle::get_config()
-{
-    if (!this->_config) {
-        this->validateTools();
-    }
-    return this->_config;
-}
-
-array<std::shared_ptr<Command>> Bundle::get_commands()
-{
-    auto commands = array<std::shared_ptr<Command>>();
-    for (auto& [name, toolConfig] : Object->entries(this->get_config()->tools))
-    {
-        if (this->hiddenTools->includes(name)) {
-            continue;
-        }
-        auto command = std::make_shared<Command>(object{
-            object::pair{std::string("name"), std::string("name")}, 
-            object::pair{std::string("docstring"), OR((toolConfig["docstring"]), (nullptr))}, 
-            object::pair{std::string("signature"), OR((toolConfig["signature"]), (nullptr))}, 
-            object::pair{std::string("endName"), OR((toolConfig["end_name"]), (nullptr))}, 
-            object::pair{std::string("arguments"), OR((toolConfig["arguments"]), (array<any>()))}
-        });
-        commands->push(command);
-    }
-    return commands;
-}
-
+} // namespace generated_misc
+} // namespace elizaos

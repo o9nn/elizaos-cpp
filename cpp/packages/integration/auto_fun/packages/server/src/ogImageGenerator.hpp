@@ -1,44 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <future>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_OGIMAGEGENERATOR_HPP_
+#define ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_OGIMAGEGENERATOR_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "db.hpp"
-#include "mcap.hpp"
-#include "util.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace autofun_server {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Ogimagegenerator {
+public:
+    Ogimagegenerator() = default;
+    ~Ogimagegenerator() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "ogImageGenerator"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
- // Import path for resolving asset path
- // Import fs for checking file existence
-
- // Assuming this is available and gives SOL price
-
-// --- Helper Functions ---
-
-// Simple fetch with timeout
-std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {});
-
-// Format numbers nicely
-std::string formatCurrency(const std::optional<double>& value, double decimals = 2);
-
-std::string formatMarketCap(const std::optional<double>& value);
-
-// --- Main Generation Function ---
-
-// Function to safely load the logo buffer - REMOVED as it's no longer used
-/*
-*/
-
+} // namespace autofun_server
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_INTEGRATION_AUTO_FUN_PACKAGES_SERVER_SRC_OGIMAGEGENERATOR_HPP_

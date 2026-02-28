@@ -1,26 +1,26 @@
-#include "eliza/packages/plugin-sql/src/schema/channelParticipant.h"
+#include "channelParticipant.hpp"
 
-std::any channelParticipantsTable = pgTable(std::string("channel_participants"), object{
-    object::pair{std::string("channelId"), text(std::string("channel_id"))->notNull()->references([=]() mutable
-    {
-        return channelTable->id;
-    }
-    , object{
-        object::pair{std::string("onDelete"), std::string("cascade")}
-    })}, 
-    object::pair{std::string("userId"), text(std::string("user_id"))->notNull()}
-}, [=](auto table) mutable
-{
-    return (object{
-        object::pair{std::string("pk"), primaryKey(object{
-            object::pair{std::string("columns"), array<any>{ table["channelId"], table["userId"] }}
-        })}
-    });
-}
-);
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Channelparticipant::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Channelparticipant::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Channelparticipant::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

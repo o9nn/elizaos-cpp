@@ -1,14 +1,26 @@
-#include "eliza-nextjs-starter/src/app/fonts.h"
+#include "fonts.hpp"
 
-object inter = object{
-    object::pair{std::string("className"), std::string("font-sans")}, 
-    object::pair{std::string("style"), object{
-        object::pair{std::string("fontFamily"), std::string("system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif")}
-    }}
-};
+namespace elizaos {
+namespace generated_misc {
 
-void Main(void)
-{
+bool Fonts::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Fonts::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Fonts::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

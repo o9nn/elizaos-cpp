@@ -1,29 +1,26 @@
-#include "eliza/packages/server/src/api/runtime/debug.h"
+#include "debug.hpp"
 
-std::shared_ptr<express::Router> createDebugRouter(std::shared_ptr<AgentServer> serverInstance)
-{
-    auto router = express->Router();
-    router->get(std::string("/servers"), [=](auto _req, auto res) mutable
-    {
-        try
-        {
-            auto servers = std::async([=]() { serverInstance->getServers(); });
-            res["json"](object{
-                object::pair{std::string("success"), true}, 
-                object::pair{std::string("servers"), OR((servers), (array<any>()))}, 
-                object::pair{std::string("count"), OR((servers->get_length()), (0))}
-            });
-        }
-        catch (const std::any& error)
-        {
-            res["status"](500)["json"](object{
-                object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
-            });
-        }
-    }
-    );
-    return router;
-};
+namespace elizaos {
+namespace generated_misc {
 
+bool Debug::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
+void Debug::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Debug::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

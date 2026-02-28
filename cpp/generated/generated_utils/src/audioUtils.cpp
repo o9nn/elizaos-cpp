@@ -1,14 +1,26 @@
-#include "plugin-specification/core-plugin-v2/src/audioUtils.h"
+#include "audioUtils.hpp"
 
-std::shared_ptr<Buffer> getWavHeader(double audioLength, double sampleRate, double channelCount, double bitsPerSample)
-{
-    return coreGetWavHeader(audioLength, sampleRate, channelCount, bitsPerSample);
-};
+namespace elizaos {
+namespace generated_utils {
 
+bool Audioutils::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
 
-Readable prependWavHeader(Readable readable, double audioLength, double sampleRate, double channelCount, double bitsPerSample)
-{
-    return corePrependWavHeader(readable, audioLength, sampleRate, channelCount, bitsPerSample);
-};
+void Audioutils::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
 
+nlohmann::json Audioutils::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
 
+} // namespace generated_utils
+} // namespace elizaos

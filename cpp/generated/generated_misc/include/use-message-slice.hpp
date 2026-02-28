@@ -1,37 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_MESSAGE_USE-MESSAGE-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_MESSAGE_USE-MESSAGE-SLICE_H
-#include "core.h"
-#include "../../app/store.h"
-#include "./message-slice.h"
-using setIsLoadingAction = setIsLoading;
-using setSelectedHasTypesAction = setSelectedHasTypes;
-using setSearchMessageContentAction = setSearchMessageContent;
-using setSearchBeforeDateAction = setSearchBeforeDate;
-using setSearchAfterDateAction = setSearchAfterDate;
-using setSelectedAction = setSelected;
-using setOrderAction = setOrder;
-using setMessagesAction = setMessages;
-using setFilteredMessagesAction = setFilteredMessages;
-using resetFiltersAction = resetFilters;
-using resetAdvancedFiltersAction = resetAdvancedFilters;
-using updateFiltersAction = updateFilters;
-using filterMessagesAction = filterMessages;
-using deleteAttachmentAction = deleteAttachment;
-using updateMessageAction = updateMessage;
-using editMessagesAction = editMessages;
-using deleteMessageAction = deleteMessage;
-using deleteMessagesAction = deleteMessages;
-using getMessageDataAction = getMessageData;
-using resetMessageDataAction = resetMessageData;
-using deleteReactionAction = deleteReaction;
-#include "../../app/hooks.h"
-#include "./message-types.h"
-#include "../../enum/has-type.h"
-#include "../../enum/sort-direction.h"
-#include "../../classes/message.h"
-using Message = _default;
-#include "../../classes/attachment.h"
-using Attachment = _default;
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_MESSAGE_SLICE_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_MESSAGE_SLICE_HPP_
 
-extern std::function<object()> useMessageSlice;
-#endif
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
+
+namespace elizaos {
+namespace generated_misc {
+
+class UseMessageSlice {
+public:
+    UseMessageSlice() = default;
+    ~UseMessageSlice() = default;
+
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "use_message_slice"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
+
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
+
+} // namespace generated_misc
+} // namespace elizaos
+
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_USE_MESSAGE_SLICE_HPP_

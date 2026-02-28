@@ -1,90 +1,26 @@
 #include "helpers.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_cli {
 
-void displayAgent(const std::optional<Agent>& data, auto title) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    logHeader(title);
-
-    // Display basic info
-    std::cout << "Name: " + data.name << std::endl;
-    std::cout << "Username: " + std::to_string(data.username || data.name.toLowerCase().replace(/\s+/g, "_")) << std::endl;
-
-    // Display sections
-    displaySection("Bio", Array.isArray(data.bio) ? data.bio : data.bio ? [data.bio] : std::nullopt);
-    displaySection("Adjectives", data.adjectives);
-    displaySection("Topics", data.topics);
-    displaySection("Plugins", data.plugins);
-
-    // Display style sections
-    if (data.style) {
-        displaySection("General Style", data.style.all);
-        displaySection("Chat Style", data.style.chat);
-        displaySection("Post Style", data.style.post);
-    }
-
-    displaySection("Post Examples", data.postExamples);
-
-    // Display message examples
-    if (data.messageExamples && data.messageExamples.length > 0) {
-        std::cout << "\n" + std::to_string(colors.cyan("Message Examples:")) << std::endl;
-        console.log(
-        data.messageExamples;
-        .std::map((conversation, i) => {
-            const auto messages = formatConversation(conversation);
-            return "\nConversation " + std::to_string(i + 1) + ":\n" + messages;
-            });
-            .join("\n");
-            );
-        }
-
+bool Helpers::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-std::string formatConversation(const std::vector<MessageExample>& conversation) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return conversation;
-    .std::map((msg) => {
-        const auto user = msg.name == "{{name1}}" ? "Anon" : msg.name;
-        return user + ": " + msg.content.text;
-        });
-        .join("\n");
-
+void Helpers::shutdown() {
+    initialized_ = false;
+    config_ = {};
 }
 
-void displaySection(const std::string& title, const std::vector<std::string>& items) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!items || items.length == 0) return;
-
-    std::cout << "\n" + std::to_string(colors.cyan(`${title}:`)) << std::endl;
-    for (const auto& item : items)
-        std::cout << "  " + item << std::endl;
-    }
-
+nlohmann::json Helpers::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
 }
 
-void logHeader(const std::string& title) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto padding = 2; // number of spaces on each side;
-    const auto titleStr = "== " + title + " ==";
-    const auto paddedTitle = " ".repeat(padding) + titleStr + " ".repeat(padding);
-    const auto borderLength = paddedTitle.size();
-
-    // Create top and bottom borders using Unicode box drawing characters
-    const auto topBorder = "colors.green(" + "┌" + std::to_string("─".repeat(borderLength)) + "┐";
-    const auto bottomBorder = "colors.green(" + "└" + std::to_string("─".repeat(borderLength)) + "┘";
-
-    const auto coloredTitle = std::to_string(" ".repeat(padding)) + "== " + std::to_string(colors.green(title)) + " ==" + std::to_string(" ".repeat(padding));
-    const auto middleRow = colors.green("│") + coloredTitle + colors.green("│");
-
-    // Log the rectangle with a leading new line for spacing
-    std::cout << "\n" + topBorder + "\n" + middleRow + "\n" + bottomBorder << std::endl;
-
-}
-
+} // namespace eliza_cli
 } // namespace elizaos

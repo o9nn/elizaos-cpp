@@ -1,24 +1,26 @@
-#include "plugin-specification/core-plugin-v2/src/actions.h"
+#include "actions.hpp"
 
-std::string formatActionNames(array<std::shared_ptr<Action>> actions)
-{
-    return coreFormatActionNames(actions);
-};
+namespace elizaos {
+namespace generated_misc {
 
-
-std::string formatActions(array<std::shared_ptr<Action>> actions)
-{
-    return coreFormatActions(actions);
-};
-
-
-std::function<std::any(array<any>, double)> composeActionExamples = [=](auto actionsData, auto count) mutable
-{
-    return coreComposeActionExamples(actionsData, count);
-};
-
-void Main(void)
-{
+bool Actions::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
-MAIN
+void Actions::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Actions::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace generated_misc
+} // namespace elizaos

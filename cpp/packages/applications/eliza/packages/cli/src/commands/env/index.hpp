@@ -1,48 +1,35 @@
-#include "actions/edit.hpp"
-#include "actions/interactive.hpp"
-#include "actions/list.hpp"
-#include "actions/reset.hpp"
-#include "types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_INDEX_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_INDEX_HPP_
+
 #include <string>
-#include <unordered_map>
 #include <vector>
-#pragma once
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_cli {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class Index {
+public:
+    Index() = default;
+    ~Index() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "index"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
+};
 
-// Create command for managing environment variables
-
-// List subcommand
-      await handleListCommand(options);
-
-// Edit local subcommand
-      await editEnvVars(options);
-
-// Reset subcommand
-      await resetEnv(options);
-
-// Interactive mode
-      await showMainMenu(options);
-
-// Default command (show help if no subcommand provided)
-  // Show available subcommands
-
-// Re-for backward compatibility
-* from './actions/edit';
-* from './actions/interactive';
-* from './actions/list';
-* from './actions/reset';
-* from './types';
-* from './utils/directory-operations';
-* from './utils/file-operations';
-* from './utils/validation';
-
+} // namespace eliza_cli
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLI_SRC_COMMANDS_ENV_INDEX_HPP_

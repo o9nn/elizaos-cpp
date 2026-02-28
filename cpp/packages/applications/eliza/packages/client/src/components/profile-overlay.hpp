@@ -1,42 +1,35 @@
-#pragma once
-#include <algorithm>
-#include <cstdint>
-#include <functional>
-#include <memory>
-#include <optional>
+#ifndef ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_OVERLAY_HPP_
+#define ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_OVERLAY_HPP_
+
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
-#include "elizaos/core.hpp"
-#include "hooks/use-query-hooks.hpp"
-#include "stop-agent-button.hpp"
-#include "ui/button.hpp"
-#include "ui/card.hpp"
-#include "ui/tooltip.hpp"
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace eliza_client {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+class ProfileOverlay {
+public:
+    ProfileOverlay() = default;
+    ~ProfileOverlay() = default;
 
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "profile_overlay"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-
-struct ProfileOverlayProps {
-    bool isOpen;
-    UUID agentId;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-/**
- * Displays a modal overlay with detailed information and controls for a specific agent.
- *
- * Renders an interactive profile card for the agent identified by {@link agentId}, including avatar, status, metadata, capabilities, plugins, and action buttons for starting, stopping, messaging, and navigating to settings. The overlay is visible when {@link isOpen} is true and can be closed via the provided callback.
- *
- * @param isOpen - Whether the overlay is visible.
- * @param onClose - Callback invoked to close the overlay.
- * @param agentId - UUID of the agent whose profile is displayed.
- *
- * @returns The profile overlay component, or null if not open.
- */
-
+} // namespace eliza_client
 } // namespace elizaos
+
+#endif // ELIZAOS_CPP_PACKAGES_APPLICATIONS_ELIZA_PACKAGES_CLIENT_SRC_COMPONENTS_PROFILE_OVERLAY_HPP_

@@ -1,33 +1,35 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_UTILS_CONFIDENCEDECAY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-EXPERIENCE_UTILS_CONFIDENCEDECAY_H
-#include "core.h"
-#include "../types.h"
+#ifndef ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIDENCEDECAY_HPP_
+#define ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIDENCEDECAY_HPP_
 
-class DecayConfig;
-class ConfidenceDecayManager;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <functional>
+#include <optional>
+#include <nlohmann/json.hpp>
 
-class DecayConfig : public object, public std::enable_shared_from_this<DecayConfig> {
+namespace elizaos {
+namespace generated_misc {
+
+class Confidencedecay {
 public:
-    using std::enable_shared_from_this<DecayConfig>::shared_from_this;
-    double halfLife;
+    Confidencedecay() = default;
+    ~Confidencedecay() = default;
 
-    double minConfidence;
+    bool initialize(const nlohmann::json& config = {});
+    void shutdown();
+    nlohmann::json getStatus() const;
+    std::string getName() const { return "confidenceDecay"; }
+    bool isInitialized() const { return initialized_; }
+    const nlohmann::json& getConfig() const { return config_; }
 
-    double decayStartDelay;
+private:
+    nlohmann::json config_;
+    bool initialized_ = false;
 };
 
-extern std::shared_ptr<DecayConfig> DEFAULT_DECAY_CONFIG;
-class ConfidenceDecayManager : public object, public std::enable_shared_from_this<ConfidenceDecayManager> {
-public:
-    using std::enable_shared_from_this<ConfidenceDecayManager>::shared_from_this;
-    std::shared_ptr<DecayConfig> config;
+} // namespace generated_misc
+} // namespace elizaos
 
-    ConfidenceDecayManager(Partial<std::shared_ptr<DecayConfig>> config = object{});
-    virtual double getDecayedConfidence(std::shared_ptr<Experience> experience);
-    virtual array<std::shared_ptr<Experience>> getExperiencesNeedingReinforcement(array<std::shared_ptr<Experience>> experiences, double threshold = 0.3);
-    virtual double calculateReinforcementBoost(std::shared_ptr<Experience> experience, double validationStrength = 1);
-    virtual std::shared_ptr<DecayConfig> getDomainSpecificDecay(std::shared_ptr<Experience> experience);
-    virtual array<object> getConfidenceTrend(std::shared_ptr<Experience> experience, double points = 10);
-};
-
-#endif
+#endif // ELIZAOS_CPP_GENERATED_GENERATED_MISC_INCLUDE_CONFIDENCEDECAY_HPP_

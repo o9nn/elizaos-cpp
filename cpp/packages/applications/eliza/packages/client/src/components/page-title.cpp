@@ -1,19 +1,26 @@
 #include "page-title.hpp"
-#include <iostream>
-#include <stdexcept>
 
 namespace elizaos {
+namespace eliza_client {
 
-void PageTitle() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return (;
-    <div className="space-y-0.5">;
-    <h2 className="text-2xl font-bold tracking-tight">{title}</h2>;
-    {subtitle ? <p className="text-muted-foreground">{subtitle}</p>  = nullptr}
-    </div>;
-    );
-
+bool PageTitle::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
 }
 
+void PageTitle::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json PageTitle::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_client
 } // namespace elizaos
