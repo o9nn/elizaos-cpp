@@ -778,3 +778,6 @@ message(STATUS "")
 message(STATUS "To create packages, run:")
 message(STATUS "  cd build && cpack")
 message(STATUS "")
+
+# Dgen/KoboldCpp Provider Plugin
+add_subdirectory(cpp/packages/plugins/dgen_kobold_provider)

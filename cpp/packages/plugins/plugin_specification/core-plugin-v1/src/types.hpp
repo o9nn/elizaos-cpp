@@ -179,6 +179,8 @@ enum ModelProviderName {
   ATOMA = "atoma",
   SECRETAI = "secret_ai",
   NEARAI = "nearai",
+  DREAMGEN = "dreamgen",
+  KOBOLDCPP = "koboldcpp",
 }
 
 /**

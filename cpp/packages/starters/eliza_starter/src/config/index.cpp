@@ -86,6 +86,11 @@ void getTokenForProvider(ModelProviderName provider, Character character) {
         );
         case ModelProviderName.GROQ:
         return character.settings.secrets.GROQ_API_KEY || settings.GROQ_API_KEY;
+        case ModelProviderName.DREAMGEN:
+        return character.settings.secrets.DREAMGEN_API_KEY || settings.DREAMGEN_API_KEY;
+        case ModelProviderName.KOBOLDCPP:
+        return character.settings.secrets.KOBOLDCPP_ENDPOINT || settings.KOBOLDCPP_ENDPOINT;
+        return character.settings.secrets.GROQ_API_KEY || settings.GROQ_API_KEY;
     }
 
 }
