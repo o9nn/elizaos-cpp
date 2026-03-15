@@ -62,17 +62,32 @@ jobs:
 
     - name: Read repository list
       run: |
-        REPO_LIST=$(cat repo_list.txt | tr '\n' ' ')
-        echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
-        echo "Repository list: $REPO_LIST"
-
-    - name: Print REPO_LIST
-      run: |
-        echo "REPO_LIST: $REPO_LIST"
+        if [ -f repo_list.txt ]; then
+          REPO_LIST=$(cat repo_list.txt | tr '\n' ' ')
+          echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
+          echo "Repository list: $REPO_LIST"
+        else
+          echo "No repo_list.txt found, fetching from GitHub API..."
+          ORG_NAME="${{ inputs.org_name }}"
+          if [ -z "$ORG_NAME" ]; then
+            ORG_NAME="elizaOS"
+          fi
+          REPO_LIST=$(curl -s "https://api.github.com/orgs/${ORG_NAME}/repos?per_page=100" | jq -r '.[].name' | tr '\n' ' ')
+          echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
+          echo "Repository list: $REPO_LIST"
+        fi
 
     - name: Sync repositories
       run: |
         echo "REPO_LIST in sync step: $REPO_LIST"
+        if [ -z "$REPO_LIST" ]; then
+          echo "No repositories to sync"
+          exit 0
+        fi
+        ORG_NAME="${{ inputs.org_name }}"
+        if [ -z "$ORG_NAME" ]; then
+          ORG_NAME="elizaOS"
+        fi
         for REPO in $REPO_LIST; do
           if [ "$REPO" = ".github" ]; then
             echo "Skipping .github repository..."
@@ -80,27 +95,17 @@ jobs:
           fi
           echo "Processing $REPO..."
           {
-            git clone "https://github.com/elizaOS/$REPO.git" "$REPO" &&
+            git clone "https://github.com/${ORG_NAME}/$REPO.git" "$REPO" &&
             if [ -d "$REPO" ] && [ "$(ls -A $REPO)" ]; then
               rm -rf "$REPO/.git"
               git add "$REPO"
-              git commit -m "Add $REPO repository as a subfolder"
+              git commit -m "Add $REPO repository as a subfolder" || echo "No changes for $REPO"
             else
               echo "Failed to clone $REPO or $REPO is empty"
             fi
           } || {
             echo "Skipping $REPO due to errors..."
           }
-        done
-
-    - name: List directories
-      run: |
-        ls -la
-        for REPO in $REPO_LIST; do
-          if [ -d "$REPO" ]; then
-            echo "Contents of $REPO:"
-            ls -la "$REPO"
-          fi
         done
 
     - name: Push changes

@@ -2,13 +2,14 @@ $ErrorActionPreference = 'Stop'
 
 $packageName = 'elizaos-cpp'
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$url64 = 'https://github.com/o9nn/elizaos-cpp/releases/download/v1.0.0/elizaos-cpp-1.0.0-win64.zip'
+$version = $env:chocolateyPackageVersion
+if (-not $version) { $version = '1.0.0' }
+$url64 = "https://github.com/o9nn/elizaos-cpp/releases/download/v${version}/elizaos-cpp-${version}-win64.zip"
 
 $packageArgs = @{
   packageName   = $packageName
   unzipLocation = $toolsDir
   url64bit      = $url64
-  checksum64    = ''
   checksumType64= 'sha256'
 }
 

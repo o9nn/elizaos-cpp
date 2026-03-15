@@ -594,6 +594,9 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+# Dgen/KoboldCpp Provider Plugin (must be before install)
+add_subdirectory(cpp/packages/plugins/dgen_kobold_provider)
+
 # ============================================================================
 # Installation
 # ============================================================================
@@ -650,6 +653,31 @@ install(TARGETS
     
     # Embodiment
     elizaos-embodiment
+
+    # Eliza Sub-Package libraries
+    elizaos-eliza-api-client elizaos-eliza-app elizaos-eliza-autodoc
+    elizaos-eliza-cli elizaos-eliza-client elizaos-eliza-core
+    elizaos-eliza-docs elizaos-eliza-plugin-bootstrap
+    elizaos-eliza-plugin-dummy-services elizaos-eliza-plugin-sql
+    elizaos-eliza-plugin-starter elizaos-eliza-project-starter
+    elizaos-eliza-project-tee-starter elizaos-eliza-server
+
+    # AutoFun Sub-Package libraries
+    elizaos-autofun-autodoc elizaos-autofun-client elizaos-autofun-docs
+    elizaos-autofun-raydium elizaos-autofun-server
+
+    # Generated Module libraries
+    elizaos-generated_api elizaos-generated_auth elizaos-generated_cli
+    elizaos-generated_database elizaos-generated_docs elizaos-generated_misc
+    elizaos-generated_plugins elizaos-generated_services
+    elizaos-generated_testing elizaos-generated_trade elizaos-generated_ui
+    elizaos-generated_utils elizaos-generated_websocket
+
+    # Additional External Module libraries
+    elizaos-aum_tracker elizaos-sandbox_template_cloud elizaos-test_hybrid
+
+    # Plugin Provider libraries
+    elizaos-dgen_kobold_provider
 
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -779,5 +807,4 @@ message(STATUS "To create packages, run:")
 message(STATUS "  cd build && cpack")
 message(STATUS "")
 
-# Dgen/KoboldCpp Provider Plugin
-add_subdirectory(cpp/packages/plugins/dgen_kobold_provider)
+# Dgen/KoboldCpp Provider Plugin - installed via main install() above

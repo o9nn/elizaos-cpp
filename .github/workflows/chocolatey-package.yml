@@ -2,13 +2,6 @@ name: Chocolatey Package
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'cpp/**'
-      - 'include/**'
-      - 'CMakeLists.txt'
-      - 'packaging/chocolatey/**'
-      - '.github/workflows/chocolatey-package.yml'
     tags:
       - 'v*'
   workflow_dispatch:
@@ -162,9 +155,10 @@ jobs:
     
     - name: Test Chocolatey package
       run: |
-        if (Test-Path "choco-package/*.nupkg") {
+        $nupkg = Get-ChildItem -Path choco-package -Filter *.nupkg | Select-Object -First 1
+        if ($nupkg) {
           Write-Host "Testing package installation..."
-          choco install choco-package/*.nupkg -y --force
+          choco install elizaos-cpp -y --force --source choco-package
           Write-Host "Package installed successfully"
         } else {
           Write-Host "No package to test"

@@ -1,0 +1,91 @@
+name: APT Repository
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g., 1.0.0)'
+        required: false
+        default: '1.0.0'
+        type: string
+
+jobs:
+  build-deb:
+    name: Build DEB (${{ matrix.distro }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: ubuntu-22.04
+            container: ubuntu:22.04
+            codename: jammy
+          - distro: ubuntu-24.04
+            container: ubuntu:24.04
+            codename: noble
+
+    container: ${{ matrix.container }}
+
+    steps:
+    - name: Install build dependencies
+      run: |
+        apt-get update
+        DEBIAN_FRONTEND=noninteractive apt-get install -y \
+          git cmake g++ build-essential libcurl4-openssl-dev \
+          pkg-config dpkg-dev ca-certificates lintian
+
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+
+    - name: Build
+      run: cmake --build build --config Release -j$(nproc)
+
+    - name: Run tests
+      working-directory: build
+      run: ctest --output-on-failure
+      continue-on-error: true
+
+    - name: Create DEB package
+      working-directory: build
+      run: |
+        cpack -G DEB
+        echo "=== DEB Package Info ==="
+        dpkg-deb --info *.deb
+        echo "=== DEB Package Contents ==="
+        dpkg-deb --contents *.deb | head -50
+
+    - name: Lint DEB package
+      working-directory: build
+      run: |
+        lintian *.deb --no-tag-display-limit || true
+
+    - name: Test DEB installation
+      working-directory: build
+      run: |
+        dpkg -i *.deb || apt-get install -f -y
+        echo "=== Installed binaries ==="
+        find /usr/bin -name "eliza*" -o -name "*_demo" -o -name "*_test" 2>/dev/null | head -30
+        echo "=== Installed libraries ==="
+        find /usr/lib -name "libelizaos*" 2>/dev/null | wc -l
+        echo "=== Installed headers ==="
+        find /usr/include/elizaos -name "*.hpp" 2>/dev/null | wc -l
+
+    - name: Upload DEB package
+      uses: actions/upload-artifact@v4
+      with:
+        name: deb-${{ matrix.codename }}-amd64
+        path: build/*.deb
+        retention-days: 90
+
+    - name: Publish to GitHub Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: build/*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

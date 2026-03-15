@@ -1,10 +1,13 @@
 name: Fetch & Sync Repositories
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      org_name:
+        description: 'Organization name to sync from (default: elizaOS)'
+        required: false
+        default: 'elizaOS'
+        type: string
 
 jobs:
   fetch:
@@ -14,4 +17,4 @@ jobs:
     needs: fetch
     uses: ./.github/workflows/sync.yml
     with:
-      org_name: elizaOS
+      org_name: ${{ inputs.org_name || 'elizaOS' }}
