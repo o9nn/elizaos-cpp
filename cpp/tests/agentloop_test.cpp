@@ -271,14 +271,14 @@ TEST_F(AgentLoopTest, StatsTracking) {
     std::this_thread::sleep_for(std::chrono::milliseconds(350));
     loop.stop();
     
-    // Note: getStats() is declared in header; stats tracking is tested via step counters
-    // LoopStats stats = loop.getStats();
-    // EXPECT_GT(stats.totalSteps, 0);
-    // EXPECT_EQ(stats.successfulSteps, stats.totalSteps);
-    // EXPECT_EQ(stats.failedSteps, 0);
-    
-    // Verify execution via our counter
-    EXPECT_GT(stepCounter.load(), 0);
+    LoopStats stats = loop.getStatistics();
+    EXPECT_GT(stats.totalStepsExecuted, 0u);
+    EXPECT_EQ(stats.errorCount, 0u);
+    EXPECT_GT(stats.successCount, 0u);
+    EXPECT_GT(stats.totalRuntimeMs, 0.0);
+    EXPECT_GT(stats.avgStepDurationMs, 0.0);
+    // 350ms at 0.1s interval should yield roughly 3 steps; allow generous timing slack
+    EXPECT_GE(stats.totalStepsExecuted, 2u);
 }
 
 TEST_F(AgentLoopTest, StatsWithFailures) {
@@ -292,9 +292,30 @@ TEST_F(AgentLoopTest, StatsWithFailures) {
     std::this_thread::sleep_for(std::chrono::milliseconds(350));
     loop.stop();
     
-    // Verify both successful and failing steps were executed
+    LoopStats stats = loop.getStatistics();
     EXPECT_GT(stepCounter.load(), 0);
     EXPECT_GT(failCounter.load(), 0);
+    EXPECT_GT(stats.errorCount, 0u);
+    EXPECT_GT(stats.successCount, 0u);
+}
+
+TEST_F(AgentLoopTest, ResetStatistics) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.05);
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    loop.stop();
+
+    LoopStats statsBefore = loop.getStatistics();
+    EXPECT_GT(statsBefore.totalStepsExecuted, 0u);
+
+    loop.resetStatistics();
+
+    LoopStats statsAfter = loop.getStatistics();
+    EXPECT_EQ(statsAfter.totalStepsExecuted, 0u);
+    EXPECT_EQ(statsAfter.errorCount, 0u);
+    EXPECT_EQ(statsAfter.successCount, 0u);
 }
 
 // ============================================================================
@@ -311,20 +332,51 @@ TEST_F(AgentLoopTest, HealthStatusTransitions) {
         transitions.push_back({old, newStatus});
     });
     
-    // Health status tracking
-    // EXPECT_EQ(loop.getHealthStatus(), HealthStatus::STOPPED);
+    EXPECT_TRUE(loop.checkHealth() == HealthStatus::STOPPED);
     
     loop.start();
-    // EXPECT_EQ(loop.getHealthStatus(), HealthStatus::HEALTHY);
+    EXPECT_TRUE(loop.checkHealth() == HealthStatus::HEALTHY);
     
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     
     loop.stop();
-    // EXPECT_EQ(loop.getHealthStatus(), HealthStatus::STOPPED);
+    EXPECT_TRUE(loop.checkHealth() == HealthStatus::STOPPED);
     
-    // Verify we captured transitions (if callback was called)
-    // EXPECT_GE(transitions.size(), 0);
-    EXPECT_TRUE(true); // Placeholder for now
+    // Verify health change transitions were captured during start/stop
+    EXPECT_GE(transitions.size(), 2u);
+    // The first transition out of STOPPED must go to STARTING or HEALTHY
+    EXPECT_TRUE(transitions.front().first == HealthStatus::STOPPED);
+    EXPECT_TRUE(transitions.front().second == HealthStatus::STARTING ||
+                transitions.front().second == HealthStatus::HEALTHY);
+    // The last transition must end in STOPPED
+    EXPECT_TRUE(transitions.back().second == HealthStatus::STOPPED);
+}
+
+TEST_F(AgentLoopTest, HealthStatusString) {
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::HEALTHY),   "HEALTHY");
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::DEGRADED),  "DEGRADED");
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::UNHEALTHY), "UNHEALTHY");
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::STOPPED),   "STOPPED");
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::STARTING),  "STARTING");
+    EXPECT_EQ(AgentLoop::healthStatusToString(HealthStatus::STOPPING),  "STOPPING");
+}
+
+TEST_F(AgentLoopTest, HealthChangeCallbackFired) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.05);
+
+    std::atomic<int> callbackCount{0};
+    loop.setHealthChangeCallback([&callbackCount](HealthStatus, HealthStatus) {
+        callbackCount++;
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    loop.stop();
+
+    // At minimum: STOPPED→STARTING and STARTING→HEALTHY on start,
+    // HEALTHY→STOPPING and STOPPING→STOPPED on stop.
+    EXPECT_GE(callbackCount.load(), 2);
 }
 
 // ============================================================================
@@ -485,6 +537,193 @@ TEST_F(AgentLoopTest, MemoryDestructorStopsLoop) {
     
     // Counter should not increase after object destroyed
     EXPECT_EQ(stepCounter.load(), countAfterDestroy);
+}
+
+// ============================================================================
+// Step Callback Tests
+// ============================================================================
+
+TEST_F(AgentLoopTest, BeforeStepCallbackFired) {
+    std::vector<LoopStep> steps = {createCountingStep("myStep")};
+    AgentLoop loop(steps, false, 0.05);
+
+    std::atomic<int> beforeCallCount{0};
+    std::string capturedName;
+    loop.setBeforeStepCallback([&](size_t /*idx*/, const std::string& name) {
+        beforeCallCount++;
+        capturedName = name;
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    loop.stop();
+
+    EXPECT_GT(beforeCallCount.load(), 0);
+    EXPECT_EQ(capturedName, "myStep");
+}
+
+TEST_F(AgentLoopTest, AfterStepCallbackFired) {
+    std::vector<LoopStep> steps = {createCountingStep("afterStep")};
+    AgentLoop loop(steps, false, 0.05);
+
+    std::atomic<int> afterCallCount{0};
+    std::atomic<double> capturedDuration{-1.0};
+    loop.setAfterStepCallback([&](size_t /*idx*/, const std::string& /*name*/, double durationMs) {
+        afterCallCount++;
+        capturedDuration = durationMs;
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    loop.stop();
+
+    EXPECT_GT(afterCallCount.load(), 0);
+    EXPECT_GE(capturedDuration.load(), 0.0); // Duration must be non-negative
+}
+
+TEST_F(AgentLoopTest, ErrorCallbackFiredOnException) {
+    std::vector<LoopStep> steps = {createFailingStep("errStep")};
+    AgentLoop loop(steps, false, 0.05);
+
+    std::atomic<int> errorCallCount{0};
+    std::string capturedError;
+    loop.setErrorCallback([&](const std::string& msg, size_t /*idx*/) {
+        errorCallCount++;
+        capturedError = msg;
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    loop.stop();
+
+    EXPECT_GT(errorCallCount.load(), 0);
+    EXPECT_FALSE(capturedError.empty());
+}
+
+TEST_F(AgentLoopTest, BeforeAndAfterCallbacksOrdered) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.05);
+
+    std::vector<std::string> events;
+    std::mutex eventMutex;
+
+    loop.setBeforeStepCallback([&](size_t, const std::string&) {
+        std::lock_guard<std::mutex> lk(eventMutex);
+        events.push_back("before");
+    });
+    loop.setAfterStepCallback([&](size_t, const std::string&, double) {
+        std::lock_guard<std::mutex> lk(eventMutex);
+        events.push_back("after");
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    loop.stop();
+
+    std::lock_guard<std::mutex> lk(eventMutex);
+    ASSERT_GE(events.size(), 2u);
+    // events.size() must be even: every "before" must have a matching "after"
+    EXPECT_EQ(events.size() % 2, 0u);
+    // Verify before always precedes its paired after
+    for (size_t i = 0; i + 1 < events.size(); i += 2) {
+        EXPECT_EQ(events[i],   "before");
+        EXPECT_EQ(events[i+1], "after");
+    }
+}
+
+// ============================================================================
+// Dynamic Interval Tests
+// ============================================================================
+
+TEST_F(AgentLoopTest, DynamicIntervalDefaultDisabled) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+    EXPECT_FALSE(loop.isDynamicIntervalEnabled());
+}
+
+TEST_F(AgentLoopTest, SetAndGetStepInterval) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+
+    loop.setStepInterval(0.05);
+    EXPECT_NEAR(loop.getStepInterval(), 0.05, 1e-9);
+
+    loop.setStepInterval(0.2);
+    EXPECT_NEAR(loop.getStepInterval(), 0.2, 1e-9);
+}
+
+TEST_F(AgentLoopTest, EnableDynamicInterval) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+
+    loop.setDynamicInterval(true);
+    EXPECT_TRUE(loop.isDynamicIntervalEnabled());
+
+    loop.setDynamicInterval(false);
+    EXPECT_FALSE(loop.isDynamicIntervalEnabled());
+}
+
+TEST_F(AgentLoopTest, IntervalBoundsClampStep) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+
+    // Setting interval bounds should not crash
+    EXPECT_NO_THROW(loop.setIntervalBounds(0.01, 1.0));
+}
+
+TEST_F(AgentLoopTest, DynamicIntervalRunsNormally) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.05);
+
+    loop.setDynamicInterval(true);
+    loop.setIntervalBounds(0.01, 0.1);
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    loop.stop();
+
+    EXPECT_GT(stepCounter.load(), 0);
+}
+
+// ============================================================================
+// Configuration Tests
+// ============================================================================
+
+TEST_F(AgentLoopTest, SetErrorThresholdNoThrow) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+    EXPECT_NO_THROW(loop.setErrorThreshold(5));
+    EXPECT_NO_THROW(loop.setErrorThreshold(0));
+    EXPECT_NO_THROW(loop.setErrorThreshold(100));
+}
+
+TEST_F(AgentLoopTest, SetStallTimeoutNoThrow) {
+    std::vector<LoopStep> steps = {createCountingStep()};
+    AgentLoop loop(steps, false, 0.1);
+    EXPECT_NO_THROW(loop.setStallTimeout(5000));
+    EXPECT_NO_THROW(loop.setStallTimeout(0));
+}
+
+TEST_F(AgentLoopTest, ErrorThresholdTriggersDegraded) {
+    // Set a very low threshold so a few errors degrade health
+    std::vector<LoopStep> steps = {createFailingStep()};
+    AgentLoop loop(steps, false, 0.02);
+    loop.setErrorThreshold(3);
+
+    HealthStatus lastHealth = HealthStatus::STOPPED;
+    loop.setHealthChangeCallback([&lastHealth](HealthStatus, HealthStatus n) {
+        lastHealth = n;
+    });
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+    loop.stop();
+
+    // After many errors the loop should have transitioned to DEGRADED or UNHEALTHY
+    HealthStatus finalHealth = loop.checkHealth();
+    EXPECT_TRUE(finalHealth == HealthStatus::DEGRADED ||
+                finalHealth == HealthStatus::UNHEALTHY ||
+                finalHealth == HealthStatus::STOPPED);
 }
 
 int main(int argc, char **argv) {
