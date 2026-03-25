@@ -277,6 +277,8 @@ TEST_F(AgentLoopTest, StatsTracking) {
     EXPECT_GT(stats.successCount, 0u);
     EXPECT_GT(stats.totalRuntimeMs, 0.0);
     EXPECT_GT(stats.avgStepDurationMs, 0.0);
+    // 350ms at 0.1s interval should yield roughly 3 steps; allow generous timing slack
+    EXPECT_GE(stats.totalStepsExecuted, 2u);
 }
 
 TEST_F(AgentLoopTest, StatsWithFailures) {
@@ -342,6 +344,12 @@ TEST_F(AgentLoopTest, HealthStatusTransitions) {
     
     // Verify health change transitions were captured during start/stop
     EXPECT_GE(transitions.size(), 2u);
+    // The first transition out of STOPPED must go to STARTING or HEALTHY
+    EXPECT_TRUE(transitions.front().first == HealthStatus::STOPPED);
+    EXPECT_TRUE(transitions.front().second == HealthStatus::STARTING ||
+                transitions.front().second == HealthStatus::HEALTHY);
+    // The last transition must end in STOPPED
+    EXPECT_TRUE(transitions.back().second == HealthStatus::STOPPED);
 }
 
 TEST_F(AgentLoopTest, HealthStatusString) {
@@ -614,7 +622,9 @@ TEST_F(AgentLoopTest, BeforeAndAfterCallbacksOrdered) {
 
     std::lock_guard<std::mutex> lk(eventMutex);
     ASSERT_GE(events.size(), 2u);
-    // Verify before always precedes the next after
+    // events.size() must be even: every "before" must have a matching "after"
+    EXPECT_EQ(events.size() % 2, 0u);
+    // Verify before always precedes its paired after
     for (size_t i = 0; i + 1 < events.size(); i += 2) {
         EXPECT_EQ(events[i],   "before");
         EXPECT_EQ(events[i+1], "after");
