@@ -26,8 +26,9 @@ jobs:
         echo "=== ElizaOS C++ Implementation Analysis ==="
         
         # Count implementations by analyzing code content
-        TOTAL_MODULES=$(find cpp -mindepth 1 -maxdepth 1 -type d | wc -l)
-        PLACEHOLDER_COUNT=$(find cpp -name "placeholder.cpp" | wc -l)
+        # Modules live under cpp/packages/<category>/<module>/
+        TOTAL_MODULES=$(find cpp/packages -mindepth 2 -maxdepth 2 -type d | wc -l)
+        PLACEHOLDER_COUNT=$(find cpp/packages -name "placeholder.cpp" | wc -l)
         
         # Identify fully implemented modules (significant code and tests)
         echo "🔍 Analyzing module implementations..."
@@ -35,13 +36,8 @@ jobs:
         PARTIAL=()
         PLACEHOLDER=()
         
-        for module_dir in cpp/*/; do
+        for module_dir in cpp/packages/*/*/; do
           module_name=$(basename "$module_dir")
-          
-          # Skip test directory
-          if [ "$module_name" = "tests" ]; then
-            continue
-          fi
           
           if [ -f "$module_dir/src/placeholder.cpp" ]; then
             # Check if placeholder is the only implementation
@@ -52,10 +48,17 @@ jobs:
               PLACEHOLDER+=("$module_name")
             fi
           else
-            # No placeholder file, likely fully implemented
-            cpp_files=$(find "$module_dir/src" -name "*.cpp" 2>/dev/null | wc -l)
-            if [ "$cpp_files" -gt 0 ]; then
+            # No placeholder file; count real implementation lines.
+            # A module with >=100 lines of C++ source is considered fully
+            # implemented; >0 but <100 lines is considered partial.
+            total_lines=$(find "$module_dir/src" -name "*.cpp" 2>/dev/null \
+              | xargs -r wc -l 2>/dev/null \
+              | tail -1 | awk '{print $1}')
+            total_lines=${total_lines:-0}
+            if [ "$total_lines" -ge 100 ]; then
               IMPLEMENTED+=("$module_name")
+            elif [ "$total_lines" -gt 0 ]; then
+              PARTIAL+=("$module_name")
             fi
           fi
         done
