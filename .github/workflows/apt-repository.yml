@@ -33,11 +33,16 @@ jobs:
         apt-get update
         DEBIAN_FRONTEND=noninteractive apt-get install -y \
           git cmake g++ build-essential libcurl4-openssl-dev \
-          pkg-config dpkg-dev ca-certificates lintian
+          pkg-config dpkg-dev ca-certificates lintian python3
 
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
 
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr

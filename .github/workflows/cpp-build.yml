@@ -106,6 +106,11 @@ jobs:
         ls cpp/include/elizaos/*.hpp 2>/dev/null | wc -l
         echo "==================================="
 
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 

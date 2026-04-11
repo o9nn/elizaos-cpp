@@ -43,6 +43,11 @@ jobs:
       with:
         submodules: recursive
     
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+    
     - name: Verify directory structure
       run: |
         echo "=== Verifying build structure ==="
@@ -151,6 +156,11 @@ jobs:
       with:
         submodules: recursive
     
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+    
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
     
@@ -227,6 +237,11 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+    
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
     
     - name: Install dependencies
       run: |

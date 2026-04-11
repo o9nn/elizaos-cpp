@@ -20,6 +20,11 @@ jobs:
       with:
         submodules: recursive
     
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+    
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
     
