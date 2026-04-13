@@ -42,7 +42,5 @@ ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framew
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
-    <file src="..\..\LICENSE" target="LICENSE.txt" />
-    <file src="..\..\README.md" target="README.md" />
   </files>
 </package>

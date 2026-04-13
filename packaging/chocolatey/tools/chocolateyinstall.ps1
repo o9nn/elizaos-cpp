@@ -1,26 +1,26 @@
 $ErrorActionPreference = 'Stop'
 
 $packageName = 'elizaos-cpp'
-$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$version = $env:chocolateyPackageVersion
-if (-not $version) { $version = '1.0.0' }
-$url64 = "https://github.com/o9nn/elizaos-cpp/releases/download/v${version}/elizaos-cpp-${version}-win64.zip"
+$toolsDir = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
+$installPath = Join-Path $toolsDir 'bin'
 
-$packageArgs = @{
-  packageName   = $packageName
-  unzipLocation = $toolsDir
-  url64bit      = $url64
-  checksumType64= 'sha256'
+$payloadDirectories = @('bin', 'include', 'lib', 'share') |
+  Where-Object { Test-Path (Join-Path $toolsDir $_) }
+
+if (-not $payloadDirectories -or $payloadDirectories.Count -eq 0) {
+  throw "No bundled ElizaOS C++ payload was found inside the Chocolatey package tools directory: $toolsDir"
 }
 
-Install-ChocolateyZipPackage @packageArgs
+Write-Host "Installing bundled ElizaOS C++ payload from: $toolsDir"
+Write-Host "Detected payload directories: $($payloadDirectories -join ', ')"
 
-# Add to PATH
-$installPath = Join-Path $toolsDir 'bin'
-Install-ChocolateyPath -PathToInstall $installPath -PathType 'Machine'
+if (Test-Path $installPath) {
+  Install-ChocolateyPath -PathToInstall $installPath -PathType 'Machine'
+  Write-Host "Added executables to PATH from: $installPath"
+} else {
+  Write-Warning "No bin directory was bundled with the package, so no PATH entry was added."
+}
 
 Write-Host "ElizaOS C++ has been installed successfully!"
 Write-Host "Installation directory: $toolsDir"
-Write-Host "Executables are available in: $installPath"
-Write-Host ""
 Write-Host "To get started, see: https://github.com/o9nn/elizaos-cpp"

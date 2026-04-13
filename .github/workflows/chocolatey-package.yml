@@ -58,8 +58,14 @@ jobs:
     - name: Install to staging directory
       run: |
         cmake --install build --prefix staging --config Release
-        Get-ChildItem -Recurse staging | Select-Object FullName
-      continue-on-error: true
+        if (!(Test-Path "staging")) {
+          throw "CMake install did not create the staging directory."
+        }
+        $stagedFiles = Get-ChildItem -Recurse staging -File
+        if (-not $stagedFiles) {
+          throw "The staging directory is empty after installation."
+        }
+        $stagedFiles | Select-Object FullName
     
     - name: Prepare Chocolatey package
       run: |
@@ -125,12 +131,16 @@ jobs:
           Set-Content -Path choco-package/tools/chocolateyinstall.ps1 -Value $installScript
         }
         
-        # Copy built files if they exist
-        if (Test-Path "build/Release") {
-          Copy-Item -Recurse build/Release/* choco-package/tools/ -ErrorAction SilentlyContinue
+        # Copy the staged install payload into the Chocolatey tools directory.
+        if (!(Test-Path "staging")) {
+          throw "Expected staging payload is missing. Run the install step before packaging."
         }
-        if (Test-Path "staging") {
-          Copy-Item -Recurse staging/* choco-package/tools/ -ErrorAction SilentlyContinue
+        Copy-Item -Recurse staging/* choco-package/tools/
+
+        $payloadRoots = @('bin', 'include', 'lib', 'share') |
+          Where-Object { Test-Path (Join-Path 'choco-package/tools' $_) }
+        if (-not $payloadRoots -or $payloadRoots.Count -eq 0) {
+          throw "Chocolatey package payload is missing expected installed directories under choco-package/tools."
         }
         
         # Copy LICENSE and README
@@ -153,23 +163,34 @@ jobs:
           Write-Host "Package created successfully:"
           Get-ChildItem *.nupkg | Select-Object Name, Length
         } else {
-          Write-Host "Warning: No package file created"
+          throw "Chocolatey packaging did not produce a .nupkg artifact."
         }
       shell: powershell
-      continue-on-error: true
     
     - name: Test Chocolatey package
       run: |
         $nupkg = Get-ChildItem -Path choco-package -Filter *.nupkg | Select-Object -First 1
-        if ($nupkg) {
-          Write-Host "Testing package installation..."
-          choco install elizaos-cpp -y --force --source choco-package
-          Write-Host "Package installed successfully"
-        } else {
-          Write-Host "No package to test"
+        if (-not $nupkg) {
+          throw "No Chocolatey package was produced to test."
         }
+
+        Write-Host "Testing package installation from local source..."
+        choco install elizaos-cpp -y --force --source choco-package
+
+        $packageToolsDir = Join-Path $env:ChocolateyInstall 'lib\elizaos-cpp\tools'
+        if (!(Test-Path $packageToolsDir)) {
+          throw "Installed Chocolatey tools directory was not created: $packageToolsDir"
+        }
+
+        $installedPayloadRoots = @('bin', 'include', 'lib', 'share') |
+          Where-Object { Test-Path (Join-Path $packageToolsDir $_) }
+        if (-not $installedPayloadRoots -or $installedPayloadRoots.Count -eq 0) {
+          throw "Installed Chocolatey package is missing the expected payload directories."
+        }
+
+        Write-Host "Package installed successfully"
+        Get-ChildItem -Recurse $packageToolsDir | Select-Object FullName
       shell: powershell
-      continue-on-error: true
     
     - name: Upload Chocolatey package
       uses: actions/upload-artifact@v4
