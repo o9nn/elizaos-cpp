@@ -1,0 +1,24 @@
+name: "ElizaOS C++ CodeQL Config"
+
+# Restrict scanning to the core C++ source tree and exclude all generated,
+# transpiled, and vendored directories that would otherwise cause the SARIF
+# output file to exceed the 536 MB JSON string length limit.
+paths:
+  - cpp
+  - src
+  - include
+
+paths-ignore:
+  - excpp
+  - excpp1
+  - excpp_old
+  - excpp_old_backup
+  - cpp_generated
+  - cpp_hybrid
+  - cpp_merge
+  - test_hybrid
+  - output_multi_full
+  - eliza
+  - otaku
+  - classified
+  - _codeql_detected_source_root
