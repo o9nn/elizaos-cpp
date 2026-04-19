@@ -33,7 +33,7 @@ protected:
         // Create some mock audio files for testing
         for (int i = 0; i < 3; ++i) {
             std::string filename = "test_audio_" + std::to_string(i) + ".wav";
-            std::string filepath = input_dir_ / filename;
+            std::string filepath = (input_dir_ / filename).string();
             std::ofstream file(filepath, std::ios::binary);
             
             // Write minimal WAV header and data
@@ -68,7 +68,7 @@ TEST_F(LJSpeechToolsTest, AudioProcessorSaveTest) {
     audio.channels = 1;
     audio.duration_seconds = 1.0;
     
-    std::string output_path = output_dir_ / "output_audio.wav";
+    std::string output_path = (output_dir_ / "output_audio.wav").string();
     EXPECT_TRUE(AudioProcessor::saveAudioFile(audio, output_path));
 }
 
@@ -155,7 +155,7 @@ TEST_F(LJSpeechToolsTest, SpeechTranscriberTest) {
 TEST_F(LJSpeechToolsTest, SpeechTranscriberFileTest) {
     SpeechTranscriber transcriber;
     
-    std::string test_file = input_dir_ / "test_audio_0.wav";
+    std::string test_file = (input_dir_ / "test_audio_0.wav").string();
     auto result = transcriber.transcribeFile(test_file);
     
     EXPECT_TRUE(result.success);
@@ -167,9 +167,9 @@ TEST_F(LJSpeechToolsTest, SpeechTranscriberBatchTest) {
     SpeechTranscriber transcriber;
     
     std::vector<std::string> files = {
-        input_dir_ / "test_audio_0.wav",
-        input_dir_ / "test_audio_1.wav",
-        input_dir_ / "test_audio_2.wav"
+        (input_dir_ / "test_audio_0.wav").string(),
+        (input_dir_ / "test_audio_1.wav").string(),
+        (input_dir_ / "test_audio_2.wav").string()
     };
     
     auto results = transcriber.transcribeBatch(files);
@@ -215,7 +215,7 @@ TEST_F(LJSpeechToolsTest, SpeechSynthesizerToFileTest) {
     SpeechSynthesizer synthesizer;
     
     std::string text = "This will be saved to a file.";
-    std::string output_file = output_dir_ / "synthesis_output.wav";
+    std::string output_file = (output_dir_ / "synthesis_output.wav").string();
     
     EXPECT_TRUE(synthesizer.synthesizeToFile(text, output_file));
 }
@@ -264,7 +264,7 @@ TEST_F(LJSpeechToolsTest, DatasetPreparatorSaveLoadTest) {
     metadata.push_back(entry2);
     
     // Save metadata
-    std::string metadata_file = output_dir_ / "test_metadata.csv";
+    std::string metadata_file = (output_dir_ / "test_metadata.csv").string();
     EXPECT_TRUE(DatasetPreparator::saveMetadata(metadata, metadata_file));
     
     // Load metadata
@@ -310,7 +310,7 @@ TEST_F(LJSpeechToolsTest, LJSpeechToolsIntegrationTest) {
     ));
     
     // Check that metadata file was created
-    std::string metadata_file = output_dir_ / "metadata.csv";
+    std::string metadata_file = (output_dir_ / "metadata.csv").string();
     EXPECT_TRUE(fs::exists(metadata_file));
     
     // Validate the dataset
