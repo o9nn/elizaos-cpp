@@ -735,7 +735,7 @@ double ContentCleaner::calculateMessageSimilarity(const DiscordMessage& msg1,
     // Jaccard similarity over character trigrams
     auto trigrams = [](const std::string& s) {
         std::unordered_set<std::string> tg;
-        for (size_t i = 0; i + 2 < s.size(); ++i) {
+        for (size_t i = 0; i + 3 <= s.size(); ++i) {
             tg.insert(s.substr(i, 3));
         }
         return tg;
