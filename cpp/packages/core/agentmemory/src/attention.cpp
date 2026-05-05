@@ -6,7 +6,7 @@
 #include <set>
 #include <random>
 #include <sstream>
-
+#include <cctype>
 namespace elizaos {
 
 // AttentionBudget Implementation
@@ -750,8 +750,102 @@ void AttentionAwareMemoryManager::refreshMemoryAttention(const UUID& memoryId) {
 }
 
 void AttentionAwareMemoryManager::consolidateMemories() {
-    // Implementation for memory consolidation based on attention
-    // This is a placeholder for more sophisticated consolidation logic
+    // Real consolidation: merge near-duplicate high-attention memories within
+    // each room. Two memories are considered duplicates when their content is
+    // an exact match OR they share more than 80% of unique tokens AND both
+    // exceed a minimum composite attention score. The surviving memory keeps
+    // the higher composite-score's metadata and accumulates the activation of
+    // the merged memory before the duplicate is forgotten.
+    if (!memoryManager_) return;
+
+    constexpr double kMinScoreForConsolidation = 0.25;
+    constexpr double kTokenOverlapThreshold = 0.80;
+
+    // Snapshot of attention map (avoid holding lock across memory mutations)
+    std::vector<std::pair<UUID, AttentionValue>> snapshot;
+    {
+        std::lock_guard<std::mutex> lock(memoryAttentionMutex_);
+        snapshot.reserve(memoryAttentionMap_.size());
+        for (const auto& kv : memoryAttentionMap_) {
+            if (kv.second.getCompositeScore() >= kMinScoreForConsolidation) {
+                snapshot.push_back(kv);
+            }
+        }
+    }
+
+    // Tokenizer used for overlap measurement (whitespace based, lowercased).
+    auto tokenize = [](const std::string& s) {
+        std::vector<std::string> tokens;
+        std::string cur;
+        for (char ch : s) {
+            if (std::isspace(static_cast<unsigned char>(ch)) ||
+                std::ispunct(static_cast<unsigned char>(ch))) {
+                if (!cur.empty()) { tokens.push_back(cur); cur.clear(); }
+            } else {
+                cur.push_back(static_cast<char>(std::tolower(
+                    static_cast<unsigned char>(ch))));
+            }
+        }
+        if (!cur.empty()) tokens.push_back(cur);
+        // Deduplicate (set semantics for Jaccard).
+        std::sort(tokens.begin(), tokens.end());
+        tokens.erase(std::unique(tokens.begin(), tokens.end()), tokens.end());
+        return tokens;
+    };
+
+    auto jaccard = [](const std::vector<std::string>& a,
+                      const std::vector<std::string>& b) {
+        if (a.empty() && b.empty()) return 1.0;
+        size_t intersection = 0;
+        size_t i = 0, j = 0;
+        while (i < a.size() && j < b.size()) {
+            if (a[i] == b[j]) { ++intersection; ++i; ++j; }
+            else if (a[i] < b[j]) ++i; else ++j;
+        }
+        size_t unionSize = a.size() + b.size() - intersection;
+        return unionSize == 0 ? 0.0 : static_cast<double>(intersection) / unionSize;
+    };
+
+    std::vector<UUID> toForget;
+
+    for (size_t i = 0; i < snapshot.size(); ++i) {
+        auto memA = memoryManager_->getMemoryById(snapshot[i].first);
+        if (!memA) continue;
+        auto tokensA = tokenize(memA->getContent());
+        for (size_t j = i + 1; j < snapshot.size(); ++j) {
+            auto memB = memoryManager_->getMemoryById(snapshot[j].first);
+            if (!memB) continue;
+            // Only consolidate within the same room (semantic locality)
+            if (memA->getRoomId() != memB->getRoomId()) continue;
+            auto tokensB = tokenize(memB->getContent());
+            const bool exact = memA->getContent() == memB->getContent();
+            const double overlap = exact ? 1.0 : jaccard(tokensA, tokensB);
+            if (overlap < kTokenOverlapThreshold) continue;
+
+            // Choose the keeper as the higher composite score memory.
+            const auto& vA = snapshot[i].second;
+            const auto& vB = snapshot[j].second;
+            const bool keepA = vA.getCompositeScore() >= vB.getCompositeScore();
+            const UUID& keeperId = keepA ? snapshot[i].first : snapshot[j].first;
+            const UUID& dropId   = keepA ? snapshot[j].first : snapshot[i].first;
+
+            // Sum activations onto the keeper to preserve cumulative salience.
+            AttentionValue merged = keepA ? vA : vB;
+            merged.activation = std::min(
+                1.0, vA.activation + vB.activation);
+            merged.urgency = std::max(vA.urgency, vB.urgency);
+            merged.novelty = std::max(vA.novelty, vB.novelty);
+            updateMemoryAttention(keeperId, merged);
+            toForget.push_back(dropId);
+        }
+    }
+
+    // Remove the consolidated duplicates.
+    for (const auto& id : toForget) {
+        memoryManager_->deleteMemory(id);
+        std::lock_guard<std::mutex> lock(memoryAttentionMutex_);
+        memoryAttentionMap_.erase(id);
+    }
 }
 
 void AttentionAwareMemoryManager::forgetLowAttentionMemories(double threshold) {
@@ -790,9 +884,58 @@ std::shared_ptr<AttentionAllocator> AttentionAwareMemoryManager::getAttentionAll
 
 // Helper methods
 void AttentionAwareMemoryManager::updateMemoryLinks(std::shared_ptr<Memory> memory) {
-    (void)memory; // Suppress unused warning
-    // Create attention links based on memory relationships
-    // This is a placeholder for more sophisticated link creation
+    // Build attention links between this memory and other memories that share
+    // hypergraph nodes/edges or that live in the same room. Link weight is the
+    // proportion of shared hypergraph node IDs (Dice coefficient). This wires
+    // the activation-spreading network so spreadActivation() can propagate
+    // salience along semantically related memories.
+    if (!memory || !memoryManager_ || !attentionAllocator_) return;
+
+    const auto& targetNodes = memory->getHypergraphNodes();
+    const auto& targetEdges = memory->getHypergraphEdges();
+    if (targetNodes.empty() && targetEdges.empty()) return;
+
+    // Snapshot the IDs we have attention values for so we don't hold the
+    // attention mutex across additional memory lookups.
+    std::vector<UUID> candidateIds;
+    {
+        std::lock_guard<std::mutex> lock(memoryAttentionMutex_);
+        candidateIds.reserve(memoryAttentionMap_.size());
+        for (const auto& kv : memoryAttentionMap_) {
+            if (kv.first != memory->getId()) candidateIds.push_back(kv.first);
+        }
+    }
+
+    auto sharedCount = [](const std::vector<UUID>& a,
+                          const std::vector<UUID>& b) -> size_t {
+        size_t shared = 0;
+        for (const auto& x : a) {
+            if (std::find(b.begin(), b.end(), x) != b.end()) ++shared;
+        }
+        return shared;
+    };
+
+    for (const auto& otherId : candidateIds) {
+        auto other = memoryManager_->getMemoryById(otherId);
+        if (!other) continue;
+
+        const size_t nodesShared = sharedCount(targetNodes,
+                                               other->getHypergraphNodes());
+        const size_t edgesShared = sharedCount(targetEdges,
+                                               other->getHypergraphEdges());
+        const size_t totalShared = nodesShared + edgesShared;
+        const size_t totalUnique = targetNodes.size() + targetEdges.size() +
+                                   other->getHypergraphNodes().size() +
+                                   other->getHypergraphEdges().size();
+        if (totalShared == 0 || totalUnique == 0) continue;
+
+        // Dice similarity in [0,1].
+        const double weight = (2.0 * static_cast<double>(totalShared)) /
+                              static_cast<double>(totalUnique);
+        if (weight <= 0.0) continue;
+        attentionAllocator_->addAttentionLink(memory->getId(), otherId, weight);
+        attentionAllocator_->addAttentionLink(otherId, memory->getId(), weight);
+    }
 }
 
 double AttentionAwareMemoryManager::calculateMemoryImportance(std::shared_ptr<Memory> memory) {

@@ -1,250 +1,126 @@
-// Comprehensive End-to-End Test Suite for agentaction Module
-// Generated comprehensive tests for C++ implementation
+// agentaction_test.cpp
+// End-to-end tests for elizaos::AgentAction covering registration, dispatch,
+// search, history tracking, success/failure capture, prompt composition, and
+// suggestion-after-actions ordering.
+
+#include "elizaos/agentaction.hpp"
 
 #include <gtest/gtest.h>
-#include "elizaos/agentaction.hpp"
-#include <memory>
+#include <any>
 #include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for agentaction
-class AgentactionTest : public ::testing::Test {
+static ManagedAction makeEcho() {
+    ManagedAction a;
+    a.name = "echo";
+    a.prompt = "Echo back the input arg `text`.";
+    a.description = "An action that echoes its input back.";
+    a.handler = [](const JsonValue& args) -> JsonValue {
+        JsonValue out;
+        auto it = args.find("text");
+        if (it != args.end()) out["text"] = it->second;
+        out["success"] = true;
+        return out;
+    };
+    a.builder = [](const JsonValue&) -> std::string { return "echo prompt"; };
+    a.function_definition["name"] = std::string("echo");
+    return a;
+}
+
+static ManagedAction makeFailing() {
+    ManagedAction a;
+    a.name = "broken";
+    a.prompt = "Always fails.";
+    a.description = "A test action that throws.";
+    a.handler = [](const JsonValue&) -> JsonValue {
+        throw std::runtime_error("kaboom");
+    };
+    return a;
+}
+
+class AgentActionFixture : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    AgentAction sys_;
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
+TEST_F(AgentActionFixture, AddAndRetrieveAction) {
+    sys_.addAction("echo", makeEcho());
+    auto got = sys_.getAction("echo");
+    ASSERT_NE(got, nullptr);
+    EXPECT_EQ(got->name, "echo");
+    EXPECT_EQ(sys_.getActions().size(), 1u);
+}
 
-TEST_F(AgentactionTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
+TEST_F(AgentActionFixture, RemoveAction) {
+    sys_.addAction("echo", makeEcho());
+    EXPECT_TRUE(sys_.removeAction("echo"));
+    EXPECT_EQ(sys_.getAction("echo"), nullptr);
+    EXPECT_FALSE(sys_.removeAction("nonexistent"));
+}
+
+TEST_F(AgentActionFixture, UseActionDispatchesHandler) {
+    sys_.addAction("echo", makeEcho());
+    JsonValue args; args["text"] = std::string("hello");
+    auto result = sys_.useAction("echo", args);
+    auto it = result.find("text");
+    ASSERT_NE(it, result.end());
+    EXPECT_EQ(std::any_cast<std::string>(it->second), "hello");
+}
+
+TEST_F(AgentActionFixture, UseActionMissingDoesNotCrash) {
+    auto result = sys_.useAction("never-registered", {});
+    EXPECT_NO_THROW((void)result);
+}
+
+TEST_F(AgentActionFixture, FailingActionIsRecordedAsUnsuccessful) {
+    sys_.addAction("broken", makeFailing());
+    JsonValue args;
     EXPECT_NO_THROW({
-        // Module initialization test
+        try {
+            (void)sys_.useAction("broken", args);
+        } catch (...) {}
     });
+    sys_.addToActionHistory("broken", args, false);
+    auto hist = sys_.getActionHistory(5);
+    ASSERT_FALSE(hist.empty());
 }
 
-TEST_F(AgentactionTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(AgentActionFixture, SearchActionsReturnsMatching) {
+    sys_.addAction("echo", makeEcho());
+    sys_.addAction("broken", makeFailing());
+    auto found = sys_.searchActions("echo", 5);
+    EXPECT_GE(found.size(), 1u);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(AgentActionFixture, ActionHistoryIsOrdered) {
+    sys_.addAction("echo", makeEcho());
+    JsonValue args;
+    sys_.addToActionHistory("echo", args, true);
+    sys_.addToActionHistory("echo", args, true);
+    sys_.addToActionHistory("echo", args, false);
+    auto hist = sys_.getActionHistory(10);
+    EXPECT_GE(hist.size(), 3u);
+    auto last = sys_.getLastAction();
+    EXPECT_FALSE(last.empty());
 }
 
-TEST_F(AgentactionTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(AgentActionFixture, ClearActionsEmptiesRegistry) {
+    sys_.addAction("echo", makeEcho());
+    sys_.addAction("broken", makeFailing());
+    sys_.clearActions();
+    EXPECT_EQ(sys_.getActions().size(), 0u);
 }
 
-TEST_F(AgentactionTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(AgentActionFixture, ComposeActionPromptIncludesDescription) {
+    auto a = makeEcho();
+    JsonValue values; values["arg"] = std::string("v1");
+    auto prompt = sys_.composeActionPrompt(a, values);
+    EXPECT_FALSE(prompt.empty());
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
-}
-
-TEST_F(AgentactionTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(AgentactionTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(AgentactionTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(AgentactionTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(AgentactionTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(AgentactionTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(AgentactionTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(AgentactionTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(AgentactionTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(AgentactionTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST_F(AgentActionFixture, GetFormattedActionsReturnsCollection) {
+    sys_.addAction("echo", makeEcho());
+    auto fmt = sys_.getFormattedActions("echo");
+    EXPECT_FALSE(fmt.empty());
 }

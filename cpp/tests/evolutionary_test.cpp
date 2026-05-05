@@ -1,250 +1,68 @@
-// Comprehensive End-to-End Test Suite for evolutionary Module
-// Generated comprehensive tests for C++ implementation
+// evolutionary_test.cpp
+// End-to-end tests for elizaos::Population, Individual, ProgramNode, and
+// FitnessResult.
 
-#include <gtest/gtest.h>
 #include "elizaos/evolutionary.hpp"
+#include <gtest/gtest.h>
 #include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for evolutionary
-class EvolutionaryTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
-};
-
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST(FitnessResult, OverallScoreCombinesComponents) {
+    FitnessResult r(0.8, 0.2, 0.1);
+    EXPECT_GT(r.getOverallScore(), 0.0);
 }
 
-TEST_F(EvolutionaryTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST(ProgramNode, BasicConstruction) {
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k0");
+    EXPECT_EQ(n->name, "k0");
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST(ProgramNode, CloneIndependent) {
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k1");
+    auto c = n->clone();
+    ASSERT_NE(c, nullptr);
+    EXPECT_EQ(c->name, "k1");
+    EXPECT_NE(c.get(), n.get());
 }
 
-TEST_F(EvolutionaryTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST(Individual, ConstructionAndAge) {
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k");
+    Individual ind(n);
+    EXPECT_EQ(ind.getAge(), 0);
+    ind.incrementAge();
+    EXPECT_EQ(ind.getAge(), 1);
 }
 
-TEST_F(EvolutionaryTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST(Individual, FitnessRoundtrip) {
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k");
+    Individual ind(n);
+    ind.setFitness(FitnessResult(0.9, 0.1, 0.05));
+    EXPECT_NEAR(ind.getFitness().fitness, 0.9, 1e-9);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST(Population, AddAndRemove) {
+    Population p(10);
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k");
+    p.addIndividual(Individual(n));
+    p.addIndividual(Individual(n));
+    EXPECT_FALSE(p.empty());
+    p.removeIndividual(0);
+    EXPECT_FALSE(p.empty());
 }
 
-TEST_F(EvolutionaryTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST(Population, ClearEmpties) {
+    Population p(10);
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k");
+    p.addIndividual(Individual(n));
+    p.clear();
+    EXPECT_TRUE(p.empty());
 }
 
-TEST_F(EvolutionaryTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(EvolutionaryTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(EvolutionaryTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(EvolutionaryTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(EvolutionaryTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(EvolutionaryTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(EvolutionaryTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(EvolutionaryTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(EvolutionaryTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST(Population, AgeIndividuals) {
+    Population p(10);
+    auto n = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "k");
+    p.addIndividual(Individual(n));
+    p.addIndividual(Individual(n));
+    EXPECT_NO_THROW(p.ageIndividuals());
 }

@@ -1,250 +1,73 @@
-// Comprehensive End-to-End Test Suite for core Module
-// Generated comprehensive tests for C++ implementation
+// core_test.cpp
+// End-to-end tests for the elizaos core types: HypergraphNode, HypergraphEdge,
+// Memory, and Task.
 
-#include <gtest/gtest.h>
 #include "elizaos/core.hpp"
-#include <memory>
+#include <gtest/gtest.h>
 #include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for core
-class CoreTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
-};
-
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(CoreTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST(HypergraphNode, ConstructorAndAttributes) {
+    HypergraphNode n("nid-1", "concept-cat");
+    EXPECT_FALSE(n.getAttribute("missing").has_value());
+    n.setAttribute("color", "orange");
+    auto v = n.getAttribute("color");
+    ASSERT_TRUE(v.has_value());
+    EXPECT_EQ(*v, "orange");
 }
 
-TEST_F(CoreTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST(HypergraphEdge, BindsMultipleNodes) {
+    HypergraphEdge e("eid-1", "knows", {"a", "b", "c"});
+    EXPECT_NO_THROW((void)e);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(CoreTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST(Memory, ConstructorAndAccessors) {
+    Memory m("m1", "content", "entity-1", "agent-1");
+    EXPECT_EQ(m.getId(), "m1");
+    EXPECT_EQ(m.getContent(), "content");
+    EXPECT_EQ(m.getEntityId(), "entity-1");
+    EXPECT_EQ(m.getAgentId(), "agent-1");
+    EXPECT_TRUE(m.getRoomId().empty());
 }
 
-TEST_F(CoreTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST(Memory, RoomIdSetter) {
+    Memory m("m2", "content", "entity-1", "agent-1");
+    m.setRoomId("room-42");
+    EXPECT_EQ(m.getRoomId(), "room-42");
 }
 
-TEST_F(CoreTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST(Memory, EmbeddingRoundtrip) {
+    Memory m("m3", "content", "entity-1", "agent-1");
+    EmbeddingVector v{1.0f, 2.0f, 3.0f, 4.0f};
+    m.setEmbedding(v);
+    auto& got = m.getEmbedding();
+    ASSERT_TRUE(got.has_value());
+    EXPECT_EQ(got->size(), 4u);
+    EXPECT_FLOAT_EQ((*got)[2], 3.0f);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(CoreTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST(Memory, UniqueFlag) {
+    Memory m("m4", "content", "entity-1", "agent-1");
+    EXPECT_NO_THROW(m.setUnique(true));
+    EXPECT_TRUE(m.isUnique());
+    m.setUnique(false);
+    EXPECT_FALSE(m.isUnique());
 }
 
-TEST_F(CoreTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST(Memory, SimilarityRoundtrip) {
+    Memory m("m5", "content", "entity-1", "agent-1");
+    m.setSimilarity(0.42);
+    EXPECT_NEAR(m.getSimilarity(), 0.42, 1e-9);
 }
 
-TEST_F(CoreTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(CoreTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(CoreTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(CoreTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(CoreTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(CoreTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(CoreTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(CoreTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(CoreTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(CoreTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST(Task, BasicLifecycle) {
+    Task t("tid-1", "task", "do something");
+    EXPECT_EQ(t.getId(), "tid-1");
+    EXPECT_NO_THROW(t.setStatus(TaskStatus::RUNNING));
+    EXPECT_EQ(t.getStatus(), TaskStatus::RUNNING);
+    t.setPriority(7);
+    EXPECT_EQ(t.getPriority(), 7);
+    t.addTag("urgent");
+    EXPECT_NO_THROW(t.updateTimestamp());
 }

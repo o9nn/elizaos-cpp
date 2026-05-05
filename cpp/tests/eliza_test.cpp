@@ -1,250 +1,94 @@
-// Comprehensive End-to-End Test Suite for eliza Module
-// Generated comprehensive tests for C++ implementation
+// eliza_test.cpp
+// End-to-end tests for elizaos::ElizaCore conversation engine.
 
-#include <gtest/gtest.h>
 #include "elizaos/eliza.hpp"
+#include "elizaos/knowledge.hpp"
+#include "elizaos/characters.hpp"
+#include <gtest/gtest.h>
 #include <memory>
 #include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for eliza
-class ElizaTest : public ::testing::Test {
+class ElizaFixture : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    ElizaCore eliza_;
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(ElizaTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(ElizaFixture, CreateAndGetSession) {
+    auto sid = eliza_.createSession("user1");
+    EXPECT_FALSE(sid.empty());
+    auto ctx = eliza_.getSession(sid);
+    EXPECT_TRUE(ctx.has_value());
 }
 
-TEST_F(ElizaTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(ElizaFixture, ProcessInputProducesResponse) {
+    auto sid = eliza_.createSession("user1");
+    auto resp = eliza_.processInput("hello", sid, "user1");
+    EXPECT_FALSE(resp.empty());
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(ElizaTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(ElizaFixture, EndSessionDoesNotThrow) {
+    auto sid = eliza_.createSession("user1");
+    // endSession may return true/false depending on whether it clears
+    // immediately; either way it must not throw and the session count
+    // must not increase afterward.
+    auto before = eliza_.getSessionCount();
+    EXPECT_NO_THROW((void)eliza_.endSession(sid));
+    EXPECT_LE(eliza_.getSessionCount(), before);
 }
 
-TEST_F(ElizaTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(ElizaFixture, MultipleSessionsAreIndependent) {
+    auto s1 = eliza_.createSession("u1");
+    auto s2 = eliza_.createSession("u2");
+    EXPECT_NE(s1, s2);
+    EXPECT_GE(eliza_.getSessionCount(), 2u);
 }
 
-TEST_F(ElizaTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(ElizaFixture, GetAllSessions) {
+    eliza_.createSession();
+    eliza_.createSession();
+    auto all = eliza_.getAllSessions();
+    EXPECT_GE(all.size(), 2u);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(ElizaTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(ElizaFixture, ClearAllSessions) {
+    eliza_.createSession();
+    eliza_.createSession();
+    eliza_.clearAllSessions();
+    EXPECT_EQ(eliza_.getSessionCount(), 0u);
 }
 
-TEST_F(ElizaTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST_F(ElizaFixture, AttachKnowledgeBaseAndCharacterManager) {
+    auto kb = std::make_shared<KnowledgeBase>();
+    auto cm = std::make_shared<CharacterManager>();
+    EXPECT_NO_THROW(eliza_.setKnowledgeBase(kb));
+    EXPECT_NO_THROW(eliza_.setCharacterManager(cm));
 }
 
-TEST_F(ElizaTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
+TEST_F(ElizaFixture, FeatureFlagsToggle) {
+    EXPECT_NO_THROW(eliza_.enableEmotionalTracking(false));
+    EXPECT_NO_THROW(eliza_.enableEmotionalTracking(true));
+    EXPECT_NO_THROW(eliza_.enableKnowledgeIntegration(false));
+    EXPECT_NO_THROW(eliza_.enableCharacterPersonality(false));
 }
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(ElizaTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
+TEST(ConversationContext, AddAndSummarize) {
+    ConversationContext ctx;
+    ctx.addTurn(ConversationTurn("hello", "hi there"));
+    ctx.addTurn(ConversationTurn("how are you?", "I am well"));
+    auto summary = ctx.getContextSummary();
+    EXPECT_FALSE(summary.empty());
 }
 
-TEST_F(ElizaTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
+TEST(ConversationContext, SessionDataRoundtrip) {
+    ConversationContext ctx;
+    ctx.setSessionData("topic", "math");
+    EXPECT_EQ(ctx.getSessionData("topic"), "math");
 }
 
-TEST_F(ElizaTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(ElizaTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(ElizaTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(ElizaTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(ElizaTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(ElizaTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(ElizaTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(ElizaTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(ElizaTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(ElizaTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST(EmotionalStateTracker, UpdateAndDominant) {
+    EmotionalStateTracker t;
+    EXPECT_NO_THROW(t.updateFromInput("I am very happy today"));
+    EXPECT_NO_THROW((void)t.getDominantEmotion());
 }
