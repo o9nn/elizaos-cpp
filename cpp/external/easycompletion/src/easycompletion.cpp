@@ -534,4 +534,67 @@ CompletionResponse function_completion(
     return client.function_completion(text, functions, func_call);
 }
 
+bool EasyCompletionClient::validate_functions(
+    const CompletionResponse& response,
+    const std::vector<FunctionDefinition>& functions,
+    const std::string& expected_function) {
+
+    if (response.function_name.empty()) {
+        return false;
+    }
+
+    // Find the matching function definition
+    const FunctionDefinition* matchingFunc = nullptr;
+    for (const auto& func : functions) {
+        if (func.name == response.function_name) {
+            matchingFunc = &func;
+            break;
+        }
+    }
+
+    if (!matchingFunc) {
+        return false; // Called function not in the provided list
+    }
+
+    // When a specific function was requested (not "auto"), verify it matches
+    if (!expected_function.empty() && expected_function != "auto" &&
+        response.function_name != expected_function) {
+        return false;
+    }
+
+    // Verify all required properties are present in the response arguments
+    for (const auto& required_prop : matchingFunc->required_properties) {
+        if (response.arguments.find(required_prop) == response.arguments.end()) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::unordered_map<std::string, std::string> EasyCompletionClient::parse_arguments(
+    const std::string& args_json) {
+
+    std::unordered_map<std::string, std::string> result;
+    if (args_json.empty()) {
+        return result;
+    }
+
+    try {
+        json parsed = json::parse(args_json);
+        for (auto it = parsed.begin(); it != parsed.end(); ++it) {
+            if (it.value().is_string()) {
+                result[it.key()] = it.value().get<std::string>();
+            } else {
+                // Serialise non-string values (numbers, booleans, objects, arrays) as strings
+                result[it.key()] = it.value().dump();
+            }
+        }
+    } catch (const std::exception&) {
+        // Malformed JSON – return whatever was parsed so far
+    }
+
+    return result;
+}
+
 } // namespace elizaos
