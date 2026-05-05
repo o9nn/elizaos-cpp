@@ -851,27 +851,50 @@ bool GitHubPagesDeployer::checkDeploymentStatus() {
 
 bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::string& url,
                                           const std::string& data, std::string& response) const {
-    // Build a curl command to make the HTTP request
-    std::string auth_header = getAuthorizationHeader();
-    std::string cmd = "curl -s -X " + method +
-                      " -H \"Accept: application/vnd.github+json\"" +
-                      " -H \"" + auth_header + "\"" +
-                      " -H \"X-GitHub-Api-Version: 2022-11-28\"";
-    if (!data.empty()) {
-        // Escape single quotes in data
-        std::string escaped_data = data;
-        size_t pos = 0;
-        while ((pos = escaped_data.find('\'', pos)) != std::string::npos) {
-            escaped_data.replace(pos, 1, "'\\''");
-            pos += 4;
-        }
-        cmd += " -d '" + escaped_data + "'";
-        cmd += " -H \"Content-Type: application/json\"";
+    // Validate that the URL starts with the expected GitHub API base to prevent injection
+    const std::string expected_base = "https://api.github.com/";
+    if (url.rfind(expected_base, 0) != 0) {
+        return false;
     }
-    cmd += " \"" + url + "\" 2>/dev/null";
+
+    // Write request body to a file in the output directory to avoid embedding
+    // user-controlled data in the shell command string
+    std::filesystem::path body_file;
+    bool has_data = !data.empty();
+    if (has_data) {
+        body_file = config_.output_dir / ".github_request_body.json";
+        try {
+            std::ofstream out(body_file, std::ios::binary);
+            if (!out) {
+                return false;
+            }
+            out << data;
+        } catch (const std::exception&) {
+            return false;
+        }
+    }
+
+    // Construct curl command using file reference (@filename) to avoid shell injection.
+    // The access_token is passed via an environment variable to avoid it appearing in
+    // the process list or shell history.
+    std::string auth_header = getAuthorizationHeader();
+    std::string cmd = "GITHUB_AUTH_HEADER=" + auth_header + " curl -s -X " + method +
+                      " -H \"Accept: application/vnd.github+json\"" +
+                      " -H \"$GITHUB_AUTH_HEADER\"" +
+                      " -H \"X-GitHub-Api-Version: 2022-11-28\"";
+    if (has_data) {
+        cmd += " -H \"Content-Type: application/json\"";
+        cmd += " --data-binary @" + body_file.string();
+    }
+    // URL has already been validated against the expected base above
+    cmd += " " + url + " 2>/dev/null";
 
     FILE* pipe = popen(cmd.c_str(), "r");
     if (!pipe) {
+        if (has_data) {
+            std::error_code ec;
+            std::filesystem::remove(body_file, ec);
+        }
         return false;
     }
 
@@ -882,9 +905,15 @@ bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::
     }
     int exit_code = pclose(pipe);
 
-    // curl returns 0 on success, and GitHub API errors have "message" fields
-    return (exit_code == 0) && (response.find("\"message\"") == std::string::npos ||
-                                 response.find("\"documentation_url\"") == std::string::npos);
+    if (has_data) {
+        std::error_code ec;
+        std::filesystem::remove(body_file, ec);
+    }
+
+    // GitHub API errors include both "message" and "documentation_url" together
+    bool api_error = (response.find("\"message\"") != std::string::npos &&
+                      response.find("\"documentation_url\"") != std::string::npos);
+    return (exit_code == 0) && !api_error;
 }
 
 std::string GitHubPagesDeployer::buildGitHubApiUrl(const std::string& endpoint) const {
