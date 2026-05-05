@@ -16,6 +16,27 @@
 
 namespace elizaos {
 
+namespace {
+    // Platform character limits
+    constexpr size_t TWITTER_MAX_CONTENT_LENGTH   = 240;
+    constexpr size_t TWITTER_MAX_TOTAL_LENGTH      = 280;
+    constexpr size_t LINKEDIN_MAX_LENGTH           = 500;
+    constexpr size_t DISCORD_MAX_LENGTH            = 1800;
+
+    // Time/scheduling constants
+    constexpr int HOURS_PER_DAY                    = 24;
+    constexpr int DEFAULT_START_HOUR               = 9;
+    constexpr int DEFAULT_END_HOUR                 = 17;
+    constexpr int DEFAULT_POST_HOUR                = 9;
+
+    // Relevance decay constants
+    constexpr double RELEVANCE_DECAY_HALFLIFE_DAYS = 7.0;
+
+    // Coordination loop constants
+    constexpr int DEFAULT_BACKUP_INTERVAL_TICKS      = 60;
+    constexpr int SCHEDULED_TASK_INTERVAL_TICKS      = 60;
+} // anonymous namespace
+
 // ============================================================================
 // DeveloperRelationsAgent - Missing Methods
 // ============================================================================
@@ -213,7 +234,8 @@ void DeveloperRelationsAgent::updateTechnicalKnowledge() {
     for (auto& [topic, entry] : knowledgeBase_) {
         auto age = std::chrono::duration_cast<std::chrono::hours>(now - entry.lastUpdated).count();
         // Decay relevance over time (half-life ~7 days)
-        entry.relevanceScore *= std::exp(-static_cast<double>(age) / (7.0 * 24.0));
+        entry.relevanceScore *= std::exp(-static_cast<double>(age) /
+                                         (RELEVANCE_DECAY_HALFLIFE_DAYS * static_cast<double>(HOURS_PER_DAY)));
         if (entry.relevanceScore < 0.01) entry.relevanceScore = 0.01;
     }
 }
@@ -889,7 +911,7 @@ bool ProjectManagerAgent::isInWorkingHours(
     }
 
     // Check hour range (simplified – just check hour number)
-    int startHour = 9, endHour = 17;
+    int startHour = DEFAULT_START_HOUR, endHour = DEFAULT_END_HOUR;
     if (!avail.workHours.start.empty()) {
         try { startHour = std::stoi(avail.workHours.start.substr(0, 2)); } catch (...) {}
     }
@@ -979,8 +1001,10 @@ std::string SocialMediaManagerAgent::optimizeContentForPlatform(
 
     switch (platform) {
         case PlatformType::TWITTER:
-            // Twitter: 280 chars, punchy, use hashtags
-            if (optimized.length() > 240) optimized = optimized.substr(0, 237) + "...";
+            // Twitter: max content chars, reserve space for hashtag
+            if (optimized.length() > TWITTER_MAX_CONTENT_LENGTH) {
+                optimized = optimized.substr(0, TWITTER_MAX_CONTENT_LENGTH - 3) + "...";
+            }
             optimized += " #ElizaOS";
             break;
         case PlatformType::LINKEDIN:
@@ -990,11 +1014,15 @@ std::string SocialMediaManagerAgent::optimizeContentForPlatform(
             }
             break;
         case PlatformType::FACEBOOK:
-            if (optimized.length() > 500) optimized = optimized.substr(0, 497) + "...";
+            if (optimized.length() > LINKEDIN_MAX_LENGTH) {
+                optimized = optimized.substr(0, LINKEDIN_MAX_LENGTH - 3) + "...";
+            }
             break;
         case PlatformType::DISCORD:
             // Discord supports markdown
-            if (optimized.length() > 1800) optimized = optimized.substr(0, 1797) + "...";
+            if (optimized.length() > DISCORD_MAX_LENGTH) {
+                optimized = optimized.substr(0, DISCORD_MAX_LENGTH - 3) + "...";
+            }
             break;
         default:
             break;
@@ -1025,7 +1053,7 @@ std::string SocialMediaManagerAgent::generateCaption(
 void SocialMediaManagerAgent::createContentCalendar(
     const std::vector<std::string>& topics, std::chrono::hours planningWindow) {
     auto now = std::chrono::system_clock::now();
-    size_t postsPerTopic = planningWindow.count() / 24; // 1 post per day per topic
+    size_t postsPerTopic = planningWindow.count() / static_cast<size_t>(HOURS_PER_DAY); // 1 post per day per topic
 
     std::vector<PlatformType> allPlatforms = {
         PlatformType::TWITTER, PlatformType::LINKEDIN, PlatformType::DISCORD};
@@ -1033,7 +1061,7 @@ void SocialMediaManagerAgent::createContentCalendar(
     size_t slotOffset = 0;
     for (const auto& topic : topics) {
         for (size_t i = 0; i < std::max(size_t(1), postsPerTopic / topics.size()); ++i) {
-            auto publishTime = now + std::chrono::hours(slotOffset * 24 + 9); // 9 AM each day
+            auto publishTime = now + std::chrono::hours(slotOffset * HOURS_PER_DAY + DEFAULT_POST_HOUR); // morning each day
             std::string generatedText = generateContent(topic, ContentType::TEXT_POST,
                                                         allPlatforms[slotOffset % allPlatforms.size()]);
             UUID id = createContent(ContentType::TEXT_POST, topic, generatedText, allPlatforms);
@@ -1567,7 +1595,7 @@ void TheOrgManager::scheduleAutoBackup(std::chrono::minutes interval) {
 // Private helpers
 void TheOrgManager::coordinationLoop() {
     int backupTickCount = 0;
-    int backupIntervalTicks = 60; // default 60 iterations = ~1 min at 1s sleep
+    int backupIntervalTicks = DEFAULT_BACKUP_INTERVAL_TICKS;
 
     while (running_) {
         // Check auto-backup setting
@@ -1625,7 +1653,7 @@ void TheOrgManager::executeScheduledTasks() {
     static size_t tick = 0;
     ++tick;
 
-    if (tick % 60 == 0) { // every ~60 seconds
+    if (tick % SCHEDULED_TASK_INTERVAL_TICKS == 0) { // every ~60 seconds
         for (const auto& [id, agent] : agents_) {
             // Ask each agent to perform its scheduled activity
             agent->processMessage("scheduled_tick", "manager");
