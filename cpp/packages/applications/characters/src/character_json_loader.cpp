@@ -419,4 +419,70 @@ float CharacterJsonLoader::getFloatFromJson(const JsonValue& json, const std::st
     return defaultValue;
 }
 
+PersonalityMatrix CharacterJsonLoader::parsePersonalityFromJson(const JsonValue& json) {
+    PersonalityMatrix pm;
+    pm.openness          = getFloatFromJson(json, "openness",          0.5f);
+    pm.conscientiousness = getFloatFromJson(json, "conscientiousness", 0.5f);
+    pm.extraversion      = getFloatFromJson(json, "extraversion",      0.5f);
+    pm.agreeableness     = getFloatFromJson(json, "agreeableness",     0.5f);
+    pm.neuroticism       = getFloatFromJson(json, "neuroticism",       0.5f);
+    pm.creativity        = getFloatFromJson(json, "creativity",        0.5f);
+    pm.empathy           = getFloatFromJson(json, "empathy",           0.5f);
+    pm.assertiveness     = getFloatFromJson(json, "assertiveness",     0.5f);
+    pm.curiosity         = getFloatFromJson(json, "curiosity",         0.5f);
+    pm.loyalty           = getFloatFromJson(json, "loyalty",           0.5f);
+    return pm;
+}
+
+CommunicationStyle CharacterJsonLoader::parseCommunicationStyleFromJson(const JsonValue& json) {
+    CommunicationStyle cs;
+    cs.tone        = getStringFromJson(json, "tone",       "neutral");
+    cs.vocabulary  = getStringFromJson(json, "vocabulary", "standard");
+    cs.verbosity   = getFloatFromJson(json, "verbosity",   0.5f);
+    cs.formality   = getFloatFromJson(json, "formality",   0.5f);
+    cs.emotionality = getFloatFromJson(json, "emotionality", 0.5f);
+    cs.catchphrases    = getStringArrayFromJson(json, "catchphrases");
+    cs.speakingPatterns = getStringArrayFromJson(json, "speakingPatterns");
+    return cs;
+}
+
+CharacterBackground CharacterJsonLoader::parseBackgroundFromJson(const JsonValue& json) {
+    CharacterBackground bg;
+    bg.backstory   = getStringFromJson(json, "backstory",   "");
+    bg.origin      = getStringFromJson(json, "origin",      "");
+    bg.occupation  = getStringFromJson(json, "occupation",  "");
+    bg.relationships = getStringArrayFromJson(json, "relationships");
+    bg.experiences   = getStringArrayFromJson(json, "experiences");
+    bg.goals         = getStringArrayFromJson(json, "goals");
+    bg.fears         = getStringArrayFromJson(json, "fears");
+    bg.motivations   = getStringArrayFromJson(json, "motivations");
+    return bg;
+}
+
+std::vector<CharacterTrait> CharacterJsonLoader::parseTraitsFromJson(const JsonValue& json) {
+    std::vector<CharacterTrait> traits;
+    auto it = json.find("traits");
+    if (it == json.end()) {
+        return traits;
+    }
+    // JsonValue is std::unordered_map<std::string, std::any>; traits entry is
+    // expected to hold a nested map keyed by trait name.
+    try {
+        auto traitMap = std::any_cast<JsonValue>(it->second);
+        for (const auto& [traitName, traitVal] : traitMap) {
+            CharacterTrait trait(traitName, traitName, TraitCategory::PERSONALITY, TraitValueType::NUMERIC);
+            try {
+                float val = std::any_cast<float>(traitVal);
+                trait.setNumericValue(val);
+            } catch (...) {
+                trait.setNumericValue(0.5f);
+            }
+            traits.push_back(trait);
+        }
+    } catch (...) {
+        // Trait data in unexpected format – return empty list
+    }
+    return traits;
+}
+
 } // namespace elizaos
