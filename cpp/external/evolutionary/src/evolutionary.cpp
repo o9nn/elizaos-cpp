@@ -455,6 +455,41 @@ std::vector<Individual> Population::eliteSelection(size_t numElite) const {
     return elite;
 }
 
+std::vector<Individual> Population::rouletteWheelSelection(size_t numSelected) const {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    std::vector<Individual> selected;
+    if (individuals_.empty() || numSelected == 0) return selected;
+
+    // Build cumulative fitness array (shift to non-negative)
+    double minScore = 0.0;
+    for (const auto& ind : individuals_) {
+        double s = ind.getFitness().getOverallScore();
+        if (s < minScore) minScore = s;
+    }
+    double shift = (minScore < 0.0) ? -minScore + 1e-9 : 0.0;
+
+    std::vector<double> cumulative;
+    cumulative.reserve(individuals_.size());
+    double total = 0.0;
+    for (const auto& ind : individuals_) {
+        total += ind.getFitness().getOverallScore() + shift;
+        cumulative.push_back(total);
+    }
+
+    std::mt19937 rng{std::random_device{}()};
+    std::uniform_real_distribution<double> dist(0.0, total);
+
+    selected.reserve(numSelected);
+    for (size_t i = 0; i < numSelected; ++i) {
+        double r = dist(rng);
+        auto it = std::lower_bound(cumulative.begin(), cumulative.end(), r);
+        size_t idx = (it == cumulative.end()) ? individuals_.size() - 1
+                                              : static_cast<size_t>(it - cumulative.begin());
+        selected.push_back(individuals_[idx]);
+    }
+    return selected;
+}
+
 void Population::sort() {
     std::lock_guard<std::mutex> lock(populationMutex_);
     
@@ -835,6 +870,23 @@ std::shared_ptr<Population> EvolutionaryOptimizer::getPopulation() const {
         copy->addIndividual(population_.getIndividual(i));
     }
     return copy;
+}
+
+Individual EvolutionaryOptimizer::optimize(const FitnessFunction& fitnessFunc,
+                                            const State& state,
+                                            const std::vector<Individual>& initialPopulation) {
+    // Seed the population with the provided individuals then run normally
+    for (const auto& ind : initialPopulation) {
+        population_.addIndividual(ind);
+    }
+    return optimize(fitnessFunc, state);
+}
+
+std::future<Individual> EvolutionaryOptimizer::optimizeAsync(
+        const FitnessFunction& fitnessFunc, const State& state) {
+    return std::async(std::launch::async, [this, fitnessFunc, state]() {
+        return optimize(fitnessFunc, state);
+    });
 }
 
 } // namespace elizaos
