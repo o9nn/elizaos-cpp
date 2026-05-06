@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_CYPRESS_PLUGINS_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_CYPRESS_PLUGINS_INDEX_H
+#include "core.h"
+#include "child_process.h"
+#include "util.h"
+
+extern object execAsync;
+#endif

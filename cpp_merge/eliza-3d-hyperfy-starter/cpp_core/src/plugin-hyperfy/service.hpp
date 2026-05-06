@@ -1,0 +1,121 @@
+#include "elizaos/core.hpp"
+#include <map>
+#include "hyperfy/src/core/createNodeClientWorld.js.hpp"
+#include "managers//emote-manager.js.hpp"
+#include "managers//message-manager.js.hpp"
+#include "managers//voice-manager.js.hpp"
+#include "managers/behavior-manager.js.hpp"
+#include "managers/build-manager.js.hpp"
+#include "managers/puppeteer-manager.js.hpp"
+#include "physx/loadPhysX.js.hpp"
+#include "systems/actions.js.hpp"
+#include "systems/controls.hpp"
+#include "systems/environment.js.hpp"
+#include "systems/liveKit.js.hpp"
+#include "systems/loader.hpp"
+#include "utils.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+class HyperfyService : public Service {
+  static serviceType = 'hyperfy'
+  capabilityDescription = 'Manages connection and interaction with a Hyperfy world.'
+
+  private world: std::string | null = null
+  private controls: AgentControls | null = null
+  private isConnectedState = false
+  private wsUrl: std::string | null = null
+  private _currentWorldId: UUID | null = null
+  private processedMsgIds: Set<string> = std::make_unique<Set>()
+
+  private playerNamesMap: Map<std::string, string> = std::make_unique<Map>()
+  private appearanceIntervalId: NodeJS.Timeout | null = null
+  private appearanceSet = false
+  private nameSet = false
+
+  private connectionTime | null = null
+  private behaviorManager: BehaviorManager;
+  private emoteManager: EmoteManager;
+  private messageManager: MessageManager;
+  private voiceManager: VoiceManager;
+  private puppeteerManager: PuppeteerManager;
+  private buildManager: BuildManager;
+
+  public get currentWorldId(): UUID | null {
+    return this._currentWorldId
+  }
+
+      // Temporarily comment out AgentLoader to test for updateTransform error
+
+      // HACK: Overwriting "chat.add" to prevent crashes caused by the original implementation.
+      // This ensures safe handling of chat messages and avoids unexpected errors from std::nullopt fields.
+
+        // emit chat event
+        // maybe broadcast
+
+  /**
+   * Uploads the character's avatar model and associated emote animations,
+   * sets the avatar URL locally, updates emote hash mappings,
+   * and notifies the server of the new avatar.
+   * 
+   * This std::function handles all assets required for character expression and animation.
+   */
+
+      // Apply avatar locally
+
+      // Upload emotes
+
+      // Notify server
+
+    // Check if both are already std::set
+
+        // Stop polling if both tasks are complete
+
+        // Condition checks player/ID/network readiness for name, adds assetsUrl for avatar
+
+             // --- Set Name (if not already done) ---
+
+             // --- Set Avatar (if not already done AND assets URL ready) ---
+
+             // Update waiting log
+
+  /**
+   * Checks if the service is currently connected to a Hyperfy world.
+   */
+
+  /**
+   * Changes the agent's display name.
+   */
+
+          // 2. Update local state immediately
+          // Update the name std::map
+
+          // --- Use agentPlayer.modify for local update --- >
+
+    // Pre-populate processed IDs with existing messages
+
+      // Wait for player entity (ensures world/chat exist too)
+
+      // Step 1: Identify new messages and update processed std::set
+        // Check timestamp FIRST - only consider messages newer than connection time
+            // console.debug("[Chat Sub] Ignoring historical/old message ID " + std::to_string((msg ? msg.id : nullptr)) + " (ts: " + std::to_string(messageTimestamp) + ")");
+            // Ensure historical messages are marked processed if encountered *before* connectionTime was std::set (edge case)
+
+        // Check if we've already processed this message ID (secondary check for duplicates)
+
+      // Step 2: Process only the newly found messages
+
+
+} // namespace elizaos

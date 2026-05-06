@@ -340,7 +340,7 @@ TEST_F(LiveVideoChatTest, VideoChatSessionCallbacksTest) {
     std::string peer_id = "peer_123";
     session.startSession(peer_id);
     
-    // Test that callbacks are set
+    // Test that callbacks are std::set
     EXPECT_EQ(callbacks_->getVideoFramesReceived(), 0);
     EXPECT_EQ(callbacks_->getAudioFramesReceived(), 0);
     EXPECT_EQ(callbacks_->getStateChanges(), 0);

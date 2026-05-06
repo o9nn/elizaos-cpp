@@ -96,21 +96,25 @@ private:
                      "Testing memory storage, retrieval, embedding search, and persistence");
         
         // Create test memories
-        auto memory1 = std::make_shared<Memory>();
-        memory1->userId = UUID::generate();
-        memory1->agentId = state_->getAgentId();
-        memory1->roomId = UUID::generate();
-        memory1->content = "This is a test memory about AI capabilities";
-        memory1->createdAt = std::chrono::system_clock::now();
-        memory1->embedding = EmbeddingVector(384, 0.5f); // Test embedding
+        UUID userId = generateUUID();
+        UUID roomId = generateUUID();
+        auto memory1 = std::make_shared<Memory>(
+            generateUUID(),
+            "This is a test memory about AI capabilities",
+            userId,
+            state_->getAgentId()
+        );
+        memory1->setRoomId(roomId);
+        memory1->setEmbedding(EmbeddingVector(384, 0.5f)); // Test embedding
         
-        auto memory2 = std::make_shared<Memory>();
-        memory2->userId = memory1->userId;
-        memory2->agentId = state_->getAgentId();
-        memory2->roomId = memory1->roomId;
-        memory2->content = "Another memory about performance testing";
-        memory2->createdAt = std::chrono::system_clock::now();
-        memory2->embedding = EmbeddingVector(384, 0.3f);
+        auto memory2 = std::make_shared<Memory>(
+            generateUUID(),
+            "Another memory about performance testing",
+            userId,
+            state_->getAgentId()
+        );
+        memory2->setRoomId(roomId);
+        memory2->setEmbedding(EmbeddingVector(384, 0.3f));
         
         // Test memory storage
         UUID id1 = memory_->createMemory(memory1);
@@ -382,11 +386,12 @@ private:
         auto start = std::chrono::high_resolution_clock::now();
         
         for (int i = 0; i < 100; ++i) {
-            auto memory = std::make_shared<Memory>();
-            memory->userId = UUID::generate();
-            memory->agentId = state_->getAgentId();
-            memory->content = "Benchmark memory " + std::to_string(i);
-            memory->createdAt = std::chrono::system_clock::now();
+            auto memory = std::make_shared<Memory>(
+                generateUUID(),
+                "Benchmark memory " + std::to_string(i),
+                generateUUID(),
+                state_->getAgentId()
+            );
             memory_->createMemory(memory);
         }
         

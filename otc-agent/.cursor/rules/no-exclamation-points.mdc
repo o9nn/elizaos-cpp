@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+description: Avoid unescaped exclamation points in shell commands
+---
+
+Never use `!` in command strings. Unescaped `!` breaks shell commands (e.g., "Build successful!" fails).

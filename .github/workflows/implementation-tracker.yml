@@ -26,8 +26,9 @@ jobs:
         echo "=== ElizaOS C++ Implementation Analysis ==="
         
         # Count implementations by analyzing code content
-        TOTAL_MODULES=$(find cpp -mindepth 1 -maxdepth 1 -type d | wc -l)
-        PLACEHOLDER_COUNT=$(find cpp -name "placeholder.cpp" | wc -l)
+        # Modules live under cpp/packages/<category>/<module>/
+        TOTAL_MODULES=$(find cpp/packages -mindepth 2 -maxdepth 2 -type d | wc -l)
+        PLACEHOLDER_COUNT=$(find cpp/packages -name "placeholder.cpp" | wc -l)
         
         # Identify fully implemented modules (significant code and tests)
         echo "🔍 Analyzing module implementations..."
@@ -35,13 +36,8 @@ jobs:
         PARTIAL=()
         PLACEHOLDER=()
         
-        for module_dir in cpp/*/; do
+        for module_dir in cpp/packages/*/*/; do
           module_name=$(basename "$module_dir")
-          
-          # Skip test directory
-          if [ "$module_name" = "tests" ]; then
-            continue
-          fi
           
           if [ -f "$module_dir/src/placeholder.cpp" ]; then
             # Check if placeholder is the only implementation
@@ -52,10 +48,17 @@ jobs:
               PLACEHOLDER+=("$module_name")
             fi
           else
-            # No placeholder file, likely fully implemented
-            cpp_files=$(find "$module_dir/src" -name "*.cpp" 2>/dev/null | wc -l)
-            if [ "$cpp_files" -gt 0 ]; then
+            # No placeholder file; count real implementation lines.
+            # A module with >=100 lines of C++ source is considered fully
+            # implemented; >0 but <100 lines is considered partial.
+            total_lines=$(find "$module_dir/src" -name "*.cpp" 2>/dev/null \
+              | xargs -r wc -l 2>/dev/null \
+              | tail -1 | awk '{print $1}')
+            total_lines=${total_lines:-0}
+            if [ "$total_lines" -ge 100 ]; then
               IMPLEMENTED+=("$module_name")
+            elif [ "$total_lines" -gt 0 ]; then
+              PARTIAL+=("$module_name")
             fi
           fi
         done
@@ -64,7 +67,12 @@ jobs:
         PARTIAL_COUNT=${#PARTIAL[@]}
         PLACEHOLDER_ONLY_COUNT=${#PLACEHOLDER[@]}
         
-        COMPLETION_PCT=$((IMPL_COUNT * 100 / (IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_ONLY_COUNT)))
+        TOTAL_COUNT=$((IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_ONLY_COUNT))
+        if [ "$TOTAL_COUNT" -eq 0 ]; then
+          COMPLETION_PCT=0
+        else
+          COMPLETION_PCT=$((IMPL_COUNT * 100 / TOTAL_COUNT))
+        fi
         
         echo "📊 Current Status:"
         echo "   ✅ Fully Implemented: $IMPL_COUNT"
@@ -87,6 +95,17 @@ jobs:
     
     - name: Generate Progress Report
       run: |
+        TOTAL_COUNT=$((IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_COUNT))
+        if [ "$TOTAL_COUNT" -eq 0 ]; then
+          FULLY_PCT=0
+          PARTIAL_PCT=0
+          PLACEHOLDER_PCT=0
+        else
+          FULLY_PCT=$((IMPL_COUNT * 100 / TOTAL_COUNT))
+          PARTIAL_PCT=$((PARTIAL_COUNT * 100 / TOTAL_COUNT))
+          PLACEHOLDER_PCT=$((PLACEHOLDER_COUNT * 100 / TOTAL_COUNT))
+        fi
+        
         cat > progress_report.md << EOF
         # 📊 ElizaOS C++ Implementation Progress Report
         
@@ -97,10 +116,10 @@ jobs:
         
         | Category | Count | Percentage |
         |----------|-------|------------|
-        | ✅ Fully Implemented | $IMPL_COUNT | $((IMPL_COUNT * 100 / (IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_COUNT)))% |
-        | 🟡 Partially Implemented | $PARTIAL_COUNT | $((PARTIAL_COUNT * 100 / (IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_COUNT)))% |
-        | 🚧 Placeholder Only | $PLACEHOLDER_COUNT | $((PLACEHOLDER_COUNT * 100 / (IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_COUNT)))% |
-        | **Total Modules** | **$((IMPL_COUNT + PARTIAL_COUNT + PLACEHOLDER_COUNT))** | **100%** |
+        | ✅ Fully Implemented | $IMPL_COUNT | $FULLY_PCT% |
+        | 🟡 Partially Implemented | $PARTIAL_COUNT | $PARTIAL_PCT% |
+        | 🚧 Placeholder Only | $PLACEHOLDER_COUNT | $PLACEHOLDER_PCT% |
+        | **Total Modules** | **$TOTAL_COUNT** | **100%** |
         
         ## 📈 Overall Completion: $COMPLETION_PCT%
         

@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC___TESTS___AUDIO_ACTIONS_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC___TESTS___AUDIO_ACTIONS_TEST_H
+#include "core.hpp"
+#include "bun:test.h"
+#include "../action-audio.h"
+// External dependency removed
+
+#endif

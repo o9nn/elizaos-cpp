@@ -1,0 +1,676 @@
+--------------------------------------------------------------------------------
+-- ElizaOS C++ Operations Formal Specification
+-- Z++ Specification Language
+-- Version: 1.0.0
+-- Date: December 12, 2024
+--------------------------------------------------------------------------------
+
+-- This specification formalizes the operations of the ElizaOS C++ framework,
+-- including state transformations, preconditions, and postconditions.
+
+-- Import previous specifications
+-- include data_model.zpp
+-- include system_state.zpp
+
+--------------------------------------------------------------------------------
+-- AGENT LIFECYCLE OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Create a new agent
+schema CreateAgent
+  ΔElizaOSSystemState
+  config?: AgentConfig
+  agentId!: AgentId
+where
+  -- Preconditions
+  config?.agentId ∉ dom agents
+  
+  -- Create new agent state
+  ∃ newAgentState: AgentState | 
+    newAgentState.config = config? ∧
+    newAgentState.status = IDLE ∧
+    newAgentState.currentMemories = ⟨⟩ ∧
+    newAgentState.actors = ⟨⟩ ∧
+    newAgentState.goals = ⟨⟩ ∧
+    newAgentState.recentMessages = ⟨⟩ ∧
+    newAgentState.characterProfile = ∅ ∧
+    newAgentState.conversationContexts = ∅ ∧
+    newAgentState.knowledgeReferences = ∅ ∧
+    newAgentState.activeTaskIds = ∅ ∧
+    newAgentState.cognitiveLoad = 0.0 ∧
+    newAgentState.attentionFocus = ∅ •
+    
+    agents' = agents ∪ {config?.agentId ↦ newAgentState}
+  
+  -- Output agent ID
+  agentId! = config?.agentId
+  
+  -- Other state unchanged
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Start agent loop
+schema StartAgentLoop
+  ΔElizaOSSystemState
+  agentId?: AgentId
+  steps?: ℕ
+  interval?: ℝ
+where
+  -- Preconditions
+  agentId? ∈ dom agents
+  steps? > 0
+  interval? ≥ 0
+  
+  -- Create or update agent loop state
+  ∃ loopState: AgentLoopState |
+    loopState.agentId = agentId? ∧
+    loopState.running = true ∧
+    loopState.paused = false ∧
+    loopState.stepIndex = 0 ∧
+    loopState.totalSteps = steps? ∧
+    loopState.intervalSeconds = interval? ∧
+    loopState.errorCount = 0 ∧
+    loopState.executionHistory = ⟨⟩ •
+    
+    agentLoops' = agentLoops ⊕ {agentId? ↦ loopState}
+  
+  -- Increment thread count
+  threadCount' = threadCount + 1
+  
+  -- Other state unchanged
+  agents' = agents
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Stop agent loop
+schema StopAgentLoop
+  ΔElizaOSSystemState
+  agentId?: AgentId
+where
+  -- Preconditions
+  agentId? ∈ dom agentLoops
+  (agentLoops(agentId?)).running = true
+  
+  -- Update loop state
+  agentLoops' = agentLoops ⊕ 
+    {agentId? ↦ (agentLoops(agentId?))⟨running := false⟩}
+  
+  -- Decrement thread count
+  threadCount' = threadCount - 1
+  
+  -- Other state unchanged
+  agents' = agents
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- MEMORY OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Create a new memory
+schema CreateMemory
+  ΔElizaOSSystemState
+  memory?: Memory
+  tableName?: Content
+  unique?: 𝔹
+  memoryId!: UUID
+where
+  -- Preconditions
+  tableName? ∈ dom (memorySystem.tables)
+  #(memory?.content) > 0
+  
+  -- If unique, check for duplicates
+  unique? ⇒ 
+    ∀ m: ran (((memorySystem.tables)(tableName?)).memories) •
+      m.content ≠ memory?.content ∨ m.entityId ≠ memory?.entityId
+  
+  -- Add memory to table
+  ∃ table: MemoryTableState |
+    table = (memorySystem.tables)(tableName?) ∧
+    memory?.id ∉ dom (table.memories) •
+    
+    memorySystem' = memorySystem⟨
+      tables := (memorySystem.tables) ⊕ 
+        {tableName? ↦ table⟨
+          memories := table.memories ∪ {memory?.id ↦ memory?}
+        ⟩},
+      totalMemories := memorySystem.totalMemories + 1
+    ⟩
+  
+  -- Output memory ID
+  memoryId! = memory?.id
+  
+  -- Increment total memories created
+  totalMemoriesCreated' = totalMemoriesCreated + 1
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Retrieve memory by ID
+schema GetMemoryById
+  ΞElizaOSSystemState
+  memoryId?: UUID
+  tableName?: Content
+  memory!: ℙ Memory
+where
+  -- Preconditions
+  tableName? ∈ dom (memorySystem.tables)
+  
+  -- Retrieve memory if exists
+  memoryId? ∈ dom (((memorySystem.tables)(tableName?)).memories) ⇒
+    memory! = {(((memorySystem.tables)(tableName?)).memories)(memoryId?)}
+  
+  -- Return empty if not found
+  memoryId? ∉ dom (((memorySystem.tables)(tableName?)).memories) ⇒
+    memory! = ∅
+end
+
+-- Search memories by embedding similarity
+schema SearchMemoriesByEmbedding
+  ΞElizaOSSystemState
+  embedding?: EmbeddingVector
+  tableName?: Content
+  threshold?: ℝ
+  limit?: ℕ
+  results!: seq Memory
+where
+  -- Preconditions
+  tableName? ∈ dom (memorySystem.tables)
+  #embedding? = memorySystem.embeddingDimension
+  0 ≤ threshold? ≤ 1
+  limit? > 0
+  
+  -- Find similar memories
+  ∃ candidates: ℙ (Memory × ℝ) |
+    -- For each memory with embedding, compute similarity
+    candidates = {m: Memory; sim: ℝ |
+      ∃ mid: dom (((memorySystem.tables)(tableName?)).memories) •
+        m = (((memorySystem.tables)(tableName?)).memories)(mid) ∧
+        m.embedding ≠ ∅ ∧
+        sim = CosineSimilarity(embedding?, ⋃ m.embedding) ∧
+        sim ≥ threshold?
+    } •
+    
+    -- Sort by similarity (descending) and take top limit?
+    results! = TakeTop(SortBySimilarity(candidates), limit?)
+end
+
+-- Delete memory
+schema DeleteMemory
+  ΔElizaOSSystemState
+  memoryId?: UUID
+  tableName?: Content
+where
+  -- Preconditions
+  tableName? ∈ dom (memorySystem.tables)
+  memoryId? ∈ dom (((memorySystem.tables)(tableName?)).memories)
+  
+  -- Remove memory from table
+  ∃ table: MemoryTableState |
+    table = (memorySystem.tables)(tableName?) •
+    
+    memorySystem' = memorySystem⟨
+      tables := (memorySystem.tables) ⊕ 
+        {tableName? ↦ table⟨
+          memories := {memoryId?} ⩤ table.memories
+        ⟩},
+      totalMemories := memorySystem.totalMemories - 1
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- COMMUNICATION OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Register an agent in the communication system
+schema RegisterAgent
+  ΔElizaOSSystemState
+  agentId?: AgentId
+where
+  -- Preconditions
+  agentId? ∈ dom agents
+  agentId? ∉ dom (communicationSystem.agents)
+  
+  -- Create participation state
+  ∃ participation: AgentParticipationState |
+    participation.agentId = agentId? ∧
+    participation.subscribedServers = ∅ ∧
+    participation.subscribedChannels = ∅ ∧
+    participation.unreadMessages = ∅ •
+    
+    communicationSystem' = communicationSystem⟨
+      agents := communicationSystem.agents ∪ {agentId? ↦ participation}
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Send a message
+schema SendMessage
+  ΔElizaOSSystemState
+  message?: Message
+  messageId!: UUID
+where
+  -- Preconditions
+  message?.sender ∈ dom (communicationSystem.agents)
+  message?.receiver ∈ dom (communicationSystem.agents)
+  message?.channelId ∈ dom (communicationSystem.channels)
+  #(message?.content) > 0
+  
+  -- Add to message archive
+  communicationSystem' = communicationSystem⟨
+    messageArchive := communicationSystem.messageArchive ∪ 
+      {message?.id ↦ message?},
+    pendingMessages := communicationSystem.pendingMessages ⁀ ⟨message?⟩
+  ⟩
+  
+  -- Output message ID
+  messageId! = message?.id
+  
+  -- Increment total messages
+  totalProcessedMessages' = totalProcessedMessages + 1
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Broadcast message to channel
+schema BroadcastMessage
+  ΔElizaOSSystemState
+  message?: Message
+  channelId?: ChannelId
+where
+  -- Preconditions
+  channelId? ∈ dom (communicationSystem.channels)
+  message?.sender ∈ dom (communicationSystem.agents)
+  
+  -- Add message to channel queue
+  ∃ channel: ChannelState |
+    channel = (communicationSystem.channels)(channelId?) •
+    
+    communicationSystem' = communicationSystem⟨
+      channels := communicationSystem.channels ⊕
+        {channelId? ↦ channel⟨
+          messageQueue := channel.messageQueue ⁀ ⟨message?⟩,
+          messageHistory := channel.messageHistory ⁀ ⟨message?.id⟩
+        ⟩},
+      messageArchive := communicationSystem.messageArchive ∪ 
+        {message?.id ↦ message?}
+    ⟩
+  
+  -- Increment total messages
+  totalProcessedMessages' = totalProcessedMessages + 1
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- CONVERSATION OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Process message with Eliza engine
+schema ProcessMessage
+  ΔElizaOSSystemState
+  agentId?: AgentId
+  input?: Content
+  sessionId?: UUID
+  response!: Content
+where
+  -- Preconditions
+  agentId? ∈ dom agents
+  #input? > 0
+  
+  -- Get or create conversation context
+  ∃ agent: AgentState; context: ConversationContext |
+    agent = agents(agentId?) ∧
+    (sessionId? ∈ dom (agent.conversationContexts) ⇒
+      context = (agent.conversationContexts)(sessionId?)) ∧
+    (sessionId? ∉ dom (agent.conversationContexts) ⇒
+      context.sessionId = sessionId? ∧
+      context.history = ⟨⟩) •
+    
+    -- Generate response based on character and history
+    ∃ turn: ConversationTurn; responseText: Content |
+      turn.input = input? ∧
+      turn.response = responseText ∧
+      responseText = GenerateResponse(agent, context, input?) •
+      
+      -- Update agent state with new context
+      agents' = agents ⊕ {agentId? ↦ agent⟨
+        conversationContexts := agent.conversationContexts ⊕
+          {sessionId? ↦ context⟨
+            history := context.history ⁀ ⟨turn⟩
+          ⟩}
+      ⟩} ∧
+      response! = responseText
+  
+  -- Other state unchanged
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- TASK OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Create a new task
+schema CreateTask
+  ΔElizaOSSystemState
+  name?: Content
+  description?: Content
+  priority?: ℕ
+  taskId!: UUID
+where
+  -- Preconditions
+  #name? > 0
+  priority? ≥ 0
+  
+  -- Create new task
+  ∃ newTask: Task; newId: UUID |
+    newTask.id = newId ∧
+    newTask.name = name? ∧
+    newTask.description = {description?} ∧
+    newTask.status = PENDING ∧
+    newTask.priority = priority? ∧
+    newTask.dependencies = ⟨⟩ ∧
+    newId ∉ dom (taskManager.tasks) •
+    
+    taskManager' = taskManager⟨
+      tasks := taskManager.tasks ∪ {newId ↦ newTask},
+      tasksByStatus := taskManager.tasksByStatus ⊕
+        {PENDING ↦ (taskManager.tasksByStatus)(PENDING) ∪ {newId}},
+      totalTasks := taskManager.totalTasks + 1
+    ⟩ ∧
+    taskId! = newId
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+end
+
+-- Start task execution
+schema StartTask
+  ΔElizaOSSystemState
+  taskId?: UUID
+where
+  -- Preconditions
+  taskId? ∈ dom (taskManager.tasks)
+  (taskManager.tasks(taskId?)).status = PENDING
+  
+  -- Check dependencies are completed
+  ∀ depId: ran ((taskManager.tasks(taskId?)).dependencies) •
+    depId ∈ taskManager.completedTasks
+  
+  -- Update task status
+  ∃ task: Task |
+    task = (taskManager.tasks)(taskId?) •
+    
+    taskManager' = taskManager⟨
+      tasks := taskManager.tasks ⊕ 
+        {taskId? ↦ task⟨status := IN_PROGRESS⟩},
+      tasksByStatus := taskManager.tasksByStatus ⊕
+        {PENDING ↦ (taskManager.tasksByStatus)(PENDING) \ {taskId?},
+         IN_PROGRESS ↦ (taskManager.tasksByStatus)(IN_PROGRESS) ∪ {taskId?}},
+      executingTasks := taskManager.executingTasks ∪ {taskId?}
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+end
+
+-- Complete task
+schema CompleteTask
+  ΔElizaOSSystemState
+  taskId?: UUID
+  completionTime?: Timestamp
+where
+  -- Preconditions
+  taskId? ∈ dom (taskManager.tasks)
+  (taskManager.tasks(taskId?)).status = IN_PROGRESS
+  completionTime? ≥ (taskManager.tasks(taskId?)).createdAt
+  
+  -- Update task status
+  ∃ task: Task |
+    task = (taskManager.tasks)(taskId?) •
+    
+    taskManager' = taskManager⟨
+      tasks := taskManager.tasks ⊕ 
+        {taskId? ↦ task⟨
+          status := COMPLETED,
+          completedAt := {completionTime?}
+        ⟩},
+      tasksByStatus := taskManager.tasksByStatus ⊕
+        {IN_PROGRESS ↦ (taskManager.tasksByStatus)(IN_PROGRESS) \ {taskId?},
+         COMPLETED ↦ (taskManager.tasksByStatus)(COMPLETED) ∪ {taskId?}},
+      executingTasks := taskManager.executingTasks \ {taskId?},
+      completedTasks := taskManager.completedTasks ∪ {taskId?}
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+end
+
+--------------------------------------------------------------------------------
+-- KNOWLEDGE OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Add knowledge entry
+schema AddKnowledgeEntry
+  ΔElizaOSSystemState
+  content?: Content
+  category?: Content
+  entryId!: UUID
+where
+  -- Preconditions
+  #content? > 0
+  #category? > 0
+  
+  -- Create new entry
+  ∃ newEntry: KnowledgeEntry; newId: UUID |
+    newEntry.id = newId ∧
+    newEntry.content = content? ∧
+    newEntry.category = category? ∧
+    newEntry.references = ⟨⟩ ∧
+    newEntry.accessCount = 0 ∧
+    newEntry.lastAccessed = ∅ ∧
+    newId ∉ dom (knowledgeSystem.entries) •
+    
+    knowledgeSystem' = knowledgeSystem⟨
+      entries := knowledgeSystem.entries ∪ {newId ↦ newEntry},
+      categoryIndex := knowledgeSystem.categoryIndex ⊕
+        {category? ↦ (knowledgeSystem.categoryIndex)(category?) ∪ {newId}},
+      totalEntries := knowledgeSystem.totalEntries + 1
+    ⟩ ∧
+    entryId! = newId
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+-- Query knowledge by category
+schema QueryKnowledgeByCategory
+  ΞElizaOSSystemState
+  category?: Content
+  results!: seq KnowledgeEntry
+where
+  -- Preconditions
+  category? ∈ dom (knowledgeSystem.categoryIndex)
+  
+  -- Retrieve all entries in category
+  results! = [e: KnowledgeEntry | 
+    e.id ∈ (knowledgeSystem.categoryIndex)(category?) ∧
+    e = (knowledgeSystem.entries)(e.id)]
+end
+
+--------------------------------------------------------------------------------
+-- ATTENTION ALLOCATION OPERATIONS
+--------------------------------------------------------------------------------
+
+-- Update attention values (ECAN-inspired)
+schema UpdateAttention
+  ΔElizaOSSystemState
+  focusedIds?: ℙ UUID
+  decayFactor?: ℝ
+where
+  -- Preconditions
+  0 < decayFactor? < 1
+  
+  -- Decay all STI values
+  ∀ nid: dom (hypergraph.nodes) •
+    hypergraph' = hypergraph⟨
+      nodes := hypergraph.nodes ⊕
+        {nid ↦ (hypergraph.nodes(nid))⟨
+          sti := (hypergraph.nodes(nid)).sti * decayFactor?
+        ⟩}
+    ⟩
+  
+  -- Boost STI for focused nodes
+  ∀ fid: focusedIds? | fid ∈ dom (hypergraph.nodes) •
+    hypergraph' = hypergraph'⟨
+      nodes := hypergraph'.nodes ⊕
+        {fid ↦ (hypergraph'.nodes(fid))⟨
+          sti := min((hypergraph'.nodes(fid)).sti + 10.0, 100.0)
+        ⟩}
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  taskManager' = taskManager
+end
+
+-- Forget low-attention nodes
+schema ForgetLowAttention
+  ΔElizaOSSystemState
+where
+  -- Find nodes below forgetting threshold
+  ∃ toForget: ℙ UUID |
+    toForget = {nid: UUID | 
+      nid ∈ dom (hypergraph.nodes) ∧
+      (hypergraph.nodes(nid)).sti < hypergraph.forgettingThreshold
+    } •
+    
+    hypergraph' = hypergraph⟨
+      nodes := toForget ⩤ hypergraph.nodes,
+      totalNodes := hypergraph.totalNodes - #toForget
+    ⟩
+  
+  -- Remove edges referencing forgotten nodes
+  ∃ invalidEdges: ℙ UUID |
+    invalidEdges = {eid: UUID |
+      eid ∈ dom (hypergraph.edges) ∧
+      ∃ nid: ran ((hypergraph.edges(eid)).nodeIds) •
+        nid ∉ dom (hypergraph'.nodes)
+    } •
+    
+    hypergraph' = hypergraph'⟨
+      edges := invalidEdges ⩤ hypergraph'.edges,
+      totalEdges := hypergraph'.totalEdges - #invalidEdges
+    ⟩
+  
+  -- Other state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- HELPER FUNCTIONS (Axiomatic Definitions)
+--------------------------------------------------------------------------------
+
+-- Cosine similarity between two embedding vectors
+CosineSimilarity: EmbeddingVector × EmbeddingVector → ℝ
+
+∀ v1, v2: EmbeddingVector | #v1 = #v2 •
+  CosineSimilarity(v1, v2) = 
+    (Σ i: 1..#v1 • v1(i) * v2(i)) /
+    (sqrt(Σ i: 1..#v1 • v1(i)²) * sqrt(Σ i: 1..#v2 • v2(i)²))
+
+-- Generate response based on agent state and context
+GenerateResponse: AgentState × ConversationContext × Content → Content
+
+-- Sort candidates by similarity score
+SortBySimilarity: ℙ (Memory × ℝ) → seq Memory
+
+-- Take top N results
+TakeTop: seq Memory × ℕ → seq Memory
+
+--------------------------------------------------------------------------------
+-- END OF OPERATIONS SPECIFICATION
+--------------------------------------------------------------------------------
+
+-- This specification defines all major operations in ElizaOS C++,
+-- including their preconditions, postconditions, and state transformations.
+-- Integration operations with external systems are defined in integrations.zpp.

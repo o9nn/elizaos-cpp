@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>V1 to V2 Character Converter</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>V1 to V2 Character Converter</h2>
+
+      <div class="main-content">
+        <div class="section">
+          <h3>V1 Character JSON (Input)</h3>
+          <textarea
+            id="input"
+            rows="20"
+            placeholder="Paste v1 JSON here"
+          ></textarea>
+        </div>
+
+        <div class="section">
+          <h3>V2 Character JSON (Output)</h3>
+          <textarea
+            id="output"
+            rows="20"
+            placeholder="V2 JSON will appear here"
+            readonly
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="primary-btn" onclick="convert()">Convert V1 → V2</button>
+        <div class="output-actions" id="outputActions">
+          <button class="success-btn" onclick="copyToClipboard('output')">
+            Copy
+          </button>
+          <button
+            class="success-btn"
+            onclick="downloadJSON('output', 'v2-character.json')"
+          >
+            Download
+          </button>
+        </div>
+      </div>
+
+      <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

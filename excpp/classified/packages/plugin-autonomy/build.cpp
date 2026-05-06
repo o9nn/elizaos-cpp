@@ -1,0 +1,50 @@
+#include "build.hpp"
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<void> build() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    std::cout << "🏗️  Building package..." << std::endl;
+
+    // Clean only library files, preserve frontend files
+    // Use || true to prevent failure if files don't exist
+    "$" + "rm -rf dist/*.js dist/*.d.ts dist/*.map dist/__tests__ dist/actions dist/providers dist/scenarios || true";
+    "$" + "mkdir -p dist";
+
+    // Build with bun
+    const auto result = Bun.build({;
+        entrypoints: ["./src/index.ts"],
+        outdir: "./dist",
+        format: "esm",
+        sourcemap: "external",
+        external: ["@elizaos/core", "@elizaos/plugin-bootstrap", "express", "cors", "vite"],
+        target: "node",
+        });
+
+        if (!result.success) {
+            std::cerr << "❌ Build failed:" << std::endl;
+            for (const auto& message : result.logs)
+                std::cerr << message << std::endl;
+            }
+            process.exit(1);
+        }
+
+        std::cout << "✅ Built " + result.outputs.size() + " files" << std::endl;
+
+        // Generate TypeScript declarations
+        std::cout << "📝 Generating TypeScript declarations..." << std::endl;
+        try {
+            "$" + "tsc --project tsconfig.build.json";
+            std::cout << "✅ TypeScript declarations generated" << std::endl;
+            } catch (error) {
+                std::cout << '⚠️ TypeScript declaration generation had issues << but continuing...' << std::endl;
+            }
+
+            std::cout << "✅ Build complete!" << std::endl;
+
+}
+
+} // namespace elizaos

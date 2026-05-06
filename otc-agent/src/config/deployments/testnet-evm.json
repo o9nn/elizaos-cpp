@@ -1,0 +1,14 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "rpc": "https://sepolia.base.org",
+  "deployer": "0x5dB1268e424da5C26451e4a8B9C221e6DE3C3064",
+  "contracts": {
+    "otc": "",
+    "usdc": "",
+    "ethUsdFeed": ""
+  },
+  "accounts": {
+    "approver": "0x5dB1268e424da5C26451e4a8B9C221e6DE3C3064"
+  }
+}

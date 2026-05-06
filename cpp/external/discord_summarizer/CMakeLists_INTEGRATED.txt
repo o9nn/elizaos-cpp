@@ -1,0 +1,231 @@
+# Discord Summarizer - Discord message analysis and summarization
+# Supports both mock and real implementations with automatic dependency detection
+
+cmake_minimum_required(VERSION 3.14)
+
+# ==============================================================================
+# DEPENDENCY DETECTION
+# ==============================================================================
+
+# Find D++ (DPP) library for Discord API
+find_package(dpp QUIET)
+
+if(dpp_FOUND)
+    message(STATUS "Discord Summarizer: Found D++ library")
+    set(DISCORD_HAS_DPP TRUE)
+else()
+    # Try pkg-config as fallback
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(DPP QUIET dpp)
+        if(DPP_FOUND)
+            message(STATUS "Discord Summarizer: Found D++ via pkg-config")
+            set(DISCORD_HAS_DPP TRUE)
+        endif()
+    endif()
+endif()
+
+# Manual search if both methods failed
+if(NOT DISCORD_HAS_DPP)
+    find_path(DPP_INCLUDE_DIR
+        NAMES dpp/dpp.h
+        PATHS /usr/include /usr/local/include
+    )
+    
+    find_library(DPP_LIBRARY
+        NAMES dpp
+        PATHS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu
+    )
+    
+    if(DPP_INCLUDE_DIR AND DPP_LIBRARY)
+        message(STATUS "Discord Summarizer: Found D++ manually")
+        set(DISCORD_HAS_DPP TRUE)
+        set(DPP_INCLUDE_DIRS ${DPP_INCLUDE_DIR})
+        set(DPP_LIBRARIES ${DPP_LIBRARY})
+    else()
+        message(STATUS "Discord Summarizer: D++ not found - Discord API will use mock implementation")
+        set(DISCORD_HAS_DPP FALSE)
+    endif()
+endif()
+
+# Determine if real implementation should be enabled
+if(DISCORD_HAS_DPP)
+    set(DISCORD_REAL_IMPL TRUE)
+    message(STATUS "Discord Summarizer: ✅ Real implementation ENABLED (D++ library)")
+else()
+    set(DISCORD_REAL_IMPL FALSE)
+    message(STATUS "Discord Summarizer: ⚠️  Mock implementation ENABLED (missing D++)")
+    message(STATUS "  - Install D++: https://dpp.dev/build.html")
+endif()
+
+# ==============================================================================
+# SOURCE FILES
+# ==============================================================================
+
+set(DISCORD_SUMMARIZER_SOURCES
+    src/discord_summarizer.cpp
+)
+
+# Add real implementation sources if enabled
+if(DISCORD_REAL_IMPL)
+    list(APPEND DISCORD_SUMMARIZER_SOURCES
+        src/discord_client_real.cpp
+    )
+endif()
+
+# ==============================================================================
+# LIBRARY DEFINITION
+# ==============================================================================
+
+add_library(elizaos-discord_summarizer STATIC ${DISCORD_SUMMARIZER_SOURCES})
+
+# Set C++ standard (D++ requires C++17)
+target_compile_features(elizaos-discord_summarizer PUBLIC cxx_std_17)
+
+# ==============================================================================
+# INCLUDE DIRECTORIES
+# ==============================================================================
+
+target_include_directories(elizaos-discord_summarizer PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+# Add private include for real implementation headers
+if(DISCORD_REAL_IMPL)
+    target_include_directories(elizaos-discord_summarizer PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+endif()
+
+# ==============================================================================
+# COMPILE DEFINITIONS
+# ==============================================================================
+
+# Enable real implementation if D++ is available
+if(DISCORD_REAL_IMPL)
+    target_compile_definitions(elizaos-discord_summarizer PRIVATE
+        DISCORD_REAL_IMPLEMENTATION
+    )
+endif()
+
+# Suppress deprecation warnings from D++
+if(DISCORD_HAS_DPP)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_definitions(elizaos-discord_summarizer PRIVATE
+            _SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING
+        )
+    endif()
+endif()
+
+# ==============================================================================
+# LINK LIBRARIES
+# ==============================================================================
+
+# Core dependencies (always required)
+target_link_libraries(elizaos-discord_summarizer PUBLIC
+    elizaos-core
+    elizaos-agentlogger
+)
+
+# System dependencies
+target_link_libraries(elizaos-discord_summarizer PRIVATE
+    Threads::Threads
+)
+
+# Optional D++ library for real implementation
+if(DISCORD_HAS_DPP)
+    if(TARGET dpp::dpp)
+        # Use imported target if available
+        target_link_libraries(elizaos-discord_summarizer PRIVATE dpp::dpp)
+    else()
+        # Use variables from pkg-config or manual search
+        target_link_libraries(elizaos-discord_summarizer PRIVATE ${DPP_LIBRARIES})
+        target_include_directories(elizaos-discord_summarizer PRIVATE ${DPP_INCLUDE_DIRS})
+        
+        # D++ requires additional system libraries on Linux
+        if(UNIX AND NOT APPLE)
+            target_link_libraries(elizaos-discord_summarizer PRIVATE
+                dl
+                pthread
+            )
+        endif()
+    endif()
+endif()
+
+# ==============================================================================
+# COMPILER OPTIONS
+# ==============================================================================
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(elizaos-discord_summarizer PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        $<$<CONFIG:Debug>:-g>
+        $<$<CONFIG:Release>:-O3>
+    )
+    
+    # Suppress specific warnings from D++
+    if(DISCORD_HAS_DPP)
+        target_compile_options(elizaos-discord_summarizer PRIVATE
+            -Wno-deprecated-declarations
+        )
+    endif()
+elseif(MSVC)
+    target_compile_options(elizaos-discord_summarizer PRIVATE
+        /W4
+        $<$<CONFIG:Debug>:/Zi>
+        $<$<CONFIG:Release>:/O2>
+    )
+    
+    # Suppress specific warnings from D++
+    if(DISCORD_HAS_DPP)
+        target_compile_options(elizaos-discord_summarizer PRIVATE
+            /wd4996  # Deprecated declarations
+        )
+    endif()
+endif()
+
+# ==============================================================================
+# INSTALLATION
+# ==============================================================================
+
+install(TARGETS elizaos-discord_summarizer
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# ==============================================================================
+# CONFIGURATION SUMMARY
+# ==============================================================================
+
+message(STATUS "")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "Discord Summarizer Configuration Summary")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "  Implementation:    ${DISCORD_REAL_IMPL}")
+if(DISCORD_REAL_IMPL)
+    message(STATUS "  D++ Library:       Found")
+    message(STATUS "  Discord API:       ✅ Real (WebSocket + REST)")
+    message(STATUS "  Message Retrieval: ✅ Real (Discord API)")
+    message(STATUS "  Message Sending:   ✅ Real (Discord API)")
+    message(STATUS "  Event Handling:    ✅ Real (WebSocket)")
+else()
+    message(STATUS "  Discord API:       ⚠️  Mock")
+    message(STATUS "  Message Retrieval: ⚠️  Mock (hardcoded)")
+    message(STATUS "  Message Sending:   ⚠️  Mock (simulated)")
+    message(STATUS "  Event Handling:    ⚠️  Mock (none)")
+endif()
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "")
+
+# ==============================================================================
+# TESTING
+# ==============================================================================
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

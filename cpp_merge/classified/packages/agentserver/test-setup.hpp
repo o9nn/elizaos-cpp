@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_TEST_SETUP_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_TEST_SETUP_H
+#include "core.hpp"
+#include "bun:test.h"
+
+extern std::function<object(string)> createMockPlugin;
+#endif

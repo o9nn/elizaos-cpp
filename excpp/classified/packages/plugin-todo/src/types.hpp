@@ -1,0 +1,82 @@
+#pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+// Extend the core service types with todo service
+  struct ServiceTypeRegistry {
+    std::string TODO;
+    std::string TODO_REMINDER;
+};
+
+// Export service type constant
+
+/**
+ * Type for todo metadata
+ */
+
+/**
+ * Todo-specific types
+ */
+struct TodoData {
+    UUID id;
+    UUID agentId;
+    UUID worldId;
+    UUID roomId;
+    UUID entityId;
+    std::string name;
+    std::optional<std::string> description;
+    std::string type;
+    double priority;
+    bool isUrgent;
+    bool isCompleted;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
+    TodoMetadata metadata;
+    std::optional<std::vector<std::string>> tags;
+};
+
+struct CreateTodoInput {
+    UUID agentId;
+    UUID worldId;
+    UUID roomId;
+    UUID entityId;
+    std::string name;
+    std::optional<std::string> description;
+    std::string type;
+    std::optional<double> priority;
+    std::optional<bool> isUrgent;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
+    std::optional<TodoMetadata> metadata;
+    std::optional<std::vector<std::string>> tags;
+};
+
+struct UpdateTodoInput {
+    std::optional<std::string> name;
+    std::optional<std::string> description;
+    std::optional<std::string> type;
+    std::optional<double> priority;
+    std::optional<bool> isUrgent;
+    std::optional<bool> isCompleted;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
+    std::optional<TodoMetadata> metadata;
+};
+
+
+} // namespace elizaos

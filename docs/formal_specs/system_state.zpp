@@ -1,0 +1,586 @@
+--------------------------------------------------------------------------------
+-- ElizaOS C++ System State Formal Specification
+-- Z++ Specification Language
+-- Version: 1.0.0
+-- Date: December 12, 2024
+--------------------------------------------------------------------------------
+
+-- This specification formalizes the system state of the ElizaOS C++ framework,
+-- including agent state, memory state, communication state, and global invariants.
+
+-- Import data model definitions
+-- include data_model.zpp
+
+--------------------------------------------------------------------------------
+-- AGENT STATE
+--------------------------------------------------------------------------------
+
+-- Individual agent state
+schema AgentState
+  config: AgentConfig
+  status: AgentStatus
+  currentMemories: seq Memory
+  actors: seq Actor
+  goals: seq Goal
+  recentMessages: seq Memory
+  characterProfile: ℙ CharacterProfile
+  conversationContexts: UUID ⇸ ConversationContext
+  knowledgeReferences: ℙ UUID
+  activeTaskIds: ℙ UUID
+  lastActivity: Timestamp
+  cognitiveLoad: ℝ
+  attentionFocus: ℙ UUID  -- Currently focused memory/knowledge IDs
+where
+  -- Agent ID must match config
+  config.agentId ∈ AgentId
+  
+  -- Recent messages should not exceed maximum (e.g., 32)
+  #recentMessages ≤ 32
+  
+  -- Optional character profile
+  #characterProfile ≤ 1
+  
+  -- Cognitive load must be in [0, 1] range
+  0 ≤ cognitiveLoad ≤ 1
+  
+  -- Recent messages must be chronologically ordered
+  ∀ i, j: dom recentMessages | i < j • 
+    (recentMessages(i)).createdAt ≤ (recentMessages(j)).createdAt
+  
+  -- All conversation contexts must have unique session IDs
+  ∀ sid1, sid2: dom conversationContexts | sid1 ≠ sid2 •
+    (conversationContexts(sid1)).sessionId ≠ (conversationContexts(sid2)).sessionId
+  
+  -- Actor IDs must be unique
+  ∀ i, j: dom actors | i ≠ j • 
+    (actors(i)).id ≠ (actors(j)).id
+  
+  -- Goal IDs must be unique
+  ∀ i, j: dom goals | i ≠ j • 
+    (goals(i)).id ≠ (goals(j)).id
+end
+
+-- Agent loop execution state
+schema AgentLoopState
+  agentId: AgentId
+  running: 𝔹
+  paused: 𝔹
+  stepIndex: ℕ
+  totalSteps: ℕ
+  intervalSeconds: ℝ
+  lastExecutionTime: ℙ Timestamp
+  errorCount: ℕ
+  executionHistory: seq Timestamp
+where
+  -- Step index must be within bounds
+  stepIndex ≤ totalSteps
+  
+  -- Interval must be non-negative
+  intervalSeconds ≥ 0
+  
+  -- Optional last execution time
+  #lastExecutionTime ≤ 1
+  
+  -- If paused, must not be running
+  paused ⇒ ¬running
+  
+  -- Execution history must be chronologically ordered
+  ∀ i, j: dom executionHistory | i < j • 
+    executionHistory(i) ≤ executionHistory(j)
+end
+
+--------------------------------------------------------------------------------
+-- MEMORY SYSTEM STATE
+--------------------------------------------------------------------------------
+
+-- Memory storage state for a single table
+schema MemoryTableState
+  tableName: Content
+  memories: UUID ⇸ Memory
+  embeddingIndex: UUID ⇸ EmbeddingVector
+  roomIndex: RoomId ⇸ ℙ UUID
+  agentIndex: AgentId ⇸ ℙ UUID
+  entityIndex: EntityId ⇸ ℙ UUID
+  worldIndex: WorldId ⇸ ℙ UUID
+where
+  -- Table name must not be empty
+  #tableName > 0
+  
+  -- All memory IDs in indices must exist in memories
+  dom embeddingIndex ⊆ dom memories
+  ⋃ ran roomIndex ⊆ dom memories
+  ⋃ ran agentIndex ⊆ dom memories
+  ⋃ ran entityIndex ⊆ dom memories
+  ⋃ ran worldIndex ⊆ dom memories
+  
+  -- Embedding index contains only memories with embeddings
+  ∀ id: dom embeddingIndex • 
+    (memories(id)).embedding ≠ ∅
+  
+  -- Room index correctly maps rooms to memory IDs
+  ∀ rid: dom roomIndex • ∀ mid: roomIndex(rid) • 
+    (memories(mid)).roomId ≠ ∅ ∧ (⋃ (memories(mid)).roomId) = rid
+  
+  -- Agent index correctly maps agents to memory IDs
+  ∀ aid: dom agentIndex • ∀ mid: agentIndex(aid) • 
+    (memories(mid)).agentId = aid
+  
+  -- Entity index correctly maps entities to memory IDs
+  ∀ eid: dom entityIndex • ∀ mid: entityIndex(eid) • 
+    (memories(mid)).entityId = eid
+end
+
+-- Complete memory system state
+schema MemorySystemState
+  tables: Content ⇸ MemoryTableState
+  embeddingDimension: ℕ
+  totalMemories: ℕ
+  attentionThreshold: ℝ
+  maxMemoriesPerTable: ℕ
+where
+  -- Must have at least the default "memories" table
+  "memories" ∈ dom tables
+  
+  -- Embedding dimension must be positive if set
+  embeddingDimension > 0
+  
+  -- Total memories equals sum of memories in all tables
+  totalMemories = (Σ t: dom tables • #((tables(t)).memories))
+  
+  -- Attention threshold must be in [0, 1]
+  0 ≤ attentionThreshold ≤ 1
+  
+  -- Max memories must be positive
+  maxMemoriesPerTable > 0
+  
+  -- No table should exceed max memories
+  ∀ t: dom tables • 
+    #((tables(t)).memories) ≤ maxMemoriesPerTable
+  
+  -- All table names must be non-empty
+  ∀ t: dom tables • 
+    #((tables(t)).tableName) > 0
+end
+
+--------------------------------------------------------------------------------
+-- COMMUNICATION SYSTEM STATE
+--------------------------------------------------------------------------------
+
+-- Channel state
+schema ChannelState
+  channelId: ChannelId
+  name: Content
+  serverId: ServerId
+  participants: ℙ AgentId
+  messageQueue: seq Message
+  messageHistory: seq UUID  -- Message IDs
+  isActive: 𝔹
+  createdAt: Timestamp
+where
+  -- Channel ID and name must not be empty
+  channelId ∈ ChannelId
+  #name > 0
+  
+  -- Message queue should be bounded
+  #messageQueue ≤ 1000
+  
+  -- All queued messages must have correct channel ID
+  ∀ m: ran messageQueue • 
+    m.channelId = channelId
+  
+  -- Message IDs in history must be unique
+  #(⋃ ran messageHistory) = #messageHistory
+end
+
+-- Server state
+schema ServerState
+  serverId: ServerId
+  name: Content
+  channels: ℙ ChannelId
+  agents: ℙ AgentId
+  isActive: 𝔹
+  createdAt: Timestamp
+where
+  -- Server ID and name must not be empty
+  serverId ∈ ServerId
+  #name > 0
+  
+  -- Server must have at least one channel if active
+  isActive ⇒ channels ≠ ∅
+end
+
+-- Agent participation tracking
+schema AgentParticipationState
+  agentId: AgentId
+  subscribedServers: ℙ ServerId
+  subscribedChannels: ℙ ChannelId
+  unreadMessages: ChannelId ⇸ ℕ
+  lastActivity: Timestamp
+where
+  -- Unread count must be non-negative
+  ∀ cid: dom unreadMessages • 
+    unreadMessages(cid) ≥ 0
+  
+  -- Can only have unread messages for subscribed channels
+  dom unreadMessages ⊆ subscribedChannels
+end
+
+-- Complete communication system state
+schema CommunicationSystemState
+  channels: ChannelId ⇸ ChannelState
+  servers: ServerId ⇸ ServerState
+  agents: AgentId ⇸ AgentParticipationState
+  messageArchive: UUID ⇸ Message
+  pendingMessages: seq Message
+  messageValidationErrors: ℕ
+where
+  -- All channel IDs in servers must exist
+  ∀ s: ran servers • 
+    s.channels ⊆ dom channels
+  
+  -- All server IDs in channels must exist
+  ∀ c: ran channels • 
+    c.serverId ∈ dom servers
+  
+  -- Agent participation must be consistent with servers
+  ∀ a: ran agents • 
+    ∀ sid: a.subscribedServers • 
+      sid ∈ dom servers ∧ a.agentId ∈ (servers(sid)).agents
+  
+  -- Agent participation must be consistent with channels
+  ∀ a: ran agents • 
+    ∀ cid: a.subscribedChannels • 
+      cid ∈ dom channels ∧ a.agentId ∈ (channels(cid)).participants
+  
+  -- All messages in archive must have unique IDs
+  ∀ m1, m2: ran messageArchive | m1 ≠ m2 • 
+    m1.id ≠ m2.id
+  
+  -- Pending messages queue should be bounded
+  #pendingMessages ≤ 10000
+  
+  -- Validation error count must be non-negative
+  messageValidationErrors ≥ 0
+end
+
+--------------------------------------------------------------------------------
+-- KNOWLEDGE SYSTEM STATE
+--------------------------------------------------------------------------------
+
+-- Knowledge base entry state
+schema KnowledgeEntry
+  id: UUID
+  content: Content
+  category: Content
+  embedding: ℙ EmbeddingVector
+  metadata: Content ↔ Content
+  references: seq UUID  -- References to other knowledge entries
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  accessCount: ℕ
+  lastAccessed: ℙ Timestamp
+where
+  -- Content must not be empty
+  #content > 0
+  
+  -- Category must not be empty
+  #category > 0
+  
+  -- Optional embedding
+  #embedding ≤ 1
+  
+  -- Timestamps must be ordered
+  createdAt ≤ updatedAt
+  
+  -- Access count must be non-negative
+  accessCount ≥ 0
+  
+  -- Optional last accessed time
+  #lastAccessed ≤ 1
+  
+  -- If accessed, last accessed time must be after creation
+  lastAccessed ≠ ∅ ⇒ createdAt ≤ (⋃ lastAccessed)
+  
+  -- Reference IDs must be unique
+  #(⋃ ran references) = #references
+end
+
+-- Knowledge system state
+schema KnowledgeSystemState
+  entries: UUID ⇸ KnowledgeEntry
+  categoryIndex: Content ⇸ ℙ UUID
+  embeddingIndex: UUID ⇸ EmbeddingVector
+  referenceGraph: UUID ⇸ ℙ UUID
+  totalEntries: ℕ
+where
+  -- Total entries matches actual count
+  totalEntries = #entries
+  
+  -- Category index correctly maps categories to entry IDs
+  ∀ cat: dom categoryIndex • ∀ eid: categoryIndex(cat) • 
+    eid ∈ dom entries ∧ (entries(eid)).category = cat
+  
+  -- Embedding index contains only entries with embeddings
+  ∀ eid: dom embeddingIndex • 
+    eid ∈ dom entries ∧ (entries(eid)).embedding ≠ ∅
+  
+  -- Reference graph correctly reflects entry references
+  ∀ eid: dom referenceGraph • 
+    eid ∈ dom entries ∧ 
+    referenceGraph(eid) = (⋃ ran ((entries(eid)).references))
+  
+  -- All referenced entries must exist (referential integrity)
+  ∀ eid: dom entries • 
+    ∀ refid: ran ((entries(eid)).references) • 
+      refid ∈ dom entries
+end
+
+--------------------------------------------------------------------------------
+-- HYPERGRAPH STATE
+--------------------------------------------------------------------------------
+
+-- Hypergraph state for knowledge representation
+schema HypergraphState
+  nodes: UUID ⇸ HypergraphNode
+  edges: UUID ⇸ HypergraphEdge
+  nodeIndex: Content ⇸ ℙ UUID  -- Label to node IDs
+  totalNodes: ℕ
+  totalEdges: ℕ
+  attentionBudget: ℝ  -- Total STI budget
+  forgettingThreshold: ℝ  -- Minimum STI to keep in memory
+where
+  -- Totals match actual counts
+  totalNodes = #nodes
+  totalEdges = #edges
+  
+  -- Node index correctly maps labels to node IDs
+  ∀ label: dom nodeIndex • ∀ nid: nodeIndex(label) • 
+    nid ∈ dom nodes ∧ (nodes(nid)).label = label
+  
+  -- All edges reference existing nodes
+  ∀ e: ran edges • 
+    ∀ nid: ran (e.nodeIds) • 
+      nid ∈ dom nodes
+  
+  -- Attention budget must be positive
+  attentionBudget > 0
+  
+  -- Forgetting threshold must be in [0, 1]
+  0 ≤ forgettingThreshold ≤ 1
+  
+  -- Total STI across all nodes and edges should not exceed budget * 2
+  (Σ n: ran nodes • n.sti) + (Σ e: ran edges • e.sti) ≤ attentionBudget * 2
+end
+
+--------------------------------------------------------------------------------
+-- TASK MANAGEMENT STATE
+--------------------------------------------------------------------------------
+
+-- Task manager state
+schema TaskManagerState
+  tasks: UUID ⇸ Task
+  tasksByStatus: TaskStatus ⇸ ℙ UUID
+  tasksByPriority: seq UUID  -- Sorted by priority
+  taskDependencies: UUID ⇸ ℙ UUID
+  executingTasks: ℙ UUID
+  completedTasks: ℙ UUID
+  failedTasks: ℙ UUID
+  totalTasks: ℕ
+where
+  -- Total tasks matches actual count
+  totalTasks = #tasks
+  
+  -- Status index correctly maps status to task IDs
+  ∀ status: dom tasksByStatus • ∀ tid: tasksByStatus(status) • 
+    tid ∈ dom tasks ∧ (tasks(tid)).status = status
+  
+  -- All task IDs in priority list must exist
+  ⋃ ran tasksByPriority ⊆ dom tasks
+  
+  -- Priority list must be sorted by descending priority
+  ∀ i, j: dom tasksByPriority | i < j • 
+    (tasks(tasksByPriority(i))).priority ≥ (tasks(tasksByPriority(j))).priority
+  
+  -- Task dependencies correctly reflect task.dependencies
+  ∀ tid: dom taskDependencies • 
+    tid ∈ dom tasks ∧ 
+    taskDependencies(tid) = (⋃ ran ((tasks(tid)).dependencies))
+  
+  -- Executing tasks must be subset of all tasks
+  executingTasks ⊆ dom tasks
+  
+  -- Executing tasks must have IN_PROGRESS status
+  ∀ tid: executingTasks • 
+    (tasks(tid)).status = IN_PROGRESS
+  
+  -- Completed and failed tasks must not overlap
+  completedTasks ∩ failedTasks = ∅
+  
+  -- Completed tasks must have COMPLETED status
+  ∀ tid: completedTasks • 
+    (tasks(tid)).status = COMPLETED
+  
+  -- Failed tasks must have FAILED status
+  ∀ tid: failedTasks • 
+    (tasks(tid)).status = FAILED
+end
+
+--------------------------------------------------------------------------------
+-- GLOBAL SYSTEM STATE
+--------------------------------------------------------------------------------
+
+-- Complete ElizaOS system state
+schema ElizaOSSystemState
+  agents: AgentId ⇸ AgentState
+  agentLoops: AgentId ⇸ AgentLoopState
+  memorySystem: MemorySystemState
+  communicationSystem: CommunicationSystemState
+  knowledgeSystem: KnowledgeSystemState
+  hypergraph: HypergraphState
+  taskManager: TaskManagerState
+  systemStartTime: Timestamp
+  systemUptime: ℝ
+  totalProcessedMessages: ℕ
+  totalMemoriesCreated: ℕ
+  threadCount: ℕ
+where
+  -- All agent IDs in loops must exist in agents
+  dom agentLoops ⊆ dom agents
+  
+  -- All agent IDs in communication must exist in agents
+  dom (communicationSystem.agents) ⊆ dom agents
+  
+  -- System uptime must be non-negative
+  systemUptime ≥ 0
+  
+  -- Total messages must be non-negative
+  totalProcessedMessages ≥ 0
+  
+  -- Total memories must match memory system
+  totalMemoriesCreated ≥ memorySystem.totalMemories
+  
+  -- Thread count must be positive
+  threadCount > 0
+  
+  -- Active agent loops must have running or paused status
+  ∀ aid: dom agentLoops • 
+    (agentLoops(aid)).running ∨ (agentLoops(aid)).paused
+  
+  -- All agent task references must exist in task manager
+  ∀ a: ran agents • 
+    a.activeTaskIds ⊆ dom (taskManager.tasks)
+end
+
+--------------------------------------------------------------------------------
+-- SYSTEM STATE INVARIANTS
+--------------------------------------------------------------------------------
+
+-- System consistency invariant
+schema SystemConsistency
+  ElizaOSSystemState
+where
+  -- Memory system total matches sum across all tables
+  memorySystem.totalMemories = 
+    (Σ t: dom (memorySystem.tables) • 
+      #(((memorySystem.tables)(t)).memories))
+  
+  -- All agent recent messages must exist in memory system
+  ∀ a: ran agents • ∀ m: ran (a.recentMessages) • 
+    ∃ t: dom (memorySystem.tables) • 
+      m.id ∈ dom ((memorySystem.tables(t)).memories)
+  
+  -- All conversation contexts must reference existing agents
+  ∀ a: ran agents • ∀ ctx: ran (a.conversationContexts) • 
+    ctx.userId ∈ dom agents
+  
+  -- Knowledge references in agents must exist
+  ∀ a: ran agents • 
+    a.knowledgeReferences ⊆ dom (knowledgeSystem.entries)
+end
+
+-- Resource constraints invariant
+schema ResourceConstraints
+  ElizaOSSystemState
+where
+  -- Total memory usage should not exceed maximum
+  memorySystem.totalMemories ≤ 
+    memorySystem.maxMemoriesPerTable * #(memorySystem.tables)
+  
+  -- Thread count should not exceed reasonable maximum
+  threadCount ≤ 1000
+  
+  -- Total pending messages should not exceed queue limits
+  #(communicationSystem.pendingMessages) ≤ 10000
+  
+  -- No agent should have excessive recent messages
+  ∀ a: ran agents • 
+    #(a.recentMessages) ≤ 32
+  
+  -- Task manager should not have excessive tasks
+  taskManager.totalTasks ≤ 100000
+end
+
+-- Thread safety invariant
+schema ThreadSafetyInvariant
+  ElizaOSSystemState
+where
+  -- All mutations to shared state must be protected by locks
+  -- (This is an abstract specification; actual implementation uses mutexes)
+  
+  -- Multiple threads can read the same data concurrently
+  -- Only one thread can write to any given data at a time
+  
+  -- Agent states are independent and can be accessed concurrently
+  ∀ a1, a2: dom agents | a1 ≠ a2 • true
+  -- (No interference between different agent states)
+end
+
+--------------------------------------------------------------------------------
+-- INITIAL STATE
+--------------------------------------------------------------------------------
+
+-- Initial system state when ElizaOS starts
+schema InitialElizaOSState
+  ElizaOSSystemState
+where
+  -- No agents initially
+  agents = ∅
+  agentLoops = ∅
+  
+  -- Memory system initialized with default table
+  dom (memorySystem.tables) = {"memories"}
+  memorySystem.totalMemories = 0
+  
+  -- Communication system empty
+  communicationSystem.channels = ∅
+  communicationSystem.servers = ∅
+  communicationSystem.agents = ∅
+  
+  -- Knowledge system empty
+  knowledgeSystem.totalEntries = 0
+  
+  -- Hypergraph empty
+  hypergraph.totalNodes = 0
+  hypergraph.totalEdges = 0
+  
+  -- Task manager empty
+  taskManager.totalTasks = 0
+  
+  -- System counters at zero
+  totalProcessedMessages = 0
+  totalMemoriesCreated = 0
+  
+  -- Minimum thread count
+  threadCount = 1
+  
+  -- System uptime is zero
+  systemUptime = 0
+end
+
+--------------------------------------------------------------------------------
+-- END OF SYSTEM STATE SPECIFICATION
+--------------------------------------------------------------------------------
+
+-- This specification defines the complete system state of ElizaOS C++,
+-- including all subsystem states and global invariants. Operations will
+-- be defined as state transformations in the operations specification.

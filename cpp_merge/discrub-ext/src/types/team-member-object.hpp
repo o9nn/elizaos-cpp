@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_TYPES_TEAM_MEMBER_OBJECT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_TYPES_TEAM_MEMBER_OBJECT_H
+#include "core.hpp"
+#include "../classes/user.h"
+
+typedef object TeamMemberObject;
+
+
+#endif

@@ -1,0 +1,118 @@
+#include "relay-status.hpp"
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::string formatStatusResponse(const std::vector<RelayStatus>& statuses) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (statuses.size() == 1) {
+        return formatSingleStatus(statuses[0]);
+    }
+
+    auto response = " **Found " + statuses.size() + " Transactions**\n\n";
+
+    statuses.forEach[&]((status, index) {
+        "response += " + "**" + std::to_string(index + 1) + ". " + std::to_string(status.id.substr(0, 10-0)) + "...**\n";
+        "response += " + "- Status: " + std::to_string(getStatusIndicator(status.status)) + " " + status.status + "\n"
+        "response += " + "- Created: " + std::to_string(new Date(status.createdAt).toLocaleString()) + "\n"
+
+        if (status.data.inTxs.[0]) {
+            "response += " + "- Origin: Chain " + std::to_string(status.data.inTxs[0].chainId) + "\n"
+        }
+        if (status.data.outTxs.[0]) {
+            "response += " + "- Destination: Chain " + std::to_string(status.data.outTxs[0].chainId) + "\n"
+        }
+
+        response += "\n";
+        });
+
+        return response;
+
+}
+
+std::string formatSingleStatus(RelayStatus status) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto statusIndicator = getStatusIndicator(status.status);
+
+    auto response = ";
+    " + std::to_string(statusIndicator) + " **Transaction Status: " + std::to_string(status.status.toUpperCase()) + "**
+
+    **Request ID:** \"${status.id}\"
+    **User:** \"${status.user}\"
+    **Recipient:** \"${status.recipient}\"
+    **Created:** " + std::to_string(new Date(status.createdAt).toLocaleString()) + "
+    **Updated:** " + std::to_string(new Date(status.updatedAt).toLocaleString()) + "
+    ";
+
+    if (status.data.inTxs.[0]) {
+        const auto inTx = status.data.inTxs[0];
+        "response += " + "\n\n**Origin Transaction:**"
+        "response += " + "\n- Chain: " + std::to_string(getChainName(inTx.chainId))
+        "response += " + "\n- Hash: \" + "${inTx.hash}\"
+        "response += " + "\n- Time: " + std::to_string(new Date(inTx.timestamp * 1000).toLocaleString())
+    }
+
+    if (status.data.outTxs.[0]) {
+        const auto outTx = status.data.outTxs[0];
+        "response += " + "\n\n**Destination Transaction:**"
+        "response += " + "\n- Chain: " + std::to_string(getChainName(outTx.chainId))
+        "response += " + "\n- Hash: \" + "${outTx.hash}\"
+        "response += " + "\n- Time: " + std::to_string(new Date(outTx.timestamp * 1000).toLocaleString())
+    }
+
+    if (status.data.fees) {
+        const auto gasFeeWei = typeof status.data.fees.gas == "string";
+        ? status.data.fees.gas;
+        : status.data.fees.gas || "0";
+        const auto relayerFeeWei = typeof status.data.fees.relayer == "string";
+        ? status.data.fees.relayer;
+        : status.data.fees.relayer || "0";
+        const auto totalFees = BigInt(gasFeeWei) + BigInt(relayerFeeWei);
+        "response += " + "\n\n**Fees:**"
+        "response += " + "\n- Gas: " + std::to_string((Number(gasFeeWei) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n- Relayer: " + std::to_string((Number(relayerFeeWei) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n- Total: " + std::to_string((Number(totalFees) / 1e18).toFixed(6)) + " ETH"
+    }
+
+    return response;
+
+}
+
+std::string getStatusIndicator(const std::string& status) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const std::unordered_map<std::string, std::string> indicators = {;
+        success: "",
+        pending: "",
+        failed: "",
+        processing: "",
+        };
+        return indicators[status.toLowerCase()] || "?";
+
+}
+
+std::string getChainName(double chainId) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const std::unordered_map<double, std::string> chains = {;
+        1: "Ethereum",
+        8453: "Base",
+        42161: "Arbitrum",
+        137: "Polygon",
+        10: "Optimism",
+        7777777: "Zora",
+        81457: "Blast",
+        534352: "Scroll",
+        59144: "Linea",
+        };
+        return "chains[chainId] || " + "Chain " + chainId;
+
+}
+
+} // namespace elizaos

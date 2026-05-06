@@ -61,6 +61,10 @@ public:
     std::chrono::system_clock::time_point updated_at;
     std::vector<std::string> related_entries;
     
+    KnowledgeEntry() : type(KnowledgeType::FACT), confidence(ConfidenceLevel::MEDIUM), source(KnowledgeSource::PROGRAMMED) {
+        created_at = std::chrono::system_clock::now();
+        updated_at = created_at;
+    }
     KnowledgeEntry(const std::string& content, KnowledgeType type = KnowledgeType::FACT);
     
     // Serialization methods

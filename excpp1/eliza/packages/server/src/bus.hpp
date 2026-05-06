@@ -1,0 +1,29 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * A simple in-memory message bus for distributing messages from the server
+ *
+ * For multi-process or multi-server deployments, this would need to be replaced
+ * with a more robust solution like Redis Pub/Sub, Kafka, RabbitMQ, etc.
+ */
+class InternalMessageBus {
+public:
+};
+
+// Increase the default max listeners if many agents might be running in one process
+
+
+} // namespace elizaos

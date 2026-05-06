@@ -204,9 +204,9 @@ private:
         auto report = embodiment_->validateSystemCoherence();
         
         logger_.log("Coherence Report:", "demo", "embodiment", LogLevel::INFO);
-        logger_.log("  Overall Coherent: " + std::string(report.overallCoherent ? "YES" : "NO", "demo", "embodiment", LogLevel::INFO));
-        logger_.log("  Issues: " + std::to_string(report.issues.size(, "demo", "embodiment", LogLevel::INFO)));
-        logger_.log("  Warnings: " + std::to_string(report.warnings.size(, "demo", "embodiment", LogLevel::INFO)));
+        logger_.log("  Overall Coherent: " + std::string(report.overallCoherent ? "YES" : "NO"), "demo", "embodiment", LogLevel::INFO);
+        logger_.log("  Issues: " + std::to_string(report.issues.size()), "demo", "embodiment", LogLevel::INFO);
+        logger_.log("  Warnings: " + std::to_string(report.warnings.size()), "demo", "embodiment", LogLevel::INFO);
         
         for (const auto& issue : report.issues) {
             logger_.log("  Issue: " + issue, "demo", "embodiment", LogLevel::ERROR);
@@ -218,7 +218,7 @@ private:
         
         logger_.log("  Metrics:", "demo", "embodiment", LogLevel::INFO);
         for (const auto& metric : report.metrics) {
-            logger_.log("    " + metric.first + ": " + std::to_string(metric.second, "demo", "embodiment", LogLevel::INFO));
+            logger_.log("    " + metric.first + ": " + std::to_string(metric.second), "demo", "embodiment", LogLevel::INFO);
         }
         
         if (report.overallCoherent) {
@@ -241,7 +241,7 @@ private:
         
         logger_.log("Performance Metrics:", "demo", "embodiment", LogLevel::INFO);
         for (const auto& metric : metrics) {
-            logger_.log("  " + metric.first + ": " + std::to_string(metric.second, "demo", "embodiment", LogLevel::INFO));
+            logger_.log("  " + metric.first + ": " + std::to_string(metric.second), "demo", "embodiment", LogLevel::INFO);
         }
     }
     
@@ -269,7 +269,7 @@ private:
     void processPerception(const std::vector<std::shared_ptr<SensoryData>>& sensoryData) {
         // Custom perception processing callback
         if (!sensoryData.empty()) {
-            logger_.log("Processing " + std::to_string(sensoryData.size(, "demo", "embodiment", LogLevel::INFO)) + " sensory inputs");
+            logger_.log("Processing " + std::to_string(sensoryData.size()) + " sensory inputs", "demo", "embodiment", LogLevel::INFO);
             
             // Add to memory and cognition
             for (const auto& data : sensoryData) {
@@ -396,7 +396,7 @@ int main() {
         demo.runDemo();
     } catch (const std::exception& e) {
         AgentLogger logger;
-        logger.logError("Demo failed with exception: " + std::string(e.what()));
+        logger.log("Demo failed with exception: " + std::string(e.what()), "demo", "embodiment", LogLevel::ERROR);
         return 1;
     }
     

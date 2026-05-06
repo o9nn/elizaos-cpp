@@ -1,0 +1,114 @@
+#include "index.hpp"
+#include <string>
+
+EnvRegistry::EnvRegistry(string envFile) {
+    this->envFile = OR((OR((envFile), (process->env->SWE_AGENT_ENV_FILE))), (path->join(os::homedir(), std::string(".swe-agent-env"))));
+    this->loadData();
+}
+
+void EnvRegistry::loadData()
+{
+    if (fs::existsSync(this->envFile)) {
+        try
+        {
+            auto content = fs::readFileSync(this->envFile, std::string("utf-8"));
+            this->data = JSON->parse(content);
+        }
+        catch (const any& error)
+        {
+            console->error(std::string("Error reading registry file: ") + error + string_empty);
+            this->data = object{};
+        }
+    } else {
+        this->data = object{};
+    }
+}
+
+void EnvRegistry::saveData()
+{
+    try
+    {
+        auto dir = path->dirname(this->envFile);
+        if (!fs::existsSync(dir)) {
+            fs::mkdirSync(dir, object{
+                object::pair{std::string("recursive"), true}
+            });
+        }
+        fs::writeFileSync(this->envFile, JSON->stringify(this->data, nullptr, 2));
+    }
+    catch (const any& error)
+    {
+        console->error(std::string("Error writing registry file: ") + error + string_empty);
+    }
+}
+
+any EnvRegistry::get(string key, any defaultValue, boolean fallbackToEnv)
+{
+    if (this->data->hasOwnProperty(key)) {
+        return const_(this->data)[key];
+    }
+    if (AND((fallbackToEnv), (const_(process->env)[key]))) {
+        return const_(process->env)[key];
+    }
+    return defaultValue;
+}
+
+void EnvRegistry::set(string key, any value)
+{
+    this->data[key] = value;
+    this->saveData();
+}
+
+void EnvRegistry::delete(string key)
+{
+    this->data.Delete(key);
+    this->saveData();
+}
+
+Record<string, any> EnvRegistry::getAll()
+{
+    return utils::assign(object{
+    }, this->data);
+}
+
+void setupCLI()
+{
+    program->name(std::string("registry"))->description(std::string("Environment registry management"))->version(std::string("1.0.0"));
+    program->command(std::string("get <key>"))->description(std::string("Get a value from the registry"))->option(std::string("-d, --default <value>"), std::string("Default value if key not found"))->action([=](auto key, auto options) mutable
+    {
+        auto value = registry->get(key, OR((options["default"]), (string_empty)));
+        console->log(value);
+    }
+    );
+    program->command(std::string("set <key> <value>"))->description(std::string("Set a value in the registry"))->action([=](auto key, auto value) mutable
+    {
+        registry->set(key, value);
+        console->log(std::string("Set ") + key + std::string(" = ") + value + string_empty);
+    }
+    );
+    program->command(std::string("delete <key>"))->description(std::string("Delete a key from the registry"))->action([=](auto key) mutable
+    {
+        registry->delete(key);
+        console->log(std::string("Deleted ") + key + string_empty);
+    }
+    );
+    program->command(std::string("list"))->description(std::string("List all registry entries"))->action([=]() mutable
+    {
+        auto all = registry->getAll();
+        console->log(JSON->stringify(all, nullptr, 2));
+    }
+    );
+    program->parse(process->argv);
+};
+
+
+std::shared_ptr<EnvRegistry> registry = std::make_shared<EnvRegistry>();
+
+void Main(void)
+{
+    if (OR((require->main == module), (require->main->filename->endsWith(std::string("/bin/registry"))))) {
+        setupCLI();
+    }
+}
+
+MAIN

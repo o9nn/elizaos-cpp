@@ -1,0 +1,185 @@
+# Discord Summarizer - Real Discord API integration for ElizaOS agents
+# Updated to use REAL implementation with D++ (DPP) library
+
+# ==============================================================================
+# DEPENDENCY CONFIGURATION
+# ==============================================================================
+
+# Find D++ library (Discord C++ library)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(DPP REQUIRED dpp)
+
+# ==============================================================================
+# SOURCE FILES
+# ==============================================================================
+
+set(DISCORD_SUMMARIZER_SOURCES
+    src/discord_summarizer.cpp
+    src/discord_client_real.cpp
+)
+
+set(DISCORD_SUMMARIZER_HEADERS
+    include/discord_client_real.hpp
+)
+
+# ==============================================================================
+# LIBRARY DEFINITION
+# ==============================================================================
+
+# Create the Discord Summarizer library with REAL implementation
+add_library(elizaos-discord_summarizer STATIC
+    ${DISCORD_SUMMARIZER_SOURCES}
+)
+
+# ==============================================================================
+# INCLUDE DIRECTORIES
+# ==============================================================================
+
+target_include_directories(elizaos-discord_summarizer 
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${DPP_INCLUDE_DIRS}
+)
+
+# ==============================================================================
+# LINK LIBRARIES
+# ==============================================================================
+
+target_link_libraries(elizaos-discord_summarizer 
+    PUBLIC
+        # ElizaOS core dependencies
+        elizaos-core
+        elizaos-agentlogger
+        elizaos-agentmemory
+    PRIVATE
+        # System dependencies
+        Threads::Threads
+        # Discord library
+        ${DPP_LIBRARIES}
+)
+
+# ==============================================================================
+# COMPILER DEFINITIONS
+# ==============================================================================
+
+# Add preprocessor definitions
+target_compile_definitions(elizaos-discord_summarizer 
+    PRIVATE
+        DISCORD_REAL_IMPLEMENTATION=1
+        DPP_CORO=$<BOOL:${DPP_CORO}>  # Enable coroutines if available
+)
+
+# ==============================================================================
+# COMPILER OPTIONS
+# ==============================================================================
+
+# Set compiler-specific options
+if(MSVC)
+    target_compile_options(elizaos-discord_summarizer PRIVATE 
+        /W4                 # Warning level 4
+        /permissive-        # Standards conformance
+        /std:c++17          # C++17 standard (minimum for D++)
+    )
+else()
+    target_compile_options(elizaos-discord_summarizer PRIVATE 
+        -Wall               # Enable all warnings
+        -Wextra             # Enable extra warnings
+        -Wpedantic          # Pedantic warnings
+        -Wno-unused-parameter  # Suppress unused parameter warnings
+        -Wno-deprecated-declarations  # Suppress deprecation warnings from D++
+    )
+endif()
+
+# ==============================================================================
+# LINKER OPTIONS
+# ==============================================================================
+
+# Add linker flags for D++
+target_link_directories(elizaos-discord_summarizer 
+    PRIVATE
+        ${DPP_LIBRARY_DIRS}
+)
+
+# Add additional linker flags if needed
+if(UNIX AND NOT APPLE)
+    target_link_libraries(elizaos-discord_summarizer PRIVATE 
+        dl          # Dynamic linking library
+        pthread     # POSIX threads
+    )
+endif()
+
+# ==============================================================================
+# INSTALLATION
+# ==============================================================================
+
+# Install the library
+install(TARGETS elizaos-discord_summarizer
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# Install headers
+install(FILES ${DISCORD_SUMMARIZER_HEADERS}
+    DESTINATION include/elizaos
+)
+
+# ==============================================================================
+# TESTING (Optional)
+# ==============================================================================
+
+# Uncomment to enable Discord Summarizer tests
+# Note: Tests require a valid Discord bot token
+# if(BUILD_TESTING)
+#     add_subdirectory(tests)
+# endif()
+
+# ==============================================================================
+# FEATURE SUMMARY
+# ==============================================================================
+
+# Print configuration summary
+message(STATUS "Discord Summarizer Configuration:")
+message(STATUS "  - Real Implementation: ENABLED")
+message(STATUS "  - D++ version: ${DPP_VERSION}")
+message(STATUS "  - D++ libraries: ${DPP_LIBRARIES}")
+message(STATUS "  - D++ include dirs: ${DPP_INCLUDE_DIRS}")
+
+# Check if D++ supports coroutines
+if(DPP_CORO)
+    message(STATUS "  - Coroutines: ENABLED")
+else()
+    message(STATUS "  - Coroutines: DISABLED")
+endif()
+
+# ==============================================================================
+# NOTES
+# ==============================================================================
+
+# Installation instructions for D++ library:
+#
+# Ubuntu/Debian (via official script):
+#   wget -O /tmp/install-dpp.sh https://nightly.dpp.dev/install-nightly.sh
+#   sudo bash /tmp/install-dpp.sh
+#   sudo apt-get update && sudo apt-get install libdpp-dev
+#
+# Build from source:
+#   git clone https://github.com/brainboxdotcc/DPP.git
+#   cd DPP
+#   mkdir build && cd build
+#   cmake ..
+#   make -j$(nproc)
+#   sudo make install
+#
+# Windows (vcpkg):
+#   vcpkg install dpp
+#
+# macOS (Homebrew):
+#   brew install d++
+#
+# Environment variables required for testing:
+#   DISCORD_BOT_TOKEN       - Your Discord bot token
+#   DISCORD_TEST_CHANNEL_ID - A test channel ID for integration tests
+#   DISCORD_TEST_GUILD_ID   - A test guild (server) ID

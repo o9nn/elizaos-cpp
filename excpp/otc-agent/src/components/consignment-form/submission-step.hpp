@@ -1,0 +1,58 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "button.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct StepState {
+    std::string id;
+    std::string label;
+    std::string status;
+    std::optional<std::string> statusMessage;
+    std::optional<std::string> errorMessage;
+    std::optional<std::string> txHash;
+    std::optional<bool> canRetry;
+};
+
+struct SubmissionStepProps {
+    std::string tokenId;
+    std::string amount;
+    bool isNegotiable;
+    double fixedDiscountBps;
+    double fixedLockupDays;
+    double minDiscountBps;
+    double maxDiscountBps;
+    double minLockupDays;
+    double maxLockupDays;
+    std::string minDealAmount;
+    std::string maxDealAmount;
+    bool isFractionalized;
+    bool isPrivate;
+    double maxPriceVolatilityBps;
+    double maxTimeToExecuteSeconds;
+    std::string consignerAddress;
+    std::string chain;
+    std::string activeFamily;
+    double selectedTokenDecimals;
+    std::string selectedTokenSymbol;
+    std::optional<std::string> selectedTokenName;
+    std::optional<std::string> selectedTokenAddress;
+    std::optional<std::string> selectedTokenLogoUrl;
+};
+
+void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamily, auto selectedTokenDecimals, auto selectedTokenSymbol, auto selectedTokenName, auto selectedTokenAddress, auto selectedTokenLogoUrl, auto onApproveToken, auto onCreateConsignment, auto getBlockExplorerUrl, auto onBack);
+
+} // namespace elizaos

@@ -1,0 +1,41 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
+#include "..types.hpp"
+#include ".agents.hpp"
+#include ".history-processors.hpp"
+#include ".models.hpp"
+#include ".problem-statement.hpp"
+#include ".tools/parsing.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+/**
+ * Shell agent implementation with human-in-the-loop capability
+ * Converted from sweagent/agent/extra/shell_agent.py
+ */
+
+/**
+ * Shell agent that allows human intervention during execution
+ */
+class ShellAgent {
+public:
+    ShellAgent(std::optional<std::any> config);
+    ShellAgent fromConfig(AgentConfig config);
+    void humanStepIn();
+    void humanStepOut();
+    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
+};
+
+
+} // namespace elizaos

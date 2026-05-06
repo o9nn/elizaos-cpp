@@ -1,15 +1,19 @@
 name: Sync Repositories
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      org_name:
+        description: 'Organization name to sync from (default: elizaOS)'
+        required: false
+        default: 'elizaOS'
+        type: string
   workflow_call:
     inputs:
       org_name:
-        required: true
+        required: false
         type: string
+        default: 'elizaOS'
 
 jobs:
   sync-repos:
@@ -31,18 +35,20 @@ jobs:
       id: determine-branch
       run: |
         BASE_BRANCH="${{ inputs.org_name }}"
-        BRANCH="$BASE_BRANCH"
-        VERSION=1
-        while git ls-remote --exit-code --heads origin "$BRANCH"; do
-          VERSION=$((VERSION + 1))
-          BRANCH="${BASE_BRANCH}-v${VERSION}"
-        done
+        if [ -z "$BASE_BRANCH" ]; then
+          BASE_BRANCH="elizaOS"
+        fi
+        BRANCH="${BASE_BRANCH}-sync-$(date +%Y%m%d-%H%M%S)"
         echo "BRANCH_NAME=$BRANCH" >> $GITHUB_ENV
         echo "Determined branch name: $BRANCH"
 
     - name: Create or switch to branch
       run: |
-        git checkout -b $BRANCH_NAME
+        if [ -z "$BRANCH_NAME" ]; then
+          echo "Error: BRANCH_NAME is empty, using fallback"
+          BRANCH_NAME="elizaOS-sync-$(date +%Y%m%d)"
+        fi
+        git checkout -b "$BRANCH_NAME"
 
     - name: Clean untracked files
       run: |
@@ -52,20 +58,36 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: repo_list
+      continue-on-error: true
 
     - name: Read repository list
       run: |
-        REPO_LIST=$(cat repo_list.txt | tr '\n' ' ')
-        echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
-        echo "Repository list: $REPO_LIST"
-
-    - name: Print REPO_LIST
-      run: |
-        echo "REPO_LIST: $REPO_LIST"
+        if [ -f repo_list.txt ]; then
+          REPO_LIST=$(cat repo_list.txt | tr '\n' ' ')
+          echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
+          echo "Repository list: $REPO_LIST"
+        else
+          echo "No repo_list.txt found, fetching from GitHub API..."
+          ORG_NAME="${{ inputs.org_name }}"
+          if [ -z "$ORG_NAME" ]; then
+            ORG_NAME="elizaOS"
+          fi
+          REPO_LIST=$(curl -s "https://api.github.com/orgs/${ORG_NAME}/repos?per_page=100" | jq -r '.[].name' | tr '\n' ' ')
+          echo "REPO_LIST=$REPO_LIST" >> $GITHUB_ENV
+          echo "Repository list: $REPO_LIST"
+        fi
 
     - name: Sync repositories
       run: |
         echo "REPO_LIST in sync step: $REPO_LIST"
+        if [ -z "$REPO_LIST" ]; then
+          echo "No repositories to sync"
+          exit 0
+        fi
+        ORG_NAME="${{ inputs.org_name }}"
+        if [ -z "$ORG_NAME" ]; then
+          ORG_NAME="elizaOS"
+        fi
         for REPO in $REPO_LIST; do
           if [ "$REPO" = ".github" ]; then
             echo "Skipping .github repository..."
@@ -73,11 +95,11 @@ jobs:
           fi
           echo "Processing $REPO..."
           {
-            git clone "https://github.com/elizaOS/$REPO.git" "$REPO" &&
+            git clone "https://github.com/${ORG_NAME}/$REPO.git" "$REPO" &&
             if [ -d "$REPO" ] && [ "$(ls -A $REPO)" ]; then
               rm -rf "$REPO/.git"
               git add "$REPO"
-              git commit -m "Add $REPO repository as a subfolder"
+              git commit -m "Add $REPO repository as a subfolder" || echo "No changes for $REPO"
             else
               echo "Failed to clone $REPO or $REPO is empty"
             fi
@@ -86,18 +108,12 @@ jobs:
           }
         done
 
-    - name: List directories
-      run: |
-        ls -la
-        for REPO in $REPO_LIST; do
-          if [ -d "$REPO" ]; then
-            echo "Contents of $REPO:"
-            ls -la "$REPO"
-          fi
-        done
-
     - name: Push changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/ZoneCog/elizaos-central.git" $BRANCH_NAME
+        if git log --oneline -1 2>/dev/null | grep -q "Add"; then
+          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "$BRANCH_NAME"
+        else
+          echo "No changes to push"
+        fi

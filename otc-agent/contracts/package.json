@@ -1,0 +1,23 @@
+{
+  "name": "@workspace/contracts",
+  "version": "0.2.5",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "forge build",
+    "test": "forge test -vvv",
+    "start": "../scripts/start-anvil.sh",
+    "deploy:local": "./scripts/deploy-with-forge.sh",
+    "deploy:eliza": "./scripts/deploy-with-forge.sh",
+    "test:e2e": "forge test --match-path test/E2E.t.sol -vvv",
+    "dev:contracts": "concurrently --raw --success=first -k \"bun start\" \"sh -c 'sleep 3 && bun deploy:eliza && tail -f /dev/null'\"",
+    "dev:full": "concurrently --raw --success=first -k \"bun start\" \"sh -c 'sleep 3 && bun deploy:eliza'\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "bun@1.0.0",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^5.1.0"
+  }
+}

@@ -1,0 +1,42 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "..types.hpp"
+#include "..utils/bignumber.hpp"
+#include "..utils/wallet.hpp"
+#include ".analyticsService.hpp"
+#include ".base/BaseTradeService.hpp"
+#include ".calculation/tradeCalculation.hpp"
+#include ".dataService.hpp"
+#include ".tradeMemoryService.hpp"
+#include ".validation/TokenValidationService.hpp"
+#include ".walletService.hpp"
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+class SellService {
+public:
+    SellService(IAgentRuntime runtime, WalletService walletService, DataService dataService, AnalyticsService analyticsService, TradeMemoryService tradeMemoryService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<void> handleSellSignal(const std::any& params);
+    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage & { expectedOutAmount: string }> signal);
+    void if(auto !signal);
+    void if(auto !tokenBalance);
+    void if(auto result.success);
+    void catch(auto error);
+
+
+} // namespace elizaos

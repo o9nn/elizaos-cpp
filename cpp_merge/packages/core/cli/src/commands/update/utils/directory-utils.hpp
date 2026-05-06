@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_UTILS_DIRECTORY_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_UPDATE_UTILS_DIRECTORY_UTILS_H
+#include "core.hpp"
+// External dependency removed
+
+void handleInvalidDirectory(std::shared_ptr<DirectoryInfo> directoryInfo);
+
+#endif

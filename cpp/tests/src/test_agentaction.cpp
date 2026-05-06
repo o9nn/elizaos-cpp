@@ -191,7 +191,7 @@ TEST_F(AgentActionTest, GetFormattedActions) {
     EXPECT_TRUE(formatted.count("formatted_actions"));
     EXPECT_TRUE(formatted.count("short_actions"));
     
-    // Check that the formatted string contains expected content
+    // Check that the formatted std::string contains expected content
     auto formattedStr = std::any_cast<std::string>(formatted["formatted_actions"]);
     EXPECT_TRUE(formattedStr.find("Available actions") != std::string::npos);
     

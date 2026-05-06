@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_BUILD_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_BUILD_H
+#include "core.hpp"
+#include "./utils/build-utils.h"
+
+extern std::function<std::shared_ptr<Promise<void>>()> run;
+#endif

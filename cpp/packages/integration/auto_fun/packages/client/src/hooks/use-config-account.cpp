@@ -1,0 +1,26 @@
+#include "use-config-account.hpp"
+
+namespace elizaos {
+namespace autofun_client {
+
+bool UseConfigAccount::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void UseConfigAccount::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json UseConfigAccount::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace autofun_client
+} // namespace elizaos

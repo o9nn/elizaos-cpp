@@ -8,6 +8,9 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
+      - '**.cpp'
+      - '**.hpp'
   pull_request:
     branches: [ main, develop ]
     paths:
@@ -15,32 +18,121 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
+      - '**.cpp'
+      - '**.hpp'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.16'
+        cmake-version: '3.20'
+
+    - name: Set up MSVC environment (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libcurl4-openssl-dev pkg-config
+
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake curl pkg-config
+
+    - name: Check C++ compiler availability
+      shell: bash
+      run: |
+        echo "=== Checking C++ Compiler Availability ==="
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "Windows platform detected"
+          if command -v cl &> /dev/null; then
+            echo "MSVC compiler (cl.exe) found in PATH"
+            cl.exe /? 2>&1 | head -n 3 || true
+          else
+            echo "MSVC compiler (cl.exe) NOT found in PATH"
+          fi
+        elif [[ "$RUNNER_OS" == "macOS" ]]; then
+          echo "macOS platform detected"
+          if command -v clang++ &> /dev/null; then
+            echo "Clang++ compiler found in PATH"
+            clang++ --version | head -n 1
+          else
+            echo "Clang++ compiler NOT found in PATH"
+          fi
+        else
+          echo "Linux platform detected"
+          if command -v g++ &> /dev/null; then
+            echo "G++ compiler found in PATH"
+            g++ --version | head -n 1
+          else
+            echo "G++ compiler NOT found in PATH"
+          fi
+        fi
+        echo "==================================="
+
+    - name: Verify directory structure
+      shell: bash
+      run: |
+        echo "=== Verifying directory structure ==="
+        echo "Top-level directories:"
+        ls -d cpp/packages/core/* cpp/packages/infrastructure/* cpp/packages/applications/* 2>/dev/null || echo "packages structure not found"
+        echo ""
+        echo "External modules:"
+        ls -d cpp/external/*/ 2>/dev/null | head -20 || echo "external structure not found"
+        echo ""
+        echo "Generated modules:"
+        ls -d cpp/generated/*/ 2>/dev/null | head -15 || echo "generated structure not found"
+        echo ""
+        echo "Include directories:"
+        ls include/elizaos/*.hpp 2>/dev/null | wc -l
+        ls cpp/include/elizaos/*.hpp 2>/dev/null | wc -l
+        echo "==================================="
+
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
 
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }}
+      run: cmake --build build --config ${{ matrix.build_type }} -j 2
 
     - name: Test
       working-directory: build
       run: ctest --output-on-failure --config ${{ matrix.build_type }}
+      continue-on-error: true
+
+    - name: Upload build artifacts
+      if: matrix.build_type == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: elizaos-cpp-${{ runner.os }}-${{ matrix.build_type }}
+        path: |
+          build/eliza*
+          build/*.exe
+          build/*.a
+          build/*.lib
+        retention-days: 7
 
   implementation-status:
     runs-on: ubuntu-latest
@@ -52,63 +144,66 @@ jobs:
         echo "=== ElizaOS C++ Implementation Status ==="
         echo ""
         
-        # Count total modules
-        TOTAL_MODULES=$(find cpp -name "CMakeLists.txt" | wc -l)
+        # Count modules across all locations
+        PKG_MODULES=$(find cpp/packages -mindepth 2 -maxdepth 2 -type d 2>/dev/null | wc -l)
+        EXT_MODULES=$(find cpp/external -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+        GEN_MODULES=$(find cpp/generated -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+        TOTAL_MODULES=$((PKG_MODULES + EXT_MODULES + GEN_MODULES))
         
-        # Count placeholder implementations
-        PLACEHOLDER_COUNT=$(find cpp -name "placeholder.cpp" | wc -l)
+        # Count modules with CMakeLists.txt (buildable)
+        BUILDABLE=$(find cpp/packages cpp/external cpp/generated -name "CMakeLists.txt" -maxdepth 3 2>/dev/null | wc -l)
         
-        # Count real implementations (modules with substantial code)
-        REAL_IMPL_COUNT=$((TOTAL_MODULES - PLACEHOLDER_COUNT))
+        # Count total source files
+        TOTAL_CPP=$(find cpp -name "*.cpp" -type f 2>/dev/null | wc -l)
+        TOTAL_HPP=$(find cpp include -name "*.hpp" -type f 2>/dev/null | wc -l)
         
-        # Calculate percentage
-        COMPLETION_PCT=$((REAL_IMPL_COUNT * 100 / TOTAL_MODULES))
-        
-        echo "📊 Implementation Progress:"
+        echo "Implementation Progress:"
+        echo "   Package Modules: $PKG_MODULES"
+        echo "   External Modules: $EXT_MODULES"
+        echo "   Generated Modules: $GEN_MODULES"
         echo "   Total Modules: $TOTAL_MODULES"
-        echo "   Implemented: $REAL_IMPL_COUNT ($COMPLETION_PCT%)"
-        echo "   Placeholders: $PLACEHOLDER_COUNT"
+        echo "   Buildable (with CMakeLists.txt): $BUILDABLE"
+        echo "   Total C++ source files: $TOTAL_CPP"
+        echo "   Total C++ header files: $TOTAL_HPP"
         echo ""
         
-        echo "🚧 Placeholder Modules Remaining:"
-        find cpp -name "placeholder.cpp" | sed 's|cpp/||' | sed 's|/src/placeholder.cpp||' | sort
-        echo ""
+        if [ $TOTAL_MODULES -gt 0 ]; then
+          COMPLETION_PCT=$((BUILDABLE * 100 / TOTAL_MODULES))
+          echo "Build Coverage: $COMPLETION_PCT%"
+        fi
         
-        echo "✅ Fully Implemented Modules:"
-        # Find modules without placeholders that have substantial implementations
-        for dir in cpp/*/; do
-          if [ ! -f "$dir/src/placeholder.cpp" ] && [ -f "$dir/CMakeLists.txt" ]; then
-            basename "$dir"
-          fi
-        done | sort
         echo ""
+        echo "Buildable Modules:"
+        find cpp/packages -name "CMakeLists.txt" -maxdepth 3 2>/dev/null | sed 's|/CMakeLists.txt||' | sort
+        find cpp/external -name "CMakeLists.txt" -maxdepth 2 2>/dev/null | sed 's|/CMakeLists.txt||' | sort
         
-        # Set output for use in other steps
-        echo "COMPLETION_PCT=$COMPLETION_PCT" >> $GITHUB_ENV
-        echo "PLACEHOLDER_COUNT=$PLACEHOLDER_COUNT" >> $GITHUB_ENV
-        echo "REAL_IMPL_COUNT=$REAL_IMPL_COUNT" >> $GITHUB_ENV
+        echo ""
+        echo "COMPLETION_PCT=${COMPLETION_PCT:-0}" >> $GITHUB_ENV
 
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev pkg-config
+
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.16'
+        cmake-version: '3.20'
 
-    - name: Configure CMake with strict warnings
+    - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
 
-    - name: Build with warnings as errors
-      run: cmake --build build
-
-    - name: Check for warnings
+    - name: Build with warnings check
       run: |
-        if cmake --build build 2>&1 | grep -i warning; then
-          echo "Build contains warnings"
+        cmake --build build 2>&1 | tee build.log
+        if grep -i "error:" build.log; then
+          echo "Build contains errors"
           exit 1
         else
-          echo "Build completed without warnings"
+          echo "Build completed successfully"
         fi

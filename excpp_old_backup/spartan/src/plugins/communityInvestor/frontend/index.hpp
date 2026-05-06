@@ -1,0 +1,28 @@
+#include ".types.ts.hpp"
+#include "LeaderboardTable.tsx.hpp"
+#include "loader.tsx.hpp"
+#include "ui/card.tsx.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+// Import types from the central types.ts file
+ // Adjusted path to central types.ts
+
+// Function to fetch real leaderboard data from the backend
+
+void LeaderboardPanelPage();
+
+
+} // namespace elizaos

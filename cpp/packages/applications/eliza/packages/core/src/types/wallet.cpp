@@ -1,0 +1,26 @@
+#include "wallet.hpp"
+
+namespace elizaos {
+namespace eliza_core {
+
+bool Wallet::initialize(const nlohmann::json& config) {
+    if (initialized_) return true;
+    config_ = config;
+    initialized_ = true;
+    return true;
+}
+
+void Wallet::shutdown() {
+    initialized_ = false;
+    config_ = {};
+}
+
+nlohmann::json Wallet::getStatus() const {
+    nlohmann::json status;
+    status["name"] = getName();
+    status["initialized"] = initialized_;
+    return status;
+}
+
+} // namespace eliza_core
+} // namespace elizaos

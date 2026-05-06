@@ -1,0 +1,10 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_ENUM_REACTION_TYPE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_ENUM_REACTION_TYPE_H
+#include "core.hpp"
+
+enum struct ReactionType;
+
+enum struct ReactionType {
+    NORMAL = 0, BURST = 1
+};
+#endif

@@ -1,0 +1,28 @@
+#include ".registry.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+/**
+ * Submit tool
+ * Submits the current changes as a patch
+ * Converted from tools/submit/bin/submit
+ */
+
+void submit();
+
+// CLI if run directly
+
+  // Default action if no arguments
+
+
+} // namespace elizaos

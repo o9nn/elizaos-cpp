@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTOCODER_PROJECT_TEMPLATE_SRC_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTOCODER_PROJECT_TEMPLATE_SRC_INDEX_H
+#include "core.hpp"
+// External dependency removed
+#include "./character.ts.h"
+
+extern std::shared_ptr<ProjectAgent> projectAgent;
+extern std::shared_ptr<Project> project;
+#endif

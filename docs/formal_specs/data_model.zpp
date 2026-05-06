@@ -1,0 +1,615 @@
+--------------------------------------------------------------------------------
+-- ElizaOS C++ Data Model Formal Specification
+-- Z++ Specification Language
+-- Version: 1.0.0
+-- Date: December 12, 2024
+--------------------------------------------------------------------------------
+
+-- This specification formalizes the data layer of the ElizaOS C++ framework,
+-- including all core data structures, types, and their invariants.
+
+--------------------------------------------------------------------------------
+-- BASIC TYPES
+--------------------------------------------------------------------------------
+
+[UUID, AgentId, ChannelId, ServerId, RoomId, WorldId, EntityId]
+-- Basic identifier types as given sets
+
+Timestamp == ℤ
+-- Timestamp represented as Unix epoch time in milliseconds
+
+EmbeddingVector == seq ℝ
+-- Embedding vectors are sequences of real numbers (floats)
+
+Content == seq Char
+-- Text content as character sequences
+
+--------------------------------------------------------------------------------
+-- ENUMERATED TYPES
+--------------------------------------------------------------------------------
+
+MemoryType ::= DOCUMENT | FRAGMENT | MESSAGE | DESCRIPTION | CUSTOM
+
+MemoryScope ::= SHARED | PRIVATE | ROOM
+
+MessageType ::= TEXT | COMMAND | RESPONSE | STATUS | ERROR
+
+TraitCategory ::= PERSONALITY | COGNITIVE | BEHAVIORAL | EMOTIONAL | 
+                  SOCIAL | PHYSICAL | SKILL | PREFERENCE
+
+TraitValueType ::= NUMERIC | CATEGORICAL | BOOLEAN | TEXT
+
+TaskStatus ::= PENDING | IN_PROGRESS | COMPLETED | FAILED | CANCELLED
+
+AgentStatus ::= IDLE | PROCESSING | WAITING | ACTIVE | SUSPENDED
+
+--------------------------------------------------------------------------------
+-- METADATA STRUCTURES
+--------------------------------------------------------------------------------
+
+-- Base metadata common to all memory types
+schema BaseMetadata
+  type: MemoryType
+  source: ℙ Content
+  sourceId: ℙ UUID
+  scope: ℙ MemoryScope
+  timestamp: ℙ Timestamp
+  tags: seq Content
+where
+  -- Source and sourceId are optional (represented as power sets)
+  #source ≤ 1
+  #sourceId ≤ 1
+  #scope ≤ 1
+  #timestamp ≤ 1
+end
+
+-- Document metadata
+schema DocumentMetadata
+  BaseMetadata
+where
+  type = DOCUMENT
+end
+
+-- Fragment metadata with document reference and position
+schema FragmentMetadata
+  BaseMetadata
+  documentId: UUID
+  position: ℕ
+where
+  type = FRAGMENT
+  position ≥ 0
+end
+
+-- Message metadata
+schema MessageMetadata
+  BaseMetadata
+where
+  type = MESSAGE
+end
+
+-- Description metadata
+schema DescriptionMetadata
+  BaseMetadata
+where
+  type = DESCRIPTION
+end
+
+-- Custom metadata with key-value pairs
+schema CustomMetadata
+  BaseMetadata
+  customData: Content ↔ Content
+where
+  type = CUSTOM
+  -- customData is a partial function from keys to values
+  dom customData ≠ ∅ ⇒ ran customData ≠ ∅
+end
+
+-- Union type for metadata
+MetadataUnion ::= document⟨⟨DocumentMetadata⟩⟩ 
+                | fragment⟨⟨FragmentMetadata⟩⟩
+                | message⟨⟨MessageMetadata⟩⟩
+                | description⟨⟨DescriptionMetadata⟩⟩
+                | custom⟨⟨CustomMetadata⟩⟩
+
+--------------------------------------------------------------------------------
+-- CORE DATA STRUCTURES
+--------------------------------------------------------------------------------
+
+-- Memory record structure
+schema Memory
+  id: UUID
+  content: Content
+  entityId: EntityId
+  agentId: AgentId
+  roomId: ℙ RoomId
+  worldId: ℙ WorldId
+  embedding: ℙ EmbeddingVector
+  metadata: MetadataUnion
+  createdAt: Timestamp
+  updatedAt: ℙ Timestamp
+where
+  -- Content must not be empty
+  #content > 0
+  
+  -- Optional fields
+  #roomId ≤ 1
+  #worldId ≤ 1
+  #embedding ≤ 1
+  #updatedAt ≤ 1
+  
+  -- If embedding exists, it must have positive dimension
+  embedding ≠ ∅ ⇒ #(⋃ embedding) > 0
+  
+  -- CreatedAt must be before updatedAt if updatedAt exists
+  updatedAt ≠ ∅ ⇒ createdAt ≤ (⋃ updatedAt)
+end
+
+-- Message structure for agent communication
+schema Message
+  id: UUID
+  type: MessageType
+  sender: AgentId
+  receiver: AgentId
+  channelId: ChannelId
+  serverId: ServerId
+  content: Content
+  metadata: Content ↔ Content
+  timestamp: Timestamp
+  inReplyToMessageId: ℙ UUID
+  sourceType: Content
+where
+  -- Content cannot be empty for TEXT and RESPONSE messages
+  (type = TEXT ∨ type = RESPONSE) ⇒ #content > 0
+  
+  -- Sender and receiver must be different
+  sender ≠ receiver
+  
+  -- Optional reply reference
+  #inReplyToMessageId ≤ 1
+  
+  -- Timestamp must be non-negative
+  timestamp ≥ 0
+end
+
+-- Truth value for probabilistic logic (PLN integration)
+schema TruthValue
+  strength: ℝ
+  confidence: ℝ
+where
+  -- Both values must be in [0, 1] range
+  0 ≤ strength ≤ 1
+  0 ≤ confidence ≤ 1
+end
+
+-- Hypergraph node for knowledge representation
+schema HypergraphNode
+  id: UUID
+  label: Content
+  attributes: Content ↔ Content
+  truthValue: ℙ TruthValue
+  sti: ℝ  -- Short-term importance
+  lti: ℝ  -- Long-term importance
+where
+  -- Label must not be empty
+  #label > 0
+  
+  -- Optional truth value
+  #truthValue ≤ 1
+  
+  -- Attention values must be non-negative
+  sti ≥ 0
+  lti ≥ 0
+  
+  -- Attributes is a partial function
+  dom attributes ⊆ ran attributes ⇒ attributes ∈ Content ⇸ Content
+end
+
+-- Hypergraph edge connecting multiple nodes
+schema HypergraphEdge
+  id: UUID
+  label: Content
+  nodeIds: seq UUID
+  truthValue: ℙ TruthValue
+  sti: ℝ
+  lti: ℝ
+where
+  -- Label must not be empty
+  #label > 0
+  
+  -- Edge must connect at least 2 nodes
+  #nodeIds ≥ 2
+  
+  -- All node IDs must be unique
+  #(⋃ ran nodeIds) = #nodeIds
+  
+  -- Optional truth value
+  #truthValue ≤ 1
+  
+  -- Attention values must be non-negative
+  sti ≥ 0
+  lti ≥ 0
+end
+
+--------------------------------------------------------------------------------
+-- CHARACTER AND PERSONALITY STRUCTURES
+--------------------------------------------------------------------------------
+
+-- Personality matrix based on Big Five model
+schema PersonalityMatrix
+  openness: ℝ
+  conscientiousness: ℝ
+  extraversion: ℝ
+  agreeableness: ℝ
+  neuroticism: ℝ
+  creativity: ℝ
+  empathy: ℝ
+  assertiveness: ℝ
+  curiosity: ℝ
+  loyalty: ℝ
+where
+  -- All traits must be in [0, 1] range
+  0 ≤ openness ≤ 1
+  0 ≤ conscientiousness ≤ 1
+  0 ≤ extraversion ≤ 1
+  0 ≤ agreeableness ≤ 1
+  0 ≤ neuroticism ≤ 1
+  0 ≤ creativity ≤ 1
+  0 ≤ empathy ≤ 1
+  0 ≤ assertiveness ≤ 1
+  0 ≤ curiosity ≤ 1
+  0 ≤ loyalty ≤ 1
+end
+
+-- Emotional state tracking
+schema EmotionalState
+  happiness: ℝ
+  sadness: ℝ
+  anger: ℝ
+  fear: ℝ
+  surprise: ℝ
+  disgust: ℝ
+  excitement: ℝ
+  calmness: ℝ
+where
+  -- All emotions must be in [0, 1] range
+  0 ≤ happiness ≤ 1
+  0 ≤ sadness ≤ 1
+  0 ≤ anger ≤ 1
+  0 ≤ fear ≤ 1
+  0 ≤ surprise ≤ 1
+  0 ≤ disgust ≤ 1
+  0 ≤ excitement ≤ 1
+  0 ≤ calmness ≤ 1
+  
+  -- Emotional consistency constraints
+  -- Opposing emotions have inverse relationship
+  happiness + sadness ≤ 1.2
+  excitement + calmness ≤ 1.2
+end
+
+-- Character trait value (polymorphic)
+TraitValue ::= numeric⟨⟨ℝ⟩⟩ 
+             | categorical⟨⟨Content⟩⟩
+             | boolean⟨⟨𝔹⟩⟩
+             | text⟨⟨Content⟩⟩
+
+-- Character trait definition
+schema CharacterTrait
+  name: Content
+  description: Content
+  category: TraitCategory
+  valueType: TraitValueType
+  value: TraitValue
+  weight: ℝ
+  tags: seq Content
+  metadata: Content ↔ Content
+where
+  -- Name and description must not be empty
+  #name > 0
+  #description > 0
+  
+  -- Weight must be in [0, 1] range
+  0 ≤ weight ≤ 1
+  
+  -- Value type must match value variant
+  (valueType = NUMERIC ⇒ value ∈ numeric⟨⟨ℝ⟩⟩) ∧
+  (valueType = CATEGORICAL ⇒ value ∈ categorical⟨⟨Content⟩⟩) ∧
+  (valueType = BOOLEAN ⇒ value ∈ boolean⟨⟨𝔹⟩⟩) ∧
+  (valueType = TEXT ⇒ value ∈ text⟨⟨Content⟩⟩)
+  
+  -- For numeric traits, value must be in [0, 1]
+  valueType = NUMERIC ⇒ 
+    ∃ v: ℝ | value = numeric⟨⟨v⟩⟩ • 0 ≤ v ≤ 1
+end
+
+-- Complete character profile
+schema CharacterProfile
+  id: UUID
+  name: Content
+  bio: ℙ Content
+  lore: seq Content
+  personality: PersonalityMatrix
+  traits: seq CharacterTrait
+  emotionalState: EmotionalState
+  knowledge: ℙ UUID  -- References to knowledge base entries
+  messageExamples: seq (Content × Content)  -- Input-output pairs
+  topics: seq Content
+  adjectives: seq Content
+  style: ℙ Content
+where
+  -- Name must not be empty
+  #name > 0
+  
+  -- Optional bio
+  #bio ≤ 1
+  bio ≠ ∅ ⇒ #(⋃ bio) > 0
+  
+  -- Trait names must be unique
+  ∀ i, j: dom traits | i ≠ j • 
+    (traits(i)).name ≠ (traits(j)).name
+  
+  -- Topics and adjectives must not contain empty strings
+  ∀ t: ran topics • #t > 0
+  ∀ a: ran adjectives • #a > 0
+  
+  -- Optional style
+  #style ≤ 1
+  
+  -- Message examples must have non-empty content
+  ∀ (input, output): ran messageExamples • 
+    #input > 0 ∧ #output > 0
+end
+
+--------------------------------------------------------------------------------
+-- TASK AND GOAL STRUCTURES
+--------------------------------------------------------------------------------
+
+-- Actor in the system
+schema Actor
+  id: UUID
+  name: Content
+  username: ℙ Content
+  details: ℙ Content
+where
+  #name > 0
+  #username ≤ 1
+  #details ≤ 1
+end
+
+-- Goal definition
+schema Goal
+  id: UUID
+  name: Content
+  description: ℙ Content
+  priority: ℕ
+  status: TaskStatus
+where
+  #name > 0
+  #description ≤ 1
+  priority ≥ 0
+end
+
+-- Task definition
+schema Task
+  id: UUID
+  name: Content
+  description: ℙ Content
+  status: TaskStatus
+  priority: ℕ
+  roomId: ℙ RoomId
+  worldId: ℙ WorldId
+  createdAt: Timestamp
+  updatedAt: Timestamp
+  completedAt: ℙ Timestamp
+  dependencies: seq UUID
+where
+  -- Name must not be empty
+  #name > 0
+  
+  -- Optional description
+  #description ≤ 1
+  
+  -- Priority must be non-negative
+  priority ≥ 0
+  
+  -- Optional room and world IDs
+  #roomId ≤ 1
+  #worldId ≤ 1
+  
+  -- Timestamps must be ordered correctly
+  createdAt ≤ updatedAt
+  
+  -- Optional completion timestamp
+  #completedAt ≤ 1
+  
+  -- If completed, completedAt must exist and be after createdAt
+  status = COMPLETED ⇒ 
+    (completedAt ≠ ∅ ∧ createdAt ≤ (⋃ completedAt))
+  
+  -- Dependencies must be unique
+  #(⋃ ran dependencies) = #dependencies
+end
+
+--------------------------------------------------------------------------------
+-- CONVERSATION STRUCTURES
+--------------------------------------------------------------------------------
+
+-- Conversation turn
+schema ConversationTurn
+  id: UUID
+  input: Content
+  response: Content
+  timestamp: Timestamp
+  emotionalState: Content
+  metadata: Content ↔ Content
+  confidence: ℝ
+where
+  -- Input and response must not be empty
+  #input > 0
+  #response > 0
+  
+  -- Timestamp must be non-negative
+  timestamp ≥ 0
+  
+  -- Confidence must be in [0, 1] range
+  0 ≤ confidence ≤ 1
+end
+
+-- Conversation context
+schema ConversationContext
+  sessionId: UUID
+  userId: UUID
+  characterId: ℙ UUID
+  history: seq ConversationTurn
+  sessionData: Content ↔ Content
+  startTime: Timestamp
+  lastActivity: Timestamp
+where
+  -- Optional character ID
+  #characterId ≤ 1
+  
+  -- Timestamps must be ordered
+  startTime ≤ lastActivity
+  
+  -- History turns must be in chronological order
+  ∀ i, j: dom history | i < j • 
+    (history(i)).timestamp ≤ (history(j)).timestamp
+  
+  -- All turn IDs in history must be unique
+  ∀ i, j: dom history | i ≠ j • 
+    (history(i)).id ≠ (history(j)).id
+end
+
+-- Response pattern for Eliza
+schema ResponsePattern
+  id: UUID
+  pattern: Content  -- Regex pattern
+  responses: seq Content
+  category: Content
+  priority: ℝ
+  conditions: seq Content
+  metadata: Content ↔ Content
+where
+  -- Pattern must not be empty
+  #pattern > 0
+  
+  -- Must have at least one response
+  #responses ≥ 1
+  
+  -- All responses must be non-empty
+  ∀ r: ran responses • #r > 0
+  
+  -- Priority must be positive
+  priority > 0
+  
+  -- Category must not be empty
+  #category > 0
+end
+
+--------------------------------------------------------------------------------
+-- AGENT CONFIGURATION
+--------------------------------------------------------------------------------
+
+-- Agent configuration
+schema AgentConfig
+  agentId: UUID
+  agentName: Content
+  bio: ℙ Content
+  lore: seq Content
+  messageExamples: seq (Content × Content)
+  postExamples: seq Content
+  topics: seq Content
+  adjectives: seq Content
+  plugins: seq Content
+  settings: Content ↔ Content
+  style: ℙ Content
+where
+  -- Agent name must not be empty
+  #agentName > 0
+  
+  -- Optional bio
+  #bio ≤ 1
+  bio ≠ ∅ ⇒ #(⋃ bio) > 0
+  
+  -- Optional style
+  #style ≤ 1
+  
+  -- All example messages must be non-empty
+  ∀ (input, output): ran messageExamples • 
+    #input > 0 ∧ #output > 0
+  
+  -- All post examples must be non-empty
+  ∀ p: ran postExamples • #p > 0
+  
+  -- Topics and adjectives must not be empty
+  ∀ t: ran topics • #t > 0
+  ∀ a: ran adjectives • #a > 0
+end
+
+--------------------------------------------------------------------------------
+-- DATA INVARIANTS AND CONSTRAINTS
+--------------------------------------------------------------------------------
+
+-- Global uniqueness constraint for identifiers
+schema UniqueIdentifiers
+  allIds: ℙ UUID
+  memoryIds: ℙ UUID
+  messageIds: ℙ UUID
+  nodeIds: ℙ UUID
+  edgeIds: ℙ UUID
+  taskIds: ℙ UUID
+  agentIds: ℙ UUID
+where
+  -- All ID sets must be pairwise disjoint
+  memoryIds ⊆ allIds
+  messageIds ⊆ allIds
+  nodeIds ⊆ allIds
+  edgeIds ⊆ allIds
+  taskIds ⊆ allIds
+  agentIds ⊆ allIds
+  
+  -- Union of all ID sets equals all IDs
+  allIds = memoryIds ∪ messageIds ∪ nodeIds ∪ edgeIds ∪ taskIds ∪ agentIds
+end
+
+-- Referential integrity for hypergraph
+schema HypergraphIntegrity
+  nodes: ℙ HypergraphNode
+  edges: ℙ HypergraphEdge
+where
+  -- All edge node references must exist
+  ∀ e: edges • ∀ nid: ran (e.nodeIds) • 
+    ∃ n: nodes • n.id = nid
+  
+  -- No self-loops (edge connecting node to itself)
+  ∀ e: edges • 
+    #(⋃ ran (e.nodeIds)) = #(e.nodeIds)
+end
+
+-- Temporal consistency for memories
+schema TemporalConsistency
+  memories: ℙ Memory
+where
+  -- For all memories, if updatedAt exists, it must be >= createdAt
+  ∀ m: memories • 
+    m.updatedAt ≠ ∅ ⇒ m.createdAt ≤ (⋃ m.updatedAt)
+end
+
+-- Memory embedding dimension consistency
+schema EmbeddingConsistency
+  embeddingDimension: ℕ
+  memories: ℙ Memory
+where
+  -- If dimension is set, all embeddings must match
+  embeddingDimension > 0 ⇒
+    ∀ m: memories | m.embedding ≠ ∅ • 
+      #(⋃ m.embedding) = embeddingDimension
+end
+
+--------------------------------------------------------------------------------
+-- END OF DATA MODEL SPECIFICATION
+--------------------------------------------------------------------------------
+
+-- This specification defines the complete data layer of ElizaOS C++.
+-- All operations and system state definitions will build upon these
+-- foundational data structures and their invariants.

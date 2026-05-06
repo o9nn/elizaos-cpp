@@ -1,0 +1,18 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/reconcile",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/check-matured-otc",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/poll-token-registrations",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
+
+

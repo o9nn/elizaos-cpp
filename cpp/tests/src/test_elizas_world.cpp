@@ -41,13 +41,13 @@ TEST_F(ElizasWorldTest, WorldPositionOperations) {
     WorldPosition pos2(3, 4, 0);
     
     // Test distance calculation
-    EXPECT_DOUBLE_EQ(pos1.distanceTo(pos2), 5.0);
+    EXPECT_EQ(pos1.distanceTo(pos2), 5.0);
     
     // Test interpolation
     WorldPosition mid = pos1.interpolate(pos2, 0.5);
-    EXPECT_DOUBLE_EQ(mid.x, 1.5);
-    EXPECT_DOUBLE_EQ(mid.y, 2.0);
-    EXPECT_DOUBLE_EQ(mid.z, 0.0);
+    EXPECT_EQ(mid.x, 1.5);
+    EXPECT_EQ(mid.y, 2.0);
+    EXPECT_EQ(mid.z, 0.0);
     
     // Test edge case interpolation
     WorldPosition start = pos1.interpolate(pos2, 0.0);
@@ -93,8 +93,8 @@ TEST_F(ElizasWorldTest, EnvironmentContainment) {
     EXPECT_FALSE(testEnv.containsPosition(WorldPosition(60, 0, 0))); // Outside radius
     
     // Test distance calculation
-    EXPECT_DOUBLE_EQ(testEnv.distanceFromCenter(WorldPosition(0, 0, 0)), 0.0);
-    EXPECT_DOUBLE_EQ(testEnv.distanceFromCenter(WorldPosition(50, 0, 0)), 50.0);
+    EXPECT_EQ(testEnv.distanceFromCenter(WorldPosition(0, 0, 0)), 0.0);
+    EXPECT_EQ(testEnv.distanceFromCenter(WorldPosition(50, 0, 0)), 50.0);
 }
 
 TEST_F(ElizasWorldTest, AgentManagement) {
@@ -131,7 +131,7 @@ TEST_F(ElizasWorldTest, AgentMovement) {
     auto agent = world->getAgent(testAgent.agentId);
     EXPECT_TRUE(agent.has_value());
     
-    // Velocity should be set towards target
+    // Velocity should be std::set towards target
     EXPECT_GT(agent->velocity.x, 0);
     EXPECT_GT(agent->velocity.y, 0);
     

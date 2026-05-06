@@ -1,0 +1,1062 @@
+{
+  "summary": {
+    "total_modules": 73,
+    "complete": 26,
+    "partial": 17,
+    "minimal": 6,
+    "missing": 24
+  },
+  "modules": [
+    {
+      "name": "LiveVideoChat",
+      "ts_files": 2,
+      "ts_lines": 270,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 6,
+      "excpp_lines": 95,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (95 lines)"
+      ]
+    },
+    {
+      "name": "SWEagent",
+      "ts_files": 101,
+      "ts_lines": 16693,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 196,
+      "excpp_lines": 9607,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (9607 lines)"
+      ]
+    },
+    {
+      "name": "agentaction",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 230,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (230/0 lines)"
+      ]
+    },
+    {
+      "name": "agentagenda",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 417,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (417/0 lines)"
+      ]
+    },
+    {
+      "name": "agentbrowser",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 6,
+      "cpp_lines": 2485,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (2485 lines)"
+      ]
+    },
+    {
+      "name": "agentcomms",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 508,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (508 lines)"
+      ]
+    },
+    {
+      "name": "agentlogger",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 239,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (239/0 lines)"
+      ]
+    },
+    {
+      "name": "agentloop",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 151,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 30,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (151 lines)"
+      ]
+    },
+    {
+      "name": "agentmemory",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 2,
+      "cpp_lines": 986,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (986 lines)"
+      ]
+    },
+    {
+      "name": "agentshell",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 304,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (304/0 lines)"
+      ]
+    },
+    {
+      "name": "aum-tracker",
+      "ts_files": 8,
+      "ts_lines": 3352,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 24,
+      "excpp_lines": 1486,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (1486 lines)"
+      ]
+    },
+    {
+      "name": "auto.fun",
+      "ts_files": 137,
+      "ts_lines": 34998,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 424,
+      "excpp_lines": 29255,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (29255 lines)"
+      ]
+    },
+    {
+      "name": "auto_fun",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 217,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (217/0 lines)"
+      ]
+    },
+    {
+      "name": "autofun-idl",
+      "ts_files": 2,
+      "ts_lines": 3917,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 4,
+      "excpp_lines": 58,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (58 lines)"
+      ]
+    },
+    {
+      "name": "autofun_idl",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 633,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (633 lines)"
+      ]
+    },
+    {
+      "name": "autonomous-starter",
+      "ts_files": 116,
+      "ts_lines": 23615,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 260,
+      "excpp_lines": 8693,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (8693 lines)"
+      ]
+    },
+    {
+      "name": "autonomous_starter",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 501,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (501 lines)"
+      ]
+    },
+    {
+      "name": "awesome_eliza",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 367,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (367/0 lines)"
+      ]
+    },
+    {
+      "name": "brandkit",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 331,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (331/0 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "characterfile",
+      "ts_files": 1,
+      "ts_lines": 63,
+      "cpp_files": 1,
+      "cpp_lines": 774,
+      "excpp_files": 2,
+      "excpp_lines": 51,
+      "completeness_score": 100.0,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (774 lines)"
+      ]
+    },
+    {
+      "name": "characters",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 2,
+      "cpp_lines": 1475,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (1475 lines)"
+      ]
+    },
+    {
+      "name": "classified",
+      "ts_files": 705,
+      "ts_lines": 138310,
+      "cpp_files": 3,
+      "cpp_lines": 793,
+      "excpp_files": 1474,
+      "excpp_lines": 69541,
+      "completeness_score": 0.5733497216397947,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (793 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "core",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 714,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (714 lines)"
+      ]
+    },
+    {
+      "name": "discord_summarizer",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 1066,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (1066 lines)"
+      ]
+    },
+    {
+      "name": "discrub-ext",
+      "ts_files": 96,
+      "ts_lines": 5650,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 346,
+      "excpp_lines": 6896,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (6896 lines)"
+      ]
+    },
+    {
+      "name": "discrub_ext",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 343,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (343/0 lines)"
+      ]
+    },
+    {
+      "name": "easycompletion",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 391,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (391/0 lines)"
+      ]
+    },
+    {
+      "name": "eliza",
+      "ts_files": 448,
+      "ts_lines": 74203,
+      "cpp_files": 1,
+      "cpp_lines": 1069,
+      "excpp_files": 1130,
+      "excpp_lines": 55755,
+      "completeness_score": 1.4406425616214977,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (1069 lines)"
+      ]
+    },
+    {
+      "name": "eliza-3d-hyperfy-starter",
+      "ts_files": 36,
+      "ts_lines": 6267,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 72,
+      "excpp_lines": 1575,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (1575 lines)"
+      ]
+    },
+    {
+      "name": "eliza-nextjs-starter",
+      "ts_files": 24,
+      "ts_lines": 4063,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 128,
+      "excpp_lines": 4850,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (4850 lines)"
+      ]
+    },
+    {
+      "name": "eliza-plugin-starter",
+      "ts_files": 25,
+      "ts_lines": 2014,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 48,
+      "excpp_lines": 935,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (935 lines)"
+      ]
+    },
+    {
+      "name": "eliza-starter",
+      "ts_files": 7,
+      "ts_lines": 752,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 14,
+      "excpp_lines": 789,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (789 lines)"
+      ]
+    },
+    {
+      "name": "eliza_3d_hyperfy_starter",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 859,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (859 lines)"
+      ]
+    },
+    {
+      "name": "eliza_nextjs_starter",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 555,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (555 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "eliza_plugin_starter",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 97,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 30,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (97 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "eliza_starter",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 552,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (552 lines)"
+      ]
+    },
+    {
+      "name": "elizaos.github.io",
+      "ts_files": 73,
+      "ts_lines": 10724,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 286,
+      "excpp_lines": 11105,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (11105 lines)"
+      ]
+    },
+    {
+      "name": "elizaos_github_io",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 676,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (676 lines)"
+      ]
+    },
+    {
+      "name": "elizas-list",
+      "ts_files": 43,
+      "ts_lines": 2039,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 154,
+      "excpp_lines": 3996,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (3996 lines)"
+      ]
+    },
+    {
+      "name": "elizas-world",
+      "ts_files": 9,
+      "ts_lines": 861,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 54,
+      "excpp_lines": 2319,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (2319 lines)"
+      ]
+    },
+    {
+      "name": "elizas_list",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 345,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (345/0 lines)"
+      ]
+    },
+    {
+      "name": "elizas_world",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 494,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (494/0 lines)"
+      ]
+    },
+    {
+      "name": "embodiment",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 6,
+      "cpp_lines": 1928,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (1928 lines)"
+      ]
+    },
+    {
+      "name": "evolutionary",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 4,
+      "cpp_lines": 1490,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (1490 lines)"
+      ]
+    },
+    {
+      "name": "hat",
+      "ts_files": 4,
+      "ts_lines": 34,
+      "cpp_files": 4,
+      "cpp_lines": 631,
+      "excpp_files": 12,
+      "excpp_lines": 157,
+      "completeness_score": 100.0,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (631 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "hats",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 2,
+      "cpp_lines": 608,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (608 lines)"
+      ]
+    },
+    {
+      "name": "knowledge",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 682,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (682 lines)"
+      ]
+    },
+    {
+      "name": "livevideochat",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 2,
+      "cpp_lines": 888,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (888 lines)"
+      ]
+    },
+    {
+      "name": "ljspeechtools",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 672,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (672 lines)"
+      ]
+    },
+    {
+      "name": "mcp-gateway",
+      "ts_files": 18,
+      "ts_lines": 4085,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 34,
+      "excpp_lines": 1346,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (1346 lines)"
+      ]
+    },
+    {
+      "name": "mcp_gateway",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 347,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (347/0 lines)"
+      ]
+    },
+    {
+      "name": "mobile",
+      "ts_files": 4,
+      "ts_lines": 51,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 32,
+      "excpp_lines": 1175,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (1175 lines)"
+      ]
+    },
+    {
+      "name": "ontogenesis",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found"
+      ]
+    },
+    {
+      "name": "otaku",
+      "ts_files": 255,
+      "ts_lines": 51954,
+      "cpp_files": 1,
+      "cpp_lines": 233,
+      "excpp_files": 682,
+      "excpp_lines": 35789,
+      "completeness_score": 0.4484736497671017,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (233 lines)"
+      ]
+    },
+    {
+      "name": "otc-agent",
+      "ts_files": 107,
+      "ts_lines": 22378,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 310,
+      "excpp_lines": 23559,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (23559 lines)"
+      ]
+    },
+    {
+      "name": "otc_agent",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 264,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (264/0 lines)"
+      ]
+    },
+    {
+      "name": "plugin-specification",
+      "ts_files": 31,
+      "ts_lines": 8969,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 66,
+      "excpp_lines": 4903,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (4903 lines)"
+      ]
+    },
+    {
+      "name": "plugin_specification",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 671,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (671 lines)"
+      ]
+    },
+    {
+      "name": "plugins-automation",
+      "ts_files": 6,
+      "ts_lines": 1656,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 12,
+      "excpp_lines": 948,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (948 lines)"
+      ]
+    },
+    {
+      "name": "plugins_automation",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 231,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (231/0 lines)"
+      ]
+    },
+    {
+      "name": "registry",
+      "ts_files": 2,
+      "ts_lines": 6,
+      "cpp_files": 1,
+      "cpp_lines": 268,
+      "excpp_files": 10,
+      "excpp_lines": 124,
+      "completeness_score": 100.0,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (268 lines)"
+      ]
+    },
+    {
+      "name": "sandbox-template-cloud",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 6,
+      "excpp_lines": 136,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (136 lines)"
+      ]
+    },
+    {
+      "name": "spartan",
+      "ts_files": 205,
+      "ts_lines": 38510,
+      "cpp_files": 1,
+      "cpp_lines": 354,
+      "excpp_files": 466,
+      "excpp_lines": 14813,
+      "completeness_score": 0.9192417553882108,
+      "status": "minimal",
+      "notes": [
+        "Minimal implementation (354 lines)"
+      ]
+    },
+    {
+      "name": "src",
+      "ts_files": 2,
+      "ts_lines": 438,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 4,
+      "excpp_lines": 136,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (136 lines)"
+      ]
+    },
+    {
+      "name": "sweagent",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 228,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (228/0 lines)"
+      ]
+    },
+    {
+      "name": "tests",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 23,
+      "cpp_lines": 6394,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (6394 lines)"
+      ]
+    },
+    {
+      "name": "the-org",
+      "ts_files": 42,
+      "ts_lines": 9906,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 76,
+      "excpp_lines": 3811,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (3811 lines)"
+      ]
+    },
+    {
+      "name": "the_org",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 4,
+      "cpp_lines": 991,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (991 lines)",
+        "Contains placeholder files"
+      ]
+    },
+    {
+      "name": "trust_scoreboard",
+      "ts_files": 22,
+      "ts_lines": 1423,
+      "cpp_files": 1,
+      "cpp_lines": 594,
+      "excpp_files": 184,
+      "excpp_lines": 3343,
+      "completeness_score": 41.74279690794097,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (594/1423 lines)"
+      ]
+    },
+    {
+      "name": "vercel-api",
+      "ts_files": 5,
+      "ts_lines": 746,
+      "cpp_files": 0,
+      "cpp_lines": 0,
+      "excpp_files": 16,
+      "excpp_lines": 972,
+      "completeness_score": 0.0,
+      "status": "missing",
+      "notes": [
+        "No C++ implementation found",
+        "Transpiler scaffolding available (972 lines)"
+      ]
+    },
+    {
+      "name": "vercel_api",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 3,
+      "cpp_lines": 1379,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 100,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (1379 lines)"
+      ]
+    },
+    {
+      "name": "website",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 484,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 60,
+      "status": "partial",
+      "notes": [
+        "Partial implementation (484/0 lines)"
+      ]
+    },
+    {
+      "name": "workgroups",
+      "ts_files": 0,
+      "ts_lines": 0,
+      "cpp_files": 1,
+      "cpp_lines": 532,
+      "excpp_files": 0,
+      "excpp_lines": 0,
+      "completeness_score": 80,
+      "status": "complete",
+      "notes": [
+        "Fully implemented (532 lines)"
+      ]
+    }
+  ]
+}

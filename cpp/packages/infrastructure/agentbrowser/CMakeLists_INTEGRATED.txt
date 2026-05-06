@@ -1,0 +1,208 @@
+# AgentBrowser - Web automation interface for ElizaOS agents
+# Supports both mock and real implementations with automatic dependency detection
+
+cmake_minimum_required(VERSION 3.14)
+
+# ==============================================================================
+# DEPENDENCY DETECTION
+# ==============================================================================
+
+# Find libcurl for HTTP requests
+find_package(CURL QUIET)
+if(CURL_FOUND)
+    message(STATUS "AgentBrowser: Found libcurl ${CURL_VERSION_STRING}")
+    set(AGENTBROWSER_HAS_CURL TRUE)
+else()
+    message(STATUS "AgentBrowser: libcurl not found - HTTP functionality will use mock implementation")
+    set(AGENTBROWSER_HAS_CURL FALSE)
+endif()
+
+# Find gumbo-parser for HTML parsing
+find_package(PkgConfig QUIET)
+set(AGENTBROWSER_HAS_GUMBO FALSE)
+
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(GUMBO QUIET gumbo)
+    if(GUMBO_FOUND)
+        message(STATUS "AgentBrowser: Found gumbo-parser via pkg-config")
+        set(AGENTBROWSER_HAS_GUMBO TRUE)
+    endif()
+endif()
+
+# Try to find gumbo manually if pkg-config failed
+if(NOT AGENTBROWSER_HAS_GUMBO)
+    find_path(GUMBO_INCLUDE_DIR 
+        NAMES gumbo.h
+        PATHS /usr/include /usr/local/include
+        PATH_SUFFIXES gumbo
+    )
+    
+    find_library(GUMBO_LIBRARY
+        NAMES gumbo
+        PATHS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu
+    )
+    
+    if(GUMBO_INCLUDE_DIR AND GUMBO_LIBRARY)
+        message(STATUS "AgentBrowser: Found gumbo-parser manually")
+        set(AGENTBROWSER_HAS_GUMBO TRUE)
+        set(GUMBO_INCLUDE_DIRS ${GUMBO_INCLUDE_DIR})
+        set(GUMBO_LIBRARIES ${GUMBO_LIBRARY})
+    else()
+        message(STATUS "AgentBrowser: gumbo-parser not found - HTML parsing will use mock implementation")
+    endif()
+endif()
+
+# Determine if real implementation should be enabled
+if(AGENTBROWSER_HAS_CURL AND AGENTBROWSER_HAS_GUMBO)
+    set(AGENTBROWSER_REAL_IMPL TRUE)
+    message(STATUS "AgentBrowser: ✅ Real implementation ENABLED (libcurl + gumbo-parser)")
+else()
+    set(AGENTBROWSER_REAL_IMPL FALSE)
+    message(STATUS "AgentBrowser: ⚠️  Mock implementation ENABLED (missing dependencies)")
+    if(NOT AGENTBROWSER_HAS_CURL)
+        message(STATUS "  - Install libcurl: sudo apt-get install libcurl4-openssl-dev")
+    endif()
+    if(NOT AGENTBROWSER_HAS_GUMBO)
+        message(STATUS "  - Install gumbo-parser: sudo apt-get install libgumbo-dev")
+    endif()
+endif()
+
+# ==============================================================================
+# SOURCE FILES
+# ==============================================================================
+
+set(AGENTBROWSER_SOURCES
+    src/agentbrowser.cpp
+)
+
+# Add real implementation sources if enabled
+if(AGENTBROWSER_REAL_IMPL)
+    list(APPEND AGENTBROWSER_SOURCES
+        src/http_client.cpp
+        src/html_parser.cpp
+    )
+endif()
+
+# ==============================================================================
+# LIBRARY DEFINITION
+# ==============================================================================
+
+add_library(elizaos-agentbrowser STATIC ${AGENTBROWSER_SOURCES})
+
+# Set C++ standard
+target_compile_features(elizaos-agentbrowser PUBLIC cxx_std_17)
+
+# ==============================================================================
+# INCLUDE DIRECTORIES
+# ==============================================================================
+
+target_include_directories(elizaos-agentbrowser PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+# Add private include for real implementation headers
+if(AGENTBROWSER_REAL_IMPL)
+    target_include_directories(elizaos-agentbrowser PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+endif()
+
+# ==============================================================================
+# COMPILE DEFINITIONS
+# ==============================================================================
+
+# Enable real implementation if dependencies are available
+if(AGENTBROWSER_REAL_IMPL)
+    target_compile_definitions(elizaos-agentbrowser PRIVATE
+        AGENTBROWSER_REAL_IMPLEMENTATION
+    )
+endif()
+
+# ==============================================================================
+# LINK LIBRARIES
+# ==============================================================================
+
+# Core dependencies (always required)
+target_link_libraries(elizaos-agentbrowser PUBLIC
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentmemory
+)
+
+# System dependencies
+target_link_libraries(elizaos-agentbrowser PRIVATE
+    Threads::Threads
+)
+
+# Optional dependencies for real implementation
+if(AGENTBROWSER_HAS_CURL)
+    target_link_libraries(elizaos-agentbrowser PRIVATE ${CURL_LIBRARIES})
+    target_include_directories(elizaos-agentbrowser PRIVATE ${CURL_INCLUDE_DIRS})
+endif()
+
+if(AGENTBROWSER_HAS_GUMBO)
+    target_link_libraries(elizaos-agentbrowser PRIVATE ${GUMBO_LIBRARIES})
+    target_include_directories(elizaos-agentbrowser PRIVATE ${GUMBO_INCLUDE_DIRS})
+endif()
+
+# ==============================================================================
+# COMPILER OPTIONS
+# ==============================================================================
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(elizaos-agentbrowser PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        $<$<CONFIG:Debug>:-g>
+        $<$<CONFIG:Release>:-O3>
+    )
+elseif(MSVC)
+    target_compile_options(elizaos-agentbrowser PRIVATE
+        /W4
+        $<$<CONFIG:Debug>:/Zi>
+        $<$<CONFIG:Release>:/O2>
+    )
+endif()
+
+# ==============================================================================
+# INSTALLATION
+# ==============================================================================
+
+install(TARGETS elizaos-agentbrowser
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# ==============================================================================
+# CONFIGURATION SUMMARY
+# ==============================================================================
+
+message(STATUS "")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "AgentBrowser Configuration Summary")
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "  Implementation:    ${AGENTBROWSER_REAL_IMPL}")
+if(AGENTBROWSER_REAL_IMPL)
+    message(STATUS "  libcurl:           ${CURL_VERSION_STRING}")
+    message(STATUS "  gumbo-parser:      Found")
+    message(STATUS "  HTTP Requests:     ✅ Real (libcurl)")
+    message(STATUS "  HTML Parsing:      ✅ Real (gumbo-parser)")
+    message(STATUS "  Element Finding:   ✅ Real (DOM traversal)")
+else()
+    message(STATUS "  HTTP Requests:     ⚠️  Mock")
+    message(STATUS "  HTML Parsing:      ⚠️  Mock")
+    message(STATUS "  Element Finding:   ⚠️  Mock")
+endif()
+message(STATUS "═══════════════════════════════════════════════════════════")
+message(STATUS "")
+
+# ==============================================================================
+# TESTING
+# ==============================================================================
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()

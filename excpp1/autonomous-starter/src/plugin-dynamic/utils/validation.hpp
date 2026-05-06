@@ -1,0 +1,27 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * Validates if a memory contains a valid prompt
+ */
+bool validatePrompt(Memory message);
+
+/**
+ * Validates if text looks like a JSON specification
+ */
+bool isValidJsonSpecification(const std::string& text);
+
+} // namespace elizaos

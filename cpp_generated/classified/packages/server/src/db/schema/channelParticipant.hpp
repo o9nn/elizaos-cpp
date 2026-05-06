@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_SCHEMA_CHANNELPARTICIPANT_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_SCHEMA_CHANNELPARTICIPANT_H
+#include "core.h"
+#include "drizzle-orm/pg-core.h"
+#include "./channel.h"
+
+extern any channelParticipantsTable;
+#endif

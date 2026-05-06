@@ -1,0 +1,9 @@
+{
+  "network": "solana-devnet",
+  "rpc": "https://api.devnet.solana.com",
+  "deployer": "ATwDftA6zTxod9A7ys2QSa1cEWg9usuLtCQj5MXPNc89",
+  "programId": "6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc",
+  "desk": "6ZidhqgftFePupwxjYgbmxhs9ym4zW2LNxppsbU66y8c",
+  "deskOwner": "ATwDftA6zTxod9A7ys2QSa1cEWg9usuLtCQj5MXPNc89",
+  "usdcMint": "FPq3dQeUjyzx9CwHNYRH9Lwm8hgDSUgiGxdZpz1FW5NU"
+}

@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ALLOWEDORIGINS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ALLOWEDORIGINS_H
+#include "core.hpp"
+
+extern array<string> envAllowedOrigins;
+extern array<string> allowedOrigins;
+#endif

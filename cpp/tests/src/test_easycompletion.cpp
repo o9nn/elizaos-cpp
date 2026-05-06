@@ -69,7 +69,7 @@ TEST_F(EasyCompletionTest, ComposeFunction) {
 }
 
 TEST_F(EasyCompletionTest, CountTokens) {
-    std::string text = "This is a test string for token counting.";
+    std::string text = "This is a test std::string for token counting.";
     int tokens = count_tokens(text);
     
     // Should be approximately text.length() / 4
@@ -90,7 +90,7 @@ TEST_F(EasyCompletionTest, TrimPrompt) {
 }
 
 TEST_F(EasyCompletionTest, ChunkPrompt) {
-    std::string text = "This is a test string that will be split into multiple chunks for processing.";
+    std::string text = "This is a test std::string that will be split into multiple chunks for processing.";
     
     std::vector<std::string> chunks = chunk_prompt(text, 5); // 5 tokens per chunk (approx 20 chars)
     

@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+description: Docs in README.md only; consolidate files; avoid bloat
+---
+
+## Documentation and Consolidation
+
+- **Documentation lives in README.md only** - no CHANGELOG.md, FIXES.md, etc.
+- **Prefer updating existing files** over creating new ones
+- **Consolidate duplicates** into single entrypoints
+- **Delete stale/unused files** when touching an area
+- **Fewer, clearer entrypoints** are preferred

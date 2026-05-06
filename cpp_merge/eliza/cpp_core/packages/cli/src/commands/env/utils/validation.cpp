@@ -1,0 +1,22 @@
+#include "validation.hpp"
+#include <string>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::string maskedValue(const std::string& value) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!value) return '';
+
+    // If the value looks like a token/API key (longer than 20 chars, no spaces), mask it
+    if (value.size() > 20 && !value.count(' ') > 0) {
+        return std::to_string(value.substring(0, 4)) + "..." + std::to_string(value.substring(value.size() - 4));
+    }
+
+    return value;
+
+}
+
+} // namespace elizaos

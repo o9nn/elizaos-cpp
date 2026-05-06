@@ -1,0 +1,10 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2___TESTS___MESSAGES_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2___TESTS___MESSAGES_TEST_H
+#include "core.h"
+#include "vitest.h"
+#include "../src/entities.h"
+#include "../src/utils.h"
+#include "../src/types.h"
+#include "../src/types.h"
+
+#endif

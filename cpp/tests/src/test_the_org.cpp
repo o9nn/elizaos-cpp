@@ -7,10 +7,6 @@ using namespace elizaos;
 class TheOrgTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Initialize logger for testing
-        auto logger = Logger::getInstance();
-        logger->setLevel("INFO");
-        
         // Create test agent configurations
         eli5Config.agentId = the_org_utils::generateAgentId(AgentRole::COMMUNITY_MANAGER);
         eli5Config.agentName = "Eli5";
@@ -485,7 +481,7 @@ TEST_F(TheOrgTest, IntegrationWorkflow) {
     
     // Simulate developer relations workflow
     eddy->indexDocumentation("/docs/getting-started.md", "1.0.0");
-    eddy->addTechnicalKnowledge("setup", "How to set up the development environment", {"setup", "dev"});
+    eddy->addTechnicalKnowledge("setup", "How to std::set up the development environment", {"setup", "dev"});
     
     // Simulate project management workflow
     UUID projectId = jimmy->createProject("Community Platform", "Building the community platform");
@@ -554,5 +550,3 @@ TEST_F(TheOrgTest, ErrorHandlingAndEdgeCases) {
     std::string knowledge = eddy.retrieveKnowledge("completely-unknown-topic");
     EXPECT_TRUE(knowledge.find("not found") != std::string::npos);
 }
-
-} // namespace elizaos

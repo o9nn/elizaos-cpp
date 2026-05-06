@@ -1,0 +1,10 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_CACHE_SEED_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_CACHE_SEED_H
+#include "core.hpp"
+// External dependency removed
+#include "uuid.hpp"
+
+extern any cacheTestAgentSettings;
+extern object testCacheEntries;
+extern object testCacheWithExpiration;
+#endif

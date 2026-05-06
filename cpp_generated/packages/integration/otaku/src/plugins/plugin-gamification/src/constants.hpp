@@ -1,0 +1,21 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-GAMIFICATION_SRC_CONSTANTS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-GAMIFICATION_SRC_CONSTANTS_H
+#include "core.h"
+
+enum struct GamificationEventType;
+
+enum struct GamificationEventType {
+    ACCOUNT_CREATION = std::string("ACCOUNT_CREATION"), DAILY_LOGIN_STREAK = std::string("DAILY_LOGIN_STREAK"), MEANINGFUL_CHAT = std::string("MEANINGFUL_CHAT"), SWAP_COMPLETED = std::string("SWAP_COMPLETED"), BRIDGE_COMPLETED = std::string("BRIDGE_COMPLETED"), TRANSFER_COMPLETED = std::string("TRANSFER_COMPLETED"), DAILY_QUEST = std::string("DAILY_QUEST"), REFERRAL_SIGNUP = std::string("REFERRAL_SIGNUP"), REFERRAL_ACTIVATION = std::string("REFERRAL_ACTIVATION"), REFERRED_WELCOME = std::string("REFERRED_WELCOME"), FIRST_CHAIN_BONUS = std::string("FIRST_CHAIN_BONUS"), AGENT_ACTION = std::string("AGENT_ACTION")
+};
+extern Record<GamificationEventType, double> BASE_POINTS;
+extern Partial<Record<GamificationEventType, double>> DAILY_CAPS;
+extern object VOLUME_MULTIPLIERS;
+extern array<object> LEVEL_THRESHOLDS;
+extern double STREAK_BONUS_PER_DAY;
+extern double MAX_STREAK_BONUS;
+extern double MIN_TRANSFER_VALUE_USD;
+extern double MIN_CHAT_LENGTH;
+extern array<object> MESSAGE_LENGTH_TIERS;
+extern double DAILY_QUEST_UNIQUE_ACTIONS_REQUIRED;
+extern double REFERRAL_ACTIVATION_WINDOW_DAYS;
+#endif

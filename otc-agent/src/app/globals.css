@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand colors */
+    --brand-primary: #f75b1e;
+    --brand-light: #ffb79b;
+    --brand-dark: #c2410c;
+
+    /* Tailwind-style color variables (for button component) */
+    --color-brand-500: #f75b1e;
+    --color-brand-600: #ea580c;
+    --color-white: #ffffff;
+    --color-zinc-300: #d4d4d8;
+    --color-zinc-400: #a1a1aa;
+    --color-zinc-500: #71717a;
+    --color-zinc-600: #52525b;
+    --color-zinc-700: #3f3f46;
+    --color-zinc-800: #27272a;
+    --color-zinc-900: #18181b;
+    --color-zinc-950: #09090b;
+    --color-blue-500: #3b82f6;
+    --color-blue-600: #2563eb;
+    --color-blue-200: #bfdbfe;
+    --color-blue-300: #93c5fd;
+    --color-cyan-300: #67e8f9;
+    --color-cyan-400: #22d3ee;
+    --color-cyan-500: #06b6d4;
+    --color-red-600: #dc2626;
+    --color-red-700: #b91c1c;
+    --color-red-200: #fecaca;
+    --color-red-300: #fca5a5;
+    --color-amber-400: #fbbf24;
+    --color-amber-500: #f59e0b;
+    --color-amber-600: #d97706;
+    --color-yellow-300: #fde047;
+    --color-yellow-400: #facc15;
+    --color-yellow-600: #ca8a04;
+    --color-yellow-700: #a16207;
+    --color-lime-300: #bef264;
+    --color-lime-400: #a3e635;
+    --color-lime-600: #65a30d;
+    --color-lime-700: #4d7c0f;
+    --color-green-600: #16a34a;
+    --color-green-700: #15803d;
+    --color-teal-600: #0d9488;
+    --color-teal-700: #0f766e;
+    --color-sky-500: #0ea5e9;
+    --color-sky-600: #0284c7;
+    --color-indigo-600: #4f46e5;
+    --color-indigo-700: #4338ca;
+    --color-indigo-300: #a5b4fc;
+    --color-indigo-400: #818cf8;
+    --color-violet-500: #8b5cf6;
+    --color-violet-600: #7c3aed;
+    --color-violet-200: #ddd6fe;
+    --color-violet-300: #c4b5fd;
+    --color-purple-500: #a855f7;
+    --color-purple-600: #9333ea;
+    --color-purple-200: #e9d5ff;
+    --color-purple-300: #d8b4fe;
+    --color-fuchsia-500: #d946ef;
+    --color-fuchsia-600: #c026d3;
+    --color-fuchsia-200: #f5d0fe;
+    --color-fuchsia-300: #f0abfc;
+    --color-pink-500: #ec4899;
+    --color-pink-600: #db2777;
+    --color-pink-200: #fbcfe8;
+    --color-pink-300: #f9a8d4;
+    --color-rose-500: #f43f5e;
+    --color-rose-600: #e11d48;
+    --color-rose-200: #fecdd3;
+    --color-rose-300: #fda4af;
+
+    /* Surface colors */
+    --surface-dark: #020818;
+
+    /* Chain colors */
+    --solana-purple: #9945ff;
+    --solana-green: #14f195;
+    --coinbase-blue: #0052ff;
+
+    /* Selection colors */
+    --selection-light: #fff0dd;
+    --selection-dark: #3d2b15;
+  }
+}
+
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  padding: 0 !important;
+}
+
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  background-color: transparent !important;
+}
+
+.prose :where(p:last-child) {
+  margin-bottom: 0 !important;
+}

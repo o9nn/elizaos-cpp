@@ -1,0 +1,26 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+// 
+// 
+
+// /**
+//  * TEE (Trusted Execution Environment) security functionality
+//  */
+// express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents);
+
+} // namespace elizaos

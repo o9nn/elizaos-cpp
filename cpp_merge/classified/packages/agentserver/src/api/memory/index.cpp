@@ -1,0 +1,13 @@
+#include "index.hpp"
+#include <string>
+
+std::shared_ptr<express::Router> memoryRouter(std::shared_ptr<Map<std::shared_ptr<UUID>, std::shared_ptr<IAgentRuntime>>> agents, std::shared_ptr<AgentServer> serverInstance)
+{
+    auto router = express->Router();
+    router->use(std::string("/"), createAgentMemoryRouter(agents));
+    router->use(std::string("/"), createGroupMemoryRouter(agents, serverInstance));
+    router->use(std::string("/"), createRoomManagementRouter(agents));
+    return router;
+};
+
+

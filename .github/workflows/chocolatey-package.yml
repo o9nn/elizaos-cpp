@@ -1,0 +1,224 @@
+name: Chocolatey Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to package (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build-chocolatey-package:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Validate case-insensitive path safety
+      shell: bash
+      run: |
+        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+    
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Install CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.20'
+    
+    - name: Verify Chocolatey installation
+      run: |
+        if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+          Write-Host "Installing Chocolatey..."
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        }
+        choco --version
+      shell: powershell
+    
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:/Program Files/ElizaOS-CPP"
+    
+    - name: Build
+      run: cmake --build build --config Release -j 2
+    
+    - name: Run tests
+      working-directory: build
+      run: ctest --output-on-failure --config Release
+      continue-on-error: true
+    
+    - name: Install to staging directory
+      run: |
+        cmake --install build --prefix staging --config Release
+        if (!(Test-Path "staging")) {
+          throw "CMake install did not create the staging directory."
+        }
+        $stagedFiles = Get-ChildItem -Recurse staging -File
+        if (-not $stagedFiles) {
+          throw "The staging directory is empty after installation."
+        }
+        $stagedFiles | Select-Object FullName
+    
+    - name: Prepare Chocolatey package
+      run: |
+        $version = "${{ github.event.inputs.version }}"
+        if ([string]::IsNullOrEmpty($version)) {
+          $version = "${{ github.ref_name }}".TrimStart('v')
+        }
+        if ([string]::IsNullOrEmpty($version) -or $version -eq "main") {
+          $version = "1.0.0"
+        }
+        
+        Write-Host "Packaging version: $version"
+        
+        # Create chocolatey package directory
+        New-Item -ItemType Directory -Force -Path choco-package
+        New-Item -ItemType Directory -Force -Path choco-package/tools
+        
+        # Check if nuspec file exists
+        if (Test-Path "packaging/chocolatey/elizaos-cpp.nuspec") {
+          Copy-Item packaging/chocolatey/elizaos-cpp.nuspec choco-package/
+          
+          # Update version in nuspec
+          $nuspecContent = Get-Content choco-package/elizaos-cpp.nuspec -Raw
+          $nuspecContent = $nuspecContent -replace '<version>.*</version>', "<version>$version</version>"
+          Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecContent
+        } else {
+          Write-Host "Warning: nuspec file not found, creating basic one"
+          $nuspecXml = "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n"
+          $nuspecXml += "<package xmlns=`"http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd`">`n"
+          $nuspecXml += "  <metadata>`n"
+          $nuspecXml += "    <id>elizaos-cpp</id>`n"
+          $nuspecXml += "    <version>$version</version>`n"
+          $nuspecXml += "    <packageSourceUrl>https://github.com/o9nn/elizaos-cpp</packageSourceUrl>`n"
+          $nuspecXml += "    <owners>ElizaOS Team</owners>`n"
+          $nuspecXml += "    <title>ElizaOS C++ Framework</title>`n"
+          $nuspecXml += "    <authors>ElizaOS Team</authors>`n"
+          $nuspecXml += "    <projectUrl>https://github.com/o9nn/elizaos-cpp</projectUrl>`n"
+          $nuspecXml += "    <copyright>2024 ElizaOS Team</copyright>`n"
+          $nuspecXml += "    <licenseUrl>https://github.com/o9nn/elizaos-cpp/blob/main/LICENSE</licenseUrl>`n"
+          $nuspecXml += "    <requireLicenseAcceptance>false</requireLicenseAcceptance>`n"
+          $nuspecXml += "    <tags>elizaos cpp ai agent cognitive framework autonomous</tags>`n"
+          $nuspecXml += "    <summary>Next-Generation Cognitive Agent Framework</summary>`n"
+          $nuspecXml += "    <description>ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework.</description>`n"
+          $nuspecXml += "  </metadata>`n"
+          $nuspecXml += "  <files>`n"
+          $nuspecXml += "    <file src=`"tools\**`" target=`"tools`" />`n"
+          $nuspecXml += "  </files>`n"
+          $nuspecXml += "</package>`n"
+          Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecXml
+        }
+        
+        # Copy install scripts if they exist
+        if (Test-Path "packaging/chocolatey/tools") {
+          Copy-Item packaging/chocolatey/tools/*.ps1 choco-package/tools/ -ErrorAction SilentlyContinue
+        } else {
+          # Create basic install script
+          $installScript = "`$ErrorActionPreference = 'Stop'`n"
+          $installScript += "`$packageName = 'elizaos-cpp'`n"
+          $installScript += "`$toolsDir = Split-Path -Parent `$MyInvocation.MyCommand.Definition`n"
+          $installScript += "`n"
+          $installScript += "Write-Host `"Installing ElizaOS C++ Framework...`"`n"
+          $installScript += "Write-Host `"Installation directory: `$toolsDir`"`n"
+          Set-Content -Path choco-package/tools/chocolateyinstall.ps1 -Value $installScript
+        }
+        
+        # Copy the staged install payload into the Chocolatey tools directory.
+        if (!(Test-Path "staging")) {
+          throw "Expected staging payload is missing. Run the install step before packaging."
+        }
+        Copy-Item -Recurse staging/* choco-package/tools/
+
+        $payloadRoots = @('bin', 'include', 'lib', 'share') |
+          Where-Object { Test-Path (Join-Path 'choco-package/tools' $_) }
+        if (-not $payloadRoots -or $payloadRoots.Count -eq 0) {
+          throw "Chocolatey package payload is missing expected installed directories under choco-package/tools."
+        }
+        
+        # Copy LICENSE and README
+        if (Test-Path "LICENSE") {
+          Copy-Item LICENSE choco-package/tools/LICENSE.txt -ErrorAction SilentlyContinue
+        }
+        if (Test-Path "README.md") {
+          Copy-Item README.md choco-package/tools/ -ErrorAction SilentlyContinue
+        }
+        
+        Write-Host "Chocolatey package prepared"
+        Get-ChildItem choco-package -Recurse | Select-Object FullName
+      shell: powershell
+    
+    - name: Build Chocolatey package
+      run: |
+        cd choco-package
+        choco pack
+        if (Test-Path "*.nupkg") {
+          Write-Host "Package created successfully:"
+          Get-ChildItem *.nupkg | Select-Object Name, Length
+        } else {
+          throw "Chocolatey packaging did not produce a .nupkg artifact."
+        }
+      shell: powershell
+    
+    - name: Test Chocolatey package
+      run: |
+        $nupkg = Get-ChildItem -Path choco-package -Filter *.nupkg | Select-Object -First 1
+        if (-not $nupkg) {
+          throw "No Chocolatey package was produced to test."
+        }
+
+        Write-Host "Testing package installation from local source..."
+        choco install elizaos-cpp -y --force --source choco-package
+
+        $packageToolsDir = Join-Path $env:ChocolateyInstall 'lib\elizaos-cpp\tools'
+        if (!(Test-Path $packageToolsDir)) {
+          throw "Installed Chocolatey tools directory was not created: $packageToolsDir"
+        }
+
+        $installedPayloadRoots = @('bin', 'include', 'lib', 'share') |
+          Where-Object { Test-Path (Join-Path $packageToolsDir $_) }
+        if (-not $installedPayloadRoots -or $installedPayloadRoots.Count -eq 0) {
+          throw "Installed Chocolatey package is missing the expected payload directories."
+        }
+
+        Write-Host "Package installed successfully"
+        Get-ChildItem -Recurse $packageToolsDir | Select-Object FullName
+      shell: powershell
+    
+    - name: Upload Chocolatey package
+      uses: actions/upload-artifact@v4
+      with:
+        name: chocolatey-package
+        path: choco-package/*.nupkg
+        retention-days: 30
+        if-no-files-found: warn
+    
+    - name: Publish to Chocolatey (if API key is set)
+      if: success() && startsWith(github.ref, 'refs/tags/v')
+      run: |
+        if ($env:CHOCO_API_KEY) {
+          cd choco-package
+          choco push *.nupkg --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
+        } else {
+          Write-Host "CHOCO_API_KEY not set, skipping publish to Chocolatey"
+        }
+      shell: powershell
+      env:
+        CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+      continue-on-error: true
+    
+    - name: Publish to GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: choco-package/*.nupkg
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true

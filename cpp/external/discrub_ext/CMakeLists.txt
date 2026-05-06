@@ -1,0 +1,17 @@
+# Stage 6 - Tools and Automation - Discrub Extension
+add_library(elizaos-discrub_ext STATIC
+    src/discrub_ext.cpp
+    src/discrub_ext_complete.cpp
+)
+
+target_include_directories(elizaos-discrub_ext PUBLIC
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
+)
+
+target_link_libraries(elizaos-discrub_ext 
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-discord_summarizer
+    Threads::Threads
+)

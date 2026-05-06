@@ -206,8 +206,9 @@ private:
     Statistics stats_;
     
     // Internal browser driver management
-    // NOTE: In full implementation, this would contain WebDriver/DevTools client
-    void* browserDriver_; // Placeholder for actual browser driver
+    // Real HTTP client and HTML parser
+    void* browserDriver_; // HTTP client and parser (browser_impl::HttpClient and HtmlParser)
+    void* htmlParser_;    // HTML parser instance
 
     // Internal helper methods
     BrowserResult validateSelector(const std::string& selector, SelectorType type);

@@ -1,0 +1,12 @@
+# Foundry / Forge
+out/
+cache/
+broadcast/
+.env.deployment
+
+# Node
+node_modules/
+
+# Deployment artifacts
+deployments/*.json
+!deployments/.gitkeep

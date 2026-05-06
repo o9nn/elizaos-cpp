@@ -35,7 +35,7 @@ TEST_F(EvolutionaryTest, ProgramNodeCreationAndEvaluation) {
     context["x"] = 10.0;
     EXPECT_DOUBLE_EQ(variableNode->evaluate(context), 10.0);
     
-    // Test function node (addition)
+    // Test std::function node (addition)
     auto addNode = std::make_shared<ProgramNode>(ProgramNode::Type::FUNCTION, "add");
     addNode->children.push_back(constantNode);
     addNode->children.push_back(variableNode);
@@ -180,7 +180,7 @@ TEST_F(EvolutionaryTest, PopulationSelection) {
 }
 
 TEST_F(EvolutionaryTest, FitnessFunction) {
-    // Define a simple fitness function that rewards higher constant values
+    // Define a simple fitness std::function that rewards higher constant values
     FitnessFunction testFitness = [](const Individual& individual, const State& /*state*/) -> FitnessResult {
         if (!individual.getProgram()) {
             return FitnessResult(0.0);
@@ -196,7 +196,7 @@ TEST_F(EvolutionaryTest, FitnessFunction) {
         return FitnessResult(fitness, complexity, 0.0);
     };
     
-    // Test the fitness function
+    // Test the fitness std::function
     auto program = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "const");
     program->parameters.push_back(5.0);
     Individual individual(program);
@@ -457,7 +457,7 @@ TEST_F(EvolutionaryTest, DISABLED_PerformanceTest) {
     
     EvolutionaryOptimizer optimizer(config);
     
-    // Fitness function that rewards finding specific target values
+    // Fitness std::function that rewards finding specific target values
     FitnessFunction targetFitness = [](const Individual& individual, const State& /*state*/) -> FitnessResult {
         if (!individual.getProgram()) {
             return FitnessResult(0.0);

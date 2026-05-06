@@ -1,0 +1,33 @@
+#include "share-card.hpp"
+#include <string>
+#include <future>
+#include <optional>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<void*> loadBusinessImage() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (businessImageCache) return businessImageCache;
+
+    return new Promise[&]((resolve, reject) {;
+        const auto img = std::make_unique<Image>();
+        img.crossOrigin = "anonymous";
+        img.onload = [&]() {
+            businessImageCache = img;
+            resolve(img);
+            };
+            img.onerror = reject;
+            img.src = "/business.png";
+            });
+
+}
+
+std::future<> createDealShareImage(std::optional<std::string> args) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    file: File; dataUrl: std::string
+}
+
+} // namespace elizaos

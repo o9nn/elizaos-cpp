@@ -12,7 +12,7 @@ protected:
     void SetUp() override {
         // Create a fresh knowledge base for each test
         kb = std::make_shared<KnowledgeBase>();
-        // Clear any existing state
+        // Clear std::any existing state
         kb->clear();
     }
 
@@ -270,7 +270,7 @@ TEST_F(KnowledgeTest, KnowledgeBaseStatistics) {
     EXPECT_EQ(typeStats[KnowledgeType::RULE], 1);
     EXPECT_EQ(typeStats[KnowledgeType::CONCEPT], 1);
     
-    // Check statistics string
+    // Check statistics std::string
     std::string stats = kb->getStatistics();
     EXPECT_FALSE(stats.empty());
     EXPECT_TRUE(stats.find("Total entries: 3") != std::string::npos);
@@ -594,7 +594,7 @@ TEST_F(KnowledgeTest, KnowledgeBaseThreadSafety) {
     }
     
     // Wait for all threads to complete
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     
@@ -617,7 +617,7 @@ TEST_F(KnowledgeTest, KnowledgeBaseThreadSafety) {
         });
     }
     
-    for (auto& thread : queryThreads) {
+    for (auto& std::thread : queryThreads) {
         thread.join();
     }
     

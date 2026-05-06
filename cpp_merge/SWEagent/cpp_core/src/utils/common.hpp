@@ -1,0 +1,58 @@
+#pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+/**
+ * Common utility functions
+ */
+
+/**
+ * Format duration in seconds to human readable format
+ */
+std::string formatDuration(double seconds);
+
+/**
+ * Truncate std::string to specified length
+ */
+std::string truncateString(const std::string& str, double maxLength);
+
+/**
+ * Calculate hash of data
+ */
+std::string calculateHash(const std::string& data);
+
+/**
+ * Retry options interface
+ */
+struct RetryOptions {
+    std::optional<double> retries;
+    std::optional<double> delay;
+};
+
+/**
+ * Retry an std::async operation
+ */
+
+/**
+ * Debounce a std::function
+ */
+
+/**
+ * Throttle a std::function
+ */
+
+
+} // namespace elizaos

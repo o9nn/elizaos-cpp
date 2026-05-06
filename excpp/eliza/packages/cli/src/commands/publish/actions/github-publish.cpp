@@ -1,0 +1,37 @@
+#include "github-publish.hpp"
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        std::cout << "Publishing to GitHub and registry..." << std::endl;
+
+        const auto result = publishToGitHub(;
+        cwd,
+        packageJson,
+        credentials.username,
+        skipRegistry,
+        dryRun;
+        );
+
+        if (!result) {
+            throw std::runtime_error('GitHub publishing failed');
+        }
+
+        console.log(
+        "[√] Successfully published plugin " + packageJson.name + "@" + packageJson.version + " to GitHub";
+        );
+
+        return result;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+} // namespace elizaos

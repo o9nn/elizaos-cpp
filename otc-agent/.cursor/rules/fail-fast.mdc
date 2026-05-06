@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+description: Fail-fast, minimal nesting, strong typing
+---
+
+## Fail-Fast Programming
+
+- **Fail-fast, not defensive** - guard clauses, early returns; validate only at edges (I/O, HTTP, RPC, filesystem)
+- **Avoid try/catch except at boundaries** - catch at entrypoints only; never catch just to log
+- **Minimal nesting** - keep conditionals ≤2 levels deep; use early returns
+- **Strong types** - rely on compile-time types, not runtime checks; no `any` or `unknown`
+
+## Examples
+
+```ts
+// Bad: nested, defensive
+function handle(input: Thing | null | undefined) {
+  if (input) {
+    if (input.kind === 'ok') {
+      doWork(input);
+    }
+  }
+}
+
+// Good: early return, strong types
+function handle(input: Thing) {
+  if (input.kind !== 'ok') throw new Error('bad');
+  doWork(input);
+}
+```

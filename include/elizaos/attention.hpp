@@ -23,7 +23,7 @@ namespace elizaos {
  */
 
 // Forward declarations
-class AttentionValue;
+struct AttentionValue;
 class AttentionBudget;
 class AttentionAllocator;
 class ActivationSpreadingNetwork;

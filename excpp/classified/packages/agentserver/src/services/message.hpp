@@ -1,0 +1,66 @@
+#pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "bus.hpp"
+#include "elizaos/core.hpp"
+#include "types.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+ // Import the bus
+
+// This interface defines the structure of messages coming from the server
+struct MessageServiceMessage {
+    UUID id;
+    UUID channelId;
+    UUID serverId;
+    UUID authorId;
+    std::optional<std::string> authorDisplayName;
+    std::string content;
+    std::optional<std::any> rawMessage;
+    std::optional<std::string> sourceId;
+    std::optional<std::string> sourceType;
+    std::optional<UUID> inReplyToMessageId;
+    double createdAt;
+};
+
+class MessageBusService {
+public:
+    MessageBusService(IAgentRuntime runtime);
+    static std::future<Service> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
+    void connectToMessageBus();
+    std::future<void> fetchValidChannelIds();
+    std::future<std::vector<std::string>> getChannelParticipants(UUID channelId);
+    void fetchAgentServers();
+    void handleServerAgentUpdate(const std::any& data);
+    std::future<bool> validateServerSubscription(MessageServiceMessage message);
+    std::future<bool> validateNotSelfMessage(MessageServiceMessage message);
+    Promise< ensureWorldAndRoomExist(MessageServiceMessage message);
+    std::future<UUID> ensureAuthorEntityExists(MessageServiceMessage message);
+    Memory createAgentMemory(MessageServiceMessage message, UUID agentAuthorEntityId, UUID agentRoomId, UUID agentWorldId);
+    void handleIncomingMessage(const std::any& messageData);
+    void handleMessageDeleted(const std::any& data);
+    void handleChannelCleared(const std::any& data);
+    void sendAgentResponseToBus(UUID agentRoomId, UUID agentWorldId, Content content, std::optional<UUID> inReplyToAgentMemoryId, std::optional<MessageServiceMessage> originalMessage);
+    void notifyMessageComplete(std::optional<UUID> channelId, std::optional<UUID> serverId);
+    std::unordered_map<std::string, std::string> getAuthHeaders();
+    std::string getCentralMessageServerUrl();
+};
+
+// Minimal plugin definition to register the service
+
+} // namespace elizaos

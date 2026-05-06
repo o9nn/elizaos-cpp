@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_3D_HYPERFY_STARTER_SRC_PLUGIN_HYPERFY_TEMPLATES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_3D_HYPERFY_STARTER_SRC_PLUGIN_HYPERFY_TEMPLATES_H
+#include "core.hpp"
+
+extern std::function<string(any)> autoTemplate;
+extern string hyperfyMessageHandlerTemplate;
+extern string hyperfyShouldRespondTemplate;
+#endif

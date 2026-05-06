@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_APP_API_TOKENS_ROUTE_SEGMENT_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_APP_API_TOKENS_ROUTE_SEGMENT_CONFIG_H
+#include "core.hpp"
+
+extern double revalidate;
+extern string fetchCache;
+extern string dynamic;
+#endif

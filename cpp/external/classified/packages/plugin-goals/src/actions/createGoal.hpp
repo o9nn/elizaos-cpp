@@ -1,0 +1,74 @@
+#pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "elizaos/core.hpp"
+#include "types.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+// Interface for parsed goal data
+struct GoalInput {
+    std::string name;
+    std::optional<std::string> description;
+    std::string ownerType;
+};
+
+// Interface for similarity check result
+struct SimilarityCheckResult {
+    bool hasSimilar;
+    std::optional<std::string> similarGoalName;
+    double confidence;
+};
+
+/**
+ * Template for extracting goal information from the user's message.
+ */
+
+/**
+ * Template for checking if a similar goal already exists
+ */
+
+/**
+ * Extracts goal information from the user's message.
+ */
+
+/**
+ * Checks if a similar goal already exists
+ */
+std::future<SimilarityCheckResult> checkForSimilarGoal(IAgentRuntime runtime, GoalInput newGoal, const std::vector<std::any>& existingGoals);
+
+/**
+ * The CREATE_GOAL action allows the agent to create a new goal.
+ */
+
+      // Extract goal information from the message
+
+      // Determine owner ID based on ownerType
+
+      // Check for existing similar goals
+
+      // Calculate active goal count
+
+      // Step 6: Create the goal
+
+      // Step 7: Send success message with guidance based on goal count
+
+    // Multi-action: Create goal then list all goals to show chaining workflow
+    // Multi-action: Create goal then confirm it to demonstrate goal lifecycle workflow
+
+
+} // namespace elizaos

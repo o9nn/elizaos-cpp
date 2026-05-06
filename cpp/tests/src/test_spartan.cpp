@@ -191,7 +191,7 @@ TEST_F(SpartanAgentTest, ConfigurationFromEnvironment) {
     EXPECT_GT(defaultConfig.maxRiskPercentage, 0);
     EXPECT_TRUE(defaultConfig.requireConfirmation);
     
-    // Test configuration from environment (would need actual env vars set)
+    // Test configuration from environment (would need actual env vars std::set)
     SpartanConfig envConfig = getSpartanConfigFromEnvironment();
     EXPECT_FALSE(envConfig.solanaRpcUrl.empty());
 }

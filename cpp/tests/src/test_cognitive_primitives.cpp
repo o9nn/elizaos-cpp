@@ -304,7 +304,7 @@ public:
     }
     
     EmbeddingVector generateEmbedding(const std::string& input) override {
-        // Simple mock embedding based on string length
+        // Simple mock embedding based on std::string length
         float length = static_cast<float>(input.length());
         return {length / 10.0f, length / 20.0f, length / 30.0f};
     }

@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_PROVIDERS_PLUGINKNOWLEDGEPROVIDER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_PROVIDERS_PLUGINKNOWLEDGEPROVIDER_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "../services/pluginRegistryService.h"
+
+extern std::shared_ptr<Provider> pluginKnowledgeProvider;
+#endif

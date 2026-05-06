@@ -1,0 +1,22 @@
+---
+alwaysApply: true
+description: Autonomous execution with runtime E2E verification
+---
+
+## Autonomous Execution
+
+- **Run the real system after changes** - use `scripts/start-all.sh`, `scripts/test-all.sh`
+- **Operate autonomously** - do not ask follow-up questions; continue until done
+- **Stop only when strictly necessary** - missing secrets, destructive action needing confirmation, external outage
+
+## Execution Conventions
+
+- Use absolute paths in tool/command arguments
+- Use non-interactive flags; run long-lived processes in background
+- Stream logs to files for inspection
+
+## Definition of Done
+
+- App starts cleanly
+- Runtime E2E tests pass
+- Changes verified end-to-end without manual intervention

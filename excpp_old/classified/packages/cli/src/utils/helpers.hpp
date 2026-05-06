@@ -1,0 +1,48 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * Gets a user-friendly display name for a directory path
+ *
+ * converts paths like "." to "Desktop" or "/Users/me/Desktop" to "Desktop"
+ * so the create command shows nice prompts like "Create plugin 'my-plugin' in Desktop?"
+ *
+ * @param targetDir The directory path to display
+ * @returns A user-friendly directory name
+ */
+std::string getDisplayDirectory(const std::string& targetDir);
+
+/**
+ * Display character
+ */
+void displayAgent(const std::optional<Agent>& data, auto title = 'Agent Review');
+
+/**
+ * Formats a conversation into a string
+ */
+std::string formatConversation(const std::vector<MessageExample>& conversation);
+
+/**
+ * Displays a section with a title and list of items
+ */
+void displaySection(const std::string& title, const std::vector<std::string>& items);
+
+/**
+ * Logs a header inside a rectangular frame with extra padding.
+ * @param {string} title - The header text to display.
+ */
+void logHeader(const std::string& title);
+
+} // namespace elizaos

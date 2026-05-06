@@ -1,0 +1,28 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "notification-item.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct MobileNotificationsProps {
+    std::vector<Notification> initialNotifications;
+};
+
+struct SwipeableWrapperProps {
+    ReactNode children;
+};
+
+void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete });
+
+
+} // namespace elizaos
