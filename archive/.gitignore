@@ -1,0 +1,5 @@
+# Archive directory - contains deprecated, obsolete, and experimental content
+# All contents of this directory are intentionally excluded from version control
+*
+!.gitignore
+!README.md

@@ -155,3 +155,25 @@ pytest test.py
 If you like this library and want to contribute in any way, please feel free to submit a PR and it will be reviewed. The goal of this project is simplicity and accessibility using plain language and sane defaults, so please keep that in mind when submitting a PR.
 
 <img src="resources/youcreatethefuture.jpg">
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/infrastructure/agentlogger/`](../cpp/packages/infrastructure/agentlogger/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentlogger.hpp`](../cpp/include/elizaos/agentlogger.hpp)
+- Source: [`cpp/packages/infrastructure/agentlogger/src/`](../cpp/packages/infrastructure/agentlogger/src/)
+- Tests: [`cpp/tests/agentlogger_test.cpp`](../cpp/tests/agentlogger_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentlogger_test
+./cpp/tests/agentlogger_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.

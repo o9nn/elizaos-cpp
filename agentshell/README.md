@@ -260,3 +260,25 @@ Runs a command in a specific shell and adds it to the shell's history. If `shell
 # Contributions Welcome
 
 If you like this library and want to contribute in any way, please feel free to submit a PR and I will review it. Please note that the goal here is simplicity and accesibility, using common language and few dependencies.
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/infrastructure/agentshell/`](../cpp/packages/infrastructure/agentshell/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentshell.hpp`](../cpp/include/elizaos/agentshell.hpp)
+- Source: [`cpp/packages/infrastructure/agentshell/src/`](../cpp/packages/infrastructure/agentshell/src/)
+- Tests: [`cpp/tests/agentshell_test.cpp`](../cpp/tests/agentshell_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentshell_test
+./cpp/tests/agentshell_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.

@@ -154,3 +154,25 @@ Wipes the 'actions' collection in memory and resets the 'actions' dictionary.
 If you like this library and want to contribute in any way, please feel free to submit a PR and I will review it. Please note that the goal here is simplicity and accesibility, using common language and few dependencies.
 
 <img src="resources/youcreatethefuture.jpg">
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/core/agentaction/`](../cpp/packages/core/agentaction/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentaction.hpp`](../cpp/include/elizaos/agentaction.hpp)
+- Source: [`cpp/packages/core/agentaction/src/`](../cpp/packages/core/agentaction/src/)
+- Tests: [`cpp/tests/agentaction_test.cpp`](../cpp/tests/agentaction_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentaction_test
+./cpp/tests/agentaction_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.

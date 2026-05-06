@@ -248,3 +248,25 @@ bash publish.sh --version=<version> --username=<pypi_username> --password=<pypi_
 If you like this library and want to contribute in any way, please feel free to submit a PR and I will review it. Please note that the goal here is simplicity and accesibility, using common language and few dependencies.
 
 <img src="resources/youcreatethefuture.jpg">
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/core/agentloop/`](../cpp/packages/core/agentloop/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentloop.hpp`](../cpp/include/elizaos/agentloop.hpp)
+- Source: [`cpp/packages/core/agentloop/src/`](../cpp/packages/core/agentloop/src/)
+- Tests: [`cpp/tests/agentloop_test.cpp`](../cpp/tests/agentloop_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentloop_test
+./cpp/tests/agentloop_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.
