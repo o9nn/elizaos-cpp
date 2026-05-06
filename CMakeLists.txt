@@ -95,6 +95,7 @@ add_subdirectory(cpp/packages/integration/auto_fun)
 add_subdirectory(cpp/packages/integration/autonomous_starter)
 add_subdirectory(cpp/packages/integration/sweagent)
 add_subdirectory(cpp/packages/integration/mcp_gateway)
+add_subdirectory(cpp/packages/integration/cognitive_bridge)
 add_subdirectory(cpp/packages/integration/otaku)
 add_subdirectory(cpp/packages/integration/otc_agent)
 

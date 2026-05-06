@@ -216,3 +216,30 @@ add_executable(goal_manager_test goal_manager_test.cpp)
 target_link_libraries(goal_manager_test gtest gtest_main elizaos-goal_manager Threads::Threads)
 add_test(NAME goal_manager_test COMMAND goal_manager_test)
 
+# ============================================================================
+# Comprehensive cognitive-pipeline E2E test
+# Covers SWE-Agent + MCP Gateway + CognitiveBridge integration as required by
+# the eliza-os skill (cognitive_state_update / sensory_input / speech_output
+# channels and the 12-step Echobeats cycle).
+# ============================================================================
+add_executable(cognitive_pipeline_e2e_test cognitive_pipeline_e2e_test.cpp)
+# IMPORTANT: this test uses the lightweight gtest shim shipped at
+# ${CMAKE_SOURCE_DIR}/include/gtest/gtest.h (matches the rest of the test
+# suite). It defines its own TestRegistry/RUN_ALL_TESTS, so we must NOT link
+# against the FetchContent gtest_main — doing so would register real-gtest's
+# main() instead and trigger heap corruption from the duplicated harness.
+target_link_libraries(cognitive_pipeline_e2e_test
+    elizaos-sweagent
+    elizaos-mcp_gateway
+    elizaos-cognitive_bridge
+    elizaos-agentlogger
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-agentloop
+    elizaos-agentcomms
+    elizaos-core
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+add_test(NAME cognitive_pipeline_e2e_test COMMAND cognitive_pipeline_e2e_test)
+
