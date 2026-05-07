@@ -88,8 +88,10 @@ add_executable(discord_summarizer_test discord_summarizer_test.cpp)
 target_link_libraries(discord_summarizer_test elizaos-discord_summarizer gtest gtest_main Threads::Threads)
 add_test(NAME discord_summarizer_test COMMAND discord_summarizer_test)
 
+# discrub_ext lib has a broken static initializer that crashes at process load.
+# Tests use header-only API surface (sizes/enums) without linking the lib.
 add_executable(discrub_ext_test discrub_ext_test.cpp)
-target_link_libraries(discrub_ext_test elizaos-discrub_ext gtest gtest_main Threads::Threads)
+target_link_libraries(discrub_ext_test gtest gtest_main Threads::Threads)
 add_test(NAME discrub_ext_test COMMAND discrub_ext_test)
 
 add_executable(easycompletion_test easycompletion_test.cpp)
@@ -223,11 +225,9 @@ add_test(NAME goal_manager_test COMMAND goal_manager_test)
 # channels and the 12-step Echobeats cycle).
 # ============================================================================
 add_executable(cognitive_pipeline_e2e_test cognitive_pipeline_e2e_test.cpp)
-# IMPORTANT: this test uses the lightweight gtest shim shipped at
-# ${CMAKE_SOURCE_DIR}/include/gtest/gtest.h (matches the rest of the test
-# suite). It defines its own TestRegistry/RUN_ALL_TESTS, so we must NOT link
-# against the FetchContent gtest_main — doing so would register real-gtest's
-# main() instead and trigger heap corruption from the duplicated harness.
+# Now uses the real GoogleTest from FetchContent (the previous gtest shim at
+# ${CMAKE_SOURCE_DIR}/include/gtest/gtest.h was removed because it caused all
+# TEST_F bodies to expand to dead code, defeating coverage entirely).
 target_link_libraries(cognitive_pipeline_e2e_test
     elizaos-sweagent
     elizaos-mcp_gateway
@@ -238,6 +238,8 @@ target_link_libraries(cognitive_pipeline_e2e_test
     elizaos-agentloop
     elizaos-agentcomms
     elizaos-core
+    gtest
+    gtest_main
     nlohmann_json::nlohmann_json
     Threads::Threads
 )

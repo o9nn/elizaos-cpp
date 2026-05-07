@@ -1,250 +1,141 @@
-// Comprehensive End-to-End Test Suite for agentcomms Module
-// Generated comprehensive tests for C++ implementation
-
+// agentcomms_test.cpp - E2E tests for elizaos::AgentComms.
 #include <gtest/gtest.h>
 #include "elizaos/agentcomms.hpp"
-#include <memory>
-#include <string>
-#include <vector>
+
+#include <atomic>
 #include <chrono>
 #include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for agentcomms
-class AgentcommsTest : public ::testing::Test {
+TEST(AgentCommsMessage, ConstructionAndMetadata) {
+    Message m("id-1", MessageType::TEXT, "alice", "bob", "channel-1", "hello");
+    EXPECT_EQ(m.id, "id-1");
+    EXPECT_EQ(m.sender, "alice");
+    EXPECT_EQ(m.receiver, "bob");
+
+    m.setMetadata("priority", "high");
+    EXPECT_TRUE(m.hasMetadata("priority"));
+    EXPECT_EQ(m.getMetadata("priority"), "high");
+    EXPECT_FALSE(m.hasMetadata("missing"));
+    EXPECT_EQ(m.getMetadata("missing"), "");
+}
+
+TEST(AgentCommsParticipation, AddRemoveChannel) {
+    AgentParticipation p("a-1");
+    p.addChannelParticipation("c-1");
+    EXPECT_TRUE(p.isParticipatingInChannel("c-1"));
+    EXPECT_FALSE(p.isParticipatingInChannel("c-2"));
+    p.removeChannelParticipation("c-1");
+    EXPECT_FALSE(p.isParticipatingInChannel("c-1"));
+}
+
+TEST(AgentCommsParticipation, AddRemoveServer) {
+    AgentParticipation p("a-1");
+    p.addServerSubscription("s-1");
+    EXPECT_TRUE(p.isSubscribedToServer("s-1"));
+    p.removeServerSubscription("s-1");
+    EXPECT_FALSE(p.isSubscribedToServer("s-1"));
+}
+
+TEST(AgentCommsUUID, GeneratesNonEmptyUuids) {
+    auto u1 = UUIDMapper::generateUUID();
+    auto u2 = UUIDMapper::generateUUID();
+    EXPECT_FALSE(u1.empty());
+    EXPECT_NE(u1, u2);
+}
+
+TEST(AgentCommsUUID, AgentSpecificUuidIsDeterministic) {
+    auto a = UUIDMapper::createAgentSpecificUUID("agent-1", "res-x");
+    auto b = UUIDMapper::createAgentSpecificUUID("agent-1", "res-x");
+    auto c = UUIDMapper::createAgentSpecificUUID("agent-2", "res-x");
+    EXPECT_EQ(a, b);
+    EXPECT_NE(a, c);
+}
+
+class AgentCommsManagerTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    AgentComms comms{"agent-1"};
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(AgentCommsManagerTest, AgentIdInitialization) {
+    EXPECT_EQ(comms.getAgentId(), "agent-1");
+    comms.setAgentId("agent-2");
+    EXPECT_EQ(comms.getAgentId(), "agent-2");
 }
 
-TEST_F(AgentcommsTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(AgentCommsManagerTest, CreateAndGetChannel) {
+    auto ch = comms.createChannel("c-1", "s-1");
+    ASSERT_NE(ch, nullptr);
+    EXPECT_EQ(ch->getChannelId(), "c-1");
+    EXPECT_EQ(ch->getServerId(), "s-1");
+
+    auto got = comms.getChannel("c-1");
+    EXPECT_NE(got, nullptr);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(AgentCommsManagerTest, AddRemoveChannelParticipant) {
+    comms.createChannel("c-1");
+    EXPECT_TRUE(comms.addChannelParticipant("c-1", "alice"));
+    EXPECT_TRUE(comms.isChannelParticipant("c-1", "alice"));
+    EXPECT_TRUE(comms.removeChannelParticipant("c-1", "alice"));
+    EXPECT_FALSE(comms.isChannelParticipant("c-1", "alice"));
 }
 
-TEST_F(AgentcommsTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(AgentCommsManagerTest, ActiveChannelsList) {
+    auto a = comms.createChannel("a");
+    auto b = comms.createChannel("b");
+    // Channels become "active" only after start().
+    a->start();
+    b->start();
+    auto list = comms.getActiveChannels();
+    EXPECT_EQ(list.size(), 2u);
+    a->stop();
+    b->stop();
 }
 
-TEST_F(AgentcommsTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(AgentCommsManagerTest, RemoveChannel) {
+    comms.createChannel("rem");
+    comms.removeChannel("rem");
+    EXPECT_EQ(comms.getChannel("rem"), nullptr);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(AgentCommsManagerTest, ServerSubscription) {
+    comms.subscribeToServer("srv-1", "agent-1");
+    EXPECT_TRUE(comms.isSubscribedToServer("srv-1", "agent-1"));
+    comms.unsubscribeFromServer("srv-1", "agent-1");
+    EXPECT_FALSE(comms.isSubscribedToServer("srv-1", "agent-1"));
 }
 
-TEST_F(AgentcommsTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST_F(AgentCommsManagerTest, SendMessageDeliversToHandler) {
+    auto ch = comms.createChannel("c-deliver");
+    std::atomic<int> received{0};
+    ch->setMessageHandler([&](const Message&) { ++received; });
+    ch->start();
+
+    Message m("m-1", MessageType::TEXT, "a", "b", "c-deliver", "payload");
+    comms.sendMessage("c-deliver", m, false);
+
+    // Allow the channel processing thread to run
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    ch->stop();
+    EXPECT_GE(received.load(), 1);
 }
 
-TEST_F(AgentcommsTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
+TEST_F(AgentCommsManagerTest, BroadcastMessageReachesAllChannels) {
+    auto a = comms.createChannel("c-a");
+    auto b = comms.createChannel("c-b");
+    std::atomic<int> total{0};
+    a->setMessageHandler([&](const Message&) { ++total; });
+    b->setMessageHandler([&](const Message&) { ++total; });
+    a->start();
+    b->start();
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
+    Message m("bm-1", MessageType::TEXT, "x", "*", "*", "broadcast");
+    comms.broadcastMessage(m, false);
 
-TEST_F(AgentcommsTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(AgentcommsTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(AgentcommsTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(AgentcommsTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(AgentcommsTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(AgentcommsTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(AgentcommsTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(AgentcommsTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(AgentcommsTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    a->stop();
+    b->stop();
+    EXPECT_GE(total.load(), 2);
 }

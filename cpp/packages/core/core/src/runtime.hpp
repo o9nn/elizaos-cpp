@@ -1,119 +1,122 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_RUNTIME_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_ENVIRONMENT_RUNTIME_H
-#include "core.h"
+// Runtime abstraction for ElizaOS-CPP core
+// Real, working implementation (replaces previous broken transpiled stub)
+#ifndef ELIZAOS_CORE_RUNTIME_HPP
+#define ELIZAOS_CORE_RUNTIME_HPP
 
-class BashAction;
-class BashActionResult;
-class BashInterruptAction;
-class CreateBashSessionRequest;
-class Command;
-class CommandResult;
-class ReadFileRequest;
-class ReadFileResponse;
-class WriteFileRequest;
-class UploadRequest;
-class AbstractRuntime;
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
+#include <future>
+#include <functional>
+#include <chrono>
+#include <stdexcept>
 
-class BashAction : public object, public std::enable_shared_from_this<BashAction> {
-public:
-    using std::enable_shared_from_this<BashAction>::shared_from_this;
+namespace elizaos {
+namespace runtime {
+
+// ============================================================================
+// Bash session abstraction
+// ============================================================================
+struct BashAction {
     std::string command;
-
-    double timeout;
-
-    std::any check;
+    double timeout = 30.0;     // seconds
+    bool check = true;         // throw on non-zero exit
 };
 
-class BashActionResult : public object, public std::enable_shared_from_this<BashActionResult> {
-public:
-    using std::enable_shared_from_this<BashActionResult>::shared_from_this;
+struct BashActionResult {
     std::string output;
-
-    double exitCode;
+    int exitCode = 0;
 };
 
-class BashInterruptAction : public object, public std::enable_shared_from_this<BashInterruptAction> {
-public:
-    using std::enable_shared_from_this<BashInterruptAction>::shared_from_this;
-    std::string type;
+struct BashInterruptAction {
+    std::string type = "interrupt";
 };
 
-class CreateBashSessionRequest : public object, public std::enable_shared_from_this<CreateBashSessionRequest> {
-public:
-    using std::enable_shared_from_this<CreateBashSessionRequest>::shared_from_this;
-    array<string> startupSource;
-
-    double startupTimeout;
+struct CreateBashSessionRequest {
+    std::vector<std::string> startupSource;
+    double startupTimeout = 30.0;
 };
 
-class Command : public object, public std::enable_shared_from_this<Command> {
-public:
-    using std::enable_shared_from_this<Command>::shared_from_this;
+// ============================================================================
+// Process command abstraction
+// ============================================================================
+struct Command {
     std::string command;
-
-    boolean shell;
-
-    boolean check;
-
-    Record<std::string, string> env;
-
+    bool shell = true;
+    bool check = true;
+    std::map<std::string, std::string> env;
     std::string cwd;
-
-    double timeout;
+    double timeout = 30.0;
 };
 
-class CommandResult : public object, public std::enable_shared_from_this<CommandResult> {
-public:
-    using std::enable_shared_from_this<CommandResult>::shared_from_this;
-    double exitCode;
-
-    std::string stdout;
-
-    std::string stderr;
+struct CommandResult {
+    int exitCode = 0;
+    std::string stdoutText;
+    std::string stderrText;
 };
 
-class ReadFileRequest : public object, public std::enable_shared_from_this<ReadFileRequest> {
-public:
-    using std::enable_shared_from_this<ReadFileRequest>::shared_from_this;
+// ============================================================================
+// File transfer abstraction
+// ============================================================================
+struct ReadFileRequest {
     std::string path;
-
-    std::string encoding;
-
-    std::string errors;
+    std::string encoding = "utf-8";
+    std::string errors = "strict";
 };
 
-class ReadFileResponse : public object, public std::enable_shared_from_this<ReadFileResponse> {
-public:
-    using std::enable_shared_from_this<ReadFileResponse>::shared_from_this;
+struct ReadFileResponse {
     std::string content;
 };
 
-class WriteFileRequest : public object, public std::enable_shared_from_this<WriteFileRequest> {
-public:
-    using std::enable_shared_from_this<WriteFileRequest>::shared_from_this;
+struct WriteFileRequest {
     std::string path;
-
     std::string content;
 };
 
-class UploadRequest : public object, public std::enable_shared_from_this<UploadRequest> {
-public:
-    using std::enable_shared_from_this<UploadRequest>::shared_from_this;
+struct UploadRequest {
     std::string sourcePath;
-
     std::string targetPath;
 };
 
-class AbstractRuntime : public object, public std::enable_shared_from_this<AbstractRuntime> {
+// ============================================================================
+// Abstract runtime interface
+// ============================================================================
+class AbstractRuntime {
 public:
-    using std::enable_shared_from_this<AbstractRuntime>::shared_from_this;
-    virtual std::shared_ptr<Promise<void>> createSession(std::shared_ptr<CreateBashSessionRequest> request) = 0;
-    template <typename P0>
-    std::shared_ptr<Promise<std::shared_ptr<BashActionResult>>> runInSession(P0 action) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<CommandResult>>> execute(std::shared_ptr<Command> command) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<ReadFileResponse>>> readFile(std::shared_ptr<ReadFileRequest> request) = 0;
-    virtual std::shared_ptr<Promise<void>> writeFile(std::shared_ptr<WriteFileRequest> request) = 0;
-    virtual std::shared_ptr<Promise<void>> upload(std::shared_ptr<UploadRequest> request) = 0;
+    virtual ~AbstractRuntime() = default;
+
+    virtual std::future<void> createSession(const CreateBashSessionRequest& request) = 0;
+    virtual std::future<BashActionResult> runInSession(const BashAction& action) = 0;
+    virtual std::future<CommandResult> execute(const Command& command) = 0;
+    virtual std::future<ReadFileResponse> readFile(const ReadFileRequest& request) = 0;
+    virtual std::future<void> writeFile(const WriteFileRequest& request) = 0;
+    virtual std::future<void> upload(const UploadRequest& request) = 0;
 };
 
-#endif
+// ============================================================================
+// Concrete LocalRuntime - executes via std::system / fstream on the host
+// ============================================================================
+class LocalRuntime : public AbstractRuntime {
+public:
+    LocalRuntime();
+    ~LocalRuntime() override;
+
+    std::future<void> createSession(const CreateBashSessionRequest& request) override;
+    std::future<BashActionResult> runInSession(const BashAction& action) override;
+    std::future<CommandResult> execute(const Command& command) override;
+    std::future<ReadFileResponse> readFile(const ReadFileRequest& request) override;
+    std::future<void> writeFile(const WriteFileRequest& request) override;
+    std::future<void> upload(const UploadRequest& request) override;
+
+    bool sessionActive() const { return sessionActive_; }
+
+private:
+    bool sessionActive_ = false;
+    std::vector<std::string> startupSource_;
+};
+
+} // namespace runtime
+} // namespace elizaos
+
+#endif // ELIZAOS_CORE_RUNTIME_HPP

@@ -1,250 +1,264 @@
-// Comprehensive End-to-End Test Suite for core Module
-// Generated comprehensive tests for C++ implementation
+// Comprehensive End-to-End Test Suite for elizaos::core
+//
+// Covers public API surface declared in include/elizaos/core.hpp:
+//   * generateUUID()
+//   * HypergraphNode / HypergraphEdge
+//   * Memory (basic + metadata + embedding + hypergraph links)
+//   * State (agent identity, actors, goals, recent messages)
+//   * TruthValue PLN-style operations
+//   * Task / TaskManager (lifecycle: create / get / schedule / cancel /
+//     tag-query / start / stop / pause / resume)
+//
+// Replaces the previous stub test that only verified compilation.
 
 #include <gtest/gtest.h>
 #include "elizaos/core.hpp"
-#include <memory>
-#include <string>
-#include <vector>
+
 #include <chrono>
+#include <memory>
 #include <thread>
-#include <atomic>
+#include <unordered_set>
 
 using namespace elizaos;
 
-// Test Fixture for core
-class CoreTest : public ::testing::Test {
+// ---------------------------------------------------------------------------
+// UUID generator
+// ---------------------------------------------------------------------------
+TEST(CoreUuid, GeneratesNonEmpty) {
+    auto u = generateUUID();
+    EXPECT_FALSE(u.empty());
+}
+
+TEST(CoreUuid, ProducesDistinctIds) {
+    std::unordered_set<UUID> seen;
+    for (int i = 0; i < 256; ++i) {
+        seen.insert(generateUUID());
+    }
+    EXPECT_EQ(seen.size(), 256u);
+}
+
+// ---------------------------------------------------------------------------
+// Hypergraph primitives
+// ---------------------------------------------------------------------------
+TEST(CoreHypergraph, NodeStoresIdLabelAndAttributes) {
+    auto id = generateUUID();
+    HypergraphNode n(id, "concept");
+    EXPECT_EQ(n.getId(), id);
+    EXPECT_EQ(n.getLabel(), "concept");
+
+    n.setAttribute("color", "blue");
+    n.setAttribute("weight", "0.7");
+
+    auto color = n.getAttribute("color");
+    ASSERT_TRUE(color.has_value());
+    EXPECT_EQ(color.value(), "blue");
+
+    EXPECT_FALSE(n.getAttribute("missing").has_value());
+    EXPECT_EQ(n.getAttributes().size(), 2u);
+}
+
+TEST(CoreHypergraph, EdgeConnectsMultipleNodes) {
+    auto id = generateUUID();
+    auto a = generateUUID();
+    auto b = generateUUID();
+    auto c = generateUUID();
+
+    HypergraphEdge e(id, "relates", {a, b, c});
+    EXPECT_EQ(e.getId(), id);
+    EXPECT_EQ(e.getLabel(), "relates");
+    EXPECT_EQ(e.getNodeIds().size(), 3u);
+    EXPECT_DOUBLE_EQ(e.getWeight(), 1.0);
+
+    e.setWeight(0.42);
+    EXPECT_DOUBLE_EQ(e.getWeight(), 0.42);
+}
+
+// ---------------------------------------------------------------------------
+// Memory
+// ---------------------------------------------------------------------------
+TEST(CoreMemory, BasicConstructionPreservesFields) {
+    auto memId = generateUUID();
+    auto entityId = generateUUID();
+    auto agentId = generateUUID();
+
+    auto mem = std::make_shared<Memory>(memId, "hello world", entityId, agentId);
+    EXPECT_EQ(mem->getId(), memId);
+    EXPECT_EQ(mem->getContent(), "hello world");
+    EXPECT_EQ(mem->getEntityId(), entityId);
+    EXPECT_EQ(mem->getAgentId(), agentId);
+    EXPECT_FALSE(mem->getEmbedding().has_value());
+    EXPECT_FALSE(mem->isUnique());
+    EXPECT_DOUBLE_EQ(mem->getSimilarity(), 0.0);
+}
+
+TEST(CoreMemory, EmbeddingCanBeSetAndRetrieved) {
+    auto mem = std::make_shared<Memory>(generateUUID(), "x", generateUUID(), generateUUID());
+    EmbeddingVector v{0.1f, 0.2f, 0.3f, 0.4f};
+    mem->setEmbedding(v);
+    ASSERT_TRUE(mem->getEmbedding().has_value());
+    EXPECT_EQ(mem->getEmbedding()->size(), 4u);
+    EXPECT_FLOAT_EQ(mem->getEmbedding()->at(2), 0.3f);
+}
+
+TEST(CoreMemory, UniqueAndSimilarityFlagsCanBeMutated) {
+    auto mem = std::make_shared<Memory>(generateUUID(), "x", generateUUID(), generateUUID());
+    mem->setUnique(true);
+    mem->setSimilarity(0.85);
+    EXPECT_TRUE(mem->isUnique());
+    EXPECT_NEAR(mem->getSimilarity(), 0.85, 1e-9);
+}
+
+TEST(CoreMemory, RoomIdAssignment) {
+    auto mem = std::make_shared<Memory>(generateUUID(), "hello", generateUUID(), generateUUID());
+    auto room = generateUUID();
+    mem->setRoomId(room);
+    EXPECT_EQ(mem->getRoomId(), room);
+}
+
+TEST(CoreMemory, HypergraphLinks) {
+    auto mem = std::make_shared<Memory>(generateUUID(), "hg", generateUUID(), generateUUID());
+    auto n1 = generateUUID();
+    auto n2 = generateUUID();
+    auto e1 = generateUUID();
+    mem->addHypergraphNode(n1);
+    mem->addHypergraphNode(n2);
+    mem->addHypergraphEdge(e1);
+
+    EXPECT_EQ(mem->getHypergraphNodes().size(), 2u);
+    EXPECT_EQ(mem->getHypergraphEdges().size(), 1u);
+    EXPECT_EQ(mem->getHypergraphNodes()[1], n2);
+    EXPECT_EQ(mem->getHypergraphEdges()[0], e1);
+}
+
+TEST(CoreMemory, MetadataConstructorRetainsType) {
+    DocumentMetadata meta;
+    meta.tags = {"intro", "primer"};
+    auto mem = std::make_shared<Memory>(
+        generateUUID(), "doc", generateUUID(), generateUUID(),
+        MemoryMetadata{meta});
+    const auto& m = mem->getMetadata();
+    ASSERT_TRUE(std::holds_alternative<DocumentMetadata>(m));
+    EXPECT_EQ(static_cast<int>(std::get<DocumentMetadata>(m).type),
+              static_cast<int>(MemoryType::DOCUMENT));
+    EXPECT_EQ(std::get<DocumentMetadata>(m).tags.size(), 2u);
+}
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+TEST(CoreState, IdentityAccessors) {
+    AgentConfig cfg;
+    cfg.agentId = generateUUID();
+    cfg.agentName = "Eliza";
+    cfg.bio = "test bio";
+    cfg.lore = "test lore";
+    cfg.adjective = "curious";
+
+    State s(cfg);
+    EXPECT_EQ(s.getAgentId(), cfg.agentId);
+    EXPECT_EQ(s.getAgentName(), "Eliza");
+    EXPECT_EQ(s.getBio(), "test bio");
+    EXPECT_EQ(s.getLore(), "test lore");
+}
+
+TEST(CoreState, ActorsGoalsAndMessages) {
+    AgentConfig cfg;
+    cfg.agentId = generateUUID();
+    cfg.agentName = "agent";
+    State s(cfg);
+
+    Actor a; a.id = generateUUID(); a.name = "User"; a.details = "human user";
+    s.addActor(a);
+
+    Goal g; g.id = generateUUID(); g.description = "learn"; g.status = "active";
+    s.addGoal(g);
+
+    auto mem = std::make_shared<Memory>(generateUUID(), "hello", generateUUID(), cfg.agentId);
+    s.addRecentMessage(mem);
+
+    EXPECT_EQ(s.getActors().size(), 1u);
+    EXPECT_EQ(s.getActors()[0].name, "User");
+    EXPECT_EQ(s.getGoals().size(), 1u);
+    EXPECT_EQ(s.getGoals()[0].description, "learn");
+    EXPECT_EQ(s.getRecentMessages().size(), 1u);
+    EXPECT_EQ(s.getRecentMessages()[0]->getContent(), "hello");
+}
+
+// ---------------------------------------------------------------------------
+// TruthValue / PLN-style operations
+// ---------------------------------------------------------------------------
+TEST(CoreTruthValue, ValidityAndExpectedValue) {
+    TruthValue t(0.8, 0.9);
+    EXPECT_TRUE(t.isValid());
+    EXPECT_NEAR(t.getExpectedValue(), 0.72, 1e-9);
+
+    TruthValue bad(1.5, 0.5);
+    EXPECT_FALSE(bad.isValid());
+}
+
+TEST(CoreTruthValue, ConjunctionDisjunctionNegation) {
+    TruthValue a(0.8, 0.9);
+    TruthValue b(0.5, 0.7);
+
+    auto c = a.conjunction(b);
+    auto d = a.disjunction(b);
+    auto n = a.negation();
+
+    EXPECT_GE(c.strength, 0.0);
+    EXPECT_LE(c.strength, 1.0);
+    EXPECT_GE(d.strength, 0.0);
+    EXPECT_LE(d.strength, 1.0);
+    EXPECT_NEAR(n.strength, 1.0 - a.strength, 1e-9);
+}
+
+TEST(CoreTruthValue, ImplicationProducesValid) {
+    TruthValue a(0.9, 0.95);
+    TruthValue b(0.4, 0.8);
+    auto i = a.implication(b);
+    EXPECT_TRUE(i.isValid());
+}
+
+// ---------------------------------------------------------------------------
+// Task / TaskManager
+// ---------------------------------------------------------------------------
+class CoreTaskManagerTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    TaskManager mgr;
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(CoreTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(CoreTaskManagerTest, CreateAndRetrieveTask) {
+    auto id = mgr.createTask("greet", "say hello");
+    EXPECT_FALSE(id.empty());
+    auto t = mgr.getTask(id);
+    ASSERT_TRUE(t != nullptr);
+    EXPECT_EQ(t->getName(), "greet");
 }
 
-TEST_F(CoreTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(CoreTaskManagerTest, ScheduleAndCancelTask) {
+    auto id = mgr.createTask("delayed", "wait then run");
+    auto when = std::chrono::system_clock::now() + std::chrono::seconds(5);
+    EXPECT_TRUE(mgr.scheduleTask(id, when));
+    EXPECT_TRUE(mgr.cancelTask(id));
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(CoreTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(CoreTaskManagerTest, PendingTasksContainsNewTasks) {
+    auto a = mgr.createTask("a", "first");
+    auto b = mgr.createTask("b", "second");
+    auto pending = mgr.getPendingTasks();
+    EXPECT_GE(pending.size(), 2u);
+    (void)a; (void)b;
 }
 
-TEST_F(CoreTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
-}
-
-TEST_F(CoreTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
-}
-
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(CoreTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
-}
-
-TEST_F(CoreTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(CoreTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(CoreTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(CoreTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(CoreTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(CoreTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(CoreTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(CoreTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(CoreTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(CoreTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(CoreTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(CoreTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST_F(CoreTaskManagerTest, RunningLifecycle) {
+    EXPECT_FALSE(mgr.isRunning());
+    mgr.setTickInterval(std::chrono::milliseconds(20));
+    mgr.start();
+    EXPECT_TRUE(mgr.isRunning());
+    std::this_thread::sleep_for(std::chrono::milliseconds(60));
+    mgr.pause();
+    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    mgr.resume();
+    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    mgr.stop();
+    EXPECT_FALSE(mgr.isRunning());
 }

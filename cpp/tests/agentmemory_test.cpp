@@ -1,250 +1,159 @@
-// Comprehensive End-to-End Test Suite for agentmemory Module
-// Generated comprehensive tests for C++ implementation
-
+// agentmemory_test.cpp - E2E tests for elizaos::AgentMemoryManager.
 #include <gtest/gtest.h>
 #include "elizaos/agentmemory.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
+#include "elizaos/core.hpp"
 
 using namespace elizaos;
 
-// Test Fixture for agentmemory
-class AgentmemoryTest : public ::testing::Test {
+namespace {
+std::shared_ptr<Memory> makeMem(const std::string& content,
+                                const UUID& room,
+                                const UUID& entity,
+                                const UUID& agent) {
+    auto m = std::make_shared<Memory>(generateUUID(), content, entity, agent);
+    m->setRoomId(room);
+    return m;
+}
+}
+
+class AgentMemoryTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    AgentMemoryManager mgr;
+    UUID room   = generateUUID();
+    UUID entity = generateUUID();
+    UUID agent  = generateUUID();
+
+    void TearDown() override { mgr.clear(); }
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
+TEST_F(AgentMemoryTest, CreateAndRetrieveMemory) {
+    auto mem = makeMem("hello", room, entity, agent);
+    auto id = mgr.createMemory(mem);
+    EXPECT_FALSE(id.empty());
 
-TEST_F(AgentmemoryTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+    auto got = mgr.getMemoryById(id);
+    ASSERT_NE(got, nullptr);
+    EXPECT_EQ(got->getContent(), "hello");
 }
 
-TEST_F(AgentmemoryTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(AgentMemoryTest, GetMemoryByIdMissingReturnsNull) {
+    auto got = mgr.getMemoryById(generateUUID());
+    EXPECT_EQ(got, nullptr);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
+TEST_F(AgentMemoryTest, UpdateMemory) {
+    auto mem = makeMem("v1", room, entity, agent);
+    auto id = mgr.createMemory(mem);
+    auto fetched = mgr.getMemoryById(id);
+    ASSERT_NE(fetched, nullptr);
 
-TEST_F(AgentmemoryTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+    fetched->setSimilarity(0.42);
+    EXPECT_TRUE(mgr.updateMemory(fetched));
+
+    auto reread = mgr.getMemoryById(id);
+    ASSERT_NE(reread, nullptr);
+    EXPECT_NEAR(reread->getSimilarity(), 0.42, 1e-9);
 }
 
-TEST_F(AgentmemoryTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(AgentMemoryTest, DeleteMemory) {
+    auto mem = makeMem("doomed", room, entity, agent);
+    auto id = mgr.createMemory(mem);
+    EXPECT_NE(mgr.getMemoryById(id), nullptr);
+
+    EXPECT_TRUE(mgr.deleteMemory(id));
+    EXPECT_EQ(mgr.getMemoryById(id), nullptr);
 }
 
-TEST_F(AgentmemoryTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
-}
-
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(AgentmemoryTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
-}
-
-TEST_F(AgentmemoryTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(AgentmemoryTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(AgentmemoryTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(AgentmemoryTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(AgentmemoryTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(AgentmemoryTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(AgentmemoryTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(AgentmemoryTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
+TEST_F(AgentMemoryTest, DeleteManyMemories) {
+    std::vector<UUID> ids;
+    for (int i = 0; i < 5; ++i) {
+        ids.push_back(mgr.createMemory(makeMem("m" + std::to_string(i),
+                                               room, entity, agent)));
     }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
+    mgr.deleteManyMemories(ids);
+    for (const auto& id : ids) {
+        EXPECT_EQ(mgr.getMemoryById(id), nullptr);
+    }
 }
 
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
+TEST_F(AgentMemoryTest, GetMemoriesByIds) {
+    std::vector<UUID> ids;
+    for (int i = 0; i < 3; ++i) {
+        ids.push_back(mgr.createMemory(makeMem("m" + std::to_string(i),
+                                               room, entity, agent)));
+    }
+    auto fetched = mgr.getMemoriesByIds(ids);
+    EXPECT_EQ(fetched.size(), 3u);
+}
 
-TEST_F(AgentmemoryTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
+TEST_F(AgentMemoryTest, GetMemoriesByRoomIds) {
+    auto otherRoom = generateUUID();
+    mgr.createMemory(makeMem("a", room, entity, agent));
+    mgr.createMemory(makeMem("b", room, entity, agent));
+    mgr.createMemory(makeMem("c", otherRoom, entity, agent));
+
+    auto fetched = mgr.getMemoriesByRoomIds({room});
+    EXPECT_EQ(fetched.size(), 2u);
+}
+
+TEST_F(AgentMemoryTest, SearchByCount) {
+    for (int i = 0; i < 5; ++i) {
+        mgr.createMemory(makeMem("m" + std::to_string(i), room, entity, agent));
+    }
+    MemorySearchParams p;
+    p.roomId = room;
+    p.count = 3;
+    auto fetched = mgr.getMemories(p);
+    EXPECT_LE(fetched.size(), 3u);
+}
+
+TEST_F(AgentMemoryTest, CountMemories) {
     for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
+        mgr.createMemory(makeMem("c" + std::to_string(i), room, entity, agent));
     }
-    
-    for (auto& t : threads) {
-        t.join();
+    EXPECT_EQ(mgr.countMemories(room), 4);
+}
+
+TEST_F(AgentMemoryTest, DeleteAllMemoriesForRoom) {
+    for (int i = 0; i < 3; ++i) {
+        mgr.createMemory(makeMem("x", room, entity, agent));
     }
-    
-    EXPECT_EQ(counter.load(), 400);
+    mgr.deleteAllMemories(room);
+    EXPECT_EQ(mgr.countMemories(room), 0);
 }
 
-TEST_F(AgentmemoryTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
+TEST_F(AgentMemoryTest, SearchByEmbedding) {
+    auto mem = makeMem("vec mem", room, entity, agent);
+    EmbeddingVector v{1.0f, 0.0f, 0.0f, 0.0f};
+    mem->setEmbedding(v);
+    mgr.createMemory(mem);
+
+    MemorySearchByEmbeddingParams p;
+    p.embedding = v;
+    p.matchThreshold = 0.5;
+    p.count = 5;
+    p.roomId = room;
+    auto results = mgr.searchMemories(p);
+    EXPECT_GE(results.size(), 1u);
 }
 
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(AgentmemoryTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
+TEST(AgentMemoryGlobals, GlobalManagerExists) {
+    auto& g = getGlobalMemoryManager();
+    auto id = memory::store(std::make_shared<Memory>(
+        generateUUID(), "global mem", generateUUID(), generateUUID()));
+    EXPECT_FALSE(id.empty());
+    auto got = memory::retrieve(id);
+    ASSERT_NE(got, nullptr);
+    EXPECT_EQ(got->getContent(), "global mem");
+    EXPECT_TRUE(memory::remove(id));
+    (void)g;
 }
 
-TEST_F(AgentmemoryTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(AgentmemoryTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(AgentmemoryTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST(AgentMemoryGlobals, ClearAllRemovesEverything) {
+    memory::clearAll();
+    auto id = memory::store(std::make_shared<Memory>(
+        generateUUID(), "x", generateUUID(), generateUUID()));
+    ASSERT_FALSE(id.empty());
+    memory::clearAll();
+    EXPECT_EQ(memory::retrieve(id), nullptr);
 }

@@ -118,13 +118,19 @@ void AgentShell::shellLoop() {
 
 ShellCommandResult AgentShell::executeCommand(const std::string& command) {
     auto tokens = parseCommand(command);
-    
+
     if (tokens.empty()) {
         return ShellCommandResult(true, "", "", 0);
     }
-    
+
     std::string commandName = tokens[0];
-    
+
+    // Record into history when enabled, regardless of dispatch outcome.
+    if (historyEnabled_) {
+        std::lock_guard<std::mutex> hlock(historyMutex_);
+        commandHistory_.push_back(command);
+    }
+
     // Look up command handler
     CommandHandler handler;
     {

@@ -215,7 +215,7 @@ add_subdirectory(cpp/tests)
 
 # Spartan Integration Test
 add_executable(spartan_integration_test
-    spartan_test.cpp
+    cpp/tests/spartan_test.cpp
 )
 target_include_directories(spartan_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -224,12 +224,14 @@ target_include_directories(spartan_integration_test PRIVATE
 target_link_libraries(spartan_integration_test
     elizaos-core
     elizaos-spartan
+    gtest
+    gtest_main
     Threads::Threads
 )
 
 # Spartan Demo
 add_executable(spartan_demo
-    spartan_demo.cpp
+    examples/spartan_demo.cpp
 )
 target_include_directories(spartan_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -244,7 +246,7 @@ target_link_libraries(spartan_demo
 
 # Stage 4 Demo
 add_executable(stage4_demo
-    demo_stage4.cpp
+    examples/demo_stage4.cpp
 )
 target_include_directories(stage4_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -262,7 +264,7 @@ target_link_libraries(stage4_demo
 
 # Stage 5 Demo
 add_executable(stage5_demo
-    demo_stage5.cpp
+    examples/demo_stage5.cpp
 )
 target_include_directories(stage5_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -281,7 +283,7 @@ target_link_libraries(stage5_demo
 
 # Stage 6 Demo
 add_executable(stage6_demo
-    demo_stage6.cpp
+    examples/demo_stage6.cpp
 )
 target_include_directories(stage6_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -299,7 +301,7 @@ target_link_libraries(stage6_demo
 
 # Awesome Eliza Demo
 add_executable(awesome_eliza_demo
-    awesome_eliza_demo.cpp
+    examples/awesome_eliza_demo.cpp
 )
 target_include_directories(awesome_eliza_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -313,7 +315,7 @@ target_link_libraries(awesome_eliza_demo
 
 # TheOrg Demo
 add_executable(the_org_demo
-    the_org_demo.cpp
+    examples/the_org_demo.cpp
 )
 target_include_directories(the_org_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -329,7 +331,7 @@ target_link_libraries(the_org_demo
 
 # Main Eliza CLI executable
 add_executable(eliza
-    eliza_main.cpp
+    examples/eliza_main.cpp
 )
 target_include_directories(eliza PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -348,7 +350,7 @@ target_link_libraries(eliza
 
 # EasyCompletion Demo
 add_executable(easycompletion_demo
-    easycompletion_demo.cpp
+    examples/easycompletion_demo.cpp
 )
 target_include_directories(easycompletion_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -363,7 +365,7 @@ target_link_libraries(easycompletion_demo
 
 # Characters Demo
 add_executable(characters_demo
-    characters_demo.cpp
+    examples/characters_demo.cpp
 )
 target_include_directories(characters_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -380,7 +382,7 @@ target_link_libraries(characters_demo
 
 # Knowledge Demo
 add_executable(knowledge_demo
-    knowledge_demo.cpp
+    examples/knowledge_demo.cpp
 )
 target_include_directories(knowledge_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -397,7 +399,7 @@ target_link_libraries(knowledge_demo
 
 # Eliza's List Demo
 add_executable(elizas_list_demo
-    elizas_list_demo.cpp
+    examples/elizas_list_demo.cpp
 )
 target_include_directories(elizas_list_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -412,7 +414,7 @@ target_link_libraries(elizas_list_demo
 )
 
 add_executable(knowledge_quick_demo
-    knowledge_quick_demo.cpp
+    examples/knowledge_quick_demo.cpp
 )
 target_include_directories(knowledge_quick_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -429,7 +431,7 @@ target_link_libraries(knowledge_quick_demo
 
 # Eliza's List Real Data Test
 add_executable(elizas_list_real_test
-    elizas_list_real_test.cpp
+    examples/elizas_list_real_test.cpp
 )
 target_include_directories(elizas_list_real_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -445,7 +447,7 @@ target_link_libraries(elizas_list_real_test
 
 # Eliza's List Unit Test
 add_executable(elizas_list_unit_test
-    elizas_list_unit_test.cpp
+    examples/elizas_list_unit_test.cpp
 )
 target_include_directories(elizas_list_unit_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -461,7 +463,7 @@ target_link_libraries(elizas_list_unit_test
 
 # Eliza 3D Hyperfy Starter Demo
 add_executable(eliza_3d_hyperfy_starter_demo
-    eliza_3d_hyperfy_starter_demo.cpp
+    examples/eliza_3d_hyperfy_starter_demo.cpp
 )
 target_include_directories(eliza_3d_hyperfy_starter_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -476,7 +478,7 @@ target_link_libraries(eliza_3d_hyperfy_starter_demo
 
 # Eliza's World Demo
 add_executable(elizas_world_demo
-    elizas_world_demo.cpp
+    examples/elizas_world_demo.cpp
 )
 target_include_directories(elizas_world_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -491,8 +493,7 @@ target_link_libraries(elizas_world_demo
 
 # Eliza's World Standalone Test
 add_executable(elizas_world_standalone_test
-    elizas_world_test.cpp
-    cpp/tests/src/test_elizas_world.cpp
+    examples/elizas_world_standalone_test.cpp
 )
 target_include_directories(elizas_world_standalone_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -508,7 +509,7 @@ target_link_libraries(elizas_world_standalone_test
 
 # Registry Demo
 add_executable(registry_demo
-    registry_demo.cpp
+    examples/registry_demo.cpp
 )
 target_include_directories(registry_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -523,7 +524,7 @@ target_link_libraries(registry_demo
 
 # Shell Demo
 add_executable(shell_demo
-    shell_demo.cpp
+    examples/shell_demo.cpp
 )
 target_include_directories(shell_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -539,7 +540,7 @@ target_link_libraries(shell_demo
 
 # AgentShell Integration Test
 add_executable(agentshell_integration_test
-    agentshell_test.cpp
+    examples/agentshell_standalone_test.cpp
 )
 target_include_directories(agentshell_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
