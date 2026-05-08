@@ -17,6 +17,13 @@ ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framew
 
 **Remaining Work:** Only 5 minimal modules (10%) need expansion - primarily optional starter templates and specialized protocols.
 
+
+## KSM Creator Companion Skill
+
+For structured evolution tasks, use the companion Copilot skill `.github/agents/elizaos-cpp-ksm-creator.md`. The companion is the Copilot-facing version of `/skill-creator(/ksm-evolve("elizaos-cpp"))`: it keeps local implementation work aligned with Manus-led KSM cycles, living-center selection, validation tiers, and reusable skill-memory crystallization.
+
+Use the companion skill whenever work spans more than a narrow local edit, especially when repairing incomplete C++ modules, CMake target assumptions, serialization round-trips, thread-safety defects, cognitive-pipeline integration, avatar protocol state, or tests that define future architectural behavior.
+
 ## Project Philosophy
 
 ### Core Principles
