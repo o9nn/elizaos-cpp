@@ -15,11 +15,11 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromFile(const std::str
         if (!file.is_open()) {
             return std::nullopt;
         }
-        
+
         std::stringstream buffer;
         buffer << file.rdbuf();
         file.close();
-        
+
         return loadFromJsonString(buffer.str());
     } catch (const std::exception& e) {
         // Log error but don't throw
@@ -30,11 +30,11 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromFile(const std::str
 std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const std::string& jsonString) {
     try {
         json j = json::parse(jsonString);
-        
+
         // Extract basic character information
         std::string name = j.value("name", "");
         std::string description = "";
-        
+
         // Try different description fields
         if (j.contains("bio") && j["bio"].is_array() && !j["bio"].empty()) {
             // If bio is an array, take the first element or concatenate
@@ -46,41 +46,41 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
         } else if (j.contains("description")) {
             description = j["description"].get<std::string>();
         }
-        
+
         if (name.empty()) {
             return std::nullopt;
         }
-        
+
         CharacterProfile character(name, description);
-        
+
         // Parse personality from style information
         if (j.contains("style")) {
             auto style = j["style"];
-            
+
             // Extract communication style preferences
             if (style.contains("all")) {
                 auto allStyles = style["all"];
                 for (const auto& styleItem : allStyles) {
                     if (styleItem.is_string()) {
                         std::string styleStr = styleItem.get<std::string>();
-                        
+
                         // Map style descriptions to personality traits
-                        if (styleStr.find("formal") != std::string::npos || 
+                        if (styleStr.find("formal") != std::string::npos ||
                             styleStr.find("proper") != std::string::npos) {
                             character.communicationStyle.formality = 0.8f;
                         }
-                        if (styleStr.find("verbose") != std::string::npos || 
+                        if (styleStr.find("verbose") != std::string::npos ||
                             styleStr.find("detailed") != std::string::npos) {
                             character.communicationStyle.verbosity = 0.8f;
                         }
-                        if (styleStr.find("emotional") != std::string::npos || 
+                        if (styleStr.find("emotional") != std::string::npos ||
                             styleStr.find("expressive") != std::string::npos) {
                             character.communicationStyle.emotionality = 0.8f;
                         }
                     }
                 }
             }
-            
+
             // Handle chat-specific styles
             if (style.contains("chat")) {
                 auto chatStyles = style["chat"];
@@ -91,8 +91,8 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                     }
                 }
             }
-            
-            // Handle post-specific styles  
+
+            // Handle post-specific styles
             if (style.contains("post")) {
                 auto postStyles = style["post"];
                 for (const auto& styleItem : postStyles) {
@@ -103,14 +103,14 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
         // Parse bio information into personality traits
         if (j.contains("bio") && j["bio"].is_array()) {
             for (const auto& bioItem : j["bio"]) {
                 if (bioItem.is_string()) {
                     std::string bioStr = bioItem.get<std::string>();
                     character.background.experiences.push_back(bioStr);
-                    
+
                     // Infer personality traits from bio
                     if (bioStr.find("loyal") != std::string::npos || bioStr.find("faithful") != std::string::npos) {
                         character.personality.loyalty = std::min(1.0f, character.personality.loyalty + 0.1f);
@@ -130,7 +130,7 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
         // Parse lore information
         if (j.contains("lore") && j["lore"].is_array()) {
             for (const auto& loreItem : j["lore"]) {
@@ -139,8 +139,8 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
-        // Parse knowledge information  
+
+        // Parse knowledge information
         if (j.contains("knowledge") && j["knowledge"].is_array()) {
             for (const auto& knowledgeItem : j["knowledge"]) {
                 if (knowledgeItem.is_string()) {
@@ -150,7 +150,7 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                     // Handle object format with id, path, content
                     std::string content = knowledgeItem["content"].get<std::string>();
                     character.background.additionalContext["knowledge"] += content + "; ";
-                    
+
                     // Store additional metadata if present
                     if (knowledgeItem.contains("id")) {
                         std::string id = knowledgeItem["id"].get<std::string>();
@@ -163,19 +163,19 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
         // Parse adjectives into traits
         if (j.contains("adjectives") && j["adjectives"].is_array()) {
             for (const auto& adjective : j["adjectives"]) {
                 if (adjective.is_string()) {
                     std::string adj = adjective.get<std::string>();
-                    
+
                     // Create categorical traits from adjectives
-                    CharacterTrait adjectiveTrait(adj, "Character adjective: " + adj, 
+                    CharacterTrait adjectiveTrait(adj, "Character adjective: " + adj,
                                                  TraitCategory::PERSONALITY, TraitValueType::BOOLEAN);
                     adjectiveTrait.setBooleanValue(true);
                     character.addTrait(adjectiveTrait);
-                    
+
                     // Map adjectives to personality dimensions
                     if (adj == "creative" || adj == "imaginative" || adj == "innovative") {
                         character.personality.creativity = std::min(1.0f, character.personality.creativity + 0.2f);
@@ -197,7 +197,7 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
         // Parse topics into interests
         if (j.contains("topics") && j["topics"].is_array()) {
             for (const auto& topic : j["topics"]) {
@@ -206,14 +206,51 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
+        // Parse first-class trait records emitted by toJsonString().  This preserves
+        // non-boolean traits during save/load round-trips while retaining support for
+        // ElizaOS-style adjective inference above.
+        if (j.contains("traits") && j["traits"].is_array()) {
+            for (const auto& traitJson : j["traits"]) {
+                if (!traitJson.is_object() || !traitJson.contains("name")) {
+                    continue;
+                }
+                const std::string traitName = traitJson.value("name", "");
+                if (traitName.empty()) {
+                    continue;
+                }
+                const std::string traitDescription = traitJson.value("description", traitName);
+                const TraitCategory category = stringToTraitCategory(traitJson.value("category", "personality"));
+                const TraitValueType valueType = stringToTraitValueType(traitJson.value("valueType", "numeric"));
+                CharacterTrait trait(traitName, traitDescription, category, valueType);
+                trait.weight = std::max(0.0f, std::min(1.0f, traitJson.value("weight", 1.0f)));
+                if (traitJson.contains("value")) {
+                    switch (valueType) {
+                        case TraitValueType::NUMERIC:
+                            trait.setNumericValue(std::max(0.0f, std::min(1.0f, traitJson["value"].get<float>())));
+                            break;
+                        case TraitValueType::BOOLEAN:
+                            trait.setBooleanValue(traitJson["value"].get<bool>());
+                            break;
+                        case TraitValueType::CATEGORICAL:
+                            trait.setCategoricalValue(traitJson["value"].get<std::string>());
+                            break;
+                        case TraitValueType::TEXT:
+                            trait.setTextValue(traitJson["value"].get<std::string>());
+                            break;
+                    }
+                }
+                character.addTrait(trait);
+            }
+        }
+
         // Parse message examples for communication patterns
         if (j.contains("messageExamples") && j["messageExamples"].is_array()) {
             int exampleCount = 0;
             for (const auto& example : j["messageExamples"]) {
                 if (example.is_array() && exampleCount < 3) { // Limit examples for performance
                     for (const auto& message : example) {
-                        if (message.is_object() && message.contains("content") && 
+                        if (message.is_object() && message.contains("content") &&
                             message["content"].contains("text")) {
                             std::string text = message["content"]["text"].get<std::string>();
                             character.background.additionalContext["message_example_" + std::to_string(exampleCount)] = text;
@@ -224,7 +261,7 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
                 }
             }
         }
-        
+
         // Set metadata
         if (j.contains("modelProvider")) {
             character.metadata["modelProvider"] = j["modelProvider"].get<std::string>();
@@ -238,32 +275,32 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
             }
             character.metadata["clients"] = clients;
         }
-        
+
         // Create character-specific traits based on the character type
         if (name.find("trump") != std::string::npos || name.find("Trump") != std::string::npos) {
-            CharacterTrait assertiveTrait("assertiveness", "Strong assertive communication", 
+            CharacterTrait assertiveTrait("assertiveness", "Strong assertive communication",
                                         TraitCategory::PERSONALITY, TraitValueType::NUMERIC);
             assertiveTrait.setNumericValue(0.95f);
             character.addTrait(assertiveTrait);
-            
+
             character.personality.assertiveness = 0.95f;
             character.personality.extraversion = 0.9f;
             character.communicationStyle.tone = "assertive";
             character.communicationStyle.verbosity = 0.8f;
         } else if (name.find("Alfred") != std::string::npos || name.find("alfred") != std::string::npos) {
-            CharacterTrait formalityTrait("formality", "Formal and proper demeanor", 
+            CharacterTrait formalityTrait("formality", "Formal and proper demeanor",
                                         TraitCategory::SOCIAL, TraitValueType::NUMERIC);
             formalityTrait.setNumericValue(0.9f);
             character.addTrait(formalityTrait);
-            
+
             character.personality.conscientiousness = 0.9f;
             character.personality.loyalty = 0.95f;
             character.communicationStyle.tone = "formal";
             character.communicationStyle.formality = 0.9f;
         }
-        
+
         return character;
-        
+
     } catch (const std::exception& e) {
         return std::nullopt;
     }
@@ -271,17 +308,17 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
 
 std::vector<CharacterProfile> CharacterJsonLoader::loadFromDirectory(const std::string& directoryPath) {
     std::vector<CharacterProfile> characters;
-    
+
     try {
         if (!std::filesystem::exists(directoryPath) || !std::filesystem::is_directory(directoryPath)) {
             return characters;
         }
-        
+
         for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
             if (entry.is_regular_file()) {
                 std::string filepath = entry.path().string();
                 std::string extension = entry.path().extension().string();
-                
+
                 // Check for JSON files
                 if (extension == ".json" || filepath.find(".character.json") != std::string::npos) {
                     auto character = loadFromFile(filepath);
@@ -294,19 +331,19 @@ std::vector<CharacterProfile> CharacterJsonLoader::loadFromDirectory(const std::
     } catch (const std::exception& e) {
         // Log error but continue
     }
-    
+
     return characters;
 }
 
 bool CharacterJsonLoader::saveToFile(const CharacterProfile& character, const std::string& filepath) {
     try {
         std::string jsonStr = toJsonString(character);
-        
+
         std::ofstream file(filepath);
         if (!file.is_open()) {
             return false;
         }
-        
+
         file << jsonStr;
         file.close();
         return true;
@@ -318,36 +355,60 @@ bool CharacterJsonLoader::saveToFile(const CharacterProfile& character, const st
 std::string CharacterJsonLoader::toJsonString(const CharacterProfile& character) {
     try {
         json j;
-        
+
         j["name"] = character.name;
         j["description"] = character.description;
         j["version"] = character.version;
         j["creator"] = character.creator;
-        
+
         // Bio from experiences
         j["bio"] = json::array();
         for (const auto& experience : character.background.experiences) {
             j["bio"].push_back(experience);
         }
-        
+
         // Lore from backstory
         if (!character.background.backstory.empty()) {
             j["lore"] = json::array();
             j["lore"].push_back(character.background.backstory);
         }
-        
-        // Personality as adjectives
+
+        // Personality as adjectives plus first-class trait records for lossless
+        // round-tripping of numeric/categorical/text values.
         j["adjectives"] = json::array();
+        j["traits"] = json::array();
         for (const auto& trait : character.traits) {
             if (trait.valueType == TraitValueType::BOOLEAN && trait.getBooleanValue()) {
                 j["adjectives"].push_back(trait.name);
             }
+
+            json traitJson;
+            traitJson["name"] = trait.name;
+            traitJson["description"] = trait.description;
+            traitJson["category"] = traitCategoryToString(trait.category);
+            traitJson["valueType"] = traitValueTypeToString(trait.valueType);
+            traitJson["weight"] = trait.weight;
+            switch (trait.valueType) {
+                case TraitValueType::NUMERIC:
+                    traitJson["value"] = trait.getNumericValue();
+                    break;
+                case TraitValueType::BOOLEAN:
+                    traitJson["value"] = trait.getBooleanValue();
+                    break;
+                case TraitValueType::CATEGORICAL:
+                    traitJson["value"] = trait.getCategoricalValue();
+                    break;
+                case TraitValueType::TEXT:
+                    traitJson["value"] = trait.getTextValue();
+                    break;
+            }
+            j["traits"].push_back(traitJson);
         }
-        
+
         // Communication style
         j["style"] = json::object();
         j["style"]["all"] = json::array();
-        
+
         if (character.communicationStyle.formality > 0.7f) {
             j["style"]["all"].push_back("formal and proper communication");
         }
@@ -357,12 +418,12 @@ std::string CharacterJsonLoader::toJsonString(const CharacterProfile& character)
         if (character.communicationStyle.emotionality > 0.7f) {
             j["style"]["all"].push_back("expressive and emotional communication");
         }
-        
+
         // Metadata
         for (const auto& [key, value] : character.metadata) {
             j[key] = value;
         }
-        
+
         // Topics from interests
         auto interestsIt = character.background.additionalContext.find("interests");
         if (interestsIt != character.background.additionalContext.end()) {
@@ -375,7 +436,7 @@ std::string CharacterJsonLoader::toJsonString(const CharacterProfile& character)
                 }
             }
         }
-        
+
         return j.dump(2); // Pretty print with 2-space indentation
     } catch (const std::exception& e) {
         return "{}";

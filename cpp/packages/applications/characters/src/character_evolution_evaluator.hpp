@@ -1,9 +1,39 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_EVALUATORS_CHARACTER-EVOLUTION-EVALUATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_EVALUATORS_CHARACTER-EVOLUTION-EVALUATOR_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "../services/character-modification-service.h"
+#pragma once
 
-extern std::string evolutionAnalysisTemplate;
-extern std::shared_ptr<Evaluator> characterEvolutionEvaluator;
-#endif
+#include "character_updater.hpp"
+
+#include <string>
+#include <vector>
+
+namespace elizaos::characters {
+
+struct CharacterEvolutionSignal {
+    std::string interactionType;
+    std::string outcome;
+    float intensity{0.5f};
+    float valence{0.0f};
+};
+
+struct CharacterEvolutionReport {
+    float personalityShift{0.0f};
+    float stabilityDelta{0.0f};
+    float compatibilityWithOriginal{1.0f};
+    std::vector<std::string> strengthenedTraits;
+    std::vector<std::string> risks;
+    std::vector<CharacterOperation> recommendedOperations;
+    std::string summary;
+};
+
+extern const char* evolutionAnalysisTemplate;
+
+CharacterEvolutionReport evaluateCharacterEvolution(const CharacterProfile& original,
+                                                    const CharacterProfile& evolved);
+
+std::vector<CharacterOperation> recommendEvolutionOperations(const CharacterProfile& profile,
+                                                            const std::vector<CharacterEvolutionSignal>& signals);
+
+CharacterProfile evolveCharacterFromSignals(const CharacterProfile& profile,
+                                            const std::vector<CharacterEvolutionSignal>& signals,
+                                            CharacterEvolutionReport* report = nullptr);
+
+} // namespace elizaos::characters
