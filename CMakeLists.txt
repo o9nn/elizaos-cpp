@@ -214,6 +214,7 @@ add_subdirectory(cpp/tests)
 # ============================================================================
 
 # Spartan Integration Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/spartan_test.cpp)
 add_executable(spartan_integration_test
     cpp/tests/spartan_test.cpp
 )
@@ -228,8 +229,10 @@ target_link_libraries(spartan_integration_test
     gtest_main
     Threads::Threads
 )
+endif()
 
 # Spartan Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/spartan_demo.cpp)
 add_executable(spartan_demo
     examples/spartan_demo.cpp
 )
@@ -243,8 +246,10 @@ target_link_libraries(spartan_demo
     elizaos-spartan
     Threads::Threads
 )
+endif()
 
 # Stage 4 Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage4.cpp)
 add_executable(stage4_demo
     examples/demo_stage4.cpp
 )
@@ -261,8 +266,10 @@ target_link_libraries(stage4_demo
     elizaos-embodiment
     Threads::Threads
 )
+endif()
 
 # Stage 5 Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage5.cpp)
 add_executable(stage5_demo
     examples/demo_stage5.cpp
 )
@@ -280,8 +287,10 @@ target_link_libraries(stage5_demo
     elizaos-embodiment
     Threads::Threads
 )
+endif()
 
 # Stage 6 Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage6.cpp)
 add_executable(stage6_demo
     examples/demo_stage6.cpp
 )
@@ -298,8 +307,10 @@ target_link_libraries(stage6_demo
     elizaos-embodiment
     Threads::Threads
 )
+endif()
 
 # Awesome Eliza Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/awesome_eliza_demo.cpp)
 add_executable(awesome_eliza_demo
     examples/awesome_eliza_demo.cpp
 )
@@ -312,8 +323,10 @@ target_link_libraries(awesome_eliza_demo
     elizaos-awesome_eliza
     Threads::Threads
 )
+endif()
 
 # TheOrg Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/the_org_demo.cpp)
 add_executable(the_org_demo
     examples/the_org_demo.cpp
 )
@@ -328,8 +341,10 @@ target_link_libraries(the_org_demo
     elizaos-the_org
     Threads::Threads
 )
+endif()
 
 # Main Eliza CLI executable
+if(EXISTS ${CMAKE_SOURCE_DIR}/eliza_main.cpp)
 add_executable(eliza
     examples/eliza_main.cpp
 )
@@ -347,8 +362,10 @@ target_link_libraries(eliza
     elizaos-characters
     Threads::Threads
 )
+endif()
 
 # EasyCompletion Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/easycompletion_demo.cpp)
 add_executable(easycompletion_demo
     examples/easycompletion_demo.cpp
 )
@@ -362,8 +379,10 @@ target_link_libraries(easycompletion_demo
     elizaos-easycompletion
     Threads::Threads
 )
+endif()
 
 # Characters Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/characters_demo.cpp)
 add_executable(characters_demo
     examples/characters_demo.cpp
 )
@@ -379,8 +398,10 @@ target_link_libraries(characters_demo
     nlohmann_json::nlohmann_json
     Threads::Threads
 )
+endif()
 
 # Knowledge Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/knowledge_demo.cpp)
 add_executable(knowledge_demo
     examples/knowledge_demo.cpp
 )
@@ -396,8 +417,10 @@ target_link_libraries(knowledge_demo
     elizaos-knowledge
     Threads::Threads
 )
+endif()
 
 # Eliza's List Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_demo.cpp)
 add_executable(elizas_list_demo
     examples/elizas_list_demo.cpp
 )
@@ -412,7 +435,9 @@ target_link_libraries(elizas_list_demo
     nlohmann_json::nlohmann_json
     Threads::Threads
 )
+endif()
 
+if(EXISTS ${CMAKE_SOURCE_DIR}/knowledge_quick_demo.cpp)
 add_executable(knowledge_quick_demo
     examples/knowledge_quick_demo.cpp
 )
@@ -428,8 +453,10 @@ target_link_libraries(knowledge_quick_demo
     elizaos-knowledge
     Threads::Threads
 )
+endif()
 
 # Eliza's List Real Data Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_real_test.cpp)
 add_executable(elizas_list_real_test
     examples/elizas_list_real_test.cpp
 )
@@ -444,8 +471,10 @@ target_link_libraries(elizas_list_real_test
     nlohmann_json::nlohmann_json
     Threads::Threads
 )
+endif()
 
 # Eliza's List Unit Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_unit_test.cpp)
 add_executable(elizas_list_unit_test
     examples/elizas_list_unit_test.cpp
 )
@@ -460,8 +489,10 @@ target_link_libraries(elizas_list_unit_test
     nlohmann_json::nlohmann_json
     Threads::Threads
 )
+endif()
 
 # Eliza 3D Hyperfy Starter Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/eliza_3d_hyperfy_starter_demo.cpp)
 add_executable(eliza_3d_hyperfy_starter_demo
     examples/eliza_3d_hyperfy_starter_demo.cpp
 )
@@ -475,8 +506,10 @@ target_link_libraries(eliza_3d_hyperfy_starter_demo
     elizaos-eliza_3d_hyperfy_starter
     Threads::Threads
 )
+endif()
 
 # Eliza's World Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_world_demo.cpp)
 add_executable(elizas_world_demo
     examples/elizas_world_demo.cpp
 )
@@ -490,8 +523,10 @@ target_link_libraries(elizas_world_demo
     elizaos-elizas_world
     Threads::Threads
 )
+endif()
 
 # Eliza's World Standalone Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_world_test.cpp)
 add_executable(elizas_world_standalone_test
     examples/elizas_world_standalone_test.cpp
 )
@@ -506,8 +541,10 @@ target_link_libraries(elizas_world_standalone_test
     gtest
     Threads::Threads
 )
+endif()
 
 # Registry Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/registry_demo.cpp)
 add_executable(registry_demo
     examples/registry_demo.cpp
 )
@@ -521,8 +558,10 @@ target_link_libraries(registry_demo
     elizaos-registry
     Threads::Threads
 )
+endif()
 
 # Shell Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/shell_demo.cpp)
 add_executable(shell_demo
     examples/shell_demo.cpp
 )
@@ -537,8 +576,10 @@ target_link_libraries(shell_demo
     elizaos-agentshell
     Threads::Threads
 )
+endif()
 
 # AgentShell Integration Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/agentshell_standalone_test.cpp)
 add_executable(agentshell_integration_test
     examples/agentshell_standalone_test.cpp
 )
@@ -553,6 +594,7 @@ target_link_libraries(agentshell_integration_test
     elizaos-agentshell
     Threads::Threads
 )
+endif()
 
 # Ontogenesis Examples
 add_executable(ontogenesis_simple_demo
@@ -603,56 +645,47 @@ add_subdirectory(cpp/packages/plugins/dgen_kobold_provider)
 # Installation
 # ============================================================================
 install(TARGETS
-    # Main executables
-    eliza shell_demo agentshell_integration_test
-    spartan_integration_test spartan_demo stage4_demo stage5_demo stage6_demo
-    awesome_eliza_demo the_org_demo easycompletion_demo
-    characters_demo knowledge_demo knowledge_quick_demo
-    elizas_list_demo elizas_list_real_test elizas_list_unit_test
-    eliza_3d_hyperfy_starter_demo elizas_world_demo
-    registry_demo
-    
     # Core and Infrastructure libraries
     elizaos-core elizaos-agentloop elizaos-agentmemory
     elizaos-agentaction elizaos-agentagenda
     elizaos-agentcomms elizaos-agentlogger elizaos-agentshell
     elizaos-agentbrowser
-    
+
     # Application modules
     elizaos-eliza elizaos-characters elizaos-knowledge
     elizaos-goal_manager
-    
+
     # Integration modules
     elizaos-auto_fun elizaos-autonomous_starter
     elizaos-sweagent elizaos-mcp_gateway elizaos-otaku elizaos-otc_agent
-    
+
     # Plugin modules
     elizaos-eliza_plugin_starter elizaos-plugin_specification
     elizaos-plugins_automation
-    
+
     # Starter modules
     elizaos-eliza_starter elizaos-eliza_nextjs_starter
     elizaos-eliza_3d_hyperfy_starter
-    
+
     # External modules
     elizaos-autofun_idl elizaos-awesome_eliza elizaos-brandkit
     elizaos-characterfile elizaos-classified elizaos-easycompletion
     elizaos-elizaos_github_io elizaos-elizas_list elizaos-elizas_world
     elizaos-hat elizaos-hats elizaos-registry elizaos-spartan
     elizaos-the_org elizaos-trust_scoreboard elizaos-workgroups
-    
+
     # Multimedia
     elizaos-ljspeechtools elizaos-livevideochat
-    
+
     # Web and Documentation
     elizaos-vercel_api elizaos-website
-    
+
     # Tools and Automation
     elizaos-discord_summarizer elizaos-discrub_ext
-    
+
     # Learning and Adaptation
     elizaos-evolutionary elizaos-ontogenesis
-    
+
     # Embodiment
     elizaos-embodiment
 
@@ -680,6 +713,9 @@ install(TARGETS
 
     # Plugin Provider libraries
     elizaos-dgen_kobold_provider
+
+    # Ontogenesis demos (when present)
+    ontogenesis_simple_demo ontogenesis_evolution_demo ontogenesis_lineage_demo
 
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib

@@ -284,7 +284,7 @@ TEST_F(HATProtocolTest, ConcurrentTokenIssuance) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -316,7 +316,7 @@ TEST_F(HATProtocolTest, ConcurrentTokenValidation) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -343,7 +343,7 @@ TEST_F(HATProtocolTest, ConcurrentPermissionChecks) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -371,7 +371,7 @@ TEST_F(HATProtocolTest, ConcurrentRevocation) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
