@@ -2,6 +2,7 @@
 #include "elizaos/agentmemory.hpp"
 #include "elizaos/core.hpp"
 #include <memory>
+#include <set>
 #include <thread>
 #include <ctime>
 
@@ -318,7 +319,7 @@ TEST_F(AgentMemoryTest, DISABLED_ThreadSafety) {
     }
     
     // Wait for all threads to complete
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     

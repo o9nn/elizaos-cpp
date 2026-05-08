@@ -390,7 +390,7 @@ TEST_F(BrandKitTest, ConcurrentColorAccess) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -410,7 +410,7 @@ TEST_F(BrandKitTest, ConcurrentCSSGeneration) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     

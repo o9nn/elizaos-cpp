@@ -258,66 +258,66 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define EXPECT_EQ(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 == _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " == " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " == " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
 
 #define EXPECT_NE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 != _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " != " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " != " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
 
 #define EXPECT_LT(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 < _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " < " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " < " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
 
 #define EXPECT_LE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 <= _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " <= " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " <= " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
 
 #define EXPECT_GT(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 > _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " > " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " > " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
 
 #define EXPECT_GE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 >= _v2)) { \
             std::ostringstream _oss; \
-            _oss << "Expected: " #val1 " >= " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
+            _oss << "Expected: " #val1 " >= " #val2; \
             ::testing::recordFailure(__FILE__, __LINE__, _oss.str()); \
         } \
     } while (0)
@@ -346,8 +346,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define EXPECT_NEAR(val1, val2, abs_error) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         auto _err = (abs_error); \
         if (std::abs(_v1 - _v2) > _err) { \
             std::ostringstream _oss; \
@@ -415,8 +415,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_EQ(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 == _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " == " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -427,8 +427,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_NE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 != _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " != " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -439,8 +439,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_LT(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 < _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " < " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -451,8 +451,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_LE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 <= _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " <= " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -463,8 +463,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_GT(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 > _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " > " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -475,8 +475,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_GE(val1, val2) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         if (!(_v1 >= _v2)) { \
             std::ostringstream _oss; \
             _oss << "Assertion failed: " #val1 " >= " #val2 " (" << _v1 << " vs " << _v2 << ")"; \
@@ -499,8 +499,8 @@ inline AssertionResult AssertionFailure() { return AssertionResult(false); }
 
 #define ASSERT_NEAR(val1, val2, abs_error) \
     do { \
-        auto _v1 = (val1); \
-        auto _v2 = (val2); \
+        const auto& _v1 = (val1); \
+        const auto& _v2 = (val2); \
         auto _err = (abs_error); \
         if (std::abs(_v1 - _v2) > _err) { \
             std::ostringstream _oss; \

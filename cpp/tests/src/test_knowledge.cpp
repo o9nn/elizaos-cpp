@@ -594,7 +594,7 @@ TEST_F(KnowledgeTest, KnowledgeBaseThreadSafety) {
     }
     
     // Wait for all threads to complete
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -617,7 +617,7 @@ TEST_F(KnowledgeTest, KnowledgeBaseThreadSafety) {
         });
     }
     
-    for (auto& std::thread : queryThreads) {
+    for (auto& thread : queryThreads) {
         thread.join();
     }
     

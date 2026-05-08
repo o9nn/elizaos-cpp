@@ -430,7 +430,7 @@ TEST_F(ClassifiedTest, ConcurrentAccess) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
@@ -461,7 +461,7 @@ TEST_F(ClassifiedTest, ConcurrentDocumentOperations) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     

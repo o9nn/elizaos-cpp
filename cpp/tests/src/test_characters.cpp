@@ -545,7 +545,7 @@ TEST_F(CharactersTest, CharacterManager_ThreadSafety) {
     }
     
     // Wait for all threads to complete
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     
