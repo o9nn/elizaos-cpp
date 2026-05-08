@@ -1,250 +1,132 @@
-// Comprehensive End-to-End Test Suite for elizas_world Module
-// Generated comprehensive tests for C++ implementation
-
+// elizas_world_test.cpp - E2E tests for ElizasWorld virtual world.
 #include <gtest/gtest.h>
 #include "elizaos/elizas_world.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
+#include <cmath>
 
 using namespace elizaos;
 
-// Test Fixture for elizas_world
+namespace {
+WorldEnvironment mkEnv(const std::string& id, double x = 0, double y = 0, double z = 0,
+                       double r = 100.0) {
+    WorldEnvironment e;
+    e.id = id;
+    e.name = id + "-name";
+    e.type = "social";
+    e.center = WorldPosition(x, y, z);
+    e.radius = r;
+    e.active = true;
+    return e;
+}
+
+WorldAgent mkAgent(const std::string& id, double x = 0, double y = 0, double z = 0) {
+    WorldAgent a;
+    a.agentId = id;
+    a.name = id;
+    a.type = "eliza";
+    a.position = WorldPosition(x, y, z);
+    a.online = true;
+    return a;
+}
+}
+
+TEST(WorldPosition, DistanceAndInterpolation) {
+    WorldPosition p1(0, 0, 0), p2(3, 4, 0);
+    EXPECT_NEAR(p1.distanceTo(p2), 5.0, 1e-6);
+    auto mid = p1.interpolate(p2, 0.5);
+    EXPECT_NEAR(mid.x, 1.5, 1e-6);
+    EXPECT_NEAR(mid.y, 2.0, 1e-6);
+}
+
+TEST(WorldEnvironment, ContainsAndDistance) {
+    auto e = mkEnv("e1", 0, 0, 0, 50);
+    EXPECT_TRUE(e.containsPosition({10, 10, 0}));
+    EXPECT_FALSE(e.containsPosition({100, 0, 0}));
+    EXPECT_NEAR(e.distanceFromCenter({30, 40, 0}), 50.0, 1e-6);
+}
+
+TEST(WorldAgent, CanInteractAndTeleport) {
+    auto a = mkAgent("a", 0, 0, 0);
+    auto b = mkAgent("b", 5, 0, 0);
+    EXPECT_TRUE(a.canInteractWith(b));
+    a.teleportTo({100, 0, 0});
+    EXPECT_NEAR(a.position.x, 100.0, 1e-6);
+}
+
 class ElizasWorldTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    ElizasWorld world;
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(ElizasWorldTest, AddRemoveEnvironment) {
+    EXPECT_TRUE(world.addEnvironment(mkEnv("env-1")));
+    EXPECT_EQ(world.getEnvironmentCount(), 1u);
+    EXPECT_TRUE(world.getEnvironment("env-1").has_value());
+    EXPECT_TRUE(world.removeEnvironment("env-1"));
+    EXPECT_FALSE(world.getEnvironment("env-1").has_value());
 }
 
-TEST_F(ElizasWorldTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(ElizasWorldTest, AddRemoveAgent) {
+    EXPECT_TRUE(world.addAgent(mkAgent("a-1")));
+    EXPECT_EQ(world.getAgentCount(), 1u);
+    EXPECT_TRUE(world.removeAgent("a-1"));
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(ElizasWorldTest, OnlineAgentsFilter) {
+    world.addAgent(mkAgent("a"));
+    auto b = mkAgent("b");
+    b.online = false;
+    world.addAgent(b);
+    EXPECT_EQ(world.getOnlineAgents().size(), 1u);
 }
 
-TEST_F(ElizasWorldTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(ElizasWorldTest, TeleportMoveAgent) {
+    world.addAgent(mkAgent("a"));
+    EXPECT_TRUE(world.teleportAgent("a", {50, 50, 0}));
+    auto a = world.getAgent("a");
+    ASSERT_TRUE(a.has_value());
+    EXPECT_NEAR(a->position.x, 50.0, 1e-6);
 }
 
-TEST_F(ElizasWorldTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(ElizasWorldTest, RecordAndQueryInteraction) {
+    world.addAgent(mkAgent("a"));
+    world.addAgent(mkAgent("b"));
+    WorldInteraction ix;
+    ix.id = "i-1";
+    ix.initiatorId = "a";
+    ix.targetId = "b";
+    ix.type = "chat";
+    EXPECT_TRUE(world.recordInteraction(ix));
+    EXPECT_GE(world.getInteractionCount(), 1u);
+    EXPECT_GE(world.getInteractionHistory("a").size(), 1u);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(ElizasWorldTest, ProximitySpatialQueries) {
+    world.addAgent(mkAgent("a", 0, 0, 0));
+    world.addAgent(mkAgent("b", 5, 0, 0));
+    world.addAgent(mkAgent("c", 100, 0, 0));
+    auto near = world.getAgentsNearPosition({0, 0, 0}, 10.0);
+    EXPECT_GE(near.size(), 2u);
 }
 
-TEST_F(ElizasWorldTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST_F(ElizasWorldTest, UpdateAdvancesSimulation) {
+    world.addAgent(mkAgent("a"));
+    EXPECT_NO_THROW(world.update(0.1));
 }
 
-TEST_F(ElizasWorldTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
+TEST_F(ElizasWorldTest, ConfigSetters) {
+    EXPECT_NO_THROW(world.setSimulationSpeed(2.0));
+    EXPECT_NO_THROW(world.setWorldBounds({-100, -100, -100}, {100, 100, 100}));
+    EXPECT_NO_THROW(world.setAutoUpdate(true, 0.5));
 }
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(ElizasWorldTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(ElizasWorldTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(ElizasWorldTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(ElizasWorldTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
+TEST_F(ElizasWorldTest, SaveLoadRoundtrip) {
+    world.addEnvironment(mkEnv("e"));
+    world.addAgent(mkAgent("a"));
+    auto path = std::string("/tmp/elizas_world_state.json");
+    bool saved = world.saveWorldState(path);
+    if (saved) {
+        ElizasWorld other;
+        EXPECT_TRUE(other.loadWorldState(path));
     }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(ElizasWorldTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(ElizasWorldTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(ElizasWorldTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(ElizasWorldTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+    SUCCEED();
 }

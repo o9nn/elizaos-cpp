@@ -473,12 +473,6 @@ TEST(CognitivePipelineE2E, SolveIssueExposeViaMCPNarrateOnBridge) {
 }
 
 
-// ===========================================================================
-// Test entry point. We use the shim's RUN_ALL_TESTS to avoid pulling in real
-// gtest_main, which would otherwise register a competing harness and corrupt
-// the heap during static initialisation.
-// ===========================================================================
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return ::testing::RUN_ALL_TESTS();
-}
+// gtest_main from FetchContent provides the entry point now that the shim has
+// been removed. The previous custom main() was a workaround for the dead-code
+// shim header and is no longer needed.

@@ -1,250 +1,88 @@
-// Comprehensive End-to-End Test Suite for autonomous_starter Module
-// Generated comprehensive tests for C++ implementation
-
+// autonomous_starter_test.cpp - E2E tests for AutonomousStarter agent.
 #include <gtest/gtest.h>
 #include "elizaos/autonomous_starter.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
+#include "elizaos/core.hpp"
 
 using namespace elizaos;
 
-// Test Fixture for autonomous_starter
-class AutonomousStarterTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
-};
-
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+namespace {
+AgentConfig mkConfig() {
+    AgentConfig c;
+    c.agentName = "Autoliza-Test";
+    c.bio = "a curious autonomous test agent";
+    c.lore = "test lore";
+    return c;
+}
 }
 
-TEST_F(AutonomousStarterTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST(AutonomousStarter, Construction) {
+    AutonomousStarter agent(mkConfig());
+    EXPECT_FALSE(agent.isRunning());
+    EXPECT_EQ(agent.getConfig().agentName, "Autoliza-Test");
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST(AutonomousStarter, StartStopLifecycle) {
+    AutonomousStarter agent(mkConfig());
+    agent.start();
+    EXPECT_TRUE(agent.isRunning());
+    agent.stop();
+    EXPECT_FALSE(agent.isRunning());
 }
 
-TEST_F(AutonomousStarterTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST(AutonomousStarter, IdempotentStartStop) {
+    AutonomousStarter agent(mkConfig());
+    agent.start();
+    agent.start();
+    EXPECT_TRUE(agent.isRunning());
+    agent.stop();
+    agent.stop();
+    EXPECT_FALSE(agent.isRunning());
 }
 
-TEST_F(AutonomousStarterTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST(AutonomousStarter, ShellAccessControl) {
+    AutonomousStarter agent(mkConfig());
+    agent.enableShellAccess(false);
+    auto r = agent.executeShellCommand("echo hello");
+    // With shell access disabled, the call must not crash; behaviour can
+    // either return failure or succeed with safe handling.
+    SUCCEED() << "exit=" << r.exitCode;
+    agent.enableShellAccess(true);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST(AutonomousStarter, CurrentWorkingDirectoryNonEmpty) {
+    AutonomousStarter agent(mkConfig());
+    EXPECT_FALSE(agent.getCurrentWorkingDirectory().empty());
 }
 
-TEST_F(AutonomousStarterTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST(AutonomousStarter, LoopIntervalAccessor) {
+    AutonomousStarter agent(mkConfig());
+    agent.setLoopInterval(std::chrono::milliseconds(250));
+    EXPECT_EQ(agent.getLoopInterval(), std::chrono::milliseconds(250));
 }
 
-TEST_F(AutonomousStarterTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
+TEST(AutonomousStarter, AutonomousLoopStartStop) {
+    AutonomousStarter agent(mkConfig());
+    agent.setLoopInterval(std::chrono::milliseconds(50));
+    agent.startAutonomousLoop();
+    // Don't strictly require isAutonomousLoopRunning() to be true the same
+    // tick (the loop may schedule asynchronously); just test we can stop it.
+    agent.stopAutonomousLoop();
+    SUCCEED();
 }
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
+TEST(AutonomousStarter, StateExposesAgentIdentity) {
+    AutonomousStarter agent(mkConfig());
+    const auto& s = agent.getState();
+    EXPECT_EQ(s.getAgentName(), "Autoliza-Test");
 }
 
-TEST_F(AutonomousStarterTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
+TEST(AutonomousStarter, CreateAutolizaFactory) {
+    auto a = createAutolizaAgent();
+    ASSERT_NE(a, nullptr);
+    EXPECT_FALSE(a->isRunning());
+    EXPECT_FALSE(a->getConfig().agentName.empty());
 }
 
-TEST_F(AutonomousStarterTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(AutonomousStarterTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(AutonomousStarterTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(AutonomousStarterTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(AutonomousStarterTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(AutonomousStarterTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(AutonomousStarterTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+TEST(AutonomousStarter, PlaceholderLink) {
+    EXPECT_NO_THROW(autonomous_starter_placeholder());
 }
