@@ -34,6 +34,12 @@ void hat_placeholder() {}
 // TeamCoordinator Implementation
 // ==============================================================================
 struct TeamCoordinator::Impl {
+    struct TeamMeta {
+        std::string name;
+        std::string objective;
+        std::chrono::system_clock::time_point sessionStart;
+    };
+    std::unordered_map<std::string, TeamMeta> team_meta;
     std::unordered_map<std::string, std::vector<TeamMember>> teams;
     std::unordered_map<std::string, std::vector<TeamTask>> team_tasks;
     std::unordered_map<std::string, std::vector<TeamTask>> member_tasks;
@@ -51,6 +57,11 @@ std::string TeamCoordinator::createTeam(const std::string& name, const std::stri
     std::lock_guard<std::mutex> lock(impl_->mutex);
     std::string id = "team_" + std::to_string(impl_->next_team_id++);
     impl_->teams[id] = {};
+    Impl::TeamMeta meta;
+    meta.name = name;
+    meta.objective = objective;
+    meta.sessionStart = std::chrono::system_clock::now();
+    impl_->team_meta[id] = std::move(meta);
     return id;
 }
 
@@ -159,6 +170,16 @@ TeamContext TeamCoordinator::getTeamContext(const std::string& teamId) const {
     if (it != impl_->teams.end()) {
         ctx.members = it->second;
     }
+    auto mit = impl_->team_meta.find(teamId);
+    if (mit != impl_->team_meta.end()) {
+        ctx.teamName         = mit->second.name;
+        ctx.currentObjective = mit->second.objective;
+        ctx.sessionStart     = mit->second.sessionStart;
+    }
+    auto tit = impl_->team_tasks.find(teamId);
+    if (tit != impl_->team_tasks.end()) {
+        ctx.activeTasks = tit->second;
+    }
     return ctx;
 }
 
@@ -246,6 +267,69 @@ void HATProtocolHandler::advertiseCapabilities(const std::vector<std::string>& c
 void HATProtocolHandler::updateAvailability(bool available, double capacity) {
     impl_->available = available;
     impl_->capacity = capacity;
+}
+
+// ==============================================================================
+// FREE UTILITY FUNCTIONS
+// ==============================================================================
+
+std::string roleToString(TeamRole role) {
+    switch (role) {
+        case TeamRole::HUMAN_LEADER: return "HUMAN_LEADER";
+        case TeamRole::AGENT_LEADER: return "AGENT_LEADER";
+        case TeamRole::HUMAN_MEMBER: return "HUMAN_MEMBER";
+        case TeamRole::AGENT_MEMBER: return "AGENT_MEMBER";
+        case TeamRole::OBSERVER:     return "OBSERVER";
+    }
+    return "OBSERVER";
+}
+
+TeamRole stringToRole(const std::string& s) {
+    if (s == "HUMAN_LEADER") return TeamRole::HUMAN_LEADER;
+    if (s == "AGENT_LEADER") return TeamRole::AGENT_LEADER;
+    if (s == "HUMAN_MEMBER") return TeamRole::HUMAN_MEMBER;
+    if (s == "AGENT_MEMBER") return TeamRole::AGENT_MEMBER;
+    return TeamRole::OBSERVER;
+}
+
+std::string priorityToString(TaskPriority p) {
+    switch (p) {
+        case TaskPriority::CRITICAL:   return "CRITICAL";
+        case TaskPriority::HIGH:       return "HIGH";
+        case TaskPriority::NORMAL:     return "NORMAL";
+        case TaskPriority::LOW:        return "LOW";
+        case TaskPriority::BACKGROUND: return "BACKGROUND";
+    }
+    return "NORMAL";
+}
+
+TaskPriority stringToPriority(const std::string& s) {
+    if (s == "CRITICAL")   return TaskPriority::CRITICAL;
+    if (s == "HIGH")       return TaskPriority::HIGH;
+    if (s == "LOW")        return TaskPriority::LOW;
+    if (s == "BACKGROUND") return TaskPriority::BACKGROUND;
+    return TaskPriority::NORMAL;
+}
+
+std::string statusToString(TaskStatus st) {
+    switch (st) {
+        case TaskStatus::PENDING:     return "PENDING";
+        case TaskStatus::ASSIGNED:    return "ASSIGNED";
+        case TaskStatus::IN_PROGRESS: return "IN_PROGRESS";
+        case TaskStatus::BLOCKED:     return "BLOCKED";
+        case TaskStatus::COMPLETED:   return "COMPLETED";
+        case TaskStatus::CANCELLED:   return "CANCELLED";
+    }
+    return "PENDING";
+}
+
+TaskStatus stringToStatus(const std::string& s) {
+    if (s == "ASSIGNED")    return TaskStatus::ASSIGNED;
+    if (s == "IN_PROGRESS") return TaskStatus::IN_PROGRESS;
+    if (s == "BLOCKED")     return TaskStatus::BLOCKED;
+    if (s == "COMPLETED")   return TaskStatus::COMPLETED;
+    if (s == "CANCELLED")   return TaskStatus::CANCELLED;
+    return TaskStatus::PENDING;
 }
 
 } // namespace hat

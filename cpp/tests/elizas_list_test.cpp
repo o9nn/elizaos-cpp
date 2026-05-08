@@ -1,250 +1,139 @@
-// Comprehensive End-to-End Test Suite for elizas_list Module
-// Generated comprehensive tests for C++ implementation
-
+// elizas_list_test.cpp - E2E tests for ElizasList project & collection registry.
 #include <gtest/gtest.h>
 #include "elizaos/elizas_list.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
+#include <nlohmann/json.hpp>
+#include <cstdio>
 
 using namespace elizaos;
 
-// Test Fixture for elizas_list
+namespace {
+Project mkProject(const std::string& id,
+                  const std::string& tag = "ai",
+                  int stars = 0) {
+    Project p;
+    p.id = id;
+    p.name = id;
+    p.description = "desc";
+    p.projectUrl = "https://example.com/" + id;
+    p.github = "elizaos/" + id;
+    p.author.name = "alice";
+    p.author.github = "alice";
+    p.tags = {tag};
+    p.metrics = Metrics{};
+    p.metrics->stars = stars;
+    return p;
+}
+}
+
+TEST(ElizasListJson, AuthorRoundtrip) {
+    Author a; a.name = "Alice"; a.github = "alice"; a.twitter = "@alice";
+    nlohmann::json j = a;
+    Author back = j.get<Author>();
+    EXPECT_EQ(back.name, "Alice");
+    EXPECT_EQ(back.github, "alice");
+    ASSERT_TRUE(back.twitter.has_value());
+    EXPECT_EQ(*back.twitter, "@alice");
+}
+
+TEST(ElizasListJson, ProjectRoundtrip) {
+    Project p = mkProject("foo", "ai", 42);
+    nlohmann::json j = p;
+    Project back = j.get<Project>();
+    EXPECT_EQ(back.id, "foo");
+    ASSERT_TRUE(back.metrics.has_value());
+    EXPECT_EQ(back.metrics->stars, 42);
+}
+
+TEST(ElizasListJson, CollectionRoundtrip) {
+    Collection c;
+    c.id = "c-1";
+    c.name = "fav";
+    c.description = "favs";
+    c.projects = {"a", "b"};
+    c.curator.name = "X";
+    c.curator.github = "x";
+    c.featured = true;
+    nlohmann::json j = c;
+    Collection back = j.get<Collection>();
+    EXPECT_EQ(back.id, "c-1");
+    EXPECT_EQ(back.projects.size(), 2u);
+    EXPECT_TRUE(back.featured);
+}
+
 class ElizasListTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    ElizasList list;
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(ElizasListTest, AddAndRetrieveProject) {
+    EXPECT_TRUE(list.addProject(mkProject("p1")));
+    EXPECT_EQ(list.getProjectCount(), 1u);
+    EXPECT_TRUE(list.getProject("p1").has_value());
 }
 
-TEST_F(ElizasListTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(ElizasListTest, RejectDuplicate) {
+    list.addProject(mkProject("p1"));
+    // Either silently ignore or fail; either way, count must remain 1.
+    list.addProject(mkProject("p1"));
+    EXPECT_EQ(list.getProjectCount(), 1u);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(ElizasListTest, RemoveProject) {
+    list.addProject(mkProject("p1"));
+    EXPECT_TRUE(list.removeProject("p1"));
+    EXPECT_FALSE(list.getProject("p1").has_value());
 }
 
-TEST_F(ElizasListTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(ElizasListTest, GetProjectsByTagAndAuthor) {
+    list.addProject(mkProject("p1", "ai"));
+    list.addProject(mkProject("p2", "tools"));
+    EXPECT_EQ(list.getProjectsByTag("ai").size(), 1u);
+    EXPECT_GE(list.getProjectsByAuthor("alice").size(), 2u);
 }
 
-TEST_F(ElizasListTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(ElizasListTest, AddAndRetrieveCollection) {
+    Collection c;
+    c.id = "c-1"; c.name = "Top"; c.curator.name = "Z"; c.curator.github = "z";
+    EXPECT_TRUE(list.addCollection(c));
+    EXPECT_EQ(list.getCollectionCount(), 1u);
+    EXPECT_TRUE(list.getCollection("c-1").has_value());
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(ElizasListTest, FeaturedCollectionsFilter) {
+    Collection a, b;
+    a.id = "a"; a.featured = false;
+    b.id = "b"; b.featured = true;
+    list.addCollection(a); list.addCollection(b);
+    EXPECT_EQ(list.getFeaturedCollections().size(), 1u);
 }
 
-TEST_F(ElizasListTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(ElizasListTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(ElizasListTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(ElizasListTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(ElizasListTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(ElizasListTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
+TEST_F(ElizasListTest, SearchAndSortByStars) {
+    list.addProject(mkProject("low",  "x", 1));
+    list.addProject(mkProject("high", "x", 99));
+    auto sorted = list.getProjectsSortedByStars();
+    ASSERT_GE(sorted.size(), 2u);
+    if (sorted[0].metrics && sorted[1].metrics) {
+        EXPECT_GE(sorted[0].metrics->stars, sorted[1].metrics->stars);
     }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
+    auto results = list.searchProjects("high");
+    EXPECT_GE(results.size(), 1u);
 }
 
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
+TEST_F(ElizasListTest, AllTagsAggregation) {
+    list.addProject(mkProject("a", "alpha"));
+    list.addProject(mkProject("b", "beta"));
+    auto tags = list.getAllTags();
+    EXPECT_GE(tags.size(), 2u);
+}
 
-TEST_F(ElizasListTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
+TEST_F(ElizasListTest, JsonExportImport) {
+    list.addProject(mkProject("p1"));
+    auto json = list.exportProjectsToJson();
+    EXPECT_FALSE(json.empty());
+
+    ElizasList other;
+    if (other.loadProjectsFromJson(json)) {
+        EXPECT_GE(other.getProjectCount(), 1u);
     }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(ElizasListTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(ElizasListTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(ElizasListTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+    SUCCEED();
 }

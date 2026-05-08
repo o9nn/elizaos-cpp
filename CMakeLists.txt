@@ -216,7 +216,7 @@ add_subdirectory(cpp/tests)
 # Spartan Integration Test
 if(EXISTS ${CMAKE_SOURCE_DIR}/spartan_test.cpp)
 add_executable(spartan_integration_test
-    spartan_test.cpp
+    cpp/tests/spartan_test.cpp
 )
 target_include_directories(spartan_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -225,6 +225,8 @@ target_include_directories(spartan_integration_test PRIVATE
 target_link_libraries(spartan_integration_test
     elizaos-core
     elizaos-spartan
+    gtest
+    gtest_main
     Threads::Threads
 )
 endif()
@@ -232,7 +234,7 @@ endif()
 # Spartan Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/spartan_demo.cpp)
 add_executable(spartan_demo
-    spartan_demo.cpp
+    examples/spartan_demo.cpp
 )
 target_include_directories(spartan_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -249,7 +251,7 @@ endif()
 # Stage 4 Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage4.cpp)
 add_executable(stage4_demo
-    demo_stage4.cpp
+    examples/demo_stage4.cpp
 )
 target_include_directories(stage4_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -269,7 +271,7 @@ endif()
 # Stage 5 Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage5.cpp)
 add_executable(stage5_demo
-    demo_stage5.cpp
+    examples/demo_stage5.cpp
 )
 target_include_directories(stage5_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -290,7 +292,7 @@ endif()
 # Stage 6 Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/demo_stage6.cpp)
 add_executable(stage6_demo
-    demo_stage6.cpp
+    examples/demo_stage6.cpp
 )
 target_include_directories(stage6_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -310,7 +312,7 @@ endif()
 # Awesome Eliza Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/awesome_eliza_demo.cpp)
 add_executable(awesome_eliza_demo
-    awesome_eliza_demo.cpp
+    examples/awesome_eliza_demo.cpp
 )
 target_include_directories(awesome_eliza_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -326,7 +328,7 @@ endif()
 # TheOrg Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/the_org_demo.cpp)
 add_executable(the_org_demo
-    the_org_demo.cpp
+    examples/the_org_demo.cpp
 )
 target_include_directories(the_org_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -344,7 +346,7 @@ endif()
 # Main Eliza CLI executable
 if(EXISTS ${CMAKE_SOURCE_DIR}/eliza_main.cpp)
 add_executable(eliza
-    eliza_main.cpp
+    examples/eliza_main.cpp
 )
 target_include_directories(eliza PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -365,7 +367,7 @@ endif()
 # EasyCompletion Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/easycompletion_demo.cpp)
 add_executable(easycompletion_demo
-    easycompletion_demo.cpp
+    examples/easycompletion_demo.cpp
 )
 target_include_directories(easycompletion_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -382,7 +384,7 @@ endif()
 # Characters Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/characters_demo.cpp)
 add_executable(characters_demo
-    characters_demo.cpp
+    examples/characters_demo.cpp
 )
 target_include_directories(characters_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -401,7 +403,7 @@ endif()
 # Knowledge Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/knowledge_demo.cpp)
 add_executable(knowledge_demo
-    knowledge_demo.cpp
+    examples/knowledge_demo.cpp
 )
 target_include_directories(knowledge_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -420,7 +422,7 @@ endif()
 # Eliza's List Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_demo.cpp)
 add_executable(elizas_list_demo
-    elizas_list_demo.cpp
+    examples/elizas_list_demo.cpp
 )
 target_include_directories(elizas_list_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -437,7 +439,7 @@ endif()
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/knowledge_quick_demo.cpp)
 add_executable(knowledge_quick_demo
-    knowledge_quick_demo.cpp
+    examples/knowledge_quick_demo.cpp
 )
 target_include_directories(knowledge_quick_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -456,7 +458,7 @@ endif()
 # Eliza's List Real Data Test
 if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_real_test.cpp)
 add_executable(elizas_list_real_test
-    elizas_list_real_test.cpp
+    examples/elizas_list_real_test.cpp
 )
 target_include_directories(elizas_list_real_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -474,7 +476,7 @@ endif()
 # Eliza's List Unit Test
 if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_list_unit_test.cpp)
 add_executable(elizas_list_unit_test
-    elizas_list_unit_test.cpp
+    examples/elizas_list_unit_test.cpp
 )
 target_include_directories(elizas_list_unit_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -492,7 +494,7 @@ endif()
 # Eliza 3D Hyperfy Starter Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/eliza_3d_hyperfy_starter_demo.cpp)
 add_executable(eliza_3d_hyperfy_starter_demo
-    eliza_3d_hyperfy_starter_demo.cpp
+    examples/eliza_3d_hyperfy_starter_demo.cpp
 )
 target_include_directories(eliza_3d_hyperfy_starter_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -509,7 +511,7 @@ endif()
 # Eliza's World Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_world_demo.cpp)
 add_executable(elizas_world_demo
-    elizas_world_demo.cpp
+    examples/elizas_world_demo.cpp
 )
 target_include_directories(elizas_world_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -526,8 +528,7 @@ endif()
 # Eliza's World Standalone Test
 if(EXISTS ${CMAKE_SOURCE_DIR}/elizas_world_test.cpp)
 add_executable(elizas_world_standalone_test
-    elizas_world_test.cpp
-    cpp/tests/src/test_elizas_world.cpp
+    examples/elizas_world_standalone_test.cpp
 )
 target_include_directories(elizas_world_standalone_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -545,7 +546,7 @@ endif()
 # Registry Demo
 if(EXISTS ${CMAKE_SOURCE_DIR}/registry_demo.cpp)
 add_executable(registry_demo
-    registry_demo.cpp
+    examples/registry_demo.cpp
 )
 target_include_directories(registry_demo PRIVATE
     ${CMAKE_SOURCE_DIR}/include
@@ -555,6 +556,42 @@ target_link_libraries(registry_demo
     elizaos-core
     elizaos-agentlogger
     elizaos-registry
+    Threads::Threads
+)
+endif()
+
+# Shell Demo
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/shell_demo.cpp)
+add_executable(shell_demo
+    examples/shell_demo.cpp
+)
+target_include_directories(shell_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
+)
+target_link_libraries(shell_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentcomms
+    elizaos-agentshell
+    Threads::Threads
+)
+endif()
+
+# AgentShell Integration Test
+if(EXISTS ${CMAKE_SOURCE_DIR}/examples/agentshell_standalone_test.cpp)
+add_executable(agentshell_integration_test
+    examples/agentshell_standalone_test.cpp
+)
+target_include_directories(agentshell_integration_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
+)
+target_link_libraries(agentshell_integration_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentcomms
+    elizaos-agentshell
     Threads::Threads
 )
 endif()

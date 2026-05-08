@@ -1,250 +1,170 @@
-// Comprehensive End-to-End Test Suite for knowledge Module
-// Generated comprehensive tests for C++ implementation
-
+// knowledge_test.cpp - E2E tests for elizaos::KnowledgeBase / KnowledgeEntry / KnowledgeQuery.
 #include <gtest/gtest.h>
 #include "elizaos/knowledge.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for knowledge
-class KnowledgeTest : public ::testing::Test {
+TEST(KnowledgeEntry, DefaultConstruction) {
+    KnowledgeEntry e;
+    EXPECT_EQ(e.type, KnowledgeType::FACT);
+    EXPECT_EQ(e.confidence, ConfidenceLevel::MEDIUM);
+}
+
+TEST(KnowledgeEntry, ContentConstructor) {
+    KnowledgeEntry e("water boils at 100C", KnowledgeType::FACT);
+    EXPECT_EQ(e.content, "water boils at 100C");
+    EXPECT_EQ(e.type, KnowledgeType::FACT);
+}
+
+TEST(KnowledgeEntry, TagsAndRelations) {
+    KnowledgeEntry e("x");
+    e.addTag("physics");
+    e.addTag("temperature");
+    EXPECT_TRUE(e.hasTag("physics"));
+    EXPECT_FALSE(e.hasTag("missing"));
+    e.addRelation("rel-1");
+    EXPECT_FALSE(e.related_entries.empty());
+}
+
+TEST(KnowledgeEntry, UpdateConfidence) {
+    KnowledgeEntry e("x");
+    e.updateConfidence(ConfidenceLevel::VERY_HIGH);
+    EXPECT_EQ(e.confidence, ConfidenceLevel::VERY_HIGH);
+}
+
+TEST(KnowledgeEntry, JsonRoundtrip) {
+    KnowledgeEntry e("roundtrip", KnowledgeType::CONCEPT);
+    e.addTag("a");
+    auto j = e.toJson();
+    auto back = KnowledgeEntry::fromJson(j);
+    EXPECT_EQ(back.content, "roundtrip");
+    EXPECT_EQ(back.type, KnowledgeType::CONCEPT);
+}
+
+TEST(KnowledgeQuery, ConstructionDefaults) {
+    KnowledgeQuery q("temperature");
+    EXPECT_EQ(q.text, "temperature");
+    EXPECT_EQ(q.maxResults, 10);
+    EXPECT_FALSE(q.includeRelated);
+}
+
+class KnowledgeBaseTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    KnowledgeBase kb;
+
+    void TearDown() override { kb.clear(); }
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(KnowledgeBaseTest, AddAndGetKnowledge) {
+    KnowledgeEntry e("hello world");
+    auto id = kb.addKnowledge(e);
+    EXPECT_FALSE(id.empty());
+    auto got = kb.getKnowledge(id);
+    ASSERT_TRUE(got.has_value());
+    EXPECT_EQ(got->content, "hello world");
 }
 
-TEST_F(KnowledgeTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(KnowledgeBaseTest, UpdateKnowledge) {
+    KnowledgeEntry e("v1");
+    auto id = kb.addKnowledge(e);
+    KnowledgeEntry updated("v2");
+    EXPECT_TRUE(kb.updateKnowledge(id, updated));
+    auto got = kb.getKnowledge(id);
+    ASSERT_TRUE(got.has_value());
+    EXPECT_EQ(got->content, "v2");
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(KnowledgeBaseTest, RemoveKnowledge) {
+    auto id = kb.addKnowledge(KnowledgeEntry("doomed"));
+    EXPECT_TRUE(kb.removeKnowledge(id));
+    EXPECT_FALSE(kb.getKnowledge(id).has_value());
 }
 
-TEST_F(KnowledgeTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(KnowledgeBaseTest, SearchByText) {
+    kb.addKnowledge(KnowledgeEntry("the cat sat"));
+    kb.addKnowledge(KnowledgeEntry("dogs bark loudly"));
+    auto results = kb.searchByText("cat", 5);
+    EXPECT_GE(results.size(), 1u);
 }
 
-TEST_F(KnowledgeTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(KnowledgeBaseTest, SearchByTags) {
+    KnowledgeEntry a("a");
+    a.addTag("animal");
+    KnowledgeEntry b("b");
+    b.addTag("plant");
+    kb.addKnowledge(a);
+    kb.addKnowledge(b);
+    auto results = kb.searchByTags({"animal"}, 5);
+    EXPECT_GE(results.size(), 1u);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(KnowledgeBaseTest, GetKnowledgeByType) {
+    KnowledgeEntry r("r", KnowledgeType::RULE);
+    kb.addKnowledge(r);
+    auto rules = kb.getKnowledgeByType(KnowledgeType::RULE);
+    EXPECT_EQ(rules.size(), 1u);
 }
 
-TEST_F(KnowledgeTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST_F(KnowledgeBaseTest, KnowledgeCount) {
+    EXPECT_EQ(kb.getKnowledgeCount(), 0u);
+    kb.addKnowledge(KnowledgeEntry("a"));
+    kb.addKnowledge(KnowledgeEntry("b"));
+    EXPECT_EQ(kb.getKnowledgeCount(), 2u);
 }
 
-TEST_F(KnowledgeTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
+TEST_F(KnowledgeBaseTest, AllTags) {
+    KnowledgeEntry e("tagged");
+    e.addTag("alpha");
+    e.addTag("beta");
+    kb.addKnowledge(e);
+    auto tags = kb.getAllTags();
+    EXPECT_GE(tags.size(), 2u);
 }
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
+TEST_F(KnowledgeBaseTest, ClearEmpties) {
+    kb.addKnowledge(KnowledgeEntry("a"));
+    kb.clear();
+    EXPECT_EQ(kb.getKnowledgeCount(), 0u);
 }
 
-TEST_F(KnowledgeTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
+TEST_F(KnowledgeBaseTest, QueryWithFilter) {
+    kb.addKnowledge(KnowledgeEntry("water", KnowledgeType::FACT));
+    kb.addKnowledge(KnowledgeEntry("if rain then wet", KnowledgeType::RULE));
+    KnowledgeQuery q("water");
+    q.types = {KnowledgeType::FACT};
+    auto r = kb.query(q);
+    EXPECT_GE(r.size(), 1u);
 }
 
-TEST_F(KnowledgeTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
+TEST_F(KnowledgeBaseTest, StatisticsString) {
+    auto s = kb.getStatistics();
+    EXPECT_FALSE(s.empty());
 }
 
-TEST_F(KnowledgeTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(KnowledgeTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
+TEST(KnowledgeUtils, EnumStringRoundtrip) {
+    for (auto t : {KnowledgeType::FACT, KnowledgeType::RULE, KnowledgeType::CONCEPT,
+                   KnowledgeType::RELATIONSHIP, KnowledgeType::PROCEDURE,
+                   KnowledgeType::EXPERIENCE}) {
+        EXPECT_EQ(stringToKnowledgeType(knowledgeTypeToString(t)), t);
     }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
+    for (auto c : {ConfidenceLevel::VERY_LOW, ConfidenceLevel::LOW,
+                   ConfidenceLevel::MEDIUM, ConfidenceLevel::HIGH,
+                   ConfidenceLevel::VERY_HIGH}) {
+        EXPECT_EQ(stringToConfidenceLevel(confidenceLevelToString(c)), c);
     }
-    
-    for (auto& t : threads) {
-        t.join();
+    for (auto s : {KnowledgeSource::LEARNED, KnowledgeSource::PROGRAMMED,
+                   KnowledgeSource::INFERRED, KnowledgeSource::OBSERVED,
+                   KnowledgeSource::COMMUNICATED}) {
+        EXPECT_EQ(stringToKnowledgeSource(knowledgeSourceToString(s)), s);
     }
-    
-    EXPECT_EQ(counter.load(), 400);
 }
 
-TEST_F(KnowledgeTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
+TEST(KnowledgeInference, AddRule) {
+    KnowledgeInferenceEngine eng;
+    eng.addInferenceRule("identity", [](const std::vector<KnowledgeEntry>& in) {
+        return in;
     });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(KnowledgeTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(KnowledgeTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(KnowledgeTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return testing::RUN_ALL_TESTS();
+    auto out = eng.inferFromFacts({KnowledgeEntry("seed")});
+    SUCCEED() << "produced " << out.size();
+    eng.removeInferenceRule("identity");
 }
