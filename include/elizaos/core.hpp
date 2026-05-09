@@ -220,6 +220,8 @@ struct TaskOptions {
 class Task {
 public:
     Task(const UUID& id, const std::string& name, const std::string& description);
+    Task(const UUID& id, const std::string& name, const std::string& description,
+         const UUID& roomId, const UUID& worldId);
     
     const UUID& getId() const { return id_; }
     const std::string& getName() const { return name_; }

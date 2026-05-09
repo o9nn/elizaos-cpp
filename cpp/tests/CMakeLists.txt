@@ -277,6 +277,7 @@ function(add_real_test name src_file)
         elizaos-evolutionary
         elizaos-ontogenesis
         elizaos-cognitive_bridge
+        gtest
         nlohmann_json::nlohmann_json
         Threads::Threads
     )

@@ -2,8 +2,41 @@
 #include <algorithm>
 #include <sstream>
 #include <random>
+#include <any>
+#include <iomanip>
 
 namespace elizaos {
+
+namespace {
+std::string jsonArgumentToString(const std::any& value) {
+    if (!value.has_value()) {
+        return "null";
+    }
+    try { return std::any_cast<std::string>(value); } catch (const std::bad_any_cast&) {}
+    try { return std::any_cast<const char*>(value); } catch (const std::bad_any_cast&) {}
+    try { return std::any_cast<bool>(value) ? "true" : "false"; } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<int>(value)); } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<long>(value)); } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<long long>(value)); } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<unsigned>(value)); } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<double>(value)); } catch (const std::bad_any_cast&) {}
+    try { return std::to_string(std::any_cast<float>(value)); } catch (const std::bad_any_cast&) {}
+    try {
+        const auto nested = std::any_cast<JsonValue>(value);
+        std::ostringstream stream;
+        stream << "{";
+        bool first = true;
+        for (const auto& [nestedKey, nestedValue] : nested) {
+            if (!first) stream << ",";
+            first = false;
+            stream << "\"" << nestedKey << "\":\"" << jsonArgumentToString(nestedValue) << "\"";
+        }
+        stream << "}";
+        return stream.str();
+    } catch (const std::bad_any_cast&) {}
+    return value.type().name();
+}
+}
 
 // Simple UUID generator
 std::string generateSimpleUUID() {
@@ -150,9 +183,8 @@ void AgentAction::addToActionHistory(const std::string& action_name, const JsonV
     CustomMetadata customMeta;
     customMeta.customData["success"] = success ? "true" : "false";
     
-    // Convert JsonValue arguments to std::string metadata (simplified)
     for (const auto& arg : arguments) {
-        customMeta.customData[arg.first] = "value"; // Simplified serialization
+        customMeta.customData[arg.first] = jsonArgumentToString(arg.second);
     }
     
     MemoryMetadata metadata = customMeta;

@@ -18,6 +18,7 @@
 #include <memory>
 #include <thread>
 #include <unordered_set>
+#include <vector>
 
 using namespace elizaos;
 
@@ -27,6 +28,36 @@ using namespace elizaos;
 TEST(CoreUuid, GeneratesNonEmpty) {
     auto u = generateUUID();
     EXPECT_FALSE(u.empty());
+}
+
+TEST(CoreUuid, ConcurrentGenerationProducesUniqueIds) {
+    constexpr int kThreadCount = 8;
+    constexpr int kIdsPerThread = 100;
+    std::vector<std::vector<UUID>> batches(kThreadCount);
+    std::vector<std::thread> workers;
+
+    for (int i = 0; i < kThreadCount; ++i) {
+        workers.emplace_back([i, &batches]() {
+            batches[i].reserve(kIdsPerThread);
+            for (int j = 0; j < kIdsPerThread; ++j) {
+                batches[i].push_back(generateUUID());
+            }
+        });
+    }
+
+    for (auto& worker : workers) {
+        worker.join();
+    }
+
+    std::unordered_set<UUID> uniqueIds;
+    for (const auto& batch : batches) {
+        for (const auto& id : batch) {
+            EXPECT_FALSE(id.empty());
+            uniqueIds.insert(id);
+        }
+    }
+
+    EXPECT_EQ(uniqueIds.size(), static_cast<size_t>(kThreadCount * kIdsPerThread));
 }
 
 TEST(CoreUuid, ProducesDistinctIds) {
@@ -232,6 +263,14 @@ TEST_F(CoreTaskManagerTest, CreateAndRetrieveTask) {
     auto t = mgr.getTask(id);
     ASSERT_TRUE(t != nullptr);
     EXPECT_EQ(t->getName(), "greet");
+}
+
+TEST_F(CoreTaskManagerTest, CreateTaskPreservesRoomAndWorldIds) {
+    auto id = mgr.createTask("contextual task", "retain identifiers", "room-42", "world-7");
+    auto t = mgr.getTask(id);
+    ASSERT_TRUE(t != nullptr);
+    EXPECT_EQ(t->getRoomId(), "room-42");
+    EXPECT_EQ(t->getWorldId(), "world-7");
 }
 
 TEST_F(CoreTaskManagerTest, ScheduleAndCancelTask) {

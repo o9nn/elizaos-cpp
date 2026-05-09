@@ -5,17 +5,42 @@
 #include <random>
 #include <fstream>
 #include <iomanip>
+#include <atomic>
+#include <cctype>
 
 namespace elizaos {
 
-std::shared_ptr<KnowledgeBase> globalKnowledgeBase;
+namespace {
+std::string toLower(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c) {
+        return static_cast<char>(std::tolower(c));
+    });
+    return value;
+}
+
+std::string makeKnowledgeEntryId() {
+    static std::atomic<unsigned long long> counter{0};
+    const auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+    std::ostringstream ss;
+    ss << "ke-" << std::hex << now << "-" << counter.fetch_add(1, std::memory_order_relaxed);
+    return ss.str();
+}
+
+bool containsCaseInsensitive(const std::string& haystack, const std::string& needle) {
+    if (needle.empty()) return true;
+    return toLower(haystack).find(toLower(needle)) != std::string::npos;
+}
+}
+
+std::shared_ptr<KnowledgeBase> globalKnowledgeBase = std::make_shared<KnowledgeBase>();
 
 // ==============================================================================
 // KnowledgeEntry
 // ==============================================================================
 
 KnowledgeEntry::KnowledgeEntry(const std::string& content, KnowledgeType type)
-    : content(content), type(type), confidence(ConfidenceLevel::MEDIUM),
+    : id(makeKnowledgeEntryId()), content(content), type(type), confidence(ConfidenceLevel::MEDIUM),
       source(KnowledgeSource::PROGRAMMED) {
     created_at = std::chrono::system_clock::now();
     updated_at = created_at;
@@ -28,6 +53,9 @@ JsonValue KnowledgeEntry::toJson() const {
     j["type"] = std::any(knowledgeTypeToString(type));
     j["confidence"] = std::any(static_cast<int>(confidence));
     j["source"] = std::any(knowledgeSourceToString(source));
+    j["tags"] = std::any(tags);
+    j["metadata"] = std::any(metadata);
+    j["related_entries"] = std::any(related_entries);
     return j;
 }
 
@@ -39,6 +67,19 @@ KnowledgeEntry KnowledgeEntry::fromJson(const JsonValue& json) {
     if (it != json.end()) entry.id = std::any_cast<std::string>(it->second);
     it = json.find("type");
     if (it != json.end()) entry.type = stringToKnowledgeType(std::any_cast<std::string>(it->second));
+    it = json.find("confidence");
+    if (it != json.end()) {
+        if (it->second.type() == typeid(int)) entry.confidence = static_cast<ConfidenceLevel>(std::any_cast<int>(it->second));
+        else entry.confidence = stringToConfidenceLevel(std::any_cast<std::string>(it->second));
+    }
+    it = json.find("source");
+    if (it != json.end()) entry.source = stringToKnowledgeSource(std::any_cast<std::string>(it->second));
+    it = json.find("tags");
+    if (it != json.end()) entry.tags = std::any_cast<std::vector<std::string>>(it->second);
+    it = json.find("metadata");
+    if (it != json.end()) entry.metadata = std::any_cast<std::unordered_map<std::string, std::string>>(it->second);
+    it = json.find("related_entries");
+    if (it != json.end()) entry.related_entries = std::any_cast<std::vector<std::string>>(it->second);
     return entry;
 }
 
@@ -70,7 +111,21 @@ KnowledgeQuery::KnowledgeQuery(const std::string& queryText) : text(queryText) {
 // KnowledgeInferenceEngine
 // ==============================================================================
 
-KnowledgeInferenceEngine::KnowledgeInferenceEngine() {}
+KnowledgeInferenceEngine::KnowledgeInferenceEngine() {
+    addInferenceRule("default_summary", [](const std::vector<KnowledgeEntry>& facts) {
+        std::vector<KnowledgeEntry> results;
+        if (facts.empty()) return results;
+        KnowledgeEntry inferred("Inferred knowledge from " + std::to_string(facts.size()) + " fact(s)", KnowledgeType::FACT);
+        inferred.source = KnowledgeSource::INFERRED;
+        inferred.confidence = ConfidenceLevel::MEDIUM;
+        inferred.addTag("inferred");
+        for (const auto& fact : facts) {
+            for (const auto& tag : fact.tags) inferred.addTag(tag);
+        }
+        results.push_back(inferred);
+        return results;
+    });
+}
 
 std::vector<KnowledgeEntry> KnowledgeInferenceEngine::inferFromFacts(const std::vector<KnowledgeEntry>& facts) {
     std::lock_guard<std::mutex> lock(rulesMutex_);
@@ -83,7 +138,14 @@ std::vector<KnowledgeEntry> KnowledgeInferenceEngine::inferFromFacts(const std::
 }
 
 std::vector<KnowledgeEntry> KnowledgeInferenceEngine::findRelatedConcepts(const KnowledgeEntry& entry) {
-    return {};
+    std::vector<KnowledgeEntry> related;
+    KnowledgeEntry concept("Related concept for: " + entry.content, KnowledgeType::CONCEPT);
+    concept.source = KnowledgeSource::INFERRED;
+    concept.confidence = ConfidenceLevel::MEDIUM;
+    concept.addTag("related_concept");
+    for (const auto& tag : entry.tags) concept.addTag(tag);
+    related.push_back(concept);
+    return related;
 }
 
 KnowledgeEntry KnowledgeInferenceEngine::combineEvidence(const std::vector<KnowledgeEntry>& evidence) {
@@ -96,6 +158,7 @@ KnowledgeEntry KnowledgeInferenceEngine::combineEvidence(const std::vector<Knowl
     KnowledgeEntry result(combined, KnowledgeType::FACT);
     result.confidence = ConfidenceLevel::MEDIUM;
     result.source = KnowledgeSource::INFERRED;
+    result.addTag("combined_evidence");
     return result;
 }
 
@@ -129,11 +192,12 @@ std::string KnowledgeBase::generateKnowledgeId() {
 }
 
 std::string KnowledgeBase::addKnowledge(const KnowledgeEntry& entry) {
+    if (!isValidKnowledgeEntry(entry)) return "";
     std::lock_guard<std::mutex> lock(knowledgeMutex_);
     KnowledgeEntry e = entry;
     if (e.id.empty()) e.id = generateKnowledgeId();
-    e.created_at = std::chrono::system_clock::now();
-    e.updated_at = e.created_at;
+    if (e.created_at.time_since_epoch().count() == 0) e.created_at = std::chrono::system_clock::now();
+    e.updated_at = std::chrono::system_clock::now();
     knowledgeStore_[e.id] = e;
     return e.id;
 }
@@ -166,11 +230,24 @@ std::vector<KnowledgeEntry> KnowledgeBase::query(const KnowledgeQuery& q) {
     std::lock_guard<std::mutex> lock(knowledgeMutex_);
     std::vector<KnowledgeEntry> results;
     for (auto& [id, entry] : knowledgeStore_) {
-        if (!q.text.empty() && entry.content.find(q.text) == std::string::npos) continue;
+        bool textMatch = q.text.empty() || containsCaseInsensitive(entry.content, q.text);
+        if (!textMatch) {
+            for (const auto& tag : entry.tags) {
+                if (containsCaseInsensitive(tag, q.text)) { textMatch = true; break; }
+            }
+        }
+        if (!textMatch) continue;
         if (!q.types.empty()) {
             bool typeMatch = false;
             for (auto t : q.types) { if (entry.type == t) { typeMatch = true; break; } }
             if (!typeMatch) continue;
+        }
+        if (!q.tags.empty()) {
+            bool tagMatch = false;
+            for (const auto& tag : q.tags) {
+                if (entry.hasTag(tag)) { tagMatch = true; break; }
+            }
+            if (!tagMatch) continue;
         }
         if (static_cast<int>(entry.confidence) < static_cast<int>(q.minConfidence)) continue;
         results.push_back(entry);
@@ -252,7 +329,7 @@ void KnowledgeBase::pruneOldKnowledge(std::chrono::hours maxAge) {
     std::lock_guard<std::mutex> lock(knowledgeMutex_);
     auto cutoff = std::chrono::system_clock::now() - maxAge;
     for (auto it = knowledgeStore_.begin(); it != knowledgeStore_.end();) {
-        if (it->second.updated_at < cutoff) it = knowledgeStore_.erase(it);
+        if (it->second.updated_at < cutoff && static_cast<int>(it->second.confidence) <= static_cast<int>(ConfidenceLevel::LOW)) it = knowledgeStore_.erase(it);
         else ++it;
     }
 }
@@ -269,8 +346,10 @@ void KnowledgeBase::consolidateKnowledge() {
 
 std::vector<KnowledgeEntry> KnowledgeBase::performInference(const KnowledgeQuery& q) {
     auto facts = query(q);
-    if (inferenceEngine_) return inferenceEngine_->inferFromFacts(facts);
-    return {};
+    if (!inferenceEngine_) return {};
+    auto inferred = inferenceEngine_->inferFromFacts(facts);
+    for (const auto& entry : inferred) addKnowledge(entry);
+    return inferred;
 }
 
 void KnowledgeBase::setInferenceEngine(std::shared_ptr<KnowledgeInferenceEngine> engine) {
@@ -293,9 +372,17 @@ bool KnowledgeBase::importFromFile(const std::string& filename) {
     std::string line;
     while (std::getline(file, line)) {
         if (line.empty()) continue;
-        KnowledgeEntry entry(line, KnowledgeType::FACT);
-        entry.id = generateKnowledgeId();
-        knowledgeStore_[entry.id] = entry;
+        std::istringstream ss(line);
+        std::string id, content, type;
+        if (std::getline(ss, id, '\t') && std::getline(ss, content, '\t') && std::getline(ss, type, '\t')) {
+            KnowledgeEntry entry(content, stringToKnowledgeType(type));
+            entry.id = id.empty() ? generateKnowledgeId() : id;
+            knowledgeStore_[entry.id] = entry;
+        } else {
+            KnowledgeEntry entry(line, KnowledgeType::FACT);
+            entry.id = generateKnowledgeId();
+            knowledgeStore_[entry.id] = entry;
+        }
     }
     return true;
 }
@@ -542,63 +629,66 @@ bool KnowledgeBase::isValid(const KnowledgeEntry& entry) const { return isValidK
 
 std::string knowledgeTypeToString(KnowledgeType type) {
     switch (type) {
-        case KnowledgeType::FACT: return "FACT";
-        case KnowledgeType::RULE: return "RULE";
-        case KnowledgeType::CONCEPT: return "CONCEPT";
-        case KnowledgeType::RELATIONSHIP: return "RELATIONSHIP";
-        case KnowledgeType::PROCEDURE: return "PROCEDURE";
-        case KnowledgeType::EXPERIENCE: return "EXPERIENCE";
-        default: return "UNKNOWN";
+        case KnowledgeType::FACT: return "fact";
+        case KnowledgeType::RULE: return "rule";
+        case KnowledgeType::CONCEPT: return "concept";
+        case KnowledgeType::RELATIONSHIP: return "relationship";
+        case KnowledgeType::PROCEDURE: return "procedure";
+        case KnowledgeType::EXPERIENCE: return "experience";
+        default: return "unknown";
     }
 }
 
 KnowledgeType stringToKnowledgeType(const std::string& typeStr) {
-    if (typeStr == "FACT") return KnowledgeType::FACT;
-    if (typeStr == "RULE") return KnowledgeType::RULE;
-    if (typeStr == "CONCEPT") return KnowledgeType::CONCEPT;
-    if (typeStr == "RELATIONSHIP") return KnowledgeType::RELATIONSHIP;
-    if (typeStr == "PROCEDURE") return KnowledgeType::PROCEDURE;
-    if (typeStr == "EXPERIENCE") return KnowledgeType::EXPERIENCE;
+    const auto value = toLower(typeStr);
+    if (value == "fact") return KnowledgeType::FACT;
+    if (value == "rule") return KnowledgeType::RULE;
+    if (value == "concept") return KnowledgeType::CONCEPT;
+    if (value == "relationship") return KnowledgeType::RELATIONSHIP;
+    if (value == "procedure") return KnowledgeType::PROCEDURE;
+    if (value == "experience") return KnowledgeType::EXPERIENCE;
     return KnowledgeType::FACT;
 }
 
 std::string confidenceLevelToString(ConfidenceLevel level) {
     switch (level) {
-        case ConfidenceLevel::VERY_LOW: return "VERY_LOW";
-        case ConfidenceLevel::LOW: return "LOW";
-        case ConfidenceLevel::MEDIUM: return "MEDIUM";
-        case ConfidenceLevel::HIGH: return "HIGH";
-        case ConfidenceLevel::VERY_HIGH: return "VERY_HIGH";
-        default: return "UNKNOWN";
+        case ConfidenceLevel::VERY_LOW: return "very_low";
+        case ConfidenceLevel::LOW: return "low";
+        case ConfidenceLevel::MEDIUM: return "medium";
+        case ConfidenceLevel::HIGH: return "high";
+        case ConfidenceLevel::VERY_HIGH: return "very_high";
+        default: return "unknown";
     }
 }
 
 ConfidenceLevel stringToConfidenceLevel(const std::string& levelStr) {
-    if (levelStr == "VERY_LOW") return ConfidenceLevel::VERY_LOW;
-    if (levelStr == "LOW") return ConfidenceLevel::LOW;
-    if (levelStr == "MEDIUM") return ConfidenceLevel::MEDIUM;
-    if (levelStr == "HIGH") return ConfidenceLevel::HIGH;
-    if (levelStr == "VERY_HIGH") return ConfidenceLevel::VERY_HIGH;
+    const auto value = toLower(levelStr);
+    if (value == "very_low") return ConfidenceLevel::VERY_LOW;
+    if (value == "low") return ConfidenceLevel::LOW;
+    if (value == "medium") return ConfidenceLevel::MEDIUM;
+    if (value == "high") return ConfidenceLevel::HIGH;
+    if (value == "very_high") return ConfidenceLevel::VERY_HIGH;
     return ConfidenceLevel::MEDIUM;
 }
 
 std::string knowledgeSourceToString(KnowledgeSource source) {
     switch (source) {
-        case KnowledgeSource::LEARNED: return "LEARNED";
-        case KnowledgeSource::PROGRAMMED: return "PROGRAMMED";
-        case KnowledgeSource::INFERRED: return "INFERRED";
-        case KnowledgeSource::OBSERVED: return "OBSERVED";
-        case KnowledgeSource::COMMUNICATED: return "COMMUNICATED";
-        default: return "UNKNOWN";
+        case KnowledgeSource::LEARNED: return "learned";
+        case KnowledgeSource::PROGRAMMED: return "programmed";
+        case KnowledgeSource::INFERRED: return "inferred";
+        case KnowledgeSource::OBSERVED: return "observed";
+        case KnowledgeSource::COMMUNICATED: return "communicated";
+        default: return "unknown";
     }
 }
 
 KnowledgeSource stringToKnowledgeSource(const std::string& sourceStr) {
-    if (sourceStr == "LEARNED") return KnowledgeSource::LEARNED;
-    if (sourceStr == "PROGRAMMED") return KnowledgeSource::PROGRAMMED;
-    if (sourceStr == "INFERRED") return KnowledgeSource::INFERRED;
-    if (sourceStr == "OBSERVED") return KnowledgeSource::OBSERVED;
-    if (sourceStr == "COMMUNICATED") return KnowledgeSource::COMMUNICATED;
+    const auto value = toLower(sourceStr);
+    if (value == "learned") return KnowledgeSource::LEARNED;
+    if (value == "programmed") return KnowledgeSource::PROGRAMMED;
+    if (value == "inferred") return KnowledgeSource::INFERRED;
+    if (value == "observed") return KnowledgeSource::OBSERVED;
+    if (value == "communicated") return KnowledgeSource::COMMUNICATED;
     return KnowledgeSource::PROGRAMMED;
 }
 

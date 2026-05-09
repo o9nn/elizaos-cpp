@@ -85,6 +85,25 @@ TEST_F(AgentActionTest, ActionHistoryGrowsWithUse) {
     EXPECT_GE(hist.size(), 2u);
 }
 
+TEST_F(AgentActionTest, ActionHistoryPreservesSerializedArguments) {
+    system.addAction("echo", makeEcho());
+    JsonValue args;
+    args["text"] = std::string("hello from history");
+    args["attempt"] = 3;
+    args["confirmed"] = true;
+
+    system.useAction("echo", args);
+    auto last = system.getLastAction();
+    ASSERT_FALSE(last.empty());
+    ASSERT_TRUE(last.count("metadata"));
+
+    auto metadata = std::any_cast<JsonValue>(last.at("metadata"));
+    EXPECT_EQ(std::any_cast<std::string>(metadata.at("text")), "hello from history");
+    EXPECT_EQ(std::any_cast<std::string>(metadata.at("attempt")), "3");
+    EXPECT_EQ(std::any_cast<std::string>(metadata.at("confirmed")), "true");
+    EXPECT_EQ(std::any_cast<std::string>(metadata.at("success")), "true");
+}
+
 TEST_F(AgentActionTest, AddToActionHistoryDirectly) {
     JsonValue args;
     system.addToActionHistory("manual", args, true);

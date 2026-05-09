@@ -578,6 +578,34 @@ TEST_F(CognitivePrimitivesTest, PLNInferenceEngineBasicOperations) {
     EXPECT_LE(bestResult.confidence, 1.0);
 }
 
+TEST_F(CognitivePrimitivesTest, PLNInferenceEngineVariableAwareInference) {
+    PLNInferenceEngine engine;
+    State state(config_);
+
+    engine.addRule(InferenceRule("likes_to_enjoys", "likes ?PERSON ?THING", "enjoys ?PERSON ?THING", TruthValue(0.9, 0.8)));
+    engine.addRule(InferenceRule("same_entity", "same ?X ?X", "self_related ?X ?X", TruthValue(0.7, 0.6)));
+
+    auto directResults = engine.forwardChain(state, "likes alice music", 1);
+    ASSERT_FALSE(directResults.empty());
+
+    bool foundSubstitutedConclusion = false;
+    for (const auto& result : directResults) {
+        if (result.conclusion == "enjoys alice music") {
+            foundSubstitutedConclusion = true;
+            EXPECT_GT(result.confidence, 0.0);
+            EXPECT_FALSE(result.reasoningChain.empty());
+        }
+    }
+    EXPECT_TRUE(foundSubstitutedConclusion);
+
+    auto repeatedResults = engine.forwardChain(state, "same bob bob", 1);
+    ASSERT_FALSE(repeatedResults.empty());
+    EXPECT_EQ(repeatedResults.front().conclusion, "self_related bob bob");
+
+    auto invalidRepeatedResults = engine.forwardChain(state, "same bob alice", 1);
+    EXPECT_TRUE(invalidRepeatedResults.empty());
+}
+
 TEST_F(CognitivePrimitivesTest, PLNInferenceEngineAtomSpaceIntegration) {
     PLNInferenceEngine engine;
     

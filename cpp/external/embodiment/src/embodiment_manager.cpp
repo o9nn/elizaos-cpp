@@ -57,8 +57,11 @@ bool EmbodimentManager::initialize() {
         return false;
     }
     
-    // Create perception-action loop
-    perceptionActionLoop_ = std::make_shared<PerceptionActionLoop>(state_, memory_, cognition_);
+    // Preserve an existing perception-action loop so configuration applied before
+    // initialization (custom interval, registered interfaces, callbacks) is not lost.
+    if (!perceptionActionLoop_) {
+        perceptionActionLoop_ = std::make_shared<PerceptionActionLoop>(state_, memory_, cognition_);
+    }
     
     if (!perceptionActionLoop_->initialize()) {
         elogError("Failed to initialize perception-action loop");

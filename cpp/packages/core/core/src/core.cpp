@@ -35,6 +35,8 @@ std::string generateUUID() {
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
     static std::uniform_int_distribution<> dis2(8, 11);
+    static std::mutex uuidMutex;
+    std::lock_guard<std::mutex> lock(uuidMutex);
     
     std::stringstream ss;
     int i;
@@ -124,7 +126,12 @@ void State::addRecentMessage(std::shared_ptr<Memory> memory) {
 
 // Task implementation
 Task::Task(const UUID& id, const std::string& name, const std::string& description)
-    : id_(id), name_(name), description_(description), 
+    : Task(id, name, description, "", "") {
+}
+
+Task::Task(const UUID& id, const std::string& name, const std::string& description,
+           const UUID& roomId, const UUID& worldId)
+    : id_(id), name_(name), description_(description), roomId_(roomId), worldId_(worldId),
       createdAt_(std::chrono::system_clock::now()),
       updatedAt_(std::chrono::system_clock::now()) {
 }
@@ -139,13 +146,10 @@ TaskManager::~TaskManager() {
 
 UUID TaskManager::createTask(const std::string& name, const std::string& description, 
                             const UUID& roomId, const UUID& worldId) {
-    (void)roomId; // Mark as intentionally unused
-    (void)worldId; // Mark as intentionally unused
-    
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     UUID taskId = generateUUID();
-    auto task = std::make_shared<Task>(taskId, name, description);
+    auto task = std::make_shared<Task>(taskId, name, description, roomId, worldId);
     
     tasks_[taskId] = task;
     return taskId;
@@ -342,13 +346,68 @@ void PLNInferenceEngine::removeRule(const std::string& ruleName) {
                                }), rules_.end());
 }
 
+namespace {
+std::vector<std::string> splitTerms(const std::string& value) {
+    std::istringstream stream(value);
+    std::vector<std::string> terms;
+    std::string term;
+    while (stream >> term) {
+        terms.push_back(term);
+    }
+    return terms;
+}
+
+bool variableAwareMatch(const std::string& pattern,
+                        const std::string& target,
+                        std::vector<VariableBinding>* bindings = nullptr) {
+    if (pattern == target) {
+        return true;
+    }
+
+    const auto patternTerms = splitTerms(pattern);
+    const auto targetTerms = splitTerms(target);
+    if (patternTerms.empty() || patternTerms.size() != targetTerms.size()) {
+        return false;
+    }
+
+    std::unordered_map<std::string, std::string> localBindings;
+    for (size_t i = 0; i < patternTerms.size(); ++i) {
+        const auto& patternTerm = patternTerms[i];
+        const auto& targetTerm = targetTerms[i];
+        if (patternTerm.size() > 1 && patternTerm.front() == '?') {
+            const std::string variable = patternTerm.substr(1);
+            auto existing = localBindings.find(variable);
+            if (existing != localBindings.end() && existing->second != targetTerm) {
+                return false;
+            }
+            localBindings[variable] = targetTerm;
+            continue;
+        }
+        if (patternTerm != targetTerm) {
+            return false;
+        }
+    }
+
+    if (bindings) {
+        for (const auto& [variable, value] : localBindings) {
+            bindings->push_back(VariableBinding(variable, value));
+        }
+    }
+    return true;
+}
+}
+
 std::vector<InferenceRule> PLNInferenceEngine::getApplicableRules(const std::string& query) const {
     std::lock_guard<std::mutex> lock(rulesMutex_);
     std::vector<InferenceRule> applicable;
     
     for (const auto& rule : rules_) {
-        if (rule.pattern.find(query) != std::string::npos || 
-            rule.conclusion.find(query) != std::string::npos) {
+        if (variableAwareMatch(rule.pattern, query) ||
+            variableAwareMatch(rule.conclusion, query) ||
+            rule.pattern.find(query) != std::string::npos ||
+            rule.conclusion.find(query) != std::string::npos ||
+            query.find(rule.pattern) != std::string::npos ||
+            query.find(rule.conclusion) != std::string::npos) {
             applicable.push_back(rule);
         }
     }
@@ -498,13 +557,10 @@ std::vector<std::shared_ptr<HypergraphNode>> PLNInferenceEngine::queryAtomSpace(
 }
 
 bool PLNInferenceEngine::unify(const std::string& pattern, const std::string& target, std::vector<VariableBinding>& bindings) {
-    // Simple unification - check if pattern matches target
-    // In a full implementation, this would handle variables and more complex patterns
-    if (pattern == target) {
+    if (variableAwareMatch(pattern, target, &bindings)) {
         return true;
     }
     
-    // Check for variable patterns (starting with ?)
     if (pattern.length() > 1 && pattern[0] == '?') {
         std::string variable = pattern.substr(1);
         bindings.push_back(VariableBinding(variable, target));
@@ -520,8 +576,9 @@ std::string PLNInferenceEngine::substituteVariables(const std::string& pattern, 
     for (const auto& binding : bindings) {
         std::string varPattern = "?" + binding.variable;
         size_t pos = result.find(varPattern);
-        if (pos != std::string::npos) {
+        while (pos != std::string::npos) {
             result.replace(pos, varPattern.length(), binding.value);
+            pos = result.find(varPattern, pos + binding.value.length());
         }
     }
     
@@ -532,12 +589,12 @@ TruthValue PLNInferenceEngine::evaluatePattern(const std::string& pattern, const
     // Simple pattern evaluation based on content matching
     // In a full implementation, this would be more sophisticated
     
-    // Check if pattern matches agent name or bio
-    if (pattern.find(state.getAgentName()) != std::string::npos) {
+    // Check if pattern matches non-empty agent identity fields.
+    if (!state.getAgentName().empty() && pattern.find(state.getAgentName()) != std::string::npos) {
         return TruthValue(0.9, 0.8);
     }
     
-    if (pattern.find(state.getBio()) != std::string::npos) {
+    if (!state.getBio().empty() && pattern.find(state.getBio()) != std::string::npos) {
         return TruthValue(0.8, 0.7);
     }
     
