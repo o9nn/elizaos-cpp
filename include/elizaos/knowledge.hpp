@@ -153,7 +153,23 @@ public:
     size_t getKnowledgeCount() const;
     std::string getStatistics() const;
     void clear();
-    
+
+    // Optional memory & logger integration. When set, knowledge entries are
+    // also persisted to the agent memory subsystem and access is traced.
+    void setMemoryManager(std::shared_ptr<AgentMemoryManager> mgr);
+    std::shared_ptr<AgentMemoryManager> getMemoryManager() const;
+    void setLogger(std::shared_ptr<AgentLogger> logger);
+    std::shared_ptr<AgentLogger> getLogger() const;
+
+    // Public access to the memory bridge and metrics tracker so that callers
+    // (and tests) can drive durable persistence and observe usage.
+    void persistToMemory(const KnowledgeEntry& entry);
+    std::optional<KnowledgeEntry> loadFromMemory(const std::string& id);
+    std::vector<KnowledgeEntry> searchMemory(const std::string& content, int maxResults = 10);
+    std::vector<KnowledgeEntry> dumpMemory() const;
+    void recordAccess(const KnowledgeEntry& entry);
+    bool isValid(const KnowledgeEntry& entry) const;
+
 private:
     std::shared_ptr<AgentMemoryManager> memory_;
     std::shared_ptr<AgentLogger> logger_;
@@ -174,6 +190,13 @@ private:
 
 // Global knowledge base instance
 extern std::shared_ptr<KnowledgeBase> globalKnowledgeBase;
+
+// Per-entry usage statistics maintained by KnowledgeBase::recordAccess.
+namespace knowledge_metrics {
+    std::uint64_t getAccessCount(const std::string& id);
+    void resetAll();
+}
+
 
 // Utility functions
 std::string knowledgeTypeToString(KnowledgeType type);

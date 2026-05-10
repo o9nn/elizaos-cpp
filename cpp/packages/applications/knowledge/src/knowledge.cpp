@@ -340,12 +340,201 @@ void KnowledgeBase::clear() {
     knowledgeStore_.clear();
 }
 
-void KnowledgeBase::saveKnowledgeToMemory(const KnowledgeEntry&) {}
-std::optional<KnowledgeEntry> KnowledgeBase::loadKnowledgeFromMemory(const std::string&) { return std::nullopt; }
-std::vector<KnowledgeEntry> KnowledgeBase::searchMemoryByContent(const std::string&, int) { return {}; }
-std::vector<KnowledgeEntry> KnowledgeBase::getAllKnowledgeFromMemory() const { return {}; }
-bool KnowledgeBase::isValidKnowledgeEntry(const KnowledgeEntry& entry) const { return !entry.content.empty(); }
-void KnowledgeBase::updateKnowledgeMetrics(const KnowledgeEntry&) {}
+// Knowledge -> Memory bridge implementations.
+//
+// These methods integrate the in-memory knowledgeStore_ with the optional
+// AgentMemoryManager (memory_), so that knowledge entries are durable across
+// the broader cognitive architecture (attention, recall, embeddings) when a
+// manager is wired in. They never throw if memory_ is unset; instead the
+// in-process knowledgeStore_ remains the source of truth.
+
+static const std::string kKnowledgeTable = "knowledge";
+
+static std::string knowledgeContentToMemoryString(const KnowledgeEntry& e) {
+    std::ostringstream os;
+    os << "[KB:" << knowledgeTypeToString(e.type) << "|c="
+       << static_cast<int>(e.confidence) << "] " << e.content;
+    if (!e.tags.empty()) {
+        os << " #";
+        for (size_t i = 0; i < e.tags.size(); ++i) {
+            if (i) os << ",";
+            os << e.tags[i];
+        }
+    }
+    return os.str();
+}
+
+void KnowledgeBase::saveKnowledgeToMemory(const KnowledgeEntry& entry) {
+    if (!memory_) return;
+    // Use the entry id as the memory id so we can round-trip cleanly.
+    auto mem = std::make_shared<Memory>(
+        entry.id,
+        knowledgeContentToMemoryString(entry),
+        /*entityId=*/std::string("knowledge_base"),
+        /*agentId=*/std::string("knowledge_base"));
+    CustomMetadata md;
+    md.type = MemoryType::CUSTOM;
+    md.tags = entry.tags;
+    md.source = std::string("knowledge");
+    md.scope = MemoryScope::SHARED;
+    md.timestamp = entry.created_at;
+    md.customData["kb_type"] = knowledgeTypeToString(entry.type);
+    md.customData["kb_source"] = knowledgeSourceToString(entry.source);
+    md.customData["kb_confidence"] = std::to_string(static_cast<int>(entry.confidence));
+    for (const auto& kv : entry.metadata) {
+        md.customData["meta_" + kv.first] = kv.second;
+    }
+    mem->setMetadata(md);
+    mem->setUnique(true);
+    memory_->createMemory(mem, kKnowledgeTable, /*unique=*/true);
+}
+
+std::optional<KnowledgeEntry> KnowledgeBase::loadKnowledgeFromMemory(const std::string& id) {
+    if (!memory_) return std::nullopt;
+    auto mem = memory_->getMemoryById(id);
+    if (!mem) return std::nullopt;
+    KnowledgeEntry e(mem->getContent(), KnowledgeType::FACT);
+    e.id = mem->getId();
+    const auto& metaVar = mem->getMetadata();
+    if (auto* cm = std::get_if<CustomMetadata>(&metaVar)) {
+        e.tags = cm->tags;
+        auto it = cm->customData.find("kb_type");
+        if (it != cm->customData.end()) e.type = stringToKnowledgeType(it->second);
+        it = cm->customData.find("kb_source");
+        if (it != cm->customData.end()) e.source = stringToKnowledgeSource(it->second);
+        it = cm->customData.find("kb_confidence");
+        if (it != cm->customData.end()) {
+            try {
+                int c = std::stoi(it->second);
+                if (c < 1) c = 1;
+                if (c > 5) c = 5;
+                e.confidence = static_cast<ConfidenceLevel>(c);
+            } catch (...) { /* leave default */ }
+        }
+        for (const auto& kv : cm->customData) {
+            if (kv.first.rfind("meta_", 0) == 0) {
+                e.metadata[kv.first.substr(5)] = kv.second;
+            }
+        }
+    }
+    e.created_at = mem->getCreatedAt();
+    e.updated_at = e.created_at;
+    return e;
+}
+
+std::vector<KnowledgeEntry> KnowledgeBase::searchMemoryByContent(const std::string& content,
+                                                                 int maxResults) {
+    std::vector<KnowledgeEntry> hits;
+    if (!memory_) return hits;
+    MemorySearchParams params;
+    params.tableName = kKnowledgeTable;
+    params.count = maxResults > 0 ? maxResults * 4 : 40; // overfetch then filter
+    auto memories = memory_->getMemories(params);
+    const std::string needle = content;
+    for (const auto& mem : memories) {
+        if (needle.empty() || mem->getContent().find(needle) != std::string::npos) {
+            auto loaded = loadKnowledgeFromMemory(mem->getId());
+            if (loaded) hits.push_back(*loaded);
+            if (maxResults > 0 && static_cast<int>(hits.size()) >= maxResults) break;
+        }
+    }
+    return hits;
+}
+
+std::vector<KnowledgeEntry> KnowledgeBase::getAllKnowledgeFromMemory() const {
+    std::vector<KnowledgeEntry> all;
+    if (!memory_) return all;
+    MemorySearchParams params;
+    params.tableName = kKnowledgeTable;
+    params.count = 100000; // effectively all
+    auto memories = memory_->getMemories(params);
+    for (const auto& mem : memories) {
+        // Have to call non-const helper through const_cast: load is logically
+        // const for the caller (no observable mutation).
+        auto loaded = const_cast<KnowledgeBase*>(this)->loadKnowledgeFromMemory(mem->getId());
+        if (loaded) all.push_back(*loaded);
+    }
+    return all;
+}
+
+bool KnowledgeBase::isValidKnowledgeEntry(const KnowledgeEntry& entry) const {
+    // Validity rules:
+    // 1. content must be non-empty and non-whitespace
+    // 2. confidence must be a known enum value
+    // 3. type must be a known enum value
+    if (entry.content.empty()) return false;
+    bool nonWhitespace = false;
+    for (char ch : entry.content) {
+        if (!std::isspace(static_cast<unsigned char>(ch))) { nonWhitespace = true; break; }
+    }
+    if (!nonWhitespace) return false;
+    int conf = static_cast<int>(entry.confidence);
+    if (conf < 1 || conf > 5) return false;
+    switch (entry.type) {
+        case KnowledgeType::FACT:
+        case KnowledgeType::RULE:
+        case KnowledgeType::CONCEPT:
+        case KnowledgeType::RELATIONSHIP:
+        case KnowledgeType::PROCEDURE:
+        case KnowledgeType::EXPERIENCE:
+            break;
+        default:
+            return false;
+    }
+    return true;
+}
+
+// Internal usage statistics tracking for the knowledge base.
+static std::mutex g_kbMetricsMutex;
+static std::unordered_map<std::string, std::uint64_t> g_kbAccessCount;
+static std::unordered_map<std::string, std::chrono::system_clock::time_point> g_kbLastAccess;
+
+void KnowledgeBase::updateKnowledgeMetrics(const KnowledgeEntry& entry) {
+    if (entry.id.empty()) return;
+    std::lock_guard<std::mutex> lock(g_kbMetricsMutex);
+    g_kbAccessCount[entry.id] += 1;
+    g_kbLastAccess[entry.id] = std::chrono::system_clock::now();
+    // Surface to logger if available, but never block.
+    if (logger_) {
+        try {
+            logger_->log(
+                std::string("knowledge accessed: ") + entry.id +
+                " count=" + std::to_string(g_kbAccessCount[entry.id]),
+                /*source=*/"KnowledgeBase",
+                /*title=*/"knowledge",
+                LogLevel::INFO,
+                LogColor::CYAN,
+                /*expand=*/true,
+                /*panel=*/false,
+                /*shouldLog=*/true);
+        } catch (...) {}
+    }
+}
+
+// Public accessors for the metrics (added to support tests / observability).
+namespace knowledge_metrics {
+    std::uint64_t getAccessCount(const std::string& id) {
+        std::lock_guard<std::mutex> lock(g_kbMetricsMutex);
+        auto it = g_kbAccessCount.find(id);
+        return it == g_kbAccessCount.end() ? 0 : it->second;
+    }
+    void resetAll() {
+        std::lock_guard<std::mutex> lock(g_kbMetricsMutex);
+        g_kbAccessCount.clear();
+        g_kbLastAccess.clear();
+    }
+}
+
+void KnowledgeBase::setMemoryManager(std::shared_ptr<AgentMemoryManager> mgr) { memory_ = std::move(mgr); }
+std::shared_ptr<AgentMemoryManager> KnowledgeBase::getMemoryManager() const { return memory_; }
+void KnowledgeBase::setLogger(std::shared_ptr<AgentLogger> logger) { logger_ = std::move(logger); }
+std::shared_ptr<AgentLogger> KnowledgeBase::getLogger() const { return logger_; }
+void KnowledgeBase::persistToMemory(const KnowledgeEntry& entry) { saveKnowledgeToMemory(entry); }
+std::optional<KnowledgeEntry> KnowledgeBase::loadFromMemory(const std::string& id) { return loadKnowledgeFromMemory(id); }
+std::vector<KnowledgeEntry> KnowledgeBase::searchMemory(const std::string& content, int maxResults) { return searchMemoryByContent(content, maxResults); }
+std::vector<KnowledgeEntry> KnowledgeBase::dumpMemory() const { return getAllKnowledgeFromMemory(); }
+void KnowledgeBase::recordAccess(const KnowledgeEntry& entry) { updateKnowledgeMetrics(entry); }
+bool KnowledgeBase::isValid(const KnowledgeEntry& entry) const { return isValidKnowledgeEntry(entry); }
 
 // ==============================================================================
 // Utility functions
