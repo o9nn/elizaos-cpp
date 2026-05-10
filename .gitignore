@@ -1,3 +1,8 @@
+# Archive directory (deprecated/obsolete content — tracked only via README/.gitignore)
+archive/*
+!archive/.gitignore
+!archive/README.md
+
 # C++ Build artifacts
 build/
 build_*/
@@ -9,6 +14,14 @@ _codeql_build_dir/
 *.dll
 *.dylib
 *.exe
+# Compiled binaries (no extension, Linux/macOS)
+agentcomms_demo
+agentshell_demo
+shell_demo
+simple_agentcomms_demo
+simple_shell_test
+test_agentcomms_*
+demo_status
 
 # CMake
 CMakeCache.txt
@@ -48,8 +61,15 @@ pip-delete-this-directory.txt
 
 # Temporary files
 ./tmp/
+tmp/
 *.tmp
 *.temp
+
+# Log files
+*.log
+events.log
+build_output.log
+cmake_output.log
 
 # Implementation tracker generated files
 *_modules.txt
@@ -61,4 +81,15 @@ updated_issue_body.md
 # Auto-generated C++ code from TypeScript - not intended for commit
 # Uncomment the next line to exclude from version control:
 # excpp/
+
+# Deprecated transpiler/merge output directories
+# These directories contain auto-generated or obsolete content.
+# To fully remove from git tracking: git rm -r --cached <dir>
 cpp_merge/build
+excpp_old/
+excpp_old_backup/
+excpp1/
+cpp_generated/
+cpp_hybrid/
+output_multi_full/
+build2/

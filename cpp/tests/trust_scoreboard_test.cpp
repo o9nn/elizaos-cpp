@@ -1,250 +1,35 @@
-// Comprehensive End-to-End Test Suite for trust_scoreboard Module
-// Generated comprehensive tests for C++ implementation
-
+// trust_scoreboard_test.cpp - Tests for the TrustScoreboard.
 #include <gtest/gtest.h>
 #include "elizaos/trust_scoreboard.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for trust_scoreboard
-class TrustScoreboardTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
-};
+TEST(TrustEvent, ConstructionFromComponents) {
+    TrustEvent e("agent-1", TrustEventType{}, TrustOutcome{}, 0.5);
+    SUCCEED();
+}
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
+TEST(TrustScore, BasicConstruction) {
+    TrustScore s;
+    SUCCEED();
+}
 
-TEST_F(TrustScoreboardTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
+TEST(TrustConfig, BasicConstruction) {
+    TrustConfig c;
+    SUCCEED();
+}
+
+TEST(TrustDecayConfig, BasicConstruction) {
+    TrustDecayConfig c;
+    SUCCEED();
+}
+
+TEST(TrustScoreboard, ConstructWithDeps) {
+    // TrustScoreboard requires a memory manager dependency. The point of this
+    // test is that the constructor signature is reachable; we deliberately
+    // pass nullptr so we can validate the binding without exercising memory.
     EXPECT_NO_THROW({
-        // Module initialization test
+        TrustScoreboard t(nullptr, TrustConfig{});
+        (void)t;
     });
-}
-
-TEST_F(TrustScoreboardTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
-}
-
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
-}
-
-TEST_F(TrustScoreboardTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
-}
-
-TEST_F(TrustScoreboardTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
-}
-
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
-}
-
-TEST_F(TrustScoreboardTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(TrustScoreboardTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(TrustScoreboardTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(TrustScoreboardTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(TrustScoreboardTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(TrustScoreboardTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(TrustScoreboardTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(TrustScoreboardTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(TrustScoreboardTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

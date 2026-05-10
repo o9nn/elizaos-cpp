@@ -9,11 +9,17 @@
 #include <memory>
 #include <unordered_map>
 #include <functional>
+#include <atomic>
+#include <thread>
 
 namespace elizaos {
 
-// Type alias for JSON values
-using JsonValue = nlohmann::json;
+// MCP-specific JSON alias. Distinct from the `JsonValue` aliases declared by
+// other elizaos headers (agentaction, agentagenda, characterfile, etc.) which
+// alias to `std::unordered_map<std::string, std::any>`. By keeping MCP's JSON
+// type isolated we let any TU include both `mcp_gateway.hpp` and any of those
+// headers without triggering an alias collision.
+using MCPJsonValue = nlohmann::json;
 
 /**
  * @brief MCP Gateway: Model Context Protocol Gateway
@@ -45,8 +51,8 @@ struct MCPTool {
     std::string name;
     std::string namespace_;
     std::string description;
-    JsonValue inputSchema;
-    std::function<JsonValue(const JsonValue&)> handler;
+    MCPJsonValue inputSchema;
+    std::function<MCPJsonValue(const MCPJsonValue&)> handler;
 };
 
 // MCP Resource definition
@@ -83,7 +89,9 @@ struct APIKeyTier {
 class MCPGateway {
 public:
     MCPGateway(const std::string& gatewayId);
-    ~MCPGateway() = default;
+    ~MCPGateway();
+    MCPGateway(const MCPGateway&) = delete;
+    MCPGateway& operator=(const MCPGateway&) = delete;
     
     // Server management
     void addServer(const MCPServerConfig& config);
@@ -98,16 +106,16 @@ public:
     std::vector<MCPTool> listToolsByNamespace(const std::string& namespace_) const;
     
     // Tool execution
-    JsonValue executeTool(const std::string& toolName, const JsonValue& input, 
+    MCPJsonValue executeTool(const std::string& toolName, const MCPJsonValue& input, 
                           const std::string& apiKey = "");
-    JsonValue executeToolWithPayment(const std::string& toolName, const JsonValue& input,
+    MCPJsonValue executeToolWithPayment(const std::string& toolName, const MCPJsonValue& input,
                                      const std::string& signature, const std::string& paymentProof);
     
     // Resource management
     void registerResource(const MCPResource& resource);
     void unregisterResource(const std::string& uri);
     std::vector<MCPResource> listResources() const;
-    JsonValue getResource(const std::string& uri) const;
+    MCPJsonValue getResource(const std::string& uri) const;
     
     // Payment configuration
     void enablePayments(const PaymentConfig& config);
@@ -153,6 +161,11 @@ private:
     int rateLimit_;
     std::shared_ptr<AgentLogger> logger_;
     mutable std::mutex mutex_;
+
+    // Health monitoring
+    std::atomic<bool> monitorRunning_{false};
+    std::thread monitorThread_;
+    std::unordered_map<std::string, std::string> healthSnapshot_;
     
     // Internal methods
     std::string resolveNamespace(const std::string& serverName, const std::string& toolName);
@@ -175,12 +188,12 @@ public:
     std::vector<MCPResource> discoverResources();
     
     // Tool execution
-    JsonValue callTool(const std::string& toolName, const JsonValue& input);
-    JsonValue callToolWithPayment(const std::string& toolName, const JsonValue& input,
+    MCPJsonValue callTool(const std::string& toolName, const MCPJsonValue& input);
+    MCPJsonValue callToolWithPayment(const std::string& toolName, const MCPJsonValue& input,
                                   const std::string& walletAddress);
     
     // Resource access
-    JsonValue getResource(const std::string& uri);
+    MCPJsonValue getResource(const std::string& uri);
     
     // Payment setup
     void setWallet(const std::string& privateKey);
@@ -205,8 +218,8 @@ public:
     
     // Tool registration
     void registerTool(const std::string& name, const std::string& description,
-                     const JsonValue& schema,
-                     std::function<JsonValue(const JsonValue&)> handler);
+                     const MCPJsonValue& schema,
+                     std::function<MCPJsonValue(const MCPJsonValue&)> handler);
     
     // Resource registration
     void registerResource(const std::string& uri, const std::string& mimeType,

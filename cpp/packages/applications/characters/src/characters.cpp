@@ -17,7 +17,7 @@ std::string generateCharacterUUID() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
-    
+
     std::string uuid = "char-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
     for (auto& c : uuid) {
         if (c == 'x') {
@@ -122,7 +122,7 @@ JsonValue CharacterTrait::toJson() const {
     json["category"] = std::string(traitCategoryToString(category));
     json["valueType"] = std::string(traitValueTypeToString(valueType));
     json["weight"] = std::string(std::to_string(weight));
-    
+
     // Handle value serialization based on type
     switch (valueType) {
         case TraitValueType::NUMERIC:
@@ -136,7 +136,7 @@ JsonValue CharacterTrait::toJson() const {
             json["value"] = std::string(getCategoricalValue());
             break;
     }
-    
+
     return json;
 }
 
@@ -152,20 +152,20 @@ CharacterTrait CharacterTrait::fromJson(const JsonValue& json) {
         }
         return "";
     };
-    
+
     std::string name = getString("name");
     std::string description = getString("description");
     TraitCategory category = stringToTraitCategory(getString("category"));
     TraitValueType valueType = stringToTraitValueType(getString("valueType"));
-    
+
     CharacterTrait trait(name, description, category, valueType);
-    
+
     try {
         trait.weight = std::stof(getString("weight"));
     } catch (const std::exception&) {
         trait.weight = 1.0f;
     }
-    
+
     std::string valueStr = getString("value");
     switch (valueType) {
         case TraitValueType::NUMERIC:
@@ -181,7 +181,7 @@ CharacterTrait CharacterTrait::fromJson(const JsonValue& json) {
             trait.setCategoricalValue(valueStr);
             break;
     }
-    
+
     return trait;
 }
 
@@ -193,7 +193,7 @@ float CharacterTrait::calculateSimilarity(const CharacterTrait& other) const {
     if (!isCompatibleWith(other)) {
         return 0.0f;
     }
-    
+
     switch (valueType) {
         case TraitValueType::NUMERIC: {
             float diff = std::abs(getNumericValue() - other.getNumericValue());
@@ -205,7 +205,7 @@ float CharacterTrait::calculateSimilarity(const CharacterTrait& other) const {
         case TraitValueType::TEXT:
             return (getCategoricalValue() == other.getCategoricalValue()) ? 1.0f : 0.0f;
     }
-    
+
     return 0.0f;
 }
 
@@ -224,12 +224,12 @@ PersonalityMatrix::PersonalityMatrix(float o, float c, float e, float a, float n
 std::string PersonalityMatrix::getPersonalityType() const {
     // Simplified personality typing based on dominant traits
     std::string type = "";
-    
+
     if (extraversion > 0.6f) type += "E"; else type += "I";
     if (openness > 0.6f) type += "N"; else type += "S";
     if (agreeableness > 0.6f) type += "F"; else type += "T";
     if (conscientiousness > 0.6f) type += "J"; else type += "P";
-    
+
     return type;
 }
 
@@ -246,18 +246,18 @@ std::vector<std::string> PersonalityMatrix::getDominantTraits() const {
         {"curiosity", curiosity},
         {"loyalty", loyalty}
     };
-    
+
     // Sort by value and return top traits
-    std::sort(traits.begin(), traits.end(), 
+    std::sort(traits.begin(), traits.end(),
               [](const auto& a, const auto& b) { return a.second > b.second; });
-    
+
     std::vector<std::string> dominant;
     for (size_t i = 0; i < std::min(size_t(3), traits.size()); ++i) {
         if (traits[i].second > 0.6f) {
             dominant.push_back(traits[i].first);
         }
     }
-    
+
     return dominant;
 }
 
@@ -269,7 +269,7 @@ float PersonalityMatrix::calculateCompatibility(const PersonalityMatrix& other) 
     totalDiff += std::abs(extraversion - other.extraversion);
     totalDiff += std::abs(agreeableness - other.agreeableness);
     totalDiff += std::abs(neuroticism - other.neuroticism);
-    
+
     // Convert difference to compatibility (lower difference = higher compatibility)
     float avgDiff = totalDiff / 5.0f;
     return 1.0f - avgDiff;
@@ -278,7 +278,7 @@ float PersonalityMatrix::calculateCompatibility(const PersonalityMatrix& other) 
 void PersonalityMatrix::adjustFromExperience(const std::string& experienceType, float intensity) {
     intensity = clamp(intensity, 0.0f, 1.0f);
     float adjustment = intensity * 0.1f; // Small adjustments
-    
+
     if (experienceType == "social_success") {
         extraversion = clamp(extraversion + adjustment, 0.0f, 1.0f);
         agreeableness = clamp(agreeableness + adjustment * 0.5f, 0.0f, 1.0f);
@@ -297,11 +297,11 @@ void PersonalityMatrix::adjustFromExperience(const std::string& experienceType, 
 void PersonalityMatrix::evolveOverTime(float timeFactorDays) {
     // Very gradual personality evolution over time
     float evolutionRate = timeFactorDays * 0.001f; // 0.1% change per day max
-    
+
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dis(-evolutionRate, evolutionRate);
-    
+
     openness = clamp(openness + dis(gen), 0.0f, 1.0f);
     conscientiousness = clamp(conscientiousness + dis(gen), 0.0f, 1.0f);
     extraversion = clamp(extraversion + dis(gen), 0.0f, 1.0f);
@@ -336,7 +336,7 @@ PersonalityMatrix PersonalityMatrix::fromJson(const JsonValue& json) {
         }
         return defaultVal;
     };
-    
+
     PersonalityMatrix matrix;
     matrix.openness = getFloat("openness");
     matrix.conscientiousness = getFloat("conscientiousness");
@@ -348,7 +348,7 @@ PersonalityMatrix PersonalityMatrix::fromJson(const JsonValue& json) {
     matrix.assertiveness = getFloat("assertiveness");
     matrix.curiosity = getFloat("curiosity");
     matrix.loyalty = getFloat("loyalty");
-    
+
     return matrix;
 }
 
@@ -356,7 +356,7 @@ PersonalityMatrix PersonalityMatrix::fromJson(const JsonValue& json) {
 // CharacterProfile Implementation
 // =====================================================
 
-CharacterProfile::CharacterProfile(const std::string& name, const std::string& description) 
+CharacterProfile::CharacterProfile(const std::string& name, const std::string& description)
     : name(name), description(description) {
     id = generateUniqueId();
     created_at = std::chrono::system_clock::now();
@@ -433,35 +433,35 @@ void CharacterProfile::adjustPersonalityDimension(const std::string& dimension, 
 std::string CharacterProfile::generateResponse(const std::string& input, const std::string& context) const {
     // Simple response generation based on personality and communication style
     std::stringstream response;
-    
+
     // Adjust response based on personality traits
     if (personality.extraversion > 0.7f) {
         response << "Oh, ";
     }
-    
+
     if (personality.agreeableness > 0.6f) {
         response << "I understand what you mean about " << input.substr(0, 20) << "... ";
     }
-    
+
     if (communicationStyle.formality > 0.6f) {
         response << "I believe that ";
     } else {
         response << "I think ";
     }
-    
+
     response << "this is an interesting point";
-    
+
     if (personality.openness > 0.7f) {
         response << " that opens up many possibilities";
     }
-    
+
     response << ".";
-    
+
     // Add context awareness
     if (!context.empty()) {
         response << " In the context of " << context << ", this becomes even more significant.";
     }
-    
+
     return response.str();
 }
 
@@ -469,7 +469,7 @@ std::string CharacterProfile::getEmotionalState() const {
     // Determine emotional state based on personality dimensions
     float positivity = (personality.agreeableness + personality.extraversion + (1.0f - personality.neuroticism)) / 3.0f;
     float energy = (personality.extraversion + personality.openness) / 2.0f;
-    
+
     if (positivity > 0.7f && energy >= 0.7f) {
         return "excited";
     } else if (positivity > 0.6f) {
@@ -490,7 +490,7 @@ void CharacterProfile::learnFromInteraction(const std::string& interaction, cons
     } else if (outcome == "negative") {
         personality.adjustFromExperience("failure", 0.1f);
     }
-    
+
     // Add to experiences
     background.experiences.push_back(interaction + " -> " + outcome);
     updateTimestamp();
@@ -508,11 +508,11 @@ void CharacterProfile::addExperience(const std::string& experience) {
 
 float CharacterProfile::calculateCompatibility(const CharacterProfile& other) const {
     float personalityCompat = personality.calculateCompatibility(other.personality);
-    
+
     // Factor in trait compatibility
     float traitCompat = 0.0f;
     int compatibleTraits = 0;
-    
+
     for (const auto& myTrait : traits) {
         auto otherTrait = other.getTrait(myTrait.name);
         if (otherTrait) {
@@ -520,31 +520,31 @@ float CharacterProfile::calculateCompatibility(const CharacterProfile& other) co
             compatibleTraits++;
         }
     }
-    
+
     if (compatibleTraits > 0) {
         traitCompat /= compatibleTraits;
     }
-    
+
     // Weighted combination
     return (personalityCompat * 0.7f) + (traitCompat * 0.3f);
 }
 
 std::vector<std::string> CharacterProfile::findCommonTraits(const CharacterProfile& other) const {
     std::vector<std::string> common;
-    
+
     for (const auto& myTrait : traits) {
         auto otherTrait = other.getTrait(myTrait.name);
         if (otherTrait && myTrait.calculateSimilarity(*otherTrait) > 0.7f) {
             common.push_back(myTrait.name);
         }
     }
-    
+
     return common;
 }
 
 std::string CharacterProfile::predictInteractionStyle(const CharacterProfile& other) const {
     float compatibility = calculateCompatibility(other);
-    
+
     if (compatibility > 0.8f) {
         return "harmonious";
     } else if (compatibility > 0.6f) {
@@ -565,11 +565,11 @@ JsonValue CharacterProfile::toJson() const {
     json["description"] = std::string(description);
     json["version"] = std::string(version);
     json["creator"] = std::string(creator);
-    
+
     // Timestamps
     json["created_at"] = std::string(std::to_string(std::chrono::system_clock::to_time_t(created_at)));
     json["updated_at"] = std::string(std::to_string(std::chrono::system_clock::to_time_t(updated_at)));
-    
+
     return json;
 }
 
@@ -585,12 +585,12 @@ CharacterProfile CharacterProfile::fromJson(const JsonValue& json) {
         }
         return "";
     };
-    
+
     CharacterProfile profile(getString("name"), getString("description"));
     profile.id = getString("id");
     profile.version = getString("version");
     profile.creator = getString("creator");
-    
+
     // Parse timestamps
     try {
         auto created_time_t = std::stoll(getString("created_at"));
@@ -600,7 +600,7 @@ CharacterProfile CharacterProfile::fromJson(const JsonValue& json) {
     } catch (const std::exception&) {
         // Use current time if parsing fails
     }
-    
+
     return profile;
 }
 
@@ -610,14 +610,14 @@ bool CharacterProfile::exportToFile(const std::string& filename) const {
         if (!file.is_open()) {
             return false;
         }
-        
+
         file << "Character Profile Export" << std::endl;
         file << "Name: " << name << std::endl;
         file << "Description: " << description << std::endl;
         file << "Personality Type: " << personality.getPersonalityType() << std::endl;
         file << "Emotional State: " << getEmotionalState() << std::endl;
         file << "Trait Count: " << traits.size() << std::endl;
-        
+
         file.close();
         return true;
     } catch (const std::exception&) {
@@ -631,11 +631,11 @@ std::optional<CharacterProfile> CharacterProfile::importFromFile(const std::stri
         if (!file.is_open()) {
             return std::nullopt;
         }
-        
+
         // Simple parsing - in practice would be more sophisticated
         std::string line;
         std::string name, description;
-        
+
         while (std::getline(file, line)) {
             if (line.find("Name: ") == 0) {
                 name = line.substr(6);
@@ -643,16 +643,16 @@ std::optional<CharacterProfile> CharacterProfile::importFromFile(const std::stri
                 description = line.substr(13);
             }
         }
-        
+
         file.close();
-        
+
         if (!name.empty()) {
             return CharacterProfile(name, description);
         }
     } catch (const std::exception&) {
         // Handle error
     }
-    
+
     return std::nullopt;
 }
 
@@ -662,14 +662,14 @@ bool CharacterProfile::validate() const {
 
 std::vector<std::string> CharacterProfile::getValidationErrors() const {
     std::vector<std::string> errors;
-    
+
     if (name.empty()) {
         errors.push_back("Name is required");
     }
     if (id.empty()) {
         errors.push_back("ID is required");
     }
-    
+
     return errors;
 }
 
@@ -735,7 +735,7 @@ CharacterTemplate CharacterTemplate::fromJson(const JsonValue& json) {
         }
         return "";
     };
-    
+
     return CharacterTemplate(getString("name"), getString("description"));
 }
 
@@ -757,63 +757,63 @@ std::string CharacterManager::generateCharacterId() {
 
 std::string CharacterManager::registerCharacter(const CharacterProfile& character) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     CharacterProfile newCharacter = character;
     if (newCharacter.id.empty()) {
         newCharacter.id = generateCharacterId();
     }
-    
+
     characters_[newCharacter.id] = newCharacter;
     saveCharacterToMemory(newCharacter);
-    
+
     logger_->log("Registered character: " + newCharacter.name, "info", "characters");
     return newCharacter.id;
 }
 
 bool CharacterManager::unregisterCharacter(const std::string& characterId) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     auto it = characters_.find(characterId);
     if (it != characters_.end()) {
         characters_.erase(it);
-        
+
         // Remove from memory
         UUID memoryId(characterId);
         memory_->deleteMemory(memoryId);
-        
+
         logger_->log("Unregistered character: " + characterId, "info", "characters");
         return true;
     }
-    
+
     return false;
 }
 
 std::optional<CharacterProfile> CharacterManager::getCharacter(const std::string& characterId) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     auto it = characters_.find(characterId);
     if (it != characters_.end()) {
         return it->second;
     }
-    
+
     // Try loading from memory
     auto memoryChar = loadCharacterFromMemory(characterId);
     if (memoryChar) {
         characters_[characterId] = *memoryChar;
         return *memoryChar;
     }
-    
+
     return std::nullopt;
 }
 
 std::vector<CharacterProfile> CharacterManager::getAllCharacters() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     std::vector<CharacterProfile> result;
     for (const auto& [key, val] : characters_) {
         result.push_back(val);
     }
-    
+
     // Also get std::any characters only in memory
     auto memoryChars = getAllCharactersFromMemory();
     for (const auto& character : memoryChars) {
@@ -821,50 +821,48 @@ std::vector<CharacterProfile> CharacterManager::getAllCharacters() const {
             result.push_back(character);
         }
     }
-    
+
     return result;
 }
 
 bool CharacterManager::updateCharacter(const std::string& characterId, const CharacterProfile& character) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     auto it = characters_.find(characterId);
     if (it != characters_.end()) {
         CharacterProfile updatedChar = character;
         updatedChar.id = characterId;
         updatedChar.updated_at = std::chrono::system_clock::now();
-        
+
         characters_[characterId] = updatedChar;
         saveCharacterToMemory(updatedChar);
-        
+
         logger_->log("Updated character: " + characterId, "info", "characters");
         return true;
     }
-    
+
     return false;
 }
 
 std::vector<CharacterProfile> CharacterManager::searchCharacters(const std::string& query) const {
-    std::lock_guard<std::mutex> lock(charactersMutex_);
-    
     std::vector<CharacterProfile> results;
-    auto allChars = getAllCharacters();
-    
+    const auto allChars = getAllCharacters();
+
     for (const auto& character : allChars) {
         if (character.name.find(query) != std::string::npos ||
             character.description.find(query) != std::string::npos) {
             results.push_back(character);
         }
     }
-    
+
     return results;
 }
 
-std::vector<CharacterProfile> CharacterManager::findCharactersByTrait(const std::string& traitName, 
+std::vector<CharacterProfile> CharacterManager::findCharactersByTrait(const std::string& traitName,
                                                                      const std::any& value) const {
     std::vector<CharacterProfile> results;
     auto allChars = getAllCharacters();
-    
+
     for (const auto& character : allChars) {
         auto trait = character.getTrait(traitName);
         if (trait) {
@@ -875,7 +873,7 @@ std::vector<CharacterProfile> CharacterManager::findCharactersByTrait(const std:
             }
         }
     }
-    
+
     return results;
 }
 
@@ -885,10 +883,10 @@ std::vector<CharacterProfile> CharacterManager::findCompatibleCharacters(const s
     if (!targetChar) {
         return {};
     }
-    
+
     std::vector<CharacterProfile> compatible;
     auto allChars = getAllCharacters();
-    
+
     for (const auto& character : allChars) {
         if (character.id != characterId) {
             float compatibility = targetChar->calculateCompatibility(character);
@@ -897,13 +895,13 @@ std::vector<CharacterProfile> CharacterManager::findCompatibleCharacters(const s
             }
         }
     }
-    
+
     // Sort by compatibility
     std::sort(compatible.begin(), compatible.end(),
               [&targetChar](const CharacterProfile& a, const CharacterProfile& b) {
                   return targetChar->calculateCompatibility(a) > targetChar->calculateCompatibility(b);
               });
-    
+
     return compatible;
 }
 
@@ -915,53 +913,53 @@ void CharacterManager::registerTemplate(const CharacterTemplate& template_) {
 
 std::optional<CharacterTemplate> CharacterManager::getTemplate(const std::string& templateName) const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     auto it = templates_.find(templateName);
     if (it != templates_.end()) {
         return it->second;
     }
-    
+
     return std::nullopt;
 }
 
 std::vector<CharacterTemplate> CharacterManager::getAllTemplates() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     std::vector<CharacterTemplate> result;
     for (const auto& [key, val] : templates_) {
         result.push_back(val);
     }
-    
+
     return result;
 }
 
-CharacterProfile CharacterManager::createFromTemplate(const std::string& templateName, 
+CharacterProfile CharacterManager::createFromTemplate(const std::string& templateName,
                                                       const std::string& characterName) const {
     auto template_ = getTemplate(templateName);
     if (template_) {
         logger_->log("Creating character from template: " + templateName, "info", "characters");
         return template_->instantiate(characterName);
     }
-    
+
     // Return basic character if template not found
     return CharacterProfile(characterName, "Character created without template");
 }
 
 void CharacterManager::evolveAllCharacters(float timeDelta) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     for (auto& [key, val] : characters_) {
         val.evolvePersonality(timeDelta);
         saveCharacterToMemory(val);
     }
-    
-    logger_->log("Evolved all characters with time delta: " + std::to_string(timeDelta), 
+
+    logger_->log("Evolved all characters with time delta: " + std::to_string(timeDelta),
                 "info", "characters");
 }
 
 void CharacterManager::saveAllCharacters(const std::string& directory) const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+
     int saved = 0;
     for (const auto& [key, val] : characters_) {
         std::string filename = directory + "/" + val.name + "_" + key + ".txt";
@@ -969,8 +967,8 @@ void CharacterManager::saveAllCharacters(const std::string& directory) const {
             saved++;
         }
     }
-    
-    logger_->log("Saved " + std::to_string(saved) + " characters to directory: " + directory, 
+
+    logger_->log("Saved " + std::to_string(saved) + " characters to directory: " + directory,
                 "info", "characters");
 }
 
@@ -983,37 +981,47 @@ bool CharacterManager::loadCharactersFromDirectory(const std::string& directory)
 std::unordered_map<TraitCategory, int> CharacterManager::getTraitCategoryStats() const {
     std::unordered_map<TraitCategory, int> stats;
     auto allChars = getAllCharacters();
-    
+
     for (const auto& character : allChars) {
         for (const auto& trait : character.traits) {
             stats[trait.category]++;
         }
     }
-    
+
     return stats;
 }
 
 std::string CharacterManager::getCharacterAnalytics() const {
-    std::lock_guard<std::mutex> lock(charactersMutex_);
-    
+    const auto allChars = getAllCharacters();
+    std::size_t templateCount = 0;
+    {
+        std::lock_guard<std::mutex> lock(charactersMutex_);
+        templateCount = templates_.size();
+    }
+
+    std::unordered_map<TraitCategory, int> stats;
+    for (const auto& character : allChars) {
+        for (const auto& trait : character.traits) {
+            stats[trait.category]++;
+        }
+    }
+
     std::stringstream ss;
     ss << "Character Manager Analytics:" << std::endl;
-    ss << "Total characters: " << characters_.size() << std::endl;
-    ss << "Total templates: " << templates_.size() << std::endl;
-    
-    auto stats = getTraitCategoryStats();
+    ss << "Total characters: " << allChars.size() << std::endl;
+    ss << "Total templates: " << templateCount << std::endl;
     ss << "Trait category distribution:" << std::endl;
     for (const auto& [key, val] : stats) {
         ss << "  " << traitCategoryToString(key) << ": " << val << std::endl;
     }
-    
+
     return ss.str();
 }
 
 std::vector<std::pair<std::string, std::string>> CharacterManager::findBestMatches() const {
     std::vector<std::pair<std::string, std::string>> matches;
     auto allChars = getAllCharacters();
-    
+
     for (size_t i = 0; i < allChars.size(); ++i) {
         for (size_t j = i + 1; j < allChars.size(); ++j) {
             float compatibility = allChars[i].calculateCompatibility(allChars[j]);
@@ -1022,7 +1030,7 @@ std::vector<std::pair<std::string, std::string>> CharacterManager::findBestMatch
             }
         }
     }
-    
+
     return matches;
 }
 
@@ -1032,7 +1040,7 @@ bool CharacterManager::exportToFile(const std::string& filename) const {
         if (!file.is_open()) {
             return false;
         }
-        
+
         file << getCharacterAnalytics() << std::endl;
         file.close();
         return true;
@@ -1047,7 +1055,7 @@ bool CharacterManager::importFromFile(const std::string& filename) {
         if (!file.is_open()) {
             return false;
         }
-        
+
         logger_->log("Importing characters from file: " + filename, "info", "characters");
         file.close();
         return true;
@@ -1073,7 +1081,7 @@ void CharacterManager::saveCharacterToMemory(const CharacterProfile& character) 
     UUID memoryId(character.id);
     UUID entityId = generateCharacterUUID();
     UUID agentId = generateCharacterUUID();
-    
+
     // Create CustomMetadata for the character
     CustomMetadata customMeta;
     customMeta.customData["id"] = character.id;
@@ -1085,40 +1093,40 @@ void CharacterManager::saveCharacterToMemory(const CharacterProfile& character) 
     customMeta.customData["trait_count"] = std::to_string(character.traits.size());
     customMeta.customData["created_at"] = std::to_string(std::chrono::system_clock::to_time_t(character.created_at));
     customMeta.customData["updated_at"] = std::to_string(std::chrono::system_clock::to_time_t(character.updated_at));
-    
+
     MemoryMetadata metadata = customMeta;
-    auto memory = std::make_shared<Memory>(memoryId, character.name + ": " + character.description, 
+    auto memory = std::make_shared<Memory>(memoryId, character.name + ": " + character.description,
                                           entityId, agentId, metadata);
-    
+
     memory_->createMemory(memory, "characters");
 }
 
 std::optional<CharacterProfile> CharacterManager::loadCharacterFromMemory(const std::string& id) {
     UUID memoryId(id);
     auto memory = memory_->getMemoryById(memoryId);
-    
+
     if (!memory) {
         return std::nullopt;
     }
-    
+
     // Parse metadata if it's CustomMetadata
     if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
         const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
-        
+
         auto getValue = [&](const std::string& key) -> std::string {
             auto it = customMeta.customData.find(key);
             return it != customMeta.customData.end() ? it->second : "";
         };
-        
+
         std::string name = getValue("name");
         std::string description = getValue("description");
-        
+
         if (!name.empty()) {
             CharacterProfile character(name, description);
             character.id = id;
             character.version = getValue("version");
             character.creator = getValue("creator");
-            
+
             // Parse timestamps
             try {
                 auto created_time_t = std::stoll(getValue("created_at"));
@@ -1128,11 +1136,11 @@ std::optional<CharacterProfile> CharacterManager::loadCharacterFromMemory(const 
             } catch (const std::exception&) {
                 // Use current time if parsing fails
             }
-            
+
             return character;
         }
     }
-    
+
     return std::nullopt;
 }
 
@@ -1140,17 +1148,17 @@ std::vector<CharacterProfile> CharacterManager::getAllCharactersFromMemory() con
     MemorySearchParams params;
     params.tableName = "characters";
     params.count = 1000; // Large number to get all
-    
+
     auto memories = memory_->getMemories(params);
     std::vector<CharacterProfile> results;
-    
+
     for (const auto& memory : memories) {
         auto character = const_cast<CharacterManager*>(this)->loadCharacterFromMemory(memory->getId());
         if (character) {
             results.push_back(*character);
         }
     }
-    
+
     return results;
 }
 
@@ -1212,16 +1220,16 @@ CharacterTemplate createScientist() {
     scientist.basePersonality.conscientiousness = 0.8f;
     scientist.basePersonality.curiosity = 0.95f;
     scientist.basePersonality.creativity = 0.7f;
-    
-    CharacterTrait analyticalTrait("analytical", "Tendency to analyze and break down problems", 
+
+    CharacterTrait analyticalTrait("analytical", "Tendency to analyze and break down problems",
                                   TraitCategory::COGNITIVE, TraitValueType::NUMERIC);
     analyticalTrait.setNumericValue(0.9f);
     scientist.defaultTraits.push_back(analyticalTrait);
-    
+
     scientist.templateCommunication.tone = "precise";
     scientist.templateCommunication.vocabulary = "technical";
     scientist.templateCommunication.formality = 0.7f;
-    
+
     return scientist;
 }
 
@@ -1229,15 +1237,15 @@ CharacterTemplate createArtist() {
     CharacterTemplate artist("Artist", "Creative and expressive individual");
     artist.basePersonality.openness = 0.95f;
     artist.basePersonality.creativity = 0.9f;
-    
-    CharacterTrait creativeTrait("creative", "Strong creative expression ability", 
+
+    CharacterTrait creativeTrait("creative", "Strong creative expression ability",
                                 TraitCategory::PERSONALITY, TraitValueType::NUMERIC);
     creativeTrait.setNumericValue(0.9f);
     artist.defaultTraits.push_back(creativeTrait);
-    
+
     artist.templateCommunication.tone = "expressive";
     artist.templateCommunication.emotionality = 0.8f;
-    
+
     return artist;
 }
 
@@ -1246,14 +1254,14 @@ CharacterTemplate createLeader() {
     leader.basePersonality.extraversion = 0.8f;
     leader.basePersonality.conscientiousness = 0.85f;
     leader.basePersonality.assertiveness = 0.9f;
-    
-    CharacterTrait leadershipTrait("leadership", "Natural ability to lead and organize", 
+
+    CharacterTrait leadershipTrait("leadership", "Natural ability to lead and organize",
                                   TraitCategory::SOCIAL, TraitValueType::NUMERIC);
     leadershipTrait.setNumericValue(0.85f);
     leader.defaultTraits.push_back(leadershipTrait);
-    
+
     leader.templateCommunication.formality = 0.6f;
-    
+
     return leader;
 }
 
@@ -1262,15 +1270,15 @@ CharacterTemplate createHelper() {
     helper.basePersonality.agreeableness = 0.9f;
     helper.basePersonality.empathy = 0.9f;
     helper.basePersonality.loyalty = 0.8f;
-    
-    CharacterTrait empathyTrait("empathy", "Strong ability to understand others' feelings", 
+
+    CharacterTrait empathyTrait("empathy", "Strong ability to understand others' feelings",
                                TraitCategory::EMOTIONAL, TraitValueType::NUMERIC);
     empathyTrait.setNumericValue(0.9f);
     helper.defaultTraits.push_back(empathyTrait);
-    
+
     helper.templateCommunication.tone = "warm";
     helper.templateCommunication.emotionality = 0.9f;
-    
+
     return helper;
 }
 
@@ -1279,15 +1287,15 @@ CharacterTemplate createExplorer() {
     explorer.basePersonality.openness = 0.9f;
     explorer.basePersonality.curiosity = 0.85f;
     explorer.basePersonality.extraversion = 0.7f;
-    
-    CharacterTrait adventureTrait("adventurous", "Seeks new experiences and challenges", 
+
+    CharacterTrait adventureTrait("adventurous", "Seeks new experiences and challenges",
                                  TraitCategory::BEHAVIORAL, TraitValueType::NUMERIC);
     adventureTrait.setNumericValue(0.85f);
     explorer.defaultTraits.push_back(adventureTrait);
-    
+
     explorer.templateCommunication.tone = "enthusiastic";
     explorer.templateCommunication.emotionality = 0.8f;
-    
+
     return explorer;
 }
 
@@ -1296,15 +1304,15 @@ CharacterTemplate createGuardian() {
     guardian.basePersonality.conscientiousness = 0.9f;
     guardian.basePersonality.loyalty = 0.9f;
     guardian.basePersonality.agreeableness = 0.7f;
-    
-    CharacterTrait protectiveTrait("protective", "Strong desire to protect and care for others", 
+
+    CharacterTrait protectiveTrait("protective", "Strong desire to protect and care for others",
                                   TraitCategory::BEHAVIORAL, TraitValueType::NUMERIC);
     protectiveTrait.setNumericValue(0.85f);
     guardian.defaultTraits.push_back(protectiveTrait);
-    
+
     guardian.templateCommunication.tone = "steady";
     guardian.templateCommunication.formality = 0.9f;
-    
+
     return guardian;
 }
 
@@ -1313,15 +1321,15 @@ CharacterTemplate createInnovator() {
     innovator.basePersonality.openness = 0.85f;
     innovator.basePersonality.creativity = 0.9f;
     innovator.basePersonality.assertiveness = 0.7f;
-    
-    CharacterTrait innovativeTrait("innovative", "Ability to create novel solutions", 
+
+    CharacterTrait innovativeTrait("innovative", "Ability to create novel solutions",
                                   TraitCategory::COGNITIVE, TraitValueType::NUMERIC);
     innovativeTrait.setNumericValue(0.9f);
     innovator.defaultTraits.push_back(innovativeTrait);
-    
+
     innovator.templateCommunication.tone = "forward-thinking";
     innovator.templateCommunication.verbosity = 0.8f;
-    
+
     return innovator;
 }
 
@@ -1330,15 +1338,15 @@ CharacterTemplate createMentor() {
     mentor.basePersonality.openness = 0.8f;
     mentor.basePersonality.agreeableness = 0.8f;
     mentor.basePersonality.empathy = 0.8f;
-    
-    CharacterTrait wisdomTrait("wisdom", "Deep understanding and good judgment", 
+
+    CharacterTrait wisdomTrait("wisdom", "Deep understanding and good judgment",
                               TraitCategory::COGNITIVE, TraitValueType::NUMERIC);
     wisdomTrait.setNumericValue(0.85f);
     mentor.defaultTraits.push_back(wisdomTrait);
-    
+
     mentor.templateCommunication.tone = "wise";
     mentor.templateCommunication.formality = 0.9f;
-    
+
     return mentor;
 }
 

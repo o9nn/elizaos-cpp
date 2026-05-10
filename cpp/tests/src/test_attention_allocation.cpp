@@ -517,7 +517,7 @@ TEST_F(AttentionAllocationTest, ThreadSafety) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     

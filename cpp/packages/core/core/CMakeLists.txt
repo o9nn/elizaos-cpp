@@ -1,5 +1,6 @@
 add_library(elizaos-core STATIC
     src/core.cpp
+    src/runtime.cpp
 )
 
 target_include_directories(elizaos-core PUBLIC

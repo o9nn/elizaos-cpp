@@ -3,6 +3,22 @@
 ## Project Overview
 ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework for building sophisticated autonomous agents with advanced cognitive capabilities, distributed cognition, and adaptive attention allocation.
 
+
+## Manus–Copilot Synergy
+
+This repository may be evolved by both Manus and GitHub Copilot. Treat the two agents as complementary roles in a single engineering loop. **Manus frames KSM evolution cycles, repository archaeology, cross-repository synthesis, validation envelopes, and reusable skill memory. Copilot accelerates local C++ implementation, focused refactors, deterministic tests, and inline code completion inside the active Manus frame.**
+
+| Situation | Copilot Should Do | Copilot Should Avoid |
+|---|---|---|
+| Manus has selected a living center or KSM cycle | Preserve the stated center, scope, and validation predicates. | Redirecting the architecture or broadening scope without an explicit cycle update. |
+| Completing C++ behavior | Finish the existing canonical API using production C++17, RAII, deterministic behavior, and thread-safe locking. | Adding parallel replacement subsystems or committing temporary partial-checkout shims. |
+| Repairing tests/builds | Add focused tests for changed behavior, then support broader CTest/full-build validation when feasible. | Disabling tests, weakening assertions, or unregistering targets merely to obtain a green run. |
+| Capturing reusable knowledge | Suggest whether the lesson belongs in repository docs, `.github/agents`, or Manus skill memory. | Embedding agent-process history in source comments unless it clarifies code intent. |
+
+When the task invokes `/skill-creator(/ksm-evolve("elizaos-cpp"))`, or when a repair spans implementation, tests, build graph, and reusable skill memory, activate the Copilot skill file `.github/agents/elizaos-cpp-ksm-creator.md`.
+
+> **Coordination invariant:** Manus owns the structure-preserving transformation frame; Copilot works locally inside that frame. If local code completion conflicts with the active KSM strategy, stop and summarize the conflict rather than silently choosing a divergent strategy.
+
 ## Development Philosophy
 - **Rigorous Implementation**: Every feature should be implemented with complete functionality including all methods, functions, and supporting infrastructure
 - **Production Quality**: Prioritize robust, production-ready implementations over mock, placeholder, or simplified solutions
@@ -21,6 +37,10 @@ ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framew
 ### Implementation Guidelines
 
 #### Core Components
+
+#### KSM Evolution / Skill-Creator Workflow
+When working on ElizaOS-C++ through `/skill-creator(/ksm-evolve("elizaos-cpp"))`, use `.github/agents/elizaos-cpp-ksm-creator.md` as the Copilot-facing operating contract. The preferred pattern is: observe the current build/test state, identify one living center, complete the smallest canonical implementation surface, add deterministic focused tests, validate the target, and only then suggest repository documentation or skill-memory updates.
+
 When implementing or modifying core agent components:
 
 1. **Agent Loop (`agentloop/`)**:

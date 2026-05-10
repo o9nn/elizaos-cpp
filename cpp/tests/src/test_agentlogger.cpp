@@ -108,7 +108,7 @@ TEST_F(AgentLoggerTest, ThreadSafety) {
         });
     }
     
-    for (auto& std::thread : threads) {
+    for (auto& thread : threads) {
         thread.join();
     }
     

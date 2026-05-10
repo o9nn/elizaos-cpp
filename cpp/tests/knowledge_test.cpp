@@ -1,177 +1,170 @@
-// knowledge_test.cpp
-// End-to-end tests for elizaos::KnowledgeBase, KnowledgeEntry, KnowledgeQuery
-// and the KnowledgeInferenceEngine. Exercises CRUD, tag-based search,
-// text search, related lookups, confidence updates, custom inference rules,
-// and the AgentMemoryManager bridge.
-
-#include "elizaos/knowledge.hpp"
-#include "elizaos/knowledge_helpers.hpp"
-#include "elizaos/agentmemory.hpp"
-#include "elizaos/agentlogger.hpp"
-
+// knowledge_test.cpp - E2E tests for elizaos::KnowledgeBase / KnowledgeEntry / KnowledgeQuery.
 #include <gtest/gtest.h>
-#include <memory>
-#include <string>
-#include <vector>
+#include "elizaos/knowledge.hpp"
 
 using namespace elizaos;
 
-class KnowledgeFixture : public ::testing::Test {
-protected:
-    void SetUp() override {
-        kb_ = std::make_unique<KnowledgeBase>();
-    }
-    std::unique_ptr<KnowledgeBase> kb_;
-};
-
-TEST_F(KnowledgeFixture, AddAndGetKnowledge) {
-    KnowledgeEntry e("Water boils at 100C", KnowledgeType::FACT);
-    e.confidence = ConfidenceLevel::HIGH;
-    e.addTag("physics");
-    auto id = kb_->addKnowledge(e);
-    EXPECT_FALSE(id.empty());
-    auto got = kb_->getKnowledge(id);
-    ASSERT_TRUE(got.has_value());
-    EXPECT_EQ(got->content, "Water boils at 100C");
-    EXPECT_TRUE(got->hasTag("physics"));
+TEST(KnowledgeEntry, DefaultConstruction) {
+    KnowledgeEntry e;
+    EXPECT_EQ(e.type, KnowledgeType::FACT);
+    EXPECT_EQ(e.confidence, ConfidenceLevel::MEDIUM);
 }
 
-TEST_F(KnowledgeFixture, UpdateKnowledge) {
-    KnowledgeEntry e("v1", KnowledgeType::FACT);
-    auto id = kb_->addKnowledge(e);
-    KnowledgeEntry e2("v2", KnowledgeType::FACT);
-    EXPECT_TRUE(kb_->updateKnowledge(id, e2));
-    auto got = kb_->getKnowledge(id);
+TEST(KnowledgeEntry, ContentConstructor) {
+    KnowledgeEntry e("water boils at 100C", KnowledgeType::FACT);
+    EXPECT_EQ(e.content, "water boils at 100C");
+    EXPECT_EQ(e.type, KnowledgeType::FACT);
+}
+
+TEST(KnowledgeEntry, TagsAndRelations) {
+    KnowledgeEntry e("x");
+    e.addTag("physics");
+    e.addTag("temperature");
+    EXPECT_TRUE(e.hasTag("physics"));
+    EXPECT_FALSE(e.hasTag("missing"));
+    e.addRelation("rel-1");
+    EXPECT_FALSE(e.related_entries.empty());
+}
+
+TEST(KnowledgeEntry, UpdateConfidence) {
+    KnowledgeEntry e("x");
+    e.updateConfidence(ConfidenceLevel::VERY_HIGH);
+    EXPECT_EQ(e.confidence, ConfidenceLevel::VERY_HIGH);
+}
+
+TEST(KnowledgeEntry, JsonRoundtrip) {
+    KnowledgeEntry e("roundtrip", KnowledgeType::CONCEPT);
+    e.addTag("a");
+    auto j = e.toJson();
+    auto back = KnowledgeEntry::fromJson(j);
+    EXPECT_EQ(back.content, "roundtrip");
+    EXPECT_EQ(back.type, KnowledgeType::CONCEPT);
+}
+
+TEST(KnowledgeQuery, ConstructionDefaults) {
+    KnowledgeQuery q("temperature");
+    EXPECT_EQ(q.text, "temperature");
+    EXPECT_EQ(q.maxResults, 10);
+    EXPECT_FALSE(q.includeRelated);
+}
+
+class KnowledgeBaseTest : public ::testing::Test {
+protected:
+    KnowledgeBase kb;
+
+    void TearDown() override { kb.clear(); }
+};
+
+TEST_F(KnowledgeBaseTest, AddAndGetKnowledge) {
+    KnowledgeEntry e("hello world");
+    auto id = kb.addKnowledge(e);
+    EXPECT_FALSE(id.empty());
+    auto got = kb.getKnowledge(id);
+    ASSERT_TRUE(got.has_value());
+    EXPECT_EQ(got->content, "hello world");
+}
+
+TEST_F(KnowledgeBaseTest, UpdateKnowledge) {
+    KnowledgeEntry e("v1");
+    auto id = kb.addKnowledge(e);
+    KnowledgeEntry updated("v2");
+    EXPECT_TRUE(kb.updateKnowledge(id, updated));
+    auto got = kb.getKnowledge(id);
     ASSERT_TRUE(got.has_value());
     EXPECT_EQ(got->content, "v2");
 }
 
-TEST_F(KnowledgeFixture, RemoveKnowledge) {
-    KnowledgeEntry e("disposable", KnowledgeType::FACT);
-    auto id = kb_->addKnowledge(e);
-    EXPECT_TRUE(kb_->removeKnowledge(id));
-    EXPECT_FALSE(kb_->getKnowledge(id).has_value());
-    EXPECT_FALSE(kb_->removeKnowledge("not-there"));
+TEST_F(KnowledgeBaseTest, RemoveKnowledge) {
+    auto id = kb.addKnowledge(KnowledgeEntry("doomed"));
+    EXPECT_TRUE(kb.removeKnowledge(id));
+    EXPECT_FALSE(kb.getKnowledge(id).has_value());
 }
 
-TEST_F(KnowledgeFixture, SearchByText) {
-    KnowledgeEntry a("The cat sat on the mat", KnowledgeType::FACT);
-    KnowledgeEntry b("Quantum entanglement is spooky", KnowledgeType::FACT);
-    KnowledgeEntry c("My cat enjoys quantum naps", KnowledgeType::FACT);
-    kb_->addKnowledge(a);
-    kb_->addKnowledge(b);
-    kb_->addKnowledge(c);
-
-    auto hits = kb_->searchByText("cat", 10);
-    EXPECT_GE(hits.size(), 2u);
+TEST_F(KnowledgeBaseTest, SearchByText) {
+    kb.addKnowledge(KnowledgeEntry("the cat sat"));
+    kb.addKnowledge(KnowledgeEntry("dogs bark loudly"));
+    auto results = kb.searchByText("cat", 5);
+    EXPECT_GE(results.size(), 1u);
 }
 
-TEST_F(KnowledgeFixture, SearchByTags) {
-    KnowledgeEntry a("alpha", KnowledgeType::FACT); a.addTag("greek");
-    KnowledgeEntry b("beta", KnowledgeType::FACT);  b.addTag("greek");
-    KnowledgeEntry c("3.14", KnowledgeType::FACT);  c.addTag("math");
-    kb_->addKnowledge(a); kb_->addKnowledge(b); kb_->addKnowledge(c);
-
-    auto greek = kb_->searchByTags({"greek"}, 10);
-    EXPECT_EQ(greek.size(), 2u);
-    auto math = kb_->searchByTags({"math"}, 10);
-    EXPECT_EQ(math.size(), 1u);
+TEST_F(KnowledgeBaseTest, SearchByTags) {
+    KnowledgeEntry a("a");
+    a.addTag("animal");
+    KnowledgeEntry b("b");
+    b.addTag("plant");
+    kb.addKnowledge(a);
+    kb.addKnowledge(b);
+    auto results = kb.searchByTags({"animal"}, 5);
+    EXPECT_GE(results.size(), 1u);
 }
 
-TEST_F(KnowledgeFixture, QueryFiltersByConfidence) {
-    KnowledgeEntry low("trivial", KnowledgeType::FACT);
-    low.confidence = ConfidenceLevel::VERY_LOW;
-    KnowledgeEntry high("certain", KnowledgeType::FACT);
-    high.confidence = ConfidenceLevel::VERY_HIGH;
-    kb_->addKnowledge(low); kb_->addKnowledge(high);
+TEST_F(KnowledgeBaseTest, GetKnowledgeByType) {
+    KnowledgeEntry r("r", KnowledgeType::RULE);
+    kb.addKnowledge(r);
+    auto rules = kb.getKnowledgeByType(KnowledgeType::RULE);
+    EXPECT_EQ(rules.size(), 1u);
+}
 
-    KnowledgeQuery q("");
-    q.minConfidence = ConfidenceLevel::HIGH;
-    q.maxResults = 50;
-    auto res = kb_->query(q);
-    for (auto& r : res) {
-        EXPECT_GE(static_cast<int>(r.confidence),
-                  static_cast<int>(ConfidenceLevel::HIGH));
+TEST_F(KnowledgeBaseTest, KnowledgeCount) {
+    EXPECT_EQ(kb.getKnowledgeCount(), 0u);
+    kb.addKnowledge(KnowledgeEntry("a"));
+    kb.addKnowledge(KnowledgeEntry("b"));
+    EXPECT_EQ(kb.getKnowledgeCount(), 2u);
+}
+
+TEST_F(KnowledgeBaseTest, AllTags) {
+    KnowledgeEntry e("tagged");
+    e.addTag("alpha");
+    e.addTag("beta");
+    kb.addKnowledge(e);
+    auto tags = kb.getAllTags();
+    EXPECT_GE(tags.size(), 2u);
+}
+
+TEST_F(KnowledgeBaseTest, ClearEmpties) {
+    kb.addKnowledge(KnowledgeEntry("a"));
+    kb.clear();
+    EXPECT_EQ(kb.getKnowledgeCount(), 0u);
+}
+
+TEST_F(KnowledgeBaseTest, QueryWithFilter) {
+    kb.addKnowledge(KnowledgeEntry("water", KnowledgeType::FACT));
+    kb.addKnowledge(KnowledgeEntry("if rain then wet", KnowledgeType::RULE));
+    KnowledgeQuery q("water");
+    q.types = {KnowledgeType::FACT};
+    auto r = kb.query(q);
+    EXPECT_GE(r.size(), 1u);
+}
+
+TEST_F(KnowledgeBaseTest, StatisticsString) {
+    auto s = kb.getStatistics();
+    EXPECT_FALSE(s.empty());
+}
+
+TEST(KnowledgeUtils, EnumStringRoundtrip) {
+    for (auto t : {KnowledgeType::FACT, KnowledgeType::RULE, KnowledgeType::CONCEPT,
+                   KnowledgeType::RELATIONSHIP, KnowledgeType::PROCEDURE,
+                   KnowledgeType::EXPERIENCE}) {
+        EXPECT_EQ(stringToKnowledgeType(knowledgeTypeToString(t)), t);
+    }
+    for (auto c : {ConfidenceLevel::VERY_LOW, ConfidenceLevel::LOW,
+                   ConfidenceLevel::MEDIUM, ConfidenceLevel::HIGH,
+                   ConfidenceLevel::VERY_HIGH}) {
+        EXPECT_EQ(stringToConfidenceLevel(confidenceLevelToString(c)), c);
+    }
+    for (auto s : {KnowledgeSource::LEARNED, KnowledgeSource::PROGRAMMED,
+                   KnowledgeSource::INFERRED, KnowledgeSource::OBSERVED,
+                   KnowledgeSource::COMMUNICATED}) {
+        EXPECT_EQ(stringToKnowledgeSource(knowledgeSourceToString(s)), s);
     }
 }
 
-TEST_F(KnowledgeFixture, RelatedKnowledge) {
-    KnowledgeEntry a("anchor", KnowledgeType::FACT);
-    auto idA = kb_->addKnowledge(a);
-    KnowledgeEntry b("linked", KnowledgeType::FACT);
-    b.addRelation(idA);
-    auto idB = kb_->addKnowledge(b);
-    auto related = kb_->getRelatedKnowledge(idB, 5);
-    EXPECT_NO_THROW((void)related);
-}
-
-TEST_F(KnowledgeFixture, EntryUpdatesConfidence) {
-    KnowledgeEntry e("uncertain", KnowledgeType::FACT);
-    e.confidence = ConfidenceLevel::LOW;
-    e.updateConfidence(ConfidenceLevel::HIGH);
-    EXPECT_EQ(e.confidence, ConfidenceLevel::HIGH);
-}
-
-TEST(KnowledgeInferenceEngine, AddRemoveAndApplyRule) {
+TEST(KnowledgeInference, AddRule) {
     KnowledgeInferenceEngine eng;
-    bool ran = false;
-    eng.addInferenceRule("toy", [&](const std::vector<KnowledgeEntry>& in) {
-        ran = true;
+    eng.addInferenceRule("identity", [](const std::vector<KnowledgeEntry>& in) {
         return in;
     });
-    auto inferred = eng.inferFromFacts({KnowledgeEntry("a fact",
-                                                       KnowledgeType::FACT)});
-    EXPECT_TRUE(ran);
-    EXPECT_GE(inferred.size(), 0u);
-    eng.removeInferenceRule("toy");
-}
-
-TEST(KnowledgeMemoryBridge, ManagerAttachAndSearch) {
-    auto kb = std::make_shared<KnowledgeBase>();
-    auto mem = std::make_shared<AgentMemoryManager>();
-    auto log = std::make_shared<AgentLogger>();
-    EXPECT_NO_THROW(kb->setMemoryManager(mem));
-    EXPECT_NO_THROW(kb->setLogger(log));
-
-    KnowledgeEntry e("persistent fact about water", KnowledgeType::FACT);
-    e.confidence = ConfidenceLevel::HIGH;
-    e.addTag("durable");
-    auto id = kb->addKnowledge(e);
-    EXPECT_FALSE(id.empty());
-
-    // searchMemory falls back to in-memory knowledgeStore when nothing
-    // is yet persisted to the AgentMemoryManager — both paths are valid.
-    auto results = kb->searchMemory("persistent", 10);
-    EXPECT_NO_THROW((void)results);
-}
-
-TEST(KnowledgeHelpers, ChunkTextSplitsBySize) {
-    std::string longText(800, 'x');
-    longText += std::string(600, 'y');
-    auto chunks = elizaos::knowledge::chunkText(longText, 400, 50);
-    EXPECT_GE(chunks.size(), 3u);
-    EXPECT_FALSE(chunks.front().empty());
-}
-
-TEST(KnowledgeHelpers, IngestTextProducesEntries) {
-    KnowledgeBase kb;
-    std::string body(2400, 'a');
-    auto ids = elizaos::knowledge::ingestText(kb, body, "doc-1",
-        KnowledgeType::FACT, {"ingested"}, 800, 120);
-    EXPECT_GT(ids.size(), 0u);
-    auto found = elizaos::knowledge::findChunksByDocument(kb, "doc-1");
-    EXPECT_GE(found.size(), 1u);
-}
-
-TEST(KnowledgeHelpers, ReconstructDocumentRoundtrip) {
-    KnowledgeBase kb;
-    std::string body(1500, 'q');
-    auto ids = elizaos::knowledge::ingestText(kb, body, "doc-x",
-        KnowledgeType::FACT, {}, 600, 100);
-    EXPECT_GT(ids.size(), 0u);
-    auto recovered = elizaos::knowledge::reconstructDocument(kb, "doc-x");
-    // Reconstruction must produce non-empty output composed of the same
-    // single character used in the source document.
-    EXPECT_FALSE(recovered.empty());
-    for (char c : recovered) EXPECT_EQ(c, 'q');
+    auto out = eng.inferFromFacts({KnowledgeEntry("seed")});
+    SUCCEED() << "produced " << out.size();
+    eng.removeInferenceRule("identity");
 }

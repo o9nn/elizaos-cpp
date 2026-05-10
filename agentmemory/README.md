@@ -721,3 +721,25 @@ For more information about DBScan clustering, refer to the original paper:
 If you like this library and want to contribute in any way, please feel free to submit a PR and I will review it. Please note that the goal here is simplicity and accesibility, using common language and few dependencies.
 
 <img src="resources/youcreatethefuture.jpg">
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/core/agentmemory/`](../cpp/packages/core/agentmemory/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentmemory.hpp`](../cpp/include/elizaos/agentmemory.hpp)
+- Source: [`cpp/packages/core/agentmemory/src/`](../cpp/packages/core/agentmemory/src/)
+- Tests: [`cpp/tests/agentmemory_test.cpp`](../cpp/tests/agentmemory_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentmemory_test
+./cpp/tests/agentmemory_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.

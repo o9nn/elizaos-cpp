@@ -17,6 +17,13 @@ ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framew
 
 **Remaining Work:** Only 5 minimal modules (10%) need expansion - primarily optional starter templates and specialized protocols.
 
+
+## KSM Creator Companion Skill
+
+For structured evolution tasks, use the companion Copilot skill `.github/agents/elizaos-cpp-ksm-creator.md`. The companion is the Copilot-facing version of `/skill-creator(/ksm-evolve("elizaos-cpp"))`: it keeps local implementation work aligned with Manus-led KSM cycles, living-center selection, validation tiers, and reusable skill-memory crystallization.
+
+Use the companion skill whenever work spans more than a narrow local edit, especially when repairing incomplete C++ modules, CMake target assumptions, serialization round-trips, thread-safety defects, cognitive-pipeline integration, avatar protocol state, or tests that define future architectural behavior.
+
 ## Project Philosophy
 
 ### Core Principles
@@ -177,12 +184,12 @@ The ElizaOS C++ framework implements a layered cognitive architecture with five 
   - Deployment automation with Git integration
   - Environment configuration and secrets management
   - Real-time deployment status monitoring
-  
+
 - **Model Context Protocol Gateway** (`mcp_gateway/`): Protocol bridge for AI models (413 lines)
   - MCP protocol implementation
   - Context management and transformation
   - Multi-model support and routing
-  
+
 - **Website and Documentation** (`website/`, `elizaos_github_io/`): Web presence (1,434 combined lines)
   - Static site generation
   - Documentation hosting
@@ -193,22 +200,22 @@ The ElizaOS C++ framework implements a layered cognitive architecture with five 
   - DeFi protocol interactions
   - Smart contract integration
   - Token and liquidity management
-  
+
 - **OTC Trading Agent** (`otc_agent/`): Over-the-counter trading (323 lines)
   - OTC trade execution
   - Price negotiation
   - Settlement management
-  
+
 - **Discord Integration** (`discord_summarizer/`, `discrub_ext/`): Community platform tools (1,674 combined lines)
   - Message summarization and analysis
   - Content moderation and filtering
   - Community management automation
-  
+
 - **Speech and Video** (`ljspeechtools/`, `livevideochat/`): Multimedia capabilities (1,921 combined lines)
   - Speech synthesis and processing
   - Real-time video chat with WebRTC
   - Audio dataset management
-  
+
 - **Virtual Worlds** (`elizas_world/`, `eliza_3d_hyperfy_starter/`): 3D environment integration (1,062 combined lines)
   - Virtual world interaction
   - 3D avatar control
@@ -543,14 +550,14 @@ int main() {
     config.agentName = "CognitiveAgent";
     config.bio = "An adaptive cognitive agent";
     config.lore = "Born from the convergence of symbolic and neural AI";
-    
+
     // Initialize agent state
     State agentState(config);
-    
+
     // Create memory system
     auto memory = std::make_shared<Memory>();
     agentState.memory = memory;
-    
+
     // Define cognitive processing steps
     std::vector<LoopStep> steps = {
         LoopStep([&](std::shared_ptr<void> input) -> std::shared_ptr<void> {
@@ -561,41 +568,41 @@ int main() {
         LoopStep([&](std::shared_ptr<void> input) -> std::shared_ptr<void> {
             // Reasoning phase: Perform cognitive reasoning
             std::cout << "Performing cognitive reasoning..." << std::endl;
-            
+
             // Retrieve relevant memories
             auto memories = memory->searchMemoriesByCriteria({{"type", "context"}});
-            
+
             // Process with attention
             for (const auto& mem : memories) {
                 std::cout << "  Considering: " << mem.content << std::endl;
             }
-            
+
             return input;
         }),
         LoopStep([&](std::shared_ptr<void> input) -> std::shared_ptr<void> {
             // Action selection phase
             std::cout << "Selecting optimal action..." << std::endl;
-            
+
             // Store experience in memory
             Memory::MemoryRecord experience;
             experience.content = "Completed cognitive cycle";
             experience.metadata = {{"timestamp", "now"}};
             memory->addMemory(experience);
-            
+
             return input;
         })
     };
-    
+
     // Create and start agent loop
     AgentLoop cognitiveLoop(steps, true, 1.0); // Loop with 1-second intervals
     cognitiveLoop.start();
-    
+
     // Allow agent to run autonomously
     std::this_thread::sleep_for(std::chrono::seconds(10));
-    
+
     // Graceful shutdown
     cognitiveLoop.stop();
-    
+
     return 0;
 }
 ```

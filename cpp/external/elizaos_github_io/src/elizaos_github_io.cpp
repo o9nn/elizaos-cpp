@@ -5,6 +5,7 @@
 #include <regex>
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 
 namespace elizaos {
 
@@ -733,6 +734,223 @@ bool GitHubPagesDeployer::commitChanges(const std::string& commit_message) {
 bool GitHubPagesDeployer::pushToGitHub() {
     auto result = executeGitCommand("git push origin " + config_.branch, temp_repo_dir_);
     return !result.empty();
+}
+
+bool GitHubPagesDeployer::createGitHubPagesRepo() {
+    std::string response;
+    std::string data = "{\"name\":\"" + config_.repository_name + "\",\"auto_init\":true,\"description\":\"GitHub Pages repository\"}";
+    if (!makeHttpRequest("POST", buildGitHubApiUrl("user/repos"), data, response)) {
+        last_deployment_status_.errors.push_back("Failed to create GitHub Pages repository");
+        return false;
+    }
+    g_github_logger.log("GitHub Pages repository created: " + config_.repository_owner + "/" + config_.repository_name,
+                       "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::updateGitHubPagesRepo() {
+    std::string response;
+    std::string data = "{\"description\":\"GitHub Pages - updated\",\"has_pages\":true}";
+    std::string endpoint = "repos/" + config_.repository_owner + "/" + config_.repository_name;
+    if (!makeHttpRequest("PATCH", buildGitHubApiUrl(endpoint), data, response)) {
+        last_deployment_status_.warnings.push_back("Failed to update GitHub Pages repository settings");
+        return false;
+    }
+    g_github_logger.log("GitHub Pages repository updated: " + config_.repository_owner + "/" + config_.repository_name,
+                       "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::initializeGitRepo(const std::filesystem::path& repo_dir) {
+    try {
+        std::filesystem::create_directories(repo_dir);
+        auto result = executeGitCommand("git init", repo_dir);
+        if (result.empty()) {
+            last_deployment_status_.errors.push_back("Failed to initialize git repository at: " + repo_dir.string());
+            return false;
+        }
+        executeGitCommand("git checkout -b " + config_.branch, repo_dir);
+        g_github_logger.log("Git repository initialized at: " + repo_dir.string(),
+                           "", "elizaos_github_io", LogLevel::INFO);
+        return true;
+    } catch (const std::exception& e) {
+        last_deployment_status_.errors.push_back(std::string("Git init error: ") + e.what());
+        return false;
+    }
+}
+
+bool GitHubPagesDeployer::createBranch(const std::string& branch_name) {
+    auto result = executeGitCommand("git checkout -b " + branch_name, temp_repo_dir_);
+    if (result.empty()) {
+        last_deployment_status_.errors.push_back("Failed to create branch: " + branch_name);
+        return false;
+    }
+    g_github_logger.log("Branch created: " + branch_name, "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::switchToBranch(const std::string& branch_name) {
+    auto result = executeGitCommand("git checkout " + branch_name, temp_repo_dir_);
+    if (result.empty()) {
+        last_deployment_status_.errors.push_back("Failed to switch to branch: " + branch_name);
+        return false;
+    }
+    g_github_logger.log("Switched to branch: " + branch_name, "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::enableGitHubPages() {
+    std::string response;
+    std::string endpoint = "repos/" + config_.repository_owner + "/" + config_.repository_name + "/pages";
+    std::string data = "{\"source\":{\"branch\":\"" + config_.branch + "\",\"path\":\"/\"}}";
+    if (!makeHttpRequest("POST", buildGitHubApiUrl(endpoint), data, response)) {
+        last_deployment_status_.errors.push_back("Failed to enable GitHub Pages");
+        return false;
+    }
+    g_github_logger.log("GitHub Pages enabled for: " + config_.repository_owner + "/" + config_.repository_name,
+                       "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::updateGitHubPagesSettings() {
+    std::string response;
+    std::string endpoint = "repos/" + config_.repository_owner + "/" + config_.repository_name + "/pages";
+    std::string data = "{\"source\":{\"branch\":\"" + config_.branch + "\",\"path\":\"/\"}}";
+    if (!config_.cname_domain.empty()) {
+        data = "{\"source\":{\"branch\":\"" + config_.branch + "\",\"path\":\"/\"},\"cname\":\"" + config_.cname_domain + "\"}";
+    }
+    if (!makeHttpRequest("PUT", buildGitHubApiUrl(endpoint), data, response)) {
+        last_deployment_status_.warnings.push_back("Failed to update GitHub Pages settings");
+        return false;
+    }
+    g_github_logger.log("GitHub Pages settings updated", "", "elizaos_github_io", LogLevel::INFO);
+    return true;
+}
+
+bool GitHubPagesDeployer::checkDeploymentStatus() {
+    std::string response;
+    std::string endpoint = "repos/" + config_.repository_owner + "/" + config_.repository_name + "/pages/builds/latest";
+    if (!makeHttpRequest("GET", buildGitHubApiUrl(endpoint), "", response)) {
+        last_deployment_status_.warnings.push_back("Failed to retrieve deployment status");
+        return false;
+    }
+    // Look for "built" status in the response
+    bool built = response.find("\"built\"") != std::string::npos ||
+                 response.find("\"status\":\"built\"") != std::string::npos;
+    if (built) {
+        last_deployment_status_.deployment_url = "https://" + config_.repository_owner +
+            ".github.io/" + config_.repository_name;
+        g_github_logger.log("Deployment status: built. URL: " + last_deployment_status_.deployment_url,
+                           "", "elizaos_github_io", LogLevel::INFO);
+    } else {
+        g_github_logger.log("Deployment status: in progress or unavailable",
+                           "", "elizaos_github_io", LogLevel::INFO);
+    }
+    return true;
+}
+
+bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::string& url,
+                                          const std::string& data, std::string& response) const {
+    // Validate HTTP method against whitelist to prevent command injection
+    static const std::vector<std::string> allowed_methods = {"GET", "POST", "PUT", "PATCH", "DELETE"};
+    if (std::find(allowed_methods.begin(), allowed_methods.end(), method) == allowed_methods.end()) {
+        return false;
+    }
+
+    // Validate that the URL starts with the expected GitHub API base to prevent injection
+    const std::string expected_base = "https://api.github.com/";
+    if (url.rfind(expected_base, 0) != 0) {
+        return false;
+    }
+
+    std::filesystem::path body_file;
+    std::filesystem::path header_file;
+    bool has_data = !data.empty();
+    std::error_code ec;
+
+    auto cleanup = [&]() {
+        if (has_data) std::filesystem::remove(body_file, ec);
+        std::filesystem::remove(header_file, ec);
+    };
+
+    // Write request body to a file and use @filename to avoid embedding
+    // user-controlled data in the shell command string
+    if (has_data) {
+        body_file = config_.output_dir / ".github_request_body.json";
+        try {
+            std::ofstream out(body_file, std::ios::binary);
+            if (!out) { return false; }
+            out << data;
+        } catch (const std::exception&) {
+            return false;
+        }
+    }
+
+    // Write the Authorization header to a file and use curl's -H @file syntax
+    // so the access token is never embedded directly in the shell command string
+    header_file = config_.output_dir / ".github_auth_header.txt";
+    try {
+        std::ofstream hout(header_file, std::ios::binary);
+        if (!hout) { cleanup(); return false; }
+        hout << getAuthorizationHeader() << "\n";
+    } catch (const std::exception&) {
+        cleanup();
+        return false;
+    }
+
+    // Construct curl command. All user-controlled values come from validated
+    // files via @filename or from hard-coded safe strings.
+    std::string cmd = "curl -s -w \"\\n%{http_code}\" -X " + method +
+                      " -H \"Accept: application/vnd.github+json\"" +
+                      " -H @" + header_file.string() +
+                      " -H \"X-GitHub-Api-Version: 2022-11-28\"";
+    if (has_data) {
+        cmd += " -H \"Content-Type: application/json\"";
+        cmd += " --data-binary @" + body_file.string();
+    }
+    cmd += " " + url + " 2>/dev/null";
+
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe) {
+        cleanup();
+        return false;
+    }
+
+    char buffer[256];
+    std::string raw;
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        raw += buffer;
+    }
+    pclose(pipe);
+    cleanup();
+
+    // The last line from curl -w "\n%{http_code}" is the HTTP status code
+    auto last_newline = raw.rfind('\n', raw.size() > 1 ? raw.size() - 2 : 0);
+    if (last_newline != std::string::npos) {
+        std::string http_code_str = raw.substr(last_newline + 1);
+        // Trim trailing whitespace/newline
+        while (!http_code_str.empty() && (http_code_str.back() == '\n' || http_code_str.back() == '\r' || http_code_str.back() == ' ')) {
+            http_code_str.pop_back();
+        }
+        response = raw.substr(0, last_newline);
+        try {
+            int http_code = std::stoi(http_code_str);
+            return (http_code >= 200 && http_code < 300);
+        } catch (const std::exception&) {
+            return false;
+        }
+    }
+
+    response = raw;
+    return false;
+}
+
+std::string GitHubPagesDeployer::buildGitHubApiUrl(const std::string& endpoint) const {
+    return "https://api.github.com/" + endpoint;
+}
+
+std::string GitHubPagesDeployer::getAuthorizationHeader() const {
+    return "Authorization: Bearer " + config_.access_token;
 }
 
 // ElizaOSGitHubIO main implementation

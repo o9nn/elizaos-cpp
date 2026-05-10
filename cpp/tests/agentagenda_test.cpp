@@ -1,250 +1,133 @@
-// Comprehensive End-to-End Test Suite for agentagenda Module
-// Generated comprehensive tests for C++ implementation
-
+// agentagenda_test.cpp - E2E tests for elizaos::AgentAgenda.
 #include <gtest/gtest.h>
 #include "elizaos/agentagenda.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for agentagenda
-class AgentagendaTest : public ::testing::Test {
+class AgentAgendaTest : public ::testing::Test {
 protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
+    AgentAgenda agenda;
+
+    void TearDown() override { agenda.clearTasks(); }
 };
 
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST_F(AgentAgendaTest, CreateTaskBasic) {
+    auto t = agenda.createTask("write the report");
+    EXPECT_FALSE(t.id.empty());
+    EXPECT_EQ(t.goal, "write the report");
 }
 
-TEST_F(AgentagendaTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST_F(AgentAgendaTest, CreateTaskWithPlanAndSteps) {
+    std::vector<AgendaTaskStep> steps{{"draft outline"}, {"fill body"}, {"review"}};
+    auto t = agenda.createTask("write report", "outline + write + review", steps);
+    EXPECT_EQ(t.steps.size(), 3u);
+    EXPECT_EQ(t.plan, "outline + write + review");
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST_F(AgentAgendaTest, ListTasksReflectsCreated) {
+    agenda.createTask("a");
+    agenda.createTask("b");
+    auto in_progress = agenda.listTasks(AgendaTaskStatus::IN_PROGRESS);
+    EXPECT_EQ(in_progress.size(), 2u);
 }
 
-TEST_F(AgentagendaTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST_F(AgentAgendaTest, GetTaskByIdReturnsTask) {
+    auto t = agenda.createTask("findme");
+    auto got = agenda.getTaskById(t.id);
+    EXPECT_EQ(got.id, t.id);
+    EXPECT_EQ(got.goal, "findme");
 }
 
-TEST_F(AgentagendaTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST_F(AgentAgendaTest, FinishTaskUpdatesStatus) {
+    auto t = agenda.createTask("done soon");
+    EXPECT_TRUE(agenda.finishTask(t.id));
+    auto complete = agenda.listTasks(AgendaTaskStatus::COMPLETE);
+    EXPECT_EQ(complete.size(), 1u);
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
+TEST_F(AgentAgendaTest, CancelTaskUpdatesStatus) {
+    auto t = agenda.createTask("oops");
+    EXPECT_TRUE(agenda.cancelTask(t.id));
+    auto cancelled = agenda.listTasks(AgendaTaskStatus::CANCELLED);
+    EXPECT_EQ(cancelled.size(), 1u);
 }
 
-TEST_F(AgentagendaTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
+TEST_F(AgentAgendaTest, DeleteTask) {
+    auto t = agenda.createTask("ephemeral");
+    EXPECT_TRUE(agenda.deleteTask(t.id));
+    EXPECT_TRUE(agenda.getTaskById(t.id).id.empty());
 }
 
-TEST_F(AgentagendaTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
+TEST_F(AgentAgendaTest, SetCurrentTask) {
+    auto t = agenda.createTask("focus");
+    EXPECT_TRUE(agenda.setCurrentTask(t.id));
+    auto cur = agenda.getCurrentTask();
+    EXPECT_EQ(cur.id, t.id);
 }
 
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(AgentagendaTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(AgentagendaTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(AgentagendaTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(AgentagendaTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
+TEST_F(AgentAgendaTest, AddAndFinishStep) {
+    auto t = agenda.createTask("multi-step");
+    EXPECT_TRUE(agenda.addStep(t.id, "step one"));
+    EXPECT_TRUE(agenda.addStep(t.id, "step two"));
+    EXPECT_TRUE(agenda.finishStep(t.id, "step one"));
+    auto fetched = agenda.getTaskById(t.id);
+    bool found_completed = false;
+    for (const auto& s : fetched.steps) {
+        if (s.content == "step one" && s.completed) found_completed = true;
     }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
+    EXPECT_TRUE(found_completed);
 }
 
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
+TEST_F(AgentAgendaTest, CancelStepRemovesIt) {
+    auto t = agenda.createTask("with step");
+    agenda.addStep(t.id, "removable");
+    EXPECT_TRUE(agenda.cancelStep(t.id, "removable"));
 }
 
-TEST_F(AgentagendaTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
+TEST_F(AgentAgendaTest, UpdatePlan) {
+    auto t = agenda.createTask("p");
+    EXPECT_TRUE(agenda.updatePlan(t.id, "new plan"));
+    auto fetched = agenda.getTaskById(t.id);
+    EXPECT_EQ(fetched.plan, "new plan");
 }
 
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
+TEST_F(AgentAgendaTest, CreatePlanReturnsNonEmpty) {
+    auto plan = agenda.createPlan("ship feature");
+    EXPECT_FALSE(plan.empty());
 }
 
-TEST_F(AgentagendaTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
+TEST_F(AgentAgendaTest, CreateStepsReturnsList) {
+    auto steps = agenda.createSteps("ship feature", "design then build");
+    EXPECT_FALSE(steps.empty());
 }
 
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(AgentagendaTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
+TEST_F(AgentAgendaTest, SearchTasks) {
+    agenda.createTask("write the report");
+    agenda.createTask("read the report");
+    auto found = agenda.searchTasks("report");
+    EXPECT_GE(found.size(), 1u);
 }
 
-TEST_F(AgentagendaTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
+TEST_F(AgentAgendaTest, FormattedTaskString) {
+    auto t = agenda.createTask("formatted");
+    auto s = agenda.getTaskAsFormattedString(t);
+    EXPECT_FALSE(s.empty());
+    EXPECT_NE(s.find("formatted"), std::string::npos);
 }
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+TEST_F(AgentAgendaTest, ListTasksFormattedString) {
+    agenda.createTask("a");
+    agenda.createTask("b");
+    auto s = agenda.listTasksAsFormattedString();
+    EXPECT_FALSE(s.empty());
+}
+
+TEST_F(AgentAgendaTest, LastCreatedAndUpdated) {
+    auto a = agenda.createTask("first");
+    auto b = agenda.createTask("second");
+    auto last_created = agenda.getLastCreatedTask();
+    EXPECT_EQ(last_created.id, b.id);
+    agenda.updatePlan(a.id, "newplan");
+    auto last_updated = agenda.getLastUpdatedTask();
+    EXPECT_EQ(last_updated.id, a.id);
 }

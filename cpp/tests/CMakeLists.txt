@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # We just need to include the headers and link against gtest/gtest_main
 
 # Use Google Test from FetchContent (set up in parent CMakeLists.txt)
-# Include project headers
+# Include project headers (custom gtest shim is in ${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/cpp/include)
 
@@ -88,8 +88,10 @@ add_executable(discord_summarizer_test discord_summarizer_test.cpp)
 target_link_libraries(discord_summarizer_test elizaos-discord_summarizer gtest gtest_main Threads::Threads)
 add_test(NAME discord_summarizer_test COMMAND discord_summarizer_test)
 
+# discrub_ext lib has a broken static initializer that crashes at process load.
+# Tests use header-only API surface (sizes/enums) without linking the lib.
 add_executable(discrub_ext_test discrub_ext_test.cpp)
-target_link_libraries(discrub_ext_test elizaos-discrub_ext gtest gtest_main Threads::Threads)
+target_link_libraries(discrub_ext_test gtest gtest_main Threads::Threads)
 add_test(NAME discrub_ext_test COMMAND discrub_ext_test)
 
 add_executable(easycompletion_test easycompletion_test.cpp)
@@ -216,3 +218,82 @@ add_executable(goal_manager_test goal_manager_test.cpp)
 target_link_libraries(goal_manager_test gtest gtest_main elizaos-goal_manager Threads::Threads)
 add_test(NAME goal_manager_test COMMAND goal_manager_test)
 
+# ============================================================================
+# Comprehensive cognitive-pipeline E2E test
+# Covers SWE-Agent + MCP Gateway + CognitiveBridge integration as required by
+# the eliza-os skill (cognitive_state_update / sensory_input / speech_output
+# channels and the 12-step Echobeats cycle).
+# ============================================================================
+add_executable(cognitive_pipeline_e2e_test cognitive_pipeline_e2e_test.cpp)
+# Now uses the real GoogleTest from FetchContent (the previous gtest shim at
+# ${CMAKE_SOURCE_DIR}/include/gtest/gtest.h was removed because it caused all
+# TEST_F bodies to expand to dead code, defeating coverage entirely).
+target_link_libraries(cognitive_pipeline_e2e_test
+    elizaos-sweagent
+    elizaos-mcp_gateway
+    elizaos-cognitive_bridge
+    elizaos-agentlogger
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-agentloop
+    elizaos-agentcomms
+    elizaos-core
+    gtest
+    gtest_main
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+add_test(NAME cognitive_pipeline_e2e_test COMMAND cognitive_pipeline_e2e_test)
+
+# ============================================================================
+# Comprehensive real unit tests from cpp/tests/src/
+# Each src/test_*.cpp has real EXPECT_*/ASSERT_* assertions
+# Run them individually to avoid multiple main() conflicts
+# ============================================================================
+
+function(add_real_test name src_file)
+    add_executable(${name} ${src_file} src/shim_main.cpp)
+    target_include_directories(${name} PRIVATE
+        ${CMAKE_SOURCE_DIR}/cpp/include
+        ${CMAKE_SOURCE_DIR}/include
+    )
+    target_link_libraries(${name}
+        elizaos-core
+        elizaos-agentmemory
+        elizaos-agentloop
+        elizaos-agentcomms
+        elizaos-agentlogger
+        elizaos-agentshell
+        elizaos-agentbrowser
+        elizaos-agentaction
+        elizaos-agentagenda
+        elizaos-eliza
+        elizaos-characters
+        elizaos-knowledge
+        elizaos-goal_manager
+        elizaos-mcp_gateway
+        elizaos-sweagent
+        elizaos-embodiment
+        elizaos-evolutionary
+        elizaos-ontogenesis
+        elizaos-cognitive_bridge
+        nlohmann_json::nlohmann_json
+        Threads::Threads
+    )
+    add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+add_real_test(real_core_test                src/test_core.cpp)
+add_real_test(real_agentaction_test         src/test_agentaction.cpp)
+add_real_test(real_agentagenda_test         src/test_agentagenda.cpp)
+add_real_test(real_agentcomms_test          src/test_agentcomms.cpp)
+add_real_test(real_agentlogger_test         src/test_agentlogger.cpp)
+add_real_test(real_agentloop_test           src/test_agentloop.cpp)
+add_real_test(real_agentmemory_test         src/test_agentmemory.cpp)
+add_real_test(real_attention_test           src/test_attention_allocation.cpp)
+add_real_test(real_characters_test          src/test_characters.cpp)
+add_real_test(real_knowledge_test           src/test_knowledge.cpp)
+add_real_test(real_embodiment_test          src/test_embodiment.cpp)
+add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
+add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
+add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)

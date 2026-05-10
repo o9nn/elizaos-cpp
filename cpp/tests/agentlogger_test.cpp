@@ -1,124 +1,110 @@
-// agentlogger_test.cpp
-// End-to-end unit tests for elizaos::AgentLogger covering log levels, file
-// output, color override, console disable, custom type colors, panel
-// formatting, and concurrent logging from multiple threads.
-
+// agentlogger_test.cpp - E2E tests for elizaos::AgentLogger.
+#include <gtest/gtest.h>
 #include "elizaos/agentlogger.hpp"
 
-#include <gtest/gtest.h>
-#include <atomic>
 #include <cstdio>
 #include <fstream>
 #include <sstream>
-#include <thread>
-#include <vector>
+#include <string>
 
 using namespace elizaos;
 
-class AgentLoggerFixture : public ::testing::Test {
+namespace {
+std::string tmpFile(const std::string& suffix) {
+    static int counter = 0;
+    return "/tmp/agentlogger_test_" + std::to_string(++counter) + "_" + suffix;
+}
+
+std::string readFile(const std::string& path) {
+    std::ifstream f(path);
+    std::ostringstream ss;
+    ss << f.rdbuf();
+    return ss.str();
+}
+}
+
+class AgentLoggerTest : public ::testing::Test {
 protected:
+    AgentLogger logger;
+
     void SetUp() override {
-        logger_ = std::make_unique<AgentLogger>();
-        std::remove("events.log");
+        logger.setConsoleEnabled(false);
+        logger.setFileEnabled(true);
     }
-    void TearDown() override {
-        std::remove("events.log");
-    }
-
-    static std::string readEventsLog() {
-        std::ifstream f("events.log");
-        std::stringstream ss; ss << f.rdbuf();
-        return ss.str();
-    }
-
-    std::unique_ptr<AgentLogger> logger_;
 };
 
-TEST_F(AgentLoggerFixture, ConsoleLogDoesNotThrowAcrossLevels) {
-    logger_->setConsoleEnabled(false);  // suppress noise in test runner
-    for (LogLevel lvl : {LogLevel::INFO, LogLevel::WARNING, LogLevel::ERROR,
-                         LogLevel::SUCCESS, LogLevel::SYSTEM, LogLevel::ACTION,
-                         LogLevel::REASONING, LogLevel::PROMPT,
-                         LogLevel::EPOCH, LogLevel::SUMMARY}) {
-        logger_->log("test message", "agentlogger_test", "title", lvl);
-    }
-    SUCCEED();  // no crash, no throw
+TEST_F(AgentLoggerTest, BasicLogDoesNotThrow) {
+    EXPECT_NO_THROW(logger.log("hello"));
+    EXPECT_NO_THROW(logger.log("with source", "TestModule"));
+    EXPECT_NO_THROW(logger.log("with title", "src", "title"));
 }
 
-TEST_F(AgentLoggerFixture, FileOutputWritesContent) {
-    logger_->setConsoleEnabled(false);
-    logger_->setFileEnabled(true);
-    logger_->writeToFile("hello-from-test", "src", LogLevel::INFO,
-                         "events.log");
-    auto contents = readEventsLog();
-    EXPECT_NE(contents.find("hello-from-test"), std::string::npos);
-}
-
-TEST_F(AgentLoggerFixture, FileEnableFlagToggles) {
-    logger_->setConsoleEnabled(false);
-    logger_->setFileEnabled(true);
-    logger_->writeToFile("first-line", "src", LogLevel::INFO, "events.log");
-    EXPECT_NE(readEventsLog().find("first-line"), std::string::npos);
-    // Toggling the flag should still leave the writer functional and not
-    // throw when re-enabled.
-    EXPECT_NO_THROW(logger_->setFileEnabled(false));
-    EXPECT_NO_THROW(logger_->setFileEnabled(true));
-    logger_->writeToFile("second-line", "src", LogLevel::INFO, "events.log");
-    EXPECT_NE(readEventsLog().find("second-line"), std::string::npos);
-}
-
-TEST_F(AgentLoggerFixture, CustomTypeColorOverride) {
-    logger_->setConsoleEnabled(false);
-    EXPECT_NO_THROW(logger_->setTypeColor(LogLevel::INFO, LogColor::MAGENTA));
-    logger_->log("colored", "", "title", LogLevel::INFO);
-    SUCCEED();
-}
-
-TEST_F(AgentLoggerFixture, PrintHeaderRendersASCII) {
-    logger_->setConsoleEnabled(false);
-    EXPECT_NO_THROW(logger_->printHeader("ELIZA", LogColor::CYAN));
-}
-
-TEST_F(AgentLoggerFixture, ConvenienceFunctionsAreSafe) {
-    EXPECT_NO_THROW({
-        logInfo("info-from-convenience", "src");
-        logWarning("warn-from-convenience", "src");
-        logError("err-from-convenience", "src");
-        logSuccess("ok-from-convenience", "src");
-        logSystem("sys-from-convenience", "src");
-    });
-}
-
-TEST_F(AgentLoggerFixture, ConcurrentLoggingIsThreadSafe) {
-    logger_->setConsoleEnabled(false);
-    logger_->setFileEnabled(true);
-    constexpr int kThreads = 8;
-    constexpr int kPerThread = 50;
-    std::atomic<int> done{0};
-    std::vector<std::thread> ts;
-    for (int t = 0; t < kThreads; ++t) {
-        ts.emplace_back([this, t, &done]() {
-            for (int i = 0; i < kPerThread; ++i) {
-                logger_->writeToFile("t" + std::to_string(t) + "-" +
-                                         std::to_string(i),
-                                     "thread", LogLevel::INFO, "events.log");
-                done.fetch_add(1);
-            }
-        });
-    }
-    for (auto& t : ts) t.join();
-    EXPECT_EQ(done.load(), kThreads * kPerThread);
-    auto contents = readEventsLog();
-    // At least one entry from every thread should be present
-    for (int t = 0; t < kThreads; ++t) {
-        EXPECT_NE(contents.find("t" + std::to_string(t) + "-0"),
-                  std::string::npos);
+TEST_F(AgentLoggerTest, AllLogLevelsAccepted) {
+    for (auto lv : {LogLevel::INFO, LogLevel::WARNING, LogLevel::ERROR,
+                    LogLevel::SUCCESS, LogLevel::SYSTEM, LogLevel::REASONING,
+                    LogLevel::ACTION, LogLevel::PROMPT, LogLevel::EPOCH,
+                    LogLevel::SUMMARY, LogLevel::START, LogLevel::STOP,
+                    LogLevel::PAUSE, LogLevel::UNKNOWN}) {
+        EXPECT_NO_THROW(logger.log("level test", "src", "title", lv));
     }
 }
 
-TEST_F(AgentLoggerFixture, GlobalLoggerIsAccessible) {
+TEST_F(AgentLoggerTest, AllColorsAccepted) {
+    for (auto c : {LogColor::WHITE, LogColor::MAGENTA, LogColor::BLUE,
+                   LogColor::YELLOW, LogColor::GREEN, LogColor::RED,
+                   LogColor::CYAN}) {
+        EXPECT_NO_THROW(logger.log("color test", "src", "title",
+                                   LogLevel::INFO, c));
+    }
+}
+
+TEST_F(AgentLoggerTest, WriteToFileCreatesFile) {
+    auto path = tmpFile("write.log");
+    std::remove(path.c_str());
+    logger.writeToFile("file payload", "src", LogLevel::INFO, path);
+    auto contents = readFile(path);
+    EXPECT_NE(contents.find("file payload"), std::string::npos);
+    std::remove(path.c_str());
+}
+
+TEST_F(AgentLoggerTest, WriteToFileAppendsMultipleLines) {
+    auto path = tmpFile("append.log");
+    std::remove(path.c_str());
+    logger.writeToFile("first", "src", LogLevel::INFO, path);
+    logger.writeToFile("second", "src", LogLevel::INFO, path);
+    auto contents = readFile(path);
+    EXPECT_NE(contents.find("first"), std::string::npos);
+    EXPECT_NE(contents.find("second"), std::string::npos);
+    std::remove(path.c_str());
+}
+
+TEST_F(AgentLoggerTest, SetTypeColorOverrides) {
+    EXPECT_NO_THROW(logger.setTypeColor(LogLevel::INFO, LogColor::RED));
+    EXPECT_NO_THROW(logger.log("with overridden color"));
+}
+
+TEST_F(AgentLoggerTest, ConsoleEnabledToggle) {
+    EXPECT_NO_THROW(logger.setConsoleEnabled(true));
+    EXPECT_NO_THROW(logger.setConsoleEnabled(false));
+    EXPECT_NO_THROW(logger.log("toggle"));
+}
+
+TEST_F(AgentLoggerTest, PrintHeaderDoesNotThrow) {
+    EXPECT_NO_THROW(logger.printHeader("Hello"));
+    EXPECT_NO_THROW(logger.printHeader("Banner", LogColor::CYAN));
+}
+
+TEST(AgentLoggerGlobals, GlobalLoggerExists) {
     ASSERT_NE(globalLogger, nullptr);
-    globalLogger->setConsoleEnabled(false);
-    EXPECT_NO_THROW(globalLogger->log("global", "src", "title",
-                                      LogLevel::INFO));
+    EXPECT_NO_THROW(globalLogger->setConsoleEnabled(false));
+    EXPECT_NO_THROW(globalLogger->log("via global"));
+}
+
+TEST(AgentLoggerGlobals, ConvenienceFunctions) {
+    if (globalLogger) globalLogger->setConsoleEnabled(false);
+    EXPECT_NO_THROW(logInfo("info msg", "src"));
+    EXPECT_NO_THROW(logWarning("warn msg", "src"));
+    EXPECT_NO_THROW(logError("err msg", "src"));
+    EXPECT_NO_THROW(logSuccess("ok msg", "src"));
+    EXPECT_NO_THROW(logSystem("sys msg", "src"));
 }

@@ -412,3 +412,25 @@ content = get_file("test.txt")
 # Contributions Welcome
 
 If you like this library and want to contribute in any way, please feel free to submit a PR and I will review it. Please note that the goal here is simplicity and accesibility, using common language and few dependencies.
+
+
+---
+
+## C++ Implementation
+
+A high-performance C++ port of this module is maintained in this repository under [`cpp/packages/infrastructure/agentcomms/`](../cpp/packages/infrastructure/agentcomms/).
+
+**Key files:**
+- Header: [`cpp/include/elizaos/agentcomms.hpp`](../cpp/include/elizaos/agentcomms.hpp)
+- Source: [`cpp/packages/infrastructure/agentcomms/src/`](../cpp/packages/infrastructure/agentcomms/src/)
+- Tests: [`cpp/tests/agentcomms_test.cpp`](../cpp/tests/agentcomms_test.cpp)
+
+**Build:**
+```bash
+mkdir -p build && cd build
+cmake ..
+make agentcomms_test
+./cpp/tests/agentcomms_test
+```
+
+See the main [C++ README](../cpp/README.md) for the full build guide.

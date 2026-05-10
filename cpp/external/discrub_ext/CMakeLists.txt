@@ -1,6 +1,7 @@
 # Stage 6 - Tools and Automation - Discrub Extension
 add_library(elizaos-discrub_ext STATIC
     src/discrub_ext.cpp
+    src/discrub_ext_complete.cpp
 )
 
 target_include_directories(elizaos-discrub_ext PUBLIC

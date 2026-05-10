@@ -306,7 +306,78 @@ Instruction IdlProcessor::buildNominateAuthorityInstruction(
     return instr;
 }
 
-// Other instruction builders can be added similarly...
+Instruction IdlProcessor::buildLaunchInstruction(
+    const instruction_args::Launch& args,
+    const std::vector<AccountMeta>& accounts) {
+    
+    Instruction instr(discriminators::LAUNCH);
+    for (const auto& account : accounts) {
+        instr.accounts.push_back(account);
+    }
+    
+    // Serialize launch args: decimals (u8), token_supply (u64), virtual_lamport_reserves (u64), name, symbol, uri
+    serializePrimitive(instr.data, args.decimals);
+    serializePrimitive(instr.data, args.token_supply);
+    serializePrimitive(instr.data, args.virtual_lamport_reserves);
+    serializeString(instr.data, args.name);
+    serializeString(instr.data, args.symbol);
+    serializeString(instr.data, args.uri);
+    
+    return instr;
+}
+
+Instruction IdlProcessor::buildLaunchAndSwapInstruction(
+    const instruction_args::LaunchAndSwap& args,
+    const std::vector<AccountMeta>& accounts) {
+    
+    Instruction instr(discriminators::LAUNCH_AND_SWAP);
+    for (const auto& account : accounts) {
+        instr.accounts.push_back(account);
+    }
+    
+    // Serialize launch_and_swap args
+    serializePrimitive(instr.data, args.decimals);
+    serializePrimitive(instr.data, args.token_supply);
+    serializePrimitive(instr.data, args.virtual_lamport_reserves);
+    serializeString(instr.data, args.name);
+    serializeString(instr.data, args.symbol);
+    serializeString(instr.data, args.uri);
+    serializePrimitive(instr.data, args.swap_amount);
+    serializePrimitive(instr.data, args.minimum_receive_amount);
+    serializePrimitive(instr.data, args.deadline);
+    
+    return instr;
+}
+
+Instruction IdlProcessor::buildSwapInstruction(
+    const instruction_args::Swap& args,
+    const std::vector<AccountMeta>& accounts) {
+    
+    Instruction instr(discriminators::SWAP);
+    for (const auto& account : accounts) {
+        instr.accounts.push_back(account);
+    }
+    
+    // Serialize swap args: amount (u64), direction (u8), minimum_receive_amount (u64), deadline (i64)
+    serializePrimitive(instr.data, args.amount);
+    serializePrimitive(instr.data, args.direction);
+    serializePrimitive(instr.data, args.minimum_receive_amount);
+    serializePrimitive(instr.data, args.deadline);
+    
+    return instr;
+}
+
+Instruction IdlProcessor::buildWithdrawInstruction(
+    const std::vector<AccountMeta>& accounts) {
+    
+    Instruction instr(discriminators::WITHDRAW);
+    for (const auto& account : accounts) {
+        instr.accounts.push_back(account);
+    }
+    // No additional args for withdraw
+    
+    return instr;
+}
 
 // Utility methods
 Discriminator IdlProcessor::getInstructionDiscriminator(const std::string& instruction_name) {

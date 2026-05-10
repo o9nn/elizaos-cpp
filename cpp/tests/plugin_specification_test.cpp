@@ -1,250 +1,46 @@
-// Comprehensive End-to-End Test Suite for plugin_specification Module
-// Generated comprehensive tests for C++ implementation
-
+// plugin_specification_test.cpp - E2E tests for PluginVersion / PluginDependency.
 #include <gtest/gtest.h>
 #include "elizaos/plugin_specification.hpp"
-#include <memory>
-#include <string>
-#include <vector>
-#include <chrono>
-#include <thread>
-#include <atomic>
 
 using namespace elizaos;
 
-// Test Fixture for plugin_specification
-class PluginSpecificationTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        // Setup test environment
-    }
-    
-    void TearDown() override {
-        // Cleanup test environment
-    }
-};
-
-// ============================================================================
-// Initialization Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, ModuleInitialization) {
-    // Test that the module can be initialized without errors
-    EXPECT_NO_THROW({
-        // Module initialization test
-    });
+TEST(PluginVersion, ToStringNonEmpty) {
+    PluginVersion v;
+    v.major = 1; v.minor = 2; v.patch = 3;
+    EXPECT_FALSE(v.toString().empty());
 }
 
-TEST_F(PluginSpecificationTest, ModuleDefaultConstruction) {
-    // Test default construction if applicable
-    EXPECT_NO_THROW({
-        // Default construction test
-    });
+TEST(PluginVersion, FromStringRoundtrip) {
+    auto v = PluginVersion::fromString("2.3.4");
+    EXPECT_EQ(v.major, 2);
+    EXPECT_EQ(v.minor, 3);
+    EXPECT_EQ(v.patch, 4);
 }
 
-// ============================================================================
-// Basic Functionality Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, BasicFunctionality) {
-    // Test core functionality of the module
-    EXPECT_NO_THROW({
-        // Basic functionality test
-    });
+TEST(PluginVersion, CompatibilityIsBoolean) {
+    PluginVersion a, b;
+    EXPECT_NO_THROW(a.isCompatibleWith(b));
 }
 
-TEST_F(PluginSpecificationTest, DataStorage) {
-    // Test data storage and retrieval
-    EXPECT_NO_THROW({
-        // Data storage test
-    });
+TEST(PluginDependency, IsSatisfiedByMinMax) {
+    PluginDependency d;
+    d.pluginName = "core";
+    d.minVersion = PluginVersion::fromString("1.0.0");
+    d.maxVersion = PluginVersion::fromString("2.0.0");
+    PluginVersion v = PluginVersion::fromString("1.5.0");
+    EXPECT_NO_THROW(d.isSatisfiedBy(v));
 }
 
-TEST_F(PluginSpecificationTest, DataRetrieval) {
-    // Test data retrieval operations
-    EXPECT_NO_THROW({
-        // Data retrieval test
-    });
+TEST(PluginParameter, JsonRoundtripCallable) {
+    PluginParameter p;
+    p.name = "x";
+    p.description = "y";
+    p.type = "string";
+    auto j = p.toJson();
+    EXPECT_NO_THROW(PluginParameter::fromJson(j));
 }
 
-// ============================================================================
-// Integration Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, IntegrationBasicWorkflow) {
-    // Test a complete workflow using multiple functions
-    EXPECT_NO_THROW({
-        // Integration workflow test
-    });
-}
-
-TEST_F(PluginSpecificationTest, IntegrationErrorHandling) {
-    // Test error handling across module operations
-    EXPECT_NO_THROW({
-        // Error handling test
-    });
-}
-
-TEST_F(PluginSpecificationTest, IntegrationMultipleOperations) {
-    // Test multiple operations in sequence
-    EXPECT_NO_THROW({
-        // Multiple operations test
-    });
-}
-
-// ============================================================================
-// Edge Case Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, EdgeCaseEmptyInput) {
-    // Test handling of empty input
-    EXPECT_NO_THROW({
-        // Empty input test
-    });
-}
-
-TEST_F(PluginSpecificationTest, EdgeCaseNullInput) {
-    // Test handling of null/invalid input
-    EXPECT_NO_THROW({
-        // Null input test
-    });
-}
-
-TEST_F(PluginSpecificationTest, EdgeCaseLargeInput) {
-    // Test handling of large input data
-    EXPECT_NO_THROW({
-        // Large input test
-    });
-}
-
-TEST_F(PluginSpecificationTest, EdgeCaseBoundaryConditions) {
-    // Test boundary conditions
-    EXPECT_NO_THROW({
-        // Boundary conditions test
-    });
-}
-
-// ============================================================================
-// Performance Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, PerformanceBasicOperations) {
-    // Test performance of basic operations
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Perform operations
-        for (int i = 0; i < 1000; ++i) {
-            // Operation
-        }
-    });
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Verify performance is acceptable (< 5 seconds for 1000 ops)
-    EXPECT_LT(duration.count(), 5000);
-}
-
-TEST_F(PluginSpecificationTest, PerformanceThroughput) {
-    // Test throughput under load
-    auto start = std::chrono::high_resolution_clock::now();
-    
-    const int operations = 100;
-    for (int i = 0; i < operations; ++i) {
-        // Perform operation
-    }
-    
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    // Calculate operations per second
-    double opsPerSecond = (operations * 1000.0) / duration.count();
-    EXPECT_GT(opsPerSecond, 10); // At least 10 ops/sec
-}
-
-// ============================================================================
-// Thread Safety Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, ThreadSafetyConcurrentAccess) {
-    // Test thread safety with concurrent access
-    std::atomic<int> counter{0};
-    
-    auto worker = [&counter]() {
-        for (int i = 0; i < 100; ++i) {
-            counter++;
-        }
-    };
-    
-    std::vector<std::thread> threads;
-    for (int i = 0; i < 4; ++i) {
-        threads.emplace_back(worker);
-    }
-    
-    for (auto& t : threads) {
-        t.join();
-    }
-    
-    EXPECT_EQ(counter.load(), 400);
-}
-
-TEST_F(PluginSpecificationTest, ThreadSafetyDataRace) {
-    // Test for data race conditions
-    EXPECT_NO_THROW({
-        // Concurrent access test
-    });
-}
-
-// ============================================================================
-// Memory Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, MemoryNoLeaks) {
-    // Test for memory leaks
-    EXPECT_NO_THROW({
-        // Create and destroy objects multiple times
-        for (int i = 0; i < 100; ++i) {
-            // Allocate and deallocate
-        }
-    });
-}
-
-TEST_F(PluginSpecificationTest, MemoryResourceManagement) {
-    // Test proper resource management
-    EXPECT_NO_THROW({
-        // Resource management test
-    });
-}
-
-// ============================================================================
-// Stress Tests
-// ============================================================================
-
-TEST_F(PluginSpecificationTest, StressTestMultipleOperations) {
-    // Test module under stress with many operations
-    EXPECT_NO_THROW({
-        for (int i = 0; i < 1000; ++i) {
-            // Perform operations
-        }
-    });
-}
-
-TEST_F(PluginSpecificationTest, StressTestLongRunning) {
-    // Test long-running operations
-    auto start = std::chrono::steady_clock::now();
-    
-    EXPECT_NO_THROW({
-        // Long-running operation
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    });
-    
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    EXPECT_GE(duration.count(), 100);
-}
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+TEST(PluginCapability, EnumValuesDistinct) {
+    EXPECT_NE(static_cast<int>(PluginCapability::ACTION_PROCESSING),
+              static_cast<int>(PluginCapability::CUSTOM));
 }
