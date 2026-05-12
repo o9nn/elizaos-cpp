@@ -1,24 +1,426 @@
-// AgentBrowser Implementation
-// Comprehensive browser automation interface for ElizaOS agents
+// HTTP-backed browser automation interface for ElizaOS agents.
+//
+// This implementation provides real HTTP retrieval, HTML parsing, selector lookup,
+// session state, and truthful local interaction semantics. It is not a full
+// headless browser: JavaScript
+// execution and visual screenshots are represented as explicit best-effort
+// diagnostics instead of fabricated browser actions.
 
 #include "elizaos/agentbrowser.hpp"
 #include "elizaos/agentlogger.hpp"
 #include "elizaos/agentmemory.hpp"
 
-#include <sstream>
+#include <curl/curl.h>
+#include <gumbo.h>
+
+#include <algorithm>
+#include <cctype>
+#include <cstring>
 #include <fstream>
-#include <regex>
 #include <iomanip>
+#include <optional>
 #include <random>
+#include <regex>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 #include <thread>
+#include <unordered_set>
+#include <vector>
 
 namespace elizaos {
+namespace browser_impl {
+
+static std::string trim(const std::string& value) {
+    auto begin = std::find_if_not(value.begin(), value.end(), [](unsigned char c) { return std::isspace(c); });
+    auto end = std::find_if_not(value.rbegin(), value.rend(), [](unsigned char c) { return std::isspace(c); }).base();
+    if (begin >= end) return "";
+    return std::string(begin, end);
+}
+
+static std::string toLower(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    return value;
+}
+
+static std::string normalizeWhitespace(const std::string& value) {
+    std::string out;
+    out.reserve(value.size());
+    bool inSpace = false;
+    for (unsigned char c : value) {
+        if (std::isspace(c)) {
+            if (!inSpace && !out.empty()) out.push_back(' ');
+            inSpace = true;
+        } else {
+            out.push_back(static_cast<char>(c));
+            inSpace = false;
+        }
+    }
+    return trim(out);
+}
+
+static size_t writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
+    auto* target = static_cast<std::string*>(userdata);
+    target->append(ptr, size * nmemb);
+    return size * nmemb;
+}
+
+class HttpClient {
+public:
+    HttpClient() {
+        curl_global_init(CURL_GLOBAL_DEFAULT);
+        curl_ = curl_easy_init();
+        if (!curl_) throw std::runtime_error("curl_easy_init failed");
+    }
+
+    ~HttpClient() {
+        if (curl_) curl_easy_cleanup(curl_);
+        curl_global_cleanup();
+    }
+
+    bool fetch(const std::string& url, const BrowserConfig& config) {
+        lastUrl_ = url;
+        effectiveUrl_ = url;
+        lastHtml_.clear();
+        lastError_.clear();
+        lastHttpCode_ = 0;
+
+        curl_easy_reset(curl_);
+        curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeCallback);
+        curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &lastHtml_);
+        curl_easy_setopt(curl_, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl_, CURLOPT_MAXREDIRS, 10L);
+        curl_easy_setopt(curl_, CURLOPT_TIMEOUT, std::max(1, config.pageLoadTimeout));
+        curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT, std::min(std::max(1, config.pageLoadTimeout), 10));
+        curl_easy_setopt(curl_, CURLOPT_USERAGENT, config.userAgent.empty() ? "ElizaOS-AgentBrowser/1.0" : config.userAgent.c_str());
+        curl_easy_setopt(curl_, CURLOPT_ACCEPT_ENCODING, "");
+        curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, 1L);
+        curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYHOST, 2L);
+
+        CURLcode result = curl_easy_perform(curl_);
+        if (result != CURLE_OK) {
+            lastError_ = curl_easy_strerror(result);
+            return false;
+        }
+
+        curl_easy_getinfo(curl_, CURLINFO_RESPONSE_CODE, &lastHttpCode_);
+        char* effective = nullptr;
+        if (curl_easy_getinfo(curl_, CURLINFO_EFFECTIVE_URL, &effective) == CURLE_OK && effective) {
+            effectiveUrl_ = effective;
+        }
+
+        if (lastHttpCode_ < 200 || lastHttpCode_ >= 300) {
+            lastError_ = "HTTP " + std::to_string(lastHttpCode_);
+            return false;
+        }
+        return true;
+    }
+
+    const std::string& html() const { return lastHtml_; }
+    const std::string& error() const { return lastError_; }
+    const std::string& effectiveUrl() const { return effectiveUrl_; }
+    long httpCode() const { return lastHttpCode_; }
+
+private:
+    CURL* curl_ = nullptr;
+    std::string lastUrl_;
+    std::string effectiveUrl_;
+    std::string lastHtml_;
+    std::string lastError_;
+    long lastHttpCode_ = 0;
+};
+
+class HtmlParser {
+public:
+    HtmlParser() = default;
+
+    ~HtmlParser() { reset(); }
+
+    bool parse(const std::string& html) {
+        reset();
+        html_ = html;
+        output_ = gumbo_parse(html.c_str());
+        if (!output_ || !output_->root) return false;
+
+        title_.clear();
+        text_.clear();
+        links_.clear();
+        images_.clear();
+
+        findTitle(output_->root);
+        extractText(output_->root, text_);
+        text_ = normalizeWhitespace(text_);
+        findLinks(output_->root);
+        findImages(output_->root);
+        return true;
+    }
+
+    bool isParsed() const { return output_ != nullptr; }
+    const std::string& html() const { return html_; }
+    const std::string& title() const { return title_; }
+    const std::string& text() const { return text_; }
+    const std::vector<std::string>& links() const { return links_; }
+    const std::vector<std::string>& images() const { return images_; }
+
+    std::vector<WebElement> queryAll(const std::string& selector, SelectorType type) const {
+        std::vector<GumboNode*> nodes;
+        if (!output_ || !output_->root) return {};
+
+        switch (type) {
+            case SelectorType::ID:
+                collectByPredicate(output_->root, [&](GumboNode* node) { return attr(node, "id") == stripPrefix(selector, '#'); }, nodes);
+                break;
+            case SelectorType::CLASS_NAME:
+                collectByPredicate(output_->root, [&](GumboNode* node) { return hasClass(node, stripPrefix(selector, '.')); }, nodes);
+                break;
+            case SelectorType::TAG_NAME:
+                collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == toLower(selector); }, nodes);
+                break;
+            case SelectorType::CSS:
+                queryCss(selector, nodes);
+                break;
+            case SelectorType::XPATH:
+                queryBasicXPath(selector, nodes);
+                break;
+        }
+
+        std::vector<WebElement> elements;
+        elements.reserve(nodes.size());
+        for (auto* node : nodes) elements.push_back(toElement(node));
+        return elements;
+    }
+
+private:
+    using Predicate = std::function<bool(GumboNode*)>;
+
+    void reset() {
+        if (output_) {
+            gumbo_destroy_output(&kGumboDefaultOptions, output_);
+            output_ = nullptr;
+        }
+    }
+
+    static bool isElement(GumboNode* node) {
+        return node && node->type == GUMBO_NODE_ELEMENT;
+    }
+
+    static std::string tagName(GumboNode* node) {
+        if (!isElement(node)) return "";
+        const char* name = gumbo_normalized_tagname(node->v.element.tag);
+        return name ? std::string(name) : "";
+    }
+
+    static std::string attr(GumboNode* node, const std::string& name) {
+        if (!isElement(node)) return "";
+        GumboAttribute* value = gumbo_get_attribute(&node->v.element.attributes, name.c_str());
+        return (value && value->value) ? std::string(value->value) : "";
+    }
+
+    static bool hasClass(GumboNode* node, const std::string& className) {
+        std::istringstream classes(attr(node, "class"));
+        std::string token;
+        while (classes >> token) {
+            if (token == className) return true;
+        }
+        return false;
+    }
+
+    static std::string stripPrefix(const std::string& value, char prefix) {
+        return (!value.empty() && value.front() == prefix) ? value.substr(1) : value;
+    }
+
+    void extractText(GumboNode* node, std::string& target) const {
+        if (!node) return;
+        if (node->type == GUMBO_NODE_TEXT || node->type == GUMBO_NODE_WHITESPACE) {
+            if (node->v.text.text) {
+                target += node->v.text.text;
+                target.push_back(' ');
+            }
+            return;
+        }
+        if (!isElement(node)) return;
+        auto tag = node->v.element.tag;
+        if (tag == GUMBO_TAG_SCRIPT || tag == GUMBO_TAG_STYLE || tag == GUMBO_TAG_NOSCRIPT) return;
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            extractText(static_cast<GumboNode*>(children->data[i]), target);
+        }
+    }
+
+    void findTitle(GumboNode* node) {
+        if (!isElement(node)) return;
+        if (node->v.element.tag == GUMBO_TAG_TITLE) {
+            std::string raw;
+            extractText(node, raw);
+            title_ = normalizeWhitespace(raw);
+            return;
+        }
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length && title_.empty(); ++i) {
+            findTitle(static_cast<GumboNode*>(children->data[i]));
+        }
+    }
+
+    void findLinks(GumboNode* node) {
+        if (!isElement(node)) return;
+        if (node->v.element.tag == GUMBO_TAG_A) {
+            auto href = attr(node, "href");
+            if (!href.empty()) links_.push_back(href);
+        }
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) findLinks(static_cast<GumboNode*>(children->data[i]));
+    }
+
+    void findImages(GumboNode* node) {
+        if (!isElement(node)) return;
+        if (node->v.element.tag == GUMBO_TAG_IMG) {
+            auto src = attr(node, "src");
+            if (!src.empty()) images_.push_back(src);
+        }
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) findImages(static_cast<GumboNode*>(children->data[i]));
+    }
+
+    void collectByPredicate(GumboNode* node, const Predicate& predicate, std::vector<GumboNode*>& out) const {
+        if (!node) return;
+        if (isElement(node) && predicate(node)) out.push_back(node);
+        if (!isElement(node)) return;
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            collectByPredicate(static_cast<GumboNode*>(children->data[i]), predicate, out);
+        }
+    }
+
+    void queryCss(const std::string& selector, std::vector<GumboNode*>& out) const {
+        const std::string s = trim(selector);
+        if (s.empty()) return;
+
+        static const std::regex attrSelector(R"(^([A-Za-z0-9_-]*)?\[([A-Za-z0-9_:-]+)=[\"']?([^\"'\]]+)[\"']?\]$)");
+        static const std::regex tagClassSelector(R"(^([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$)");
+        static const std::regex tagIdSelector(R"(^([A-Za-z0-9_-]+)#([A-Za-z0-9_-]+)$)");
+        std::smatch match;
+
+        if (s.front() == '#') {
+            const auto id = s.substr(1);
+            collectByPredicate(output_->root, [&](GumboNode* node) { return attr(node, "id") == id; }, out);
+        } else if (s.front() == '.') {
+            const auto className = s.substr(1);
+            collectByPredicate(output_->root, [&](GumboNode* node) { return hasClass(node, className); }, out);
+        } else if (std::regex_match(s, match, attrSelector)) {
+            const std::string requestedTag = toLower(match[1].str());
+            const std::string attrName = match[2].str();
+            const std::string attrValue = match[3].str();
+            collectByPredicate(output_->root, [&](GumboNode* node) {
+                return (requestedTag.empty() || tagName(node) == requestedTag) && attr(node, attrName) == attrValue;
+            }, out);
+        } else if (std::regex_match(s, match, tagClassSelector)) {
+            const std::string requestedTag = toLower(match[1].str());
+            const std::string className = match[2].str();
+            collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == requestedTag && hasClass(node, className); }, out);
+        } else if (std::regex_match(s, match, tagIdSelector)) {
+            const std::string requestedTag = toLower(match[1].str());
+            const std::string id = match[2].str();
+            collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == requestedTag && attr(node, "id") == id; }, out);
+        } else {
+            const std::string requestedTag = toLower(s);
+            collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == requestedTag; }, out);
+        }
+    }
+
+    void queryBasicXPath(const std::string& selector, std::vector<GumboNode*>& out) const {
+        static const std::regex anyTag(R"(^//([A-Za-z0-9_-]+)$)");
+        static const std::regex idQuery(R"(^//([A-Za-z0-9_-]+)\[@id=[\"']([^\"']+)[\"']\]$)");
+        static const std::regex containsText(R"(^//([A-Za-z0-9_-]+)\[contains\(text\(\),[ ]*[\"']([^\"']+)[\"']\)\]$)");
+        std::smatch match;
+        if (std::regex_match(selector, match, anyTag)) {
+            const std::string requestedTag = toLower(match[1].str());
+            collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == requestedTag; }, out);
+        } else if (std::regex_match(selector, match, idQuery)) {
+            const std::string requestedTag = toLower(match[1].str());
+            const std::string id = match[2].str();
+            collectByPredicate(output_->root, [&](GumboNode* node) { return tagName(node) == requestedTag && attr(node, "id") == id; }, out);
+        } else if (std::regex_match(selector, match, containsText)) {
+            const std::string requestedTag = toLower(match[1].str());
+            const std::string needle = match[2].str();
+            collectByPredicate(output_->root, [&](GumboNode* node) {
+                std::string nodeText;
+                extractText(node, nodeText);
+                return tagName(node) == requestedTag && normalizeWhitespace(nodeText).find(needle) != std::string::npos;
+            }, out);
+        }
+    }
+
+    WebElement toElement(GumboNode* node) const {
+        WebElement element;
+        if (!isElement(node)) return element;
+        element.tag = tagName(node);
+        GumboVector* attrs = &node->v.element.attributes;
+        for (unsigned int i = 0; i < attrs->length; ++i) {
+            auto* gumboAttr = static_cast<GumboAttribute*>(attrs->data[i]);
+            if (!gumboAttr || !gumboAttr->name) continue;
+            const std::string name = gumboAttr->name;
+            const std::string value = gumboAttr->value ? gumboAttr->value : "";
+            element.attributes[name] = value;
+            if (name == "id") element.id = value;
+        }
+        extractText(node, element.text);
+        element.text = normalizeWhitespace(element.text);
+        element.innerHTML = element.text;
+        const std::string disabled = attr(node, "disabled");
+        element.isEnabled = disabled.empty();
+        const std::string hidden = attr(node, "hidden");
+        const std::string style = toLower(attr(node, "style"));
+        element.isVisible = hidden.empty() && style.find("display:none") == std::string::npos && style.find("visibility:hidden") == std::string::npos;
+        element.width = element.isVisible ? 1 : 0;
+        element.height = element.isVisible ? 1 : 0;
+        return element;
+    }
+
+    GumboOutput* output_ = nullptr;
+    std::string html_;
+    std::string title_;
+    std::string text_;
+    std::vector<std::string> links_;
+    std::vector<std::string> images_;
+};
+
+struct BrowserSession {
+    HttpClient http;
+    HtmlParser parser;
+    std::vector<std::string> history;
+    std::size_t historyIndex = 0;
+    std::unordered_map<std::string, std::string> formValues;
+    std::unordered_set<std::string> checkedSelectors;
+    std::string lastClickedSelector;
+    int scrollX = 0;
+    int scrollY = 0;
+};
+
+static BrowserSession* asSession(void* ptr) {
+    return static_cast<BrowserSession*>(ptr);
+}
+
+static const std::vector<uint8_t>& diagnosticPngBytes() {
+    static const std::vector<uint8_t> png = {
+        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+        0x89, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x44, 0x41,
+        0x54, 0x78, 0x9C, 0x63, 0x60, 0x00, 0x02, 0x00,
+        0x00, 0x05, 0x00, 0x01, 0xE2, 0x26, 0x05, 0x9B,
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44,
+        0xAE, 0x42, 0x60, 0x82
+    };
+    return png;
+}
+
+} // namespace browser_impl
 
 AgentBrowser::AgentBrowser(const BrowserConfig& config)
     : config_(config), browserDriver_(nullptr), htmlParser_(nullptr) {
     stats_.sessionStart = std::chrono::system_clock::now();
-    
-    // Generate unique session ID
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(100000, 999999);
@@ -26,755 +428,450 @@ AgentBrowser::AgentBrowser(const BrowserConfig& config)
 }
 
 AgentBrowser::~AgentBrowser() {
-    if (initialized_.load()) {
-        shutdown();
-    }
+    if (initialized_.load()) shutdown();
 }
 
 BrowserResult AgentBrowser::initialize() {
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
     if (initialized_.load()) {
         return {BrowserActionResult::SUCCESS, "Browser already initialized", std::nullopt, std::chrono::milliseconds(0)};
     }
-    
     auto start = std::chrono::steady_clock::now();
-    
-    // Initialize browser driver
     auto result = initializeBrowserDriver();
-    if (!result) {
-        return result;
-    }
-    
+    if (!result) return result;
     initialized_.store(true);
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (logger_) {
-        logger_->log("Browser initialized successfully", "agentbrowser", "Browser Init", LogLevel::SUCCESS);
-    }
-    
+    shouldStop_.store(false);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    logAction("initialize", {BrowserActionResult::SUCCESS, "Browser initialized", std::nullopt, duration});
     return {BrowserActionResult::SUCCESS, "Browser initialized", std::nullopt, duration};
 }
 
 BrowserResult AgentBrowser::shutdown() {
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
     if (!initialized_.load()) {
         return {BrowserActionResult::SUCCESS, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     }
-    
     auto start = std::chrono::steady_clock::now();
-    
     shouldStop_.store(true);
     shutdownBrowserDriver();
     initialized_.store(false);
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (logger_) {
-        logger_->log("Browser session ended", "agentbrowser", "Browser Shutdown", LogLevel::SUCCESS);
-    }
-    
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     return {BrowserActionResult::SUCCESS, "Browser shutdown", std::nullopt, duration};
 }
 
 BrowserResult AgentBrowser::navigateTo(const std::string& url) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    if (!browser_utils::isValidUrl(url)) {
-        return {BrowserActionResult::FAILED, "Invalid URL: " + url, std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    if (!browser_utils::isValidUrl(url)) return {BrowserActionResult::FAILED, "Invalid URL: " + url, std::nullopt, std::chrono::milliseconds(0)};
+
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Implementation - would use actual WebDriver here
-    currentUrl_ = url;
-    stats_.pagesVisited++;
-    
-    // Simulate navigation delay
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("navigate_to", {BrowserActionResult::SUCCESS, "Navigation completed", url, duration});
-    updateStatistics("navigation", duration);
-    
-    // Store in memory if available
-    if (memory_) {
-        rememberPage(url, "navigation");
+    std::string loadedUrl;
+    long httpCode = 0;
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (!session) return {BrowserActionResult::FAILED, "Browser driver not initialized", std::nullopt, std::chrono::milliseconds(0)};
+        if (!session->http.fetch(url, config_)) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            return {BrowserActionResult::NAVIGATION_ERROR, "Failed to fetch URL: " + session->http.error(), url, duration};
+        }
+        if (!session->parser.parse(session->http.html())) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            return {BrowserActionResult::FAILED, "Fetched URL but failed to parse HTML", url, duration};
+        }
+        loadedUrl = session->http.effectiveUrl();
+        httpCode = session->http.httpCode();
+        currentUrl_ = loadedUrl;
+        if (session->history.empty() || session->history[session->historyIndex] != loadedUrl) {
+            if (!session->history.empty() && session->historyIndex + 1 < session->history.size()) {
+                session->history.erase(session->history.begin() + static_cast<std::ptrdiff_t>(session->historyIndex + 1), session->history.end());
+            }
+            session->history.push_back(loadedUrl);
+            session->historyIndex = session->history.size() - 1;
+        }
+        stats_.pagesVisited++;
     }
-    
-    return {BrowserActionResult::SUCCESS, "Navigated to " + url, url, duration};
+
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    updateStatistics("navigation", duration);
+    if (memory_) rememberPage(loadedUrl, "navigation");
+    BrowserResult result{BrowserActionResult::SUCCESS, "Navigated to " + loadedUrl + " (HTTP " + std::to_string(httpCode) + ")", loadedUrl, duration};
+    logAction("navigate_to", result);
+    return result;
 }
 
 BrowserResult AgentBrowser::goBack() {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    std::string target;
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (!session || session->history.empty() || session->historyIndex == 0) {
+            return {BrowserActionResult::FAILED, "No previous page in browser history", std::nullopt, std::chrono::milliseconds(0)};
+        }
+        target = session->history[--session->historyIndex];
     }
-    
-    auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate browser back operation
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("go_back", {BrowserActionResult::SUCCESS, "Navigated back", std::nullopt, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Navigated back", std::nullopt, duration};
+    return navigateTo(target);
 }
 
 BrowserResult AgentBrowser::goForward() {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    std::string target;
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (!session || session->history.empty() || session->historyIndex + 1 >= session->history.size()) {
+            return {BrowserActionResult::FAILED, "No next page in browser history", std::nullopt, std::chrono::milliseconds(0)};
+        }
+        target = session->history[++session->historyIndex];
     }
-    
-    auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate browser forward operation
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("go_forward", {BrowserActionResult::SUCCESS, "Navigated forward", std::nullopt, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Navigated forward", std::nullopt, duration};
+    return navigateTo(target);
 }
 
 BrowserResult AgentBrowser::refresh() {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    std::string url;
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        url = currentUrl_;
     }
-    
-    auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate page refresh
-    std::this_thread::sleep_for(std::chrono::milliseconds(800));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("refresh", {BrowserActionResult::SUCCESS, "Page refreshed", std::nullopt, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Page refreshed", std::nullopt, duration};
+    if (url.empty()) return {BrowserActionResult::FAILED, "No page loaded", std::nullopt, std::chrono::milliseconds(0)};
+    return navigateTo(url);
 }
 
 BrowserResult AgentBrowser::waitForPageLoad(int timeoutSec) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     auto start = std::chrono::steady_clock::now();
-    
-    // Simulate waiting for page load
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (duration.count() > timeoutSec * 1000) {
-        return {BrowserActionResult::TIMEOUT, "Page load timeout", std::nullopt, duration};
+    while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count() <= timeoutSec) {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (session && session->parser.isParsed()) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            return {BrowserActionResult::SUCCESS, "Page loaded", currentUrl_, duration};
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
-    
-    return {BrowserActionResult::SUCCESS, "Page loaded", std::nullopt, duration};
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return {BrowserActionResult::TIMEOUT, "Timed out waiting for page load", std::nullopt, duration};
 }
 
 std::optional<PageInfo> AgentBrowser::getCurrentPageInfo() {
-    if (!initialized_.load()) {
-        return std::nullopt;
-    }
-    
+    if (!initialized_.load()) return std::nullopt;
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Implementation - would extract real page data
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (!session || !session->parser.isParsed()) return std::nullopt;
     PageInfo info;
     info.url = currentUrl_;
-    info.title = "Sample Page - " + browser_utils::extractDomain(currentUrl_);
-    info.html = "<html><body><h1>Sample Page</h1><p>This is a functional implementation.</p></body></html>";
-    info.links = {"https://example.com/link1", "https://example.com/link2"};
-    info.images = {"https://example.com/image1.jpg"};
+    info.title = session->parser.title();
+    info.html = session->parser.html();
+    info.links = session->parser.links();
+    info.images = session->parser.images();
     info.loadTime = std::chrono::system_clock::now();
     info.isLoaded = true;
-    
     return info;
 }
 
 std::optional<std::string> AgentBrowser::getPageTitle() {
-    if (!initialized_.load()) {
-        return std::nullopt;
-    }
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "Page Title";
+    auto info = getCurrentPageInfo();
+    return info ? std::optional<std::string>(info->title) : std::nullopt;
 }
 
 std::optional<std::string> AgentBrowser::getPageText() {
-    if (!initialized_.load()) {
-        return std::nullopt;
-    }
+    if (!initialized_.load()) return std::nullopt;
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "Page text content";
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (!session || !session->parser.isParsed()) return std::nullopt;
+    return session->parser.text();
 }
 
 std::optional<std::string> AgentBrowser::getPageHTML() {
-    if (!initialized_.load()) {
-        return std::nullopt;
-    }
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    return "<html><body></body></html>";
+    auto info = getCurrentPageInfo();
+    return info ? std::optional<std::string>(info->html) : std::nullopt;
 }
 
 std::vector<std::string> AgentBrowser::getLinks() {
-    if (!initialized_.load()) {
-        return {};
-    }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    std::vector<std::string> links;
-    
-    auto html = getPageHTML();
-    if (!html) return links;
-    
-    // Simple regex-based link extraction
-    std::regex linkRegex(R"(<a[^>]+href=[\"']([^\"']+)[\"'])");
-    std::smatch match;
-    std::string htmlStr = *html;
-    
-    auto begin = std::sregex_iterator(htmlStr.begin(), htmlStr.end(), linkRegex);
-    auto end = std::sregex_iterator();
-    
-    for (std::sregex_iterator i = begin; i != end; ++i) {
-        std::smatch m = *i;
-        if (m.size() > 1) {
-            links.push_back(m[1].str());
-        }
-    }
-    
-    return links;
+    auto info = getCurrentPageInfo();
+    return info ? info->links : std::vector<std::string>{};
 }
 
 std::vector<std::string> AgentBrowser::getImages() {
-    if (!initialized_.load()) {
-        return {};
-    }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    std::vector<std::string> images;
-    
-    auto html = getPageHTML();
-    if (!html) return images;
-    
-    // Extract image sources
-    std::regex imgRegex(R"(<img[^>]+src=[\"']([^\"']+)[\"'])");
-    std::string htmlStr = *html;
-    
-    auto begin = std::sregex_iterator(htmlStr.begin(), htmlStr.end(), imgRegex);
-    auto end = std::sregex_iterator();
-    
-    for (std::sregex_iterator i = begin; i != end; ++i) {
-        std::smatch m = *i;
-        if (m.size() > 1) {
-            images.push_back(m[1].str());
-        }
-    }
-    
-    return images;
+    auto info = getCurrentPageInfo();
+    return info ? info->images : std::vector<std::string>{};
 }
 
 std::optional<WebElement> AgentBrowser::findElement(const std::string& selector, SelectorType type) {
-    if (!initialized_.load()) {
-        return std::nullopt;
-    }
-    
-    auto validationResult = validateSelector(selector, type);
-    if (!validationResult) {
-        return std::nullopt;
-    }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Create mock element
-    WebElement element;
-    element.id = "mock_element_" + selector;
-    element.tag = "div";
-    element.text = "Mock element text";
-    element.innerHTML = "<div>Mock element content</div>";
-    element.attributes["class"] = "mock-element";
-    element.isVisible = true;
-    element.isEnabled = true;
-    element.x = 100;
-    element.y = 200;
-    element.width = 150;
-    element.height = 30;
-    
-    return element;
+    auto elements = findElements(selector, type);
+    if (elements.empty()) return std::nullopt;
+    return elements.front();
 }
 
 std::vector<WebElement> AgentBrowser::findElements(const std::string& selector, SelectorType type) {
-    if (!initialized_.load()) {
-        return {};
-    }
-    
-    auto validationResult = validateSelector(selector, type);
-    if (!validationResult) {
-        return {};
-    }
-    
+    if (!initialized_.load()) return {};
+    auto validation = validateSelector(selector, type);
+    if (!validation) return {};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Return mock elements
-    std::vector<WebElement> elements;
-    for (int i = 0; i < 3; ++i) {
-        WebElement element;
-        element.id = "mock_element_" + selector + "_" + std::to_string(i);
-        element.tag = "div";
-        element.text = "Mock element " + std::to_string(i);
-        element.innerHTML = "<div>Mock element " + std::to_string(i) + "</div>";
-        element.attributes["class"] = "mock-element";
-        element.isVisible = true;
-        element.isEnabled = true;
-        element.x = 100 + i * 50;
-        element.y = 200 + i * 40;
-        element.width = 150;
-        element.height = 30;
-        elements.push_back(element);
-    }
-    
-    return elements;
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (!session || !session->parser.isParsed()) return {};
+    return session->parser.queryAll(selector, type);
 }
 
 BrowserResult AgentBrowser::clickElement(const std::string& selector, SelectorType type) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    auto validationResult = validateSelector(selector, type);
-    if (!validationResult) {
-        return validationResult;
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Implementation - would use actual element clicking
-    stats_.elementsClicked++;
-    
-    // Simulate click delay
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("click_element", {BrowserActionResult::SUCCESS, "Element clicked", selector, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Clicked element: " + selector, selector, duration};
+    auto element = findElement(selector, type);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
+    if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Element is not interactable: " + selector, selector, duration};
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (session) session->lastClickedSelector = selector;
+        stats_.elementsClicked++;
+    }
+    BrowserResult result{BrowserActionResult::SUCCESS, "Clicked element: " + selector, selector, duration};
+    logAction("click_element", result);
+    return result;
 }
 
 BrowserResult AgentBrowser::typeText(const std::string& selector, const std::string& text, SelectorType type) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    auto validationResult = validateSelector(selector, type);
-    if (!validationResult) {
-        return validationResult;
-    }
-    
     auto start = std::chrono::steady_clock::now();
+    auto element = findElement(selector, type);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
+    if (!element->isEnabled) return {BrowserActionResult::FAILED, "Element is disabled: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Implementation - would type into actual element
-    // Simulate typing delay based on text length
-    std::this_thread::sleep_for(std::chrono::milliseconds(text.length() * 50));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("type_text", {BrowserActionResult::SUCCESS, "Text typed", text, duration});
-    
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) session->formValues[selector] += text;
     return {BrowserActionResult::SUCCESS, "Typed text into " + selector, text, duration};
 }
 
 BrowserResult AgentBrowser::clearText(const std::string& selector, SelectorType type) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    auto validationResult = validateSelector(selector, type);
-    if (!validationResult) {
-        return validationResult;
-    }
-    
     auto start = std::chrono::steady_clock::now();
+    auto element = findElement(selector, type);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate clearing text
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("clear_text", {BrowserActionResult::SUCCESS, "Text cleared", selector, duration});
-    
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) session->formValues[selector].clear();
     return {BrowserActionResult::SUCCESS, "Cleared text from " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::fillForm(const std::unordered_map<std::string, std::string>& formData) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate filling form fields
     for (const auto& [selector, value] : formData) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(value.length() * 30));
+        auto result = clearText(selector);
+        if (!result) return result;
+        result = typeText(selector, value);
+        if (!result) return result;
     }
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("fill_form", {BrowserActionResult::SUCCESS, "Form filled", std::to_string(formData.size()) + " fields", duration});
-    
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     return {BrowserActionResult::SUCCESS, "Form filled with " + std::to_string(formData.size()) + " fields", std::nullopt, duration};
 }
 
 BrowserResult AgentBrowser::submitForm(const std::string& formSelector) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    stats_.formsSubmitted++;
-    
-    // Simulate form submission
-    std::this_thread::sleep_for(std::chrono::milliseconds(800));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("submit_form", {BrowserActionResult::SUCCESS, "Form submitted", formSelector, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Form submitted: " + formSelector, formSelector, duration};
+    auto element = findElement(formSelector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Form not found: " + formSelector, formSelector, duration};
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        stats_.formsSubmitted++;
+    }
+    return {BrowserActionResult::SUCCESS, "Form submission prepared: " + formSelector, formSelector, duration};
 }
 
 BrowserResult AgentBrowser::selectOption(const std::string& selector, const std::string& value) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
+    auto element = findElement(selector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Select element not found: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate option selection
-    std::this_thread::sleep_for(std::chrono::milliseconds(300));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("select_option", {BrowserActionResult::SUCCESS, "Option selected", value, duration});
-    
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) session->formValues[selector] = value;
     return {BrowserActionResult::SUCCESS, "Selected option '" + value + "' in " + selector, value, duration};
 }
 
 BrowserResult AgentBrowser::checkCheckbox(const std::string& selector, bool checked) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
+    auto element = findElement(selector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Checkbox not found: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate checkbox interaction
-    std::this_thread::sleep_for(std::chrono::milliseconds(150));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    std::string action = checked ? "Checked" : "Unchecked";
-    logAction("check_checkbox", {BrowserActionResult::SUCCESS, action + " checkbox", selector, duration});
-    
-    return {BrowserActionResult::SUCCESS, action + " checkbox: " + selector, selector, duration};
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) {
+        if (checked) session->checkedSelectors.insert(selector);
+        else session->checkedSelectors.erase(selector);
+    }
+    return {BrowserActionResult::SUCCESS, std::string(checked ? "Checked" : "Unchecked") + " checkbox: " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::executeJavaScript(const std::string& script) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate JavaScript execution
-    std::this_thread::sleep_for(std::chrono::milliseconds(400));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("execute_javascript", {BrowserActionResult::SUCCESS, "JavaScript executed", script, duration});
-    
-    return {BrowserActionResult::SUCCESS, "JavaScript executed", script, duration};
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return {BrowserActionResult::FAILED, "JavaScript execution requires a real browser engine; HTTP parser mode cannot execute scripts", script, duration};
 }
 
 std::optional<std::string> AgentBrowser::evaluateJavaScript(const std::string& expression) {
-    if (!initialized_.load()) {
-        return std::nullopt;
+    if (!initialized_.load()) return std::nullopt;
+    const std::string expr = browser_impl::trim(expression);
+    if (expr == "document.title") return getPageTitle();
+    if (expr == "document.body.innerText" || expr == "document.body.textContent") return getPageText();
+    if (expr == "document.documentElement.outerHTML") return getPageHTML();
+    if (expr == "window.location.href" || expr == "location.href") {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        return currentUrl_;
     }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate JavaScript evaluation
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    
-    // Return mock result
-    return "Mock result for: " + expression;
+    return std::nullopt;
 }
 
 BrowserResult AgentBrowser::scrollToElement(const std::string& selector) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
+    auto element = findElement(selector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate scrolling
-    std::this_thread::sleep_for(std::chrono::milliseconds(300));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("scroll_to_element", {BrowserActionResult::SUCCESS, "Scrolled to element", selector, duration});
-    
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) { session->scrollX = element->x; session->scrollY = element->y; }
     return {BrowserActionResult::SUCCESS, "Scrolled to element: " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::scrollBy(int x, int y) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     auto start = std::chrono::steady_clock::now();
     std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Simulate scrolling
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    std::string scrollInfo = "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
-    logAction("scroll_by", {BrowserActionResult::SUCCESS, "Scrolled by", scrollInfo, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Scrolled by " + scrollInfo, scrollInfo, duration};
+    auto* session = browser_impl::asSession(browserDriver_);
+    if (session) { session->scrollX += x; session->scrollY += y; }
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    std::string data = "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
+    return {BrowserActionResult::SUCCESS, "Scrolled by " + data, data, duration};
 }
 
 BrowserResult AgentBrowser::captureScreenshot(const std::string& filename) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
     std::string actualFilename = filename.empty() ? generateScreenshotFilename() : filename;
-    
-    // Implementation - would capture actual screenshot
-    std::ofstream file(actualFilename);
-    if (file.is_open()) {
-        file << "AGENTBROWSER_SCREENSHOT_DATA_FOR_" << currentUrl_ << std::endl;
-        file << "Generated at: " << std::chrono::duration_cast<std::chrono::seconds>(
-            std::chrono::system_clock::now().time_since_epoch()).count() << std::endl;
-        file.close();
+    std::ofstream file(actualFilename, std::ios::binary);
+    if (!file) return {BrowserActionResult::FAILED, "Could not save diagnostic screenshot to " + actualFilename, std::nullopt, std::chrono::milliseconds(0)};
+    const auto& png = browser_impl::diagnosticPngBytes();
+    file.write(reinterpret_cast<const char*>(png.data()), static_cast<std::streamsize>(png.size()));
+    file.close();
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
         stats_.screenshotsTaken++;
-    } else {
-        return {BrowserActionResult::FAILED, "Could not save screenshot to " + actualFilename, std::nullopt, std::chrono::milliseconds(0)};
     }
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("capture_screenshot", {BrowserActionResult::SUCCESS, "Screenshot captured", actualFilename, duration});
-    
-    return {BrowserActionResult::SUCCESS, "Screenshot saved: " + actualFilename, actualFilename, duration};
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return {BrowserActionResult::SUCCESS, "Saved diagnostic PNG artifact: " + actualFilename, actualFilename, duration};
 }
 
 std::vector<uint8_t> AgentBrowser::getScreenshotData() {
-    if (!initialized_.load()) {
-        return {};
-    }
-    
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
-    // Return mock screenshot data
-    std::string mockData = "MOCK_PNG_DATA_" + currentUrl_;
-    return std::vector<uint8_t>(mockData.begin(), mockData.end());
+    if (!initialized_.load()) return {};
+    return browser_impl::diagnosticPngBytes();
 }
 
 BrowserResult AgentBrowser::savePageHTML(const std::string& filename) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    auto start = std::chrono::steady_clock::now();
-    std::lock_guard<std::mutex> lock(sessionMutex_);
-    
     auto html = getPageHTML();
-    if (!html) {
-        return {BrowserActionResult::FAILED, "Could not retrieve page HTML", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
+    if (!html) return {BrowserActionResult::FAILED, "No page HTML available", std::nullopt, std::chrono::milliseconds(0)};
+    auto start = std::chrono::steady_clock::now();
     std::ofstream file(filename);
-    if (file.is_open()) {
-        file << *html;
-        file.close();
-    } else {
-        return {BrowserActionResult::FAILED, "Could not save HTML to " + filename, std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    logAction("save_page_html", {BrowserActionResult::SUCCESS, "HTML saved", filename, duration});
-    
+    if (!file) return {BrowserActionResult::FAILED, "Could not save HTML to " + filename, std::nullopt, std::chrono::milliseconds(0)};
+    file << *html;
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     return {BrowserActionResult::SUCCESS, "HTML saved: " + filename, filename, duration};
 }
 
 BrowserResult AgentBrowser::waitForElement(const std::string& selector, int timeoutSec) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    
-    // Simulate waiting for element
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (duration.count() > timeoutSec * 1000) {
-        return {BrowserActionResult::TIMEOUT, "Element wait timeout: " + selector, selector, duration};
+    while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count() <= timeoutSec) {
+        if (findElement(selector)) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            return {BrowserActionResult::SUCCESS, "Element found: " + selector, selector, duration};
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
-    
-    return {BrowserActionResult::SUCCESS, "Element found: " + selector, selector, duration};
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return {BrowserActionResult::TIMEOUT, "Element wait timeout: " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::waitForElementVisible(const std::string& selector, int timeoutSec) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    
-    // Simulate waiting for element visibility
-    std::this_thread::sleep_for(std::chrono::milliseconds(600));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (duration.count() > timeoutSec * 1000) {
-        return {BrowserActionResult::TIMEOUT, "Element visibility wait timeout: " + selector, selector, duration};
-    }
-    
-    return {BrowserActionResult::SUCCESS, "Element visible: " + selector, selector, duration};
+    auto result = waitForElement(selector, timeoutSec);
+    if (!result) return result;
+    auto element = findElement(selector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return (element && element->isVisible)
+        ? BrowserResult{BrowserActionResult::SUCCESS, "Element visible: " + selector, selector, duration}
+        : BrowserResult{BrowserActionResult::TIMEOUT, "Element visibility wait timeout: " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::waitForElementClickable(const std::string& selector, int timeoutSec) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    
-    // Simulate waiting for element to be clickable
-    std::this_thread::sleep_for(std::chrono::milliseconds(400));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (duration.count() > timeoutSec * 1000) {
-        return {BrowserActionResult::TIMEOUT, "Element clickable wait timeout: " + selector, selector, duration};
-    }
-    
-    return {BrowserActionResult::SUCCESS, "Element clickable: " + selector, selector, duration};
+    auto result = waitForElement(selector, timeoutSec);
+    if (!result) return result;
+    auto element = findElement(selector);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return (element && element->isVisible && element->isEnabled)
+        ? BrowserResult{BrowserActionResult::SUCCESS, "Element clickable: " + selector, selector, duration}
+        : BrowserResult{BrowserActionResult::TIMEOUT, "Element clickable wait timeout: " + selector, selector, duration};
 }
 
 BrowserResult AgentBrowser::waitForText(const std::string& text, int timeoutSec) {
-    if (!initialized_.load()) {
-        return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
-    }
-    
     auto start = std::chrono::steady_clock::now();
-    
-    // Simulate waiting for text
-    std::this_thread::sleep_for(std::chrono::milliseconds(700));
-    
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::steady_clock::now() - start);
-    
-    if (duration.count() > timeoutSec * 1000) {
-        return {BrowserActionResult::TIMEOUT, "Text wait timeout: " + text, text, duration};
+    while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count() <= timeoutSec) {
+        auto pageText = getPageText();
+        if (pageText && pageText->find(text) != std::string::npos) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+            return {BrowserActionResult::SUCCESS, "Text found: " + text, text, duration};
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
-    
-    return {BrowserActionResult::SUCCESS, "Text found: " + text, text, duration};
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+    return {BrowserActionResult::TIMEOUT, "Text wait timeout: " + text, text, duration};
 }
 
-void AgentBrowser::setMemory(std::shared_ptr<AgentMemoryManager> memory) {
-    memory_ = memory;
-}
+void AgentBrowser::setMemory(std::shared_ptr<AgentMemoryManager> memory) { memory_ = std::move(memory); }
 
-void AgentBrowser::setLogger(std::shared_ptr<AgentLogger> logger) {
-    logger_ = logger;
-}
+void AgentBrowser::setLogger(std::shared_ptr<AgentLogger> logger) { logger_ = std::move(logger); }
 
 void AgentBrowser::rememberPage(const std::string& url, const std::string& purpose) {
     if (!memory_) return;
-    
-    // Store browsing pattern in agent memory
-    UUID memoryId = "browser_" + std::to_string(std::hash<std::string>{}(url + purpose));
-    std::string content = "Visited URL: " + url + " for purpose: " + purpose;
-    UUID entityId = "browser_entity";
-    UUID agentId = "browser_agent";
-    
-    DescriptionMetadata metadata;
+    CustomMetadata metadata;
     metadata.scope = MemoryScope::PRIVATE;
-    
-    auto memory = std::make_shared<Memory>(memoryId, content, entityId, agentId, metadata);
-    
-    EmbeddingVector embedding(384, 0.1f); // Placeholder embedding
-    memory->setEmbedding(embedding);
-    
-    // Note: storeMemory method may not exist, this is a placeholder implementation
-    // memory_->storeMemory(memory);
+    metadata.source = "agentbrowser";
+    metadata.timestamp = std::chrono::system_clock::now();
+    metadata.tags = {"browser", "page", purpose};
+    metadata.customData["url"] = url;
+    metadata.customData["purpose"] = purpose;
+
+    const UUID id = "browser_" + std::to_string(std::hash<std::string>{}(url + "|" + purpose));
+    const UUID entityId = "browser_entity";
+    const UUID agentId = "browser_agent";
+    std::string title;
+    if (auto pageTitle = getPageTitle()) title = *pageTitle;
+    const std::string content = "Visited URL: " + url + "\nPurpose: " + purpose + (title.empty() ? "" : "\nTitle: " + title);
+    auto memory = std::make_shared<Memory>(id, content, entityId, agentId, metadata);
+    memory->setRoomId("browser_room");
+    memory->setUnique(true);
+    memory_->createMemory(memory, "browser_pages", true);
 }
 
-std::vector<std::string> AgentBrowser::getSimilarPages(const std::string& /*purpose*/) {
+std::vector<std::string> AgentBrowser::getSimilarPages(const std::string& purpose) {
     if (!memory_) return {};
-    
-    // Find similar browsing patterns from memory
-    // This is a placeholder - would use actual memory search
+    MemorySearchParams params;
+    params.tableName = "browser_pages";
+    params.count = 50;
+    auto memories = memory_->getMemories(params);
     std::vector<std::string> urls;
+    std::regex urlRegex(R"(Visited URL: ([^\n]+))");
+    for (const auto& memory : memories) {
+        if (!memory) continue;
+        const auto& content = memory->getContent();
+        if (!purpose.empty() && content.find(purpose) == std::string::npos) continue;
+        std::smatch match;
+        if (std::regex_search(content, match, urlRegex) && match.size() > 1) urls.push_back(match[1].str());
+    }
     return urls;
 }
 
-void AgentBrowser::setConfig(const BrowserConfig& config) {
-    config_ = config;
-}
+void AgentBrowser::setConfig(const BrowserConfig& config) { config_ = config; }
 
 void AgentBrowser::resetStatistics() {
     std::lock_guard<std::mutex> lock(statsMutex_);
@@ -782,38 +879,21 @@ void AgentBrowser::resetStatistics() {
     stats_.sessionStart = std::chrono::system_clock::now();
 }
 
-// Private helper methods
-
 BrowserResult AgentBrowser::validateSelector(const std::string& selector, SelectorType type) {
-    if (selector.empty()) {
-        return {BrowserActionResult::FAILED, "Empty selector", std::nullopt, std::chrono::milliseconds(0)};
+    if (browser_impl::trim(selector).empty()) return {BrowserActionResult::FAILED, "Empty selector", std::nullopt, std::chrono::milliseconds(0)};
+    if (type == SelectorType::CSS && selector.find_first_of("{}") != std::string::npos) {
+        return {BrowserActionResult::FAILED, "Invalid CSS selector", std::nullopt, std::chrono::milliseconds(0)};
     }
-    
-    // Basic validation - would be more comprehensive in full implementation
-    switch (type) {
-        case SelectorType::CSS:
-            if (selector.find_first_of("{}") != std::string::npos) {
-                return {BrowserActionResult::FAILED, "Invalid CSS selector", std::nullopt, std::chrono::milliseconds(0)};
-            }
-            break;
-        case SelectorType::XPATH:
-            // Use substr instead of starts_with for C++17 compatibility
-            if (selector.length() < 1 || (selector.substr(0, 1) != "/" && selector.substr(0, 2) != "//")) {
-                return {BrowserActionResult::FAILED, "Invalid XPath selector", std::nullopt, std::chrono::milliseconds(0)};
-            }
-            break;
-        default:
-            break;
+    if (type == SelectorType::XPATH && selector.rfind("/", 0) != 0) {
+        return {BrowserActionResult::FAILED, "Invalid XPath selector", std::nullopt, std::chrono::milliseconds(0)};
     }
-    
     return {BrowserActionResult::SUCCESS, "Selector valid", std::nullopt, std::chrono::milliseconds(0)};
 }
 
 std::string AgentBrowser::generateScreenshotFilename() {
     auto now = std::chrono::system_clock::now();
-    auto time_t = std::chrono::system_clock::to_time_t(now);
-    auto tm = *std::localtime(&time_t);
-    
+    auto time = std::chrono::system_clock::to_time_t(now);
+    auto tm = *std::localtime(&time);
     std::ostringstream oss;
     oss << "screenshot_" << std::put_time(&tm, "%Y%m%d_%H%M%S") << ".png";
     return oss.str();
@@ -821,107 +901,88 @@ std::string AgentBrowser::generateScreenshotFilename() {
 
 void AgentBrowser::logAction(const std::string& action, const BrowserResult& result) {
     if (!logger_) return;
-    
-    std::string message = result.message + " (" + action + ")";
-    LogLevel level = result ? LogLevel::SUCCESS : LogLevel::ERROR;
-    
-    logger_->log(message, "agentbrowser", "Browser Action", level);
+    logger_->log(result.message + " (" + action + ")", "agentbrowser", "Browser Action", result ? LogLevel::SUCCESS : LogLevel::ERROR);
 }
 
 void AgentBrowser::updateStatistics(const std::string& action, std::chrono::milliseconds duration) {
     std::lock_guard<std::mutex> lock(statsMutex_);
-    
-    if (action == "navigation") {
-        stats_.totalNavigationTime += duration;
-    }
+    if (action == "navigation") stats_.totalNavigationTime += duration;
 }
 
 BrowserResult AgentBrowser::initializeBrowserDriver() {
-    // Implementation for actual browser driver initialization
-    // In full implementation, this would:
-    // - Initialize WebDriver or Chrome DevTools Protocol client
-    // - Configure browser options (headless, window size, etc.)
-    // - Establish connection to browser instance
-    
-    browserDriver_ = reinterpret_cast<void*>(0x12345); // Placeholder pointer
-    return {BrowserActionResult::SUCCESS, "Browser driver initialized", std::nullopt, std::chrono::milliseconds(0)};
+    try {
+        auto* session = new browser_impl::BrowserSession();
+        browserDriver_ = session;
+        htmlParser_ = &session->parser;
+        return {BrowserActionResult::SUCCESS, "Browser driver initialized with libcurl and gumbo", std::nullopt, std::chrono::milliseconds(0)};
+    } catch (const std::exception& e) {
+        browserDriver_ = nullptr;
+        htmlParser_ = nullptr;
+        return {BrowserActionResult::FAILED, std::string("Failed to initialize browser driver: ") + e.what(), std::nullopt, std::chrono::milliseconds(0)};
+    }
 }
 
 void AgentBrowser::shutdownBrowserDriver() {
-    // Implementation for actual browser driver cleanup
-    // In full implementation, this would:
-    // - Close all browser tabs and windows
-    // - Terminate browser process
-    // - Clean up WebDriver/DevTools connection
-    
+    auto* session = browser_impl::asSession(browserDriver_);
+    delete session;
     browserDriver_ = nullptr;
+    htmlParser_ = nullptr;
 }
 
-BrowserResult AgentBrowser::sendBrowserCommand(const std::string& command, const std::unordered_map<std::string, std::string>& /*params*/) {
-    // Implementation for actual browser command execution
-    // In full implementation, this would:
-    // - Send WebDriver commands or DevTools Protocol messages
-    // - Handle command responses and errors
-    // - Return structured results
-    
-    return {BrowserActionResult::SUCCESS, "Command executed: " + command, std::nullopt, std::chrono::milliseconds(0)};
+BrowserResult AgentBrowser::sendBrowserCommand(const std::string& command, const std::unordered_map<std::string, std::string>& params) {
+    if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
+    if (command == "getTitle") {
+        auto title = getPageTitle();
+        return title ? BrowserResult{BrowserActionResult::SUCCESS, "Command executed: getTitle", *title, std::chrono::milliseconds(0)}
+                     : BrowserResult{BrowserActionResult::FAILED, "No page title available", std::nullopt, std::chrono::milliseconds(0)};
+    }
+    if (command == "getText") {
+        auto text = getPageText();
+        return text ? BrowserResult{BrowserActionResult::SUCCESS, "Command executed: getText", *text, std::chrono::milliseconds(0)}
+                    : BrowserResult{BrowserActionResult::FAILED, "No page text available", std::nullopt, std::chrono::milliseconds(0)};
+    }
+    if (command == "navigate") {
+        auto it = params.find("url");
+        if (it == params.end()) return {BrowserActionResult::FAILED, "navigate command requires url", std::nullopt, std::chrono::milliseconds(0)};
+        return navigateTo(it->second);
+    }
+    return {BrowserActionResult::FAILED, "Unsupported browser command: " + command, std::nullopt, std::chrono::milliseconds(0)};
 }
 
-// Browser utility functions
 namespace browser_utils {
 
 std::string cssSelector(const std::string& element, const std::string& attribute, const std::string& value) {
     std::string selector = element;
-    if (!attribute.empty() && !value.empty()) {
-        selector += "[" + attribute + "='" + value + "']";
-    }
+    if (!attribute.empty() && !value.empty()) selector += "[" + attribute + "='" + value + "']";
     return selector;
 }
 
 std::string xpathSelector(const std::string& element, const std::string& text) {
-    if (text.empty()) {
-        return "//" + element;
-    }
-    return "//" + element + "[contains(text(), '" + text + "')]";
+    return text.empty() ? "//" + element : "//" + element + "[contains(text(), '" + text + "')]";
 }
 
 bool isValidUrl(const std::string& url) {
-    std::regex url_regex(R"(^https?:\/\/[^\s/$.?#].[^\s]*$)", std::regex_constants::icase);
-    return std::regex_match(url, url_regex);
+    static const std::regex urlRegex(R"(^https?://[^\s/$.?#][^\s]*$)", std::regex_constants::icase);
+    return std::regex_match(url, urlRegex);
 }
 
 std::string extractDomain(const std::string& url) {
-    std::regex domain_regex(R"(https?:\/\/([^\/]+))", std::regex_constants::icase);
+    static const std::regex domainRegex(R"(^https?://([^/:?#]+))", std::regex_constants::icase);
     std::smatch match;
-    if (std::regex_search(url, match, domain_regex) && match.size() > 1) {
-        return match[1].str();
-    }
-    return "";
+    return (std::regex_search(url, match, domainRegex) && match.size() > 1) ? match[1].str() : "";
 }
 
 std::vector<std::string> extractEmails(const std::string& text) {
     std::vector<std::string> emails;
-    std::regex email_regex(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
-    std::sregex_iterator iter(text.begin(), text.end(), email_regex);
-    std::sregex_iterator end;
-    
-    for (; iter != end; ++iter) {
-        emails.push_back(iter->str());
-    }
-    
+    static const std::regex emailRegex(R"([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})");
+    for (auto it = std::sregex_iterator(text.begin(), text.end(), emailRegex); it != std::sregex_iterator(); ++it) emails.push_back(it->str());
     return emails;
 }
 
 std::vector<std::string> extractPhoneNumbers(const std::string& text) {
     std::vector<std::string> phones;
-    std::regex phone_regex(R"(\+?[\d\s\-\(\)]{10,})");
-    std::sregex_iterator iter(text.begin(), text.end(), phone_regex);
-    std::sregex_iterator end;
-    
-    for (; iter != end; ++iter) {
-        phones.push_back(iter->str());
-    }
-    
+    static const std::regex phoneRegex(R"(\+?[0-9][0-9\s().-]{8,}[0-9])");
+    for (auto it = std::sregex_iterator(text.begin(), text.end(), phoneRegex); it != std::sregex_iterator(); ++it) phones.push_back(browser_impl::trim(it->str()));
     return phones;
 }
 

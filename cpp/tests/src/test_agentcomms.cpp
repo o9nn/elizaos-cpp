@@ -3,6 +3,16 @@
 #include <thread>
 #include <chrono>
 #include <atomic>
+#include <algorithm>
+#include <condition_variable>
+#include <cstring>
+#include <mutex>
+#include <sstream>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 using namespace elizaos;
 
@@ -192,18 +202,114 @@ TEST_F(AgentCommsTest, StartStopCycle) {
     EXPECT_FALSE(channel->isActive());
 }
 
-TEST_F(AgentCommsTest, TCPConnector) {
-    // Test basic TCP connector functionality
+namespace {
+class LoopbackTcpServer {
+public:
+    LoopbackTcpServer() {
+        serverFd_ = ::socket(AF_INET, SOCK_STREAM, 0);
+        EXPECT_GE(serverFd_, 0);
+        int opt = 1;
+        EXPECT_EQ(::setsockopt(serverFd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)), 0);
+
+        sockaddr_in addr{};
+        addr.sin_family = AF_INET;
+        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        addr.sin_port = htons(0);
+        EXPECT_EQ(::bind(serverFd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)), 0);
+        EXPECT_EQ(::listen(serverFd_, 1), 0);
+
+        socklen_t len = sizeof(addr);
+        EXPECT_EQ(::getsockname(serverFd_, reinterpret_cast<sockaddr*>(&addr), &len), 0);
+        port_ = ntohs(addr.sin_port);
+        running_.store(true);
+        worker_ = std::thread(&LoopbackTcpServer::serveOneClient, this);
+    }
+
+    ~LoopbackTcpServer() { stop(); }
+
+    std::string connectionString() const {
+        return "127.0.0.1:" + std::to_string(port_);
+    }
+
+    bool waitForPayload(const std::string& expected, std::chrono::milliseconds timeout) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        return cv_.wait_for(lock, timeout, [&] { return received_.find(expected) != std::string::npos; });
+    }
+
+    void stop() {
+        if (!running_.exchange(false)) return;
+        if (serverFd_ >= 0) {
+            ::shutdown(serverFd_, SHUT_RDWR);
+            ::close(serverFd_);
+            serverFd_ = -1;
+        }
+        if (clientFd_ >= 0) {
+            ::shutdown(clientFd_, SHUT_RDWR);
+            ::close(clientFd_);
+            clientFd_ = -1;
+        }
+        if (worker_.joinable()) worker_.join();
+    }
+
+private:
+    void serveOneClient() {
+        clientFd_ = ::accept(serverFd_, nullptr, nullptr);
+        if (clientFd_ < 0) return;
+        char buffer[1024];
+        const ssize_t n = ::recv(clientFd_, buffer, sizeof(buffer), 0);
+        if (n > 0) {
+            std::string payload(buffer, static_cast<std::size_t>(n));
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                received_ += payload;
+            }
+            cv_.notify_all();
+            const std::string response = "ack:" + payload;
+            (void)::send(clientFd_, response.data(), response.size(), MSG_NOSIGNAL);
+        }
+    }
+
+    int serverFd_{-1};
+    int clientFd_{-1};
+    uint16_t port_{0};
+    std::atomic<bool> running_{false};
+    std::thread worker_;
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    std::string received_;
+};
+}
+
+TEST_F(AgentCommsTest, TCPConnectorLoopbackE2E) {
+    LoopbackTcpServer server;
     TCPConnector connector;
     
     EXPECT_FALSE(connector.isConnected());
+
+    std::mutex callbackMutex;
+    std::condition_variable callbackCv;
+    std::string callbackData;
+    connector.setDataHandler([&](const std::string& data) {
+        {
+            std::lock_guard<std::mutex> lock(callbackMutex);
+            callbackData += data;
+        }
+        callbackCv.notify_all();
+    });
     
-    bool connected = connector.connect("localhost:8080");
-    EXPECT_TRUE(connected);
+    ASSERT_TRUE(connector.connect(server.connectionString()));
     EXPECT_TRUE(connector.isConnected());
     
-    bool sent = connector.sendData("test data");
-    EXPECT_TRUE(sent);
+    const std::string payload = "tcp-e2e-message";
+    ASSERT_TRUE(connector.sendData(payload));
+    EXPECT_TRUE(server.waitForPayload(payload, std::chrono::milliseconds(2000)));
+
+    {
+        std::unique_lock<std::mutex> lock(callbackMutex);
+        ASSERT_TRUE(callbackCv.wait_for(lock, std::chrono::milliseconds(2000), [&] {
+            return callbackData.find("ack:" + payload) != std::string::npos;
+        }));
+    }
     
     connector.disconnect();
     EXPECT_FALSE(connector.isConnected());

@@ -443,10 +443,15 @@ public:
     bool isConnected() const override;
     
 private:
+    void receiveLoop();
+    void closeSocketNoThrow();
+
     std::atomic<bool> connected_;
+    int socket_fd_;
+    mutable std::mutex socketMutex_;
+    std::thread receiverThread_;
     std::function<void(const std::string&)> dataHandler_;
-    // Note: Full TCP implementation would require platform-specific socket code
-    // This is a basic framework for now
+    mutable std::mutex handlerMutex_;
 };
 
 /**

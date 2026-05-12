@@ -1,11 +1,22 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "elizaos/agentbrowser.hpp"
 #include <memory>
 #include <string>
+#include <atomic>
+#include <chrono>
+#include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <thread>
+#include <unordered_map>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 using namespace elizaos;
-using namespace ::testing;
 
 class AgentBrowserTest : public ::testing::Test {
 protected:
@@ -204,4 +215,181 @@ TEST_F(AgentBrowserTest, BrowserActionResultValues) {
     EXPECT_EQ(static_cast<int>(BrowserActionResult::TIMEOUT), 2);
     EXPECT_EQ(static_cast<int>(BrowserActionResult::ELEMENT_NOT_FOUND), 3);
     EXPECT_EQ(static_cast<int>(BrowserActionResult::NAVIGATION_ERROR), 4);
+}
+
+namespace {
+class LocalHttpServer {
+public:
+    explicit LocalHttpServer(std::unordered_map<std::string, std::string> routes)
+        : routes_(std::move(routes)) {
+        serverFd_ = ::socket(AF_INET, SOCK_STREAM, 0);
+        EXPECT_GE(serverFd_, 0);
+        int opt = 1;
+        EXPECT_EQ(::setsockopt(serverFd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)), 0);
+
+        sockaddr_in addr{};
+        addr.sin_family = AF_INET;
+        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        addr.sin_port = htons(0);
+        EXPECT_EQ(::bind(serverFd_, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)), 0);
+        EXPECT_EQ(::listen(serverFd_, 16), 0);
+
+        socklen_t len = sizeof(addr);
+        EXPECT_EQ(::getsockname(serverFd_, reinterpret_cast<sockaddr*>(&addr), &len), 0);
+        port_ = ntohs(addr.sin_port);
+        running_.store(true);
+        worker_ = std::thread(&LocalHttpServer::serveLoop, this);
+    }
+
+    ~LocalHttpServer() { stop(); }
+
+    std::string url(const std::string& path) const {
+        return "http://127.0.0.1:" + std::to_string(port_) + path;
+    }
+
+    void stop() {
+        if (!running_.exchange(false)) return;
+        if (serverFd_ >= 0) {
+            ::shutdown(serverFd_, SHUT_RDWR);
+            ::close(serverFd_);
+            serverFd_ = -1;
+        }
+        if (worker_.joinable()) worker_.join();
+    }
+
+private:
+    void serveLoop() {
+        while (running_.load()) {
+            int client = ::accept(serverFd_, nullptr, nullptr);
+            if (client < 0) break;
+            handleClient(client);
+            ::shutdown(client, SHUT_RDWR);
+            ::close(client);
+        }
+    }
+
+    void handleClient(int client) {
+        std::string request;
+        char buffer[1024];
+        while (request.find("\r\n\r\n") == std::string::npos) {
+            ssize_t n = ::recv(client, buffer, sizeof(buffer), 0);
+            if (n <= 0) break;
+            request.append(buffer, static_cast<std::size_t>(n));
+            if (request.size() > 8192) break;
+        }
+
+        std::string path = "/";
+        std::istringstream stream(request);
+        std::string method;
+        stream >> method >> path;
+
+        int code = 200;
+        auto it = routes_.find(path);
+        std::string body;
+        if (it == routes_.end()) {
+            code = 404;
+            body = "<html><title>Not Found</title><body>missing</body></html>";
+        } else {
+            body = it->second;
+        }
+
+        std::ostringstream response;
+        response << "HTTP/1.1 " << code << (code == 200 ? " OK" : " Not Found") << "\r\n"
+                 << "Content-Type: text/html; charset=utf-8\r\n"
+                 << "Content-Length: " << body.size() << "\r\n"
+                 << "Connection: close\r\n\r\n"
+                 << body;
+        const std::string bytes = response.str();
+        const char* cursor = bytes.data();
+        std::size_t remaining = bytes.size();
+        while (remaining > 0) {
+            ssize_t sent = ::send(client, cursor, remaining, MSG_NOSIGNAL);
+            if (sent <= 0) break;
+            cursor += sent;
+            remaining -= static_cast<std::size_t>(sent);
+        }
+    }
+
+    std::unordered_map<std::string, std::string> routes_;
+    int serverFd_{-1};
+    uint16_t port_{0};
+    std::atomic<bool> running_{false};
+    std::thread worker_;
+};
+}
+
+TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
+    LocalHttpServer server({
+        {"/index.html", R"HTML(
+            <html>
+              <head><title>ElizaOS Browser Fixture</title></head>
+              <body>
+                <h1 id="headline">AgentBrowser retrieved deterministic HTML</h1>
+                <a id="cta" class="primary" href="/second.html">Continue to second page</a>
+                <form id="login-form"><input id="name" name="name" value=""><input id="agree" type="checkbox"></form>
+                <img src="/asset.png" alt="fixture">
+              </body>
+            </html>)HTML"},
+        {"/second.html", R"HTML(
+            <html><head><title>Second Fixture</title></head><body><p class="status">Second page loaded</p></body></html>)HTML"}
+    });
+
+    AgentBrowser browser(config_);
+    ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
+
+    auto nav = browser.navigateTo(server.url("/index.html"));
+    ASSERT_EQ(nav.result, BrowserActionResult::SUCCESS) << nav.message;
+    ASSERT_EQ(browser.waitForPageLoad(1).result, BrowserActionResult::SUCCESS);
+
+    auto title = browser.getPageTitle();
+    ASSERT_TRUE(title.has_value());
+    EXPECT_EQ(*title, "ElizaOS Browser Fixture");
+
+    auto pageText = browser.getPageText();
+    ASSERT_TRUE(pageText.has_value());
+    EXPECT_NE(pageText->find("AgentBrowser retrieved deterministic HTML"), std::string::npos);
+
+    auto cta = browser.findElement("#cta");
+    ASSERT_TRUE(cta.has_value());
+    EXPECT_EQ(cta->tag, "a");
+    EXPECT_EQ(cta->attributes["href"], "/second.html");
+    EXPECT_NE(cta->text.find("Continue"), std::string::npos);
+    EXPECT_GE(browser.findElements("a").size(), 1u);
+    EXPECT_EQ(browser.waitForElement("#cta", 1).result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.clickElement("#cta").result, BrowserActionResult::SUCCESS);
+
+    EXPECT_EQ(browser.typeText("#name", "Ada").result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.clearText("#name").result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.fillForm({{"#name", "Grace"}}).result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.checkCheckbox("#agree", true).result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.submitForm("#login-form").result, BrowserActionResult::SUCCESS);
+
+    const auto tempDir = std::filesystem::temp_directory_path();
+    const auto htmlPath = tempDir / "elizaos_agentbrowser_fixture.html";
+    const auto pngPath = tempDir / "elizaos_agentbrowser_fixture.png";
+    EXPECT_EQ(browser.savePageHTML(htmlPath.string()).result, BrowserActionResult::SUCCESS);
+    EXPECT_TRUE(std::filesystem::exists(htmlPath));
+    EXPECT_EQ(browser.captureScreenshot(pngPath.string()).result, BrowserActionResult::SUCCESS);
+    EXPECT_TRUE(std::filesystem::exists(pngPath));
+    EXPECT_GT(std::filesystem::file_size(pngPath), 0u);
+    EXPECT_FALSE(browser.getScreenshotData().empty());
+
+    auto second = browser.navigateTo(server.url("/second.html"));
+    ASSERT_EQ(second.result, BrowserActionResult::SUCCESS) << second.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Second Fixture");
+    auto back = browser.goBack();
+    ASSERT_EQ(back.result, BrowserActionResult::SUCCESS) << back.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "ElizaOS Browser Fixture");
+
+    auto stats = browser.getStatistics();
+    EXPECT_GE(stats.pagesVisited, 2);
+    EXPECT_GE(stats.elementsClicked, 1);
+    EXPECT_GE(stats.formsSubmitted, 1);
+    EXPECT_GE(stats.screenshotsTaken, 1);
+
+    std::filesystem::remove(htmlPath);
+    std::filesystem::remove(pngPath);
+    EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
 }

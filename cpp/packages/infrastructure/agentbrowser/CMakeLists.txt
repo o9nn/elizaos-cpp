@@ -1,4 +1,10 @@
 # AgentBrowser - Web automation interface for ElizaOS agents
+
+find_package(Threads REQUIRED)
+find_package(CURL REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GUMBO REQUIRED gumbo)
+
 add_library(elizaos-agentbrowser STATIC
     src/agentbrowser.cpp
 )
@@ -8,25 +14,24 @@ target_include_directories(elizaos-agentbrowser PUBLIC
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
-target_link_libraries(elizaos-agentbrowser 
+target_include_directories(elizaos-agentbrowser PRIVATE
+    ${CURL_INCLUDE_DIRS}
+    ${GUMBO_INCLUDE_DIRS}
+)
+
+target_link_directories(elizaos-agentbrowser PRIVATE
+    ${GUMBO_LIBRARY_DIRS}
+)
+
+target_link_libraries(elizaos-agentbrowser
     elizaos-core
     elizaos-agentlogger
     elizaos-agentmemory
     Threads::Threads
+    CURL::libcurl
+    ${GUMBO_LIBRARIES}
 )
 
-# Add libcurl for HTTP requests
-if(CURL_FOUND)
-    target_link_libraries(elizaos-agentbrowser ${CURL_LIBRARIES})
-    target_include_directories(elizaos-agentbrowser PRIVATE ${CURL_INCLUDE_DIRS})
-endif()
-
-# Add gumbo-parser for HTML parsing
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(GUMBO QUIET gumbo)
-    if(GUMBO_FOUND)
-        target_link_libraries(elizaos-agentbrowser ${GUMBO_LIBRARIES})
-        target_include_directories(elizaos-agentbrowser PRIVATE ${GUMBO_INCLUDE_DIRS})
-    endif()
-endif()
+target_compile_definitions(elizaos-agentbrowser PRIVATE
+    ELIZAOS_AGENTBROWSER_REAL_HTTP=1
+)
