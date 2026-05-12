@@ -6,6 +6,12 @@
 #include <sstream>
 #include <iomanip>
 #include <random>
+#include <cstring>
+#include <cerrno>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
 namespace elizaos {
 
@@ -509,39 +515,158 @@ AgentParticipation& AgentComms::getOrCreateParticipation(const AgentId& agent_id
     return it->second;
 }
 
-// TCPConnector implementation (basic framework)
-TCPConnector::TCPConnector() : connected_(false) {
+// TCPConnector implementation
+TCPConnector::TCPConnector() : connected_(false), socket_fd_(-1) {
 }
 
 TCPConnector::~TCPConnector() {
     disconnect();
 }
 
+namespace {
+std::pair<std::string, std::string> parseTcpConnectionString(const std::string& connectionString) {
+    std::string value = connectionString;
+    const std::string tcpPrefix = "tcp://";
+    if (value.rfind(tcpPrefix, 0) == 0) {
+        value = value.substr(tcpPrefix.size());
+    }
+
+    const auto colon = value.rfind(':');
+    if (colon == std::string::npos || colon == 0 || colon + 1 >= value.size()) {
+        return {"", ""};
+    }
+
+    return {value.substr(0, colon), value.substr(colon + 1)};
+}
+}
+
 bool TCPConnector::connect(const std::string& connectionString) {
-    // Basic implementation - in a full implementation this would
-    // parse the connection std::string and establish a TCP connection
-    (void)connectionString; // Suppress unused parameter warning
-    connected_ = true;
+    disconnect();
+
+    const auto [host, port] = parseTcpConnectionString(connectionString);
+    if (host.empty() || port.empty()) {
+        return false;
+    }
+
+    addrinfo hints{};
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    addrinfo* results = nullptr;
+    const int gaiResult = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &results);
+    if (gaiResult != 0 || results == nullptr) {
+        return false;
+    }
+
+    int candidateSocket = -1;
+    for (addrinfo* rp = results; rp != nullptr; rp = rp->ai_next) {
+        candidateSocket = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        if (candidateSocket < 0) {
+            continue;
+        }
+
+        if (::connect(candidateSocket, rp->ai_addr, rp->ai_addrlen) == 0) {
+            break;
+        }
+
+        ::close(candidateSocket);
+        candidateSocket = -1;
+    }
+
+    ::freeaddrinfo(results);
+
+    if (candidateSocket < 0) {
+        return false;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(socketMutex_);
+        socket_fd_ = candidateSocket;
+        connected_ = true;
+    }
+
+    receiverThread_ = std::thread(&TCPConnector::receiveLoop, this);
     return true;
 }
 
 void TCPConnector::disconnect() {
     connected_ = false;
+    closeSocketNoThrow();
+
+    if (receiverThread_.joinable()) {
+        receiverThread_.join();
+    }
+}
+
+void TCPConnector::closeSocketNoThrow() {
+    std::lock_guard<std::mutex> lock(socketMutex_);
+    if (socket_fd_ >= 0) {
+        ::shutdown(socket_fd_, SHUT_RDWR);
+        ::close(socket_fd_);
+        socket_fd_ = -1;
+    }
 }
 
 bool TCPConnector::sendData(const std::string& data) {
     if (!connected_) {
         return false;
     }
-    
-    // In a full implementation, this would send data over the TCP socket
-    // For now, just simulate success
-    (void)data; // Suppress unused parameter warning
+
+    std::lock_guard<std::mutex> lock(socketMutex_);
+    if (socket_fd_ < 0) {
+        return false;
+    }
+
+    const char* buffer = data.data();
+    std::size_t totalSent = 0;
+    while (totalSent < data.size()) {
+        const ssize_t sent = ::send(socket_fd_, buffer + totalSent, data.size() - totalSent, MSG_NOSIGNAL);
+        if (sent <= 0) {
+            connected_ = false;
+            return false;
+        }
+        totalSent += static_cast<std::size_t>(sent);
+    }
+
     return true;
 }
 
+void TCPConnector::receiveLoop() {
+    char buffer[4096];
+    while (connected_) {
+        int fd = -1;
+        {
+            std::lock_guard<std::mutex> lock(socketMutex_);
+            fd = socket_fd_;
+        }
+
+        if (fd < 0) {
+            break;
+        }
+
+        const ssize_t received = ::recv(fd, buffer, sizeof(buffer), 0);
+        if (received > 0) {
+            std::function<void(const std::string&)> handler;
+            {
+                std::lock_guard<std::mutex> lock(handlerMutex_);
+                handler = dataHandler_;
+            }
+            if (handler) {
+                handler(std::string(buffer, static_cast<std::size_t>(received)));
+            }
+        } else if (received == 0) {
+            connected_ = false;
+            break;
+        } else if (errno != EINTR) {
+            connected_ = false;
+            break;
+        }
+    }
+}
+
 void TCPConnector::setDataHandler(std::function<void(const std::string&)> handler) {
-    dataHandler_ = handler;
+    std::lock_guard<std::mutex> lock(handlerMutex_);
+    dataHandler_ = std::move(handler);
 }
 
 bool TCPConnector::isConnected() const {
