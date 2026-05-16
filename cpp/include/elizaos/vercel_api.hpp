@@ -1,18 +1,7 @@
 #pragma once
 
-/**
- * ElizaOS C++ - vercel_api Module
- * 
- * Stub header for test compilation.
- * Actual implementation is in the respective module directory.
- */
-
-#include "elizaos.hpp"
-
-namespace elizaos {
-namespace vercel_api {
-
-// Module-specific declarations go here
-
-} // namespace vercel_api
-} // namespace elizaos
+// This header is a compatibility forwarding wrapper.
+// The authoritative public ElizaOS C++ API lives under include/elizaos/.
+// Keeping this shim prevents cpp/include from drifting when legacy targets
+// still add cpp/include ahead of the root include directory.
+#include "../../../include/elizaos/vercel_api.hpp"
