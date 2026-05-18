@@ -23,6 +23,7 @@
 #include <regex>
 #include <sstream>
 #include <stdexcept>
+#include <map>
 #include <string>
 #include <thread>
 #include <unordered_set>
@@ -63,6 +64,110 @@ static size_t writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata
     auto* target = static_cast<std::string*>(userdata);
     target->append(ptr, size * nmemb);
     return size * nmemb;
+}
+
+static bool startsWith(const std::string& value, const std::string& prefix) {
+    return value.rfind(prefix, 0) == 0;
+}
+
+static std::string urlEncode(const std::string& value) {
+    std::ostringstream encoded;
+    encoded << std::uppercase << std::hex;
+    for (unsigned char c : value) {
+        if (std::isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+            encoded << static_cast<char>(c);
+        } else if (c == ' ') {
+            encoded << '+';
+        } else {
+            encoded << '%' << std::setw(2) << std::setfill('0') << static_cast<int>(c) << std::setfill(' ');
+        }
+    }
+    return encoded.str();
+}
+
+static std::string removeFragment(const std::string& url) {
+    auto pos = url.find('#');
+    return pos == std::string::npos ? url : url.substr(0, pos);
+}
+
+static std::string resolveUrl(const std::string& baseUrl, const std::string& target) {
+    const std::string href = trim(target);
+    if (href.empty()) return baseUrl;
+    if (startsWith(href, "http://") || startsWith(href, "https://")) return href;
+
+    static const std::regex baseRegex(R"(^(https?)://([^/?#]+)([^?#]*)?(\?[^#]*)?(#.*)?$)", std::regex_constants::icase);
+    std::smatch match;
+    if (!std::regex_match(baseUrl, match, baseRegex)) return href;
+
+    const std::string scheme = match[1].str();
+    const std::string authority = match[2].str();
+    const std::string rawPath = match[3].matched && !match[3].str().empty() ? match[3].str() : "/";
+    const std::string origin = scheme + "://" + authority;
+
+    if (startsWith(href, "//")) return scheme + ":" + href;
+    if (href.front() == '/') return origin + href;
+    if (href.front() == '?') return origin + rawPath + href;
+    if (href.front() == '#') return removeFragment(baseUrl) + href;
+
+    std::string directory = rawPath;
+    auto slash = directory.rfind('/');
+    directory = (slash == std::string::npos) ? "/" : directory.substr(0, slash + 1);
+
+    std::vector<std::string> segments;
+    auto pushSegments = [&](const std::string& path) {
+        std::size_t start = 0;
+        while (start <= path.size()) {
+            const auto end = path.find('/', start);
+            std::string part = path.substr(start, end == std::string::npos ? std::string::npos : end - start);
+            if (!part.empty() && part != ".") {
+                if (part == "..") {
+                    if (!segments.empty()) segments.pop_back();
+                } else {
+                    segments.push_back(part);
+                }
+            }
+            if (end == std::string::npos) break;
+            start = end + 1;
+        }
+    };
+
+    pushSegments(directory);
+    pushSegments(href);
+
+    std::ostringstream path;
+    path << '/';
+    for (std::size_t i = 0; i < segments.size(); ++i) {
+        if (i) path << '/';
+        path << segments[i];
+    }
+    return origin + path.str();
+}
+
+static std::string appendQuery(const std::string& url, const std::map<std::string, std::string>& params) {
+    if (params.empty()) return url;
+    std::ostringstream query;
+    bool first = true;
+    for (const auto& [key, value] : params) {
+        if (key.empty()) continue;
+        query << (first ? "" : "&") << urlEncode(key) << '=' << urlEncode(value);
+        first = false;
+    }
+    if (first) return url;
+
+    const auto fragmentPos = url.find('#');
+    const std::string withoutFragment = fragmentPos == std::string::npos ? url : url.substr(0, fragmentPos);
+    const std::string fragment = fragmentPos == std::string::npos ? "" : url.substr(fragmentPos);
+    const char separator = withoutFragment.find('?') == std::string::npos ? '?' : '&';
+    return withoutFragment + separator + query.str() + fragment;
+}
+
+static std::string formFieldName(const std::string& selector, const WebElement& element) {
+    auto name = element.attributes.find("name");
+    if (name != element.attributes.end() && !name->second.empty()) return name->second;
+    if (!element.id.empty()) return element.id;
+    std::string cleaned = selector;
+    if (!cleaned.empty() && (cleaned.front() == '#' || cleaned.front() == '.')) cleaned.erase(cleaned.begin());
+    return cleaned;
 }
 
 class HttpClient {
@@ -620,12 +725,32 @@ BrowserResult AgentBrowser::clickElement(const std::string& selector, SelectorTy
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
     if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Element is not interactable: " + selector, selector, duration};
+
+    std::optional<std::string> href;
+    if (browser_impl::toLower(element->tag) == "a") {
+        auto it = element->attributes.find("href");
+        if (it != element->attributes.end() && !browser_impl::trim(it->second).empty()) href = it->second;
+    }
+
+    std::string baseUrl;
     {
         std::lock_guard<std::mutex> lock(sessionMutex_);
         auto* session = browser_impl::asSession(browserDriver_);
         if (session) session->lastClickedSelector = selector;
+        baseUrl = currentUrl_;
         stats_.elementsClicked++;
     }
+
+    if (href && !baseUrl.empty()) {
+        const std::string targetUrl = browser_impl::resolveUrl(baseUrl, *href);
+        auto nav = navigateTo(targetUrl);
+        if (nav) {
+            nav.message = "Clicked link " + selector + " and navigated to " + targetUrl;
+            logAction("click_element", nav);
+        }
+        return nav;
+    }
+
     BrowserResult result{BrowserActionResult::SUCCESS, "Clicked element: " + selector, selector, duration};
     logAction("click_element", result);
     return result;
@@ -671,11 +796,47 @@ BrowserResult AgentBrowser::submitForm(const std::string& formSelector) {
     auto element = findElement(formSelector);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Form not found: " + formSelector, formSelector, duration};
+    if (browser_impl::toLower(element->tag) != "form") return {BrowserActionResult::FAILED, "Selector is not a form: " + formSelector, formSelector, duration};
+
+    std::unordered_map<std::string, std::string> formValues;
+    std::unordered_set<std::string> checkedSelectors;
+    std::string baseUrl;
     {
         std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (session) {
+            formValues = session->formValues;
+            checkedSelectors = session->checkedSelectors;
+        }
+        baseUrl = currentUrl_;
         stats_.formsSubmitted++;
     }
-    return {BrowserActionResult::SUCCESS, "Form submission prepared: " + formSelector, formSelector, duration};
+
+    const auto methodIt = element->attributes.find("method");
+    const std::string method = methodIt == element->attributes.end() ? "get" : browser_impl::toLower(methodIt->second);
+    const auto actionIt = element->attributes.find("action");
+    const std::string action = actionIt == element->attributes.end() || browser_impl::trim(actionIt->second).empty() ? baseUrl : actionIt->second;
+
+    if (method == "get") {
+        std::map<std::string, std::string> queryParams;
+        for (const auto& [selector, value] : formValues) {
+            auto field = findElement(selector);
+            if (!field || !field->isEnabled) continue;
+            queryParams[browser_impl::formFieldName(selector, *field)] = value;
+        }
+        for (const auto& selector : checkedSelectors) {
+            auto field = findElement(selector);
+            if (!field || !field->isEnabled) continue;
+            auto valueIt = field->attributes.find("value");
+            queryParams[browser_impl::formFieldName(selector, *field)] = valueIt == field->attributes.end() || valueIt->second.empty() ? "on" : valueIt->second;
+        }
+        const std::string target = browser_impl::appendQuery(browser_impl::resolveUrl(baseUrl, action), queryParams);
+        auto nav = navigateTo(target);
+        if (nav) nav.message = "Submitted GET form " + formSelector + " to " + target;
+        return nav;
+    }
+
+    return {BrowserActionResult::SUCCESS, "Form submission prepared for unsupported HTTP method: " + method, formSelector, duration};
 }
 
 BrowserResult AgentBrowser::selectOption(const std::string& selector, const std::string& value) {

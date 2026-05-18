@@ -284,7 +284,11 @@ private:
         stream >> method >> path;
 
         int code = 200;
-        auto it = routes_.find(path);
+        std::string lookupPath = path;
+        if (auto query = lookupPath.find('?'); query != std::string::npos) lookupPath = lookupPath.substr(0, query);
+        if (auto fragment = lookupPath.find('#'); fragment != std::string::npos) lookupPath = lookupPath.substr(0, fragment);
+
+        auto it = routes_.find(lookupPath);
         std::string body;
         if (it == routes_.end()) {
             code = 404;
@@ -326,12 +330,14 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
               <body>
                 <h1 id="headline">AgentBrowser retrieved deterministic HTML</h1>
                 <a id="cta" class="primary" href="/second.html">Continue to second page</a>
-                <form id="login-form"><input id="name" name="name" value=""><input id="agree" type="checkbox"></form>
+                <form id="login-form" method="get" action="/submitted.html"><input id="name" name="name" value=""><input id="agree" name="agree" type="checkbox"></form>
                 <img src="/asset.png" alt="fixture">
               </body>
             </html>)HTML"},
         {"/second.html", R"HTML(
-            <html><head><title>Second Fixture</title></head><body><p class="status">Second page loaded</p></body></html>)HTML"}
+            <html><head><title>Second Fixture</title></head><body><p class="status">Second page loaded</p></body></html>)HTML"},
+        {"/submitted.html", R"HTML(
+            <html><head><title>Submitted Fixture</title></head><body><p class="submitted">Submitted page loaded</p></body></html>)HTML"}
     });
 
     AgentBrowser browser(config_);
@@ -354,15 +360,32 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
     EXPECT_EQ(cta->tag, "a");
     EXPECT_EQ(cta->attributes["href"], "/second.html");
     EXPECT_NE(cta->text.find("Continue"), std::string::npos);
-    EXPECT_GE(browser.findElements("a").size(), 1u);
+     EXPECT_GE(browser.findElements("a").size(), 1u);
     EXPECT_EQ(browser.waitForElement("#cta", 1).result, BrowserActionResult::SUCCESS);
-    EXPECT_EQ(browser.clickElement("#cta").result, BrowserActionResult::SUCCESS);
-
     EXPECT_EQ(browser.typeText("#name", "Ada").result, BrowserActionResult::SUCCESS);
     EXPECT_EQ(browser.clearText("#name").result, BrowserActionResult::SUCCESS);
     EXPECT_EQ(browser.fillForm({{"#name", "Grace"}}).result, BrowserActionResult::SUCCESS);
     EXPECT_EQ(browser.checkCheckbox("#agree", true).result, BrowserActionResult::SUCCESS);
-    EXPECT_EQ(browser.submitForm("#login-form").result, BrowserActionResult::SUCCESS);
+
+    auto submitted = browser.submitForm("#login-form");
+    ASSERT_EQ(submitted.result, BrowserActionResult::SUCCESS) << submitted.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Submitted Fixture");
+    auto submittedUrl = browser.evaluateJavaScript("location.href");
+    ASSERT_TRUE(submittedUrl.has_value());
+    EXPECT_NE(submittedUrl->find("/submitted.html?"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("agree=on"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("name=Grace"), std::string::npos);
+
+    auto backToForm = browser.goBack();
+    ASSERT_EQ(backToForm.result, BrowserActionResult::SUCCESS) << backToForm.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "ElizaOS Browser Fixture");
+
+    auto clickNav = browser.clickElement("#cta");
+    ASSERT_EQ(clickNav.result, BrowserActionResult::SUCCESS) << clickNav.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Second Fixture");
 
     const auto tempDir = std::filesystem::temp_directory_path();
     const auto htmlPath = tempDir / "elizaos_agentbrowser_fixture.html";
@@ -374,14 +397,15 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
     EXPECT_GT(std::filesystem::file_size(pngPath), 0u);
     EXPECT_FALSE(browser.getScreenshotData().empty());
 
-    auto second = browser.navigateTo(server.url("/second.html"));
-    ASSERT_EQ(second.result, BrowserActionResult::SUCCESS) << second.message;
-    ASSERT_TRUE(browser.getPageTitle().has_value());
-    EXPECT_EQ(*browser.getPageTitle(), "Second Fixture");
     auto back = browser.goBack();
     ASSERT_EQ(back.result, BrowserActionResult::SUCCESS) << back.message;
     ASSERT_TRUE(browser.getPageTitle().has_value());
     EXPECT_EQ(*browser.getPageTitle(), "ElizaOS Browser Fixture");
+
+    auto second = browser.navigateTo(server.url("/second.html"));
+    ASSERT_EQ(second.result, BrowserActionResult::SUCCESS) << second.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Second Fixture");
 
     auto stats = browser.getStatistics();
     EXPECT_GE(stats.pagesVisited, 2);
@@ -391,5 +415,46 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
 
     std::filesystem::remove(htmlPath);
     std::filesystem::remove(pngPath);
+    EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
+}
+
+TEST_F(AgentBrowserTest, RealHttpRelativeLinkNavigationAndJavaScriptLimits) {
+    LocalHttpServer server({
+        {"/nested/start.html", R"HTML(
+            <html>
+              <head><title>Relative Start</title></head>
+              <body>
+                <a id="relative" href="../second.html?from=relative">Relative traversal</a>
+                <button id="plain-button">No navigation</button>
+              </body>
+            </html>)HTML"},
+        {"/second.html", R"HTML(
+            <html><head><title>Relative Destination</title></head><body><p>Arrived through a relative URL.</p></body></html>)HTML"}
+    });
+
+    AgentBrowser browser(config_);
+    ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
+
+    auto nav = browser.navigateTo(server.url("/nested/start.html"));
+    ASSERT_EQ(nav.result, BrowserActionResult::SUCCESS) << nav.message;
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Relative Start");
+
+    auto unsupported = browser.executeJavaScript("document.body.append('fake')");
+    EXPECT_EQ(unsupported.result, BrowserActionResult::FAILED);
+    EXPECT_NE(unsupported.message.find("requires a real browser engine"), std::string::npos);
+    EXPECT_EQ(browser.evaluateJavaScript("document.title").value_or(""), "Relative Start");
+
+    auto plainClick = browser.clickElement("#plain-button");
+    EXPECT_EQ(plainClick.result, BrowserActionResult::SUCCESS) << plainClick.message;
+    EXPECT_EQ(browser.getPageTitle().value_or(""), "Relative Start");
+
+    auto linkClick = browser.clickElement("#relative");
+    ASSERT_EQ(linkClick.result, BrowserActionResult::SUCCESS) << linkClick.message;
+    EXPECT_EQ(browser.getPageTitle().value_or(""), "Relative Destination");
+    auto href = browser.evaluateJavaScript("location.href");
+    ASSERT_TRUE(href.has_value());
+    EXPECT_NE(href->find("/second.html?from=relative"), std::string::npos);
+
     EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
 }
