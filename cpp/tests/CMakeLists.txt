@@ -299,3 +299,57 @@ add_real_test(real_embodiment_test          src/test_embodiment.cpp)
 add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
 add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
+
+# Regression test for public API drift between include/ and cpp/include/.
+# This target intentionally searches cpp/include first so stale duplicate
+# headers cannot silently reappear without failing the focused KSM lane.
+add_executable(public_header_forwarding_test public_header_forwarding_test.cpp)
+target_include_directories(public_header_forwarding_test BEFORE PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/include
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(public_header_forwarding_test
+    elizaos-cognitive_bridge
+    elizaos-plugin_specification
+    gtest
+    gtest_main
+    Threads::Threads
+)
+add_test(NAME public_header_forwarding_test COMMAND public_header_forwarding_test)
+
+# ============================================================================
+# KSM focused canonical validation target
+# ============================================================================
+# The repository's default all-target graph intentionally includes generated
+# transpilation modules and nested package experiments. KSM repair cycles need a
+# fast, deterministic target that exercises the canonical hand-written C++
+# centers and the cognitive integration anchor without compiling the generated
+# forest first.
+set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
+    cognitive_pipeline_e2e_test
+    real_core_test
+    real_agentaction_test
+    real_agentagenda_test
+    real_agentbrowser_test
+    real_agentcomms_test
+    real_agentlogger_test
+    real_agentloop_test
+    real_agentmemory_test
+    real_attention_test
+    real_characters_test
+    real_knowledge_test
+    real_embodiment_test
+    real_evolutionary_test
+    real_ontogenesis_test
+    real_cognitive_primitives_test
+    plugin_specification_test
+    public_header_forwarding_test
+)
+
+add_custom_target(ksm_canonical_tests
+    DEPENDS ${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
+)
+
+set_tests_properties(${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
+    PROPERTIES LABELS "ksm;canonical"
+)
