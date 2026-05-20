@@ -418,6 +418,53 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
     EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
 }
 
+
+TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
+    LocalHttpServer server({
+        {"/forms.html", R"HTML(
+            <html>
+              <head><title>Scoped Form Defaults</title></head>
+              <body>
+                <form id="target-form" method="get" action="/multi-submitted.html">
+                  <input id="name" name="name" type="text" value="Default Name">
+                  <input id="city" name="city" type="text" value="Cape Town">
+                  <input id="disabled-field" name="disabled" type="text" value="must-not-submit" disabled>
+                  <input id="checked-opt" name="opt" type="checkbox" value="yes" checked>
+                  <input id="unchecked-opt" name="skip" type="checkbox" value="no">
+                  <textarea id="notes" name="notes">default note</textarea>
+                </form>
+                <form id="other-form" method="get" action="/other.html">
+                  <input id="other-field" name="other" type="text" value="leak">
+                </form>
+              </body>
+            </html>)HTML"},
+        {"/multi-submitted.html", R"HTML(
+            <html><head><title>Scoped Submitted</title></head><body><p>Scoped form submitted</p></body></html>)HTML"}
+    });
+
+    AgentBrowser browser(config_);
+    ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.navigateTo(server.url("/forms.html")).result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.fillForm({{"#name", "Ada Lovelace"}}).result, BrowserActionResult::SUCCESS);
+
+    auto result = browser.submitForm("#target-form");
+    ASSERT_EQ(result.result, BrowserActionResult::SUCCESS) << result.message;
+    auto submittedUrl = browser.evaluateJavaScript("location.href");
+    ASSERT_TRUE(submittedUrl.has_value());
+    EXPECT_NE(submittedUrl->find("/multi-submitted.html?"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("name=Ada+Lovelace"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("city=Cape+Town"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("notes=default+note"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("opt=yes"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("disabled=must-not-submit"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("skip=no"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("other=leak"), std::string::npos);
+
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "Scoped Submitted");
+    EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
+}
+
 TEST_F(AgentBrowserTest, RealHttpRelativeLinkNavigationAndJavaScriptLimits) {
     LocalHttpServer server({
         {"/nested/start.html", R"HTML(
