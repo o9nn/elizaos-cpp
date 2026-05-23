@@ -317,6 +317,23 @@ target_link_libraries(public_header_forwarding_test
 )
 add_test(NAME public_header_forwarding_test COMMAND public_header_forwarding_test)
 
+# Focused validation for the application-level Eliza API client boundary.
+# This catches regressions in URL normalization, endpoint derivation, redacted
+# auth status, timeout handling, and deterministic shutdown semantics.
+add_executable(api_client_real_test api_client_real_test.cpp)
+target_include_directories(api_client_real_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/packages/applications/eliza/packages/api-client/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
+)
+target_link_libraries(api_client_real_test
+    elizaos-eliza-api-client
+    gtest
+    gtest_main
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+add_test(NAME api_client_real_test COMMAND api_client_real_test)
 add_executable(public_header_forwarding_all_test
     public_header_forwarding_all_test.cpp
     public_header_forwarding_headers/agentaction_hpp_test.cpp
@@ -413,6 +430,7 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_cognitive_primitives_test
     plugin_specification_test
     public_header_forwarding_test
+    api_client_real_test
     public_header_forwarding_all_test
 )
 
