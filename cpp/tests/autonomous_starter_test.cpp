@@ -83,6 +83,61 @@ TEST(AutonomousStarter, CreateAutolizaFactory) {
     EXPECT_FALSE(a->getConfig().agentName.empty());
 }
 
+
+TEST(AutonomousStarter, RejectsDisabledEmptyAndForbiddenShellCommands) {
+    AutonomousStarter agent(mkConfig());
+
+    agent.enableShellAccess(false);
+    auto disabled = agent.executeShellCommand("echo should_not_run");
+    EXPECT_FALSE(disabled.success);
+    EXPECT_NE(disabled.error.find("disabled"), std::string::npos);
+
+    agent.enableShellAccess(true);
+    auto empty = agent.executeShellCommand("   ");
+    EXPECT_FALSE(empty.success);
+    EXPECT_NE(empty.error.find("empty"), std::string::npos);
+
+    auto forbidden = agent.executeShellCommand("rm -rf /");
+    EXPECT_FALSE(forbidden.success);
+    EXPECT_NE(forbidden.error.find("forbidden pattern"), std::string::npos);
+}
+
+TEST(AutonomousStarter, ExecutesSafeShellCommandAndRecordsOutput) {
+    AutonomousStarter agent(mkConfig());
+    auto result = agent.executeShellCommand("printf eliza-safe-command");
+
+    ASSERT_TRUE(result.success) << result.error;
+    EXPECT_EQ(result.exitCode, 0);
+    EXPECT_NE(result.output.find("eliza-safe-command"), std::string::npos);
+    EXPECT_FALSE(agent.getState().getRecentMessages().empty());
+}
+
+TEST(AutonomousStarter, InternalCdChangesWorkingDirectoryAndRejectsMissingDirectory) {
+    AutonomousStarter agent(mkConfig());
+    const auto original = agent.getCurrentWorkingDirectory();
+
+    auto cdTmp = agent.executeShellCommand("cd /tmp");
+    ASSERT_TRUE(cdTmp.success) << cdTmp.error;
+    EXPECT_EQ(agent.getCurrentWorkingDirectory(), "/tmp");
+    EXPECT_NE(cdTmp.output.find("/tmp"), std::string::npos);
+
+    auto missing = agent.executeShellCommand("cd /definitely_missing_elizaos_cpp_dir");
+    EXPECT_FALSE(missing.success);
+    EXPECT_EQ(agent.getCurrentWorkingDirectory(), "/tmp");
+
+    auto restore = agent.executeShellCommand(std::string("cd ") + original);
+    EXPECT_TRUE(restore.success) << restore.error;
+}
+
+TEST(AutonomousStarter, SchedulesValidShellTaskAndRejectsUnsafeTask) {
+    AutonomousStarter agent(mkConfig());
+    auto safeTask = agent.executeShellCommandAsTask("printf queued-task");
+    EXPECT_FALSE(safeTask.empty());
+
+    auto unsafeTask = agent.executeShellCommandAsTask("shutdown now");
+    EXPECT_TRUE(unsafeTask.empty());
+}
+
 TEST(AutonomousStarter, PlaceholderLink) {
     EXPECT_NO_THROW(autonomous_starter_placeholder());
 }

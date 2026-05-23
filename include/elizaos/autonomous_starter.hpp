@@ -1,202 +1,115 @@
 #pragma once
 
-#include "elizaos/core.hpp"
-#include "elizaos/agentloop.hpp"
-#include "elizaos/agentshell.hpp"
-#include <memory>
-#include <chrono>
+/**
+ * ElizaOS C++ - Autonomous Starter
+ *
+ * Canonical public header for the autonomous starter integration package.
+ * The class exposes a safe, deterministic C++ autonomy surface around agent
+ * state, shell-command execution, task dispatch, and a perception/reason/action
+ * cognitive loop.
+ */
+
+#include "core.hpp"
+#include "agentloop.hpp"
+#include "agentshell.hpp"
+
 #include <atomic>
+#include <chrono>
+#include <memory>
+#include <string>
 
 namespace elizaos {
 
 /**
- * AutonomousStarter - Core autonomous agent implementation
- * 
- * A C++ implementation inspired by the TypeScript autonomous-starter,
- * featuring the Autoliza character - a self-aware AI with full terminal access
- * and an insatiable curiosity to explore and learn.
- * 
- * Key Features:
- * - Shell command execution with safety checks
- * - Autonomous cognitive loop (perception, reasoning, action)
- * - Task management integration
- * - Memory-based learning and experience tracking
- * - Configurable loop intervals for different operation modes
+ * AutonomousStarter - Core autonomous agent implementation.
+ *
+ * The starter is intentionally lightweight: it uses the existing State,
+ * TaskManager, AgentLoop, and ShellCommandResult primitives instead of pulling
+ * in external runtime dependencies. Shell access can be disabled, command
+ * execution is guarded by explicit safety checks, and every significant
+ * autonomy transition is written into the agent's recent-memory stream.
  */
 class AutonomousStarter {
 public:
-    /**
-     * Constructor
-     * @param config Agent configuration including name, bio, and other attributes
-     */
-    AutonomousStarter(const AgentConfig& config);
-    
-    /**
-     * Destructor - ensures clean shutdown
-     */
+    explicit AutonomousStarter(const AgentConfig& config);
     ~AutonomousStarter();
-    
-    // === Core Lifecycle ===
-    
-    /**
-     * Start the autonomous agent
-     */
+
+    AutonomousStarter(const AutonomousStarter&) = delete;
+    AutonomousStarter& operator=(const AutonomousStarter&) = delete;
+
+    // Core lifecycle
     void start();
-    
-    /**
-     * Stop the autonomous agent
-     */
     void stop();
-    
-    /**
-     * Check if the agent is running
-     */
     bool isRunning() const { return running_; }
-    
-    // === Shell Command Execution ===
-    
-    /**
-     * Execute a shell command with safety checks
-     * @param command The shell command to execute
-     * @return Result including output, error, and exit code
-     */
+
+    // Shell command execution
     ShellCommandResult executeShellCommand(const std::string& command);
-    
-    /**
-     * Enable or disable shell access for security
-     * @param enabled Whether shell commands should be allowed
-     */
     void enableShellAccess(bool enabled) { shellAccessEnabled_ = enabled; }
-    
-    /**
-     * Get current working directory
-     */
+    bool isShellAccessEnabled() const { return shellAccessEnabled_; }
     const std::string& getCurrentWorkingDirectory() const { return currentWorkingDirectory_; }
-    
-    // === Autonomous Loop Control ===
-    
-    /**
-     * Start the autonomous cognitive loop
-     * Begins continuous perception, reasoning, and action cycles
-     */
+
+    // Autonomous loop control
     void startAutonomousLoop();
-    
-    /**
-     * Stop the autonomous cognitive loop
-     * Useful for debugging or manual control
-     */
     void stopAutonomousLoop();
-    
-    /**
-     * Check if autonomous loop is running
-     */
     bool isAutonomousLoopRunning() const;
-    
-    /**
-     * Set the interval between autonomous loop iterations
-     * @param interval Time between loop cycles
-     */
     void setLoopInterval(std::chrono::milliseconds interval);
-    
-    /**
-     * Get current loop interval
-     */
     std::chrono::milliseconds getLoopInterval() const { return loopInterval_; }
-    
-    // === State Access ===
-    
-    /**
-     * Get mutable reference to agent state
-     */
+
+    // State access
     State& getState() { return state_; }
-    
-    /**
-     * Get const reference to agent state
-     */
     const State& getState() const { return state_; }
-    
-    /**
-     * Get agent configuration
-     */
     const AgentConfig& getConfig() const { return config_; }
-    
-    // === Task Management ===
-    
-    /**
-     * Execute a shell command as a task
-     * @param command The command to execute
-     * @return Task ID for tracking
-     */
+
+    // Task management
     UUID executeShellCommandAsTask(const std::string& command);
-    
+
 private:
-    // === Internal Cognitive Steps ===
-    
-    /**
-     * Perception step - gather information about environment
-     */
+    // Internal cognitive steps
     std::shared_ptr<void> perceptionStep(std::shared_ptr<void> input);
-    
-    /**
-     * Reasoning step - analyze information and plan actions
-     */
     std::shared_ptr<void> reasoningStep(std::shared_ptr<void> input);
-    
-    /**
-     * Action step - execute planned actions
-     */
     std::shared_ptr<void> actionStep(std::shared_ptr<void> input);
-    
-    // === Internal Task Worker ===
-    
-    /**
-     * Worker for executing shell commands as tasks
-     */
+
+    // Memory helpers
+    void appendMemory(const std::string& content);
+    std::string summarizeRecentExperience(std::size_t maxItems = 4) const;
+
+    // Shell helpers
+    ShellCommandResult validateShellCommand(const std::string& command) const;
+    ShellCommandResult executeInternalCd(const std::string& command);
+    ShellCommandResult executeExternalShellCommand(const std::string& command);
+
     class ShellCommandWorker : public TaskWorker {
     public:
-        ShellCommandWorker(AutonomousStarter* starter) : starter_(starter) {}
-        
+        explicit ShellCommandWorker(AutonomousStarter* starter) : starter_(starter) {}
+
         std::string getName() const override { return "shell_command"; }
-        
-        bool validate(const Task& task, const State& state, 
-                     std::shared_ptr<Memory> message) const override;
-        
+        bool validate(const Task& task, const State& state,
+                      std::shared_ptr<Memory> message) const override;
         bool execute(Task& task, State& state, const TaskOptions& options) override;
-        
+
     private:
         AutonomousStarter* starter_;
     };
-    
-    // === Member Variables ===
-    
-    AgentConfig config_;                                    // Agent configuration
-    State state_;                                          // Current agent state
-    std::atomic<bool> running_{false};                     // Whether agent is active
-    std::atomic<bool> shellAccessEnabled_{true};           // Shell access safety flag
-    
-    // Autonomous loop management
-    std::unique_ptr<AgentLoop> autonomousLoop_;            // Cognitive loop handler
-    std::chrono::milliseconds loopInterval_{1000};        // Loop iteration interval
-    
-    // Task management
-    std::unique_ptr<TaskManager> taskManager_;             // Task orchestration
-    std::shared_ptr<ShellCommandWorker> shellWorker_;     // Shell command worker
-    
-    // Environment tracking
-    std::string currentWorkingDirectory_;                  // Current working directory
+
+    AgentConfig config_;
+    State state_;
+    std::atomic<bool> running_{false};
+    std::atomic<bool> shellAccessEnabled_{true};
+
+    std::unique_ptr<AgentLoop> autonomousLoop_;
+    std::chrono::milliseconds loopInterval_{1000};
+
+    std::unique_ptr<TaskManager> taskManager_;
+    std::shared_ptr<ShellCommandWorker> shellWorker_;
+
+    std::string currentWorkingDirectory_;
+    std::size_t cognitiveCycle_{0};
+    std::size_t actionCounter_{0};
+    std::string lastObservationSummary_;
+    std::string lastPlan_;
 };
 
-// === Convenience Functions ===
-
-/**
- * Create a pre-configured Autoliza agent instance
- * @return Shared pointer to autonomous starter configured as Autoliza
- */
 std::shared_ptr<AutonomousStarter> createAutolizaAgent();
-
-/**
- * Compatibility function for existing builds
- */
 void autonomous_starter_placeholder();
 
 } // namespace elizaos

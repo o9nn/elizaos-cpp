@@ -147,3 +147,76 @@ TEST(HATEnums, StringRoundtrips) {
         EXPECT_EQ(stringToStatus(statusToString(s)), s);
     }
 }
+
+TEST(HATTokens, PermissionRegistryAndRevocation) {
+    std::vector<std::string> permissions = {"read", "write", "execute"};
+    const auto token = issueHATToken("agent@1", "team/main", permissions);
+
+    EXPECT_FALSE(token.empty());
+    EXPECT_TRUE(validateHATToken(token));
+    EXPECT_TRUE(checkHATPermission(token, "read"));
+    EXPECT_TRUE(checkHATPermission(token, "write"));
+    EXPECT_FALSE(checkHATPermission(token, "admin"));
+    EXPECT_FALSE(checkHATPermission("missing-token", "read"));
+
+    revokeHATToken(token);
+    EXPECT_FALSE(validateHATToken(token));
+    EXPECT_FALSE(checkHATPermission(token, "read"));
+}
+
+TEST_F(HATCoordinatorTest, AcknowledgeMessageMutatesMessageAndRejectsMissingId) {
+    auto teamId = coord.createTeam("t", "obj");
+    ASSERT_TRUE(coord.addMember(teamId, mkMember("a", "A", TeamRole::AGENT_MEMBER, {})));
+
+    TeamMessage msg;
+    msg.senderId = "system";
+    msg.receiverId = "a";
+    msg.type = CommunicationType::DIRECTIVE;
+    msg.content = "ack me";
+    msg.acknowledged = false;
+    auto id = coord.sendMessage(msg);
+
+    EXPECT_FALSE(coord.acknowledgeMessage("missing-message"));
+    EXPECT_TRUE(coord.acknowledgeMessage(id));
+    auto messages = coord.getMessagesForMember("a");
+    ASSERT_EQ(messages.size(), 1u);
+    EXPECT_TRUE(messages.front().acknowledged);
+}
+
+TEST_F(HATCoordinatorTest, BestAssigneeHonorsCapabilitiesAndCapacity) {
+    auto teamId = coord.createTeam("t", "obj");
+    ASSERT_TRUE(coord.addMember(teamId, mkMember("busy", "Busy", TeamRole::AGENT_MEMBER, {"code"}, 1.0, 0.9)));
+    ASSERT_TRUE(coord.addMember(teamId, mkMember("free", "Free", TeamRole::AGENT_MEMBER, {"code", "review"}, 1.0, 0.2)));
+    ASSERT_TRUE(coord.addMember(teamId, mkMember("wrong", "Wrong", TeamRole::AGENT_MEMBER, {"paint"}, 1.0, 0.0)));
+
+    auto task = mkTask("review feature", TaskPriority::HIGH, {"code", "review"});
+    EXPECT_EQ(coord.findBestAssignee(teamId, task), "free");
+    EXPECT_EQ(coord.findBestAssignee("missing-team", task), "");
+}
+
+TEST(HATProtocol, RejectsInvalidOperationsAndEmitsAssistanceCallback) {
+    HATProtocolHandler h;
+    EXPECT_FALSE(h.joinTeam("team-1"));
+    EXPECT_FALSE(h.reportStatus("ready"));
+    EXPECT_FALSE(h.requestAssistance("task-1", "need context"));
+
+    bool callbackCalled = false;
+    h.onMessage([&](const TeamMessage& message) {
+        callbackCalled = true;
+        EXPECT_EQ(message.senderId, "agent-1");
+        EXPECT_EQ(message.relatedTaskId, "task-1");
+        EXPECT_EQ(message.type, CommunicationType::QUERY);
+    });
+
+    ASSERT_TRUE(h.initialize("agent-1"));
+    EXPECT_FALSE(h.initialize(""));
+    EXPECT_TRUE(h.joinTeam("team-1"));
+    EXPECT_TRUE(h.joinTeam("team-1"));
+    EXPECT_TRUE(h.reportStatus("ready"));
+    EXPECT_FALSE(h.reportStatus(""));
+    EXPECT_TRUE(h.requestAssistance("task-1", "need context"));
+    EXPECT_TRUE(callbackCalled);
+    EXPECT_TRUE(h.leaveTeam("team-1"));
+    EXPECT_FALSE(h.leaveTeam("team-1"));
+}
+

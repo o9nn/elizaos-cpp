@@ -196,8 +196,17 @@ private:
 // FREE FUNCTIONS
 // ==============================================================================
 
-// Placeholder function for library linkage
+// Backward-compatible module-link probe.
 void hat_placeholder();
+
+// Token lifecycle helpers. Tokens are in-process capabilities used by the
+// local HAT coordinator tests and demos; they are not cryptographic bearer
+// tokens for network use.
+std::string issueHATToken(const std::string& agentId, const std::string& teamId,
+                          const std::vector<std::string>& permissions);
+bool validateHATToken(const std::string& token);
+bool checkHATPermission(const std::string& token, const std::string& permission);
+void revokeHATToken(const std::string& token);
 
 // Utility functions
 std::string roleToString(TeamRole role);
