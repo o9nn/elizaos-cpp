@@ -146,14 +146,19 @@ Individual Individual::crossover(const Individual& parent1, const Individual& pa
         return Individual(nullptr);
     }
     
-    // Create offspring by copying parent1's program
-    auto offspring = std::make_shared<ProgramNode>(*parent1.program_);
+    // Create offspring by deep-copying parent1's program. A shallow ProgramNode copy
+    // would alias child subtrees back into parent1, so replacing a descendant during
+    // crossover could mutate a parent and make tests non-deterministic across runs.
+    auto offspring = parent1.program_->clone();
     
-    // Perform subtree crossover
+    // Perform subtree crossover.
     std::random_device rd;
     std::mt19937 gen(rd());
     
-    // Select random subtree from parent1 to replace
+    // Select candidate subtrees from the cloned offspring. Prefer non-root
+    // replacement sites when parent1 has descendants so the offspring keeps a
+    // usable top-level executable structure instead of occasionally collapsing to
+    // a terminal constant.
     std::vector<std::shared_ptr<ProgramNode>> subtrees1;
     std::function<void(std::shared_ptr<ProgramNode>)> collectSubtrees1 = 
         [&](std::shared_ptr<ProgramNode> node) {
@@ -164,7 +169,7 @@ Individual Individual::crossover(const Individual& parent1, const Individual& pa
         };
     collectSubtrees1(offspring);
     
-    // Select random subtree from parent2 to insert
+    // Select random subtree from parent2 to insert.
     std::vector<std::shared_ptr<ProgramNode>> subtrees2;
     std::function<void(std::shared_ptr<ProgramNode>)> collectSubtrees2 = 
         [&](std::shared_ptr<ProgramNode> node) {
@@ -176,13 +181,14 @@ Individual Individual::crossover(const Individual& parent1, const Individual& pa
     collectSubtrees2(parent2.program_);
     
     if (!subtrees1.empty() && !subtrees2.empty()) {
-        std::uniform_int_distribution<size_t> dist1(0, subtrees1.size() - 1);
+        const size_t minReplaceIndex = subtrees1.size() > 1 ? 1 : 0;
+        std::uniform_int_distribution<size_t> dist1(minReplaceIndex, subtrees1.size() - 1);
         std::uniform_int_distribution<size_t> dist2(0, subtrees2.size() - 1);
         
         size_t replaceIndex = dist1(gen);
         size_t insertIndex = dist2(gen);
         
-        // Replace subtree
+        // Replace subtree contents with an independent clone from parent2.
         auto& replaceNode = subtrees1[replaceIndex];
         auto& insertNode = subtrees2[insertIndex];
         

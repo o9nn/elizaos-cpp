@@ -317,6 +317,75 @@ target_link_libraries(public_header_forwarding_test
 )
 add_test(NAME public_header_forwarding_test COMMAND public_header_forwarding_test)
 
+add_executable(public_header_forwarding_all_test
+    public_header_forwarding_all_test.cpp
+    public_header_forwarding_headers/agentaction_hpp_test.cpp
+    public_header_forwarding_headers/agentagenda_hpp_test.cpp
+    public_header_forwarding_headers/agentbrowser_hpp_test.cpp
+    public_header_forwarding_headers/agentcomms_hpp_test.cpp
+    public_header_forwarding_headers/agentlogger_hpp_test.cpp
+    public_header_forwarding_headers/agentloop_hpp_test.cpp
+    public_header_forwarding_headers/agentmemory_hpp_test.cpp
+    public_header_forwarding_headers/agentshell_hpp_test.cpp
+    public_header_forwarding_headers/attention_hpp_test.cpp
+    public_header_forwarding_headers/auto_fun_hpp_test.cpp
+    public_header_forwarding_headers/autofun_idl_hpp_test.cpp
+    public_header_forwarding_headers/autonomous_starter_hpp_test.cpp
+    public_header_forwarding_headers/awesome_eliza_hpp_test.cpp
+    public_header_forwarding_headers/brandkit_hpp_test.cpp
+    public_header_forwarding_headers/characterfile_hpp_test.cpp
+    public_header_forwarding_headers/characters_hpp_test.cpp
+    public_header_forwarding_headers/classified_hpp_test.cpp
+    public_header_forwarding_headers/cognitive_bridge_hpp_test.cpp
+    public_header_forwarding_headers/comprehensive_e2e_hpp_test.cpp
+    public_header_forwarding_headers/core_hpp_test.cpp
+    public_header_forwarding_headers/discord_summarizer_hpp_test.cpp
+    public_header_forwarding_headers/discrub_ext_hpp_test.cpp
+    public_header_forwarding_headers/easycompletion_hpp_test.cpp
+    public_header_forwarding_headers/eliza_hpp_test.cpp
+    public_header_forwarding_headers/eliza_3d_hyperfy_starter_hpp_test.cpp
+    public_header_forwarding_headers/eliza_nextjs_starter_hpp_test.cpp
+    public_header_forwarding_headers/eliza_plugin_starter_hpp_test.cpp
+    public_header_forwarding_headers/eliza_starter_hpp_test.cpp
+    public_header_forwarding_headers/elizaos_hpp_test.cpp
+    public_header_forwarding_headers/elizaos_github_io_hpp_test.cpp
+    public_header_forwarding_headers/elizas_list_hpp_test.cpp
+    public_header_forwarding_headers/elizas_world_hpp_test.cpp
+    public_header_forwarding_headers/embodiment_hpp_test.cpp
+    public_header_forwarding_headers/evolutionary_hpp_test.cpp
+    public_header_forwarding_headers/goal_manager_hpp_test.cpp
+    public_header_forwarding_headers/hat_hpp_test.cpp
+    public_header_forwarding_headers/hats_hpp_test.cpp
+    public_header_forwarding_headers/knowledge_hpp_test.cpp
+    public_header_forwarding_headers/livevideochat_hpp_test.cpp
+    public_header_forwarding_headers/ljspeechtools_hpp_test.cpp
+    public_header_forwarding_headers/mcp_gateway_hpp_test.cpp
+    public_header_forwarding_headers/ontogenesis_hpp_test.cpp
+    public_header_forwarding_headers/otaku_hpp_test.cpp
+    public_header_forwarding_headers/otc_agent_hpp_test.cpp
+    public_header_forwarding_headers/plugin_specification_hpp_test.cpp
+    public_header_forwarding_headers/plugins_automation_hpp_test.cpp
+    public_header_forwarding_headers/registry_hpp_test.cpp
+    public_header_forwarding_headers/spartan_hpp_test.cpp
+    public_header_forwarding_headers/sweagent_hpp_test.cpp
+    public_header_forwarding_headers/the_org_hpp_test.cpp
+    public_header_forwarding_headers/trust_scoreboard_hpp_test.cpp
+    public_header_forwarding_headers/vercel_api_hpp_test.cpp
+    public_header_forwarding_headers/website_hpp_test.cpp
+    public_header_forwarding_headers/workgroups_hpp_test.cpp
+)
+target_include_directories(public_header_forwarding_all_test BEFORE PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/include
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(public_header_forwarding_all_test
+    nlohmann_json::nlohmann_json
+    gtest
+    gtest_main
+    Threads::Threads
+)
+add_test(NAME public_header_forwarding_all_test COMMAND public_header_forwarding_all_test)
+
 # ============================================================================
 # KSM focused canonical validation target
 # ============================================================================
@@ -344,6 +413,7 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_cognitive_primitives_test
     plugin_specification_test
     public_header_forwarding_test
+    public_header_forwarding_all_test
 )
 
 add_custom_target(ksm_canonical_tests
