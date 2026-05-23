@@ -170,6 +170,37 @@ static std::string formFieldName(const std::string& selector, const WebElement& 
     return cleaned;
 }
 
+static std::string formControlValue(const WebElement& element) {
+    auto value = element.attributes.find("value");
+    if (value != element.attributes.end()) return value->second;
+    return element.text;
+}
+
+static bool isSuccessfulTextControl(const WebElement& element) {
+    const std::string tag = toLower(element.tag);
+    const std::string type = [&]() {
+        auto it = element.attributes.find("type");
+        return it == element.attributes.end() ? std::string{} : toLower(it->second);
+    }();
+    if (tag == "textarea" || tag == "select") return true;
+    if (tag != "input") return false;
+    static const std::unordered_set<std::string> skipped = {
+        "button", "checkbox", "file", "image", "radio", "reset", "submit"
+    };
+    return skipped.find(type) == skipped.end();
+}
+
+static bool isCheckableControl(const WebElement& element) {
+    const std::string tag = toLower(element.tag);
+    auto typeIt = element.attributes.find("type");
+    const std::string type = typeIt == element.attributes.end() ? std::string{} : toLower(typeIt->second);
+    return tag == "input" && (type == "checkbox" || type == "radio");
+}
+
+static bool hasHtmlAttribute(const WebElement& element, const std::string& name) {
+    return element.attributes.find(name) != element.attributes.end();
+}
+
 class HttpClient {
 public:
     HttpClient() {
@@ -271,7 +302,31 @@ public:
     std::vector<WebElement> queryAll(const std::string& selector, SelectorType type) const {
         std::vector<GumboNode*> nodes;
         if (!output_ || !output_->root) return {};
+        collectMatching(selector, type, nodes);
+        return toElements(nodes);
+    }
 
+    std::vector<WebElement> formControls(const std::string& formSelector, SelectorType type) const {
+        std::vector<GumboNode*> formNodes;
+        if (!output_ || !output_->root) return {};
+        collectMatching(formSelector, type, formNodes);
+        auto selectedForm = std::find_if(formNodes.begin(), formNodes.end(), [](GumboNode* node) {
+            return tagName(node) == "form";
+        });
+        if (selectedForm == formNodes.end()) return {};
+
+        std::vector<GumboNode*> controls;
+        collectByPredicate(*selectedForm, [](GumboNode* node) {
+            const std::string tag = tagName(node);
+            return tag == "input" || tag == "select" || tag == "textarea" || tag == "button";
+        }, controls);
+        return toElements(controls);
+    }
+
+private:
+    using Predicate = std::function<bool(GumboNode*)>;
+
+    void collectMatching(const std::string& selector, SelectorType type, std::vector<GumboNode*>& nodes) const {
         switch (type) {
             case SelectorType::ID:
                 collectByPredicate(output_->root, [&](GumboNode* node) { return attr(node, "id") == stripPrefix(selector, '#'); }, nodes);
@@ -289,15 +344,14 @@ public:
                 queryBasicXPath(selector, nodes);
                 break;
         }
+    }
 
+    std::vector<WebElement> toElements(const std::vector<GumboNode*>& nodes) const {
         std::vector<WebElement> elements;
         elements.reserve(nodes.size());
         for (auto* node : nodes) elements.push_back(toElement(node));
         return elements;
     }
-
-private:
-    using Predicate = std::function<bool(GumboNode*)>;
 
     void reset() {
         if (output_) {
@@ -320,6 +374,11 @@ private:
         if (!isElement(node)) return "";
         GumboAttribute* value = gumbo_get_attribute(&node->v.element.attributes, name.c_str());
         return (value && value->value) ? std::string(value->value) : "";
+    }
+
+    static bool hasAttr(GumboNode* node, const std::string& name) {
+        if (!isElement(node)) return false;
+        return gumbo_get_attribute(&node->v.element.attributes, name.c_str()) != nullptr;
     }
 
     static bool hasClass(GumboNode* node, const std::string& className) {
@@ -472,11 +531,13 @@ private:
         extractText(node, element.text);
         element.text = normalizeWhitespace(element.text);
         element.innerHTML = element.text;
-        const std::string disabled = attr(node, "disabled");
-        element.isEnabled = disabled.empty();
-        const std::string hidden = attr(node, "hidden");
+        element.isEnabled = !hasAttr(node, "disabled") && toLower(attr(node, "aria-disabled")) != "true";
         const std::string style = toLower(attr(node, "style"));
-        element.isVisible = hidden.empty() && style.find("display:none") == std::string::npos && style.find("visibility:hidden") == std::string::npos;
+        element.isVisible = !hasAttr(node, "hidden") &&
+                            style.find("display:none") == std::string::npos &&
+                            style.find("display: none") == std::string::npos &&
+                            style.find("visibility:hidden") == std::string::npos &&
+                            style.find("visibility: hidden") == std::string::npos;
         element.width = element.isVisible ? 1 : 0;
         element.height = element.isVisible ? 1 : 0;
         return element;
@@ -819,6 +880,23 @@ BrowserResult AgentBrowser::submitForm(const std::string& formSelector) {
 
     if (method == "get") {
         std::map<std::string, std::string> queryParams;
+        {
+            std::lock_guard<std::mutex> lock(sessionMutex_);
+            auto* session = browser_impl::asSession(browserDriver_);
+            if (session) {
+                for (const auto& control : session->parser.formControls(formSelector, SelectorType::CSS)) {
+                    if (!control.isEnabled) continue;
+                    const std::string name = browser_impl::formFieldName("", control);
+                    if (name.empty()) continue;
+                    if (browser_impl::isSuccessfulTextControl(control)) {
+                        queryParams.emplace(name, browser_impl::formControlValue(control));
+                    } else if (browser_impl::isCheckableControl(control) && browser_impl::hasHtmlAttribute(control, "checked")) {
+                        const std::string value = browser_impl::formControlValue(control);
+                        queryParams.emplace(name, value.empty() ? "on" : value);
+                    }
+                }
+            }
+        }
         for (const auto& [selector, value] : formValues) {
             auto field = findElement(selector);
             if (!field || !field->isEnabled) continue;
@@ -1142,7 +1220,7 @@ std::vector<std::string> extractEmails(const std::string& text) {
 
 std::vector<std::string> extractPhoneNumbers(const std::string& text) {
     std::vector<std::string> phones;
-    static const std::regex phoneRegex(R"(\+?[0-9][0-9\s().-]{8,}[0-9])");
+    static const std::regex phoneRegex(R"((?:\+?[0-9]|\([0-9]{2,4}\))[0-9\s().-]{7,}[0-9])");
     for (auto it = std::sregex_iterator(text.begin(), text.end(), phoneRegex); it != std::sregex_iterator(); ++it) phones.push_back(browser_impl::trim(it->str()));
     return phones;
 }
