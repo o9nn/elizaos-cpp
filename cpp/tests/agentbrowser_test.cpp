@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include "elizaos/agentbrowser.hpp"
 
+#include <algorithm>
+
 using namespace elizaos;
 
 class AgentBrowserTest : public ::testing::Test {
@@ -83,6 +85,9 @@ TEST(BrowserUtils, ExtractEmails) {
 }
 
 TEST(BrowserUtils, ExtractPhoneNumbers) {
-    auto p = browser_utils::extractPhoneNumbers("Call +27 11 555 1234 or 555-867-5309");
-    SUCCEED() << "matched " << p.size() << " phone numbers";
+    auto p = browser_utils::extractPhoneNumbers("Call +27 11 555 1234, (021) 555 1234, or 555-867-5309");
+    ASSERT_GE(p.size(), 3u);
+    EXPECT_NE(std::find(p.begin(), p.end(), "+27 11 555 1234"), p.end());
+    EXPECT_NE(std::find(p.begin(), p.end(), "(021) 555 1234"), p.end());
+    EXPECT_NE(std::find(p.begin(), p.end(), "555-867-5309"), p.end());
 }

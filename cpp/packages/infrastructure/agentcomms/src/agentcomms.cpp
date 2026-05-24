@@ -503,8 +503,39 @@ MessageValidationResult AgentComms::validateMessage(const Message& message, cons
         return MessageValidationResult(true);
     }
     
-    // Use default validation
-    return MessageValidation::defaultValidator(message, agent_to_check);
+    auto default_result = MessageValidation::defaultValidator(message, agent_to_check);
+    if (!default_result.valid) {
+        return default_result;
+    }
+
+    // If participation state has been configured for this agent, treat it as an
+    // access-control envelope around the default structural checks.  Empty
+    // participation sets remain permissive so existing deployments that only use
+    // default validation are not made unexpectedly strict.
+    std::lock_guard<std::mutex> lock(participationsMutex_);
+    auto participation_it = participations_.find(agent_to_check);
+    if (participation_it == participations_.end()) {
+        return MessageValidationResult(true);
+    }
+
+    const auto& participation = participation_it->second;
+    if (!participation.participating_channels.empty()) {
+        auto channel_result = MessageValidation::validateChannelParticipation(
+            message, agent_to_check, participation);
+        if (!channel_result.valid) {
+            return channel_result;
+        }
+    }
+
+    if (!message.server_id.empty()) {
+        auto server_result = MessageValidation::validateServerSubscription(
+            message, agent_to_check, participation);
+        if (!server_result.valid) {
+            return server_result;
+        }
+    }
+
+    return MessageValidationResult(true);
 }
 
 AgentParticipation& AgentComms::getOrCreateParticipation(const AgentId& agent_id) {
