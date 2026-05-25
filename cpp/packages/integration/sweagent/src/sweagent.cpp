@@ -413,44 +413,48 @@ std::vector<SolutionResult> SWEAgentManager::solveIssuesParallel(const std::vect
     std::vector<SolutionResult> results;
     if (issues.empty()) return results;
 
-    // Take a snapshot of the agent pool so we can hand out work without
-    // holding the lock while individual agents run.
+    // Take a stable snapshot of both the agent pool and concurrency cap. The
+    // manager never holds its mutex while agents solve issues, but each worker is
+    // bound to a single distinct agent from the snapshot. That avoids concurrent
+    // calls into one SWEAgent instance and keeps each agent's solution history
+    // coherent without adding fine-grained locking inside the agent itself.
     std::vector<std::shared_ptr<SWEAgent>> pool;
+    int maxParallel = 1;
     {
         std::lock_guard<std::mutex> lock(mutex_);
         pool.reserve(agents_.size());
         for (auto& [_, agent] : agents_) pool.push_back(agent);
+        maxParallel = std::max(1, maxParallelAgents_);
     }
     if (pool.empty()) return results;
 
     const size_t workers = std::max<size_t>(1,
-        std::min<size_t>(pool.size(), static_cast<size_t>(std::max(1, maxParallelAgents_))));
+        std::min<size_t>(pool.size(), static_cast<size_t>(maxParallel)));
 
+    results.resize(issues.size());
     std::atomic<size_t> nextIndex{0};
-    std::vector<std::future<std::vector<SolutionResult>>> futures;
+    std::vector<std::future<void>> futures;
     futures.reserve(workers);
 
     for (size_t w = 0; w < workers; ++w) {
-        futures.push_back(std::async(std::launch::async, [&, w]() {
-            std::vector<SolutionResult> local;
+        auto agent = pool[w];
+        futures.push_back(std::async(std::launch::async, [&, agent]() {
             while (true) {
                 const size_t i = nextIndex.fetch_add(1);
                 if (i >= issues.size()) break;
-                auto& agent = pool[(i + w) % pool.size()];
-                local.push_back(agent->solveIssue(issues[i]));
+                results[i] = agent->solveIssue(issues[i]);
             }
-            return local;
         }));
     }
 
     for (auto& f : futures) {
-        auto local = f.get();
-        results.insert(results.end(), local.begin(), local.end());
+        f.get();
     }
     return results;
 }
 
 void SWEAgentManager::setMaxParallelAgents(int maxAgents) {
+    std::lock_guard<std::mutex> lock(mutex_);
     maxParallelAgents_ = std::max(1, maxAgents);
 }
 

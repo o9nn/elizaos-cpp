@@ -6,18 +6,24 @@
 #include <cmath>
 #include <iomanip>
 #include <any>
+#include <mutex>
 
 namespace elizaos {
 
 // Global character manager instance
 std::shared_ptr<CharacterManager> globalCharacterManager = std::make_shared<CharacterManager>();
 
-// Simple UUID generator for characters
+// Thread-safe UUID generator for characters.
+// CharacterProfile constructors may run concurrently before CharacterManager
+// registration acquires its own mutex, so the shared random engine must be
+// serialized at the generator boundary.
 std::string generateCharacterUUID() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
+    static std::mutex uuidMutex;
 
+    std::lock_guard<std::mutex> lock(uuidMutex);
     std::string uuid = "char-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
     for (auto& c : uuid) {
         if (c == 'x') {

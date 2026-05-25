@@ -150,6 +150,47 @@ TEST(SWEAgentManagerDepth, SolvesIssuesInParallel) {
     EXPECT_GT(successes, 0);
 }
 
+TEST(SWEAgentManagerDepth, ParallelSolvingPreservesIssueOrderAndAgentHistory) {
+    auto a1 = std::make_shared<SWEAgent>("ordered-1", "model");
+    auto a2 = std::make_shared<SWEAgent>("ordered-2", "model");
+    SWEAgentManager mgr;
+    mgr.addAgent(a1);
+    mgr.addAgent(a2);
+    mgr.setMaxParallelAgents(2);
+
+    std::vector<GitHubIssue> issues;
+    for (int i = 0; i < 12; ++i) {
+        GitHubIssue issue;
+        issue.repo = "demo/ordered-parallel";
+        issue.issueNumber = 200 + i;
+        issue.title = "Add ordered helper" + std::to_string(i);
+        issue.description = "Implement ordered helper" + std::to_string(i) + " function.";
+        issue.labels = {"feature", "cpp"};
+        issues.push_back(issue);
+    }
+
+    const auto results = mgr.solveIssuesParallel(issues);
+    ASSERT_EQ(results.size(), issues.size());
+
+    for (size_t i = 0; i < results.size(); ++i) {
+        EXPECT_TRUE(results[i].success);
+        EXPECT_NE(results[i].description.find(issues[i].title), std::string::npos);
+        EXPECT_FALSE(results[i].filesChanged.empty());
+        EXPECT_FALSE(results[i].testsRun.empty());
+    }
+
+    const auto h1 = a1->getHistory();
+    const auto h2 = a2->getHistory();
+    EXPECT_GT(h1.size(), 0u);
+    EXPECT_GT(h2.size(), 0u);
+    EXPECT_EQ(h1.size() + h2.size(), issues.size());
+
+    const auto statuses = mgr.getAgentStatuses();
+    ASSERT_EQ(statuses.size(), 2u);
+    EXPECT_NE(statuses.at("ordered-1").find("solved"), std::string::npos);
+    EXPECT_NE(statuses.at("ordered-2").find("solved"), std::string::npos);
+}
+
 // ===========================================================================
 // MCP Gateway integration tests
 // ===========================================================================
