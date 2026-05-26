@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/types.h>
 
 namespace elizaos {
@@ -610,13 +611,19 @@ bool TCPConnector::connect(const std::string& connectionString) {
         return false;
     }
 
+    timeval receiveTimeout{};
+    receiveTimeout.tv_sec = 0;
+    receiveTimeout.tv_usec = 100000;
+    (void)::setsockopt(candidateSocket, SOL_SOCKET, SO_RCVTIMEO, &receiveTimeout, sizeof(receiveTimeout));
+
     {
         std::lock_guard<std::mutex> lock(socketMutex_);
         socket_fd_ = candidateSocket;
         connected_ = true;
     }
-
+    
     receiverThread_ = std::thread(&TCPConnector::receiveLoop, this);
+
     return true;
 }
 
@@ -688,7 +695,10 @@ void TCPConnector::receiveLoop() {
         } else if (received == 0) {
             connected_ = false;
             break;
-        } else if (errno != EINTR) {
+        } else {
+            if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) {
+                continue;
+            }
             connected_ = false;
             break;
         }

@@ -332,6 +332,50 @@ TEST(GoalUtilityTest, TypeToString) {
     EXPECT_EQ(goalTypeToString(GoalType::MAINTENANCE), "MAINTENANCE");
 }
 
+
+TEST_F(GoalManagerTest, SerializeDeserializeRoundTripRestoresGoalState) {
+    auto active = manager.createGoal("Investigate sensor drift", "Normalize IMU bias");
+    active->setPriority(GoalPriority::HIGH);
+    manager.activateGoal(active->getId());
+    manager.updateProgress(active->getId(), 0.42);
+
+    auto completed = manager.createGoal("Calibrate servo", "Verify motion envelope");
+    completed->setPriority(GoalPriority::LOW);
+    manager.completeGoal(completed->getId());
+
+    const std::string snapshot = manager.serialize();
+
+    GoalManager restored;
+    ASSERT_TRUE(restored.deserialize(snapshot));
+    EXPECT_EQ(restored.getTotalGoalCount(), 2);
+
+    auto restoredActive = restored.getGoal(active->getId());
+    ASSERT_NE(restoredActive, nullptr);
+    EXPECT_EQ(restoredActive->getName(), "Investigate sensor drift");
+    EXPECT_EQ(restoredActive->getStatus(), GoalStatus::ACTIVE);
+    EXPECT_EQ(restoredActive->getPriority(), GoalPriority::HIGH);
+    EXPECT_NEAR(restoredActive->getProgress(), 0.42, 1e-9);
+
+    auto restoredCompleted = restored.getGoal(completed->getId());
+    ASSERT_NE(restoredCompleted, nullptr);
+    EXPECT_EQ(restoredCompleted->getStatus(), GoalStatus::COMPLETED);
+    EXPECT_EQ(restoredCompleted->getPriority(), GoalPriority::LOW);
+    EXPECT_NEAR(restoredCompleted->getProgress(), 1.0, 1e-9);
+}
+
+TEST_F(GoalManagerTest, DeserializeRejectsMalformedInputWithoutChangingExistingGoals) {
+    auto existing = manager.createGoal("Keep me", "Existing state should survive failed loads");
+    const UUID existingId = existing->getId();
+
+    EXPECT_FALSE(manager.deserialize(""));
+    EXPECT_FALSE(manager.deserialize("GOALS:not_a_count\n"));
+    EXPECT_FALSE(manager.deserialize("GOALS:1\nGOAL|id|name|ACTIVE|HIGH|not_a_number\n"));
+    EXPECT_FALSE(manager.deserialize("GOALS:2\nGOAL|id|name|ACTIVE|HIGH|0.1\n"));
+
+    EXPECT_EQ(manager.getTotalGoalCount(), 1);
+    EXPECT_NE(manager.getGoal(existingId), nullptr);
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
