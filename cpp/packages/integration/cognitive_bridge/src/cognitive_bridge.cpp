@@ -1,5 +1,7 @@
 #include "elizaos/cognitive_bridge.hpp"
 
+#include <algorithm>
+#include <iterator>
 #include <utility>
 
 namespace elizaos {

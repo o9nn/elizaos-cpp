@@ -372,6 +372,41 @@ TEST(CognitiveBridgeBasics, HistoryIsBoundedAndOrdered) {
     EXPECT_EQ(bridge.stats().cognitivePublished, 300u);
 }
 
+TEST(CognitiveBridgeBasics, SensoryAndSpeechHistoriesAreBoundedAndOrderedIndependently) {
+    CognitiveBridge bridge("br-history");
+
+    for (int i = 0; i < 270; ++i) {
+        SensoryInput sensory;
+        sensory.sourceId = "camera";
+        sensory.modality = "vision";
+        sensory.payload = "frame-" + std::to_string(i);
+        sensory.metadata["seq"] = std::to_string(i);
+        bridge.publishSensoryInput(sensory);
+
+        SpeechOutput speech;
+        speech.agentId = "avatar";
+        speech.text = "utterance-" + std::to_string(i);
+        speech.voice = "alloy";
+        speech.metadata["seq"] = std::to_string(i);
+        bridge.publishSpeechOutput(speech);
+    }
+
+    auto sensoryRecent = bridge.recentSensoryInputs(6);
+    auto speechRecent = bridge.recentSpeechOutputs(6);
+
+    ASSERT_EQ(sensoryRecent.size(), 6u);
+    ASSERT_EQ(speechRecent.size(), 6u);
+    EXPECT_EQ(sensoryRecent.front().metadata.at("seq"), "264");
+    EXPECT_EQ(sensoryRecent.back().metadata.at("seq"), "269");
+    EXPECT_EQ(speechRecent.front().metadata.at("seq"), "264");
+    EXPECT_EQ(speechRecent.back().metadata.at("seq"), "269");
+
+    auto stats = bridge.stats();
+    EXPECT_EQ(stats.sensoryPublished, 270u);
+    EXPECT_EQ(stats.speechPublished, 270u);
+    EXPECT_EQ(stats.cognitivePublished, 0u);
+}
+
 TEST(CognitiveBridgeEchobeats, EchobeatsRunsThroughTwelveSteps) {
     CognitiveBridge bridge("br-3");
 
@@ -413,6 +448,30 @@ TEST(CognitiveBridgeEchobeats, PhaseFormulaMatchesEchobeatsKnowledge) {
         const int actual = CognitiveBridge::phaseForStep(step);
         EXPECT_EQ(actual, phase);
     }
+}
+
+TEST(CognitiveBridgeEchobeats, StartStopIsIdempotentAndRestartable) {
+    CognitiveBridge bridge("br-restart");
+
+    bridge.startEchobeats(5ms, "echo-restart");
+    bridge.startEchobeats(5ms, "echo-restart");
+    EXPECT_TRUE(bridge.isEchobeatsRunning());
+    std::this_thread::sleep_for(45ms);
+    bridge.stopEchobeats();
+    bridge.stopEchobeats();
+    EXPECT_FALSE(bridge.isEchobeatsRunning());
+
+    const auto firstStats = bridge.stats();
+    EXPECT_GT(firstStats.echobeatsTicks, 0u);
+    EXPECT_GT(firstStats.cognitivePublished, 0u);
+
+    bridge.startEchobeats(5ms, "echo-restart");
+    std::this_thread::sleep_for(30ms);
+    bridge.stopEchobeats();
+
+    const auto secondStats = bridge.stats();
+    EXPECT_GT(secondStats.echobeatsTicks, firstStats.echobeatsTicks);
+    EXPECT_GT(secondStats.cognitivePublished, firstStats.cognitivePublished);
 }
 
 TEST(CognitiveBridgeEchobeats, ConcurrentPublishersAreThreadSafe) {
