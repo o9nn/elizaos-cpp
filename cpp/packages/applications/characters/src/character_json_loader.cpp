@@ -1,5 +1,7 @@
 #include "elizaos/character_json_loader.hpp"
 #include "elizaos/agentlogger.hpp"
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
@@ -445,14 +447,202 @@ std::string CharacterJsonLoader::toJsonString(const CharacterProfile& character)
 
 // Helper functions implementation
 
+namespace {
+
+std::string trimJsonLoaderString(const std::string& value) {
+    const auto begin = std::find_if_not(value.begin(), value.end(), [](unsigned char ch) {
+        return std::isspace(ch) != 0;
+    });
+    const auto end = std::find_if_not(value.rbegin(), value.rend(), [](unsigned char ch) {
+        return std::isspace(ch) != 0;
+    }).base();
+    if (begin >= end) {
+        return {};
+    }
+    return std::string(begin, end);
+}
+
+void appendStringIfPresent(std::vector<std::string>& result, const std::string& value) {
+    std::string trimmed = trimJsonLoaderString(value);
+    if (!trimmed.empty()) {
+        result.push_back(trimmed);
+    }
+}
+
+std::optional<std::string> anyToLoaderString(const std::any& value) {
+    try {
+        if (value.type() == typeid(std::string)) {
+            return std::any_cast<std::string>(value);
+        }
+        if (value.type() == typeid(const char*)) {
+            return std::string(std::any_cast<const char*>(value));
+        }
+        if (value.type() == typeid(char*)) {
+            return std::string(std::any_cast<char*>(value));
+        }
+        if (value.type() == typeid(bool)) {
+            return std::any_cast<bool>(value) ? "true" : "false";
+        }
+        if (value.type() == typeid(int)) {
+            return std::to_string(std::any_cast<int>(value));
+        }
+        if (value.type() == typeid(long)) {
+            return std::to_string(std::any_cast<long>(value));
+        }
+        if (value.type() == typeid(long long)) {
+            return std::to_string(std::any_cast<long long>(value));
+        }
+        if (value.type() == typeid(unsigned int)) {
+            return std::to_string(std::any_cast<unsigned int>(value));
+        }
+        if (value.type() == typeid(unsigned long)) {
+            return std::to_string(std::any_cast<unsigned long>(value));
+        }
+        if (value.type() == typeid(unsigned long long)) {
+            return std::to_string(std::any_cast<unsigned long long>(value));
+        }
+        if (value.type() == typeid(float)) {
+            return std::to_string(std::any_cast<float>(value));
+        }
+        if (value.type() == typeid(double)) {
+            return std::to_string(std::any_cast<double>(value));
+        }
+    } catch (const std::bad_any_cast&) {
+        return std::nullopt;
+    }
+    return std::nullopt;
+}
+
+void appendJsonStringValues(std::vector<std::string>& result, const json& value) {
+    if (value.is_string()) {
+        appendStringIfPresent(result, value.get<std::string>());
+        return;
+    }
+    if (value.is_number_integer()) {
+        appendStringIfPresent(result, std::to_string(value.get<long long>()));
+        return;
+    }
+    if (value.is_number_unsigned()) {
+        appendStringIfPresent(result, std::to_string(value.get<unsigned long long>()));
+        return;
+    }
+    if (value.is_number_float()) {
+        appendStringIfPresent(result, std::to_string(value.get<double>()));
+        return;
+    }
+    if (value.is_boolean()) {
+        appendStringIfPresent(result, value.get<bool>() ? "true" : "false");
+        return;
+    }
+    if (value.is_object()) {
+        for (const char* field : {"text", "value", "content", "name"}) {
+            if (value.contains(field)) {
+                appendJsonStringValues(result, value.at(field));
+                return;
+            }
+        }
+    }
+}
+
+std::vector<std::string> parseLoaderStringArrayLiteral(const std::string& value) {
+    std::vector<std::string> parsed;
+    const std::string trimmed = trimJsonLoaderString(value);
+    if (trimmed.empty()) {
+        return parsed;
+    }
+
+    if (trimmed.front() == '[' || trimmed.front() == '{' || trimmed.front() == '"') {
+        try {
+            const json j = json::parse(trimmed);
+            if (j.is_array()) {
+                for (const auto& item : j) {
+                    appendJsonStringValues(parsed, item);
+                }
+                return parsed;
+            }
+            appendJsonStringValues(parsed, j);
+            if (!parsed.empty()) {
+                return parsed;
+            }
+        } catch (const json::exception&) {
+            // Fall through to delimiter parsing for legacy serialized strings.
+        }
+    }
+
+    const char delimiter = trimmed.find(',') != std::string::npos ? ','
+        : (trimmed.find(';') != std::string::npos ? ';'
+        : (trimmed.find('\n') != std::string::npos ? '\n' : '\0'));
+    if (delimiter == '\0') {
+        appendStringIfPresent(parsed, trimmed);
+        return parsed;
+    }
+
+    std::stringstream ss(trimmed);
+    std::string item;
+    while (std::getline(ss, item, delimiter)) {
+        appendStringIfPresent(parsed, item);
+    }
+    return parsed;
+}
+
+void appendAnyStringArrayValues(std::vector<std::string>& result, const std::any& value) {
+    if (auto scalar = anyToLoaderString(value); scalar.has_value()) {
+        std::vector<std::string> parsed = parseLoaderStringArrayLiteral(*scalar);
+        result.insert(result.end(), parsed.begin(), parsed.end());
+        return;
+    }
+
+    try {
+        const auto values = std::any_cast<std::vector<std::string>>(value);
+        for (const auto& item : values) {
+            appendStringIfPresent(result, item);
+        }
+        return;
+    } catch (const std::bad_any_cast&) {}
+
+    try {
+        const auto values = std::any_cast<std::vector<std::any>>(value);
+        for (const auto& item : values) {
+            appendAnyStringArrayValues(result, item);
+        }
+        return;
+    } catch (const std::bad_any_cast&) {}
+
+    try {
+        const auto values = std::any_cast<std::vector<JsonValue>>(value);
+        for (const auto& object : values) {
+            for (const auto& field : {std::string("text"), std::string("value"), std::string("content"), std::string("name")}) {
+                auto it = object.find(field);
+                if (it != object.end()) {
+                    appendAnyStringArrayValues(result, it->second);
+                    break;
+                }
+            }
+        }
+        return;
+    } catch (const std::bad_any_cast&) {}
+
+    try {
+        const auto object = std::any_cast<JsonValue>(value);
+        for (const auto& field : {std::string("items"), std::string("values"), std::string("text"), std::string("value"), std::string("content"), std::string("name")}) {
+            auto it = object.find(field);
+            if (it != object.end()) {
+                appendAnyStringArrayValues(result, it->second);
+                return;
+            }
+        }
+    } catch (const std::bad_any_cast&) {}
+}
+
+} // namespace
+
 std::string CharacterJsonLoader::getStringFromJson(const JsonValue& json, const std::string& key, const std::string& defaultValue) {
     auto it = json.find(key);
-    if (it != json.end()) {
-        try {
-            return std::any_cast<std::string>(it->second);
-        } catch (const std::bad_any_cast&) {
-            return defaultValue;
-        }
+    if (it == json.end()) {
+        return defaultValue;
+    }
+    if (auto value = anyToLoaderString(it->second); value.has_value()) {
+        return *value;
     }
     return defaultValue;
 }
@@ -461,21 +651,47 @@ std::vector<std::string> CharacterJsonLoader::getStringArrayFromJson(const JsonV
     std::vector<std::string> result;
     auto it = json.find(key);
     if (it != json.end()) {
-        // This is a simplified implementation - would need proper JSON array parsing
-        // For now, just return empty std::vector
+        appendAnyStringArrayValues(result, it->second);
     }
     return result;
 }
 
 float CharacterJsonLoader::getFloatFromJson(const JsonValue& json, const std::string& key, float defaultValue) {
     auto it = json.find(key);
-    if (it != json.end()) {
-        try {
-            std::string valueStr = std::any_cast<std::string>(it->second);
-            return std::stof(valueStr);
-        } catch (const std::exception&) {
-            return defaultValue;
+    if (it == json.end()) {
+        return defaultValue;
+    }
+
+    try {
+        if (it->second.type() == typeid(float)) {
+            return std::any_cast<float>(it->second);
         }
+        if (it->second.type() == typeid(double)) {
+            return static_cast<float>(std::any_cast<double>(it->second));
+        }
+        if (it->second.type() == typeid(int)) {
+            return static_cast<float>(std::any_cast<int>(it->second));
+        }
+        if (it->second.type() == typeid(long)) {
+            return static_cast<float>(std::any_cast<long>(it->second));
+        }
+        if (it->second.type() == typeid(long long)) {
+            return static_cast<float>(std::any_cast<long long>(it->second));
+        }
+        if (it->second.type() == typeid(unsigned int)) {
+            return static_cast<float>(std::any_cast<unsigned int>(it->second));
+        }
+        if (it->second.type() == typeid(unsigned long)) {
+            return static_cast<float>(std::any_cast<unsigned long>(it->second));
+        }
+        if (it->second.type() == typeid(unsigned long long)) {
+            return static_cast<float>(std::any_cast<unsigned long long>(it->second));
+        }
+        if (auto value = anyToLoaderString(it->second); value.has_value()) {
+            return std::stof(*value);
+        }
+    } catch (const std::exception&) {
+        return defaultValue;
     }
     return defaultValue;
 }

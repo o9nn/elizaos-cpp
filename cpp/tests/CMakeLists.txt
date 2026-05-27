@@ -76,6 +76,10 @@ add_executable(characters_test characters_test.cpp)
 target_link_libraries(characters_test elizaos-characters gtest gtest_main Threads::Threads)
 add_test(NAME characters_test COMMAND characters_test)
 
+add_executable(character_json_loader_test character_json_loader_test.cpp)
+target_link_libraries(character_json_loader_test elizaos-characters gtest gtest_main Threads::Threads)
+add_test(NAME character_json_loader_test COMMAND character_json_loader_test)
+
 add_executable(classified_test classified_test.cpp)
 target_link_libraries(classified_test elizaos-classified gtest gtest_main Threads::Threads)
 add_test(NAME classified_test COMMAND classified_test)

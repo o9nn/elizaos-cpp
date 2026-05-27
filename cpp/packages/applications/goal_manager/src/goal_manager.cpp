@@ -6,6 +6,7 @@
 #include <sstream>
 #include <random>
 #include <queue>
+#include <cstring>
 
 namespace elizaos {
 
@@ -798,8 +799,89 @@ std::string GoalManager::serialize() const {
 }
 
 bool GoalManager::deserialize(const std::string& data) {
-    // Simple deserialization - would need more robust implementation
-    return !data.empty();
+    std::istringstream input(data);
+    std::string header;
+
+    if (!std::getline(input, header)) {
+        return false;
+    }
+
+    constexpr const char* prefix = "GOALS:";
+    if (header.rfind(prefix, 0) != 0) {
+        return false;
+    }
+
+    size_t expectedCount = 0;
+    try {
+        size_t consumed = 0;
+        expectedCount = std::stoul(header.substr(std::char_traits<char>::length(prefix)), &consumed);
+        if (consumed != header.size() - std::char_traits<char>::length(prefix)) {
+            return false;
+        }
+    } catch (const std::exception&) {
+        return false;
+    }
+
+    std::unordered_map<UUID, std::shared_ptr<Goal>> parsedGoals;
+    std::string line;
+    size_t actualCount = 0;
+
+    while (std::getline(input, line)) {
+        if (line.empty()) {
+            continue;
+        }
+
+        std::vector<std::string> fields;
+        std::string field;
+        std::istringstream lineStream(line);
+        while (std::getline(lineStream, field, '|')) {
+            fields.push_back(field);
+        }
+
+        if (fields.size() != 6 || fields[0] != "GOAL") {
+            return false;
+        }
+
+        const UUID& id = fields[1];
+        const std::string& name = fields[2];
+        if (id.empty() || name.empty() || parsedGoals.find(id) != parsedGoals.end()) {
+            return false;
+        }
+
+        double progress = 0.0;
+        try {
+            size_t consumed = 0;
+            progress = std::stod(fields[5], &consumed);
+            if (consumed != fields[5].size()) {
+                return false;
+            }
+        } catch (const std::exception&) {
+            return false;
+        }
+
+        if (progress < 0.0 || progress > 1.0) {
+            return false;
+        }
+
+        auto goal = std::make_shared<Goal>(id, name, "");
+        goal->setPriority(stringToGoalPriority(fields[4]));
+        goal->setProgress(progress);
+        goal->setStatus(stringToGoalStatus(fields[3]));
+        if (stringToGoalStatus(fields[3]) != GoalStatus::COMPLETED && progress < 1.0) {
+            goal->setProgress(progress);
+        }
+
+        parsedGoals.emplace(id, std::move(goal));
+        ++actualCount;
+    }
+
+    if (actualCount != expectedCount) {
+        return false;
+    }
+
+    std::lock_guard<std::mutex> lock(mutex_);
+    goals_ = std::move(parsedGoals);
+    return true;
 }
 
 void GoalManager::notifyCreated(std::shared_ptr<Goal> goal) {
