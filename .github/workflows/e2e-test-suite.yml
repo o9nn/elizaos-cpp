@@ -100,7 +100,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
 
       - name: Set up CMake
@@ -185,8 +184,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -259,8 +256,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -327,8 +322,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -422,8 +415,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -482,8 +473,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -548,8 +537,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
