@@ -36,8 +36,6 @@ jobs:
           pkg-config dpkg-dev ca-certificates lintian python3
 
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
 
     - name: Validate case-insensitive path safety
       shell: bash

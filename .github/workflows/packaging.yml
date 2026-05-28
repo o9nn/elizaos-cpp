@@ -40,8 +40,6 @@ jobs:
         DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev pkg-config rpm dpkg-dev ca-certificates
     
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
     
     - name: Validate case-insensitive path safety
       shell: bash
@@ -153,8 +151,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
     
     - name: Validate case-insensitive path safety
       shell: bash
@@ -235,8 +231,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-      with:
-        submodules: recursive
     
     - name: Validate case-insensitive path safety
       shell: bash
