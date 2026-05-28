@@ -350,3 +350,60 @@ TEST_F(AgentAgendaTest, NonExistentOperations) {
     AgendaTaskStep new_step("content", false);
     EXPECT_FALSE(agenda->updateStep("non-existent", "old", new_step));
 }
+
+TEST_F(AgentAgendaTest, GeneratedPlanStepsAndSearchCoverGoalPlanAndStepText) {
+    auto task = agenda->createTask("Calibrate autonomous sensor rig");
+
+    EXPECT_TRUE(task.plan.find("Clarify the intended outcome") != std::string::npos);
+    ASSERT_GE(task.steps.size(), 4);
+    EXPECT_TRUE(task.steps[0].content.find("Define success criteria") != std::string::npos);
+    EXPECT_TRUE(task.steps[2].content.find("Execute plan segment") != std::string::npos);
+
+    auto goal_matches = agenda->searchTasks("SENSOR");
+    ASSERT_EQ(goal_matches.size(), 1);
+    EXPECT_EQ(goal_matches[0].id, task.id);
+
+    auto plan_matches = agenda->searchTasks("dependencies");
+    ASSERT_EQ(plan_matches.size(), 1);
+    EXPECT_EQ(plan_matches[0].id, task.id);
+
+    auto step_matches = agenda->searchTasks("success criteria");
+    ASSERT_EQ(step_matches.size(), 1);
+    EXPECT_EQ(step_matches[0].id, task.id);
+}
+
+TEST_F(AgentAgendaTest, StepSerializationRoundTripsEscapesAndCompletionFlags) {
+    std::vector<AgendaTaskStep> steps = {
+        AgendaTaskStep("Quote: \"alpha\" and slash \\ beta", true),
+        AgendaTaskStep("Line one\nLine two\tTabbed", false)
+    };
+
+    auto task = agenda->createTask("Persist escaped steps", "Custom persistence plan", steps);
+    auto loaded = agenda->getTaskById(task.id);
+
+    ASSERT_EQ(loaded.steps.size(), 2);
+    EXPECT_EQ(loaded.steps[0].content, "Quote: \"alpha\" and slash \\ beta");
+    EXPECT_TRUE(loaded.steps[0].completed);
+    EXPECT_EQ(loaded.steps[1].content, "Line one\nLine two\tTabbed");
+    EXPECT_FALSE(loaded.steps[1].completed);
+
+    auto matches = agenda->searchTasks("tabbed");
+    ASSERT_EQ(matches.size(), 1);
+    EXPECT_EQ(matches[0].id, task.id);
+}
+
+TEST_F(AgentAgendaTest, RejectedCurrentTaskChangePreservesExistingCurrentTask) {
+    auto active = agenda->createTask("Keep this active");
+    auto completed = agenda->createTask("Completed target must not steal current");
+
+    ASSERT_TRUE(agenda->finishTask(completed.id));
+    ASSERT_TRUE(agenda->setCurrentTask(active.id));
+
+    EXPECT_FALSE(agenda->setCurrentTask(completed.id));
+
+    auto current = agenda->getCurrentTask();
+    EXPECT_EQ(current.id, active.id);
+    EXPECT_TRUE(agenda->getTaskById(active.id).current);
+    EXPECT_FALSE(agenda->getTaskById(completed.id).current);
+}
+

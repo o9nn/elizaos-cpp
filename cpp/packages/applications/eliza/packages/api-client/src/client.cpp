@@ -74,6 +74,35 @@ std::map<std::string, std::string> headersFromConfig(const nlohmann::json& confi
     return headers;
 }
 
+std::string toLowerAscii(std::string value) {
+    for (char& c : value) {
+        if (c >= 'A' && c <= 'Z') {
+            c = static_cast<char>(c - 'A' + 'a');
+        }
+    }
+    return value;
+}
+
+bool isSensitiveHeaderName(const std::string& header_name) {
+    const std::string lower = toLowerAscii(header_name);
+    return lower == "authorization" ||
+           lower == "proxy-authorization" ||
+           lower == "x-api-key" ||
+           lower == "api-key" ||
+           lower == "apikey" ||
+           lower.find("token") != std::string::npos ||
+           lower.find("secret") != std::string::npos;
+}
+
+std::map<std::string, std::string> redactHeadersForStatus(
+    const std::map<std::string, std::string>& headers) {
+    std::map<std::string, std::string> redacted;
+    for (const auto& [name, value] : headers) {
+        redacted[name] = isSensitiveHeaderName(name) ? std::string("[REDACTED]") : value;
+    }
+    return redacted;
+}
+
 } // namespace
 
 bool Client::initialize(const nlohmann::json& config) {
@@ -123,7 +152,7 @@ nlohmann::json Client::getStatus() const {
     status["hasBearerToken"] = hasBearerToken();
     status["hasAuth"] = hasAuth();
     status["headerCount"] = default_headers_.size();
-    status["defaultHeaders"] = default_headers_;
+    status["defaultHeaders"] = redactHeadersForStatus(default_headers_);
     return status;
 }
 

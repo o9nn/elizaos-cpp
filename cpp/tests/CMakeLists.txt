@@ -261,7 +261,13 @@ function(add_real_test name src_file)
         ${CMAKE_SOURCE_DIR}/cpp/include
         ${CMAKE_SOURCE_DIR}/include
     )
-    target_link_libraries(${name}
+
+    set(real_test_required_libraries
+        gtest
+        nlohmann_json::nlohmann_json
+        Threads::Threads
+    )
+    set(real_test_optional_elizaos_targets
         elizaos-core
         elizaos-agentmemory
         elizaos-agentloop
@@ -281,10 +287,16 @@ function(add_real_test name src_file)
         elizaos-evolutionary
         elizaos-ontogenesis
         elizaos-cognitive_bridge
-        gtest
-        nlohmann_json::nlohmann_json
-        Threads::Threads
     )
+    foreach(real_test_target IN LISTS real_test_optional_elizaos_targets)
+        if(TARGET ${real_test_target})
+            list(APPEND real_test_required_libraries ${real_test_target})
+        else()
+            message(STATUS "${name}: skipping unavailable optional test dependency ${real_test_target}")
+        endif()
+    endforeach()
+
+    target_link_libraries(${name} ${real_test_required_libraries})
     add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
@@ -299,9 +311,21 @@ add_real_test(real_agentmemory_test         src/test_agentmemory.cpp)
 add_real_test(real_attention_test           src/test_attention_allocation.cpp)
 add_real_test(real_characters_test          src/test_characters.cpp)
 add_real_test(real_knowledge_test           src/test_knowledge.cpp)
-add_real_test(real_embodiment_test          src/test_embodiment.cpp)
-add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
-add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
+if(TARGET elizaos-embodiment)
+    add_real_test(real_embodiment_test      src/test_embodiment.cpp)
+else()
+    message(STATUS "Skipping real_embodiment_test: elizaos-embodiment target is unavailable in this checkout")
+endif()
+if(TARGET elizaos-evolutionary)
+    add_real_test(real_evolutionary_test    src/test_evolutionary.cpp)
+else()
+    message(STATUS "Skipping real_evolutionary_test: elizaos-evolutionary target is unavailable in this checkout")
+endif()
+if(TARGET elizaos-ontogenesis)
+    add_real_test(real_ontogenesis_test     src/test_ontogenesis.cpp)
+else()
+    message(STATUS "Skipping real_ontogenesis_test: elizaos-ontogenesis target is unavailable in this checkout")
+endif()
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
 
 # Regression test for public API drift between include/ and cpp/include/.
@@ -326,7 +350,7 @@ add_test(NAME public_header_forwarding_test COMMAND public_header_forwarding_tes
 # auth status, timeout handling, and deterministic shutdown semantics.
 add_executable(api_client_real_test api_client_real_test.cpp)
 target_include_directories(api_client_real_test PRIVATE
-    ${CMAKE_SOURCE_DIR}/cpp/packages/applications/eliza/packages/api-client/src
+    ${CMAKE_SOURCE_DIR}/packages/applications/eliza/packages/api-client/src
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
@@ -428,15 +452,23 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_attention_test
     real_characters_test
     real_knowledge_test
-    real_embodiment_test
-    real_evolutionary_test
-    real_ontogenesis_test
     real_cognitive_primitives_test
     plugin_specification_test
     public_header_forwarding_test
     api_client_real_test
     public_header_forwarding_all_test
 )
+
+
+if(TARGET real_embodiment_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_embodiment_test)
+endif()
+if(TARGET real_evolutionary_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_evolutionary_test)
+endif()
+if(TARGET real_ontogenesis_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_ontogenesis_test)
+endif()
 
 add_custom_target(ksm_canonical_tests
     DEPENDS ${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}

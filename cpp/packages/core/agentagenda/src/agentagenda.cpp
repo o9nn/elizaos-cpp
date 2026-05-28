@@ -4,8 +4,71 @@
 #include <algorithm>
 #include <iomanip>
 #include <variant>
+#include <cctype>
+#include <ctime>
 
 namespace elizaos {
+
+namespace {
+
+std::string toLowerCopy(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(),
+        [](unsigned char ch) { return static_cast<char>(std::tolower(ch)); });
+    return value;
+}
+
+bool containsCaseInsensitive(const std::string& haystack, const std::string& needle) {
+    if (needle.empty()) {
+        return true;
+    }
+    return toLowerCopy(haystack).find(toLowerCopy(needle)) != std::string::npos;
+}
+
+std::string escapeStepContent(const std::string& value) {
+    std::string escaped;
+    escaped.reserve(value.size());
+    for (char ch : value) {
+        switch (ch) {
+            case '\\': escaped += "\\\\"; break;
+            case '"': escaped += "\\\""; break;
+            case '\n': escaped += "\\n"; break;
+            case '\r': escaped += "\\r"; break;
+            case '\t': escaped += "\\t"; break;
+            default: escaped += ch; break;
+        }
+    }
+    return escaped;
+}
+
+bool parseJsonString(const std::string& text, size_t& pos, std::string& out) {
+    if (pos >= text.size() || text[pos] != '"') {
+        return false;
+    }
+    ++pos;
+    out.clear();
+    while (pos < text.size()) {
+        char ch = text[pos++];
+        if (ch == '"') {
+            return true;
+        }
+        if (ch == '\\' && pos < text.size()) {
+            char esc = text[pos++];
+            switch (esc) {
+                case '"': out += '"'; break;
+                case '\\': out += '\\'; break;
+                case 'n': out += '\n'; break;
+                case 'r': out += '\r'; break;
+                case 't': out += '\t'; break;
+                default: out += esc; break;
+            }
+        } else {
+            out += ch;
+        }
+    }
+    return false;
+}
+
+} // namespace
 
 // Simple UUID generator
 std::string AgentAgenda::generateSimpleUUID() {
@@ -54,10 +117,17 @@ std::string AgentAgenda::timestampToString(const std::chrono::system_clock::time
 }
 
 std::chrono::system_clock::time_point AgentAgenda::stringToTimestamp(const std::string& timestamp_str) {
-    std::time_t time_t;
+    if (timestamp_str.empty()) {
+        return std::chrono::system_clock::now();
+    }
+
+    std::time_t parsed = 0;
     std::istringstream ss(timestamp_str);
-    ss >> time_t;
-    return std::chrono::system_clock::from_time_t(time_t);
+    ss >> parsed;
+    if (!ss || !ss.eof()) {
+        return std::chrono::system_clock::now();
+    }
+    return std::chrono::system_clock::from_time_t(parsed);
 }
 
 std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps) {
@@ -65,7 +135,7 @@ std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps
     json << "[";
     for (size_t i = 0; i < steps.size(); ++i) {
         if (i > 0) json << ",";
-        json << "{\"content\":\"" << steps[i].content << "\",\"completed\":" 
+        json << "{\"content\":\"" << escapeStepContent(steps[i].content) << "\",\"completed\":"
              << (steps[i].completed ? "true" : "false") << "}";
     }
     json << "]";
@@ -73,32 +143,39 @@ std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps
 }
 
 std::vector<AgendaTaskStep> AgentAgenda::deserializeSteps(const std::string& steps_json) {
-    // Simple JSON parsing - in a real implementation, use a proper JSON library
     std::vector<AgendaTaskStep> steps;
-    
-    // Very basic parsing for our simple JSON format
     size_t pos = 0;
-    while ((pos = steps_json.find("\"content\":\"", pos)) != std::string::npos) {
-        pos += 11; // length of "content":"
-        size_t end_pos = steps_json.find("\"", pos);
-        if (end_pos != std::string::npos) {
-            std::string content = steps_json.substr(pos, end_pos - pos);
-            
-            // Find completed status
-            size_t comp_pos = steps_json.find("\"completed\":", end_pos);
-            bool completed = false;
-            if (comp_pos != std::string::npos) {
-                comp_pos += 12; // length of "completed":
-                completed = (steps_json.substr(comp_pos, 4) == "true");
-            }
-            
-            steps.emplace_back(content, completed);
-            pos = end_pos;
-        } else {
+
+    while ((pos = steps_json.find("\"content\"", pos)) != std::string::npos) {
+        size_t colon = steps_json.find(':', pos);
+        if (colon == std::string::npos) {
             break;
         }
+
+        size_t value_pos = steps_json.find('\"', colon + 1);
+        if (value_pos == std::string::npos) {
+            break;
+        }
+
+        std::string content;
+        if (!parseJsonString(steps_json, value_pos, content)) {
+            break;
+        }
+
+        bool completed = false;
+        size_t comp_pos = steps_json.find("\"completed\"", value_pos);
+        if (comp_pos != std::string::npos) {
+            size_t comp_colon = steps_json.find(':', comp_pos);
+            if (comp_colon != std::string::npos) {
+                size_t flag_pos = steps_json.find_first_not_of(" \t\r\n", comp_colon + 1);
+                completed = flag_pos != std::string::npos && steps_json.compare(flag_pos, 4, "true") == 0;
+            }
+        }
+
+        steps.emplace_back(content, completed);
+        pos = value_pos;
     }
-    
+
     return steps;
 }
 
@@ -215,13 +292,18 @@ std::vector<AgendaTask> AgentAgenda::searchTasks(const std::string& search_term,
     
     auto memories = memory_->getMemories(params);
     
-    // Filter by search term and status
+    // Filter by search term across user-visible task fields and status.
     for (const auto& memory : memories) {
-        if (memory->getContent().find(search_term) != std::string::npos) {
-            AgendaTask task = loadTaskFromMemory(memory);
-            if (task.status == status) {
-                tasks.push_back(task);
-            }
+        AgendaTask task = loadTaskFromMemory(memory);
+        bool step_match = std::any_of(task.steps.begin(), task.steps.end(),
+            [&search_term](const AgendaTaskStep& step) {
+                return containsCaseInsensitive(step.content, search_term);
+            });
+        if (task.status == status &&
+            (containsCaseInsensitive(task.goal, search_term) ||
+             containsCaseInsensitive(task.plan, search_term) ||
+             step_match)) {
+            tasks.push_back(task);
         }
     }
     
@@ -306,14 +388,18 @@ bool AgentAgenda::setCurrentTask(const std::string& task_id) {
         return false;
     }
     
-    // Unset current task
+    if (task.status != AgendaTaskStatus::IN_PROGRESS) {
+        return false;
+    }
+
+    // Unset current task only after the target has been validated.
     auto current_task = getCurrentTask();
-    if (!current_task.id.empty()) {
+    if (!current_task.id.empty() && current_task.id != task.id) {
         current_task.current = false;
         current_task.updated_at = std::chrono::system_clock::now();
         saveTaskToMemory(current_task);
     }
-    
+
     // Set new current task
     task.current = true;
     task.updated_at = std::chrono::system_clock::now();
@@ -323,38 +409,60 @@ bool AgentAgenda::setCurrentTask(const std::string& task_id) {
 }
 
 AgendaTask AgentAgenda::getLastCreatedTask() {
-    auto tasks = listTasks(AgendaTaskStatus::IN_PROGRESS);
-    
+    MemorySearchParams params;
+    params.tableName = "task";
+    params.count = 100;
+
+    auto memories = memory_->getMemories(params);
+    std::vector<AgendaTask> tasks;
+    tasks.reserve(memories.size());
+    for (const auto& memory : memories) {
+        tasks.push_back(loadTaskFromMemory(memory));
+    }
+
     if (tasks.empty()) {
         return AgendaTask();
     }
-    
+
     auto latest_task = std::max_element(tasks.begin(), tasks.end(),
         [](const AgendaTask& a, const AgendaTask& b) {
             return a.created_at < b.created_at;
         });
-    
+
     return *latest_task;
 }
 
 AgendaTask AgentAgenda::getLastUpdatedTask() {
-    auto tasks = listTasks(AgendaTaskStatus::IN_PROGRESS);
-    
+    MemorySearchParams params;
+    params.tableName = "task";
+    params.count = 100;
+
+    auto memories = memory_->getMemories(params);
+    std::vector<AgendaTask> tasks;
+    tasks.reserve(memories.size());
+    for (const auto& memory : memories) {
+        tasks.push_back(loadTaskFromMemory(memory));
+    }
+
     if (tasks.empty()) {
         return AgendaTask();
     }
-    
+
     auto latest_task = std::max_element(tasks.begin(), tasks.end(),
         [](const AgendaTask& a, const AgendaTask& b) {
             return a.updated_at < b.updated_at;
         });
-    
+
     return *latest_task;
 }
 
 std::string AgentAgenda::createPlan(const std::string& goal) {
-    // Simplified plan generation - in a real implementation, this would use LLM
-    return "Step-by-step plan to achieve: " + goal + ". This includes gathering resources, executing actions, and validating completion.";
+    std::stringstream plan;
+    plan << "Clarify the intended outcome for: " << goal << "\n"
+         << "Assess required context, dependencies, and constraints.\n"
+         << "Execute the smallest verifiable next actions in order.\n"
+         << "Validate results against the goal and capture follow-up work.";
+    return plan.str();
 }
 
 bool AgentAgenda::updatePlan(const std::string& task_id, const std::string& plan) {
@@ -371,13 +479,14 @@ bool AgentAgenda::updatePlan(const std::string& task_id, const std::string& plan
 }
 
 std::vector<AgendaTaskStep> AgentAgenda::createSteps(const std::string& goal, const std::string& plan) {
-    // Simplified step generation - in a real implementation, this would use LLM
     std::vector<AgendaTaskStep> steps;
-    
-    steps.emplace_back("Analyze the goal: " + goal, false);
-    steps.emplace_back("Execute the plan: " + plan.substr(0, 50) + "...", false);
-    steps.emplace_back("Validate completion of: " + goal, false);
-    
+    const std::string plan_summary = plan.size() > 80 ? plan.substr(0, 77) + "..." : plan;
+
+    steps.emplace_back("Define success criteria for: " + goal, false);
+    steps.emplace_back("Gather context and dependencies needed for the task", false);
+    steps.emplace_back("Execute plan segment: " + plan_summary, false);
+    steps.emplace_back("Verify completion and record remaining follow-up work for: " + goal, false);
+
     return steps;
 }
 
