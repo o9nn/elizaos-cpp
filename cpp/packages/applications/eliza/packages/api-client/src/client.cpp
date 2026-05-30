@@ -108,38 +108,96 @@ std::map<std::string, std::string> redactHeadersForStatus(
 bool Client::initialize(const nlohmann::json& config) {
     if (initialized_) return true;
 
-    const std::string configured_base_url =
-        stringFromKey(config, {"baseUrl", "base_url"});
-    if (configured_base_url.empty()) {
-        throw std::invalid_argument("API client requires baseUrl or base_url");
+    try {
+        const std::string configured_base_url =
+            stringFromKey(config, {"baseUrl", "base_url"});
+        if (configured_base_url.empty()) {
+            setLastError("missing_base_url", "API client requires baseUrl or base_url");
+            throw std::invalid_argument("API client requires baseUrl or base_url");
+        }
+
+        const std::string normalized_base_url = normalizeBaseUrl(configured_base_url);
+        const int configured_timeout_ms = timeoutFromConfig(config);
+        const std::string configured_api_key =
+            stringFromKey(config, {"apiKey", "api_key"});
+        const std::string configured_bearer_token =
+            stringFromKey(config, {"bearerToken", "bearer_token"});
+        const auto configured_headers = headersFromConfig(config);
+
+        config_ = config;
+        base_url_ = normalized_base_url;
+        timeout_ms_ = configured_timeout_ms;
+        api_key_ = configured_api_key;
+        bearer_token_ = configured_bearer_token;
+        default_headers_ = configured_headers;
+
+        // Add authentication headers
+        if (!api_key_.empty()) {
+            default_headers_["X-API-Key"] = api_key_;
+        }
+        if (!bearer_token_.empty()) {
+            default_headers_["Authorization"] = "Bearer " + bearer_token_;
+        }
+
+        // Create and initialize the shared BaseClient
+        baseClient_ = std::make_shared<BaseClient>();
+        
+        nlohmann::json baseClientConfig;
+        baseClientConfig["baseUrl"] = base_url_;
+        baseClientConfig["timeoutMs"] = timeout_ms_;
+        
+        if (!baseClient_->initialize(baseClientConfig)) {
+            setLastError(baseClient_->getLastErrorCode(), baseClient_->getLastErrorMessage());
+            return false;
+        }
+
+        initialized_ = true;
+        clearLastError();
+        return true;
+    } catch (const std::invalid_argument& e) {
+        setLastError("invalid_configuration", e.what());
+        throw;
+    } catch (const std::exception& e) {
+        setLastError("initialization_error", e.what());
+        return false;
     }
-
-    const std::string normalized_base_url = normalizeBaseUrl(configured_base_url);
-    const int configured_timeout_ms = timeoutFromConfig(config);
-    const std::string configured_api_key =
-        stringFromKey(config, {"apiKey", "api_key"});
-    const std::string configured_bearer_token =
-        stringFromKey(config, {"bearerToken", "bearer_token"});
-    const auto configured_headers = headersFromConfig(config);
-
-    config_ = config;
-    base_url_ = normalized_base_url;
-    timeout_ms_ = configured_timeout_ms;
-    api_key_ = configured_api_key;
-    bearer_token_ = configured_bearer_token;
-    default_headers_ = configured_headers;
-    initialized_ = true;
-    return true;
 }
 
 void Client::shutdown() {
+    // Shutdown services
+    if (server_) {
+        server_->shutdown();
+        server_.reset();
+    }
+    if (system_) {
+        system_->shutdown();
+        system_.reset();
+    }
+    if (agents_) {
+        agents_->shutdown();
+        agents_.reset();
+    }
+
+    // Shutdown base client
+    if (baseClient_) {
+        baseClient_->shutdown();
+        baseClient_.reset();
+    }
+
     initialized_ = false;
-    config_ = {};
+    config_ = nlohmann::json::object();
     base_url_.clear();
     timeout_ms_ = kDefaultTimeoutMs;
     api_key_.clear();
     bearer_token_.clear();
     default_headers_.clear();
+    clearLastError();
+}
+
+void Client::setTransport(std::shared_ptr<IHttpTransport> transport) {
+    if (baseClient_) {
+        baseClient_->setTransport(std::move(transport));
+    }
 }
 
 nlohmann::json Client::getStatus() const {
@@ -153,6 +211,23 @@ nlohmann::json Client::getStatus() const {
     status["hasAuth"] = hasAuth();
     status["headerCount"] = default_headers_.size();
     status["defaultHeaders"] = redactHeadersForStatus(default_headers_);
+    status["lastErrorCode"] = lastErrorCode_;
+    status["lastErrorMessage"] = lastErrorMessage_;
+    
+    // Include base client status
+    status["baseClient"] = baseClient_ ? baseClient_->getStatus() : nlohmann::json::object();
+    
+    // Include service statuses if initialized
+    if (server_) {
+        status["services"]["server"] = server_->getStatus();
+    }
+    if (system_) {
+        status["services"]["system"] = system_->getStatus();
+    }
+    if (agents_) {
+        status["services"]["agents"] = agents_->getStatus();
+    }
+    
     return status;
 }
 
@@ -173,6 +248,76 @@ std::string Client::resolveEndpoint(const std::string& path) const {
         return base_url_ + path;
     }
     return base_url_ + "/" + path;
+}
+
+void Client::ensureServicesInitialized() const {
+    if (!initialized_) {
+        throw std::logic_error("Client must be initialized before accessing services");
+    }
+}
+
+Server& Client::server() {
+    ensureServicesInitialized();
+    if (!server_) {
+        server_ = std::make_unique<Server>(baseClient_);
+        server_->initialize(config_);
+    }
+    return *server_;
+}
+
+const Server& Client::server() const {
+    ensureServicesInitialized();
+    if (!server_) {
+        server_ = std::make_unique<Server>(baseClient_);
+        server_->initialize(config_);
+    }
+    return *server_;
+}
+
+System& Client::system() {
+    ensureServicesInitialized();
+    if (!system_) {
+        system_ = std::make_unique<System>(baseClient_);
+        system_->initialize(config_);
+    }
+    return *system_;
+}
+
+const System& Client::system() const {
+    ensureServicesInitialized();
+    if (!system_) {
+        system_ = std::make_unique<System>(baseClient_);
+        system_->initialize(config_);
+    }
+    return *system_;
+}
+
+Agents& Client::agents() {
+    ensureServicesInitialized();
+    if (!agents_) {
+        agents_ = std::make_unique<Agents>(baseClient_);
+        agents_->initialize(config_);
+    }
+    return *agents_;
+}
+
+const Agents& Client::agents() const {
+    ensureServicesInitialized();
+    if (!agents_) {
+        agents_ = std::make_unique<Agents>(baseClient_);
+        agents_->initialize(config_);
+    }
+    return *agents_;
+}
+
+void Client::setLastError(std::string code, std::string message) {
+    lastErrorCode_ = std::move(code);
+    lastErrorMessage_ = std::move(message);
+}
+
+void Client::clearLastError() {
+    lastErrorCode_.clear();
+    lastErrorMessage_.clear();
 }
 
 } // namespace eliza_api_client
