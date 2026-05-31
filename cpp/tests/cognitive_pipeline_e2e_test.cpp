@@ -357,6 +357,58 @@ TEST(CognitiveBridgeBasics, PublishAndSubscribeRoundTrip) {
     EXPECT_EQ(stateCount.load(), 1);
 }
 
+TEST(CognitiveBridgeBasics, PublishingUsesSnapshotSoHandlersCanUnsubscribeSafely) {
+    CognitiveBridge bridge("br-snapshot");
+
+    std::atomic<int> selfHits{0};
+    std::atomic<int> peerHits{0};
+    SubscriptionId selfSubscription = 0;
+
+    selfSubscription = bridge.subscribeCognitiveState([&](const CognitiveState&) {
+        ++selfHits;
+        bridge.unsubscribeCognitiveState(selfSubscription);
+    });
+    auto peerSubscription = bridge.subscribeCognitiveState([&](const CognitiveState&) {
+        ++peerHits;
+    });
+
+    CognitiveState state;
+    state.agentId = "snapshot-agent";
+    state.mood = "stable";
+
+    bridge.publishCognitiveState(state);
+    bridge.publishCognitiveState(state);
+    bridge.unsubscribeCognitiveState(peerSubscription);
+    bridge.publishCognitiveState(state);
+
+    EXPECT_EQ(selfHits.load(), 1);
+    EXPECT_EQ(peerHits.load(), 2);
+    EXPECT_EQ(bridge.stats().cognitivePublished, 3u);
+}
+
+TEST(CognitiveBridgeBasics, RecentHistoryLimitZeroReturnsEmptyAcrossChannels) {
+    CognitiveBridge bridge("br-zero-limit");
+
+    CognitiveState state;
+    state.agentId = "zero-agent";
+    bridge.publishCognitiveState(state);
+
+    SensoryInput sensory;
+    sensory.sourceId = "sensor";
+    sensory.modality = "telemetry";
+    sensory.payload = "sample";
+    bridge.publishSensoryInput(sensory);
+
+    SpeechOutput speech;
+    speech.agentId = "zero-agent";
+    speech.text = "sample";
+    bridge.publishSpeechOutput(speech);
+
+    EXPECT_TRUE(bridge.recentCognitiveStates(0).empty());
+    EXPECT_TRUE(bridge.recentSensoryInputs(0).empty());
+    EXPECT_TRUE(bridge.recentSpeechOutputs(0).empty());
+}
+
 TEST(CognitiveBridgeBasics, HistoryIsBoundedAndOrdered) {
     CognitiveBridge bridge("br-2");
     for (int i = 0; i < 300; ++i) {
@@ -448,6 +500,29 @@ TEST(CognitiveBridgeEchobeats, PhaseFormulaMatchesEchobeatsKnowledge) {
         const int actual = CognitiveBridge::phaseForStep(step);
         EXPECT_EQ(actual, phase);
     }
+}
+
+TEST(CognitiveBridgeEchobeats, TickPayloadCarriesAgentFocusMoodAndPhase) {
+    CognitiveBridge bridge("br-payload");
+
+    bridge.startEchobeats(5ms, "echo-payload");
+    std::this_thread::sleep_for(40ms);
+    bridge.stopEchobeats();
+
+    const auto recent = bridge.recentCognitiveStates(16);
+    ASSERT_FALSE(recent.empty());
+
+    bool sawPayload = false;
+    for (const auto& state : recent) {
+        if (state.agentId == "echo-payload" && state.focus == "echobeats" && state.mood == "ticking") {
+            sawPayload = true;
+            EXPECT_EQ(state.echobeatsPhase, CognitiveBridge::phaseForStep(state.echobeatsStep));
+        }
+    }
+
+    EXPECT_TRUE(sawPayload);
+    EXPECT_FALSE(bridge.isEchobeatsRunning());
+    EXPECT_GE(bridge.stats().echobeatsTicks, 1u);
 }
 
 TEST(CognitiveBridgeEchobeats, StartStopIsIdempotentAndRestartable) {
