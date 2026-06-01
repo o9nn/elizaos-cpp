@@ -376,6 +376,40 @@ private:
         return (value && value->value) ? std::string(value->value) : "";
     }
 
+    static std::string nodeText(GumboNode* node) {
+        if (!node) return "";
+        if (node->type == GUMBO_NODE_TEXT || node->type == GUMBO_NODE_WHITESPACE) {
+            return node->v.text.text ? std::string(node->v.text.text) : "";
+        }
+        if (!isElement(node)) return "";
+        std::string text;
+        GumboVector* children = &node->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            text += nodeText(static_cast<GumboNode*>(children->data[i]));
+            text.push_back(' ');
+        }
+        return normalizeWhitespace(text);
+    }
+
+    static std::string optionValue(GumboNode* option) {
+        const std::string explicitValue = attr(option, "value");
+        return explicitValue.empty() ? nodeText(option) : explicitValue;
+    }
+
+    static std::string selectedOptionValue(GumboNode* select) {
+        if (tagName(select) != "select") return "";
+        std::optional<std::string> firstOption;
+        GumboVector* children = &select->v.element.children;
+        for (unsigned int i = 0; i < children->length; ++i) {
+            auto* child = static_cast<GumboNode*>(children->data[i]);
+            if (tagName(child) != "option") continue;
+            const std::string value = optionValue(child);
+            if (!firstOption) firstOption = value;
+            if (hasAttr(child, "selected")) return value;
+        }
+        return firstOption.value_or("");
+    }
+
     static bool hasAttr(GumboNode* node, const std::string& name) {
         if (!isElement(node)) return false;
         return gumbo_get_attribute(&node->v.element.attributes, name.c_str()) != nullptr;
@@ -527,6 +561,9 @@ private:
             const std::string value = gumboAttr->value ? gumboAttr->value : "";
             element.attributes[name] = value;
             if (name == "id") element.id = value;
+        }
+        if (tagName(node) == "select" && element.attributes.find("value") == element.attributes.end()) {
+            element.attributes["value"] = selectedOptionValue(node);
         }
         extractText(node, element.text);
         element.text = normalizeWhitespace(element.text);
@@ -880,31 +917,46 @@ BrowserResult AgentBrowser::submitForm(const std::string& formSelector) {
 
     if (method == "get") {
         std::map<std::string, std::string> queryParams;
+        std::vector<WebElement> scopedControls;
         {
             std::lock_guard<std::mutex> lock(sessionMutex_);
             auto* session = browser_impl::asSession(browserDriver_);
-            if (session) {
-                for (const auto& control : session->parser.formControls(formSelector, SelectorType::CSS)) {
-                    if (!control.isEnabled) continue;
-                    const std::string name = browser_impl::formFieldName("", control);
-                    if (name.empty()) continue;
-                    if (browser_impl::isSuccessfulTextControl(control)) {
-                        queryParams.emplace(name, browser_impl::formControlValue(control));
-                    } else if (browser_impl::isCheckableControl(control) && browser_impl::hasHtmlAttribute(control, "checked")) {
-                        const std::string value = browser_impl::formControlValue(control);
-                        queryParams.emplace(name, value.empty() ? "on" : value);
-                    }
-                }
+            if (session) scopedControls = session->parser.formControls(formSelector, SelectorType::CSS);
+        }
+
+        auto sameControl = [](const WebElement& lhs, const WebElement& rhs) {
+            if (!lhs.id.empty() && lhs.id == rhs.id) return true;
+            auto lhsName = lhs.attributes.find("name");
+            auto rhsName = rhs.attributes.find("name");
+            if (lhsName != lhs.attributes.end() && rhsName != rhs.attributes.end() &&
+                !lhsName->second.empty() && lhsName->second == rhsName->second && lhs.tag == rhs.tag) return true;
+            return false;
+        };
+        auto isScopedControl = [&](const WebElement& field) {
+            return std::any_of(scopedControls.begin(), scopedControls.end(), [&](const WebElement& control) {
+                return sameControl(control, field);
+            });
+        };
+
+        for (const auto& control : scopedControls) {
+            if (!control.isEnabled) continue;
+            const std::string name = browser_impl::formFieldName("", control);
+            if (name.empty()) continue;
+            if (browser_impl::isSuccessfulTextControl(control)) {
+                queryParams.emplace(name, browser_impl::formControlValue(control));
+            } else if (browser_impl::isCheckableControl(control) && browser_impl::hasHtmlAttribute(control, "checked")) {
+                const std::string value = browser_impl::formControlValue(control);
+                queryParams.emplace(name, value.empty() ? "on" : value);
             }
         }
         for (const auto& [selector, value] : formValues) {
             auto field = findElement(selector);
-            if (!field || !field->isEnabled) continue;
+            if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
             queryParams[browser_impl::formFieldName(selector, *field)] = value;
         }
         for (const auto& selector : checkedSelectors) {
             auto field = findElement(selector);
-            if (!field || !field->isEnabled) continue;
+            if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
             auto valueIt = field->attributes.find("value");
             queryParams[browser_impl::formFieldName(selector, *field)] = valueIt == field->attributes.end() || valueIt->second.empty() ? "on" : valueIt->second;
         }

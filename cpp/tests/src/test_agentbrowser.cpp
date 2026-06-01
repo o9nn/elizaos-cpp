@@ -431,10 +431,12 @@ TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
                   <input id="disabled-field" name="disabled" type="text" value="must-not-submit" disabled>
                   <input id="checked-opt" name="opt" type="checkbox" value="yes" checked>
                   <input id="unchecked-opt" name="skip" type="checkbox" value="no">
+                  <select id="role" name="role"><option value="operator">Operator</option><option value="architect" selected>Architect</option></select>
                   <textarea id="notes" name="notes">default note</textarea>
                 </form>
                 <form id="other-form" method="get" action="/other.html">
                   <input id="other-field" name="other" type="text" value="leak">
+                  <input id="outside-check" name="outside" type="checkbox" value="outside-value">
                 </form>
               </body>
             </html>)HTML"},
@@ -445,7 +447,8 @@ TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
     AgentBrowser browser(config_);
     ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
     ASSERT_EQ(browser.navigateTo(server.url("/forms.html")).result, BrowserActionResult::SUCCESS);
-    ASSERT_EQ(browser.fillForm({{"#name", "Ada Lovelace"}}).result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.fillForm({{"#name", "Ada Lovelace"}, {"#other-field", "outside override"}}).result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.checkCheckbox("#outside-check", true).result, BrowserActionResult::SUCCESS);
 
     auto result = browser.submitForm("#target-form");
     ASSERT_EQ(result.result, BrowserActionResult::SUCCESS) << result.message;
@@ -456,9 +459,12 @@ TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
     EXPECT_NE(submittedUrl->find("city=Cape+Town"), std::string::npos);
     EXPECT_NE(submittedUrl->find("notes=default+note"), std::string::npos);
     EXPECT_NE(submittedUrl->find("opt=yes"), std::string::npos);
+    EXPECT_NE(submittedUrl->find("role=architect"), std::string::npos);
     EXPECT_EQ(submittedUrl->find("disabled=must-not-submit"), std::string::npos);
     EXPECT_EQ(submittedUrl->find("skip=no"), std::string::npos);
     EXPECT_EQ(submittedUrl->find("other=leak"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("other=outside+override"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("outside=outside-value"), std::string::npos);
 
     ASSERT_TRUE(browser.getPageTitle().has_value());
     EXPECT_EQ(*browser.getPageTitle(), "Scoped Submitted");
