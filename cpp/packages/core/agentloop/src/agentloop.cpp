@@ -120,6 +120,7 @@ void AgentLoop::pause() {
 
 void AgentLoop::unpause() {
     pauseRequested_ = false;
+    stepEvent_.notify_all();
 }
 
 bool AgentLoop::isRunning() const {

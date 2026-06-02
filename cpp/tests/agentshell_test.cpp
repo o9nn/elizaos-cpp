@@ -2,6 +2,13 @@
 #include <gtest/gtest.h>
 #include "elizaos/agentshell.hpp"
 
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <sstream>
+#include <thread>
+#include <vector>
+
 using namespace elizaos;
 
 class AgentShellTest : public ::testing::Test {
@@ -82,6 +89,33 @@ TEST_F(AgentShellTest, SetPromptDoesNotThrow) {
 TEST_F(AgentShellTest, IsRunningInitiallyFalse) {
     EXPECT_FALSE(shell.isRunning());
 }
+
+#ifndef HAVE_READLINE
+TEST(AgentShellInteractive, StartConsumesFiniteInputJoinsCleanlyAndRecordsHistoryOnce) {
+    AgentShell interactiveShell;
+    interactiveShell.setHistoryEnabled(true);
+
+    std::istringstream scriptedInput("echo interactive lifecycle\nexit\n");
+    std::ostringstream capturedOutput;
+    auto* originalCin = std::cin.rdbuf(scriptedInput.rdbuf());
+    auto* originalCout = std::cout.rdbuf(capturedOutput.rdbuf());
+
+    interactiveShell.start("test> ");
+    for (int attempt = 0; attempt < 100 && interactiveShell.isRunning(); ++attempt) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    interactiveShell.stop();
+
+    std::cout.rdbuf(originalCout);
+    std::cin.rdbuf(originalCin);
+
+    EXPECT_FALSE(interactiveShell.isRunning());
+    const auto history = interactiveShell.getHistory();
+    EXPECT_EQ(1u, static_cast<unsigned>(std::count(history.begin(), history.end(), "echo interactive lifecycle")));
+    EXPECT_EQ(1u, static_cast<unsigned>(std::count(history.begin(), history.end(), "exit")));
+    EXPECT_NE(capturedOutput.str().find("interactive lifecycle"), std::string::npos);
+}
+#endif
 
 TEST(AgentShellGlobals, GlobalShellExists) {
     ASSERT_NE(globalShell, nullptr);
