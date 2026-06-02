@@ -39,17 +39,20 @@ void AgentShell::start(const std::string& prompt) {
 }
 
 void AgentShell::stop() {
-    if (!running_) {
-        return;
-    }
-    
-    running_ = false;
+    const bool wasRunning = running_.exchange(false);
     
     if (shellThread_ && shellThread_->joinable()) {
-        shellThread_->join();
+        if (shellThread_->get_id() != std::this_thread::get_id()) {
+            shellThread_->join();
+        } else {
+            shellThread_->detach();
+        }
     }
+    shellThread_.reset();
     
-    logInfo("Interactive shell stopped", "agentshell");
+    if (wasRunning) {
+        logInfo("Interactive shell stopped", "agentshell");
+    }
 }
 
 void AgentShell::shellLoop() {
@@ -89,13 +92,8 @@ void AgentShell::shellLoop() {
             continue;
         }
         
-        // Add to internal history
-        if (historyEnabled_) {
-            std::lock_guard<std::mutex> lock(historyMutex_);
-            commandHistory_.push_back(command);
-        }
-        
-        // Execute command
+        // Execute command. executeCommand() is the single owner of internal
+        // history recording, so interactive commands are not double-counted.
         auto result = executeCommand(command);
         
         // Display result
