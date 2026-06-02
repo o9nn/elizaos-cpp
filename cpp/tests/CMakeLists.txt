@@ -354,6 +354,7 @@ target_include_directories(api_client_real_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
+find_package(CURL REQUIRED)
 target_link_libraries(api_client_real_test
     elizaos-eliza-api-client
     gtest
@@ -362,6 +363,24 @@ target_link_libraries(api_client_real_test
     Threads::Threads
 )
 add_test(NAME api_client_real_test COMMAND api_client_real_test)
+
+# Targeted api-client Feature Garden Ledger tests: truthful BaseClient + ServerService vertical slice.
+add_executable(real_api_client_test src/test_api_client.cpp src/shim_main.cpp)
+target_include_directories(real_api_client_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/include
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/packages/applications/eliza/packages/api-client/src
+)
+find_package(CURL REQUIRED)
+target_link_libraries(real_api_client_test
+    elizaos-eliza-api-client
+    gtest
+    nlohmann_json::nlohmann_json
+    CURL::libcurl
+    Threads::Threads
+)
+add_test(NAME real_api_client_test COMMAND real_api_client_test)
+
 add_executable(public_header_forwarding_all_test
     public_header_forwarding_all_test.cpp
     public_header_forwarding_headers/agentaction_hpp_test.cpp
@@ -440,6 +459,16 @@ add_test(NAME public_header_forwarding_all_test COMMAND public_header_forwarding
 # centers and the cognitive integration anchor without compiling the generated
 # forest first.
 set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
+    agentaction_test
+    agentagenda_test
+    agentbrowser_test
+    agentcomms_test
+    agentloop_test
+    agentmemory_test
+    agentshell_test
+    characters_test
+    core_test
+    knowledge_test
     cognitive_pipeline_e2e_test
     real_core_test
     real_agentaction_test
@@ -456,6 +485,7 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     plugin_specification_test
     public_header_forwarding_test
     api_client_real_test
+    real_api_client_test
     public_header_forwarding_all_test
 )
 
