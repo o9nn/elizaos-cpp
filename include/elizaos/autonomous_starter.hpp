@@ -110,6 +110,21 @@ private:
 };
 
 std::shared_ptr<AutonomousStarter> createAutolizaAgent();
+
+/**
+ * Run a lightweight AutonomousStarter health check.
+ *
+ * The check constructs a bounded Autoliza instance, verifies lifecycle and shell
+ * guard behavior, executes a harmless command, and stops the agent. It returns
+ * false instead of throwing when a check fails, which makes it suitable for
+ * package-link smoke tests and startup diagnostics.
+ */
+bool autonomous_starter_self_check();
+
+/**
+ * Compatibility wrapper retained for older downstream code.
+ * Prefer autonomous_starter_self_check() for meaningful diagnostics.
+ */
 void autonomous_starter_placeholder();
 
 } // namespace elizaos

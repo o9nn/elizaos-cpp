@@ -138,6 +138,10 @@ TEST(AutonomousStarter, SchedulesValidShellTaskAndRejectsUnsafeTask) {
     EXPECT_TRUE(unsafeTask.empty());
 }
 
+TEST(AutonomousStarter, SelfCheckExercisesLifecycleShellGuardAndMemory) {
+    EXPECT_TRUE(autonomous_starter_self_check());
+}
+
 TEST(AutonomousStarter, PlaceholderLink) {
     EXPECT_NO_THROW(autonomous_starter_placeholder());
 }

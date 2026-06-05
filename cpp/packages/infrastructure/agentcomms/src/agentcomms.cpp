@@ -168,58 +168,82 @@ std::vector<AgentId> CommChannel::getParticipants() const {
 }
 
 void CommChannel::start() {
-    if (active_) {
+    if (active_.exchange(true)) {
         return; // Already active
     }
-    
-    active_ = true;
-    stopRequested_ = false;
+
+    {
+        std::lock_guard<std::mutex> lock(queueMutex_);
+        stopRequested_ = false;
+    }
+
     processingThread_ = std::make_unique<std::thread>(&CommChannel::processMessages, this);
 }
 
 void CommChannel::stop() {
-    if (!active_) {
+    if (!active_.exchange(false)) {
         return;
     }
-    
-    stopRequested_ = true;
-    queueCondition_.notify_all();
-    
-    if (processingThread_ && processingThread_->joinable()) {
-        processingThread_->join();
+
+    {
+        std::lock_guard<std::mutex> lock(queueMutex_);
+        stopRequested_ = true;
     }
-    
-    active_ = false;
+    queueCondition_.notify_all();
+
+    if (processingThread_ && processingThread_->joinable()) {
+        if (processingThread_->get_id() == std::this_thread::get_id()) {
+            processingThread_->detach();
+        } else {
+            processingThread_->join();
+        }
+    }
 }
 
 void CommChannel::processMessages() {
-    while (!stopRequested_) {
-        std::unique_lock<std::mutex> lock(queueMutex_);
-        
-        // Wait for messages or stop signal
+    std::unique_lock<std::mutex> lock(queueMutex_);
+
+    while (true) {
+        // Wait for messages or stop signal. stopRequested_ is modified while
+        // holding queueMutex_, which prevents a lost wake-up that can otherwise
+        // leave idle channels blocked forever during stop().
         queueCondition_.wait(lock, [this] {
-            return !messageQueue_.empty() || stopRequested_;
+            return !messageQueue_.empty() || stopRequested_.load();
         });
-        
-        // Process all available messages
-        while (!messageQueue_.empty() && !stopRequested_) {
+
+        if (stopRequested_ && messageQueue_.empty()) {
+            break;
+        }
+
+        // Process all available messages. A stop request terminates the loop
+        // after any message already removed from the queue has been handled;
+        // no new messages are accepted once active_ becomes false.
+        while (!messageQueue_.empty()) {
             Message message = messageQueue_.front();
             messageQueue_.pop();
-            
+
             lock.unlock();
-            
+
             // Call message handler if std::set
             if (messageHandler_) {
                 try {
                     messageHandler_(message);
                 } catch (const std::exception& e) {
                     // Log error but continue processing
-                    std::cerr << "Error in message handler for channel " << channelId_ 
+                    std::cerr << "Error in message handler for channel " << channelId_
                               << ": " << e.what() << std::endl;
                 }
             }
-            
+
             lock.lock();
+
+            if (stopRequested_) {
+                break;
+            }
+        }
+
+        if (stopRequested_) {
+            break;
         }
     }
 }

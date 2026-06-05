@@ -7,7 +7,7 @@
 // content sniffing, deterministic chunking with sliding-window overlap,
 // and confidence/source heuristics.
 
-#include "elizaos/knowledge.hpp"
+#include "elizaos/knowledge_helpers.hpp"
 #include "elizaos/core.hpp"
 
 #include <algorithm>
@@ -76,8 +76,8 @@ std::string trim(const std::string& s) {
 // Split text into roughly chunkSize chunks with overlap characters of overlap.
 // Empty input returns an empty vector. The function never throws.
 std::vector<std::string> chunkText(const std::string& text,
-                                   size_t chunkSize = kDefaultChunkSize,
-                                   size_t overlap = kDefaultChunkOverlap) {
+                                   size_t chunkSize,
+                                   size_t overlap) {
     std::vector<std::string> chunks;
     if (text.empty() || chunkSize == 0) return chunks;
     if (overlap >= chunkSize) overlap = chunkSize / 4;
@@ -104,10 +104,10 @@ std::string readWholeFile(const std::string& path) {
 std::vector<std::string> ingestText(KnowledgeBase& kb,
                                     const std::string& text,
                                     const std::string& documentName,
-                                    KnowledgeType type = KnowledgeType::FACT,
-                                    const std::vector<std::string>& tags = {},
-                                    size_t chunkSize = kDefaultChunkSize,
-                                    size_t overlap = kDefaultChunkOverlap) {
+                                    KnowledgeType type,
+                                    const std::vector<std::string>& tags,
+                                    size_t chunkSize,
+                                    size_t overlap) {
     std::vector<std::string> ids;
     auto chunks = chunkText(trim(text), chunkSize, overlap);
     if (chunks.empty()) return ids;
@@ -128,9 +128,9 @@ std::vector<std::string> ingestText(KnowledgeBase& kb,
 // Ingest a file from disk. Returns chunk IDs (empty on failure).
 std::vector<std::string> ingestFile(KnowledgeBase& kb,
                                     const std::string& filePath,
-                                    const std::vector<std::string>& tags = {},
-                                    size_t chunkSize = kDefaultChunkSize,
-                                    size_t overlap = kDefaultChunkOverlap) {
+                                    const std::vector<std::string>& tags,
+                                    size_t chunkSize,
+                                    size_t overlap) {
     auto contents = readWholeFile(filePath);
     if (contents.empty()) return {};
     auto type = inferTypeFromFilename(filePath);
@@ -191,8 +191,23 @@ std::string reconstructDocument(KnowledgeBase& kb,
     return out;
 }
 
-// Backwards-compat token to keep CMake / linker symbol stable.
-void knowledge_helpers_placeholder() {}
+bool knowledge_helpers_self_check() {
+    try {
+        const auto chunks = chunkText(
+            "alpha beta gamma delta epsilon zeta eta theta iota kappa", 24, 6);
+        return chunks.size() >= 2 && !chunks.front().empty() &&
+               chunks.front().find("alpha") != std::string::npos &&
+               chunks.back().find("kappa") != std::string::npos;
+    } catch (...) {
+        return false;
+    }
+}
+
+// Backwards-compat token to keep CMake / linker symbol stable while still
+// exercising the real helper path when legacy smoke tests call this symbol.
+void knowledge_helpers_placeholder() {
+    (void)knowledge_helpers_self_check();
+}
 
 }  // namespace knowledge
 }  // namespace elizaos

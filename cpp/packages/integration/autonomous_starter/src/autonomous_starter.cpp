@@ -497,8 +497,52 @@ std::shared_ptr<AutonomousStarter> createAutolizaAgent() {
     return std::make_shared<AutonomousStarter>(config);
 }
 
+bool autonomous_starter_self_check() {
+    try {
+        auto agent = createAutolizaAgent();
+        if (!agent || agent->isRunning()) {
+            return false;
+        }
+
+        agent->start();
+        if (!agent->isRunning()) {
+            return false;
+        }
+
+        const auto safeCommand = agent->executeShellCommand("printf autonomous-self-check");
+        if (!safeCommand.success ||
+            safeCommand.output.find("autonomous-self-check") == std::string::npos) {
+            agent->stop();
+            return false;
+        }
+
+        agent->enableShellAccess(false);
+        const auto disabledCommand = agent->executeShellCommand("printf should-not-run");
+        agent->enableShellAccess(true);
+        if (disabledCommand.success) {
+            agent->stop();
+            return false;
+        }
+
+        if (agent->getState().getRecentMessages().empty()) {
+            agent->stop();
+            return false;
+        }
+
+        agent->stop();
+        return !agent->isRunning();
+    } catch (const std::exception& e) {
+        logError(std::string("AutonomousStarter self-check failed: ") + e.what());
+        return false;
+    } catch (...) {
+        logError("AutonomousStarter self-check failed with unknown exception");
+        return false;
+    }
+}
+
 void autonomous_starter_placeholder() {
-    logInfo("AutonomousStarter module loaded");
+    const bool ok = autonomous_starter_self_check();
+    logInfo(std::string("AutonomousStarter module loaded; self-check=") + (ok ? "ok" : "failed"));
 }
 
 } // namespace elizaos
