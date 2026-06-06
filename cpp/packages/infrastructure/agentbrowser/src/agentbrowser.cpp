@@ -143,8 +143,7 @@ static std::string resolveUrl(const std::string& baseUrl, const std::string& tar
     return origin + path.str();
 }
 
-static std::string appendQuery(const std::string& url, const std::map<std::string, std::string>& params) {
-    if (params.empty()) return url;
+static std::string encodeFormBody(const std::map<std::string, std::string>& params) {
     std::ostringstream query;
     bool first = true;
     for (const auto& [key, value] : params) {
@@ -152,13 +151,18 @@ static std::string appendQuery(const std::string& url, const std::map<std::strin
         query << (first ? "" : "&") << urlEncode(key) << '=' << urlEncode(value);
         first = false;
     }
-    if (first) return url;
+    return query.str();
+}
+
+static std::string appendQuery(const std::string& url, const std::map<std::string, std::string>& params) {
+    const std::string body = encodeFormBody(params);
+    if (body.empty()) return url;
 
     const auto fragmentPos = url.find('#');
     const std::string withoutFragment = fragmentPos == std::string::npos ? url : url.substr(0, fragmentPos);
     const std::string fragment = fragmentPos == std::string::npos ? "" : url.substr(fragmentPos);
     const char separator = withoutFragment.find('?') == std::string::npos ? '?' : '&';
-    return withoutFragment + separator + query.str() + fragment;
+    return withoutFragment + separator + body + fragment;
 }
 
 static std::string formFieldName(const std::string& selector, const WebElement& element) {
@@ -190,6 +194,18 @@ static bool isSuccessfulTextControl(const WebElement& element) {
     return skipped.find(type) == skipped.end();
 }
 
+static bool isTextEntryControl(const WebElement& element) {
+    const std::string tag = toLower(element.tag);
+    if (tag == "textarea") return true;
+    if (tag != "input") return false;
+    const auto typeIt = element.attributes.find("type");
+    const std::string type = typeIt == element.attributes.end() ? "text" : toLower(typeIt->second);
+    static const std::unordered_set<std::string> accepted = {
+        "", "text", "search", "email", "url", "tel", "password", "number", "date", "datetime-local", "month", "time", "week"
+    };
+    return accepted.find(type) != accepted.end();
+}
+
 static bool isCheckableControl(const WebElement& element) {
     const std::string tag = toLower(element.tag);
     auto typeIt = element.attributes.find("type");
@@ -215,6 +231,20 @@ public:
     }
 
     bool fetch(const std::string& url, const BrowserConfig& config) {
+        return perform(url, config, "GET", "");
+    }
+
+    bool postForm(const std::string& url, const std::string& body, const BrowserConfig& config) {
+        return perform(url, config, "POST", body);
+    }
+
+    const std::string& html() const { return lastHtml_; }
+    const std::string& error() const { return lastError_; }
+    const std::string& effectiveUrl() const { return effectiveUrl_; }
+    long httpCode() const { return lastHttpCode_; }
+
+private:
+    bool perform(const std::string& url, const BrowserConfig& config, const std::string& method, const std::string& body) {
         lastUrl_ = url;
         effectiveUrl_ = url;
         lastHtml_.clear();
@@ -234,7 +264,17 @@ public:
         curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, 1L);
         curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYHOST, 2L);
 
+        curl_slist* headers = nullptr;
+        if (method == "POST") {
+            headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+            curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers);
+            curl_easy_setopt(curl_, CURLOPT_POST, 1L);
+            curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, body.c_str());
+            curl_easy_setopt(curl_, CURLOPT_POSTFIELDSIZE, static_cast<long>(body.size()));
+        }
+
         CURLcode result = curl_easy_perform(curl_);
+        if (headers) curl_slist_free_all(headers);
         if (result != CURLE_OK) {
             lastError_ = curl_easy_strerror(result);
             return false;
@@ -253,12 +293,6 @@ public:
         return true;
     }
 
-    const std::string& html() const { return lastHtml_; }
-    const std::string& error() const { return lastError_; }
-    const std::string& effectiveUrl() const { return effectiveUrl_; }
-    long httpCode() const { return lastHttpCode_; }
-
-private:
     CURL* curl_ = nullptr;
     std::string lastUrl_;
     std::string effectiveUrl_;
@@ -321,6 +355,23 @@ public:
             return tag == "input" || tag == "select" || tag == "textarea" || tag == "button";
         }, controls);
         return toElements(controls);
+    }
+
+    std::vector<std::string> selectOptionValues(const std::string& selector, SelectorType type) const {
+        std::vector<GumboNode*> selectNodes;
+        if (!output_ || !output_->root) return {};
+        collectMatching(selector, type, selectNodes);
+        auto selected = std::find_if(selectNodes.begin(), selectNodes.end(), [](GumboNode* node) {
+            return tagName(node) == "select";
+        });
+        if (selected == selectNodes.end()) return {};
+
+        std::vector<GumboNode*> optionNodes;
+        collectByPredicate(*selected, [](GumboNode* node) { return tagName(node) == "option"; }, optionNodes);
+        std::vector<std::string> values;
+        values.reserve(optionNodes.size());
+        for (auto* option : optionNodes) values.push_back(optionValue(option));
+        return values;
     }
 
 private:
@@ -745,11 +796,13 @@ BrowserResult AgentBrowser::waitForPageLoad(int timeoutSec) {
     if (!initialized_.load()) return {BrowserActionResult::FAILED, "Browser not initialized", std::nullopt, std::chrono::milliseconds(0)};
     auto start = std::chrono::steady_clock::now();
     while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start).count() <= timeoutSec) {
-        std::lock_guard<std::mutex> lock(sessionMutex_);
-        auto* session = browser_impl::asSession(browserDriver_);
-        if (session && session->parser.isParsed()) {
-            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
-            return {BrowserActionResult::SUCCESS, "Page loaded", currentUrl_, duration};
+        {
+            std::lock_guard<std::mutex> lock(sessionMutex_);
+            auto* session = browser_impl::asSession(browserDriver_);
+            if (session && session->parser.isParsed()) {
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+                return {BrowserActionResult::SUCCESS, "Page loaded", currentUrl_, duration};
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
@@ -859,7 +912,8 @@ BrowserResult AgentBrowser::typeText(const std::string& selector, const std::str
     auto element = findElement(selector, type);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
-    if (!element->isEnabled) return {BrowserActionResult::FAILED, "Element is disabled: " + selector, selector, duration};
+    if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Element is not editable: " + selector, selector, duration};
+    if (!browser_impl::isTextEntryControl(*element)) return {BrowserActionResult::FAILED, "Element is not a text entry control: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
     auto* session = browser_impl::asSession(browserDriver_);
     if (session) session->formValues[selector] += text;
@@ -871,6 +925,8 @@ BrowserResult AgentBrowser::clearText(const std::string& selector, SelectorType 
     auto element = findElement(selector, type);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Element not found: " + selector, selector, duration};
+    if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Element is not editable: " + selector, selector, duration};
+    if (!browser_impl::isTextEntryControl(*element)) return {BrowserActionResult::FAILED, "Element is not a text entry control: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
     auto* session = browser_impl::asSession(browserDriver_);
     if (session) session->formValues[selector].clear();
@@ -915,58 +971,96 @@ BrowserResult AgentBrowser::submitForm(const std::string& formSelector) {
     const auto actionIt = element->attributes.find("action");
     const std::string action = actionIt == element->attributes.end() || browser_impl::trim(actionIt->second).empty() ? baseUrl : actionIt->second;
 
+    std::map<std::string, std::string> queryParams;
+    std::vector<WebElement> scopedControls;
+    {
+        std::lock_guard<std::mutex> lock(sessionMutex_);
+        auto* session = browser_impl::asSession(browserDriver_);
+        if (session) scopedControls = session->parser.formControls(formSelector, SelectorType::CSS);
+    }
+
+    auto sameControl = [](const WebElement& lhs, const WebElement& rhs) {
+        if (!lhs.id.empty() && lhs.id == rhs.id) return true;
+        auto lhsName = lhs.attributes.find("name");
+        auto rhsName = rhs.attributes.find("name");
+        if (lhsName != lhs.attributes.end() && rhsName != rhs.attributes.end() &&
+            !lhsName->second.empty() && lhsName->second == rhsName->second && lhs.tag == rhs.tag) return true;
+        return false;
+    };
+    auto isScopedControl = [&](const WebElement& field) {
+        return std::any_of(scopedControls.begin(), scopedControls.end(), [&](const WebElement& control) {
+            return sameControl(control, field);
+        });
+    };
+
+    for (const auto& control : scopedControls) {
+        if (!control.isEnabled) continue;
+        const std::string name = browser_impl::formFieldName("", control);
+        if (name.empty()) continue;
+        if (browser_impl::isSuccessfulTextControl(control)) {
+            queryParams.emplace(name, browser_impl::formControlValue(control));
+        } else if (browser_impl::isCheckableControl(control) && browser_impl::hasHtmlAttribute(control, "checked")) {
+            const std::string value = browser_impl::formControlValue(control);
+            queryParams.emplace(name, value.empty() ? "on" : value);
+        }
+    }
+    for (const auto& [selector, value] : formValues) {
+        auto field = findElement(selector);
+        if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
+        queryParams[browser_impl::formFieldName(selector, *field)] = value;
+    }
+    for (const auto& selector : checkedSelectors) {
+        auto field = findElement(selector);
+        if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
+        auto valueIt = field->attributes.find("value");
+        queryParams[browser_impl::formFieldName(selector, *field)] = valueIt == field->attributes.end() || valueIt->second.empty() ? "on" : valueIt->second;
+    }
+
+    const std::string target = browser_impl::resolveUrl(baseUrl, action);
     if (method == "get") {
-        std::map<std::string, std::string> queryParams;
-        std::vector<WebElement> scopedControls;
-        {
-            std::lock_guard<std::mutex> lock(sessionMutex_);
-            auto* session = browser_impl::asSession(browserDriver_);
-            if (session) scopedControls = session->parser.formControls(formSelector, SelectorType::CSS);
-        }
-
-        auto sameControl = [](const WebElement& lhs, const WebElement& rhs) {
-            if (!lhs.id.empty() && lhs.id == rhs.id) return true;
-            auto lhsName = lhs.attributes.find("name");
-            auto rhsName = rhs.attributes.find("name");
-            if (lhsName != lhs.attributes.end() && rhsName != rhs.attributes.end() &&
-                !lhsName->second.empty() && lhsName->second == rhsName->second && lhs.tag == rhs.tag) return true;
-            return false;
-        };
-        auto isScopedControl = [&](const WebElement& field) {
-            return std::any_of(scopedControls.begin(), scopedControls.end(), [&](const WebElement& control) {
-                return sameControl(control, field);
-            });
-        };
-
-        for (const auto& control : scopedControls) {
-            if (!control.isEnabled) continue;
-            const std::string name = browser_impl::formFieldName("", control);
-            if (name.empty()) continue;
-            if (browser_impl::isSuccessfulTextControl(control)) {
-                queryParams.emplace(name, browser_impl::formControlValue(control));
-            } else if (browser_impl::isCheckableControl(control) && browser_impl::hasHtmlAttribute(control, "checked")) {
-                const std::string value = browser_impl::formControlValue(control);
-                queryParams.emplace(name, value.empty() ? "on" : value);
-            }
-        }
-        for (const auto& [selector, value] : formValues) {
-            auto field = findElement(selector);
-            if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
-            queryParams[browser_impl::formFieldName(selector, *field)] = value;
-        }
-        for (const auto& selector : checkedSelectors) {
-            auto field = findElement(selector);
-            if (!field || !field->isEnabled || !isScopedControl(*field)) continue;
-            auto valueIt = field->attributes.find("value");
-            queryParams[browser_impl::formFieldName(selector, *field)] = valueIt == field->attributes.end() || valueIt->second.empty() ? "on" : valueIt->second;
-        }
-        const std::string target = browser_impl::appendQuery(browser_impl::resolveUrl(baseUrl, action), queryParams);
-        auto nav = navigateTo(target);
-        if (nav) nav.message = "Submitted GET form " + formSelector + " to " + target;
+        const std::string targetWithQuery = browser_impl::appendQuery(target, queryParams);
+        auto nav = navigateTo(targetWithQuery);
+        if (nav) nav.message = "Submitted GET form " + formSelector + " to " + targetWithQuery;
         return nav;
     }
 
-    return {BrowserActionResult::SUCCESS, "Form submission prepared for unsupported HTTP method: " + method, formSelector, duration};
+    if (method == "post") {
+        const std::string body = browser_impl::encodeFormBody(queryParams);
+        std::string loadedUrl;
+        long httpCode = 0;
+        {
+            std::lock_guard<std::mutex> lock(sessionMutex_);
+            auto* session = browser_impl::asSession(browserDriver_);
+            if (!session) return {BrowserActionResult::FAILED, "Browser driver not initialized", formSelector, duration};
+            if (!session->http.postForm(target, body, config_)) {
+                auto failedDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+                return {BrowserActionResult::NAVIGATION_ERROR, "Failed to submit POST form: " + session->http.error(), target, failedDuration};
+            }
+            if (!session->parser.parse(session->http.html())) {
+                auto failedDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+                return {BrowserActionResult::FAILED, "POST form response received but failed to parse HTML", target, failedDuration};
+            }
+            loadedUrl = session->http.effectiveUrl();
+            httpCode = session->http.httpCode();
+            currentUrl_ = loadedUrl;
+            if (session->history.empty() || session->history[session->historyIndex] != loadedUrl) {
+                if (!session->history.empty() && session->historyIndex + 1 < session->history.size()) {
+                    session->history.erase(session->history.begin() + static_cast<std::ptrdiff_t>(session->historyIndex + 1), session->history.end());
+                }
+                session->history.push_back(loadedUrl);
+                session->historyIndex = session->history.size() - 1;
+            }
+            stats_.pagesVisited++;
+        }
+        auto postDuration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+        updateStatistics("navigation", postDuration);
+        if (memory_) rememberPage(loadedUrl, "form-post");
+        BrowserResult result{BrowserActionResult::SUCCESS, "Submitted POST form " + formSelector + " to " + loadedUrl + " (HTTP " + std::to_string(httpCode) + ")", loadedUrl, postDuration};
+        logAction("submit_form", result);
+        return result;
+    }
+
+    return {BrowserActionResult::FAILED, "Unsupported form HTTP method: " + method, formSelector, duration};
 }
 
 BrowserResult AgentBrowser::selectOption(const std::string& selector, const std::string& value) {
@@ -974,9 +1068,17 @@ BrowserResult AgentBrowser::selectOption(const std::string& selector, const std:
     auto element = findElement(selector);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Select element not found: " + selector, selector, duration};
+    if (browser_impl::toLower(element->tag) != "select") return {BrowserActionResult::FAILED, "Element is not a select control: " + selector, selector, duration};
+    if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Select element is not interactable: " + selector, selector, duration};
+
     std::lock_guard<std::mutex> lock(sessionMutex_);
     auto* session = browser_impl::asSession(browserDriver_);
-    if (session) session->formValues[selector] = value;
+    if (!session) return {BrowserActionResult::FAILED, "Browser driver not initialized", selector, duration};
+    const auto values = session->parser.selectOptionValues(selector, SelectorType::CSS);
+    if (std::find(values.begin(), values.end(), value) == values.end()) {
+        return {BrowserActionResult::FAILED, "Option value not found in select control: " + value, selector, duration};
+    }
+    session->formValues[selector] = value;
     return {BrowserActionResult::SUCCESS, "Selected option '" + value + "' in " + selector, value, duration};
 }
 
@@ -985,6 +1087,8 @@ BrowserResult AgentBrowser::checkCheckbox(const std::string& selector, bool chec
     auto element = findElement(selector);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
     if (!element) return {BrowserActionResult::ELEMENT_NOT_FOUND, "Checkbox not found: " + selector, selector, duration};
+    if (!browser_impl::isCheckableControl(*element)) return {BrowserActionResult::FAILED, "Element is not a checkbox or radio control: " + selector, selector, duration};
+    if (!element->isVisible || !element->isEnabled) return {BrowserActionResult::FAILED, "Checkbox is not interactable: " + selector, selector, duration};
     std::lock_guard<std::mutex> lock(sessionMutex_);
     auto* session = browser_impl::asSession(browserDriver_);
     if (session) {

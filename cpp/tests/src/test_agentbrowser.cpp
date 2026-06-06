@@ -7,9 +7,12 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <mutex>
+#include <optional>
 #include <sstream>
 #include <thread>
 #include <unordered_map>
+#include <vector>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -247,6 +250,27 @@ public:
         return "http://127.0.0.1:" + std::to_string(port_) + path;
     }
 
+    struct RecordedRequest {
+        std::string method;
+        std::string path;
+        std::string body;
+    };
+
+    std::vector<RecordedRequest> requests() const {
+        std::lock_guard<std::mutex> lock(requestsMutex_);
+        return requests_;
+    }
+
+    std::optional<RecordedRequest> lastRequestForPath(const std::string& lookupPath) const {
+        std::lock_guard<std::mutex> lock(requestsMutex_);
+        for (auto it = requests_.rbegin(); it != requests_.rend(); ++it) {
+            std::string normalized = it->path;
+            if (auto query = normalized.find('?'); query != std::string::npos) normalized = normalized.substr(0, query);
+            if (normalized == lookupPath) return *it;
+        }
+        return std::nullopt;
+    }
+
     void stop() {
         if (!running_.exchange(false)) return;
         if (serverFd_ >= 0) {
@@ -275,13 +299,42 @@ private:
             ssize_t n = ::recv(client, buffer, sizeof(buffer), 0);
             if (n <= 0) break;
             request.append(buffer, static_cast<std::size_t>(n));
-            if (request.size() > 8192) break;
+            if (request.size() > 65536) break;
+        }
+
+        const auto headerEnd = request.find("\r\n\r\n");
+        std::string headers = headerEnd == std::string::npos ? request : request.substr(0, headerEnd + 4);
+        std::size_t contentLength = 0;
+        {
+            std::istringstream headerStream(headers);
+            std::string line;
+            while (std::getline(headerStream, line)) {
+                if (!line.empty() && line.back() == '\r') line.pop_back();
+                const std::string prefix = "Content-Length:";
+                if (line.rfind(prefix, 0) == 0) {
+                    contentLength = static_cast<std::size_t>(std::stoul(line.substr(prefix.size())));
+                }
+            }
+        }
+        while (headerEnd != std::string::npos && request.size() < headerEnd + 4 + contentLength) {
+            ssize_t n = ::recv(client, buffer, sizeof(buffer), 0);
+            if (n <= 0) break;
+            request.append(buffer, static_cast<std::size_t>(n));
+            if (request.size() > 65536) break;
         }
 
         std::string path = "/";
         std::istringstream stream(request);
         std::string method;
         stream >> method >> path;
+        std::string requestBody;
+        if (headerEnd != std::string::npos && request.size() > headerEnd + 4) {
+            requestBody = request.substr(headerEnd + 4, contentLength);
+        }
+        {
+            std::lock_guard<std::mutex> lock(requestsMutex_);
+            requests_.push_back({method, path, requestBody});
+        }
 
         int code = 200;
         std::string lookupPath = path;
@@ -315,6 +368,8 @@ private:
     }
 
     std::unordered_map<std::string, std::string> routes_;
+    mutable std::mutex requestsMutex_;
+    std::vector<RecordedRequest> requests_;
     int serverFd_{-1};
     uint16_t port_{0};
     std::atomic<bool> running_{false};
@@ -468,6 +523,103 @@ TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
 
     ASSERT_TRUE(browser.getPageTitle().has_value());
     EXPECT_EQ(*browser.getPageTitle(), "Scoped Submitted");
+    EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
+}
+
+
+TEST_F(AgentBrowserTest, SubmitPostFormSendsScopedEncodedBodyAndUpdatesPage) {
+    LocalHttpServer server({
+        {"/post-form.html", R"HTML(
+            <html>
+              <head><title>POST Form</title></head>
+              <body>
+                <form id="post-form" method="post" action="/post-submitted.html">
+                  <input id="name" name="name" type="text" value="Default Name">
+                  <input id="city" name="city" type="text" value="Cape Town">
+                  <input id="disabled-field" name="disabled" type="text" value="must-not-submit" disabled>
+                  <input id="checked-opt" name="opt" type="checkbox" value="yes" checked>
+                  <input id="notify" name="notify" type="checkbox" value="email">
+                  <select id="role" name="role"><option value="operator">Operator</option><option value="architect" selected>Architect</option></select>
+                  <textarea id="notes" name="notes">default note</textarea>
+                </form>
+                <form id="other-form" method="post" action="/other.html">
+                  <input id="other-field" name="other" type="text" value="leak">
+                </form>
+              </body>
+            </html>)HTML"},
+        {"/post-submitted.html", R"HTML(
+            <html><head><title>POST Submitted</title></head><body><p>POST form submitted</p></body></html>)HTML"}
+    });
+
+    AgentBrowser browser(config_);
+    ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.navigateTo(server.url("/post-form.html")).result, BrowserActionResult::SUCCESS);
+
+    ASSERT_EQ(browser.fillForm({{"#name", "Ada Lovelace"}, {"#other-field", "outside override"}}).result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.selectOption("#role", "architect").result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.checkCheckbox("#notify", true).result, BrowserActionResult::SUCCESS);
+
+    auto result = browser.submitForm("#post-form");
+    ASSERT_EQ(result.result, BrowserActionResult::SUCCESS) << result.message;
+    EXPECT_NE(result.message.find("Submitted POST form"), std::string::npos);
+    ASSERT_TRUE(browser.getPageTitle().has_value());
+    EXPECT_EQ(*browser.getPageTitle(), "POST Submitted");
+
+    auto submittedUrl = browser.evaluateJavaScript("location.href");
+    ASSERT_TRUE(submittedUrl.has_value());
+    EXPECT_NE(submittedUrl->find("/post-submitted.html"), std::string::npos);
+    EXPECT_EQ(submittedUrl->find("?name="), std::string::npos);
+
+    auto request = server.lastRequestForPath("/post-submitted.html");
+    ASSERT_TRUE(request.has_value());
+    EXPECT_EQ(request->method, "POST");
+    EXPECT_NE(request->body.find("name=Ada+Lovelace"), std::string::npos);
+    EXPECT_NE(request->body.find("city=Cape+Town"), std::string::npos);
+    EXPECT_NE(request->body.find("notes=default+note"), std::string::npos);
+    EXPECT_NE(request->body.find("opt=yes"), std::string::npos);
+    EXPECT_NE(request->body.find("notify=email"), std::string::npos);
+    EXPECT_NE(request->body.find("role=architect"), std::string::npos);
+    EXPECT_EQ(request->body.find("disabled=must-not-submit"), std::string::npos);
+    EXPECT_EQ(request->body.find("other=leak"), std::string::npos);
+    EXPECT_EQ(request->body.find("other=outside+override"), std::string::npos);
+
+    auto stats = browser.getStatistics();
+    EXPECT_GE(stats.pagesVisited, 2);
+    EXPECT_GE(stats.formsSubmitted, 1);
+    EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
+}
+
+TEST_F(AgentBrowserTest, FormControlValidationRejectsWrongControlsAndMissingOptions) {
+    LocalHttpServer server({
+        {"/controls.html", R"HTML(
+            <html>
+              <head><title>Control Validation</title></head>
+              <body>
+                <input id="name" name="name" type="text" value="">
+                <input id="disabled-name" name="disabled_name" type="text" disabled>
+                <select id="role" name="role"><option value="operator">Operator</option><option value="architect">Architect</option></select>
+                <input id="agree" name="agree" type="checkbox" value="yes">
+                <button id="plain-button">Plain Button</button>
+              </body>
+            </html>)HTML"}
+    });
+
+    AgentBrowser browser(config_);
+    ASSERT_EQ(browser.initialize().result, BrowserActionResult::SUCCESS);
+    ASSERT_EQ(browser.navigateTo(server.url("/controls.html")).result, BrowserActionResult::SUCCESS);
+
+    EXPECT_EQ(browser.typeText("#name", "Ada").result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.typeText("#role", "architect").result, BrowserActionResult::FAILED);
+    EXPECT_EQ(browser.typeText("#plain-button", "click text").result, BrowserActionResult::FAILED);
+    EXPECT_EQ(browser.clearText("#disabled-name").result, BrowserActionResult::FAILED);
+
+    EXPECT_EQ(browser.selectOption("#role", "architect").result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.selectOption("#role", "missing").result, BrowserActionResult::FAILED);
+    EXPECT_EQ(browser.selectOption("#name", "Ada").result, BrowserActionResult::FAILED);
+
+    EXPECT_EQ(browser.checkCheckbox("#agree", true).result, BrowserActionResult::SUCCESS);
+    EXPECT_EQ(browser.checkCheckbox("#name", true).result, BrowserActionResult::FAILED);
+
     EXPECT_EQ(browser.shutdown().result, BrowserActionResult::SUCCESS);
 }
 
