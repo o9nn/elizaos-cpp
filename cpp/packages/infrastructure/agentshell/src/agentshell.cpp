@@ -16,7 +16,7 @@ namespace elizaos {
 std::shared_ptr<AgentShell> globalShell = std::make_shared<AgentShell>();
 
 AgentShell::AgentShell() 
-    : running_(false), prompt_("elizaos> "), historyEnabled_(true) {
+    : prompt_("elizaos> "), historyEnabled_(true), running_(false) {
     initializeBuiltinCommands();
 }
 

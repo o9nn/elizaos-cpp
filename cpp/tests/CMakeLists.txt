@@ -106,6 +106,10 @@ add_executable(eliza_test eliza_test.cpp)
 target_link_libraries(eliza_test elizaos-eliza gtest gtest_main Threads::Threads)
 add_test(NAME eliza_test COMMAND eliza_test)
 
+add_executable(eliza_paths_test eliza_paths_test.cpp)
+target_link_libraries(eliza_paths_test elizaos-eliza gtest gtest_main Threads::Threads)
+add_test(NAME eliza_paths_test COMMAND eliza_paths_test)
+
 add_executable(eliza_3d_hyperfy_starter_test eliza_3d_hyperfy_starter_test.cpp)
 target_link_libraries(eliza_3d_hyperfy_starter_test elizaos-eliza_3d_hyperfy_starter gtest gtest_main Threads::Threads)
 add_test(NAME eliza_3d_hyperfy_starter_test COMMAND eliza_3d_hyperfy_starter_test)
@@ -248,6 +252,14 @@ target_link_libraries(cognitive_pipeline_e2e_test
     Threads::Threads
 )
 add_test(NAME cognitive_pipeline_e2e_test COMMAND cognitive_pipeline_e2e_test)
+
+add_executable(comprehensive_e2e_test comprehensive_e2e_test.cpp)
+target_link_libraries(comprehensive_e2e_test
+    gtest
+    gtest_main
+    Threads::Threads
+)
+add_test(NAME comprehensive_e2e_test COMMAND comprehensive_e2e_test)
 
 # ============================================================================
 # Comprehensive real unit tests from cpp/tests/src/
@@ -469,7 +481,9 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     characters_test
     core_test
     knowledge_test
+    eliza_paths_test
     cognitive_pipeline_e2e_test
+    comprehensive_e2e_test
     real_core_test
     real_agentaction_test
     real_agentagenda_test

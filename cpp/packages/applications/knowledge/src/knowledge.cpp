@@ -139,12 +139,12 @@ std::vector<KnowledgeEntry> KnowledgeInferenceEngine::inferFromFacts(const std::
 
 std::vector<KnowledgeEntry> KnowledgeInferenceEngine::findRelatedConcepts(const KnowledgeEntry& entry) {
     std::vector<KnowledgeEntry> related;
-    KnowledgeEntry concept("Related concept for: " + entry.content, KnowledgeType::CONCEPT);
-    concept.source = KnowledgeSource::INFERRED;
-    concept.confidence = ConfidenceLevel::MEDIUM;
-    concept.addTag("related_concept");
-    for (const auto& tag : entry.tags) concept.addTag(tag);
-    related.push_back(concept);
+    KnowledgeEntry related_concept_entry("Related concept for: " + entry.content, KnowledgeType::CONCEPT);
+    related_concept_entry.source = KnowledgeSource::INFERRED;
+    related_concept_entry.confidence = ConfidenceLevel::MEDIUM;
+    related_concept_entry.addTag("related_concept");
+    for (const auto& tag : entry.tags) related_concept_entry.addTag(tag);
+    related.push_back(related_concept_entry);
     return related;
 }
 
