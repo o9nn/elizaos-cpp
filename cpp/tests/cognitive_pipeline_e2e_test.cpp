@@ -19,6 +19,8 @@
 #include "elizaos/sweagent.hpp"
 #include "elizaos/mcp_gateway.hpp"
 #include "elizaos/cognitive_bridge.hpp"
+#include "elizaos/characterfile.hpp"
+#include "elizaos/knowledge_helpers.hpp"
 
 #include <nlohmann/json.hpp>
 #include <gtest/gtest.h>
@@ -579,6 +581,101 @@ TEST(CognitiveBridgeEchobeats, ConcurrentPublishersAreThreadSafe) {
 // ===========================================================================
 // Full-stack pipeline test: SWE-Agent -> MCP Gateway -> CognitiveBridge
 // ===========================================================================
+
+TEST(CognitivePipelineE2E, CharacterKnowledgeAndBridgeRoundTripAutonomyContext) {
+    // 1. A character profile is loaded from real JSON and round-tripped through
+    //    the repaired CharacterFileLoader exporter/parser path.
+    CharacterFileLoader loader;
+    const std::string characterJson = R"json({
+        "name": "Eliza Autonomous Repairer",
+        "description": "A cognitive C++ agent that repairs repositories and narrates progress.",
+        "version": "1.0",
+        "creator": "ksm-cycle",
+        "tags": ["autonomy", "cpp", "repair"],
+        "personality": {
+            "openness": 0.9,
+            "conscientiousness": 0.82,
+            "curiosity": 0.95,
+            "empathy": 0.72
+        },
+        "background": {
+            "occupation": "autonomous software repair agent",
+            "goals": ["complete missing implementations", "preserve cognitive continuity"]
+        },
+        "communicationStyle": {
+            "tone": "precise",
+            "vocabulary": "technical",
+            "verbosity": 0.65,
+            "catchphrases": ["closing the loop"]
+        }
+    })json";
+
+    auto profile = loader.loadFromJson(characterJson);
+    ASSERT_TRUE(profile.has_value());
+    EXPECT_EQ(profile->name, "Eliza Autonomous Repairer");
+    EXPECT_NE(profile->description.find("repairs repositories"), std::string::npos);
+    EXPECT_EQ(profile->communicationStyle.tone, "precise");
+
+    const std::string exported = loader.exportToJson(*profile);
+    auto reloaded = loader.loadFromJson(exported);
+    ASSERT_TRUE(reloaded.has_value());
+    EXPECT_EQ(reloaded->name, profile->name);
+    EXPECT_EQ(reloaded->description, profile->description);
+    EXPECT_EQ(reloaded->communicationStyle.vocabulary, "technical");
+
+    // 2. The repaired knowledge helpers chunk, ingest, find, and reconstruct an
+    //    autonomy context document without relying on external services.
+    KnowledgeBase kb;
+    const std::string autonomyContext =
+        profile->name + " uses Echobeats, character memory, and repository tests "
+        "to preserve autonomous repair intent across C++ implementation cycles.";
+    const auto ids = knowledge::ingestText(
+        kb, autonomyContext, "autonomy-context", KnowledgeType::CONCEPT,
+        {"autonomy", "character", "knowledge"}, 48, 12);
+    ASSERT_GE(ids.size(), 2u);
+    EXPECT_EQ(kb.getKnowledgeCount(), ids.size());
+
+    const auto chunks = knowledge::findChunksByDocument(kb, "autonomy-context");
+    ASSERT_EQ(chunks.size(), ids.size());
+    EXPECT_EQ(chunks.front().metadata.at("chunk_index"), "0");
+    const auto reconstructed = knowledge::reconstructDocument(kb, "autonomy-context");
+    EXPECT_EQ(reconstructed, autonomyContext);
+    EXPECT_TRUE(knowledge::knowledge_helpers_self_check());
+
+    // 3. The bridge publishes the resulting character-grounded knowledge state
+    //    so downstream avatar/UI layers can subscribe to real cognitive state and
+    //    speech output rather than placeholder status strings.
+    CognitiveBridge bridge("char-knowledge-bridge");
+    std::atomic<int> stateCount{0};
+    std::atomic<int> speechCount{0};
+    bridge.subscribeCognitiveState([&](const CognitiveState&) { ++stateCount; });
+    bridge.subscribeSpeechOutput([&](const SpeechOutput&) { ++speechCount; });
+
+    CognitiveState state;
+    state.agentId = profile->name;
+    state.mood = "focused";
+    state.focus = "autonomy-context-loaded";
+    state.echobeatsStep = 9;
+    state.echobeatsPhase = CognitiveBridge::phaseForStep(state.echobeatsStep);
+    state.metadata["document"] = "autonomy-context";
+    state.metadata["chunks"] = std::to_string(chunks.size());
+    bridge.publishCognitiveState(state);
+
+    SpeechOutput speech;
+    speech.agentId = profile->name;
+    speech.text = "Loaded " + std::to_string(chunks.size()) + " autonomy context chunks.";
+    speech.voice = "alloy";
+    bridge.publishSpeechOutput(speech);
+
+    EXPECT_EQ(stateCount.load(), 1);
+    EXPECT_EQ(speechCount.load(), 1);
+    auto recentState = bridge.recentCognitiveStates(1);
+    ASSERT_FALSE(recentState.empty());
+    EXPECT_EQ(recentState.front().metadata.at("document"), "autonomy-context");
+    EXPECT_EQ(recentState.front().echobeatsPhase, CognitiveBridge::phaseForStep(9));
+    EXPECT_NE(bridge.recentSpeechOutputs(1).front().text.find("autonomy context"),
+              std::string::npos);
+}
 
 TEST(CognitivePipelineE2E, SolveIssueExposeViaMCPNarrateOnBridge) {
     // 1. The SWE-Agent solves a feature request.

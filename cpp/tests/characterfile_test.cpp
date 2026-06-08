@@ -26,24 +26,31 @@ protected:
 };
 
 TEST_F(CharacterFileLoaderTest, ExportToJsonRoundtripStable) {
-    CharacterProfile cp("Alice", "Test character");
+    CharacterProfile cp("Alice \"Autonomy\"", "Test character with newline\nand slash \\");
+    cp.id = "alice-autonomy";
+    cp.creator = "e2e-suite";
     auto json = loader.exportToJson(cp);
-    EXPECT_FALSE(json.empty());
+    EXPECT_NE(json.find("\\\"Autonomy\\\""), std::string::npos);
+    auto loaded = loader.loadFromJson(json);
+    ASSERT_TRUE(loaded.has_value());
+    EXPECT_EQ(loaded->name, cp.name);
+    EXPECT_EQ(loaded->description, cp.description);
+    EXPECT_EQ(loaded->id, cp.id);
+    EXPECT_EQ(loaded->creator, cp.creator);
 }
 
 TEST_F(CharacterFileLoaderTest, SaveAndLoadFile) {
     CharacterProfile cp("Bob", "Test");
+    cp.id = "bob-roundtrip";
+    cp.creator = "characterfile-test";
     auto path = std::string("/tmp/cf_test_bob.json");
-    bool saved = loader.saveToFile(cp, path);
+    ASSERT_TRUE(loader.saveToFile(cp, path));
     auto loaded = loader.loadFromFile(path);
-    if (saved && loaded) {
-        // Name field may not survive simple JSON in the placeholder impl;
-        // the important thing is the file round-trips without crashing.
-        SUCCEED() << "loaded name='" << loaded->name << "'";
-    } else {
-        SUCCEED() << "loader is placeholder; saved=" << saved
-                  << " loaded=" << loaded.has_value();
-    }
+    ASSERT_TRUE(loaded.has_value());
+    EXPECT_EQ(loaded->name, cp.name);
+    EXPECT_EQ(loaded->description, cp.description);
+    EXPECT_EQ(loaded->id, cp.id);
+    EXPECT_EQ(loaded->creator, cp.creator);
     std::remove(path.c_str());
 }
 
@@ -55,9 +62,8 @@ TEST_F(CharacterFileLoaderTest, IsCharacterFileExtensions) {
 
 TEST_F(CharacterFileLoaderTest, ValidateInvalidJsonHandled) {
     auto v = loader.validateJson("{not json");
-    // Some impls only do schema validation; either result is acceptable as long
-    // as the call did not crash.
-    SUCCEED() << "isValid=" << v.isValid << " errors=" << v.errors.size();
+    EXPECT_FALSE(v.isValid);
+    EXPECT_FALSE(v.errors.empty());
 }
 
 TEST_F(CharacterFileLoaderTest, StatisticsAvailable) {
@@ -96,6 +102,7 @@ TEST(CharacterFileConvenience, LoadAndSave) {
     auto v = validateCharacterFile(path);
     SUCCEED() << "valid=" << v.isValid;
     auto loaded = loadCharacterFromFile(path);
-    EXPECT_TRUE(loaded.has_value());
+    ASSERT_TRUE(loaded.has_value());
+    EXPECT_EQ(loaded->name, cp.name);
     std::remove(path.c_str());
 }

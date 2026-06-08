@@ -236,6 +236,8 @@ target_link_libraries(cognitive_pipeline_e2e_test
     elizaos-sweagent
     elizaos-mcp_gateway
     elizaos-cognitive_bridge
+    elizaos-characterfile
+    elizaos-knowledge
     elizaos-agentlogger
     elizaos-agentmemory
     elizaos-agentaction
@@ -463,9 +465,11 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     agentagenda_test
     agentbrowser_test
     agentcomms_test
+    agentlogger_test
     agentloop_test
     agentmemory_test
     agentshell_test
+    characterfile_test
     characters_test
     core_test
     knowledge_test

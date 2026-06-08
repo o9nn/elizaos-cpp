@@ -5,8 +5,170 @@
 #include <filesystem>
 #include <regex>
 #include <iomanip>
+#include <cctype>
 
 namespace elizaos {
+
+namespace {
+
+std::string jsonEscape(const std::string& input) {
+    std::ostringstream escaped;
+    for (unsigned char c : input) {
+        switch (c) {
+            case '"': escaped << "\\\""; break;
+            case '\\': escaped << "\\\\"; break;
+            case '\b': escaped << "\\b"; break;
+            case '\f': escaped << "\\f"; break;
+            case '\n': escaped << "\\n"; break;
+            case '\r': escaped << "\\r"; break;
+            case '\t': escaped << "\\t"; break;
+            default:
+                if (c < 0x20) {
+                    escaped << "\\u" << std::hex << std::setw(4) << std::setfill('0')
+                            << static_cast<int>(c) << std::dec << std::setfill(' ');
+                } else {
+                    escaped << static_cast<char>(c);
+                }
+        }
+    }
+    return escaped.str();
+}
+
+std::string jsonUnescape(const std::string& input) {
+    std::string out;
+    out.reserve(input.size());
+    for (size_t i = 0; i < input.size(); ++i) {
+        if (input[i] != '\\' || i + 1 >= input.size()) {
+            out.push_back(input[i]);
+            continue;
+        }
+        const char esc = input[++i];
+        switch (esc) {
+            case '"': out.push_back('"'); break;
+            case '\\': out.push_back('\\'); break;
+            case '/': out.push_back('/'); break;
+            case 'b': out.push_back('\b'); break;
+            case 'f': out.push_back('\f'); break;
+            case 'n': out.push_back('\n'); break;
+            case 'r': out.push_back('\r'); break;
+            case 't': out.push_back('\t'); break;
+            case 'u':
+                // Keep unicode escapes byte-stable in this lightweight parser; callers
+                // still receive deterministic content instead of a synthetic character.
+                out.append("\\u");
+                for (int n = 0; n < 4 && i + 1 < input.size(); ++n) out.push_back(input[++i]);
+                break;
+            default: out.push_back(esc); break;
+        }
+    }
+    return out;
+}
+
+void skipWhitespace(const std::string& s, size_t& pos) {
+    while (pos < s.size() && std::isspace(static_cast<unsigned char>(s[pos]))) ++pos;
+}
+
+std::string parseJsonStringLiteral(const std::string& s, size_t& pos) {
+    if (pos >= s.size() || s[pos] != '"') {
+        throw std::runtime_error("Expected JSON string literal");
+    }
+    ++pos;
+    std::string raw;
+    while (pos < s.size()) {
+        char c = s[pos++];
+        if (c == '"') return jsonUnescape(raw);
+        if (c == '\\' && pos < s.size()) {
+            raw.push_back('\\');
+            raw.push_back(s[pos++]);
+        } else {
+            raw.push_back(c);
+        }
+    }
+    throw std::runtime_error("Unterminated JSON string literal");
+}
+
+std::string parseJsonScalarAsString(const std::string& s, size_t& pos) {
+    skipWhitespace(s, pos);
+    if (pos < s.size() && s[pos] == '"') return parseJsonStringLiteral(s, pos);
+    const size_t start = pos;
+    while (pos < s.size() && s[pos] != ',' && s[pos] != '}') ++pos;
+    size_t end = pos;
+    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) --end;
+    return s.substr(start, end - start);
+}
+
+JsonValue parseJsonObjectFlat(const std::string& jsonString) {
+    size_t pos = 0;
+    skipWhitespace(jsonString, pos);
+    if (pos >= jsonString.size() || jsonString[pos] != '{') {
+        throw std::runtime_error("Expected JSON object");
+    }
+    ++pos;
+    JsonValue json;
+    while (true) {
+        skipWhitespace(jsonString, pos);
+        if (pos < jsonString.size() && jsonString[pos] == '}') {
+            ++pos;
+            break;
+        }
+        std::string key = parseJsonStringLiteral(jsonString, pos);
+        skipWhitespace(jsonString, pos);
+        if (pos >= jsonString.size() || jsonString[pos] != ':') {
+            throw std::runtime_error("Expected ':' after JSON object key");
+        }
+        ++pos;
+        skipWhitespace(jsonString, pos);
+        if (pos < jsonString.size() && jsonString[pos] == '{') {
+            const size_t objectStart = pos;
+            int depth = 0;
+            bool inString = false;
+            bool escaped = false;
+            do {
+                char c = jsonString[pos++];
+                if (escaped) { escaped = false; continue; }
+                if (c == '\\') { escaped = true; continue; }
+                if (c == '"') { inString = !inString; continue; }
+                if (!inString && c == '{') ++depth;
+                if (!inString && c == '}') --depth;
+            } while (pos < jsonString.size() && depth > 0);
+            json[key] = parseJsonObjectFlat(jsonString.substr(objectStart, pos - objectStart));
+        } else if (pos < jsonString.size() && jsonString[pos] == '[') {
+            // Preserve array values as their complete JSON slice. This lightweight
+            // loader only needs scalar/object fields today, but it must still
+            // consume arrays correctly so valid character files with tags,
+            // goals, traits, or catchphrases do not corrupt subsequent parsing.
+            const size_t arrayStart = pos;
+            int depth = 0;
+            bool inString = false;
+            bool escaped = false;
+            do {
+                char c = jsonString[pos++];
+                if (escaped) { escaped = false; continue; }
+                if (c == '\\') { escaped = true; continue; }
+                if (c == '"') { inString = !inString; continue; }
+                if (!inString && c == '[') ++depth;
+                if (!inString && c == ']') --depth;
+            } while (pos < jsonString.size() && depth > 0);
+            json[key] = jsonString.substr(arrayStart, pos - arrayStart);
+        } else {
+            json[key] = parseJsonScalarAsString(jsonString, pos);
+        }
+        skipWhitespace(jsonString, pos);
+        if (pos < jsonString.size() && jsonString[pos] == ',') {
+            ++pos;
+            continue;
+        }
+        if (pos < jsonString.size() && jsonString[pos] == '}') {
+            ++pos;
+            break;
+        }
+        if (pos >= jsonString.size()) break;
+        throw std::runtime_error("Expected ',' or '}' in JSON object");
+    }
+    return json;
+}
+
+} // namespace
 
 // Local helper to parse version strings without depending on plugin_specification
 static PluginVersion parseVersionString(const std::string& versionStr) {
@@ -155,20 +317,31 @@ bool CharacterFileLoader::saveToFile(const CharacterProfile& character, const st
 }
 
 std::string CharacterFileLoader::exportToJson(const CharacterProfile& character) {
-    JsonValue json = exportToJsonValue(character);
-    
-    // Convert to formatted JSON std::string
+    // Convert to formatted JSON with proper string escaping so exported profiles
+    // can be parsed back into the same public identity fields.
     std::ostringstream oss;
     oss << "{\n";
-    oss << "  \"name\": \"" << character.name << "\",\n";
-    oss << "  \"description\": \"" << character.description << "\",\n";
-    oss << "  \"id\": \"" << character.id << "\",\n";
-    oss << "  \"version\": \"" << character.version << "\",\n";
-    oss << "  \"creator\": \"" << character.creator << "\",\n";
+    oss << "  \"name\": \"" << jsonEscape(character.name) << "\",\n";
+    oss << "  \"description\": \"" << jsonEscape(character.description) << "\",\n";
+    oss << "  \"id\": \"" << jsonEscape(character.id) << "\",\n";
+    oss << "  \"version\": \"" << jsonEscape(character.version) << "\",\n";
+    oss << "  \"creator\": \"" << jsonEscape(character.creator) << "\",\n";
     oss << "  \"created_at\": \"" << std::to_string(std::chrono::system_clock::to_time_t(character.created_at)) << "\",\n";
-    oss << "  \"updated_at\": \"" << std::to_string(std::chrono::system_clock::to_time_t(character.updated_at)) << "\"\n";
+    oss << "  \"updated_at\": \"" << std::to_string(std::chrono::system_clock::to_time_t(character.updated_at)) << "\",\n";
+    oss << "  \"personality\": {\n";
+    oss << "    \"openness\": " << character.personality.openness << ",\n";
+    oss << "    \"conscientiousness\": " << character.personality.conscientiousness << ",\n";
+    oss << "    \"curiosity\": " << character.personality.curiosity << ",\n";
+    oss << "    \"empathy\": " << character.personality.empathy << "\n";
+    oss << "  },\n";
+    oss << "  \"communicationStyle\": {\n";
+    oss << "    \"tone\": \"" << jsonEscape(character.communicationStyle.tone) << "\",\n";
+    oss << "    \"vocabulary\": \"" << jsonEscape(character.communicationStyle.vocabulary) << "\",\n";
+    oss << "    \"verbosity\": " << character.communicationStyle.verbosity << ",\n";
+    oss << "    \"formality\": " << character.communicationStyle.formality << ",\n";
+    oss << "    \"emotionality\": " << character.communicationStyle.emotionality << "\n";
+    oss << "  }\n";
     oss << "}";
-    
     return oss.str();
 }
 
@@ -304,14 +477,10 @@ void CharacterFileLoader::setValidationSchema(const JsonValue& schema) {
 
 // Private helper methods
 JsonValue CharacterFileLoader::parseJsonString(const std::string& jsonString) {
-    // Simple JSON parsing - in a real implementation would use a proper JSON library
-    JsonValue json;
-    
-    // For now, create a basic structure
-    json["name"] = std::string("ParsedCharacter");
-    json["description"] = std::string("Character parsed from JSON");
-    json["id"] = std::string("parsed-" + std::to_string(std::hash<std::string>{}(jsonString)));
-    
+    JsonValue json = parseJsonObjectFlat(jsonString);
+    if (json.empty()) {
+        throw std::runtime_error("JSON object did not contain any fields");
+    }
     return json;
 }
 
@@ -401,6 +570,24 @@ CharacterProfile CharacterFileLoader::jsonToCharacterProfile(const JsonValue& js
             // Use default traits
         }
     }
+
+    if (json.find("background") != json.end()) {
+        try {
+            JsonValue backgroundJson = std::any_cast<JsonValue>(json.at("background"));
+            character.background = parseBackground(backgroundJson);
+        } catch (const std::bad_any_cast&) {
+            // Use default background
+        }
+    }
+
+    if (json.find("communicationStyle") != json.end()) {
+        try {
+            JsonValue communicationJson = std::any_cast<JsonValue>(json.at("communicationStyle"));
+            character.communicationStyle = parseCommunicationStyle(communicationJson);
+        } catch (const std::bad_any_cast&) {
+            // Use default communication style
+        }
+    }
     
     return character;
 }
@@ -462,25 +649,29 @@ JsonValue CharacterFileLoader::personalityToJson(const PersonalityMatrix& person
 std::vector<CharacterTrait> CharacterFileLoader::parseTraits(const JsonValue& traitsJson) {
     std::vector<CharacterTrait> traits;
     
-    // Simple trait parsing - in a real implementation would parse array of trait objects
-    CharacterTrait defaultTrait("default", "Default trait", TraitCategory::PERSONALITY, TraitValueType::NUMERIC);
-    defaultTrait.setNumericValue(0.5f);
-    traits.push_back(defaultTrait);
-    
-    // Use traitsJson to avoid warning
-    if (!traitsJson.empty()) {
-        // Would parse traits from JSON here
+    if (traitsJson.empty()) {
+        return traits;
     }
-    
+
+    CharacterTrait trait(
+        getString(traitsJson, "name", "imported-trait"),
+        getString(traitsJson, "description", "Trait imported from character file"),
+        TraitCategory::PERSONALITY,
+        TraitValueType::NUMERIC);
+    trait.setNumericValue(getFloat(traitsJson, "value", 0.5f));
+    traits.push_back(trait);
     return traits;
 }
 
 JsonValue CharacterFileLoader::traitsToJson(const std::vector<CharacterTrait>& traits) {
     JsonValue json;
     
-    // Simple trait serialization - in a real implementation would create trait array
     json["count"] = std::string(std::to_string(traits.size()));
-    
+    if (!traits.empty()) {
+        json["name"] = std::string(traits.front().name);
+        json["description"] = std::string(traits.front().description);
+        json["value"] = std::string(std::to_string(traits.front().getNumericValue()));
+    }
     return json;
 }
 
@@ -507,6 +698,7 @@ CommunicationStyle CharacterFileLoader::parseCommunicationStyle(const JsonValue&
     CommunicationStyle style;
     
     style.tone = getString(commJson, "tone", "neutral");
+    style.vocabulary = getString(commJson, "vocabulary", "standard");
     style.formality = getFloat(commJson, "formality", 0.5f);
     style.emotionality = getFloat(commJson, "emotionality", 0.5f);
     style.verbosity = getFloat(commJson, "verbosity", 0.5f);
