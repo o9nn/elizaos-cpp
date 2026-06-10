@@ -55,6 +55,14 @@ public:
     void setLoopInterval(std::chrono::milliseconds interval);
     std::chrono::milliseconds getLoopInterval() const { return loopInterval_; }
 
+    // Deterministic single-cycle autonomy controls for tests, supervisors, and
+    // embedding runtimes that need bounded observe-reason-act stepping.
+    std::size_t runCognitiveCycleOnce();
+    std::size_t getCognitiveCycleCount() const { return cognitiveCycle_; }
+    std::size_t getActionCount() const { return actionCounter_; }
+    const std::string& getLastObservationSummary() const { return lastObservationSummary_; }
+    const std::string& getLastPlan() const { return lastPlan_; }
+
     // State access
     State& getState() { return state_; }
     const State& getState() const { return state_; }
@@ -64,6 +72,11 @@ public:
     UUID executeShellCommandAsTask(const std::string& command);
 
 private:
+    // Goal-driven autonomy helpers
+    void ensureCoreAutonomyGoals();
+    std::string selectGoalContext() const;
+    std::string buildActionCommandForPlan(const std::string& plan) const;
+
     // Internal cognitive steps
     std::shared_ptr<void> perceptionStep(std::shared_ptr<void> input);
     std::shared_ptr<void> reasoningStep(std::shared_ptr<void> input);

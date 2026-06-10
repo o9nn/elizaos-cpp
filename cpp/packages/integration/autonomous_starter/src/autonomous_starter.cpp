@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
+#include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -126,6 +127,7 @@ void AutonomousStarter::start() {
 
     running_ = true;
     taskManager_->start();
+    ensureCoreAutonomyGoals();
 
     logInfo("AutonomousStarter started for agent: " + config_.agentName);
     appendMemory(
@@ -182,6 +184,67 @@ std::string AutonomousStarter::summarizeRecentExperience(std::size_t maxItems) c
     return summary.str();
 }
 
+void AutonomousStarter::ensureCoreAutonomyGoals() {
+    if (!state_.getGoals().empty()) {
+        return;
+    }
+
+    const Timestamp now = std::chrono::system_clock::now();
+    state_.addGoal(Goal{
+        generateUUID(),
+        "Establish bounded situational awareness of the runtime workspace",
+        "active",
+        now,
+        now
+    });
+    state_.addGoal(Goal{
+        generateUUID(),
+        "Inspect available C++ project structure before taking code actions",
+        "pending",
+        now,
+        now
+    });
+}
+
+std::string AutonomousStarter::selectGoalContext() const {
+    const auto& goals = state_.getGoals();
+    if (goals.empty()) {
+        return "maintain safe baseline awareness";
+    }
+
+    auto normalizeStatus = [](std::string status) {
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return status;
+    };
+
+    for (const auto& goal : goals) {
+        const auto status = normalizeStatus(goal.status);
+        if (status == "active" || status == "in_progress" || status == "pending") {
+            return goal.description.empty() ? "continue open autonomy goal" : goal.description;
+        }
+    }
+
+    return goals.back().description.empty() ? "review completed autonomy context" : goals.back().description;
+}
+
+std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan) const {
+    if (plan.find("project structure") != std::string::npos ||
+        plan.find("source discovery") != std::string::npos ||
+        plan.find("C++") != std::string::npos) {
+        return "find . -maxdepth 3 \\( -name '*.cpp' -o -name '*.hpp' \\) | sort | head -10";
+    }
+    if (plan.find("system identity") != std::string::npos ||
+        plan.find("runtime") != std::string::npos) {
+        return "whoami && uname -srm";
+    }
+    if (plan.find("situational awareness") != std::string::npos ||
+        plan.find("workspace") != std::string::npos) {
+        return "pwd && ls -la | head -20";
+    }
+    return (actionCounter_ % 2 == 0) ? "pwd && ls -la | head -20" : "date -u";
+}
+
 ShellCommandResult AutonomousStarter::validateShellCommand(const std::string& command) const {
     if (!shellAccessEnabled_) {
         return ShellCommandResult(false, "", "Shell access is disabled", -1);
@@ -199,8 +262,12 @@ ShellCommandResult AutonomousStarter::validateShellCommand(const std::string& co
         "fdisk",
         "dd if=",
         ":(){",
+        ":(){ :|:& };:",
         "shutdown",
-        "reboot"
+        "reboot",
+        "chmod -R 777 /",
+        "chown -R",
+        "sudo rm"
     };
 
     for (const auto& forbidden : forbiddenPatterns) {
@@ -208,6 +275,21 @@ ShellCommandResult AutonomousStarter::validateShellCommand(const std::string& co
             const std::string error = "Command contains forbidden pattern: " + forbidden;
             logWarning(error);
             return ShellCommandResult(false, "", error, -1);
+        }
+    }
+
+    const std::vector<std::string> pipeToShellPatterns = {
+        "| sh", "|sh", "| bash", "|bash", "| sudo sh", "|sudo sh", "| sudo bash", "|sudo bash"
+    };
+    const bool fetchesRemoteScript = stripped.find("curl ") != std::string::npos ||
+                                     stripped.find("wget ") != std::string::npos;
+    if (fetchesRemoteScript) {
+        for (const auto& pipePattern : pipeToShellPatterns) {
+            if (stripped.find(pipePattern) != std::string::npos) {
+                const std::string error = "Command contains forbidden pattern: remote script piped to shell";
+                logWarning(error);
+                return ShellCommandResult(false, "", error, -1);
+            }
         }
     }
 
@@ -259,9 +341,16 @@ ShellCommandResult AutonomousStarter::executeExternalShellCommand(const std::str
         return ShellCommandResult(false, "", error, -1);
     }
 
+    constexpr std::size_t kMaxCapturedOutputBytes = 64 * 1024;
     std::array<char, 512> buffer{};
     while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
-        output += buffer.data();
+        if (output.size() < kMaxCapturedOutputBytes) {
+            const std::size_t remaining = kMaxCapturedOutputBytes - output.size();
+            output.append(buffer.data(), std::min<std::size_t>(std::strlen(buffer.data()), remaining));
+            if (remaining <= std::strlen(buffer.data())) {
+                output += "\n[output truncated after 65536 bytes]\n";
+            }
+        }
     }
 
     rawStatus = pclose(pipe);
@@ -358,6 +447,15 @@ void AutonomousStarter::setLoopInterval(std::chrono::milliseconds interval) {
     }
 }
 
+std::size_t AutonomousStarter::runCognitiveCycleOnce() {
+    ensureCoreAutonomyGoals();
+    std::shared_ptr<void> token = std::make_shared<int>(0);
+    token = perceptionStep(token);
+    token = reasoningStep(token);
+    actionStep(token);
+    return cognitiveCycle_;
+}
+
 std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> input) {
     ++cognitiveCycle_;
 
@@ -366,6 +464,7 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
 
     std::ostringstream observation;
     observation << "Cycle " << cognitiveCycle_ << " perception: ";
+    observation << "primary_goal=" << selectGoalContext() << "; ";
     if (pwd.success) {
         observation << "cwd=" << trim(pwd.output) << "; ";
     }
@@ -387,11 +486,21 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
 
 std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> input) {
     const std::size_t memoryCount = state_.getRecentMessages().size();
+    const std::string goalContext = selectGoalContext();
+    std::string normalizedGoal = goalContext;
+    std::transform(normalizedGoal.begin(), normalizedGoal.end(), normalizedGoal.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
-    if (memoryCount < 5) {
-        lastPlan_ = "establish situational awareness with pwd and directory inspection";
-    } else if (lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
+    if (normalizedGoal.find("c++") != std::string::npos ||
+        normalizedGoal.find("project structure") != std::string::npos ||
+        lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
         lastPlan_ = "inspect C++ project structure with targeted source discovery";
+    } else if (normalizedGoal.find("runtime") != std::string::npos ||
+               normalizedGoal.find("system") != std::string::npos) {
+        lastPlan_ = "inspect system identity and runtime context";
+    } else if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
+               normalizedGoal.find("workspace") != std::string::npos) {
+        lastPlan_ = "establish situational awareness with pwd and directory inspection";
     } else if (actionCounter_ % 3 == 0) {
         lastPlan_ = "sample repository source files";
     } else if (actionCounter_ % 3 == 1) {
@@ -401,21 +510,15 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     }
 
     appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
-                 " reasoning: recent experience summary = " + summarizeRecentExperience() +
+                 " reasoning: goal = " + goalContext +
+                 "; recent experience summary = " + summarizeRecentExperience() +
                  "; selected plan = " + lastPlan_ + ".");
     logInfo("Reasoning selected plan: " + lastPlan_);
     return input;
 }
 
 std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input) {
-    std::string command;
-    if (lastPlan_.find("C++ project") != std::string::npos || lastPlan_.find("source") != std::string::npos) {
-        command = "find . -maxdepth 3 -name '*.cpp' -o -name '*.hpp' | head -10";
-    } else if (lastPlan_.find("system identity") != std::string::npos) {
-        command = "whoami && uname -srm";
-    } else {
-        command = (actionCounter_ % 2 == 0) ? "pwd && ls -la | head -20" : "date -u";
-    }
+    const std::string command = buildActionCommandForPlan(lastPlan_);
 
     ++actionCounter_;
     const auto result = executeShellCommand(command);
