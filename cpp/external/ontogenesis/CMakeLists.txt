@@ -2,10 +2,11 @@
 # Implementation of self-generating, evolving kernels through recursive application of differential operators
 
 add_library(elizaos-ontogenesis STATIC
-    ${CMAKE_SOURCE_DIR}/src/ontogenesis.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ontogenesis.cpp
 )
 
 target_include_directories(elizaos-ontogenesis PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
@@ -28,7 +29,7 @@ install(TARGETS elizaos-ontogenesis
 )
 
 install(FILES
-    ${CMAKE_SOURCE_DIR}/include/elizaos/ontogenesis.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../include/elizaos/ontogenesis.hpp
     DESTINATION include/elizaos
     OPTIONAL
 )

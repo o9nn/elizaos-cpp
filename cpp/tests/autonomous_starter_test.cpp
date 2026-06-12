@@ -13,6 +13,15 @@ AgentConfig mkConfig() {
     c.lore = "test lore";
     return c;
 }
+
+bool memoryContains(const AutonomousStarter& agent, const std::string& needle) {
+    for (const auto& memory : agent.getState().getRecentMessages()) {
+        if (memory && memory->getContent().find(needle) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
 }
 
 TEST(AutonomousStarter, Construction) {
@@ -190,6 +199,34 @@ TEST(AutonomousStarter, ShellValidationRejectsPipeToShellAndRecursiveRootMutatio
     auto chmodRoot = agent.executeShellCommand("chmod -R 777 /");
     EXPECT_FALSE(chmodRoot.success);
     EXPECT_NE(chmodRoot.error.find("forbidden pattern"), std::string::npos);
+}
+
+
+TEST(AutonomousStarter, MultiCycleAutonomyMaintainsGoalPlanAndMemoryTimeline) {
+    AutonomousStarter agent(mkConfig());
+    const Timestamp now = std::chrono::system_clock::now();
+    agent.getState().addGoal(Goal{
+        generateUUID(),
+        "Run validation self-audit over autonomy tests before acting",
+        "active",
+        now,
+        now
+    });
+
+    for (std::size_t expectedCycle = 1; expectedCycle <= 3; ++expectedCycle) {
+        EXPECT_EQ(agent.runCognitiveCycleOnce(), expectedCycle);
+        EXPECT_EQ(agent.getCognitiveCycleCount(), expectedCycle);
+        EXPECT_EQ(agent.getActionCount(), expectedCycle);
+        EXPECT_NE(agent.getLastObservationSummary().find("primary_goal="), std::string::npos);
+        EXPECT_NE(agent.getLastPlan().find("self-audit"), std::string::npos);
+        EXPECT_TRUE(memoryContains(agent, "Cycle " + std::to_string(expectedCycle) + " perception:"));
+        EXPECT_TRUE(memoryContains(agent, "Cycle " + std::to_string(expectedCycle) + " reasoning:"));
+        EXPECT_TRUE(memoryContains(agent, "Cycle " + std::to_string(expectedCycle) + " action:"));
+    }
+
+    EXPECT_TRUE(memoryContains(agent, "find tests"));
+    EXPECT_TRUE(memoryContains(agent, "Cycle 3 action:"));
+    EXPECT_GE(agent.getState().getRecentMessages().size(), 9u);
 }
 
 TEST(AutonomousStarter, PlaceholderLink) {

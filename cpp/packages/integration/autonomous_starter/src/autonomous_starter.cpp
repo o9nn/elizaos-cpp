@@ -36,6 +36,70 @@ std::string trim(const std::string& value) {
     return value.substr(first, last - first + 1);
 }
 
+std::string toLowerAscii(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    return value;
+}
+
+std::string normalizeCommandForSafety(const std::string& command) {
+    std::string normalized = toLowerAscii(command);
+    for (char& c : normalized) {
+        if (c == '\n' || c == '\r' || c == '\t') {
+            c = ' ';
+        }
+    }
+
+    std::string collapsed;
+    collapsed.reserve(normalized.size());
+    bool previousSpace = false;
+    for (char c : normalized) {
+        const bool isSpace = std::isspace(static_cast<unsigned char>(c));
+        if (isSpace) {
+            if (!previousSpace) {
+                collapsed.push_back(' ');
+            }
+        } else {
+            collapsed.push_back(c);
+        }
+        previousSpace = isSpace;
+    }
+    return trim(collapsed);
+}
+
+bool containsAny(const std::string& value, const std::vector<std::string>& needles) {
+    return std::any_of(needles.begin(), needles.end(), [&value](const std::string& needle) {
+        return value.find(needle) != std::string::npos;
+    });
+}
+
+bool hasCommandSubstitution(const std::string& normalized) {
+    return normalized.find("$(") != std::string::npos || normalized.find('`') != std::string::npos;
+}
+
+bool fetchesRemoteScript(const std::string& normalized) {
+    return containsAny(normalized, {
+        "curl ", "curl\"", "curl'", "wget ", "wget\"", "wget'",
+        "python -c", "python3 -c", "perl -e", "ruby -e"
+    });
+}
+
+bool pipesToShell(const std::string& normalized) {
+    return containsAny(normalized, {
+        "| sh", "|sh", "| bash", "|bash", "| sudo sh", "|sudo sh",
+        "| sudo bash", "|sudo bash", "| zsh", "|zsh", "| fish", "|fish",
+        "| /bin/sh", "|/bin/sh", "| /bin/bash", "|/bin/bash"
+    });
+}
+
+bool mutatesFilesystemRootRecursively(const std::string& normalized) {
+    return containsAny(normalized, {
+        "rm -rf /", "rm -fr /", "rm -r /", "rm -f -r /", "rm -rf -- /",
+        "chmod -r 777 /", "chmod -r 777 -- /", "chown -r ", "chgrp -r ",
+        "find / -delete", "find / -exec rm", "rsync --delete /"
+    });
+}
+
 bool startsWithCd(const std::string& command) {
     const std::string stripped = trim(command);
     return stripped == "cd" || stripped.rfind("cd ", 0) == 0;
@@ -229,20 +293,39 @@ std::string AutonomousStarter::selectGoalContext() const {
 }
 
 std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan) const {
-    if (plan.find("project structure") != std::string::npos ||
-        plan.find("source discovery") != std::string::npos ||
-        plan.find("C++") != std::string::npos) {
-        return "find . -maxdepth 3 \\( -name '*.cpp' -o -name '*.hpp' \\) | sort | head -10";
+    const std::string normalizedPlan = toLowerAscii(plan);
+
+    if (normalizedPlan.find("project structure") != std::string::npos ||
+        normalizedPlan.find("source discovery") != std::string::npos ||
+        normalizedPlan.find("c++") != std::string::npos ||
+        normalizedPlan.find("cmake") != std::string::npos) {
+        return "find . -maxdepth 3 \\( -name CMakeLists.txt -o -name '*.cpp' -o -name '*.hpp' \\) | sort | head -20";
     }
-    if (plan.find("system identity") != std::string::npos ||
-        plan.find("runtime") != std::string::npos) {
+    if (normalizedPlan.find("sample repository source") != std::string::npos ||
+        normalizedPlan.find("source files") != std::string::npos) {
+        return "find . -maxdepth 4 -type f \\( -name '*.cpp' -o -name '*.hpp' \\) | sort | head -25";
+    }
+    if (normalizedPlan.find("test") != std::string::npos ||
+        normalizedPlan.find("validation") != std::string::npos ||
+        normalizedPlan.find("self-audit") != std::string::npos) {
+        return "find tests -maxdepth 3 -type f 2>/dev/null | sort | head -25";
+    }
+    if (normalizedPlan.find("system identity") != std::string::npos ||
+        normalizedPlan.find("runtime") != std::string::npos ||
+        normalizedPlan.find("kernel") != std::string::npos) {
         return "whoami && uname -srm";
     }
-    if (plan.find("situational awareness") != std::string::npos ||
-        plan.find("workspace") != std::string::npos) {
+    if (normalizedPlan.find("situational awareness") != std::string::npos ||
+        normalizedPlan.find("workspace") != std::string::npos) {
         return "pwd && ls -la | head -20";
     }
-    return (actionCounter_ % 2 == 0) ? "pwd && ls -la | head -20" : "date -u";
+
+    static const std::array<const char*, 3> safeDefaultCommands = {{
+        "pwd && ls -la | head -20",
+        "find . -maxdepth 2 -type f | sort | head -20",
+        "date -u"
+    }};
+    return safeDefaultCommands[actionCounter_ % safeDefaultCommands.size()];
 }
 
 ShellCommandResult AutonomousStarter::validateShellCommand(const std::string& command) const {
@@ -255,42 +338,41 @@ ShellCommandResult AutonomousStarter::validateShellCommand(const std::string& co
         return ShellCommandResult(false, "", "Command is empty", -1);
     }
 
+    const std::string normalized = normalizeCommandForSafety(stripped);
+
     const std::vector<std::string> forbiddenPatterns = {
-        "rm -rf /",
-        "rm -fr /",
-        "mkfs",
-        "fdisk",
-        "dd if=",
-        ":(){",
-        ":(){ :|:& };:",
-        "shutdown",
-        "reboot",
-        "chmod -R 777 /",
-        "chown -R",
-        "sudo rm"
+        "mkfs", "fdisk", "parted ", "dd if=", ":(){", ":() {", ":(){ :|:& };:",
+        "shutdown", "reboot", "halt", "poweroff", "sudo rm", "sudo dd", "sudo mkfs",
+        "systemctl poweroff", "systemctl reboot", "init 0", "init 6", "kill -9 -1"
     };
 
     for (const auto& forbidden : forbiddenPatterns) {
-        if (stripped.find(forbidden) != std::string::npos) {
+        if (normalized.find(forbidden) != std::string::npos) {
             const std::string error = "Command contains forbidden pattern: " + forbidden;
             logWarning(error);
             return ShellCommandResult(false, "", error, -1);
         }
     }
 
-    const std::vector<std::string> pipeToShellPatterns = {
-        "| sh", "|sh", "| bash", "|bash", "| sudo sh", "|sudo sh", "| sudo bash", "|sudo bash"
-    };
-    const bool fetchesRemoteScript = stripped.find("curl ") != std::string::npos ||
-                                     stripped.find("wget ") != std::string::npos;
-    if (fetchesRemoteScript) {
-        for (const auto& pipePattern : pipeToShellPatterns) {
-            if (stripped.find(pipePattern) != std::string::npos) {
-                const std::string error = "Command contains forbidden pattern: remote script piped to shell";
-                logWarning(error);
-                return ShellCommandResult(false, "", error, -1);
-            }
-        }
+    if (mutatesFilesystemRootRecursively(normalized)) {
+        const std::string error = "Command contains forbidden pattern: recursive root mutation";
+        logWarning(error);
+        return ShellCommandResult(false, "", error, -1);
+    }
+
+    if (fetchesRemoteScript(normalized) && pipesToShell(normalized)) {
+        const std::string error = "Command contains forbidden pattern: remote script piped to shell";
+        logWarning(error);
+        return ShellCommandResult(false, "", error, -1);
+    }
+
+    if ((fetchesRemoteScript(normalized) || normalized.find("http://") != std::string::npos ||
+         normalized.find("https://") != std::string::npos) &&
+        (hasCommandSubstitution(normalized) || normalized.find("eval ") != std::string::npos ||
+         normalized.rfind("eval", 0) == 0)) {
+        const std::string error = "Command contains forbidden pattern: remote content evaluated by shell";
+        logWarning(error);
+        return ShellCommandResult(false, "", error, -1);
     }
 
     return ShellCommandResult(true, "", "", 0);
@@ -491,9 +573,14 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     std::transform(normalizedGoal.begin(), normalizedGoal.end(), normalizedGoal.begin(),
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
-    if (normalizedGoal.find("c++") != std::string::npos ||
-        normalizedGoal.find("project structure") != std::string::npos ||
-        lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
+    if (normalizedGoal.find("test") != std::string::npos ||
+        normalizedGoal.find("validation") != std::string::npos ||
+        normalizedGoal.find("self-audit") != std::string::npos ||
+        normalizedGoal.find("audit") != std::string::npos) {
+        lastPlan_ = "run autonomy self-audit by inspecting tests and validation coverage";
+    } else if (normalizedGoal.find("c++") != std::string::npos ||
+               normalizedGoal.find("project structure") != std::string::npos ||
+               lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
         lastPlan_ = "inspect C++ project structure with targeted source discovery";
     } else if (normalizedGoal.find("runtime") != std::string::npos ||
                normalizedGoal.find("system") != std::string::npos) {
