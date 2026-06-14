@@ -60,6 +60,35 @@ add_executable(autonomous_starter_test autonomous_starter_test.cpp)
 target_link_libraries(autonomous_starter_test elizaos-autonomous_starter gtest gtest_main Threads::Threads)
 add_test(NAME autonomous_starter_test COMMAND autonomous_starter_test)
 
+if(TARGET elizaos-persistence)
+    add_executable(persistence_test persistence_test.cpp)
+    target_link_libraries(persistence_test elizaos-persistence elizaos-core gtest gtest_main Threads::Threads)
+    add_test(NAME persistence_test COMMAND persistence_test)
+endif()
+
+add_executable(comprehensive_autonomy_e2e_test comprehensive_autonomy_e2e_test.cpp)
+target_link_libraries(comprehensive_autonomy_e2e_test
+    elizaos-autonomous_starter
+    elizaos-cognitive_bridge
+    elizaos-knowledge
+    elizaos-goal_manager
+    elizaos-characters
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-agentloop
+    elizaos-agentcomms
+    elizaos-agentlogger
+    elizaos-core
+    gtest
+    gtest_main
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+if(TARGET elizaos-persistence)
+    target_link_libraries(comprehensive_autonomy_e2e_test elizaos-persistence)
+endif()
+add_test(NAME comprehensive_autonomy_e2e_test COMMAND comprehensive_autonomy_e2e_test)
+
 add_executable(awesome_eliza_test awesome_eliza_test.cpp)
 target_link_libraries(awesome_eliza_test elizaos-awesome_eliza gtest gtest_main Threads::Threads)
 add_test(NAME awesome_eliza_test COMMAND awesome_eliza_test)
@@ -289,6 +318,7 @@ function(add_real_test name src_file)
         elizaos-evolutionary
         elizaos-ontogenesis
         elizaos-cognitive_bridge
+        elizaos-persistence
     )
     foreach(real_test_target IN LISTS real_test_optional_elizaos_targets)
         if(TARGET ${real_test_target})
@@ -502,6 +532,12 @@ if(TARGET real_evolutionary_test)
 endif()
 if(TARGET real_ontogenesis_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_ontogenesis_test)
+endif()
+if(TARGET persistence_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS persistence_test)
+endif()
+if(TARGET comprehensive_autonomy_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS comprehensive_autonomy_e2e_test)
 endif()
 
 add_custom_target(ksm_canonical_tests

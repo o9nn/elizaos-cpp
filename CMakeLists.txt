@@ -71,6 +71,7 @@ include_directories(${CMAKE_SOURCE_DIR}/cpp/include)
 add_subdirectory(cpp/packages/core/core)
 add_subdirectory(cpp/packages/core/agentloop)
 add_subdirectory(cpp/packages/core/agentmemory)
+add_subdirectory(cpp/packages/core/persistence)
 add_subdirectory(cpp/packages/core/agentaction)
 add_subdirectory(cpp/packages/core/agentagenda)
 

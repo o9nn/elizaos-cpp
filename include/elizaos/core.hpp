@@ -137,13 +137,17 @@ struct Actor {
     std::string details;
 };
 
-struct Goal {
+struct StateGoal {
     UUID id;
     std::string description;
     std::string status;
     Timestamp createdAt;
     Timestamp updatedAt;
 };
+// When goal_manager.hpp is not included, provide backward-compatible alias
+#ifndef ELIZAOS_GOAL_MANAGER_HPP
+using Goal = StateGoal;
+#endif
 
 /**
  * Enhanced Memory class with embedding vectors and metadata support
@@ -338,17 +342,17 @@ public:
     
     // Context management
     void addActor(const Actor& actor);
-    void addGoal(const Goal& goal);
+    void addGoal(const StateGoal& goal);
     void addRecentMessage(std::shared_ptr<Memory> memory);
     
     const std::vector<Actor>& getActors() const { return actors_; }
-    const std::vector<Goal>& getGoals() const { return goals_; }
+    const std::vector<StateGoal>& getGoals() const { return goals_; }
     const std::vector<std::shared_ptr<Memory>>& getRecentMessages() const { return recentMessages_; }
     
 private:
     AgentConfig config_;
     std::vector<Actor> actors_;
-    std::vector<Goal> goals_;
+    std::vector<StateGoal> goals_;
     std::vector<std::shared_ptr<Memory>> recentMessages_;
 };
 

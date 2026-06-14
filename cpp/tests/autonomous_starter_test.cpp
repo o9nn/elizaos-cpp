@@ -168,7 +168,7 @@ TEST(AutonomousStarter, StartSeedsCoreAutonomyGoalsAndMemory) {
 TEST(AutonomousStarter, SingleCognitiveCycleIsGoalDrivenAndObservable) {
     AutonomousStarter agent(mkConfig());
     const Timestamp now = std::chrono::system_clock::now();
-    agent.getState().addGoal(Goal{
+    agent.getState().addGoal(StateGoal{
         generateUUID(),
         "Inspect available C++ project structure before taking code actions",
         "active",
@@ -205,7 +205,7 @@ TEST(AutonomousStarter, ShellValidationRejectsPipeToShellAndRecursiveRootMutatio
 TEST(AutonomousStarter, MultiCycleAutonomyMaintainsGoalPlanAndMemoryTimeline) {
     AutonomousStarter agent(mkConfig());
     const Timestamp now = std::chrono::system_clock::now();
-    agent.getState().addGoal(Goal{
+    agent.getState().addGoal(StateGoal{
         generateUUID(),
         "Run validation self-audit over autonomy tests before acting",
         "active",

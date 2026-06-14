@@ -405,11 +405,15 @@ void AgentLoop::runLoop() {
         for (const auto& loopStep : steps_) {
             // Handle pause state before executing step
             while (pauseRequested_ && !stopRequested_) {
-                // When paused, wait for step signal
+                // When paused, wait for step signal or unpause
                 std::unique_lock<std::mutex> lock(stepMutex_);
                 stepEvent_.wait(lock, [this] {
-                    return stepSignaled_ || stopRequested_;
+                    return stepSignaled_ || stopRequested_ || !pauseRequested_;
                 });
+
+                if (!pauseRequested_) {
+                    break; // Unpaused - resume normal execution
+                }
 
                 if (stepSignaled_) {
                     stepSignaled_ = false;

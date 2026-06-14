@@ -3,6 +3,10 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#ifndef _WIN32
+#include <poll.h>
+#include <unistd.h>
+#endif
 
 namespace elizaos {
 
@@ -137,6 +141,17 @@ void ConsoleTextInput::inputThread() {
     std::cout << std::endl;
     
     while (active_) {
+        // Non-blocking stdin check: use poll() on Unix to avoid blocking on getline
+#ifndef _WIN32
+        struct pollfd pfd;
+        pfd.fd = STDIN_FILENO;
+        pfd.events = POLLIN;
+        int ret = poll(&pfd, 1, 100); // 100ms timeout
+        if (ret <= 0) {
+            // Timeout or error - check active_ and loop
+            continue;
+        }
+#endif
         std::cout << "> ";
         std::cout.flush();
         

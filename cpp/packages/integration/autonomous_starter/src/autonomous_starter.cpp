@@ -254,14 +254,14 @@ void AutonomousStarter::ensureCoreAutonomyGoals() {
     }
 
     const Timestamp now = std::chrono::system_clock::now();
-    state_.addGoal(Goal{
+    state_.addGoal(StateGoal{
         generateUUID(),
         "Establish bounded situational awareness of the runtime workspace",
         "active",
         now,
         now
     });
-    state_.addGoal(Goal{
+    state_.addGoal(StateGoal{
         generateUUID(),
         "Inspect available C++ project structure before taking code actions",
         "pending",
