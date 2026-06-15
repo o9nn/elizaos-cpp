@@ -319,6 +319,7 @@ function(add_real_test name src_file)
         elizaos-ontogenesis
         elizaos-cognitive_bridge
         elizaos-persistence
+        elizaos-autonomous_starter
     )
     foreach(real_test_target IN LISTS real_test_optional_elizaos_targets)
         if(TARGET ${real_test_target})
@@ -547,3 +548,52 @@ add_custom_target(ksm_canonical_tests
 set_tests_properties(${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
     PROPERTIES LABELS "ksm;canonical"
 )
+
+# ============================================================================
+# Eliza Paths Test - Environment-aware path resolution
+# ============================================================================
+add_executable(eliza_paths_test eliza_paths_test.cpp)
+target_include_directories(eliza_paths_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/packages/applications/eliza/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include
+)
+target_link_libraries(eliza_paths_test
+    elizaos-eliza
+    gtest
+    gtest_main
+    Threads::Threads
+)
+target_compile_options(eliza_paths_test PRIVATE -DELIZAOS_TEST_MODE)
+add_test(NAME eliza_paths_test COMMAND eliza_paths_test)
+
+# ============================================================================
+# Cognitive Bridge Protocol Test - WebSocket protocol conformance
+# ============================================================================
+add_real_test(real_cognitive_bridge_protocol_test src/test_cognitive_bridge_protocol.cpp)
+
+# ============================================================================
+# Embodiment-Cognitive Integration Test
+# ============================================================================
+if(TARGET elizaos-embodiment)
+    add_real_test(real_embodiment_cognitive_integration_test src/test_embodiment_cognitive_integration.cpp)
+endif()
+
+# Add new tests to KSM canonical targets
+if(TARGET eliza_paths_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS eliza_paths_test)
+endif()
+if(TARGET real_cognitive_bridge_protocol_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_cognitive_bridge_protocol_test)
+endif()
+if(TARGET real_embodiment_cognitive_integration_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_embodiment_cognitive_integration_test)
+endif()
+
+# ============================================================================
+# Autonomy Optimizer Test - Enhanced autonomy pipeline integration
+# ============================================================================
+add_real_test(real_autonomy_optimizer_test src/test_autonomy_optimizer.cpp)
+if(TARGET real_autonomy_optimizer_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_optimizer_test)
+endif()
