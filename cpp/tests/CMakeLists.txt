@@ -344,6 +344,7 @@ add_real_test(real_agentmemory_test         src/test_agentmemory.cpp)
 add_real_test(real_attention_test           src/test_attention_allocation.cpp)
 add_real_test(real_characters_test          src/test_characters.cpp)
 add_real_test(real_knowledge_test           src/test_knowledge.cpp)
+add_real_test(real_knowledge_hypergraph_test src/test_knowledge_hypergraph.cpp)
 if(TARGET elizaos-embodiment)
     add_real_test(real_embodiment_test      src/test_embodiment.cpp)
 else()
@@ -516,6 +517,7 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_attention_test
     real_characters_test
     real_knowledge_test
+    real_knowledge_hypergraph_test
     real_cognitive_primitives_test
     plugin_specification_test
     public_header_forwarding_test

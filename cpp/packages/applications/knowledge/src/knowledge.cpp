@@ -7,6 +7,9 @@
 #include <iomanip>
 #include <atomic>
 #include <cctype>
+#include <functional>
+#include <unordered_set>
+#include <queue>
 
 namespace elizaos {
 
@@ -691,5 +694,1231 @@ KnowledgeSource stringToKnowledgeSource(const std::string& sourceStr) {
     if (value == "communicated") return KnowledgeSource::COMMUNICATED;
     return KnowledgeSource::PROGRAMMED;
 }
+
+
+// ============================================================================
+// Phase 2.1: Hyperedge Implementation
+// ============================================================================
+
+namespace {
+std::string makeHyperedgeId() {
+    static std::atomic<unsigned long long> counter{0};
+    const auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+    std::ostringstream ss;
+    ss << "he-" << std::hex << now << "-" << counter.fetch_add(1, std::memory_order_relaxed);
+    return ss.str();
+}
+}
+
+Hyperedge::Hyperedge(const std::string& relType, const std::vector<std::string>& nodes)
+    : id(makeHyperedgeId())
+    , relationshipType(relType)
+    , nodeIds(nodes) {
+    
+    if (nodes.size() == 2) {
+        edgeType = HyperedgeType::BINARY;
+    } else if (nodes.size() == 3) {
+        edgeType = HyperedgeType::TERNARY;
+    } else {
+        edgeType = HyperedgeType::NARY;
+    }
+}
+
+bool Hyperedge::isValid(const Timestamp& at) const {
+    if (validFrom && at < *validFrom) return false;
+    if (validUntil && at > *validUntil) return false;
+    return true;
+}
+
+bool Hyperedge::connects(const std::string& nodeId) const {
+    return std::find(nodeIds.begin(), nodeIds.end(), nodeId) != nodeIds.end();
+}
+
+// ============================================================================
+// Phase 2.1: KnowledgeHypergraph Implementation
+// ============================================================================
+
+KnowledgeHypergraph::KnowledgeHypergraph() {}
+
+std::string KnowledgeHypergraph::generateEdgeId() const {
+    return makeHyperedgeId();
+}
+
+void KnowledgeHypergraph::addNode(const KnowledgeEntry& entry) {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    nodes_[entry.id] = entry;
+}
+
+void KnowledgeHypergraph::removeNode(const std::string& nodeId) {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    // Remove all edges connected to this node
+    auto edgeIdsIt = nodeToEdges_.find(nodeId);
+    if (edgeIdsIt != nodeToEdges_.end()) {
+        for (const auto& edgeId : edgeIdsIt->second) {
+            edges_.erase(edgeId);
+        }
+        nodeToEdges_.erase(edgeIdsIt);
+    }
+    
+    // Remove the node itself
+    nodes_.erase(nodeId);
+    
+    // Clean up references in other nodes' edge lists
+    for (auto& [id, edgeIds] : nodeToEdges_) {
+        edgeIds.erase(
+            std::remove_if(edgeIds.begin(), edgeIds.end(),
+                [this, &nodeId](const std::string& eid) {
+                    auto it = edges_.find(eid);
+                    return it != edges_.end() && it->second.connects(nodeId);
+                }),
+            edgeIds.end());
+    }
+}
+
+std::optional<KnowledgeEntry> KnowledgeHypergraph::getNode(const std::string& nodeId) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    auto it = nodes_.find(nodeId);
+    if (it != nodes_.end()) {
+        return it->second;
+    }
+    return std::nullopt;
+}
+
+std::string KnowledgeHypergraph::addEdge(const Hyperedge& edge) {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    Hyperedge e = edge;
+    if (e.id.empty()) {
+        e.id = generateEdgeId();
+    }
+    
+    edges_[e.id] = e;
+    
+    // Index by connected nodes
+    for (const auto& nodeId : e.nodeIds) {
+        nodeToEdges_[nodeId].push_back(e.id);
+    }
+    
+    return e.id;
+}
+
+void KnowledgeHypergraph::removeEdge(const std::string& edgeId) {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    auto it = edges_.find(edgeId);
+    if (it != edges_.end()) {
+        // Remove from node indices
+        for (const auto& nodeId : it->second.nodeIds) {
+            auto& edgeIds = nodeToEdges_[nodeId];
+            edgeIds.erase(
+                std::remove(edgeIds.begin(), edgeIds.end(), edgeId),
+                edgeIds.end());
+        }
+        edges_.erase(it);
+    }
+}
+
+std::optional<Hyperedge> KnowledgeHypergraph::getEdge(const std::string& edgeId) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    auto it = edges_.find(edgeId);
+    if (it != edges_.end()) {
+        return it->second;
+    }
+    return std::nullopt;
+}
+
+std::vector<Hyperedge> KnowledgeHypergraph::getEdgesConnecting(const std::string& nodeId) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<Hyperedge> result;
+    auto it = nodeToEdges_.find(nodeId);
+    if (it != nodeToEdges_.end()) {
+        for (const auto& edgeId : it->second) {
+            auto edgeIt = edges_.find(edgeId);
+            if (edgeIt != edges_.end()) {
+                result.push_back(edgeIt->second);
+            }
+        }
+    }
+    return result;
+}
+
+std::vector<Hyperedge> KnowledgeHypergraph::getEdgesByType(const std::string& relationshipType) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<Hyperedge> result;
+    for (const auto& [id, edge] : edges_) {
+        if (edge.relationshipType == relationshipType) {
+            result.push_back(edge);
+        }
+    }
+    return result;
+}
+
+std::vector<std::string> KnowledgeHypergraph::getNeighbors(const std::string& nodeId, int maxDepth) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::unordered_set<std::string> visited;
+    std::vector<std::string> toVisit = {nodeId};
+    visited.insert(nodeId);
+    
+    for (int depth = 0; depth < maxDepth && !toVisit.empty(); depth++) {
+        std::vector<std::string> nextLevel;
+        
+        for (const auto& currentId : toVisit) {
+            auto edgesIt = nodeToEdges_.find(currentId);
+            if (edgesIt != nodeToEdges_.end()) {
+                for (const auto& edgeId : edgesIt->second) {
+                    auto edgeIt = edges_.find(edgeId);
+                    if (edgeIt != edges_.end()) {
+                        for (const auto& neighborId : edgeIt->second.nodeIds) {
+                            if (visited.find(neighborId) == visited.end()) {
+                                visited.insert(neighborId);
+                                nextLevel.push_back(neighborId);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        toVisit = std::move(nextLevel);
+    }
+    
+    visited.erase(nodeId);  // Don't include the start node
+    return std::vector<std::string>(visited.begin(), visited.end());
+}
+
+std::vector<std::vector<std::string>> KnowledgeHypergraph::findPaths(
+    const std::string& fromId,
+    const std::string& toId,
+    int maxDepth) const {
+    
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<std::vector<std::string>> paths;
+    std::vector<std::string> currentPath = {fromId};
+    std::unordered_set<std::string> visited = {fromId};
+    
+    std::function<void(const std::string&, int)> dfs = [&](const std::string& current, int depth) {
+        if (depth > maxDepth) return;
+        
+        if (current == toId) {
+            paths.push_back(currentPath);
+            return;
+        }
+        
+        auto edgesIt = nodeToEdges_.find(current);
+        if (edgesIt != nodeToEdges_.end()) {
+            for (const auto& edgeId : edgesIt->second) {
+                auto edgeIt = edges_.find(edgeId);
+                if (edgeIt != edges_.end()) {
+                    for (const auto& neighborId : edgeIt->second.nodeIds) {
+                        if (visited.find(neighborId) == visited.end()) {
+                            visited.insert(neighborId);
+                            currentPath.push_back(neighborId);
+                            dfs(neighborId, depth + 1);
+                            currentPath.pop_back();
+                            visited.erase(neighborId);
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
+    dfs(fromId, 0);
+    return paths;
+}
+
+std::vector<KnowledgeEntry> KnowledgeHypergraph::extractSubgraph(
+    const std::string& centerId,
+    int radius) const {
+    
+    auto neighborIds = getNeighbors(centerId, radius);
+    neighborIds.push_back(centerId);
+    
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<KnowledgeEntry> result;
+    for (const auto& id : neighborIds) {
+        auto it = nodes_.find(id);
+        if (it != nodes_.end()) {
+            result.push_back(it->second);
+        }
+    }
+    return result;
+}
+
+std::vector<std::unordered_map<std::string, std::string>> KnowledgeHypergraph::matchPattern(
+    const std::vector<std::string>& patternNodes,
+    const std::vector<std::pair<int, int>>& patternEdges,
+    const std::string& relationshipType) const {
+    
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<std::unordered_map<std::string, std::string>> matches;
+    
+    if (patternNodes.empty()) return matches;
+    
+    // Simple pattern matching - find all possible bindings
+    std::vector<std::string> allNodeIds;
+    for (const auto& [id, entry] : nodes_) {
+        allNodeIds.push_back(id);
+    }
+    
+    // For simplicity, just match first node pattern to all nodes
+    // Full implementation would do proper constraint satisfaction
+    for (const auto& nodeId : allNodeIds) {
+        std::unordered_map<std::string, std::string> binding;
+        binding[patternNodes[0]] = nodeId;
+        
+        // Check if edges match
+        bool allEdgesMatch = true;
+        for (const auto& [from, to] : patternEdges) {
+            if (from < static_cast<int>(patternNodes.size()) && 
+                to < static_cast<int>(patternNodes.size())) {
+                // Check if edge exists
+                auto edges = getEdgesConnecting(binding[patternNodes[from]]);
+                bool found = false;
+                for (const auto& e : edges) {
+                    if ((relationshipType.empty() || e.relationshipType == relationshipType) &&
+                        e.connects(binding[patternNodes[to]])) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    allEdgesMatch = false;
+                    break;
+                }
+            }
+        }
+        
+        if (allEdgesMatch) {
+            matches.push_back(binding);
+        }
+    }
+    
+    return matches;
+}
+
+size_t KnowledgeHypergraph::nodeCount() const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    return nodes_.size();
+}
+
+size_t KnowledgeHypergraph::edgeCount() const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    return edges_.size();
+}
+
+double KnowledgeHypergraph::averageDegree() const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    if (nodes_.empty()) return 0.0;
+    
+    size_t totalDegree = 0;
+    for (const auto& [nodeId, edgeIds] : nodeToEdges_) {
+        totalDegree += edgeIds.size();
+    }
+    
+    return static_cast<double>(totalDegree) / nodes_.size();
+}
+
+std::vector<std::string> KnowledgeHypergraph::findHubs(int topN) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    
+    std::vector<std::pair<std::string, size_t>> nodeDegrees;
+    for (const auto& [nodeId, edgeIds] : nodeToEdges_) {
+        nodeDegrees.emplace_back(nodeId, edgeIds.size());
+    }
+    
+    std::sort(nodeDegrees.begin(), nodeDegrees.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    
+    std::vector<std::string> hubs;
+    for (int i = 0; i < std::min(topN, static_cast<int>(nodeDegrees.size())); i++) {
+        hubs.push_back(nodeDegrees[i].first);
+    }
+    
+    return hubs;
+}
+
+// ============================================================================
+// Phase 2.1: ChainedInferenceEngine Implementation
+// ============================================================================
+
+ChainedInferenceEngine::ChainedInferenceEngine() {}
+
+void ChainedInferenceEngine::addRule(const InferenceRule& rule) {
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    // Remove existing rule with same name
+    rules_.erase(
+        std::remove_if(rules_.begin(), rules_.end(),
+            [&rule](const InferenceRule& r) { return r.name == rule.name; }),
+        rules_.end());
+    
+    rules_.push_back(rule);
+}
+
+void ChainedInferenceEngine::removeRule(const std::string& ruleName) {
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    rules_.erase(
+        std::remove_if(rules_.begin(), rules_.end(),
+            [&ruleName](const InferenceRule& r) { return r.name == ruleName; }),
+        rules_.end());
+}
+
+void ChainedInferenceEngine::enableRule(const std::string& ruleName, bool enable) {
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    for (auto& rule : rules_) {
+        if (rule.name == ruleName) {
+            rule.enabled = enable;
+            break;
+        }
+    }
+}
+
+std::vector<ChainedInferenceEngine::InferenceRule> ChainedInferenceEngine::getRules() const {
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    return rules_;
+}
+
+bool ChainedInferenceEngine::matchCondition(
+    const KnowledgeEntry& entry,
+    const std::pair<std::string, std::string>& condition) const {
+    
+    const auto& [condType, condPattern] = condition;
+    
+    // Check type
+    if (!condType.empty() && knowledgeTypeToString(entry.type) != condType) {
+        return false;
+    }
+    
+    // Check pattern (simple substring match)
+    if (!condPattern.empty()) {
+        std::string lowerContent = toLower(entry.content);
+        std::string lowerPattern = toLower(condPattern);
+        if (lowerContent.find(lowerPattern) == std::string::npos) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+KnowledgeEntry ChainedInferenceEngine::applyRule(
+    const InferenceRule& rule,
+    const std::vector<KnowledgeEntry>& matchedFacts) {
+    
+    KnowledgeEntry result;
+    result.type = stringToKnowledgeType(rule.conclusion.first);
+    result.content = rule.conclusion.second;
+    result.source = KnowledgeSource::INFERRED;
+    
+    // Calculate confidence based on input facts
+    double totalConfidence = 0.0;
+    for (const auto& fact : matchedFacts) {
+        totalConfidence += static_cast<int>(fact.confidence);
+    }
+    
+    double avgConfidence = matchedFacts.empty() ? 3.0 : totalConfidence / matchedFacts.size();
+    avgConfidence *= rule.confidenceModifier;
+    
+    result.confidence = static_cast<ConfidenceLevel>(
+        std::max(1, std::min(5, static_cast<int>(avgConfidence))));
+    
+    // Add relations to source facts
+    for (const auto& fact : matchedFacts) {
+        result.related_entries.push_back(fact.id);
+    }
+    
+    return result;
+}
+
+std::vector<KnowledgeEntry> ChainedInferenceEngine::forwardChain(
+    const std::vector<KnowledgeEntry>& facts,
+    int maxIterations) {
+    
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    lastTrace_.clear();
+    std::vector<KnowledgeEntry> workingSet = facts;
+    std::unordered_set<std::string> derivedContents;
+    
+    for (const auto& f : facts) {
+        derivedContents.insert(toLower(f.content));
+    }
+    
+    for (int iteration = 0; iteration < maxIterations; iteration++) {
+        bool newDerivations = false;
+        
+        for (const auto& rule : rules_) {
+            if (!rule.enabled) continue;
+            
+            // Find all facts matching conditions
+            std::vector<KnowledgeEntry> matchedFacts;
+            bool allConditionsMet = true;
+            
+            for (const auto& condition : rule.conditions) {
+                bool conditionMet = false;
+                for (const auto& fact : workingSet) {
+                    if (matchCondition(fact, condition)) {
+                        matchedFacts.push_back(fact);
+                        conditionMet = true;
+                        break;
+                    }
+                }
+                if (!conditionMet) {
+                    allConditionsMet = false;
+                    break;
+                }
+            }
+            
+            if (allConditionsMet && !matchedFacts.empty()) {
+                KnowledgeEntry derived = applyRule(rule, matchedFacts);
+                
+                // Check if this is a new derivation
+                if (derivedContents.find(toLower(derived.content)) == derivedContents.end()) {
+                    if (static_cast<int>(derived.confidence) >= 
+                        static_cast<int>(minConfidence_ * 5)) {
+                        
+                        derivedContents.insert(toLower(derived.content));
+                        workingSet.push_back(derived);
+                        newDerivations = true;
+                        
+                        // Record trace
+                        InferenceStep step;
+                        step.ruleApplied = rule.name;
+                        for (const auto& f : matchedFacts) {
+                            step.inputEntryIds.push_back(f.id);
+                        }
+                        step.outputEntryId = derived.id;
+                        step.confidence = static_cast<double>(derived.confidence) / 5.0;
+                        step.explanation = "Applied rule '" + rule.name + "' to derive: " + derived.content;
+                        lastTrace_.push_back(step);
+                    }
+                }
+            }
+        }
+        
+        if (!newDerivations) break;
+    }
+    
+    // Return only derived facts (not the original ones)
+    std::vector<KnowledgeEntry> derived;
+    for (size_t i = facts.size(); i < workingSet.size(); i++) {
+        derived.push_back(workingSet[i]);
+    }
+    
+    return derived;
+}
+
+std::vector<KnowledgeEntry> ChainedInferenceEngine::backwardChain(
+    const KnowledgeEntry& goal,
+    const std::vector<KnowledgeEntry>& knowledgeBase) {
+    
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    lastTrace_.clear();
+    std::vector<KnowledgeEntry> supportingFacts;
+    
+    // Find rules that could produce the goal
+    for (const auto& rule : rules_) {
+        if (!rule.enabled) continue;
+        
+        // Check if rule conclusion matches goal
+        if (rule.conclusion.first == knowledgeTypeToString(goal.type) ||
+            containsCaseInsensitive(goal.content, rule.conclusion.second)) {
+            
+            // Find facts that satisfy the conditions
+            std::vector<KnowledgeEntry> matchedFacts;
+            bool allConditionsMet = true;
+            
+            for (const auto& condition : rule.conditions) {
+                bool conditionMet = false;
+                for (const auto& fact : knowledgeBase) {
+                    if (matchCondition(fact, condition)) {
+                        matchedFacts.push_back(fact);
+                        conditionMet = true;
+                        break;
+                    }
+                }
+                if (!conditionMet) {
+                    allConditionsMet = false;
+                    break;
+                }
+            }
+            
+            if (allConditionsMet) {
+                for (const auto& f : matchedFacts) {
+                    // Avoid duplicates
+                    bool found = false;
+                    for (const auto& existing : supportingFacts) {
+                        if (existing.id == f.id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        supportingFacts.push_back(f);
+                    }
+                }
+                
+                InferenceStep step;
+                step.ruleApplied = rule.name;
+                for (const auto& f : matchedFacts) {
+                    step.inputEntryIds.push_back(f.id);
+                }
+                step.outputEntryId = goal.id;
+                step.explanation = "Found supporting facts for goal via rule '" + rule.name + "'";
+                lastTrace_.push_back(step);
+            }
+        }
+    }
+    
+    return supportingFacts;
+}
+
+std::vector<KnowledgeEntry> ChainedInferenceEngine::abductiveReason(
+    const KnowledgeEntry& observation,
+    const std::vector<KnowledgeEntry>& knowledgeBase) {
+    
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    
+    lastTrace_.clear();
+    std::vector<KnowledgeEntry> explanations;
+    
+    // Find rules where the observation could be the conclusion
+    // and look for the conditions as potential explanations
+    for (const auto& rule : rules_) {
+        if (!rule.enabled) continue;
+        
+        // Check if rule conclusion matches observation
+        if (containsCaseInsensitive(observation.content, rule.conclusion.second)) {
+            
+            // The conditions of this rule could explain the observation
+            for (const auto& condition : rule.conditions) {
+                // Find facts that match this condition
+                for (const auto& fact : knowledgeBase) {
+                    if (matchCondition(fact, condition)) {
+                        bool found = false;
+                        for (const auto& e : explanations) {
+                            if (e.id == fact.id) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            explanations.push_back(fact);
+                        }
+                    }
+                }
+            }
+            
+            if (!explanations.empty()) {
+                InferenceStep step;
+                step.ruleApplied = rule.name;
+                step.outputEntryId = observation.id;
+                step.explanation = "Abductive explanation via rule '" + rule.name + "'";
+                lastTrace_.push_back(step);
+            }
+        }
+    }
+    
+    return explanations;
+}
+
+std::vector<InferenceStep> ChainedInferenceEngine::getLastInferenceTrace() const {
+    std::lock_guard<std::mutex> lock(inferenceMutex_);
+    return lastTrace_;
+}
+
+void ChainedInferenceEngine::setMaxChainDepth(int depth) {
+    maxChainDepth_ = depth;
+}
+
+int ChainedInferenceEngine::getMaxChainDepth() const {
+    return maxChainDepth_;
+}
+
+// ============================================================================
+// Phase 2.1: KnowledgeFusionEngine Implementation
+// ============================================================================
+
+KnowledgeFusionEngine::KnowledgeFusionEngine() {}
+
+double KnowledgeFusionEngine::calculateSimilarity(
+    const KnowledgeEntry& a, 
+    const KnowledgeEntry& b) const {
+    
+    // Simple Jaccard-like similarity based on word overlap
+    std::unordered_set<std::string> wordsA, wordsB;
+    
+    std::istringstream streamA(toLower(a.content));
+    std::istringstream streamB(toLower(b.content));
+    std::string word;
+    
+    while (streamA >> word) {
+        if (word.size() > 2) wordsA.insert(word);
+    }
+    while (streamB >> word) {
+        if (word.size() > 2) wordsB.insert(word);
+    }
+    
+    if (wordsA.empty() || wordsB.empty()) return 0.0;
+    
+    size_t intersection = 0;
+    for (const auto& w : wordsA) {
+        if (wordsB.find(w) != wordsB.end()) {
+            intersection++;
+        }
+    }
+    
+    size_t unionSize = wordsA.size() + wordsB.size() - intersection;
+    return static_cast<double>(intersection) / unionSize;
+}
+
+KnowledgeEntry KnowledgeFusionEngine::mergeEntries(
+    const std::vector<KnowledgeEntry>& entries) const {
+    
+    if (entries.empty()) return KnowledgeEntry();
+    if (entries.size() == 1) return entries[0];
+    
+    KnowledgeEntry merged = entries[0];
+    
+    // Combine content (take longest or most detailed)
+    for (size_t i = 1; i < entries.size(); i++) {
+        if (entries[i].content.size() > merged.content.size()) {
+            merged.content = entries[i].content;
+        }
+    }
+    
+    // Take highest confidence
+    for (const auto& e : entries) {
+        if (static_cast<int>(e.confidence) > static_cast<int>(merged.confidence)) {
+            merged.confidence = e.confidence;
+        }
+    }
+    
+    // Merge tags
+    for (const auto& e : entries) {
+        for (const auto& tag : e.tags) {
+            merged.addTag(tag);
+        }
+    }
+    
+    // Merge related entries
+    for (const auto& e : entries) {
+        for (const auto& rel : e.related_entries) {
+            merged.addRelation(rel);
+        }
+    }
+    
+    // Update timestamp
+    merged.updated_at = std::chrono::system_clock::now();
+    
+    return merged;
+}
+
+std::vector<KnowledgeEntry> KnowledgeFusionEngine::fuseKnowledge(
+    const std::vector<std::vector<KnowledgeEntry>>& sources,
+    FusionStrategy strategy) {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    // Flatten all entries
+    std::vector<KnowledgeEntry> allEntries;
+    for (const auto& source : sources) {
+        for (const auto& entry : source) {
+            allEntries.push_back(entry);
+        }
+    }
+    
+    // Detect conflicts
+    auto conflicts = detectConflicts(allEntries);
+    
+    // Resolve conflicts
+    std::vector<KnowledgeEntry> resolved;
+    std::unordered_set<std::string> processedIds;
+    
+    for (auto& conflict : conflicts) {
+        auto resolution = resolveConflict(conflict, strategy);
+        resolved.push_back(resolution);
+        
+        for (const auto& v : conflict.conflictingEntries) {
+            processedIds.insert(v.id);
+        }
+    }
+    
+    // Add non-conflicting entries
+    for (const auto& entry : allEntries) {
+        if (processedIds.find(entry.id) == processedIds.end()) {
+            resolved.push_back(entry);
+            processedIds.insert(entry.id);
+        }
+    }
+    
+    return resolved;
+}
+
+std::vector<KnowledgeConflict> KnowledgeFusionEngine::detectConflicts(
+    const std::vector<KnowledgeEntry>& entries) {
+    
+    std::vector<KnowledgeConflict> conflicts;
+    
+    // Group similar entries
+    std::vector<std::vector<KnowledgeEntry>> similarGroups;
+    std::vector<bool> processed(entries.size(), false);
+    
+    for (size_t i = 0; i < entries.size(); i++) {
+        if (processed[i]) continue;
+        
+        std::vector<KnowledgeEntry> group = {entries[i]};
+        processed[i] = true;
+        
+        for (size_t j = i + 1; j < entries.size(); j++) {
+            if (processed[j]) continue;
+            
+            double sim = calculateSimilarity(entries[i], entries[j]);
+            if (sim > 0.5) {  // Similar enough to be potential conflict
+                group.push_back(entries[j]);
+                processed[j] = true;
+            }
+        }
+        
+        if (group.size() > 1) {
+            similarGroups.push_back(group);
+        }
+    }
+    
+    // Create conflicts from groups
+    for (const auto& group : similarGroups) {
+        KnowledgeConflict conflict;
+        // conflict has no entryId field;
+        conflict.conflictingEntries = group;
+        
+        // Determine conflict type
+        bool typesDiffer = false;
+        bool confidencesDiffer = false;
+        
+        for (size_t i = 1; i < group.size(); i++) {
+            if (group[i].type != group[0].type) typesDiffer = true;
+            if (group[i].confidence != group[0].confidence) confidencesDiffer = true;
+        }
+        
+        if (typesDiffer) {
+            conflict.conflictType = "type";
+        } else if (confidencesDiffer) {
+            conflict.conflictType = "confidence";
+        } else {
+            conflict.conflictType = "value";
+        }
+        
+        conflicts.push_back(conflict);
+    }
+    
+    unresolvedConflicts_ = conflicts;
+    return conflicts;
+}
+
+KnowledgeEntry KnowledgeFusionEngine::resolveConflict(
+    const KnowledgeConflict& conflict,
+    FusionStrategy strategy) {
+    
+    const auto& versions = conflict.conflictingEntries;
+    
+    if (versions.empty()) return KnowledgeEntry();
+    if (versions.size() == 1) return versions[0];
+    
+    switch (strategy) {
+        case FusionStrategy::HIGHEST_CONFIDENCE: {
+            KnowledgeEntry best = versions[0];
+            for (const auto& v : versions) {
+                if (static_cast<int>(v.confidence) > static_cast<int>(best.confidence)) {
+                    best = v;
+                }
+            }
+            return best;
+        }
+        
+        case FusionStrategy::MOST_RECENT: {
+            KnowledgeEntry best = versions[0];
+            for (const auto& v : versions) {
+                if (v.updated_at > best.updated_at) {
+                    best = v;
+                }
+            }
+            return best;
+        }
+        
+        case FusionStrategy::CONSENSUS: {
+            // Take the version that appears most often (by content similarity)
+            std::vector<int> votes(versions.size(), 0);
+            for (size_t i = 0; i < versions.size(); i++) {
+                for (size_t j = i + 1; j < versions.size(); j++) {
+                    double sim = calculateSimilarity(versions[i], versions[j]);
+                    if (sim > 0.8) {
+                        votes[i]++;
+                        votes[j]++;
+                    }
+                }
+            }
+            
+            int bestIdx = 0;
+            for (size_t i = 1; i < votes.size(); i++) {
+                if (votes[i] > votes[bestIdx]) {
+                    bestIdx = i;
+                }
+            }
+            return versions[bestIdx];
+        }
+        
+        case FusionStrategy::WEIGHTED_AVERAGE:
+        case FusionStrategy::MANUAL:
+        default:
+            // Fall back to merging
+            return mergeEntries(versions);
+    }
+}
+
+void KnowledgeFusionEngine::recordVersion(
+    const KnowledgeEntry& entry,
+    const std::string& reason,
+    const std::string& changedBy) {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    KnowledgeVersion version;
+    version.versionId = makeKnowledgeEntryId();
+    // entryId stored in entry itself;
+    version.entry = entry;
+    version.timestamp = std::chrono::system_clock::now();
+    version.reason = reason;
+    version.changedBy = changedBy;
+    
+    versionHistory_[entry.id].push_back(version);
+}
+
+std::vector<KnowledgeVersion> KnowledgeFusionEngine::getVersionHistory(
+    const std::string& entryId) const {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    auto it = versionHistory_.find(entryId);
+    if (it != versionHistory_.end()) {
+        return it->second;
+    }
+    return {};
+}
+
+std::optional<KnowledgeEntry> KnowledgeFusionEngine::getVersionAt(
+    const std::string& entryId,
+    const Timestamp& at) const {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    auto it = versionHistory_.find(entryId);
+    if (it == versionHistory_.end()) return std::nullopt;
+    
+    // Find the most recent version before 'at'
+    const KnowledgeVersion* best = nullptr;
+    for (const auto& v : it->second) {
+        if (v.timestamp <= at) {
+            if (!best || v.timestamp > best->timestamp) {
+                best = &v;
+            }
+        }
+    }
+    
+    if (best) {
+        return best->entry;
+    }
+    return std::nullopt;
+}
+
+std::optional<KnowledgeEntry> KnowledgeFusionEngine::rollbackToVersion(
+    const std::string& versionId) {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    for (const auto& [entryId, versions] : versionHistory_) {
+        for (const auto& v : versions) {
+            if (v.versionId == versionId) {
+                return v.entry;
+            }
+        }
+    }
+    return std::nullopt;
+}
+
+void KnowledgeFusionEngine::setTemporalValidity(
+    const std::string& entryId,
+    std::optional<Timestamp> validFrom,
+    std::optional<Timestamp> validUntil) {
+    
+    // This would need to be integrated with the knowledge base
+    // For now, just record in version history
+    // Full implementation would modify the actual entry
+}
+
+std::vector<KnowledgeEntry> KnowledgeFusionEngine::getValidKnowledge(
+    const Timestamp& at) const {
+    
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    
+    std::vector<KnowledgeEntry> valid;
+    for (const auto& [entryId, versions] : versionHistory_) {
+        auto entry = getVersionAt(entryId, at);
+        if (entry) {
+            valid.push_back(*entry);
+        }
+    }
+    return valid;
+}
+
+// ============================================================================
+// Phase 2.1: EnhancedKnowledgeBase Implementation
+// ============================================================================
+
+EnhancedKnowledgeBase::EnhancedKnowledgeBase()
+    : KnowledgeBase()
+    , inferenceEngine_(std::make_unique<ChainedInferenceEngine>())
+    , fusionEngine_(std::make_unique<KnowledgeFusionEngine>()) {}
+
+void EnhancedKnowledgeBase::enableHypergraph(bool enable) {
+    hypergraphEnabled_ = enable;
+}
+
+std::string EnhancedKnowledgeBase::addRelationship(
+    const std::string& relationshipType,
+    const std::vector<std::string>& nodeIds,
+    double weight) {
+    
+    if (!hypergraphEnabled_) {
+        enableHypergraph(true);
+    }
+    
+    // Ensure all nodes exist in hypergraph
+    for (const auto& nodeId : nodeIds) {
+        auto entry = getKnowledge(nodeId);
+        if (entry) {
+            hypergraph_.addNode(*entry);
+        }
+    }
+    
+    Hyperedge edge(relationshipType, nodeIds);
+    edge.weight = weight;
+    
+    return hypergraph_.addEdge(edge);
+}
+
+std::vector<KnowledgeEntry> EnhancedKnowledgeBase::queryByRelationship(
+    const std::string& relationshipType,
+    const std::string& involvedNodeId) {
+    
+    if (!hypergraphEnabled_) return {};
+    
+    std::vector<KnowledgeEntry> results;
+    
+    auto edges = hypergraph_.getEdgesByType(relationshipType);
+    
+    for (const auto& edge : edges) {
+        if (involvedNodeId.empty() || edge.connects(involvedNodeId)) {
+            for (const auto& nodeId : edge.nodeIds) {
+                auto node = hypergraph_.getNode(nodeId);
+                if (node) {
+                    // Avoid duplicates
+                    bool found = false;
+                    for (const auto& r : results) {
+                        if (r.id == node->id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        results.push_back(*node);
+                    }
+                }
+            }
+        }
+    }
+    
+    return results;
+}
+
+std::vector<KnowledgeEntry> EnhancedKnowledgeBase::infer(const KnowledgeQuery& query) {
+    // Get relevant facts
+    auto facts = this->query(query);
+    
+    // Run forward chaining
+    auto inferred = inferenceEngine_->forwardChain(facts);
+    
+    return inferred;
+}
+
+void EnhancedKnowledgeBase::enableAutoInference(bool enable) {
+    autoInferenceEnabled_ = enable;
+}
+
+void EnhancedKnowledgeBase::importAndFuse(
+    const std::vector<KnowledgeEntry>& newKnowledge,
+    KnowledgeFusionEngine::FusionStrategy strategy) {
+    
+    // Get existing knowledge
+    std::vector<KnowledgeEntry> existing;
+    auto allTags = getAllTags();  // Get some existing entries
+    for (const auto& tag : allTags) {
+        auto entries = searchByTags({tag});
+        for (const auto& e : entries) {
+            existing.push_back(e);
+        }
+    }
+    
+    // Fuse with new knowledge
+    std::vector<std::vector<KnowledgeEntry>> sources = {existing, newKnowledge};
+    auto fused = fusionEngine_->fuseKnowledge(sources, strategy);
+    
+    // Update knowledge base with fused entries
+    for (const auto& entry : fused) {
+        auto existingEntry = getKnowledge(entry.id);
+        if (existingEntry) {
+            updateKnowledge(entry.id, entry);
+        } else {
+            addKnowledge(entry);
+        }
+        
+        // Record version
+        fusionEngine_->recordVersion(entry, "Fused from multiple sources");
+    }
+}
+
+std::vector<KnowledgeEntry> EnhancedKnowledgeBase::semanticSearch(
+    const std::string& query,
+    int maxResults,
+    double minSimilarity) {
+    
+    // Get all entries and filter by similarity
+    auto allEntries = searchByText(query, maxResults * 3);  // Get more for filtering
+    
+    std::vector<std::pair<KnowledgeEntry, double>> scored;
+    
+    KnowledgeEntry queryEntry;
+    queryEntry.content = query;
+    
+    for (const auto& entry : allEntries) {
+        // Calculate simple word overlap similarity
+        double sim = 0.5;
+        if (fusionEngine_) {
+            sim = fusionEngine_->calculateSimilarity(queryEntry, entry);
+        }
+        
+        if (sim >= minSimilarity) {
+            scored.emplace_back(entry, sim);
+        }
+    }
+    
+    // Sort by similarity
+    std::sort(scored.begin(), scored.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    
+    // Return top results
+    std::vector<KnowledgeEntry> results;
+    for (size_t i = 0; i < std::min(static_cast<size_t>(maxResults), scored.size()); i++) {
+        results.push_back(scored[i].first);
+    }
+    
+    return results;
+}
+
+std::vector<std::vector<KnowledgeEntry>> EnhancedKnowledgeBase::findConnectionPaths(
+    const std::string& fromId,
+    const std::string& toId,
+    int maxDepth) {
+    
+    if (!hypergraphEnabled_) return {};
+    
+    auto paths = hypergraph_.findPaths(fromId, toId, maxDepth);
+    
+    std::vector<std::vector<KnowledgeEntry>> entryPaths;
+    
+    for (const auto& path : paths) {
+        std::vector<KnowledgeEntry> entryPath;
+        for (const auto& nodeId : path) {
+            auto node = hypergraph_.getNode(nodeId);
+            if (node) {
+                entryPath.push_back(*node);
+            }
+        }
+        if (!entryPath.empty()) {
+            entryPaths.push_back(entryPath);
+        }
+    }
+    
+    return entryPaths;
+}
+
+std::vector<std::vector<std::string>> EnhancedKnowledgeBase::clusterKnowledge(int numClusters) {
+    // Simple clustering based on content similarity
+    std::vector<std::vector<std::string>> clusters(numClusters);
+    
+    // Get all entries
+    std::vector<KnowledgeEntry> allEntries;
+    auto types = {KnowledgeType::FACT, KnowledgeType::RULE, KnowledgeType::CONCEPT,
+                  KnowledgeType::RELATIONSHIP, KnowledgeType::PROCEDURE, KnowledgeType::EXPERIENCE};
+    
+    for (auto type : types) {
+        auto entries = getKnowledgeByType(type);
+        for (const auto& e : entries) {
+            allEntries.push_back(e);
+        }
+    }
+    
+    if (allEntries.empty()) return clusters;
+    
+    // Simple round-robin assignment (a real implementation would use k-means)
+    for (size_t i = 0; i < allEntries.size(); i++) {
+        clusters[i % numClusters].push_back(allEntries[i].id);
+    }
+    
+    return clusters;
+}
+
+EnhancedKnowledgeBase::EnhancedStats EnhancedKnowledgeBase::getEnhancedStats() const {
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    EnhancedStats stats;
+    stats.totalEntries = getKnowledgeCount();
+    stats.totalRelationships = hypergraphEnabled_ ? hypergraph_.edgeCount() : 0;
+    
+    // Count inferred entries
+    stats.inferredEntries = 0;
+    auto types = {KnowledgeType::FACT, KnowledgeType::RULE, KnowledgeType::CONCEPT};
+    for (auto type : types) {
+        auto entries = const_cast<EnhancedKnowledgeBase*>(this)->getKnowledgeByType(type);
+        for (const auto& e : entries) {
+            if (e.source == KnowledgeSource::INFERRED) {
+                stats.inferredEntries++;
+            }
+        }
+    }
+    
+    // Conflicts pending would need access to fusion engine's internal state
+    stats.conflictsPending = 0;
+    
+    stats.graphDensity = hypergraphEnabled_ && hypergraph_.nodeCount() > 0 ?
+        static_cast<double>(hypergraph_.edgeCount()) / hypergraph_.nodeCount() : 0.0;
+    
+    stats.averagePathLength = 0;  // Would require path analysis
+    
+    return stats;
+}
+
 
 } // namespace elizaos
