@@ -417,3 +417,198 @@ TEST_F(AgentMemoryTest, ClearAllMemories) {
     EXPECT_EQ(memory::retrieve("mem1"), nullptr);
     EXPECT_EQ(memory::retrieve("mem2"), nullptr);
 }
+
+// ============================================================================
+// Hierarchical / Associative Memory Subsystem E2E Tests
+// Validates the ported memory-strength decay, consolidation, hierarchical
+// indexing, associative network + spreading activation, defragmentation,
+// and statistics.
+// ============================================================================
+
+#include <algorithm>
+
+// ---- Hierarchical Indexing ----
+
+TEST_F(AgentMemoryTest, HierarchicalIndexingByType) {
+    auto& mgr = getGlobalMemoryManager();
+    auto ep = createTestMemory("h-ep-1", "had lunch with a friend");
+    auto sem = createTestMemory("h-sem-1", "Paris is the capital of France");
+    auto proc = createTestMemory("h-proc-1", "how to ride a bicycle");
+    mgr.createMemory(ep);
+    mgr.createMemory(sem);
+    mgr.createMemory(proc);
+
+    mgr.indexMemory("h-ep-1", HierarchicalMemoryType::EPISODIC, {"lunch", "friend"});
+    mgr.indexMemory("h-sem-1", HierarchicalMemoryType::SEMANTIC, {"geography", "france"});
+    mgr.indexMemory("h-proc-1", HierarchicalMemoryType::PROCEDURAL, {"cycling"});
+
+    auto episodic = mgr.getMemoriesByType(HierarchicalMemoryType::EPISODIC);
+    ASSERT_EQ(episodic.size(), 1u);
+    EXPECT_EQ(episodic[0]->getId(), "h-ep-1");
+
+    auto byConcept = mgr.getMemoriesByConcept("geography");
+    ASSERT_EQ(byConcept.size(), 1u);
+    EXPECT_EQ(byConcept[0]->getId(), "h-sem-1");
+}
+
+TEST_F(AgentMemoryTest, ReindexAllMemories) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("r-1", "fact one"));
+    mgr.createMemory(createTestMemory("r-2", "fact two"));
+    mgr.reindexAllMemories();
+    auto semantic = mgr.getMemoriesByType(HierarchicalMemoryType::SEMANTIC);
+    EXPECT_EQ(semantic.size(), 2u);
+}
+
+// ---- Memory Strength / Decay ----
+
+TEST_F(AgentMemoryTest, MemoryStrengthBoostAndDecay) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("s-1", "important memory"));
+
+    MemoryStrength initial = mgr.getMemoryStrength("s-1");
+    EXPECT_NEAR(initial.currentStrength, MemoryStrength::DEFAULT_INITIAL_STRENGTH, 1e-9);
+
+    mgr.applyDecayToAllMemories(30.0);
+    MemoryStrength decayed = mgr.getMemoryStrength("s-1");
+    EXPECT_LT(decayed.currentStrength, initial.currentStrength);
+
+    mgr.boostMemoryOnAccess("s-1");
+    MemoryStrength boosted = mgr.getMemoryStrength("s-1");
+    EXPECT_GT(boosted.currentStrength, decayed.currentStrength);
+    EXPECT_EQ(boosted.accessCount, 1);
+}
+
+TEST_F(AgentMemoryTest, GetDecayedMemoriesBelowThreshold) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("d-1", "fading memory"));
+
+    MemoryStrength weak;
+    weak.currentStrength = 0.05;
+    weak.baseImportance = 0.1;
+    mgr.setMemoryStrength("d-1", weak);
+
+    auto decayed = mgr.getDecayedMemories(0.1);
+    ASSERT_FALSE(decayed.empty());
+    EXPECT_NE(std::find(decayed.begin(), decayed.end(), std::string("d-1")), decayed.end());
+}
+
+TEST_F(AgentMemoryTest, CustomDecayParamsAffectRetention) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("dp-1", "memory under fast decay"));
+
+    MemoryDecayParams fast;
+    fast.baseDecayRate = 0.5;
+    fast.minStrength = 0.001;
+    mgr.setDecayParams(fast);
+    mgr.applyDecayToAllMemories(5.0);
+    double strongDecayStrength = mgr.getMemoryStrength("dp-1").currentStrength;
+    EXPECT_LT(strongDecayStrength, MemoryStrength::DEFAULT_INITIAL_STRENGTH);
+}
+
+// ---- Consolidation ----
+
+TEST_F(AgentMemoryTest, MemoryConsolidationCycle) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("c-1", "frequently accessed important memory"));
+
+    MemoryStrength strength;
+    strength.baseImportance = 0.9;
+    strength.accessCount = 5;
+    strength.currentStrength = 0.8;
+    mgr.setMemoryStrength("c-1", strength);
+
+    MemoryConsolidationEngine::ConsolidationParams params;
+    params.consolidationThreshold = 0.7;
+    params.minAccessCount = 3;
+    mgr.setConsolidationParams(params);
+
+    auto result = mgr.runConsolidation();
+    EXPECT_GE(result.memoriesProcessed, 1);
+    EXPECT_GE(result.memoriesConsolidated, 1);
+
+    MemoryStrength after = mgr.getMemoryStrength("c-1");
+    EXPECT_TRUE(after.isConsolidated);
+}
+
+// ---- Associative Network + Spreading Activation ----
+
+TEST_F(AgentMemoryTest, AssociativeNetworkAndSpreadingActivation) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("a-1", "coffee"));
+    mgr.createMemory(createTestMemory("a-2", "morning"));
+    mgr.createMemory(createTestMemory("a-3", "work"));
+
+    mgr.createAssociation("a-1", "a-2", "temporal", 0.8);
+    mgr.createAssociation("a-2", "a-3", "temporal", 0.7);
+
+    auto links = mgr.getAssociations("a-1");
+    ASSERT_FALSE(links.empty());
+    EXPECT_EQ(links[0].targetMemoryId, "a-2");
+
+    mgr.strengthenAssociation("a-1", "a-2", 0.1);
+    auto strengthened = mgr.getAssociations("a-1");
+    EXPECT_GT(strengthened[0].associationStrength, 0.8);
+    mgr.weakenAssociation("a-1", "a-2", 0.2);
+    auto weakened = mgr.getAssociations("a-1");
+    EXPECT_LT(weakened[0].associationStrength, strengthened[0].associationStrength);
+
+    auto activated = mgr.spreadActivation("a-1", 2, 0.5);
+    EXPECT_NE(std::find(activated.begin(), activated.end(), std::string("a-2")), activated.end());
+    EXPECT_NE(std::find(activated.begin(), activated.end(), std::string("a-3")), activated.end());
+
+    memory::createLink("a-3", "a-1", "semantic");
+    auto assoc = memory::getAssociated("a-3", 2);
+    EXPECT_FALSE(assoc.empty());
+}
+
+// ---- Defragmentation ----
+
+TEST_F(AgentMemoryTest, DefragmentationRemovesDecayedMemories) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("f-keep", "strong memory"));
+    mgr.createMemory(createTestMemory("f-drop", "weak memory"));
+
+    MemoryDecayParams params;
+    params.minStrength = 0.1;
+    mgr.setDecayParams(params);
+
+    MemoryStrength weak;
+    weak.currentStrength = 0.01;
+    mgr.setMemoryStrength("f-drop", weak);
+
+    size_t before = mgr.getMemoryCount();
+    EXPECT_EQ(before, 2u);
+    mgr.defragmentMemories();
+    EXPECT_NE(mgr.getMemoryById("f-keep"), nullptr);
+    EXPECT_EQ(mgr.getMemoryById("f-drop"), nullptr);
+}
+
+// ---- Statistics ----
+
+TEST_F(AgentMemoryTest, MemoryStatisticsAggregation) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("st-1", "episodic event"));
+    mgr.createMemory(createTestMemory("st-2", "semantic fact"));
+    mgr.indexMemory("st-1", HierarchicalMemoryType::EPISODIC);
+    mgr.indexMemory("st-2", HierarchicalMemoryType::SEMANTIC);
+    mgr.createAssociation("st-1", "st-2", "semantic", 0.5);
+
+    auto stats = mgr.getStatistics();
+    EXPECT_EQ(stats.totalMemories, 2u);
+    EXPECT_EQ(stats.episodicMemories, 1u);
+    EXPECT_EQ(stats.semanticMemories, 1u);
+    EXPECT_GE(stats.totalAssociations, 1u);
+    EXPECT_GT(stats.averageStrength, 0.0);
+
+    auto stats2 = memory::getStats();
+    EXPECT_EQ(stats2.totalMemories, 2u);
+}
+
+TEST_F(AgentMemoryTest, ConsolidateAndDecayConvenienceWrappers) {
+    auto& mgr = getGlobalMemoryManager();
+    mgr.createMemory(createTestMemory("cv-1", "memory for convenience cycle"));
+    memory::applyDecay(1.0);
+    memory::consolidate();
+    EXPECT_NE(mgr.getMemoryById("cv-1"), nullptr);
+}

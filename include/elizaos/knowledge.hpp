@@ -290,6 +290,11 @@ public:
     std::vector<std::string> findHubs(int topN = 10) const;
 
 private:
+    // No-lock variant of getEdgesConnecting for use by methods (e.g.
+    // matchPattern) that already hold graphMutex_, avoiding non-recursive
+    // std::mutex self-deadlock.
+    std::vector<Hyperedge> getEdgesConnectingLocked(const std::string& nodeId) const;
+
     std::unordered_map<std::string, KnowledgeEntry> nodes_;
     std::unordered_map<std::string, Hyperedge> edges_;
     std::unordered_map<std::string, std::vector<std::string>> nodeToEdges_;
@@ -435,8 +440,19 @@ public:
     double calculateSimilarity(const KnowledgeEntry& a, const KnowledgeEntry& b) const;
 
 private:
+    // No-lock variants for use by methods (e.g. getValidKnowledge) that already
+    // hold fusionMutex_, avoiding non-recursive std::mutex self-deadlock.
+    std::optional<KnowledgeEntry> getVersionAtLocked(
+        const std::string& entryId,
+        const Timestamp& at) const;
+    bool isValidAtLocked(const std::string& entryId, const Timestamp& at) const;
+
     std::unordered_map<std::string, std::vector<KnowledgeVersion>> versionHistory_;
     std::vector<KnowledgeConflict> unresolvedConflicts_;
+    // Explicit temporal-validity windows keyed by entry id. Absent entry => the
+    // knowledge is temporally unconstrained (always valid).
+    std::unordered_map<std::string,
+        std::pair<std::optional<Timestamp>, std::optional<Timestamp>>> validityWindows_;
     mutable std::mutex fusionMutex_;
     KnowledgeEntry mergeEntries(const std::vector<KnowledgeEntry>& entries) const;
 };

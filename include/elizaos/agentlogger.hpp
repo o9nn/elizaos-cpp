@@ -1,16 +1,42 @@
 #pragma once
 
+/**
+ * ElizaOS C++ - AgentLogger Module
+ *
+ * Structured logging with multiple output targets, log levels, and
+ * color-coded console panels.
+ *
+ * Features:
+ * - Console logging with ANSI color support
+ * - File logging with rotation (size-based, retention, optional gzip)
+ * - Structured JSON logging for aggregation systems
+ * - Cognitive introspection trace export
+ * - Audit trail support
+ *
+ * NOTE: This is the feature-complete logger. The basic console/file logger
+ * that previously lived here is a strict subset of this API, so existing
+ * call sites (log/printHeader/writeToFile/setConsoleEnabled/setFileEnabled
+ * and the logInfo/logWarning/... convenience functions) remain source
+ * compatible.
+ */
+
+#include "elizaos/core.hpp"
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <sstream>
 #include <string>
 #include <unordered_map>
-#include <mutex>
-#include <fstream>
-#include <memory>
+#include <vector>
+#include <chrono>
+#include <deque>
 
 namespace elizaos {
 
-/**
- * Log levels for AgentLogger
- */
+// ============================================================================
+// LogLevel / LogColor / LogFormat
+// ============================================================================
+
 enum class LogLevel {
     UNKNOWN,
     SYSTEM,
@@ -25,12 +51,12 @@ enum class LogLevel {
     SUMMARY,
     REASONING,
     ACTION,
-    PROMPT
+    PROMPT,
+    DEBUG,
+    TRACE,
+    AUDIT
 };
 
-/**
- * Color codes for console output
- */
 enum class LogColor {
     WHITE,
     MAGENTA,
@@ -41,145 +67,186 @@ enum class LogColor {
     CYAN
 };
 
-/**
- * AgentLogger - C++ implementation of the Python agentlogger functionality
- * 
- * Provides colored console logging with file output capabilities,
- * similar to the Python version using Rich library
- */
-class AgentLogger {
-public:
-    /**
-     * Constructor
-     */
-    AgentLogger();
-    
-    /**
-     * Destructor - ensures file handles are closed
-     */
-    ~AgentLogger();
-    
-    /**
-     * Main logging function
-     * @param content Content to log
-     * @param source Optional source identifier (function/file name)
-     * @param title Title for the log entry
-     * @param level Log level
-     * @param color Override color (optional)
-     * @param expand Whether to expand panel width
-     * @param panel Whether to use panel formatting
-     * @param shouldLog Whether to actually log (can be disabled)
-     */
-    void log(
-        const std::string& content,
-        const std::string& source = "",
-        const std::string& title = "agentlogger",
-        LogLevel level = LogLevel::INFO,
-        LogColor color = LogColor::BLUE,
-        bool expand = true,
-        bool panel = true,
-        bool shouldLog = true
-    );
-    
-    /**
-     * Print ASCII header
-     * @param text Text to display in ASCII art
-     * @param color Color for the header
-     */
-    void printHeader(
-        const std::string& text = "agentlogger",
-        LogColor color = LogColor::YELLOW
-    );
-    
-    /**
-     * Write content to log file
-     * @param content Content to write
-     * @param source Optional source identifier
-     * @param level Log level
-     * @param filename Log filename
-     */
-    void writeToFile(
-        const std::string& content,
-        const std::string& source = "",
-        LogLevel level = LogLevel::INFO,
-        const std::string& filename = "events.log"
-    );
-    
-    /**
-     * Set custom type colors
-     * @param level Log level
-     * @param color Color to use for this level
-     */
-    void setTypeColor(LogLevel level, LogColor color);
-    
-    /**
-     * Enable/disable console output
-     * @param enabled Whether console output is enabled
-     */
-    void setConsoleEnabled(bool enabled);
-    
-    /**
-     * Enable/disable file output
-     * @param enabled Whether file output is enabled
-     */
-    void setFileEnabled(bool enabled);
-    
-private:
-    /**
-     * Get color code string for console output
-     * @param color Color enum
-     * @return ANSI color code string
-     */
-    std::string getColorCode(LogColor color) const;
-    
-    /**
-     * Get default color for log level
-     * @param level Log level
-     * @return Default color for this level
-     */
-    LogColor getDefaultColor(LogLevel level) const;
-    
-    /**
-     * Convert log level to string
-     * @param level Log level
-     * @return String representation
-     */
-    std::string levelToString(LogLevel level) const;
-    
-    /**
-     * Create formatted panel border
-     * @param title Panel title
-     * @param color Panel color
-     * @param width Panel width
-     * @return Formatted border string
-     */
-    std::string createPanel(
-        const std::string& content,
-        const std::string& title,
-        LogColor color,
-        int width = 80
-    ) const;
-    
-    // Member variables
-    std::unordered_map<LogLevel, LogColor> typeColors_;
-    std::mutex logMutex_;
-    bool consoleEnabled_;
-    bool fileEnabled_;
-    static const int SEPARATOR_WIDTH = 80;
+// Task 1.4.1: Structured logging format
+enum class LogFormat {
+    TEXT,    // Human-readable text format
+    JSON,    // Structured JSON format for aggregation
+    COMPACT  // Compact single-line format
 };
 
-/**
- * Global logger instance for convenience
- */
+// ============================================================================
+// LogEntry - Structured log entry
+// ============================================================================
+
+struct LogEntry {
+    std::chrono::system_clock::time_point timestamp;
+    LogLevel level;
+    std::string source;
+    std::string title;
+    std::string content;
+    std::string agentId;
+    std::string sessionId;
+    std::unordered_map<std::string, std::string> metadata;
+
+    // Convert to JSON string
+    std::string toJson() const;
+
+    // Convert to text string
+    std::string toText() const;
+};
+
+// ============================================================================
+// LogRotationConfig - Task 1.4.3: Log rotation configuration
+// ============================================================================
+
+struct LogRotationConfig {
+    size_t maxFileSize = 10 * 1024 * 1024;  // 10 MB default
+    size_t maxFiles = 5;                      // Keep 5 rotated files
+    bool compressRotated = false;             // Compress rotated files
+    std::string rotationPattern = ".%Y%m%d-%H%M%S";  // Timestamp pattern
+};
+
+// ============================================================================
+// CognitiveTrace - Task 1.4.4: Cognitive introspection trace
+// ============================================================================
+
+struct CognitiveTrace {
+    std::string traceId;
+    std::chrono::system_clock::time_point startTime;
+    std::chrono::system_clock::time_point endTime;
+    std::string agentId;
+    std::string operationType;  // reasoning, memory, action, etc.
+    std::vector<LogEntry> events;
+    std::unordered_map<std::string, std::string> context;
+
+    double durationMs() const;
+    std::string toJson() const;
+};
+
+// ============================================================================
+// AgentLogger
+// ============================================================================
+
+class AgentLogger {
+public:
+    static constexpr int SEPARATOR_WIDTH = 80;
+
+    AgentLogger();
+    ~AgentLogger();
+
+    // Primary log method (default expand/panel preserved from the original
+    // o9nn logger for console-output backward compatibility).
+    void log(const std::string& content,
+             const std::string& source    = "",
+             const std::string& title     = "agentlogger",
+             LogLevel           level     = LogLevel::INFO,
+             LogColor           color     = LogColor::BLUE,
+             bool               expand    = true,
+             bool               panel     = true,
+             bool               shouldLog = true);
+
+    // Task 1.4.1: Structured logging with metadata
+    void logStructured(const LogEntry& entry);
+    void logJson(const std::string& content,
+                 const std::string& source = "",
+                 LogLevel level = LogLevel::INFO,
+                 const std::unordered_map<std::string, std::string>& metadata = {});
+
+    void printHeader(const std::string& text = "agentlogger", LogColor color = LogColor::YELLOW);
+
+    // File logging
+    void writeToFile(const std::string& content,
+                     const std::string& source  = "",
+                     LogLevel           level    = LogLevel::INFO,
+                     const std::string& filename = "events.log");
+
+    // Task 1.4.1: Write JSON to file
+    void writeJsonToFile(const LogEntry& entry, const std::string& filename = "elizaos.json.log");
+
+    // Configuration
+    void setTypeColor(LogLevel level, LogColor color);
+    void setConsoleEnabled(bool enabled);
+    void setFileEnabled(bool enabled);
+    void setLogFormat(LogFormat format);
+    void setAgentId(const std::string& agentId);
+    void setSessionId(const std::string& sessionId);
+
+    // Task 1.4.3: Log rotation
+    void setRotationConfig(const LogRotationConfig& config);
+    void rotateLogFile(const std::string& filename);
+
+    // Task 1.4.4: Cognitive introspection
+    std::string startTrace(const std::string& operationType);
+    void addTraceEvent(const std::string& traceId, const LogEntry& event);
+    CognitiveTrace endTrace(const std::string& traceId);
+    void exportTraces(const std::string& filename);
+
+    // Task 1.4.5: Audit trail
+    void logAudit(const std::string& action,
+                  const std::string& subject,
+                  const std::string& outcome,
+                  const std::unordered_map<std::string, std::string>& details = {});
+    void exportAuditTrail(const std::string& filename);
+
+    bool isConsoleEnabled() const { return consoleEnabled_; }
+    bool isFileEnabled()    const { return fileEnabled_; }
+    LogFormat getLogFormat() const { return logFormat_; }
+
+private:
+    std::string getColorCode(LogColor color) const;
+    LogColor    getDefaultColor(LogLevel level) const;
+    std::string levelToString(LogLevel level) const;
+    std::string createPanel(const std::string& content,
+                            const std::string& title,
+                            LogColor color,
+                            int width = SEPARATOR_WIDTH) const;
+    std::string getTimestamp() const;
+    std::string escapeJson(const std::string& str) const;
+    void checkAndRotate(const std::string& filename);
+    size_t getFileSize(const std::string& filename) const;
+    // Prune rotated log artifacts for the given base log so that at most
+    // rotationConfig_.maxFiles remain (oldest removed first). No-op when
+    // maxFiles == 0 (unlimited retention).
+    void enforceRotationRetention(const std::string& baseFilename);
+
+    bool consoleEnabled_ = true;
+    bool fileEnabled_    = true;
+    LogFormat logFormat_ = LogFormat::TEXT;
+    std::string agentId_;
+    std::string sessionId_;
+    LogRotationConfig rotationConfig_;
+
+    std::unordered_map<LogLevel, LogColor> typeColors_;
+    mutable std::mutex logMutex_;
+
+    // Active traces for cognitive introspection
+    std::unordered_map<std::string, CognitiveTrace> activeTraces_;
+    std::deque<CognitiveTrace> completedTraces_;
+    static constexpr size_t MAX_COMPLETED_TRACES = 1000;
+
+    // Audit trail
+    std::deque<LogEntry> auditTrail_;
+    static constexpr size_t MAX_AUDIT_ENTRIES = 10000;
+};
+
+// ============================================================================
+// Global logger instance and convenience functions
+// ============================================================================
+
 extern std::shared_ptr<AgentLogger> globalLogger;
 
-/**
- * Convenience functions for common log operations
- */
 void logInfo(const std::string& content, const std::string& source = "");
 void logWarning(const std::string& content, const std::string& source = "");
 void logError(const std::string& content, const std::string& source = "");
 void logSuccess(const std::string& content, const std::string& source = "");
 void logSystem(const std::string& content, const std::string& source = "");
+void logDebug(const std::string& content, const std::string& source = "");
+void logTrace(const std::string& content, const std::string& source = "");
+
+// Task 1.4.1: JSON logging convenience functions
+void logJsonInfo(const std::string& content,
+                 const std::unordered_map<std::string, std::string>& metadata = {});
+void logJsonError(const std::string& content,
+                  const std::unordered_map<std::string, std::string>& metadata = {});
 
 } // namespace elizaos

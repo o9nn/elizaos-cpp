@@ -361,6 +361,10 @@ else()
     message(STATUS "Skipping real_ontogenesis_test: elizaos-ontogenesis target is unavailable in this checkout")
 endif()
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
+# KSM structure-preserving repair regression lane (ported to parity with the
+# hurdcog canonical fork, plus o9nn-specific repairs: memory deadlock, clear()
+# full-state reset, and AgentLogger Task 1.4 feature parity).
+add_real_test(real_repair_regressions_test  src/test_repair_regressions.cpp)
 
 # Regression test for public API drift between include/ and cpp/include/.
 # This target intentionally searches cpp/include first so stale duplicate
@@ -519,6 +523,7 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_knowledge_test
     real_knowledge_hypergraph_test
     real_cognitive_primitives_test
+    real_repair_regressions_test
     plugin_specification_test
     public_header_forwarding_test
     api_client_real_test

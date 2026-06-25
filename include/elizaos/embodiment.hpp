@@ -11,6 +11,8 @@
 #include <chrono>
 #include <mutex>
 #include <atomic>
+#include <fstream>  // SensoryStream::fileStream_ (std::ifstream) requires a complete type
+#include <thread>   // PerceptionActionLoop::loopThread_ (std::thread) requires a complete type
 
 namespace elizaos {
 

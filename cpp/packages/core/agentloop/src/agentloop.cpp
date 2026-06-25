@@ -555,9 +555,524 @@ void AgentLoop::inputHandlingLoop() {
             std::cout << "\nHealth Status: " << healthStatusToString(checkHealth()) << std::endl;
         }
 
-        // Small delay to prevent excessive CPU usage
+                // Small delay to prevent excessive CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+}
+
+// =========================================================================
+// Autonomy Optimisation: Prometheus Metrics Export
+// =========================================================================
+
+std::string AgentLoop::exportPrometheusMetrics(const std::string& loopName) const {
+    auto stats = getStatistics();
+    std::ostringstream oss;
+
+    // Basic loop metrics
+    oss << stats.toPrometheusFormat(loopName);
+
+    // Cognitive load metrics
+    auto load = getCognitiveLoad();
+    oss << "\n# HELP " << loopName << "_cognitive_load Cognitive load metrics\n";
+    oss << "# TYPE " << loopName << "_cognitive_load gauge\n";
+    oss << loopName << "_cognitive_load{component=\"cpu\"} " << load.cpuUtilization << "\n";
+    oss << loopName << "_cognitive_load{component=\"memory\"} " << load.memoryPressure << "\n";
+    oss << loopName << "_cognitive_load{component=\"queue\"} " << load.taskQueueDepth << "\n";
+    oss << loopName << "_cognitive_load{component=\"error_rate\"} " << load.errorRate << "\n";
+    oss << loopName << "_cognitive_load{component=\"composite\"} " << load.getCompositeLoad() << "\n\n";
+
+    // Health status
+    oss << "# HELP " << loopName << "_health_status Current health status (0-5)\n";
+    oss << "# TYPE " << loopName << "_health_status gauge\n";
+    oss << loopName << "_health_status " << static_cast<int>(checkHealth()) << "\n\n";
+
+    // Degradation status
+    oss << "# HELP " << loopName << "_degraded Whether the loop is in degraded mode\n";
+    oss << "# TYPE " << loopName << "_degraded gauge\n";
+    oss << loopName << "_degraded " << (currentlyDegraded_.load() ? 1 : 0) << "\n";
+
+    return oss.str();
+}
+
+std::vector<PrometheusMetric> AgentLoop::getMetrics() const {
+    std::vector<PrometheusMetric> metrics;
+    auto stats = getStatistics();
+    auto load = getCognitiveLoad();
+
+    metrics.push_back({"agent_loop_iterations_total", "Total loop iterations", "counter",
+                       static_cast<double>(stats.totalIterations), {}});
+    metrics.push_back({"agent_loop_steps_success", "Successful steps", "counter",
+                       static_cast<double>(stats.successCount), {}});
+    metrics.push_back({"agent_loop_steps_error", "Failed steps", "counter",
+                       static_cast<double>(stats.errorCount), {}});
+    metrics.push_back({"agent_loop_steps_deferred", "Deferred steps", "counter",
+                       static_cast<double>(stats.deferredCount), {}});
+    metrics.push_back({"agent_loop_avg_duration_ms", "Average step duration", "gauge",
+                       stats.avgStepDurationMs, {}});
+    metrics.push_back({"agent_loop_cognitive_load", "Composite cognitive load", "gauge",
+                       load.getCompositeLoad(), {}});
+    metrics.push_back({"agent_loop_throughput_hz", "Steps per second", "gauge",
+                       load.throughput, {}});
+
+    return metrics;
+}
+
+// =========================================================================
+// Autonomy Optimisation: Cognitive Load Monitoring
+// =========================================================================
+
+CognitiveLoad AgentLoop::getCognitiveLoad() const {
+    std::lock_guard<std::mutex> lock(cognitiveLoadMutex_);
+    return cognitiveLoad_;
+}
+
+void AgentLoop::enableCognitiveLoadMonitoring(bool enable) {
+    cognitiveLoadMonitoringEnabled_ = enable;
+}
+
+bool AgentLoop::isCognitiveLoadMonitoringEnabled() const {
+    return cognitiveLoadMonitoringEnabled_;
+}
+
+void AgentLoop::setCognitiveLoadThresholds(double pressureThreshold, double degradeThreshold) {
+    pressureThreshold_ = std::clamp(pressureThreshold, 0.0, 1.0);
+    degradeThreshold_ = std::clamp(degradeThreshold, pressureThreshold_, 1.0);
+}
+
+void AgentLoop::updateCognitiveLoad() {
+    if (!cognitiveLoadMonitoringEnabled_) return;
+
+    std::lock_guard<std::mutex> loadLock(cognitiveLoadMutex_);
+    std::lock_guard<std::mutex> statsLock(statsMutex_);
+
+    // Estimate CPU utilization based on step duration vs interval
+    if (stepInterval_ > 0 && stats_.avgStepDurationMs > 0) {
+        double intervalMs = stepInterval_ * 1000.0;
+        cognitiveLoad_.cpuUtilization = std::min(1.0, stats_.avgStepDurationMs / intervalMs);
+    }
+
+    // Calculate error rate from recent history
+    if (stats_.totalStepsExecuted > 0) {
+        cognitiveLoad_.errorRate = static_cast<double>(stats_.errorCount) / stats_.totalStepsExecuted;
+    }
+
+    // Calculate throughput
+    if (stats_.totalRuntimeMs > 0) {
+        cognitiveLoad_.throughput = (stats_.totalStepsExecuted * 1000.0) / stats_.totalRuntimeMs;
+    }
+
+    // Average response time
+    cognitiveLoad_.avgResponseTime = stats_.avgStepDurationMs;
+
+    // Task queue depth (normalized based on step count)
+    cognitiveLoad_.taskQueueDepth = steps_.empty() ? 0.0 :
+        std::min(1.0, static_cast<double>(steps_.size()) / 100.0);
+
+    // Memory pressure heuristic based on error rate and queue depth
+    cognitiveLoad_.memoryPressure = std::min(1.0,
+        cognitiveLoad_.errorRate * 0.5 + cognitiveLoad_.taskQueueDepth * 0.5);
+}
+
+// =========================================================================
+// Autonomy Optimisation: Graceful Degradation
+// =========================================================================
+
+void AgentLoop::enableGracefulDegradation(bool enable) {
+    gracefulDegradationEnabled_ = enable;
+}
+
+bool AgentLoop::isGracefulDegradationEnabled() const {
+    return gracefulDegradationEnabled_;
+}
+
+bool AgentLoop::isCurrentlyDegraded() const {
+    return currentlyDegraded_.load();
+}
+
+bool AgentLoop::shouldDeferStep(const LoopStep& step) const {
+    if (!gracefulDegradationEnabled_) return false;
+    if (!step.canDefer) return false;
+
+    auto load = getCognitiveLoad();
+
+    // Critical and high priority steps are never deferred
+    if (step.priority == StepPriority::CRITICAL || step.priority == StepPriority::HIGH) {
+        return false;
+    }
+
+    // Background steps are deferred if under any pressure
+    if (step.priority == StepPriority::BACKGROUND && load.isUnderPressure()) {
+        return true;
+    }
+
+    // Low priority steps are deferred if should degrade
+    if (step.priority == StepPriority::LOW && load.shouldDegrade()) {
+        return true;
+    }
+
+    // Normal priority steps are only deferred under severe pressure
+    if (step.priority == StepPriority::NORMAL && load.getCompositeLoad() > 0.95) {
+        return true;
+    }
+
+    return false;
+}
+
+std::vector<LoopStep> AgentLoop::getExecutableSteps() const {
+    std::vector<LoopStep> executableSteps;
+    for (const auto& step : steps_) {
+        if (!shouldDeferStep(step)) {
+            executableSteps.push_back(step);
+        }
+    }
+    return executableSteps;
+}
+
+// =========================================================================
+// Autonomy Optimisation: Priority-Based Step Execution
+// =========================================================================
+
+void AgentLoop::addPriorityStep(const LoopStep& step) {
+    std::lock_guard<std::mutex> lock(priorityStepsMutex_);
+    steps_.push_back(step);
+    std::sort(steps_.begin(), steps_.end(),
+        [](const LoopStep& a, const LoopStep& b) {
+            return static_cast<int>(a.priority) < static_cast<int>(b.priority);
+        });
+}
+
+void AgentLoop::removePriorityStep(const std::string& stepName) {
+    std::lock_guard<std::mutex> lock(priorityStepsMutex_);
+    steps_.erase(
+        std::remove_if(steps_.begin(), steps_.end(),
+            [&stepName](const LoopStep& s) { return s.name == stepName; }),
+        steps_.end());
+}
+
+std::vector<LoopStep> AgentLoop::getStepsByPriority(StepPriority priority) const {
+    std::vector<LoopStep> result;
+    for (const auto& step : steps_) {
+        if (step.priority == priority) {
+            result.push_back(step);
+        }
+    }
+    return result;
+}
+
+void AgentLoop::setStepPriority(const std::string& stepName, StepPriority priority) {
+    for (auto& step : steps_) {
+        if (step.name == stepName) {
+            step.priority = priority;
+            break;
+        }
+    }
+    sortStepsByPriority();
+}
+
+void AgentLoop::sortStepsByPriority() {
+    std::sort(steps_.begin(), steps_.end(),
+        [](const LoopStep& a, const LoopStep& b) {
+            return static_cast<int>(a.priority) < static_cast<int>(b.priority);
+        });
+}
+
+// =========================================================================
+// Autonomy Optimisation: Dynamic Step Management
+// =========================================================================
+
+void AgentLoop::addStep(const LoopStep& step) {
+    std::lock_guard<std::mutex> lock(priorityStepsMutex_);
+    steps_.push_back(step);
+}
+
+void AgentLoop::removeStep(const std::string& stepName) {
+    std::lock_guard<std::mutex> lock(priorityStepsMutex_);
+    steps_.erase(
+        std::remove_if(steps_.begin(), steps_.end(),
+            [&stepName](const LoopStep& s) { return s.name == stepName; }),
+        steps_.end());
+}
+
+size_t AgentLoop::getStepCount() const {
+    return steps_.size();
+}
+
+// =========================================================================
+// Autonomy Optimisation: Latency Percentile Tracking
+// =========================================================================
+
+void AgentLoop::recordLatency(double latencyMs) {
+    std::lock_guard<std::mutex> lock(latencyMutex_);
+    latencyHistogram_.push_back(latencyMs);
+    if (latencyHistogram_.size() > latencyHistogramMaxSize_) {
+        latencyHistogram_.erase(latencyHistogram_.begin());
+    }
+    updateLatencyPercentiles();
+}
+
+double AgentLoop::getPercentileLatency(double percentile) const {
+    std::lock_guard<std::mutex> lock(latencyMutex_);
+    if (latencyHistogram_.empty()) return 0.0;
+    std::vector<double> sorted = latencyHistogram_;
+    std::sort(sorted.begin(), sorted.end());
+    size_t index = static_cast<size_t>((percentile / 100.0) * (sorted.size() - 1));
+    return sorted[index];
+}
+
+void AgentLoop::setLatencyHistogramSize(size_t size) {
+    std::lock_guard<std::mutex> lock(latencyMutex_);
+    latencyHistogramMaxSize_ = size;
+    while (latencyHistogram_.size() > latencyHistogramMaxSize_) {
+        latencyHistogram_.erase(latencyHistogram_.begin());
+    }
+}
+
+void AgentLoop::updateLatencyPercentiles() {
+    // Note: latencyMutex_ should already be held by caller
+    if (latencyHistogram_.empty()) return;
+    std::vector<double> sorted = latencyHistogram_;
+    std::sort(sorted.begin(), sorted.end());
+    auto getPercentile = [&sorted](double p) -> double {
+        size_t index = static_cast<size_t>((p / 100.0) * (sorted.size() - 1));
+        return sorted[index];
+    };
+    std::lock_guard<std::mutex> statsLock(statsMutex_);
+    stats_.p50LatencyMs = getPercentile(50.0);
+    stats_.p95LatencyMs = getPercentile(95.0);
+    stats_.p99LatencyMs = getPercentile(99.0);
+}
+
+// =========================================================================
+// CircuitBreaker Implementation
+// =========================================================================
+
+CircuitBreaker::CircuitBreaker(const CircuitBreakerConfig& config)
+    : config_(config) {
+    lastStateChange_ = std::chrono::steady_clock::now();
+}
+
+bool CircuitBreaker::allowRequest() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    switch (state_) {
+        case CircuitState::CLOSED:
+            return true;
+        case CircuitState::OPEN:
+            if (shouldTransitionToHalfOpen()) {
+                state_ = CircuitState::HALF_OPEN;
+                halfOpenRequests_ = 0;
+                lastStateChange_ = std::chrono::steady_clock::now();
+            }
+            return state_ == CircuitState::HALF_OPEN;
+        case CircuitState::HALF_OPEN:
+            if (halfOpenRequests_ < config_.halfOpenMaxRequests) {
+                halfOpenRequests_++;
+                return true;
+            }
+            return false;
+    }
+    return false;
+}
+
+void CircuitBreaker::recordSuccess() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    totalSuccesses_++;
+    consecutiveSuccesses_++;
+    consecutiveFailures_ = 0;
+    recentResults_.push_back(true);
+    if (recentResults_.size() > config_.evaluationWindow) {
+        recentResults_.pop_front();
+    }
+    evaluateState();
+}
+
+void CircuitBreaker::recordFailure() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    totalFailures_++;
+    consecutiveFailures_++;
+    consecutiveSuccesses_ = 0;
+    lastFailureTime_ = std::chrono::steady_clock::now();
+    recentResults_.push_back(false);
+    if (recentResults_.size() > config_.evaluationWindow) {
+        recentResults_.pop_front();
+    }
+    evaluateState();
+}
+
+void CircuitBreaker::evaluateState() {
+    // Note: mutex_ should already be held
+    switch (state_) {
+        case CircuitState::CLOSED:
+            if (shouldTransitionToOpen()) {
+                state_ = CircuitState::OPEN;
+                lastStateChange_ = std::chrono::steady_clock::now();
+            }
+            break;
+        case CircuitState::HALF_OPEN:
+            if (shouldTransitionToClosed()) {
+                state_ = CircuitState::CLOSED;
+                consecutiveFailures_ = 0;
+                consecutiveSuccesses_ = 0;
+                lastStateChange_ = std::chrono::steady_clock::now();
+            } else if (shouldTransitionToOpen()) {
+                state_ = CircuitState::OPEN;
+                lastStateChange_ = std::chrono::steady_clock::now();
+            }
+            break;
+        case CircuitState::OPEN:
+            // State transition handled in allowRequest()
+            break;
+    }
+}
+
+bool CircuitBreaker::shouldTransitionToOpen() const {
+    if (consecutiveFailures_ >= config_.failureThreshold) {
+        return true;
+    }
+    // mutex_ already held by caller chain; use the no-lock helper to avoid
+    // re-locking the non-recursive mutex_.
+    if (recentResults_.size() >= config_.evaluationWindow) {
+        double failureRate = computeFailureRateLocked();
+        if (failureRate >= config_.failureRateThreshold) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CircuitBreaker::shouldTransitionToHalfOpen() const {
+    auto elapsed = std::chrono::steady_clock::now() - lastStateChange_;
+    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    return static_cast<uint64_t>(elapsedMs) >= config_.timeoutMs;
+}
+
+bool CircuitBreaker::shouldTransitionToClosed() const {
+    return consecutiveSuccesses_ >= config_.successThreshold;
+}
+
+CircuitState CircuitBreaker::getState() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return state_;
+}
+
+std::string CircuitBreaker::getStateString() const {
+    switch (getState()) {
+        case CircuitState::CLOSED: return "CLOSED";
+        case CircuitState::OPEN: return "OPEN";
+        case CircuitState::HALF_OPEN: return "HALF_OPEN";
+    }
+    return "UNKNOWN";
+}
+
+void CircuitBreaker::reset() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    state_ = CircuitState::CLOSED;
+    consecutiveFailures_ = 0;
+    consecutiveSuccesses_ = 0;
+    totalFailures_ = 0;
+    totalSuccesses_ = 0;
+    halfOpenRequests_ = 0;
+    recentResults_.clear();
+    lastStateChange_ = std::chrono::steady_clock::now();
+}
+
+void CircuitBreaker::forceOpen() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    state_ = CircuitState::OPEN;
+    lastStateChange_ = std::chrono::steady_clock::now();
+}
+
+void CircuitBreaker::forceClosed() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    state_ = CircuitState::CLOSED;
+    consecutiveFailures_ = 0;
+    lastStateChange_ = std::chrono::steady_clock::now();
+}
+
+uint64_t CircuitBreaker::getFailureCount() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return totalFailures_;
+}
+
+uint64_t CircuitBreaker::getSuccessCount() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return totalSuccesses_;
+}
+
+double CircuitBreaker::computeFailureRateLocked() const {
+    // Precondition: mutex_ is already held by the caller.
+    if (recentResults_.empty()) return 0.0;
+    uint64_t failures = 0;
+    for (bool success : recentResults_) {
+        if (!success) failures++;
+    }
+    return static_cast<double>(failures) / static_cast<double>(recentResults_.size());
+}
+
+double CircuitBreaker::getFailureRate() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return computeFailureRateLocked();
+}
+
+uint64_t CircuitBreaker::getTotalCalls() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return totalFailures_ + totalSuccesses_;
+}
+
+std::string CircuitBreaker::toPrometheusFormat(const std::string& name) const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::ostringstream oss;
+    oss << "# HELP " << name << "_state Circuit breaker state (0=closed, 1=open, 2=half-open)\n";
+    oss << "# TYPE " << name << "_state gauge\n";
+    oss << name << "_state " << static_cast<int>(state_) << "\n\n";
+    oss << "# HELP " << name << "_requests_total Total requests by outcome\n";
+    oss << "# TYPE " << name << "_requests_total counter\n";
+    oss << name << "_requests_total{outcome=\"success\"} " << totalSuccesses_ << "\n";
+    oss << name << "_requests_total{outcome=\"failure\"} " << totalFailures_ << "\n\n";
+    oss << "# HELP " << name << "_failure_rate Current failure rate\n";
+    oss << "# TYPE " << name << "_failure_rate gauge\n";
+    double failureRate = 0.0;
+    if (!recentResults_.empty()) {
+        uint64_t failures = 0;
+        for (bool success : recentResults_) {
+            if (!success) failures++;
+        }
+        failureRate = static_cast<double>(failures) / static_cast<double>(recentResults_.size());
+    }
+    oss << name << "_failure_rate " << failureRate << "\n";
+    return oss.str();
+}
+
+// =========================================================================
+// AgentLoop Circuit Breaker Integration
+// =========================================================================
+
+void AgentLoop::enableCircuitBreaker(bool enable) {
+    if (enable && !circuitBreaker_) {
+        circuitBreaker_ = std::make_unique<CircuitBreaker>();
+    }
+    circuitBreakerEnabled_ = enable;
+}
+
+bool AgentLoop::isCircuitBreakerEnabled() const {
+    return circuitBreakerEnabled_;
+}
+
+void AgentLoop::setCircuitBreakerConfig(const CircuitBreakerConfig& config) {
+    circuitBreaker_ = std::make_unique<CircuitBreaker>(config);
+}
+
+CircuitBreaker& AgentLoop::getCircuitBreaker() {
+    if (!circuitBreaker_) {
+        circuitBreaker_ = std::make_unique<CircuitBreaker>();
+    }
+    return *circuitBreaker_;
+}
+
+const CircuitBreaker& AgentLoop::getCircuitBreaker() const {
+    if (!circuitBreaker_) {
+        const_cast<AgentLoop*>(this)->circuitBreaker_ = std::make_unique<CircuitBreaker>();
+    }
+    return *circuitBreaker_;
 }
 
 } // namespace elizaos

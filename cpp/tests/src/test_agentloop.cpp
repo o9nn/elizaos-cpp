@@ -261,3 +261,280 @@ TEST_F(AgentLoopTest, InputTypeConversionSafety) {
     EXPECT_FALSE(eofValue == ' ');
     EXPECT_FALSE(eofValue == 'q');
 }
+
+
+// ============================================================================
+// Autonomy Optimisation E2E Tests
+// Validates the ported CircuitBreaker, CognitiveLoad, graceful degradation,
+// priority-step execution, latency percentiles, and Prometheus export.
+// ============================================================================
+
+// ---- CircuitBreaker ----
+
+TEST_F(AgentLoopTest, CircuitBreakerOpensAfterFailureThreshold) {
+    CircuitBreakerConfig cfg;
+    cfg.failureThreshold = 3;
+    cfg.successThreshold = 2;
+    cfg.evaluationWindow = 10;
+    CircuitBreaker cb(cfg);
+
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    EXPECT_TRUE(cb.allowRequest());
+
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);  // not yet at threshold
+
+    cb.recordFailure();  // 3rd consecutive failure -> open
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    EXPECT_EQ(cb.getStateString(), "OPEN");
+    EXPECT_EQ(cb.getFailureCount(), 3u);
+}
+
+TEST_F(AgentLoopTest, CircuitBreakerHalfOpenRecovery) {
+    CircuitBreakerConfig cfg;
+    cfg.failureThreshold = 2;
+    cfg.successThreshold = 2;
+    cfg.timeoutMs = 10;  // short timeout so we can transition to half-open quickly
+    cfg.halfOpenMaxRequests = 5;
+    CircuitBreaker cb(cfg);
+
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+
+    // Fast-fail while open
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    EXPECT_TRUE(cb.allowRequest());  // transitions to HALF_OPEN and allows
+    EXPECT_EQ(cb.getState(), CircuitState::HALF_OPEN);
+
+    // Successes in half-open should close it
+    cb.recordSuccess();
+    cb.recordSuccess();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+}
+
+TEST_F(AgentLoopTest, CircuitBreakerFailureRateAndResetNoDeadlock) {
+    CircuitBreakerConfig cfg;
+    cfg.failureThreshold = 100;       // disable consecutive-trip
+    cfg.failureRateThreshold = 0.5;
+    cfg.evaluationWindow = 4;
+    CircuitBreaker cb(cfg);
+
+    cb.recordFailure();
+    cb.recordFailure();
+    cb.recordSuccess();
+    cb.recordSuccess();
+    // getFailureRate must not deadlock (regression: non-recursive mutex)
+    double rate = cb.getFailureRate();
+    EXPECT_GE(rate, 0.0);
+    EXPECT_LE(rate, 1.0);
+    EXPECT_EQ(cb.getTotalCalls(), 4u);
+
+    cb.forceOpen();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    cb.reset();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    EXPECT_EQ(cb.getFailureCount(), 0u);
+}
+
+TEST_F(AgentLoopTest, CircuitBreakerPrometheusExport) {
+    CircuitBreaker cb;
+    cb.recordSuccess();
+    cb.recordFailure();
+    std::string metrics = cb.toPrometheusFormat("test_breaker");
+    EXPECT_NE(metrics.find("test_breaker_state"), std::string::npos);
+    EXPECT_NE(metrics.find("test_breaker_requests_total"), std::string::npos);
+    EXPECT_NE(metrics.find("test_breaker_failure_rate"), std::string::npos);
+}
+
+TEST_F(AgentLoopTest, AgentLoopCircuitBreakerIntegration) {
+    std::vector<LoopStep> steps = {
+        LoopStep([this](std::shared_ptr<void> ctx) -> std::shared_ptr<void> {
+            stepCounter_++;
+            return ctx;
+        })
+    };
+    AgentLoop loop(steps, true, 0.0);
+    EXPECT_FALSE(loop.isCircuitBreakerEnabled());
+    loop.enableCircuitBreaker(true);
+    EXPECT_TRUE(loop.isCircuitBreakerEnabled());
+
+    CircuitBreakerConfig cfg;
+    cfg.failureThreshold = 2;
+    loop.setCircuitBreakerConfig(cfg);
+    auto& cb = loop.getCircuitBreaker();
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(loop.getCircuitBreaker().getState(), CircuitState::OPEN);
+}
+
+// ---- CognitiveLoad ----
+
+TEST_F(AgentLoopTest, CognitiveLoadCompositeAndThresholds) {
+    CognitiveLoad load;
+    load.cpuUtilization = 0.9;
+    load.memoryPressure = 0.9;
+    load.taskQueueDepth = 0.9;
+    load.errorRate = 0.9;
+    load.avgResponseTime = 900.0;
+    double composite = load.getCompositeLoad();
+    EXPECT_GT(composite, 0.0);
+    EXPECT_LE(composite, 1.0);
+    EXPECT_TRUE(load.isUnderPressure());
+    EXPECT_TRUE(load.shouldDegrade());
+
+    CognitiveLoad lowLoad;  // all zeros
+    EXPECT_FALSE(lowLoad.isUnderPressure());
+    EXPECT_FALSE(lowLoad.shouldDegrade());
+}
+
+TEST_F(AgentLoopTest, CognitiveLoadMonitoringToggle) {
+    std::vector<LoopStep> steps = {
+        LoopStep([this](std::shared_ptr<void> ctx) -> std::shared_ptr<void> {
+            stepCounter_++;
+            return ctx;
+        })
+    };
+    AgentLoop loop(steps, false, 0.005);
+    EXPECT_FALSE(loop.isCognitiveLoadMonitoringEnabled());
+    loop.enableCognitiveLoadMonitoring(true);
+    EXPECT_TRUE(loop.isCognitiveLoadMonitoringEnabled());
+    loop.setCognitiveLoadThresholds(0.6, 0.8);
+
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(60));
+    auto cl = loop.getCognitiveLoad();
+    EXPECT_GE(cl.getCompositeLoad(), 0.0);
+    loop.stop();
+}
+
+// ---- Graceful Degradation ----
+
+TEST_F(AgentLoopTest, GracefulDegradationToggle) {
+    std::vector<LoopStep> steps = {
+        LoopStep([this](std::shared_ptr<void> ctx) -> std::shared_ptr<void> {
+            stepCounter_++;
+            return ctx;
+        }, "primary")
+    };
+    AgentLoop loop(steps, true, 0.0);
+    EXPECT_FALSE(loop.isGracefulDegradationEnabled());
+    loop.enableGracefulDegradation(true);
+    EXPECT_TRUE(loop.isGracefulDegradationEnabled());
+    EXPECT_FALSE(loop.isCurrentlyDegraded());  // not degraded by default
+}
+
+// ---- Priority Step Management ----
+
+TEST_F(AgentLoopTest, PriorityStepManagement) {
+    std::vector<LoopStep> steps;
+    AgentLoop loop(steps, true, 0.0);
+    EXPECT_EQ(loop.getStepCount(), 0u);
+
+    LoopStep critical([](std::shared_ptr<void> c) { return c; }, "critical");
+    critical.withPriority(StepPriority::CRITICAL).nonDeferrable();
+    LoopStep background([](std::shared_ptr<void> c) { return c; }, "bg");
+    background.withPriority(StepPriority::BACKGROUND);
+
+    loop.addPriorityStep(background);
+    loop.addPriorityStep(critical);
+    EXPECT_EQ(loop.getStepCount(), 2u);
+
+    // After priority sort, critical (0) should come before background (4)
+    auto critSteps = loop.getStepsByPriority(StepPriority::CRITICAL);
+    ASSERT_EQ(critSteps.size(), 1u);
+    EXPECT_EQ(critSteps[0].name, "critical");
+
+    loop.setStepPriority("bg", StepPriority::HIGH);
+    auto highSteps = loop.getStepsByPriority(StepPriority::HIGH);
+    ASSERT_EQ(highSteps.size(), 1u);
+    EXPECT_EQ(highSteps[0].name, "bg");
+
+    loop.removePriorityStep("critical");
+    EXPECT_EQ(loop.getStepCount(), 1u);
+}
+
+TEST_F(AgentLoopTest, DynamicStepAddRemove) {
+    std::vector<LoopStep> steps;
+    AgentLoop loop(steps, true, 0.0);
+    loop.addStep(LoopStep([](std::shared_ptr<void> c) { return c; }, "s1"));
+    loop.addStep(LoopStep([](std::shared_ptr<void> c) { return c; }, "s2"));
+    EXPECT_EQ(loop.getStepCount(), 2u);
+    loop.removeStep("s1");
+    EXPECT_EQ(loop.getStepCount(), 1u);
+}
+
+TEST_F(AgentLoopTest, LoopStepBuilderConfiguration) {
+    LoopStep step([](std::shared_ptr<void> c) { return c; }, "configured");
+    step.withPriority(StepPriority::HIGH).withTimeout(250.0).withRetries(3).nonDeferrable();
+    EXPECT_EQ(step.priority, StepPriority::HIGH);
+    EXPECT_DOUBLE_EQ(step.maxExecutionTimeMs, 250.0);
+    EXPECT_EQ(step.retryCount, 3);
+    EXPECT_FALSE(step.canDefer);
+    EXPECT_EQ(step.name, "configured");
+}
+
+// ---- Latency Percentiles ----
+
+TEST_F(AgentLoopTest, LatencyPercentileTracking) {
+    std::vector<LoopStep> steps;
+    AgentLoop loop(steps, true, 0.0);
+    loop.setLatencyHistogramSize(1000);
+    for (int i = 1; i <= 100; ++i) {
+        loop.recordLatency(static_cast<double>(i));  // 1..100 ms
+    }
+    double p50 = loop.getPercentileLatency(50.0);
+    double p95 = loop.getPercentileLatency(95.0);
+    double p99 = loop.getPercentileLatency(99.0);
+    EXPECT_GE(p50, 40.0);
+    EXPECT_LE(p50, 60.0);
+    EXPECT_GE(p95, p50);
+    EXPECT_GE(p99, p95);
+}
+
+// ---- Prometheus / Metrics Export ----
+
+TEST_F(AgentLoopTest, PrometheusMetricsExport) {
+    std::vector<LoopStep> steps = {
+        LoopStep([this](std::shared_ptr<void> ctx) -> std::shared_ptr<void> {
+            stepCounter_++;
+            return ctx;
+        })
+    };
+    AgentLoop loop(steps, false, 0.005);
+    loop.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(60));
+    loop.stop();
+
+    std::string metrics = loop.exportPrometheusMetrics("eliza_test");
+    EXPECT_NE(metrics.find("eliza_test_iterations_total"), std::string::npos);
+    EXPECT_NE(metrics.find("eliza_test_steps_total"), std::string::npos);
+    EXPECT_NE(metrics.find("eliza_test_health_status"), std::string::npos);
+
+    auto structured = loop.getMetrics();
+    EXPECT_FALSE(structured.empty());
+    bool foundIterations = false;
+    for (const auto& m : structured) {
+        if (m.name == "agent_loop_iterations_total") {
+            foundIterations = true;
+            EXPECT_EQ(m.type, "counter");
+        }
+        // Each metric must render valid Prometheus text
+        EXPECT_NE(m.toPrometheusFormat().find(m.name), std::string::npos);
+    }
+    EXPECT_TRUE(foundIterations);
+}
+
+TEST_F(AgentLoopTest, LoopStatsPrometheusFormat) {
+    LoopStats stats;
+    stats.totalIterations = 10;
+    stats.successCount = 8;
+    stats.errorCount = 2;
+    stats.p50LatencyMs = 5.0;
+    stats.p95LatencyMs = 9.0;
+    stats.p99LatencyMs = 9.9;
+    std::string out = stats.toPrometheusFormat("loopx");
+    EXPECT_NE(out.find("loopx_iterations_total 10"), std::string::npos);
+    EXPECT_NE(out.find("quantile=\"0.95\""), std::string::npos);
+}

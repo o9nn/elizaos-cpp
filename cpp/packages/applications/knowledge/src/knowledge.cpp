@@ -829,9 +829,9 @@ std::optional<Hyperedge> KnowledgeHypergraph::getEdge(const std::string& edgeId)
     return std::nullopt;
 }
 
-std::vector<Hyperedge> KnowledgeHypergraph::getEdgesConnecting(const std::string& nodeId) const {
-    std::lock_guard<std::mutex> lock(graphMutex_);
-    
+std::vector<Hyperedge> KnowledgeHypergraph::getEdgesConnectingLocked(const std::string& nodeId) const {
+    // Precondition: graphMutex_ already held by caller. Used by matchPattern()
+    // and other methods that must avoid re-locking the non-recursive mutex.
     std::vector<Hyperedge> result;
     auto it = nodeToEdges_.find(nodeId);
     if (it != nodeToEdges_.end()) {
@@ -843,6 +843,11 @@ std::vector<Hyperedge> KnowledgeHypergraph::getEdgesConnecting(const std::string
         }
     }
     return result;
+}
+
+std::vector<Hyperedge> KnowledgeHypergraph::getEdgesConnecting(const std::string& nodeId) const {
+    std::lock_guard<std::mutex> lock(graphMutex_);
+    return getEdgesConnectingLocked(nodeId);
 }
 
 std::vector<Hyperedge> KnowledgeHypergraph::getEdgesByType(const std::string& relationshipType) const {
@@ -963,45 +968,97 @@ std::vector<std::unordered_map<std::string, std::string>> KnowledgeHypergraph::m
     
     if (patternNodes.empty()) return matches;
     
-    // Simple pattern matching - find all possible bindings
+    // Proper subgraph pattern matching via backtracking constraint
+    // satisfaction. Each pattern variable (index in patternNodes) is bound to
+    // a concrete graph node id; an edge constraint (from,to) is satisfied iff
+    // a hyperedge of the requested relationshipType connects the two bound
+    // nodes. We enumerate candidate node ids once and recursively assign each
+    // pattern variable, pruning partial assignments that already violate an
+    // edge whose endpoints are both bound.
     std::vector<std::string> allNodeIds;
+    allNodeIds.reserve(nodes_.size());
     for (const auto& [id, entry] : nodes_) {
         allNodeIds.push_back(id);
     }
-    
-    // For simplicity, just match first node pattern to all nodes
-    // Full implementation would do proper constraint satisfaction
-    for (const auto& nodeId : allNodeIds) {
-        std::unordered_map<std::string, std::string> binding;
-        binding[patternNodes[0]] = nodeId;
-        
-        // Check if edges match
-        bool allEdgesMatch = true;
-        for (const auto& [from, to] : patternEdges) {
-            if (from < static_cast<int>(patternNodes.size()) && 
-                to < static_cast<int>(patternNodes.size())) {
-                // Check if edge exists
-                auto edges = getEdgesConnecting(binding[patternNodes[from]]);
-                bool found = false;
-                for (const auto& e : edges) {
-                    if ((relationshipType.empty() || e.relationshipType == relationshipType) &&
-                        e.connects(binding[patternNodes[to]])) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    allEdgesMatch = false;
-                    break;
-                }
-            }
-        }
-        
-        if (allEdgesMatch) {
-            matches.push_back(binding);
+
+    const int numVars = static_cast<int>(patternNodes.size());
+
+    // Filter edge constraints to those fully within the pattern's variable range.
+    std::vector<std::pair<int, int>> validEdges;
+    validEdges.reserve(patternEdges.size());
+    for (const auto& [from, to] : patternEdges) {
+        if (from >= 0 && from < numVars && to >= 0 && to < numVars) {
+            validEdges.emplace_back(from, to);
         }
     }
-    
+
+    // Returns true iff some hyperedge of the requested relationship type relates
+    // fromNode -> toNode. Hyperedges are membership sets whose nodeIds order
+    // encodes role/direction, so a directed pattern edge (from,to) is satisfied
+    // only when a single hyperedge contains BOTH endpoints as DISTINCT members
+    // and fromNode occupies an earlier slot than toNode (preserving the n-ary
+    // ordering, e.g. cause before effect). Uses the no-lock accessor since
+    // graphMutex_ is already held by this method.
+    auto edgeSatisfied = [&](const std::string& fromNode,
+                             const std::string& toNode) -> bool {
+        if (fromNode == toNode) return false; // no self-loops in patterns
+        const auto connecting = getEdgesConnectingLocked(fromNode);
+        for (const auto& e : connecting) {
+            if (!relationshipType.empty() && e.relationshipType != relationshipType) {
+                continue;
+            }
+            // Find ordered positions of both endpoints within this hyperedge.
+            int fromPos = -1, toPos = -1;
+            for (int i = 0; i < static_cast<int>(e.nodeIds.size()); ++i) {
+                if (e.nodeIds[i] == fromNode && fromPos == -1) fromPos = i;
+                else if (e.nodeIds[i] == toNode && toPos == -1) toPos = i;
+            }
+            if (fromPos != -1 && toPos != -1 && fromPos < toPos) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // Check every edge constraint whose endpoints are both bound in `assigned`.
+    // `justAssigned` is the variable index that was bound most recently so we
+    // only need to validate constraints that touch it (incremental pruning).
+    auto partialConsistent = [&](const std::vector<int>& assignment,
+                                 int justAssigned) -> bool {
+        for (const auto& [from, to] : validEdges) {
+            if (from != justAssigned && to != justAssigned) continue;
+            if (assignment[from] < 0 || assignment[to] < 0) continue; // not both bound yet
+            if (!edgeSatisfied(allNodeIds[assignment[from]], allNodeIds[assignment[to]])) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    std::vector<int> assignment(numVars, -1); // index into allNodeIds, -1 = unbound
+    std::function<void(int)> backtrack = [&](int var) {
+        if (var == numVars) {
+            std::unordered_map<std::string, std::string> binding;
+            binding.reserve(numVars);
+            for (int v = 0; v < numVars; ++v) {
+                binding[patternNodes[v]] = allNodeIds[assignment[v]];
+            }
+            matches.push_back(std::move(binding));
+            return;
+        }
+        for (int candidate = 0; candidate < static_cast<int>(allNodeIds.size()); ++candidate) {
+            assignment[var] = candidate;
+            if (partialConsistent(assignment, var)) {
+                backtrack(var + 1);
+            }
+            assignment[var] = -1;
+        }
+    };
+
+    if (!allNodeIds.empty()) {
+        backtrack(0);
+    }
+
     return matches;
 }
 
@@ -1618,16 +1675,14 @@ std::vector<KnowledgeVersion> KnowledgeFusionEngine::getVersionHistory(
     return {};
 }
 
-std::optional<KnowledgeEntry> KnowledgeFusionEngine::getVersionAt(
+std::optional<KnowledgeEntry> KnowledgeFusionEngine::getVersionAtLocked(
     const std::string& entryId,
     const Timestamp& at) const {
-    
-    std::lock_guard<std::mutex> lock(fusionMutex_);
-    
+    // Precondition: fusionMutex_ already held by caller.
     auto it = versionHistory_.find(entryId);
     if (it == versionHistory_.end()) return std::nullopt;
-    
-    // Find the most recent version before 'at'
+
+    // Find the most recent version at or before 'at'
     const KnowledgeVersion* best = nullptr;
     for (const auto& v : it->second) {
         if (v.timestamp <= at) {
@@ -1636,11 +1691,33 @@ std::optional<KnowledgeEntry> KnowledgeFusionEngine::getVersionAt(
             }
         }
     }
-    
+
     if (best) {
         return best->entry;
     }
     return std::nullopt;
+}
+
+std::optional<KnowledgeEntry> KnowledgeFusionEngine::getVersionAt(
+    const std::string& entryId,
+    const Timestamp& at) const {
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+    return getVersionAtLocked(entryId, at);
+}
+
+bool KnowledgeFusionEngine::isValidAtLocked(
+    const std::string& entryId,
+    const Timestamp& at) const {
+    // Precondition: fusionMutex_ already held by caller.
+    auto it = validityWindows_.find(entryId);
+    if (it == validityWindows_.end()) {
+        // No explicit window => entry is unconstrained (always temporally valid).
+        return true;
+    }
+    const auto& [validFrom, validUntil] = it->second;
+    if (validFrom && at < *validFrom) return false;
+    if (validUntil && at >= *validUntil) return false;
+    return true;
 }
 
 std::optional<KnowledgeEntry> KnowledgeFusionEngine::rollbackToVersion(
@@ -1662,20 +1739,53 @@ void KnowledgeFusionEngine::setTemporalValidity(
     const std::string& entryId,
     std::optional<Timestamp> validFrom,
     std::optional<Timestamp> validUntil) {
-    
-    // This would need to be integrated with the knowledge base
-    // For now, just record in version history
-    // Full implementation would modify the actual entry
+
+    std::lock_guard<std::mutex> lock(fusionMutex_);
+
+    // Record the explicit validity window for this entry. This is consulted by
+    // getValidKnowledge() (via isValidAtLocked) so that temporally-bounded
+    // knowledge is included only while within its window. Passing two unset
+    // optionals clears any prior constraint (entry becomes always-valid).
+    if (!validFrom && !validUntil) {
+        validityWindows_.erase(entryId);
+    } else {
+        validityWindows_[entryId] = {validFrom, validUntil};
+    }
+
+    // Also reflect the window onto the most recent recorded version's entry
+    // metadata so callers reading version history observe the validity bounds.
+    // KnowledgeEntry has no dedicated validity fields, so we encode the bounds
+    // as epoch-nanosecond strings under reserved metadata keys (absent key =>
+    // unbounded on that side).
+    auto it = versionHistory_.find(entryId);
+    if (it != versionHistory_.end() && !it->second.empty()) {
+        KnowledgeVersion* latest = &it->second.front();
+        for (auto& v : it->second) {
+            if (v.timestamp > latest->timestamp) latest = &v;
+        }
+        auto toNanos = [](const Timestamp& t) {
+            return std::to_string(std::chrono::duration_cast<std::chrono::nanoseconds>(
+                t.time_since_epoch()).count());
+        };
+        latest->entry.metadata.erase("_validFrom");
+        latest->entry.metadata.erase("_validUntil");
+        if (validFrom) latest->entry.metadata["_validFrom"] = toNanos(*validFrom);
+        if (validUntil) latest->entry.metadata["_validUntil"] = toNanos(*validUntil);
+    }
 }
 
 std::vector<KnowledgeEntry> KnowledgeFusionEngine::getValidKnowledge(
     const Timestamp& at) const {
-    
+
     std::lock_guard<std::mutex> lock(fusionMutex_);
-    
+
     std::vector<KnowledgeEntry> valid;
     for (const auto& [entryId, versions] : versionHistory_) {
-        auto entry = getVersionAt(entryId, at);
+        // Honor explicit temporal-validity windows.
+        if (!isValidAtLocked(entryId, at)) {
+            continue;
+        }
+        auto entry = getVersionAtLocked(entryId, at);
         if (entry) {
             valid.push_back(*entry);
         }
