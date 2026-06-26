@@ -534,8 +534,130 @@ std::size_t AutonomousStarter::runCognitiveCycleOnce() {
     std::shared_ptr<void> token = std::make_shared<int>(0);
     token = perceptionStep(token);
     token = reasoningStep(token);
-    actionStep(token);
+    token = actionStep(token);
+    reflectionStep(token);
     return cognitiveCycle_;
+}
+
+double AutonomousStarter::getPlanSuccessRatio(const std::string& plan) const {
+    auto it = planStats_.find(plan);
+    if (it == planStats_.end() || it->second.attempts == 0) {
+        return 0.0;
+    }
+    return static_cast<double>(it->second.successes) /
+           static_cast<double>(it->second.attempts);
+}
+
+double AutonomousStarter::planBias(const std::string& plan) const {
+    // Optimistic prior: unseen plans start neutral so the agent still explores,
+    // while plans with a track record are biased by their measured success rate.
+    auto it = planStats_.find(plan);
+    if (it == planStats_.end() || it->second.attempts == 0) {
+        return 0.5;
+    }
+    return static_cast<double>(it->second.successes) /
+           static_cast<double>(it->second.attempts);
+}
+
+void AutonomousStarter::recordPlanOutcome(const std::string& plan, bool success) {
+    if (plan.empty()) {
+        return;
+    }
+    auto& stats = planStats_[plan];
+    ++stats.attempts;
+    if (success) {
+        ++stats.successes;
+    }
+}
+
+void AutonomousStarter::refreshGoalAttention() {
+    const auto& goals = state_.getGoals();
+    for (const auto& goal : goals) {
+        std::string status = goal.status;
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        const bool open = (status == "active" || status == "in_progress" ||
+                           status == "pending");
+
+        AttentionValue av = goalAttention_.hasAttentionValue(goal.id)
+                                ? goalAttention_.getAttentionValue(goal.id)
+                                : AttentionValue{};
+        if (status == "active" || status == "in_progress") {
+            av.importance = 0.9;
+            av.urgency = 0.7;
+        } else if (status == "pending") {
+            av.importance = 0.6;
+            av.urgency = 0.5;
+        } else {
+            av.importance = 0.1;
+            av.urgency = 0.1;
+        }
+        av.novelty = (goal.id == focusedGoalId_) ? std::max(0.0, av.novelty * 0.6)
+                                                 : std::min(1.0, av.novelty + 0.3);
+        av.activation = open ? std::min(1.0, av.activation + 0.2)
+                             : std::max(0.0, av.activation * 0.5);
+        goalAttention_.updateAttentionValue(goal.id, av);
+    }
+}
+
+const StateGoal* AutonomousStarter::selectFocusGoal() {
+    const auto& goals = state_.getGoals();
+    if (goals.empty()) {
+        focusedGoalId_.clear();
+        return nullptr;
+    }
+    refreshGoalAttention();
+
+    const StateGoal* best = nullptr;
+    double bestScore = -1.0;
+    for (const auto& goal : goals) {
+        std::string status = goal.status;
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (status != "active" && status != "in_progress" && status != "pending") {
+            continue;
+        }
+        const double score =
+            goalAttention_.getAttentionValue(goal.id).getCompositeScore();
+        if (score > bestScore) {
+            bestScore = score;
+            best = &goal;
+        }
+    }
+    if (!best) {
+        best = &goals.back();
+    }
+    focusedGoalId_ = best->id;
+    return best;
+}
+
+void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actionSucceeded) {
+    if (focusedGoalId_.empty() || !actionSucceeded) {
+        return;
+    }
+    std::string currentStatus;
+    for (const auto& goal : state_.getGoals()) {
+        if (goal.id == focusedGoalId_) {
+            currentStatus = goal.status;
+            break;
+        }
+    }
+    std::string lower = currentStatus;
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+    if (lower == "pending") {
+        state_.updateGoalStatus(focusedGoalId_, "active");
+        appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+                     " advanced pending -> active after successful plan '" + plan + "'.");
+    } else if (lower == "active" || lower == "in_progress") {
+        if (getPlanSuccessRatio(plan) >= 0.5 &&
+            planStats_[plan].attempts >= 2) {
+            state_.updateGoalStatus(focusedGoalId_, "completed");
+            appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+                         " advanced active -> completed after reliable plan '" + plan + "'.");
+        }
+    }
 }
 
 std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> input) {
@@ -568,38 +690,66 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
 
 std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> input) {
     const std::size_t memoryCount = state_.getRecentMessages().size();
-    const std::string goalContext = selectGoalContext();
+
+    // Attention-weighted goal selection: focus on the highest-scoring open goal
+    // rather than the first active one. This makes the agent's attention an
+    // economic resource that shifts toward important/urgent/novel goals.
+    const StateGoal* focus = selectFocusGoal();
+    const std::string goalContext = focus ? (focus->description.empty()
+                                                 ? selectGoalContext()
+                                                 : focus->description)
+                                          : selectGoalContext();
     std::string normalizedGoal = goalContext;
     std::transform(normalizedGoal.begin(), normalizedGoal.end(), normalizedGoal.begin(),
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
+    // Build the candidate plan set implied by the focused goal/context.
+    std::vector<std::string> candidatePlans;
     if (normalizedGoal.find("test") != std::string::npos ||
         normalizedGoal.find("validation") != std::string::npos ||
         normalizedGoal.find("self-audit") != std::string::npos ||
         normalizedGoal.find("audit") != std::string::npos) {
-        lastPlan_ = "run autonomy self-audit by inspecting tests and validation coverage";
-    } else if (normalizedGoal.find("c++") != std::string::npos ||
-               normalizedGoal.find("project structure") != std::string::npos ||
-               lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
-        lastPlan_ = "inspect C++ project structure with targeted source discovery";
-    } else if (normalizedGoal.find("runtime") != std::string::npos ||
-               normalizedGoal.find("system") != std::string::npos) {
-        lastPlan_ = "inspect system identity and runtime context";
-    } else if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
-               normalizedGoal.find("workspace") != std::string::npos) {
-        lastPlan_ = "establish situational awareness with pwd and directory inspection";
-    } else if (actionCounter_ % 3 == 0) {
-        lastPlan_ = "sample repository source files";
-    } else if (actionCounter_ % 3 == 1) {
-        lastPlan_ = "inspect system identity and kernel context";
-    } else {
-        lastPlan_ = "maintain lightweight environmental awareness";
+        candidatePlans.push_back("run autonomy self-audit by inspecting tests and validation coverage");
+    }
+    if (normalizedGoal.find("c++") != std::string::npos ||
+        normalizedGoal.find("project structure") != std::string::npos ||
+        lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
+        candidatePlans.push_back("inspect C++ project structure with targeted source discovery");
+    }
+    if (normalizedGoal.find("runtime") != std::string::npos ||
+        normalizedGoal.find("system") != std::string::npos) {
+        candidatePlans.push_back("inspect system identity and runtime context");
+    }
+    if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
+        normalizedGoal.find("workspace") != std::string::npos) {
+        candidatePlans.push_back("establish situational awareness with pwd and directory inspection");
+    }
+    // Always include the rotating exploratory plans so the agent keeps options
+    // open even once core goals are addressed.
+    candidatePlans.push_back("sample repository source files");
+    candidatePlans.push_back("inspect system identity and kernel context");
+    candidatePlans.push_back("maintain lightweight environmental awareness");
+
+    // Outcome-based plan adaptation: pick the candidate with the highest learned
+    // success bias. Ties are broken by candidate order (goal-relevant plans are
+    // listed first), which preserves the previous deterministic preference while
+    // letting accumulated feedback override it once evidence exists.
+    lastPlan_ = candidatePlans.front();
+    double bestBias = -1.0;
+    for (const auto& plan : candidatePlans) {
+        const double bias = planBias(plan);
+        if (bias > bestBias) {
+            bestBias = bias;
+            lastPlan_ = plan;
+        }
     }
 
     appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
-                 " reasoning: goal = " + goalContext +
+                 " reasoning: focus_goal_id = " + (focus ? focus->id : std::string("none")) +
+                 "; goal = " + goalContext +
                  "; recent experience summary = " + summarizeRecentExperience() +
-                 "; selected plan = " + lastPlan_ + ".");
+                 "; selected plan = " + lastPlan_ +
+                 " (bias=" + std::to_string(bestBias) + ").");
     logInfo("Reasoning selected plan: " + lastPlan_);
     return input;
 }
@@ -610,10 +760,45 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     ++actionCounter_;
     const auto result = executeShellCommand(command);
 
+    // Capture outcome details so the reflection step can evaluate them.
+    lastActionCommand_ = command;
+    lastActionSucceeded_ = result.success;
+    lastActionOutput_ = result.output;
+
     appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
                  " action: command='" + command + "', success=" +
                  std::string(result.success ? "true" : "false") +
                  ", exitCode=" + std::to_string(result.exitCode) + ".");
+    return input;
+}
+
+std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> input) {
+    // Reflection closes the cognitive loop: the agent evaluates the outcome of
+    // its action, feeds the result back into plan-success statistics, advances
+    // the focused goal's lifecycle, and records a reflective conclusion that
+    // shapes subsequent reasoning.
+    recordPlanOutcome(lastPlan_, lastActionSucceeded_);
+    advanceGoalLifecycle(lastPlan_, lastActionSucceeded_);
+
+    const double ratio = getPlanSuccessRatio(lastPlan_);
+    std::ostringstream reflection;
+    reflection << "Cycle " << cognitiveCycle_ << " reflection: plan='" << lastPlan_
+               << "' " << (lastActionSucceeded_ ? "succeeded" : "failed")
+               << "; plan_success_ratio=" << ratio
+               << "; focus_goal=" << (focusedGoalId_.empty() ? "none" : focusedGoalId_);
+
+    if (!lastActionSucceeded_) {
+        reflection << "; conclusion=de-prioritize this plan and explore alternatives next cycle";
+    } else if (ratio >= 0.75) {
+        reflection << "; conclusion=plan is reliable, reinforce focus on current goal";
+    } else {
+        reflection << "; conclusion=plan is promising, continue gathering evidence";
+    }
+
+    lastReflection_ = reflection.str();
+    ++reflectionCount_;
+    appendMemory(lastReflection_);
+    logInfo("Reflection: " + lastReflection_);
     return input;
 }
 

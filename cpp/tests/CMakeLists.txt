@@ -57,7 +57,7 @@ target_link_libraries(autofun_idl_test elizaos-autofun_idl gtest gtest_main Thre
 add_test(NAME autofun_idl_test COMMAND autofun_idl_test)
 
 add_executable(autonomous_starter_test autonomous_starter_test.cpp)
-target_link_libraries(autonomous_starter_test elizaos-autonomous_starter gtest gtest_main Threads::Threads)
+target_link_libraries(autonomous_starter_test elizaos-autonomous_starter elizaos-agentmemory gtest gtest_main Threads::Threads)
 add_test(NAME autonomous_starter_test COMMAND autonomous_starter_test)
 
 if(TARGET elizaos-persistence)
@@ -603,4 +603,13 @@ endif()
 add_real_test(real_autonomy_optimizer_test src/test_autonomy_optimizer.cpp)
 if(TARGET real_autonomy_optimizer_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_optimizer_test)
+endif()
+
+# KSM autonomy-evolution suite: comprehensive E2E coverage for the optimized
+# self-regulating cognitive loop - attention-weighted goal focus, plan-success
+# feedback learning, goal lifecycle transitions, the reflection phase, and the
+# State::updateGoalStatus lifecycle API extension.
+add_real_test(real_autonomy_evolution_test src/test_autonomy_evolution.cpp)
+if(TARGET real_autonomy_evolution_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_evolution_test)
 endif()

@@ -113,6 +113,17 @@ void State::addGoal(const Goal& goal) {
     goals_.push_back(goal);
 }
 
+bool State::updateGoalStatus(const UUID& goalId, const std::string& status) {
+    for (auto& goal : goals_) {
+        if (goal.id == goalId) {
+            goal.status = status;
+            goal.updatedAt = std::chrono::system_clock::now();
+            return true;
+        }
+    }
+    return false;
+}
+
 void State::addRecentMessage(std::shared_ptr<Memory> memory) {
     recentMessages_.push_back(memory);
     

@@ -12,11 +12,14 @@
 #include "core.hpp"
 #include "agentloop.hpp"
 #include "agentshell.hpp"
+#include "attention.hpp"
 
 #include <atomic>
 #include <chrono>
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace elizaos {
 
@@ -57,11 +60,28 @@ public:
 
     // Deterministic single-cycle autonomy controls for tests, supervisors, and
     // embedding runtimes that need bounded observe-reason-act stepping.
+    // Each cycle now runs the full perceive -> reason -> act -> reflect loop.
     std::size_t runCognitiveCycleOnce();
     std::size_t getCognitiveCycleCount() const { return cognitiveCycle_; }
     std::size_t getActionCount() const { return actionCounter_; }
     const std::string& getLastObservationSummary() const { return lastObservationSummary_; }
     const std::string& getLastPlan() const { return lastPlan_; }
+
+    // Reflection / learning surface. After each cycle the agent records whether
+    // the executed action succeeded and the reflective conclusion it drew.
+    const std::string& getLastReflection() const { return lastReflection_; }
+    std::size_t getReflectionCount() const { return reflectionCount_; }
+    bool getLastActionSucceeded() const { return lastActionSucceeded_; }
+
+    // Attention-weighted autonomy introspection. Returns the goal id the agent
+    // is currently focused on (highest attention composite score among open
+    // goals), or an empty string when no goals exist.
+    UUID getFocusedGoalId() const { return focusedGoalId_; }
+
+    // Returns the success ratio (0.0-1.0) of every plan label the agent has
+    // executed so far. Used by supervisors and tests to confirm that the agent
+    // adapts plan selection based on accumulated outcome feedback.
+    double getPlanSuccessRatio(const std::string& plan) const;
 
     // State access
     State& getState() { return state_; }
@@ -77,10 +97,25 @@ private:
     std::string selectGoalContext() const;
     std::string buildActionCommandForPlan(const std::string& plan) const;
 
+    // Attention-weighted goal selection. Seeds/refreshes attention values for
+    // every open goal and returns the highest-scoring open goal, falling back
+    // to the most recent goal when none are open.
+    const StateGoal* selectFocusGoal();
+    void refreshGoalAttention();
+
+    // Outcome-based plan adaptation. Records the success/failure of a plan and
+    // biases future plan selection toward historically successful plans.
+    void recordPlanOutcome(const std::string& plan, bool success);
+    double planBias(const std::string& plan) const;
+
+    // Goal lifecycle transition driven by accomplished plans.
+    void advanceGoalLifecycle(const std::string& plan, bool actionSucceeded);
+
     // Internal cognitive steps
     std::shared_ptr<void> perceptionStep(std::shared_ptr<void> input);
     std::shared_ptr<void> reasoningStep(std::shared_ptr<void> input);
     std::shared_ptr<void> actionStep(std::shared_ptr<void> input);
+    std::shared_ptr<void> reflectionStep(std::shared_ptr<void> input);
 
     // Memory helpers
     void appendMemory(const std::string& content);
@@ -120,6 +155,21 @@ private:
     std::size_t actionCounter_{0};
     std::string lastObservationSummary_;
     std::string lastPlan_;
+
+    // Reflection / learning state.
+    std::string lastReflection_;
+    std::size_t reflectionCount_{0};
+    bool lastActionSucceeded_{false};
+    std::string lastActionCommand_;
+    std::string lastActionOutput_;
+
+    // Attention-weighted goal selection state.
+    AttentionAllocator goalAttention_;
+    UUID focusedGoalId_;
+
+    // Per-plan outcome feedback: plan label -> (successes, attempts).
+    struct PlanStats { std::size_t successes{0}; std::size_t attempts{0}; };
+    std::unordered_map<std::string, PlanStats> planStats_;
 };
 
 std::shared_ptr<AutonomousStarter> createAutolizaAgent();
