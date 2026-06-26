@@ -344,6 +344,11 @@ public:
     void addActor(const Actor& actor);
     void addGoal(const StateGoal& goal);
     void addRecentMessage(std::shared_ptr<Memory> memory);
+
+    // Goal lifecycle mutation (structure-preserving extension). Updates the
+    // status (and updatedAt timestamp) of the goal identified by goalId.
+    // Returns true if a matching goal was found and updated.
+    bool updateGoalStatus(const UUID& goalId, const std::string& status);
     
     const std::vector<Actor>& getActors() const { return actors_; }
     const std::vector<StateGoal>& getGoals() const { return goals_; }
