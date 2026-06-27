@@ -63,6 +63,17 @@ public:
     const std::string& getLastObservationSummary() const { return lastObservationSummary_; }
     const std::string& getLastPlan() const { return lastPlan_; }
 
+    // Closed-loop goal-progression introspection. These expose the convergence
+    // signals an autonomy supervisor needs: how many seeded goals are still open
+    // (pending/active/in_progress) versus completed, the id of the goal the agent
+    // is currently pursuing, and how many consecutive cycles produced the same
+    // plan (a stagnation signal). A healthy autonomous agent drives open goals to
+    // completion rather than looping a single plan indefinitely.
+    std::size_t getOpenGoalCount() const;
+    std::size_t getCompletedGoalCount() const;
+    const UUID& getActiveGoalId() const { return activeGoalId_; }
+    std::size_t getStagnationCounter() const { return stagnationCounter_; }
+
     // State access
     State& getState() { return state_; }
     const State& getState() const { return state_; }
@@ -76,6 +87,22 @@ private:
     void ensureCoreAutonomyGoals();
     std::string selectGoalContext() const;
     std::string buildActionCommandForPlan(const std::string& plan) const;
+
+    // Closed-loop goal-progression helpers.
+    // selectActiveGoal picks the highest-priority open goal (active >
+    // in_progress > pending) and records its id in activeGoalId_.
+    // evaluateGoalProgress inspects the latest action evidence and advances goal
+    // statuses: a satisfied active goal becomes "completed", and the next pending
+    // goal is promoted to "active". seedAdaptiveGoal injects a fresh exploration
+    // goal when every seeded goal is complete so autonomy never dead-ends.
+    const StateGoal* selectActiveGoal();
+    void evaluateGoalProgress(const std::string& plan,
+                              const std::string& command,
+                              const ShellCommandResult& result);
+    void seedAdaptiveGoal();
+    bool planSatisfiesGoal(const StateGoal& goal,
+                           const std::string& plan,
+                           const ShellCommandResult& result) const;
 
     // Internal cognitive steps
     std::shared_ptr<void> perceptionStep(std::shared_ptr<void> input);
@@ -120,6 +147,12 @@ private:
     std::size_t actionCounter_{0};
     std::string lastObservationSummary_;
     std::string lastPlan_;
+
+    // Closed-loop goal-progression state.
+    UUID activeGoalId_;
+    std::string previousPlan_;
+    std::size_t stagnationCounter_{0};
+    std::size_t adaptiveGoalCounter_{0};
 };
 
 std::shared_ptr<AutonomousStarter> createAutolizaAgent();
