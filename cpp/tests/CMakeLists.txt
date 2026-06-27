@@ -604,3 +604,17 @@ add_real_test(real_autonomy_optimizer_test src/test_autonomy_optimizer.cpp)
 if(TARGET real_autonomy_optimizer_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_optimizer_test)
 endif()
+
+# ============================================================================
+# Closed-loop goal-progression autonomy regression suite (parity with hurdcog).
+# Locks in the structure-preserving upgrade that turns the autonomy goal center
+# from an open-loop seed into a converging, evidence-driven drive
+# (State::updateGoalStatus, active-goal selection, completion-on-evidence,
+# adaptive re-seeding, stagnation guard).
+# ============================================================================
+add_real_test(real_closed_loop_autonomy_test src/test_closed_loop_autonomy.cpp)
+if(TARGET real_closed_loop_autonomy_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_closed_loop_autonomy_test)
+    add_dependencies(ksm_canonical_tests real_closed_loop_autonomy_test)
+    set_tests_properties(real_closed_loop_autonomy_test PROPERTIES LABELS "ksm;canonical")
+endif()

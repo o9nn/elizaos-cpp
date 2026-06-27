@@ -344,7 +344,15 @@ public:
     void addActor(const Actor& actor);
     void addGoal(const StateGoal& goal);
     void addRecentMessage(std::shared_ptr<Memory> memory);
-    
+
+    // Goal lifecycle management.
+    // updateGoalStatus transitions an existing goal (matched by id) to a new
+    // status string and refreshes its updatedAt timestamp. It returns true when
+    // a goal was found and updated, false otherwise. This is the minimal,
+    // non-breaking surface required for closed-loop goal-driven autonomy where
+    // an agent advances pending->active->completed based on observed evidence.
+    bool updateGoalStatus(const UUID& goalId, const std::string& status);
+
     const std::vector<Actor>& getActors() const { return actors_; }
     const std::vector<StateGoal>& getGoals() const { return goals_; }
     const std::vector<std::shared_ptr<Memory>>& getRecentMessages() const { return recentMessages_; }
