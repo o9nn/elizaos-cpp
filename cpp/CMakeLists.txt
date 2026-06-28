@@ -44,6 +44,7 @@ add_subdirectory(packages/core/agentloop)
 add_subdirectory(packages/core/agentmemory)
 add_subdirectory(packages/core/agentaction)
 add_subdirectory(packages/core/agentagenda)
+add_subdirectory(packages/core/persistence)
 
 # Infrastructure modules - support services
 add_subdirectory(packages/infrastructure/agentcomms)

@@ -329,6 +329,7 @@ protected:
     PluginMetadata metadata_;
     PluginState state_ = PluginState::UNLOADED;
     PluginContext* context_ = nullptr;
+    PluginConfig config_;
 };
 
 /**
@@ -354,6 +355,7 @@ protected:
     PluginMetadata metadata_;
     PluginState state_ = PluginState::UNLOADED;
     PluginContext* context_ = nullptr;
+    PluginConfig config_;
 };
 
 /**

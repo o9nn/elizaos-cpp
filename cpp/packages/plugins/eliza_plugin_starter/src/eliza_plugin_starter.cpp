@@ -256,6 +256,16 @@ SimpleActionPlugin::SimpleActionPlugin(const std::string& id, const std::string&
 }
 
 bool SimpleActionPlugin::initialize(const PluginConfig& config, PluginContext& context) {
+    // Validate the supplied configuration (enforces any required keys) and
+    // persist it before completing initialization. A failed validation leaves
+    // the plugin in the ERROR state and reports through the plugin context.
+    std::string err;
+    if (!config.validate(err)) {
+        state_ = PluginState::ERROR;
+        context.logError("SimpleActionPlugin initialize failed: " + err);
+        return false;
+    }
+    config_ = config;
     context_ = &context;
     state_ = PluginState::INITIALIZED;
     return true;
@@ -278,6 +288,14 @@ SimpleProviderPlugin::SimpleProviderPlugin(const std::string& id, const std::str
 }
 
 bool SimpleProviderPlugin::initialize(const PluginConfig& config, PluginContext& context) {
+    // Validate and persist the supplied configuration before initialization.
+    std::string err;
+    if (!config.validate(err)) {
+        state_ = PluginState::ERROR;
+        context.logError("SimpleProviderPlugin initialize failed: " + err);
+        return false;
+    }
+    config_ = config;
     context_ = &context;
     state_ = PluginState::INITIALIZED;
     return true;

@@ -250,7 +250,9 @@ public:
     
     bool connect(const std::string& url, const std::string& authToken) {
         logWarning("Using simulated WebSocket (libwebsockets not available)", "WebSocketClient");
-        logInfo("Simulating connection to: " + url, "WebSocketClient");
+        logInfo("Simulating connection to: " + url +
+                (authToken.empty() ? " (no auth token)" : " (with auth token)"),
+                "WebSocketClient");
         
         // Simulate connection delay
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -618,14 +620,35 @@ std::shared_ptr<HyperfyService> HyperfyServiceFactory::createService() {
 
 std::shared_ptr<HyperfyService> HyperfyServiceFactory::createServiceWithConfig(const HyperfyConfig& config) {
     auto service = std::make_shared<HyperfyService>();
-    // Config is set through constructor or direct member access
+    // Pre-seed the service with the caller-supplied configuration so that a
+    // subsequent start()/connect() uses the intended world URL and options.
+    service->applyConfig(config);
     return service;
 }
 
-// HyperfyService::executeAction implementation
+// HyperfyService action registry
+void HyperfyService::registerAction(const std::string& name, std::shared_ptr<HyperfyAction> action) {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    actions_[name] = std::move(action);
+}
+
+std::shared_ptr<HyperfyAction> HyperfyService::getAction(const std::string& name) const {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    auto it = actions_.find(name);
+    return it != actions_.end() ? it->second : nullptr;
+}
+
+// HyperfyService::executeAction implementation - resolve the named action and
+// dispatch it with the supplied parameter string. Returns false when the
+// service is stopped or no action is registered under `name`.
 bool HyperfyService::executeAction(const std::string& name, const std::string& parameters) {
     if (!isRunning()) return false;
-    return true;
+    auto action = getAction(name);
+    if (!action) {
+        logWarning("executeAction: no action registered named '" + name + "'", "HyperfyService");
+        return false;
+    }
+    return action->execute(parameters);
 }
 
 
@@ -637,15 +660,29 @@ WebSocketClient::~WebSocketClient() {
 }
 
 bool WebSocketClient::connect(const std::string& url, const std::string& authToken) {
-    url_ = url;
-    connected_ = true;
-    running_ = true;
+    // In-process simulation layer: record the target endpoint, mark the
+    // connection live and fire the onConnect callback. authToken is retained
+    // alongside the url so a future libwebsockets/Boost.Beast backend can
+    // present credentials during the real handshake.
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        url_ = authToken.empty() ? url : (url + "?token=" + authToken);
+        connected_ = true;
+        running_ = true;
+    }
+    if (onConnect_) {
+        onConnect_();
+    }
     return true;
 }
 
 void WebSocketClient::disconnect() {
-    connected_ = false;
+    bool wasConnected = connected_.exchange(false);
     running_ = false;
+    cv_.notify_all();
+    if (wasConnected && onDisconnect_) {
+        onDisconnect_("client disconnect");
+    }
 }
 
 bool WebSocketClient::isConnected() const {
@@ -653,22 +690,94 @@ bool WebSocketClient::isConnected() const {
 }
 
 bool WebSocketClient::send(const WebSocketMessage& message) {
-    return connected_;
+    if (!connected_) {
+        if (onError_) {
+            onError_("send failed: not connected");
+        }
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(mutex_);
+    outgoingMessages_.push(message);
+    return true;
 }
 
 bool WebSocketClient::sendText(const std::string& text) {
-    return connected_;
+    WebSocketMessage msg;
+    msg.type = MessageType::CHAT_MESSAGE;
+    msg.payload = text;
+    msg.sender = "local";
+    msg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+    return send(msg);
 }
 
-void WebSocketClient::setOnMessage(OnMessageCallback callback) {}
-void WebSocketClient::setOnConnect(OnConnectCallback callback) {}
-void WebSocketClient::setOnDisconnect(OnDisconnectCallback callback) {}
-void WebSocketClient::setOnError(OnErrorCallback callback) {}
+void WebSocketClient::setOnMessage(OnMessageCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    onMessage_ = std::move(callback);
+}
+void WebSocketClient::setOnConnect(OnConnectCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    onConnect_ = std::move(callback);
+}
+void WebSocketClient::setOnDisconnect(OnDisconnectCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    onDisconnect_ = std::move(callback);
+}
+void WebSocketClient::setOnError(OnErrorCallback callback) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    onError_ = std::move(callback);
+}
 
-bool WebSocketClient::hasPendingMessages() const { return false; }
-WebSocketMessage WebSocketClient::popMessage() { return WebSocketMessage{}; }
-void WebSocketClient::messageProcessingLoop() {}
-void WebSocketClient::simulateIncomingMessage(const WebSocketMessage& msg) {}
+bool WebSocketClient::hasPendingMessages() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return !incomingMessages_.empty();
+}
+
+WebSocketMessage WebSocketClient::popMessage() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (incomingMessages_.empty()) {
+        return WebSocketMessage{};
+    }
+    WebSocketMessage msg = incomingMessages_.front();
+    incomingMessages_.pop();
+    return msg;
+}
+
+void WebSocketClient::messageProcessingLoop() {
+    // Drain queued inbound messages and dispatch them to the registered
+    // handler while the client is running. Used by a background processing
+    // thread when a real transport is wired in.
+    while (running_) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        cv_.wait(lock, [this] { return !incomingMessages_.empty() || !running_; });
+        while (!incomingMessages_.empty()) {
+            WebSocketMessage msg = incomingMessages_.front();
+            incomingMessages_.pop();
+            OnMessageCallback cb = onMessage_;
+            lock.unlock();
+            if (cb) {
+                cb(msg);
+            }
+            lock.lock();
+        }
+    }
+}
+
+void WebSocketClient::simulateIncomingMessage(const WebSocketMessage& msg) {
+    // Inject a message as if it arrived from the world server. The message is
+    // both queued (for hasPendingMessages/popMessage polling consumers) and
+    // delivered synchronously to any registered onMessage callback.
+    OnMessageCallback cb;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        incomingMessages_.push(msg);
+        cb = onMessage_;
+    }
+    cv_.notify_all();
+    if (cb) {
+        cb(msg);
+    }
+}
 
 // HyperfyWorld::sendHeartbeat implementation
 bool HyperfyWorld::sendHeartbeat() {

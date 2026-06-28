@@ -39,10 +39,18 @@ using Timestamp = std::chrono::system_clock::time_point;
 
 /**
  * Generic JSON-like value type.
- * Keys are always strings; values can be strings, numbers, booleans, null,
- * nested maps, or vectors of the same.
+ * Keys are always strings; values are type-erased (std::any) so they may hold
+ * strings, numbers, booleans, null, nested JsonValue maps, or vectors thereof.
+ *
+ * NOTE: This MUST stay a map of std::any. The canonical modules round-trip
+ * structured metadata through std::any_cast<JsonValue>(...) (see
+ * agentaction.cpp and character_json_loader.cpp), and the module-local
+ * header <elizaos/agentaction.hpp> independently declares the same alias.
+ * A divergent (string->string) definition here reintroduces an ODR/typedef
+ * conflict that breaks any translation unit combining persistence/knowledge
+ * with agentaction (e.g. comprehensive_autonomy_e2e_test).
  */
-using JsonValue = std::unordered_map<std::string, std::string>;
+using JsonValue = std::unordered_map<std::string, std::any>;
 
 // ---------------------------------------------------------------------------
 // Common result wrapper

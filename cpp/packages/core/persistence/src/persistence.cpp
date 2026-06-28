@@ -1,19 +1,73 @@
 /**
  * @file persistence.cpp
- * @brief Implementation of ElizaOS Persistence Module
+ * @brief SQLite persistence backend implementation for ElizaOS
  *
- * SQLite-backed persistent storage for agent memories, state, and key-value data.
+ * Implements the authoritative API defined in include/persistence.hpp.
+ * All classes live in namespace elizaos (no nested persistence namespace).
  */
 
 #include "elizaos/persistence.hpp"
 #include <sqlite3.h>
-#include <algorithm>
 #include <stdexcept>
+#include <sstream>
+#include <algorithm>
+#include <cstring>
+#include <fstream>
 
 namespace elizaos {
 
 // ============================================================================
-// SQLite Transaction Implementation
+// TransactionScope Implementation
+// ============================================================================
+
+TransactionScope::TransactionScope(std::shared_ptr<Transaction> txn)
+    : txn_(std::move(txn)), active_(true), committed_(false) {}
+
+TransactionScope::~TransactionScope() {
+    if (active_ && !committed_ && txn_ && txn_->isActive()) {
+        txn_->rollback();
+    }
+}
+
+TransactionScope::TransactionScope(TransactionScope&& other) noexcept
+    : txn_(std::move(other.txn_)), active_(other.active_), committed_(other.committed_) {
+    other.active_ = false;
+}
+
+TransactionScope& TransactionScope::operator=(TransactionScope&& other) noexcept {
+    if (this != &other) {
+        txn_ = std::move(other.txn_);
+        active_ = other.active_;
+        committed_ = other.committed_;
+        other.active_ = false;
+    }
+    return *this;
+}
+
+void TransactionScope::commit() {
+    if (active_ && txn_ && txn_->isActive()) {
+        txn_->commit();
+        committed_ = true;
+    }
+}
+
+void TransactionScope::rollback() {
+    if (active_ && txn_ && txn_->isActive()) {
+        txn_->rollback();
+        active_ = false;
+    }
+}
+
+StorageResult<ResultSet> TransactionScope::execute(
+    const std::string& sql, const QueryParams& params) {
+    if (!active_ || !txn_ || !txn_->isActive()) {
+        return StorageResult<ResultSet>::fail("Transaction not active");
+    }
+    return txn_->execute(sql, params);
+}
+
+// ============================================================================
+// SQLiteTransaction Implementation
 // ============================================================================
 
 class SQLiteTransaction : public Transaction {
@@ -199,8 +253,39 @@ StorageResult<ResultSet> SQLiteBackend::query(
         }, params[i]);
     }
 
-    ResultSet results = extractResults(stmt);
+    ResultSet results;
+    int colCount = sqlite3_column_count(stmt);
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        Row row;
+        for (int c = 0; c < colCount; ++c) {
+            ColumnValue cv;
+            cv.name = sqlite3_column_name(stmt, c);
+            int type = sqlite3_column_type(stmt, c);
+            switch (type) {
+                case SQLITE_NULL: cv.value = nullptr; break;
+                case SQLITE_INTEGER: cv.value = static_cast<int64_t>(sqlite3_column_int64(stmt, c)); break;
+                case SQLITE_FLOAT: cv.value = sqlite3_column_double(stmt, c); break;
+                case SQLITE_TEXT: {
+                    const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, c));
+                    cv.value = std::string(text ? text : "");
+                    break;
+                }
+                case SQLITE_BLOB: {
+                    const uint8_t* data = static_cast<const uint8_t*>(sqlite3_column_blob(stmt, c));
+                    int size = sqlite3_column_bytes(stmt, c);
+                    cv.value = std::vector<uint8_t>(data, data + size);
+                    break;
+                }
+            }
+            row.push_back(std::move(cv));
+        }
+        results.push_back(std::move(row));
+    }
+
     sqlite3_finalize(stmt);
+    if (rc != SQLITE_DONE) {
+        return StorageResult<ResultSet>::fail(sqlite3_errmsg(db));
+    }
     return StorageResult<ResultSet>::ok(std::move(results));
 }
 
@@ -216,7 +301,6 @@ StorageResult<void> SQLiteBackend::execute(
         return StorageResult<void>::fail(sqlite3_errmsg(db));
     }
 
-    // Bind parameters
     for (size_t i = 0; i < params.size(); ++i) {
         int idx = static_cast<int>(i) + 1;
         std::visit([&](auto&& arg) {
@@ -241,7 +325,7 @@ StorageResult<void> SQLiteBackend::execute(
     if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
         return StorageResult<void>::fail(sqlite3_errmsg(db));
     }
-    return StorageResult<void>::ok(sqlite3_changes(db));
+    return StorageResult<void>::ok(static_cast<int64_t>(sqlite3_changes(db)));
 }
 
 StorageResult<void> SQLiteBackend::executeBatch(
@@ -506,16 +590,19 @@ ConnectionPool::~ConnectionPool() {
 std::shared_ptr<StorageBackend> ConnectionPool::acquire() {
     std::unique_lock<std::mutex> lock(mutex_);
     if (shutdown_) return nullptr;
+    
     cv_.wait(lock, [this]() { return !available_.empty() || shutdown_; });
     if (shutdown_ || available_.empty()) return nullptr;
+    
     auto conn = available_.front();
     available_.pop();
     return conn;
 }
 
 void ConnectionPool::release(std::shared_ptr<StorageBackend> conn) {
+    if (!conn) return;
     std::lock_guard<std::mutex> lock(mutex_);
-    if (!shutdown_ && conn) {
+    if (!shutdown_) {
         available_.push(conn);
         cv_.notify_one();
     }
@@ -576,6 +663,7 @@ MemoryPersistence::MemoryPersistence(std::shared_ptr<StorageBackend> backend)
 MemoryPersistence::~MemoryPersistence() = default;
 
 bool MemoryPersistence::initialize() {
+    if (initialized_) return true;
     if (!backend_ || !backend_->isConnected()) return false;
     initialized_ = true;
     return true;
@@ -584,17 +672,18 @@ bool MemoryPersistence::initialize() {
 void MemoryPersistence::ensureTable(const std::string& tableName) {
     std::lock_guard<std::mutex> lock(tablesMutex_);
     if (existingTables_.count(tableName)) return;
-
+    
     backend_->execute(
         "CREATE TABLE IF NOT EXISTS " + tableName + " ("
         "id TEXT PRIMARY KEY, "
         "content TEXT NOT NULL, "
-        "agent_id TEXT, "
+        "agent_id TEXT NOT NULL, "
         "room_id TEXT, "
         "embedding BLOB, "
-        "metadata TEXT DEFAULT '', "
-        "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        "metadata TEXT DEFAULT '{}', "
+        "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
         ")");
+    
     backend_->execute("CREATE INDEX IF NOT EXISTS idx_" + tableName + "_agent ON " + tableName + "(agent_id)");
     backend_->execute("CREATE INDEX IF NOT EXISTS idx_" + tableName + "_room ON " + tableName + "(room_id)");
     existingTables_.insert(tableName);
@@ -607,13 +696,13 @@ StorageResult<void> MemoryPersistence::saveMemory(
     const std::string& metadata) {
     if (!initialized_) return StorageResult<void>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     std::vector<uint8_t> embBlob;
     if (!embedding.empty()) {
         embBlob.resize(embedding.size() * sizeof(float));
         std::memcpy(embBlob.data(), embedding.data(), embBlob.size());
     }
-
+    
     return backend_->execute(
         "INSERT OR REPLACE INTO " + tableName + " (id, content, agent_id, room_id, embedding, metadata) VALUES (?, ?, ?, ?, ?, ?)",
         {memoryId, content, agentId, roomId,
@@ -625,15 +714,16 @@ StorageResult<std::unordered_map<std::string, std::string>> MemoryPersistence::l
     const UUID& memoryId, const std::string& tableName) {
     if (!initialized_) return StorageResult<std::unordered_map<std::string, std::string>>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     auto result = backend_->query(
         "SELECT id, content, agent_id, room_id, metadata FROM " + tableName + " WHERE id = ?",
         {memoryId});
+    
     if (!result.success) return StorageResult<std::unordered_map<std::string, std::string>>::fail(result.error.value_or("Query failed"));
     if (!result.value.has_value() || result.value->empty()) {
         return StorageResult<std::unordered_map<std::string, std::string>>::fail("Memory not found");
     }
-
+    
     std::unordered_map<std::string, std::string> mem;
     for (const auto& col : result.value->front()) {
         mem[col.name] = col.asString();
@@ -646,13 +736,14 @@ MemoryPersistence::loadMemoriesByAgent(
     const std::string& agentId, const std::string& tableName, int limit) {
     if (!initialized_) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     auto result = backend_->query(
         "SELECT id, content, agent_id, room_id, metadata FROM " + tableName +
         " WHERE agent_id = ? ORDER BY created_at DESC LIMIT ?",
         {agentId, static_cast<int64_t>(limit)});
+    
     if (!result.success) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail(result.error.value_or("Query failed"));
-
+    
     std::vector<std::unordered_map<std::string, std::string>> memories;
     if (result.value.has_value()) {
         for (const auto& row : *result.value) {
@@ -671,13 +762,14 @@ MemoryPersistence::loadMemoriesByRoom(
     const std::string& roomId, const std::string& tableName, int limit) {
     if (!initialized_) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     auto result = backend_->query(
         "SELECT id, content, agent_id, room_id, metadata FROM " + tableName +
         " WHERE room_id = ? ORDER BY created_at DESC LIMIT ?",
         {roomId, static_cast<int64_t>(limit)});
+    
     if (!result.success) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail(result.error.value_or("Query failed"));
-
+    
     std::vector<std::unordered_map<std::string, std::string>> memories;
     if (result.value.has_value()) {
         for (const auto& row : *result.value) {
@@ -710,13 +802,14 @@ MemoryPersistence::searchMemories(
     const std::string& query, const std::string& tableName, int limit) {
     if (!initialized_) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     auto result = backend_->query(
         "SELECT id, content, agent_id, room_id, metadata FROM " + tableName +
         " WHERE content LIKE ? ORDER BY created_at DESC LIMIT ?",
         {std::string("%" + query + "%"), static_cast<int64_t>(limit)});
+    
     if (!result.success) return StorageResult<std::vector<std::unordered_map<std::string, std::string>>>::fail(result.error.value_or("Query failed"));
-
+    
     std::vector<std::unordered_map<std::string, std::string>> memories;
     if (result.value.has_value()) {
         for (const auto& row : *result.value) {
@@ -735,18 +828,18 @@ StorageResult<void> MemoryPersistence::saveMemoriesBatch(
     const std::string& tableName) {
     if (!initialized_) return StorageResult<void>::fail("Not initialized");
     ensureTable(tableName);
-
+    
     std::vector<QueryParams> batches;
     for (const auto& [id, content, agentId, roomId] : memories) {
-        batches.push_back({id, content, agentId, roomId, std::string("")});
+        batches.push_back({id, content, agentId, roomId, nullptr, std::string("{}")});
     }
+    
     return backend_->executeBatch(
-        "INSERT OR REPLACE INTO " + tableName + " (id, content, agent_id, room_id, metadata) VALUES (?, ?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO " + tableName + " (id, content, agent_id, room_id, embedding, metadata) VALUES (?, ?, ?, ?, ?, ?)",
         batches);
 }
 
 int64_t MemoryPersistence::getMemoryCount(const std::string& tableName) {
-    if (!initialized_) return 0;
     ensureTable(tableName);
     auto result = backend_->query("SELECT COUNT(*) FROM " + tableName);
     if (result.success && result.value.has_value() && !result.value->empty()) {
@@ -756,7 +849,6 @@ int64_t MemoryPersistence::getMemoryCount(const std::string& tableName) {
 }
 
 int64_t MemoryPersistence::getMemoryCountByAgent(const std::string& agentId, const std::string& tableName) {
-    if (!initialized_) return 0;
     ensureTable(tableName);
     auto result = backend_->query("SELECT COUNT(*) FROM " + tableName + " WHERE agent_id = ?", {agentId});
     if (result.success && result.value.has_value() && !result.value->empty()) {
@@ -783,16 +875,21 @@ KeyValueStore::KeyValueStore(std::shared_ptr<StorageBackend> backend)
 KeyValueStore::~KeyValueStore() = default;
 
 bool KeyValueStore::initialize() {
+    if (initialized_) return true;
     if (!backend_ || !backend_->isConnected()) return false;
+    
     auto result = backend_->execute(
         "CREATE TABLE IF NOT EXISTS kv_store ("
         "key TEXT PRIMARY KEY, "
         "value TEXT NOT NULL, "
-        "expires_at TIMESTAMP DEFAULT NULL, "
-        "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        "expires_at DATETIME DEFAULT NULL, "
+        "created_at DATETIME DEFAULT CURRENT_TIMESTAMP, "
+        "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP"
         ")");
-    initialized_ = result.success;
-    return initialized_;
+    
+    if (!result.success) return false;
+    initialized_ = true;
+    return true;
 }
 
 StorageResult<void> KeyValueStore::set(const std::string& key, const std::string& value) {
@@ -841,14 +938,14 @@ StorageResult<void> KeyValueStore::setMany(const std::unordered_map<std::string,
 StorageResult<std::unordered_map<std::string, std::string>> KeyValueStore::getMany(
     const std::vector<std::string>& keys) {
     if (!initialized_) return StorageResult<std::unordered_map<std::string, std::string>>::fail("Not initialized");
-    std::unordered_map<std::string, std::string> result_map;
+    std::unordered_map<std::string, std::string> results;
     for (const auto& key : keys) {
         auto r = get(key);
         if (r.success && r.value.has_value()) {
-            result_map[key] = *r.value;
+            results[key] = *r.value;
         }
     }
-    return StorageResult<std::unordered_map<std::string, std::string>>::ok(std::move(result_map));
+    return StorageResult<std::unordered_map<std::string, std::string>>::ok(std::move(results));
 }
 
 StorageResult<std::vector<std::pair<std::string, std::string>>> KeyValueStore::getByPrefix(
@@ -858,7 +955,7 @@ StorageResult<std::vector<std::pair<std::string, std::string>>> KeyValueStore::g
         "SELECT key, value FROM kv_store WHERE key LIKE ? AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)",
         {prefix + "%"});
     if (!result.success) return StorageResult<std::vector<std::pair<std::string, std::string>>>::fail(result.error.value_or("Query failed"));
-
+    
     std::vector<std::pair<std::string, std::string>> pairs;
     if (result.value.has_value()) {
         for (const auto& row : *result.value) {
@@ -878,9 +975,18 @@ StorageResult<void> KeyValueStore::removeByPrefix(const std::string& prefix) {
 StorageResult<void> KeyValueStore::setWithExpiry(
     const std::string& key, const std::string& value, std::chrono::seconds ttl) {
     if (!initialized_) return StorageResult<void>::fail("Not initialized");
+    // SQLite's datetime() modifier parser rejects a malformed '+-N seconds'
+    // string produced by concatenating a negative offset, which would silently
+    // leave expires_at NULL and make the entry effectively permanent. Build the
+    // signed modifier explicitly so non-positive TTLs deterministically expire
+    // the key immediately (offset <= 0 -> already in the past).
+    const int64_t seconds = static_cast<int64_t>(ttl.count());
+    const std::string modifier =
+        (seconds >= 0 ? std::string("+") : std::string("-")) +
+        std::to_string(seconds >= 0 ? seconds : -seconds) + " seconds";
     return backend_->execute(
-        "INSERT OR REPLACE INTO kv_store (key, value, expires_at, updated_at) VALUES (?, ?, datetime('now', '+' || ? || ' seconds'), CURRENT_TIMESTAMP)",
-        {key, value, static_cast<int64_t>(ttl.count())});
+        "INSERT OR REPLACE INTO kv_store (key, value, expires_at, updated_at) VALUES (?, ?, datetime('now', ?), CURRENT_TIMESTAMP)",
+        {key, value, modifier});
 }
 
 void KeyValueStore::cleanupExpired() {
@@ -920,26 +1026,27 @@ StorageManager& StorageManager::getInstance() {
 bool StorageManager::initialize(const StorageConfig& config) {
     std::lock_guard<std::mutex> lock(mutex_);
     if (initialized_) return true;
-
+    
     config_ = config;
     pool_ = std::make_shared<ConnectionPool>(config);
+    
     if (pool_->availableConnections() == 0) return false;
-
+    
     auto conn = pool_->acquire();
     if (!conn) return false;
-
+    
     memoryPersistence_ = std::make_shared<MemoryPersistence>(conn);
     if (!memoryPersistence_->initialize()) {
         pool_->release(conn);
         return false;
     }
-
+    
     kvStore_ = std::make_shared<KeyValueStore>(conn);
     if (!kvStore_->initialize()) {
         pool_->release(conn);
         return false;
     }
-
+    
     pool_->release(conn);
     initialized_ = true;
     return true;

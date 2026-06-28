@@ -243,7 +243,7 @@ namespace elizaos {
             std::map<std::string, std::shared_ptr<HyperfyManager>> managers_;
             std::atomic<bool> running_;
             std::thread serviceThread_;
-            std::mutex serviceMutex_;
+            mutable std::mutex serviceMutex_;
             HyperfyConfig config_;
             
             // Service loop for handling background tasks
@@ -274,6 +274,12 @@ namespace elizaos {
             
             // Configuration
             const HyperfyConfig& getConfig() const { return config_; }
+            // Apply a configuration without starting the service (used by the
+            // factory to pre-seed a service created via createServiceWithConfig).
+            void applyConfig(const HyperfyConfig& config) {
+                std::lock_guard<std::mutex> lock(serviceMutex_);
+                config_ = config;
+            }
         };
         
         // Basic action implementations
