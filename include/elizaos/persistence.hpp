@@ -178,36 +178,31 @@ public:
 
 class TransactionScope {
 public:
-    TransactionScope(std::shared_ptr<Transaction> txn)
-        : txn_(std::move(txn)), committed_(false) {}
+    TransactionScope(std::shared_ptr<Transaction> txn);
+    ~TransactionScope();
 
-    ~TransactionScope() {
-        if (txn_ && txn_->isActive() && !committed_) {
-            txn_->rollback();
-        }
-    }
+    // Non-copyable
+    TransactionScope(const TransactionScope&) = delete;
+    TransactionScope& operator=(const TransactionScope&) = delete;
 
-    bool commit() {
-        if (txn_ && txn_->isActive()) {
-            committed_ = txn_->commit();
-            return committed_;
-        }
-        return false;
-    }
+    // Movable
+    TransactionScope(TransactionScope&& other) noexcept;
+    TransactionScope& operator=(TransactionScope&& other) noexcept;
 
-    bool rollback() {
-        if (txn_ && txn_->isActive()) {
-            return txn_->rollback();
-        }
-        return false;
-    }
+    void commit();
+    void rollback();
 
     Transaction& get() { return *txn_; }
-    bool isActive() const { return txn_ && txn_->isActive(); }
+    bool isActive() const { return active_ && txn_ && txn_->isActive(); }
+
+    StorageResult<ResultSet> execute(
+        const std::string& sql,
+        const QueryParams& params = {});
 
 private:
     std::shared_ptr<Transaction> txn_;
-    bool committed_;
+    bool active_ = true;
+    bool committed_ = false;
 };
 
 // ============================================================================
