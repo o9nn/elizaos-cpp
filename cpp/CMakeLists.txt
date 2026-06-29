@@ -101,6 +101,7 @@ elizaos_add_subdirectory_if_exists(external/embodiment)
 # Integration modules - complex external integrations
 add_subdirectory(packages/integration/auto_fun)
 add_subdirectory(packages/integration/autonomous_starter)
+add_subdirectory(packages/integration/cognitive_curriculum)
 elizaos_add_subdirectory_if_exists(packages/integration/SWEagent)
 elizaos_add_subdirectory_if_exists(packages/integration/sweagent)
 add_subdirectory(packages/integration/otaku)

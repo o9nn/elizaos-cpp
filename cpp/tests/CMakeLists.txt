@@ -60,6 +60,11 @@ add_executable(autonomous_starter_test autonomous_starter_test.cpp)
 target_link_libraries(autonomous_starter_test elizaos-autonomous_starter gtest gtest_main Threads::Threads)
 add_test(NAME autonomous_starter_test COMMAND autonomous_starter_test)
 
+add_executable(homework_loop_test homework_loop_test.cpp)
+target_link_libraries(homework_loop_test elizaos-cognitive_curriculum elizaos-autonomous_starter gtest gtest_main Threads::Threads)
+add_test(NAME homework_loop_test COMMAND homework_loop_test)
+set_tests_properties(homework_loop_test PROPERTIES LABELS "ksm")
+
 if(TARGET elizaos-persistence)
     add_executable(persistence_test persistence_test.cpp)
     target_link_libraries(persistence_test elizaos-persistence elizaos-core gtest gtest_main Threads::Threads)

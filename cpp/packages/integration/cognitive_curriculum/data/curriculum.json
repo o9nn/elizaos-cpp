@@ -1,0 +1,307 @@
+{
+  "schema": "eliza-homework-loop/curriculum@1",
+  "generated_utc": "2026-06-29T06:13:15.837952+00:00",
+  "objective": {
+    "loss": "1 - PropertyCoherenceScore",
+    "coherence": "(1/15) * sum(score(property_i))",
+    "weakest_rule": "argmax_center Loss(center)",
+    "convergence": {
+      "coherence_threshold": 0.8,
+      "min_center": 0.5
+    }
+  },
+  "alignment_tenets": [
+    "one objective function shared with the developmental cycle",
+    "operational homework is a subset of the developmental KSM cycle",
+    "bounded and non-destructive: only step 10 proposes, nothing commits",
+    "truthful aliveness: stubs cannot inflate coherence",
+    "visible handoff: every cycle records the weakest-center signal"
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Existence",
+      "local": "exists",
+      "global": "in"
+    },
+    {
+      "id": 2,
+      "name": "Distinction",
+      "local": "not",
+      "global": "not-in"
+    },
+    {
+      "id": 3,
+      "name": "Disjunction",
+      "local": "or",
+      "global": "intersect"
+    },
+    {
+      "id": 4,
+      "name": "Conjunction",
+      "local": "and",
+      "global": "union"
+    },
+    {
+      "id": 5,
+      "name": "Transition",
+      "local": "implies",
+      "global": "subset"
+    },
+    {
+      "id": 6,
+      "name": "ModularClosure",
+      "local": "iff",
+      "global": "subseteq"
+    },
+    {
+      "id": 7,
+      "name": "Recursion",
+      "local": "forall",
+      "global": "emptyset"
+    }
+  ],
+  "properties": [
+    {
+      "id": 1,
+      "name": "LevelsOfScale",
+      "evidence": "has_coarse_and_fine_parts"
+    },
+    {
+      "id": 2,
+      "name": "StrongCenters",
+      "evidence": "primary_class_implemented"
+    },
+    {
+      "id": 3,
+      "name": "Boundaries",
+      "evidence": "has_api_boundary"
+    },
+    {
+      "id": 4,
+      "name": "AlternatingRepetition",
+      "evidence": "participates_each_cycle"
+    },
+    {
+      "id": 5,
+      "name": "PositiveSpace",
+      "evidence": "has_build_target"
+    },
+    {
+      "id": 6,
+      "name": "GoodShape",
+      "evidence": "focused_test_passes"
+    },
+    {
+      "id": 7,
+      "name": "LocalSymmetries",
+      "evidence": "operations_consistent"
+    },
+    {
+      "id": 8,
+      "name": "DeepInterlock",
+      "evidence": "referenced_by_other_center"
+    },
+    {
+      "id": 9,
+      "name": "Contrast",
+      "evidence": "distinct_from_neighbours"
+    },
+    {
+      "id": 10,
+      "name": "Gradients",
+      "evidence": "exposes_graded_surface"
+    },
+    {
+      "id": 11,
+      "name": "Roughness",
+      "evidence": "handles_edge_cases"
+    },
+    {
+      "id": 12,
+      "name": "Echoes",
+      "evidence": "appears_in_memory_stream"
+    },
+    {
+      "id": 13,
+      "name": "TheVoid",
+      "evidence": "has_focused_core"
+    },
+    {
+      "id": 14,
+      "name": "SimplicityInnerCalm",
+      "evidence": "no_conflicting_paths"
+    },
+    {
+      "id": 15,
+      "name": "NotSeparateness",
+      "evidence": "contributes_to_main_loop"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "verb": "OBSERVE",
+      "operator": "exists",
+      "mode": "read"
+    },
+    {
+      "step": 2,
+      "verb": "IDENTIFY",
+      "operator": "not",
+      "mode": "read"
+    },
+    {
+      "step": 3,
+      "verb": "FIND_WEAKNESS",
+      "operator": "or",
+      "mode": "read"
+    },
+    {
+      "step": 4,
+      "verb": "ANALYZE",
+      "operator": "and",
+      "mode": "read"
+    },
+    {
+      "step": 5,
+      "verb": "DISCOVER",
+      "operator": "implies",
+      "mode": "read"
+    },
+    {
+      "step": 6,
+      "verb": "INSPECT",
+      "operator": "in",
+      "mode": "read"
+    },
+    {
+      "step": 7,
+      "verb": "MEASURE_ERROR",
+      "operator": "not-in",
+      "mode": "read"
+    },
+    {
+      "step": 8,
+      "verb": "CALCULATE_GRADIENT",
+      "operator": "intersect",
+      "mode": "read"
+    },
+    {
+      "step": 9,
+      "verb": "AGGREGATE",
+      "operator": "union",
+      "mode": "read"
+    },
+    {
+      "step": 10,
+      "verb": "NEST",
+      "operator": "subset",
+      "mode": "propose"
+    },
+    {
+      "step": 11,
+      "verb": "SEAL",
+      "operator": "iff",
+      "mode": "read"
+    },
+    {
+      "step": 12,
+      "verb": "BOOTSTRAP",
+      "operator": "forall",
+      "mode": "read"
+    }
+  ],
+  "centers": [
+    {
+      "name": "characters",
+      "primary_dimension": "Structure",
+      "local_view": "trait fields, JSON loaders, manager",
+      "global_view": "persona presented to users",
+      "concept_ids": [
+        20,
+        23,
+        25,
+        41,
+        44,
+        46
+      ],
+      "validation_anchor": "characters_test"
+    },
+    {
+      "name": "memory",
+      "primary_dimension": "Process",
+      "local_view": "Memory objects, recent-message stream",
+      "global_view": "autobiographical field",
+      "concept_ids": [
+        27,
+        30,
+        32,
+        48,
+        51,
+        53
+      ],
+      "validation_anchor": "memory tests"
+    },
+    {
+      "name": "cognitive_cycle",
+      "primary_dimension": "Process",
+      "local_view": "perception/reasoning/action steps",
+      "global_view": "Echobeats 12-step rhythm",
+      "concept_ids": [
+        27,
+        31,
+        33,
+        48,
+        52,
+        54
+      ],
+      "validation_anchor": "comprehensive_autonomy_e2e_test"
+    },
+    {
+      "name": "endocrine",
+      "primary_dimension": "Control",
+      "local_view": "hormone levels, bounded updates",
+      "global_view": "affective field / mood",
+      "concept_ids": [
+        34,
+        37,
+        39,
+        55,
+        58,
+        60
+      ],
+      "validation_anchor": "endocrine tests"
+    },
+    {
+      "name": "protocol",
+      "primary_dimension": "Structure",
+      "local_view": "WebSocket schema, state fields",
+      "global_view": "backend-frontend contract",
+      "concept_ids": [
+        20,
+        24,
+        25,
+        41,
+        45,
+        46
+      ],
+      "validation_anchor": "protocol serialization tests"
+    },
+    {
+      "name": "autonomy",
+      "primary_dimension": "Control",
+      "local_view": "goals, plans, shell guards",
+      "global_view": "bounded self-directed agent",
+      "concept_ids": [
+        34,
+        38,
+        40,
+        55,
+        59,
+        61
+      ],
+      "validation_anchor": "autonomous_starter_test"
+    }
+  ]
+}
