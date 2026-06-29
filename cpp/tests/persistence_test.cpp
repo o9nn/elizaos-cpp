@@ -871,3 +871,110 @@ TEST_F(PersistenceTest, PersistenceAcrossReopen) {
         backend.disconnect();
     }
 }
+
+
+// ===========================================================================
+// TransactionScope Move-Semantics Regression Tests
+// ---------------------------------------------------------------------------
+// These lock in the reconciled public TransactionScope contract (out-of-line
+// ctor/dtor + move ctor/assign + void commit()/rollback() + execute()).
+// A prior header-drift bug shipped an older inline definition (bool commit(),
+// no move ops, no `active_`) that broke the build; these tests guarantee the
+// move pathway and the moved-from inactive-scope behavior cannot silently
+// regress again.
+// ===========================================================================
+
+TEST_F(PersistenceTest, TransactionScopeMoveConstructTransfersOwnership) {
+    StorageConfig config = StorageConfig::inMemory();
+    SQLiteBackend backend(config);
+    ASSERT_TRUE(backend.connect());
+
+    backend.execute("CREATE TABLE ts_move (id INTEGER PRIMARY KEY, val TEXT)", {});
+    backend.execute("INSERT INTO ts_move VALUES (1, 'before')", {});
+
+    {
+        auto txn = backend.beginTransaction();
+        ASSERT_NE(txn, nullptr);
+        TransactionScope original(txn);
+        ASSERT_TRUE(original.isActive());
+
+        // Move-construct: ownership transfers, source becomes inactive.
+        TransactionScope moved(std::move(original));
+        EXPECT_FALSE(original.isActive());
+        EXPECT_TRUE(moved.isActive());
+
+        // The moved-to scope drives a real write then commits via void commit().
+        auto execResult = moved.execute("UPDATE ts_move SET val = 'after' WHERE id = 1", {});
+        EXPECT_TRUE(execResult.success);
+        moved.commit();
+        EXPECT_FALSE(moved.isActive());
+
+        // The moved-from scope must not be able to execute anything.
+        auto failResult = original.execute("UPDATE ts_move SET val = 'ghost' WHERE id = 1", {});
+        EXPECT_FALSE(failResult.success);
+    }
+
+    auto result = backend.query("SELECT val FROM ts_move WHERE id = 1", {});
+    ASSERT_TRUE(result.success);
+    ASSERT_EQ(result.value->size(), 1u);
+    EXPECT_EQ((*result.value)[0][0].asString(), "after");
+
+    backend.disconnect();
+}
+
+TEST_F(PersistenceTest, TransactionScopeMoveAssignSuppressesDoubleRollback) {
+    StorageConfig config = StorageConfig::inMemory();
+    SQLiteBackend backend(config);
+    ASSERT_TRUE(backend.connect());
+
+    backend.execute("CREATE TABLE ts_assign (id INTEGER PRIMARY KEY, val TEXT)", {});
+    backend.execute("INSERT INTO ts_assign VALUES (1, 'keep')", {});
+
+    {
+        auto txn = backend.beginTransaction();
+        ASSERT_NE(txn, nullptr);
+        TransactionScope source(txn);
+        source.execute("UPDATE ts_assign SET val = 'pending' WHERE id = 1", {});
+
+        // Move-assign into a fresh, empty scope. The source is neutered so its
+        // destructor cannot trigger a second rollback on the same transaction.
+        TransactionScope sink(nullptr);
+        sink = std::move(source);
+        EXPECT_FALSE(source.isActive());
+        EXPECT_TRUE(sink.isActive());
+        // sink leaves scope without commit -> single auto-rollback expected.
+    }
+
+    auto result = backend.query("SELECT val FROM ts_assign WHERE id = 1", {});
+    ASSERT_TRUE(result.success);
+    ASSERT_EQ(result.value->size(), 1u);
+    EXPECT_EQ((*result.value)[0][0].asString(), "keep");
+
+    backend.disconnect();
+}
+
+TEST_F(PersistenceTest, TransactionScopeExecuteFailsAfterCommit) {
+    StorageConfig config = StorageConfig::inMemory();
+    SQLiteBackend backend(config);
+    ASSERT_TRUE(backend.connect());
+
+    backend.execute("CREATE TABLE ts_commit (id INTEGER PRIMARY KEY, val TEXT)", {});
+
+    auto txn = backend.beginTransaction();
+    ASSERT_NE(txn, nullptr);
+    TransactionScope scope(txn);
+    EXPECT_TRUE(scope.execute("INSERT INTO ts_commit VALUES (1, 'committed')", {}).success);
+    scope.commit();
+
+    // After commit the underlying transaction is inactive; execute must fail
+    // gracefully rather than dispatch to a closed transaction.
+    auto afterCommit = scope.execute("INSERT INTO ts_commit VALUES (2, 'late')", {});
+    EXPECT_FALSE(afterCommit.success);
+
+    auto result = backend.query("SELECT COUNT(*) FROM ts_commit", {});
+    ASSERT_TRUE(result.success);
+    ASSERT_EQ(result.value->size(), 1u);
+    EXPECT_EQ((*result.value)[0][0].asInt(), 1);
+
+    backend.disconnect();
+}
