@@ -94,6 +94,7 @@ add_subdirectory(cpp/packages/applications/goal_manager)
 # Integration modules
 add_subdirectory(cpp/packages/integration/auto_fun)
 add_subdirectory(cpp/packages/integration/autonomous_starter)
+add_subdirectory(cpp/packages/integration/cognitive_curriculum)
 add_subdirectory(cpp/packages/integration/sweagent)
 add_subdirectory(cpp/packages/integration/mcp_gateway)
 add_subdirectory(cpp/packages/integration/cognitive_bridge)

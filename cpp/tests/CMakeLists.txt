@@ -208,6 +208,10 @@ add_executable(otaku_test otaku_test.cpp)
 target_link_libraries(otaku_test elizaos-otaku gtest gtest_main Threads::Threads)
 add_test(NAME otaku_test COMMAND otaku_test)
 
+add_executable(otaku_liquidity_test otaku_liquidity_test.cpp)
+target_link_libraries(otaku_liquidity_test elizaos-otaku gtest gtest_main Threads::Threads)
+add_test(NAME otaku_liquidity_test COMMAND otaku_liquidity_test)
+
 add_executable(otc_agent_test otc_agent_test.cpp)
 target_link_libraries(otc_agent_test elizaos-otc_agent gtest gtest_main Threads::Threads)
 add_test(NAME otc_agent_test COMMAND otc_agent_test)
