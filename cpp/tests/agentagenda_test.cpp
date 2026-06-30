@@ -1,5 +1,7 @@
 // agentagenda_test.cpp - E2E tests for elizaos::AgentAgenda.
 #include <gtest/gtest.h>
+#include <thread>
+#include <chrono>
 #include "elizaos/agentagenda.hpp"
 
 using namespace elizaos;
@@ -130,4 +132,66 @@ TEST_F(AgentAgendaTest, LastCreatedAndUpdated) {
     agenda.updatePlan(a.id, "newplan");
     auto last_updated = agenda.getLastUpdatedTask();
     EXPECT_EQ(last_updated.id, a.id);
+}
+
+
+// --- planAgain() adaptive re-planning (backported from hurdcog fork) ---
+
+TEST_F(AgentAgendaTest, PlanAgainBasic) {
+    auto t = agenda.createTask("complete the project");
+    auto new_plan = agenda.planAgain(t.id);
+    EXPECT_FALSE(new_plan.empty());
+    EXPECT_NE(new_plan.find("Re-planned"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithContext) {
+    auto t = agenda.createTask("build feature");
+    auto new_plan = agenda.planAgain(t.id, "requirements changed");
+    EXPECT_NE(new_plan.find("Re-planning context"), std::string::npos);
+    EXPECT_NE(new_plan.find("requirements changed"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithProgress) {
+    std::vector<AgendaTaskStep> steps{
+        AgendaTaskStep("step 1 done", true),
+        AgendaTaskStep("step 2 pending", false)
+    };
+    auto t = agenda.createTask("multi-step task", "original plan", steps);
+    auto new_plan = agenda.planAgain(t.id);
+    EXPECT_NE(new_plan.find("Progress Summary"), std::string::npos);
+    EXPECT_NE(new_plan.find("Completed:"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainRegenerateSteps) {
+    std::vector<AgendaTaskStep> steps{
+        AgendaTaskStep("done step", true),
+        AgendaTaskStep("pending step", false)
+    };
+    auto t = agenda.createTask("task to replan", "original plan", steps);
+    auto new_plan = agenda.planAgain(t.id, "need new approach", true);
+    EXPECT_FALSE(new_plan.empty());
+
+    auto updated = agenda.getTaskById(t.id);
+    bool found_done = false;
+    for (const auto& s : updated.steps) {
+        if (s.content == "done step" && s.completed) found_done = true;
+    }
+    EXPECT_TRUE(found_done);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainNonExistent) {
+    auto result = agenda.planAgain("non-existent-id");
+    EXPECT_TRUE(result.empty());
+}
+
+// Regression guard for the millisecond-resolution timestamp serialization:
+// a planAgain() a few ms after createTask must yield a strictly newer
+// updated_at after the persistence round-trip (previously floored to seconds).
+TEST_F(AgentAgendaTest, PlanAgainUpdatesTimestamp) {
+    auto t = agenda.createTask("timestamp monotonicity");
+    auto original_updated = agenda.getTaskById(t.id).updated_at;
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    agenda.planAgain(t.id, "bump");
+    auto new_updated = agenda.getTaskById(t.id).updated_at;
+    EXPECT_GT(new_updated, original_updated);
 }

@@ -8,9 +8,12 @@
 #include <ctime>
 
 namespace elizaos {
-
 namespace {
-
+// Display-length limits used by planAgain() (backported from hurdcog fork).
+constexpr size_t MAX_COMPLETED_STEP_DISPLAY_LENGTH = 60;
+constexpr size_t MAX_REMAINING_STEP_DISPLAY_LENGTH = 55;
+constexpr size_t MAX_CONTEXT_STEP_LENGTH = 50;
+constexpr size_t MAX_REMAINING_STEPS_TO_SHOW = 3;
 std::string toLowerCopy(std::string value) {
     std::transform(value.begin(), value.end(), value.begin(),
         [](unsigned char ch) { return static_cast<char>(std::tolower(ch)); });
@@ -110,9 +113,16 @@ AgendaTaskStatus AgentAgenda::stringToStatus(const std::string& status_str) {
 }
 
 std::string AgentAgenda::timestampToString(const std::chrono::system_clock::time_point& timepoint) {
-    auto time_t = std::chrono::system_clock::to_time_t(timepoint);
+    // Serialize with millisecond resolution. The previous implementation used
+    // to_time_t(), which floors to whole seconds; that made sub-second updates
+    // (e.g. planAgain() running a few ms after createTask) invisible after a
+    // persistence round-trip, breaking updated_at monotonicity. Storing the
+    // epoch in milliseconds preserves the ordering the autonomy loop relies on.
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                  timepoint.time_since_epoch())
+                  .count();
     std::stringstream ss;
-    ss << time_t;
+    ss << ms;
     return ss.str();
 }
 
@@ -121,13 +131,14 @@ std::chrono::system_clock::time_point AgentAgenda::stringToTimestamp(const std::
         return std::chrono::system_clock::now();
     }
 
-    std::time_t parsed = 0;
+    long long parsed = 0;
     std::istringstream ss(timestamp_str);
     ss >> parsed;
     if (!ss || !ss.eof()) {
         return std::chrono::system_clock::now();
     }
-    return std::chrono::system_clock::from_time_t(parsed);
+    return std::chrono::system_clock::time_point(
+        std::chrono::milliseconds(parsed));
 }
 
 std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps) {
@@ -476,6 +487,100 @@ bool AgentAgenda::updatePlan(const std::string& task_id, const std::string& plan
     
     saveTaskToMemory(task);
     return true;
+}
+
+std::string AgentAgenda::planAgain(const std::string& task_id,
+                                    const std::string& context,
+                                    bool regenerate_steps) {
+    auto task = getTaskById(task_id);
+    if (task.id.empty()) {
+        return "";
+    }
+
+    // Analyze current task state
+    size_t completed_count = 0;
+    size_t total_steps = task.steps.size();
+    std::vector<std::string> completed_step_contents;
+    std::vector<std::string> remaining_step_contents;
+
+    for (const auto& step : task.steps) {
+        if (step.completed) {
+            completed_count++;
+            completed_step_contents.push_back(step.content);
+        } else {
+            remaining_step_contents.push_back(step.content);
+        }
+    }
+
+    // Build the new plan based on current progress
+    std::stringstream new_plan;
+    new_plan << "Re-planned for goal: " << task.goal << "\n\n";
+
+    if (total_steps > 0) {
+        new_plan << "Progress Summary:\n";
+        new_plan << "  - Completed: " << completed_count << "/" << total_steps << " steps\n";
+        if (!completed_step_contents.empty()) {
+            new_plan << "  - Already done:\n";
+            for (const auto& done : completed_step_contents) {
+                new_plan << "    * " << (done.size() > MAX_COMPLETED_STEP_DISPLAY_LENGTH ?
+                    done.substr(0, MAX_COMPLETED_STEP_DISPLAY_LENGTH - 3) + "..." : done) << "\n";
+            }
+        }
+        new_plan << "\n";
+    }
+
+    if (!context.empty()) {
+        new_plan << "Re-planning context: " << context << "\n\n";
+    }
+
+    new_plan << "Revised Strategy:\n";
+    if (remaining_step_contents.empty()) {
+        new_plan << "  1. Verify all completed work meets the original goal criteria\n";
+        new_plan << "  2. Document any lessons learned or improvements identified\n";
+        new_plan << "  3. Consider if additional scope or follow-up tasks are needed\n";
+        new_plan << "  4. Mark task as complete or extend with new steps\n";
+    } else {
+        new_plan << "  1. Review remaining work against original goal\n";
+        new_plan << "  2. Prioritize remaining steps based on current context\n";
+        new_plan << "  3. Execute highest-priority remaining actions:\n";
+        size_t step_num = 0;
+        for (const auto& remaining : remaining_step_contents) {
+            if (step_num >= MAX_REMAINING_STEPS_TO_SHOW) {
+                new_plan << "       (" << (remaining_step_contents.size() - MAX_REMAINING_STEPS_TO_SHOW) << " more steps...)\n";
+                break;
+            }
+            new_plan << "     - " << (remaining.size() > MAX_REMAINING_STEP_DISPLAY_LENGTH ?
+                remaining.substr(0, MAX_REMAINING_STEP_DISPLAY_LENGTH - 3) + "..." : remaining) << "\n";
+            step_num++;
+        }
+        new_plan << "  4. Validate results against the goal: " << task.goal << "\n";
+    }
+
+    std::string plan_result = new_plan.str();
+
+    task.plan = plan_result;
+    task.updated_at = std::chrono::system_clock::now();
+
+    if (regenerate_steps) {
+        std::vector<AgendaTaskStep> new_steps;
+        for (const auto& step : task.steps) {
+            if (step.completed) {
+                new_steps.push_back(step);
+            }
+        }
+        if (!context.empty()) {
+            new_steps.emplace_back("Address re-planning context: " +
+                (context.size() > MAX_CONTEXT_STEP_LENGTH ?
+                    context.substr(0, MAX_CONTEXT_STEP_LENGTH - 3) + "..." : context), false);
+        }
+        new_steps.emplace_back("Verify revised approach aligns with goal: " + task.goal, false);
+        new_steps.emplace_back("Execute revised plan actions", false);
+        new_steps.emplace_back("Validate final results and document completion", false);
+        task.steps = new_steps;
+    }
+
+    saveTaskToMemory(task);
+    return plan_result;
 }
 
 std::vector<AgendaTaskStep> AgentAgenda::createSteps(const std::string& goal, const std::string& plan) {

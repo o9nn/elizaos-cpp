@@ -544,6 +544,11 @@ private:
     // Callbacks
     std::function<void(const std::string&)> statusCallback_;
 
+    // Open liquidity positions opened via addLiquidity(), keyed by positionId.
+    // Backported from hurdcog fork to complete the liquidity-position lifecycle.
+    std::vector<LiquidityPosition> liquidityPositions_;
+    mutable std::mutex liquidityMutex_;
+
     // Thread safety
     mutable std::mutex agentMutex_;
 

@@ -157,7 +157,23 @@ public:
      * @return True if plan was updated, false otherwise
      */
     bool updatePlan(const std::string& task_id, const std::string& plan);
-    
+
+    /**
+     * @brief Re-plan an existing task based on current progress
+     *
+     * Analyzes the current state of a task (completed steps, remaining steps,
+     * and the original goal) and generates a new plan that accounts for what
+     * has already been done. Backported from hurdcog fork for cross-fork parity.
+     *
+     * @param task_id The ID of the task to re-plan
+     * @param context Optional additional context for re-planning
+     * @param regenerate_steps If true, also regenerates the steps based on the new plan
+     * @return The new plan string, or empty string if task not found
+     */
+    std::string planAgain(const std::string& task_id,
+                          const std::string& context = "",
+                          bool regenerate_steps = false);
+
     /**
      * @brief Create steps for a goal and plan
      * @param goal The goal
