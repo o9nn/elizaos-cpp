@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cmath>
+#include <cctype>
 
 namespace elizaos {
 
@@ -111,6 +112,56 @@ void State::addActor(const Actor& actor) {
 
 void State::addGoal(const Goal& goal) {
     goals_.push_back(goal);
+}
+
+namespace {
+// Case-insensitive ASCII equality used by the goal-status helpers so that
+// callers can match "Active"/"active"/"ACTIVE" interchangeably.
+bool iequalsAsciiGoalStatus(const std::string& a, const std::string& b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        if (std::tolower(static_cast<unsigned char>(a[i])) !=
+            std::tolower(static_cast<unsigned char>(b[i]))) {
+            return false;
+        }
+    }
+    return true;
+}
+} // namespace
+
+bool State::updateGoalStatus(const UUID& goalId, const std::string& status) {
+    for (auto& goal : goals_) {
+        if (goal.id == goalId) {
+            goal.status = status;
+            goal.updatedAt = std::chrono::system_clock::now();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool State::updateGoalStatusByDescription(const std::string& description,
+                                          const std::string& status) {
+    for (auto& goal : goals_) {
+        if (iequalsAsciiGoalStatus(goal.description, description)) {
+            goal.status = status;
+            goal.updatedAt = std::chrono::system_clock::now();
+            return true;
+        }
+    }
+    return false;
+}
+
+std::size_t State::countGoalsWithStatus(const std::string& status) const {
+    std::size_t count = 0;
+    for (const auto& goal : goals_) {
+        if (iequalsAsciiGoalStatus(goal.status, status)) {
+            ++count;
+        }
+    }
+    return count;
 }
 
 void State::addRecentMessage(std::shared_ptr<Memory> memory) {

@@ -13,6 +13,7 @@ target_link_libraries(elizaos-autonomous_starter
     elizaos-agentloop
     elizaos-agentshell
     elizaos-agentlogger
+    elizaos-agentmemory
     Threads::Threads
 )
 
@@ -32,6 +33,7 @@ target_link_libraries(autonomous_starter_demo
     elizaos-agentloop
     elizaos-agentshell
     elizaos-agentlogger
+    elizaos-agentmemory
     Threads::Threads
 )
 
@@ -51,6 +53,7 @@ target_link_libraries(autonomous_starter_tests
     elizaos-agentloop
     elizaos-agentshell
     elizaos-agentlogger
+    elizaos-agentmemory
     gtest_main
     Threads::Threads
 )

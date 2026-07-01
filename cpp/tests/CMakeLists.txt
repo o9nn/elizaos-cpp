@@ -609,3 +609,26 @@ add_real_test(real_autonomy_optimizer_test src/test_autonomy_optimizer.cpp)
 if(TARGET real_autonomy_optimizer_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_optimizer_test)
 endif()
+
+# ============================================================================
+# Closed-loop autonomy suite - ported from hurdcog for cross-fork parity.
+# Validates the advanced attention-weighted, evidence-gated goal lifecycle
+# (single completion path, active-goal invariant, purposeful-repetition
+# stagnation exemption) now shared by both forks.
+# ============================================================================
+add_real_test(real_closed_loop_autonomy_test src/test_closed_loop_autonomy.cpp)
+if(TARGET real_closed_loop_autonomy_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_closed_loop_autonomy_test)
+endif()
+add_real_test(real_autonomy_reflection_test src/test_autonomy_reflection.cpp)
+if(TARGET real_autonomy_reflection_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_reflection_test)
+endif()
+add_real_test(real_autonomy_evolution_test src/test_autonomy_evolution.cpp)
+if(TARGET real_autonomy_evolution_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_evolution_test)
+endif()
+add_real_test(real_attention_bus_test src/test_attention_bus.cpp)
+if(TARGET real_attention_bus_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_attention_bus_test)
+endif()

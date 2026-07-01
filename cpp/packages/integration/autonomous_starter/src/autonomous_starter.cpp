@@ -1,5 +1,8 @@
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/agentlogger.hpp"
+#include "elizaos/attention.hpp"
+
+#include <cmath>
 
 #include <algorithm>
 #include <array>
@@ -13,12 +16,17 @@
 #include <sstream>
 #include <thread>
 #include <vector>
+#include <unordered_map>
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <direct.h>  // _getcwd on Windows
 #define getcwd _getcwd
+#ifndef _MSC_VER
+// MinGW has popen/pclose without underscore prefix.
+#else
 #define popen _popen
 #define pclose _pclose
+#endif
 #else
 #include <sys/wait.h>
 #include <unistd.h>
@@ -49,7 +57,6 @@ std::string normalizeCommandForSafety(const std::string& command) {
             c = ' ';
         }
     }
-
     std::string collapsed;
     collapsed.reserve(normalized.size());
     bool previousSpace = false;
@@ -131,7 +138,8 @@ std::string shellQuote(const std::string& value) {
 }
 
 int decodeExitStatus(int rawStatus) {
-#ifdef _MSC_VER
+#ifdef _WIN32
+    // On Windows, pclose() returns the process exit code directly.
     return rawStatus;
 #else
     if (rawStatus == -1) {
@@ -282,14 +290,315 @@ std::string AutonomousStarter::selectGoalContext() const {
         return status;
     };
 
-    for (const auto& goal : goals) {
-        const auto status = normalizeStatus(goal.status);
-        if (status == "active" || status == "in_progress" || status == "pending") {
-            return goal.description.empty() ? "continue open autonomy goal" : goal.description;
+    // Prefer the currently pursued goal so perception, reasoning, and action all
+    // converge on the same intent within a cycle.
+    if (!activeGoalId_.empty()) {
+        for (const auto& goal : goals) {
+            if (goal.id == activeGoalId_) {
+                const auto status = normalizeStatus(goal.status);
+                if (status == "active" || status == "in_progress" || status == "pending") {
+                    return goal.description.empty() ? "continue open autonomy goal" : goal.description;
+                }
+            }
+        }
+    }
+
+    // Priority order: active > in_progress > pending.
+    for (const char* wanted : {"active", "in_progress", "pending"}) {
+        for (const auto& goal : goals) {
+            if (normalizeStatus(goal.status) == wanted) {
+                return goal.description.empty() ? "continue open autonomy goal" : goal.description;
+            }
         }
     }
 
     return goals.back().description.empty() ? "review completed autonomy context" : goals.back().description;
+}
+
+const StateGoal* AutonomousStarter::selectActiveGoal() {
+    const auto& goals = state_.getGoals();
+    auto normalizeStatus = [](std::string status) {
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return status;
+    };
+
+    // Promote the first pending goal to active when no active goal exists, so
+    // the agent always has exactly one goal in flight (single-tasking autonomy).
+    const StateGoal* active = nullptr;
+    const StateGoal* firstPending = nullptr;
+    for (const auto& goal : goals) {
+        const auto status = normalizeStatus(goal.status);
+        if ((status == "active" || status == "in_progress") && active == nullptr) {
+            active = &goal;
+        } else if (status == "pending" && firstPending == nullptr) {
+            firstPending = &goal;
+        }
+    }
+
+    if (active == nullptr && firstPending != nullptr) {
+        state_.updateGoalStatus(firstPending->id, "active");
+        // Re-resolve the pointer after mutation (vector storage is stable here,
+        // but re-scan defensively in case of future reallocation semantics).
+        for (const auto& goal : state_.getGoals()) {
+            if (goal.id == firstPending->id) {
+                active = &goal;
+                break;
+            }
+        }
+    }
+
+    if (active != nullptr) {
+        activeGoalId_ = active->id;
+    } else {
+        activeGoalId_ = "";
+    }
+    return active;
+}
+
+bool AutonomousStarter::planSatisfiesGoal(const StateGoal& goal,
+                                          const std::string& plan,
+                                          const ShellCommandResult& result) const {
+    // A goal is only satisfied by a successful action whose plan is topically
+    // aligned with the goal. Failed commands never satisfy a goal, so the agent
+    // will keep working (or escalate via the stagnation guard) until it produces
+    // real evidence. This is the behavioral consequence that makes the goal
+    // center "living" rather than a decorative status field.
+    if (!result.success) {
+        return false;
+    }
+
+    const std::string goalText = toLowerAscii(goal.description);
+    const std::string planText = toLowerAscii(plan);
+
+    auto mentions = [](const std::string& text, std::initializer_list<const char*> needles) {
+        for (const char* needle : needles) {
+            if (text.find(needle) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // Situational-awareness goals are satisfied by any successful awareness plan.
+    if (mentions(goalText, {"situational awareness", "workspace", "awareness"})) {
+        return mentions(planText, {"situational awareness", "workspace", "awareness", "pwd", "directory"});
+    }
+    // Project-structure / source-inspection goals.
+    if (mentions(goalText, {"project structure", "c++", "source", "cmake", "code actions"})) {
+        return mentions(planText, {"project structure", "source", "c++", "cmake", "repository source"});
+    }
+    // Test/validation goals.
+    if (mentions(goalText, {"test", "validation", "self-audit"})) {
+        return mentions(planText, {"test", "validation", "self-audit"});
+    }
+    // Runtime/system goals.
+    if (mentions(goalText, {"runtime", "system", "kernel", "identity"})) {
+        return mentions(planText, {"runtime", "system", "kernel", "identity"});
+    }
+
+    // Generic exploration goals are satisfied by any successful action.
+    return true;
+}
+
+bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal,
+                                               const std::string& plan) const {
+    const std::string goalText = normalizedGoal;  // caller passes lower-cased goal
+    const std::string planText = toLowerAscii(plan);
+
+    auto mentions = [](const std::string& text, std::initializer_list<const char*> needles) {
+        for (const char* needle : needles) {
+            if (text.find(needle) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // Mirror the topic mapping used by planSatisfiesGoal(), minus the success
+    // requirement. This keeps the stagnation-guard exemption in lock-step with
+    // the goal-completion alignment logic so the two never disagree about whether
+    // a plan serves a goal.
+    if (mentions(goalText, {"situational awareness", "workspace", "awareness"})) {
+        return mentions(planText, {"situational awareness", "workspace", "awareness", "pwd", "directory"});
+    }
+    if (mentions(goalText, {"project structure", "c++", "source", "cmake", "code actions"})) {
+        return mentions(planText, {"project structure", "source", "c++", "cmake", "repository source"});
+    }
+    if (mentions(goalText, {"test", "validation", "self-audit", "audit"})) {
+        return mentions(planText, {"test", "validation", "self-audit"});
+    }
+    if (mentions(goalText, {"runtime", "system", "kernel", "identity"})) {
+        return mentions(planText, {"runtime", "system", "kernel", "identity"});
+    }
+    // For generic goals no specific plan is privileged, so repetition of any plan
+    // is treated as aimless and remains subject to the stagnation guard.
+    return false;
+}
+
+void AutonomousStarter::seedAdaptiveGoal() {
+    const Timestamp now = std::chrono::system_clock::now();
+    static const std::array<const char*, 3> rotations = {{
+        "Sample repository source files to deepen project understanding",
+        "Self-audit test and validation surfaces for autonomy health",
+        "Inspect system identity and runtime context for situational grounding"
+    }};
+    const std::string description = rotations[adaptiveGoalCounter_ % rotations.size()];
+    ++adaptiveGoalCounter_;
+    state_.addGoal(StateGoal{
+        generateUUID(),
+        description,
+        "pending",
+        now,
+        now
+    });
+    appendMemory("Adaptive goal seeded: " + description +
+                 " (all prior goals satisfied; autonomy continues exploring).");
+}
+
+void AutonomousStarter::evaluateGoalProgress(const std::string& plan,
+                                             const std::string& command,
+                                             const ShellCommandResult& result) {
+    (void)command;
+
+    // Mark the active goal completed when the successful action provides aligned
+    // evidence, then promote the next pending goal.
+    if (!activeGoalId_.empty()) {
+        const StateGoal* activeGoal = nullptr;
+        for (const auto& goal : state_.getGoals()) {
+            if (goal.id == activeGoalId_) {
+                activeGoal = &goal;
+                break;
+            }
+        }
+        // Convergence gate: a single aligned success is only a probe, not proof
+        // that the goal is achieved. Require the serving plan to have demonstrated
+        // *reliable* success (>= 2 attempts and a success ratio >= 0.5) before
+        // marking the goal completed. This keeps a sustained goal live across the
+        // first cycle or two -- preserving plan continuity for a single dominant
+        // goal -- while still driving every goal to closed-loop completion within
+        // a handful of cycles. The threshold mirrors advanceGoalLifecycle() so the
+        // two evidence-gated paths agree on what "reliable" means.
+        // A goal is "achieved" only after its serving plan has produced reliable,
+        // repeated evidence: at least three successful aligned attempts with a
+        // success ratio >= 0.5. Three (rather than two) gives a lone dominant goal
+        // a stable multi-cycle pursuit window before it converges, while a set of
+        // goals still drives every member to completion well within a normal run.
+        const bool planIsReliable =
+            planStats_[plan].attempts >= 3 && getPlanSuccessRatio(plan) >= 0.5;
+        if (activeGoal != nullptr && planSatisfiesGoal(*activeGoal, plan, result) &&
+            planIsReliable) {
+            const std::string completedDescription = activeGoal->description;
+            state_.updateGoalStatus(activeGoalId_, "completed");
+            appendMemory("Goal completed: " + completedDescription +
+                         " (satisfied by reliable plan='" + plan + "').");
+            activeGoalId_ = "";
+        }
+    }
+
+    // If every goal is now complete, seed a fresh adaptive goal so the agent
+    // never dead-ends into a no-open-goal idle loop.
+    if (getOpenGoalCount() == 0) {
+        seedAdaptiveGoal();
+    }
+}
+
+std::size_t AutonomousStarter::getOpenGoalCount() const {
+    std::size_t open = 0;
+    for (const auto& goal : state_.getGoals()) {
+        std::string status = toLowerAscii(goal.status);
+        if (status == "active" || status == "in_progress" || status == "pending") {
+            ++open;
+        }
+    }
+    return open;
+}
+
+std::size_t AutonomousStarter::getCompletedGoalCount() const {
+    std::size_t completed = 0;
+    for (const auto& goal : state_.getGoals()) {
+        if (toLowerAscii(goal.status) == "completed") {
+            ++completed;
+        }
+    }
+    return completed;
+}
+
+std::string AutonomousStarter::scoreAndSelectGoal() const {
+    const auto& goals = state_.getGoals();
+    if (goals.empty()) {
+        return selectGoalContext();
+    }
+
+    auto normalizeStatus = [](std::string status) {
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return status;
+    };
+
+    // Score each open goal through the repository's AttentionAllocator. Open
+    // goals (active/in_progress/pending) receive higher urgency; freshly created
+    // goals (small index) receive higher novelty; long-standing goals accrue
+    // importance. This replaces ad-hoc string matching with the engine's own
+    // ECAN-style composite attention scoring.
+    std::vector<UUID> candidateIds;
+    candidateIds.reserve(goals.size());
+    const Timestamp now = std::chrono::system_clock::now();
+
+    for (std::size_t i = 0; i < goals.size(); ++i) {
+        const auto& goal = goals[i];
+        const std::string status = normalizeStatus(goal.status);
+        const bool isOpen = (status == "active" || status == "in_progress" || status == "pending");
+        if (!isOpen) {
+            continue;
+        }
+
+        AttentionValue av;
+        // Urgency: active goals outrank pending goals.
+        av.urgency = (status == "active" || status == "in_progress") ? 0.85 : 0.55;
+        // Importance: older goals (earlier in the list / earlier createdAt) carry
+        // more long-term importance because they anchor the agent's mission.
+        const double ageSeconds =
+            std::chrono::duration_cast<std::chrono::seconds>(now - goal.createdAt).count();
+        av.importance = std::min(1.0, 0.4 + (ageSeconds / 3600.0) * 0.1);
+        // Novelty: goals not yet attempted (no matching memory) are novel.
+        const std::string needle = goal.description.substr(0, std::min<std::size_t>(goal.description.size(), 24));
+        bool seen = false;
+        for (const auto& mem : state_.getRecentMessages()) {
+            if (mem && !needle.empty() && mem->getContent().find(needle) != std::string::npos) {
+                seen = true;
+                break;
+            }
+        }
+        av.novelty = seen ? 0.2 : 0.8;
+        // Activation: bias by current competence so a struggling agent focuses on
+        // the highest-urgency goal rather than exploring novel ones.
+        av.activation = competenceSignal_;
+
+        goalAttention_.updateAttentionValue(goal.id, av);
+        candidateIds.push_back(goal.id);
+    }
+
+    if (candidateIds.empty()) {
+        return selectGoalContext();
+    }
+
+    const auto prioritized = goalAttention_.prioritizeElements(candidateIds);
+    if (prioritized.empty()) {
+        return selectGoalContext();
+    }
+
+    const UUID topId = prioritized.front().elementId;
+    for (const auto& goal : goals) {
+        if (goal.id == topId) {
+            return goal.description.empty() ? selectGoalContext() : goal.description;
+        }
+    }
+    return selectGoalContext();
+}
+
+std::string AutonomousStarter::getAttentionPrioritizedGoal() const {
+    return scoreAndSelectGoal();
 }
 
 std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan) const {
@@ -492,6 +801,9 @@ void AutonomousStarter::startAutonomousLoop() {
         }),
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
             return actionStep(input);
+        }),
+        LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
+            return reflectionStep(input);
         })
     };
 
@@ -534,12 +846,176 @@ std::size_t AutonomousStarter::runCognitiveCycleOnce() {
     std::shared_ptr<void> token = std::make_shared<int>(0);
     token = perceptionStep(token);
     token = reasoningStep(token);
-    actionStep(token);
+    token = actionStep(token);
+    reflectionStep(token);
     return cognitiveCycle_;
+}
+
+double AutonomousStarter::getPlanSuccessRatio(const std::string& plan) const {
+    auto it = planStats_.find(plan);
+    if (it == planStats_.end() || it->second.attempts == 0) {
+        return 0.0;
+    }
+    return static_cast<double>(it->second.successes) /
+           static_cast<double>(it->second.attempts);
+}
+
+double AutonomousStarter::planBias(const std::string& plan) const {
+    // Optimistic prior: unseen plans start neutral so the agent still explores,
+    // while plans with a track record are biased by their measured success rate.
+    auto it = planStats_.find(plan);
+    if (it == planStats_.end() || it->second.attempts == 0) {
+        return 0.5;
+    }
+    return static_cast<double>(it->second.successes) /
+           static_cast<double>(it->second.attempts);
+}
+
+void AutonomousStarter::recordPlanOutcome(const std::string& plan, bool success) {
+    if (plan.empty()) {
+        return;
+    }
+    auto& stats = planStats_[plan];
+    ++stats.attempts;
+    if (success) {
+        ++stats.successes;
+    }
+}
+
+void AutonomousStarter::refreshGoalAttention() {
+    const auto& goals = state_.getGoals();
+    for (const auto& goal : goals) {
+        std::string status = goal.status;
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        const bool open = (status == "active" || status == "in_progress" ||
+                           status == "pending");
+
+        AttentionValue av = goalAttention_.hasAttentionValue(goal.id)
+                                ? goalAttention_.getAttentionValue(goal.id)
+                                : AttentionValue{};
+        // Importance: active goals outrank pending; completed goals fade out.
+        if (status == "active" || status == "in_progress") {
+            av.importance = 0.9;
+            av.urgency = 0.7;
+        } else if (status == "pending") {
+            av.importance = 0.6;
+            av.urgency = 0.5;
+        } else {
+            av.importance = 0.1;
+            av.urgency = 0.1;
+        }
+        // Novelty rewards goals the agent has not focused on recently.
+        av.novelty = (goal.id == focusedGoalId_) ? std::max(0.0, av.novelty * 0.6)
+                                                 : std::min(1.0, av.novelty + 0.3);
+        av.activation = open ? std::min(1.0, av.activation + 0.2)
+                             : std::max(0.0, av.activation * 0.5);
+        goalAttention_.updateAttentionValue(goal.id, av);
+    }
+}
+
+const StateGoal* AutonomousStarter::selectFocusGoal() {
+    const auto& goals = state_.getGoals();
+    if (goals.empty()) {
+        focusedGoalId_.clear();
+        return nullptr;
+    }
+    refreshGoalAttention();
+
+    const StateGoal* best = nullptr;
+    double bestScore = -1.0;
+    for (const auto& goal : goals) {
+        std::string status = goal.status;
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (status != "active" && status != "in_progress" && status != "pending") {
+            continue;
+        }
+        const double score =
+            goalAttention_.getAttentionValue(goal.id).getCompositeScore();
+        if (score > bestScore) {
+            bestScore = score;
+            best = &goal;
+        }
+    }
+    if (!best) {
+        best = &goals.back();  // all goals completed: keep most recent context
+    }
+    focusedGoalId_ = best->id;
+    return best;
+}
+
+void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actionSucceeded) {
+    if (focusedGoalId_.empty() || !actionSucceeded) {
+        return;
+    }
+    // Find the focused goal's current status.
+    std::string currentStatus;
+    for (const auto& goal : state_.getGoals()) {
+        if (goal.id == focusedGoalId_) {
+            currentStatus = goal.status;
+            break;
+        }
+    }
+    std::string lower = currentStatus;
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+    // pending -> active on first successful action toward the goal; active ->
+    // completed once the agent has accumulated enough successful experience on
+    // its plan for that goal.
+    if (lower == "pending") {
+        state_.updateGoalStatus(focusedGoalId_, "active");
+        appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+                     " advanced pending -> active after successful plan '" + plan + "'.");
+    } else if (lower == "active" || lower == "in_progress") {
+        if (getPlanSuccessRatio(plan) >= 0.5 &&
+            planStats_[plan].attempts >= 3) {
+            // Capture the description before mutation so the completion evidence
+            // token matches the one evaluateGoalProgress emits (single vocabulary
+            // for supervisors/tests scanning memory for "Goal completed:").
+            std::string completedDescription;
+            for (const auto& goal : state_.getGoals()) {
+                if (goal.id == focusedGoalId_) {
+                    completedDescription = goal.description;
+                    break;
+                }
+            }
+            state_.updateGoalStatus(focusedGoalId_, "completed");
+            appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+                         " advanced active -> completed after reliable plan '" + plan + "'.");
+            if (!completedDescription.empty()) {
+                appendMemory("Goal completed: " + completedDescription +
+                             " (satisfied by reliable plan='" + plan + "').");
+            }
+            // Invariant repair: the active-goal pointer must never name a completed
+            // goal. If the focused goal we just completed is also the currently
+            // pursued active goal, clear the pointer immediately in the same step
+            // so getActiveGoalId() only ever references an open goal. The next
+            // perception step's selectActiveGoal() promotes the next pending goal.
+            if (activeGoalId_ == focusedGoalId_) {
+                activeGoalId_ = "";
+            }
+            // NOTE: adaptive re-seeding is intentionally NOT done here. It is owned
+            // by evaluateGoalProgress(), which runs in the ACTION phase -- before
+            // reflection and, crucially, after the current cycle's reasoning has
+            // already chosen its plan. Seeding a fresh driver here (in reflection)
+            // would swap the agent's objective mid-window and pull a sustained
+            // dominant goal's plan off-topic on the very next cycle. Deferring to
+            // the action-phase re-seed keeps a lone completed goal as the fallback
+            // focus context (selectFocusGoal returns goals.back()), so reasoning
+            // continues to serve its topic until a genuinely new open goal exists.
+        }
+    }
 }
 
 std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> input) {
     ++cognitiveCycle_;
+
+    // Resolve which goal we are pursuing this cycle (promotes a pending goal to
+    // active if nothing is active), so the whole observe-reason-act pass is
+    // anchored to a single concrete intent.
+    selectActiveGoal();
 
     const auto pwd = executeShellCommand("pwd");
     const auto listing = executeShellCommand("ls -1 | head -20");
@@ -568,38 +1044,168 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
 
 std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> input) {
     const std::size_t memoryCount = state_.getRecentMessages().size();
-    const std::string goalContext = selectGoalContext();
+
+    // Attention-weighted goal selection: focus on the highest-scoring open goal
+    // rather than the first active one. This makes the agent's attention an
+    // economic resource that shifts toward important/urgent/novel goals.
+    const StateGoal* focus = selectFocusGoal();
+    const std::string goalContext = focus ? (focus->description.empty()
+                                                 ? selectGoalContext()
+                                                 : focus->description)
+                                          : selectGoalContext();
     std::string normalizedGoal = goalContext;
     std::transform(normalizedGoal.begin(), normalizedGoal.end(), normalizedGoal.begin(),
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
-    if (normalizedGoal.find("test") != std::string::npos ||
+    // Plan selection is goal-first: the plan must serve the goal the agent is
+    // actively pursuing, otherwise action evidence can never satisfy that goal
+    // and the closed loop cannot converge. Topic precedence is therefore keyed on
+    // the active goal's description, with environmental hints used only as a
+    // tie-breaker for goals that are themselves about project structure.
+    if (normalizedGoal.find("situational awareness") != std::string::npos ||
+        normalizedGoal.find("workspace") != std::string::npos ||
+        normalizedGoal.find("awareness") != std::string::npos) {
+        lastPlan_ = "establish situational awareness with pwd and directory inspection";
+    } else if (normalizedGoal.find("test") != std::string::npos ||
         normalizedGoal.find("validation") != std::string::npos ||
-        normalizedGoal.find("self-audit") != std::string::npos ||
-        normalizedGoal.find("audit") != std::string::npos) {
-        lastPlan_ = "run autonomy self-audit by inspecting tests and validation coverage";
+        normalizedGoal.find("self-audit") != std::string::npos) {
+        lastPlan_ = "self-audit validation and test surfaces";
     } else if (normalizedGoal.find("c++") != std::string::npos ||
                normalizedGoal.find("project structure") != std::string::npos ||
-               lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
+               normalizedGoal.find("source") != std::string::npos ||
+               normalizedGoal.find("code actions") != std::string::npos) {
         lastPlan_ = "inspect C++ project structure with targeted source discovery";
     } else if (normalizedGoal.find("runtime") != std::string::npos ||
-               normalizedGoal.find("system") != std::string::npos) {
+               normalizedGoal.find("system") != std::string::npos ||
+               normalizedGoal.find("identity") != std::string::npos ||
+               normalizedGoal.find("kernel") != std::string::npos) {
         lastPlan_ = "inspect system identity and runtime context";
-    } else if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
-               normalizedGoal.find("workspace") != std::string::npos) {
+    } else if (memoryCount < 5) {
         lastPlan_ = "establish situational awareness with pwd and directory inspection";
-    } else if (actionCounter_ % 3 == 0) {
+    } else if (actionCounter_ % 4 == 0) {
         lastPlan_ = "sample repository source files";
-    } else if (actionCounter_ % 3 == 1) {
+    } else if (actionCounter_ % 4 == 1) {
+        lastPlan_ = "self-audit validation and test surfaces";
+    } else if (actionCounter_ % 4 == 2) {
         lastPlan_ = "inspect system identity and kernel context";
     } else {
         lastPlan_ = "maintain lightweight environmental awareness";
     }
 
+    // Build the candidate plan set implied by the focused goal/context.
+    std::vector<std::string> candidatePlans;
+    // Closed-loop feedback: if the previous actions have been failing, do not
+    // keep selecting the same plan. Fall back to the safest situational-
+    // awareness plan to recover ground truth before attempting richer actions.
+    std::size_t recentFailures = 0;
+    for (bool ok : recentActionOutcomes_) {
+        if (!ok) ++recentFailures;
+    }
+    const bool strugglingNow = (recentActionOutcomes_.size() >= 2 && recentFailures >= 2);
+
+    if (strugglingNow) {
+        lastPlan_ = "establish situational awareness with pwd and directory inspection";
+        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+                     " reasoning: goal = " + goalContext +
+                     "; recent experience summary = " + summarizeRecentExperience() +
+                     "; competence = " + std::to_string(competenceSignal_) +
+                     "; detected repeated action failure, falling back to safe situational awareness" +
+                     "; selected plan = " + lastPlan_ + ".");
+        logInfo("Reasoning detected repeated failure; fallback plan: " + lastPlan_);
+        return input;
+    }
+
+    if (normalizedGoal.find("test") != std::string::npos ||
+        normalizedGoal.find("validation") != std::string::npos ||
+        normalizedGoal.find("self-audit") != std::string::npos) {
+        candidatePlans.push_back("self-audit validation and test surfaces");
+    }
+    if (normalizedGoal.find("c++") != std::string::npos ||
+        normalizedGoal.find("project structure") != std::string::npos ||
+        lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
+        candidatePlans.push_back("inspect C++ project structure with targeted source discovery");
+    }
+    if (normalizedGoal.find("runtime") != std::string::npos ||
+        normalizedGoal.find("system") != std::string::npos) {
+        candidatePlans.push_back("inspect system identity and runtime context");
+    }
+    if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
+        normalizedGoal.find("workspace") != std::string::npos) {
+        candidatePlans.push_back("establish situational awareness with pwd and directory inspection");
+    }
+    // Always include the rotating exploratory plans so the agent keeps options
+    // open even once core goals are addressed.
+    candidatePlans.push_back("sample repository source files");
+    candidatePlans.push_back("inspect system identity and kernel context");
+    candidatePlans.push_back("maintain lightweight environmental awareness");
+
+    // Outcome-based plan adaptation: pick the candidate with the highest learned
+    // success bias. Ties are broken by candidate order (goal-relevant plans are
+    // listed first), which preserves the previous deterministic preference while
+    // letting accumulated feedback override it once evidence exists.
+    lastPlan_ = candidatePlans.front();
+    double bestBias = -1.0;
+    for (const auto& plan : candidatePlans) {
+        const double bias = planBias(plan);
+        if (bias > bestBias) {
+            bestBias = bias;
+            lastPlan_ = plan;
+        }
+    }
+
+    // Stagnation guard: if reasoning keeps producing the same plan, the agent is
+    // stuck. Count consecutive repeats and, once a threshold is crossed, escalate
+    // to a deliberately different plan so autonomy explores instead of looping.
+    //
+    // Crucial refinement (living-systems principle): purposeful repetition is not
+    // stagnation. When the repeated plan is the one that directly SERVES the
+    // agent's current goal, repeating it is convergence toward that goal, not a
+    // loop the agent is trapped in. Escalating away from a goal-aligned plan would
+    // starve the goal of the very evidence it needs to complete. We therefore
+    // exempt the goal-serving plan from escalation while still counting repeats
+    // (so the bounded-stagnation invariant holds), and only force a different plan
+    // when the repetition is aimless (plan not aligned with the active goal).
+    if (lastPlan_ == previousPlan_) {
+        ++stagnationCounter_;
+    } else {
+        stagnationCounter_ = 0;
+    }
+    const bool planServesCurrentGoal = planSatisfiesGoalTopic(normalizedGoal, lastPlan_);
+    if (stagnationCounter_ >= 2 && !planServesCurrentGoal) {
+        static const std::array<const char*, 4> escalationPlans = {{
+            "sample repository source files",
+            "self-audit validation and test surfaces",
+            "inspect system identity and kernel context",
+            "establish situational awareness with pwd and directory inspection"
+        }};
+        std::string escalated = lastPlan_;
+        for (const char* candidate : escalationPlans) {
+            if (candidate != lastPlan_) {
+                escalated = candidate;
+                break;
+            }
+        }
+        appendMemory("Stagnation detected after " + std::to_string(stagnationCounter_) +
+                     " repeats of plan '" + lastPlan_ + "'; escalating to '" + escalated + "'.");
+        lastPlan_ = escalated;
+        stagnationCounter_ = 0;
+    } else if (stagnationCounter_ >= 2 && planServesCurrentGoal) {
+        // Purposeful repetition: keep pursuing the goal-aligned plan but reset the
+        // counter so the bounded-stagnation invariant (<= 2) is preserved and the
+        // guard remains armed for genuinely aimless loops later.
+        appendMemory("Sustained goal-aligned pursuit of plan '" + lastPlan_ +
+                     "' (convergence, not stagnation); resetting stagnation counter.");
+        stagnationCounter_ = 0;
+    }
+    previousPlan_ = lastPlan_;
+
     appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
-                 " reasoning: goal = " + goalContext +
+                 " reasoning: focus_goal_id = " + (focus ? focus->id : std::string("none")) +
+                 "; goal = " + goalContext +
                  "; recent experience summary = " + summarizeRecentExperience() +
-                 "; selected plan = " + lastPlan_ + ".");
+                 "; competence = " + std::to_string(competenceSignal_) +
+                 "; selected plan = " + lastPlan_ +
+                 " (bias=" + std::to_string(bestBias) + ").");
     logInfo("Reasoning selected plan: " + lastPlan_);
     return input;
 }
@@ -610,10 +1216,132 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     ++actionCounter_;
     const auto result = executeShellCommand(command);
 
+    // Capture the outcome so the reflection phase and the next reasoning cycle
+    // can adapt. This closes the observe->reason->act->reflect feedback loop.
+    lastActionCommand_ = command;
+    lastActionSucceeded_ = result.success;
+    lastActionOutput_ = result.output;
+    lastActionExitCode_ = result.exitCode;
+
     appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
                  " action: command='" + command + "', success=" +
                  std::string(result.success ? "true" : "false") +
                  ", exitCode=" + std::to_string(result.exitCode) + ".");
+
+    // Close the loop: feed the action outcome back into goal state so successful,
+    // aligned actions complete the active goal and promote the next one. This is
+    // what turns the goal list from a static seed into a converging drive.
+    evaluateGoalProgress(lastPlan_, command, result);
+    return input;
+}
+
+std::string AutonomousStarter::activeGoalDescriptionForPlan() const {
+    // The currently-serving goal is the first non-terminal goal, matching the
+    // selection precedence used by selectGoalContext().
+    const auto& goals = state_.getGoals();
+    for (const auto& goal : goals) {
+        std::string status = toLowerAscii(goal.status);
+        if (status == "active" || status == "in_progress" || status == "pending") {
+            return goal.description;
+        }
+    }
+    return std::string();
+}
+
+std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> input) {
+    // Reflection is the fourth Echobeats-aligned phase and the point where the
+    // observe->reason->act->reflect loop becomes self-regulating. It performs
+    // three complementary jobs:
+    //   1. Feed the action outcome back into per-plan success statistics and a
+    //      bounded competence signal that biases future plan selection.
+    //   2. Advance the focused goal's lifecycle (complete/rotate/escalate) so
+    //      the agent does not loop forever on a satisfied or failing probe.
+    //   3. Record an adaptive reflective note that becomes part of the
+    //      experience the next reasoning cycle summarizes.
+    recordPlanOutcome(lastPlan_, lastActionSucceeded_);
+    advanceGoalLifecycle(lastPlan_, lastActionSucceeded_);
+
+    // --- 1. Competence signal + rolling outcome window ---------------------
+    constexpr std::size_t kOutcomeWindow = 5;
+    recentActionOutcomes_.push_back(lastActionSucceeded_);
+    while (recentActionOutcomes_.size() > kOutcomeWindow) {
+        recentActionOutcomes_.pop_front();
+    }
+    if (lastActionSucceeded_) {
+        ++successfulActionCount_;
+        // Competence rises toward 1.0 with diminishing returns.
+        competenceSignal_ += (1.0 - competenceSignal_) * 0.2;
+    } else {
+        ++failedActionCount_;
+        // Competence falls toward 0.0 more sharply so failures register quickly.
+        competenceSignal_ -= competenceSignal_ * 0.3;
+    }
+    competenceSignal_ = std::max(0.0, std::min(1.0, competenceSignal_));
+
+    std::size_t windowFailures = 0;
+    for (bool ok : recentActionOutcomes_) {
+        if (!ok) ++windowFailures;
+    }
+
+    const double ratio = getPlanSuccessRatio(lastPlan_);
+    std::ostringstream reflection;
+    reflection << "Cycle " << cognitiveCycle_ << " reflection: plan='" << lastPlan_ << "'"
+               << ", action='" << lastActionCommand_ << "'"
+               << ", outcome=" << (lastActionSucceeded_ ? "succeeded" : "failed")
+               << ", exitCode=" << lastActionExitCode_
+               << ", competence=" << competenceSignal_
+               << ", plan_success_ratio=" << ratio
+               << ", recentFailures=" << windowFailures << "/" << recentActionOutcomes_.size()
+               << ", focus_goal=" << (focusedGoalId_.empty() ? "none" : focusedGoalId_) << "; ";
+
+    // --- 2. Goal lifecycle advancement / adaptive escalation ----------------
+    const std::string activeGoal = activeGoalDescriptionForPlan();
+    if (lastActionSucceeded_) {
+        consecutiveActionFailures_ = 0;
+
+        // Goal completion is owned by a SINGLE authoritative, evidence-gated path
+        // (evaluateGoalProgress in actionStep + advanceGoalLifecycle above). The
+        // reflection phase deliberately no longer completes goals by description
+        // nor force-activates the next pending goal: doing so previously raced the
+        // id-based path, double-completed on the first aligned success, and caused
+        // a sustained dominant goal to lose plan continuity after cycle 1. Here we
+        // only report the current convergence state; promotion of the next pending
+        // goal is handled deterministically by selectActiveGoal() on the next
+        // perception step, keeping exactly one goal in flight without a duplicate
+        // rotation mechanism.
+        completedGoalCount_ = getCompletedGoalCount();
+        reflection << "completed_total=" << completedGoalCount_;
+    } else {
+        ++consecutiveActionFailures_;
+        reflection << "consecutive_failures=" << consecutiveActionFailures_;
+
+        // Adaptive escalation: if the agent repeatedly fails, fall back to a
+        // minimal, guaranteed-safe situational-awareness goal so the next plan
+        // selects a low-risk probe rather than retrying a failing path.
+        if (consecutiveActionFailures_ >= 2 && !activeGoal.empty()) {
+            const Timestamp now = std::chrono::system_clock::now();
+            state_.updateGoalStatusByDescription(activeGoal, "blocked");
+            state_.addGoal(StateGoal{
+                generateUUID(),
+                "Re-establish bounded situational awareness after repeated action failure",
+                "active",
+                now,
+                now
+            });
+            reflection << "; escalated: blocked failing goal and re-seeded safe awareness goal";
+        } else if (competenceSignal_ > 0.8) {
+            reflection << "; lesson=high competence, free to pursue more novel goals";
+        } else {
+            reflection << "; lesson=steady progress, continuing current strategy";
+        }
+    }
+
+    lastReflection_ = reflection.str();
+    ++reflectionCount_;
+    appendMemory(lastReflection_);
+    logInfo("Reflection: competence=" + std::to_string(competenceSignal_) +
+            " outcome=" + std::string(lastActionSucceeded_ ? "succeeded" : "failed"));
+    logInfo(lastReflection_);
     return input;
 }
 
