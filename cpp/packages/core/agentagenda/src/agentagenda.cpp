@@ -110,9 +110,17 @@ AgendaTaskStatus AgentAgenda::stringToStatus(const std::string& status_str) {
 }
 
 std::string AgentAgenda::timestampToString(const std::chrono::system_clock::time_point& timepoint) {
-    auto time_t = std::chrono::system_clock::to_time_t(timepoint);
+    // Persist the FULL clock resolution (nanoseconds since epoch), not whole
+    // seconds. Serializing via to_time_t() truncated every timestamp down to the
+    // second, so a save/load round-trip could return a value strictly less than
+    // the original in-memory timestamp -- breaking monotonic "updated_at moved
+    // forward" invariants for sub-second updates. Storing the raw tick count is
+    // lossless and round-trips exactly.
+    const auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                        timepoint.time_since_epoch())
+                        .count();
     std::stringstream ss;
-    ss << time_t;
+    ss << ns;
     return ss.str();
 }
 
@@ -121,13 +129,13 @@ std::chrono::system_clock::time_point AgentAgenda::stringToTimestamp(const std::
         return std::chrono::system_clock::now();
     }
 
-    std::time_t parsed = 0;
+    long long parsed = 0;
     std::istringstream ss(timestamp_str);
     ss >> parsed;
     if (!ss || !ss.eof()) {
         return std::chrono::system_clock::now();
     }
-    return std::chrono::system_clock::from_time_t(parsed);
+    return std::chrono::system_clock::time_point(std::chrono::nanoseconds(parsed));
 }
 
 std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps) {

@@ -348,6 +348,24 @@ public:
     const std::vector<Actor>& getActors() const { return actors_; }
     const std::vector<StateGoal>& getGoals() const { return goals_; }
     const std::vector<std::shared_ptr<Memory>>& getRecentMessages() const { return recentMessages_; }
+
+    // Goal-status mutation API.
+    //
+    // These additive helpers let autonomy/cognitive loops close the feedback
+    // loop by progressing or completing goals in response to action outcomes,
+    // without breaking the existing read-only getGoals() contract. Each returns
+    // true when a matching goal was updated and refreshes the goal's updatedAt
+    // timestamp. Status comparison is case-insensitive on the description match
+    // but the supplied status string is stored verbatim.
+    // updateGoalStatus transitions an existing goal (matched by id) to a new
+    // status string and refreshes its updatedAt timestamp. Returns true when
+    // a goal was found and updated, false otherwise.
+    bool updateGoalStatus(const UUID& goalId, const std::string& status);
+    bool updateGoalStatusByDescription(const std::string& description,
+                                       const std::string& status);
+    // Returns the number of goals whose (case-insensitive) status equals the
+    // supplied value. Useful for measuring closed-loop progress.
+    std::size_t countGoalsWithStatus(const std::string& status) const;
     
 private:
     AgentConfig config_;

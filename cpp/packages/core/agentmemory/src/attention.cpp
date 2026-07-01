@@ -7,6 +7,8 @@
 #include <random>
 #include <sstream>
 #include <cctype>
+#include <unordered_set>
+#include <map>
 namespace elizaos {
 
 // AttentionBudget Implementation
@@ -1020,5 +1022,1132 @@ namespace attention {
         getGlobalAttentionAwareMemoryManager().getAttentionAllocator()->decayAttentionValues(decayRate);
     }
 }
+
+// ============================================================================
+// Phase 1.3: SaliencyDetector Implementation
+// ============================================================================
+
+void SaliencyDetector::initializeEmotionalKeywords() {
+    // Positive emotions
+    emotionalKeywords_["happy"] = 0.8;
+    emotionalKeywords_["joy"] = 0.85;
+    emotionalKeywords_["excited"] = 0.9;
+    emotionalKeywords_["love"] = 0.95;
+    emotionalKeywords_["amazing"] = 0.8;
+    emotionalKeywords_["wonderful"] = 0.75;
+    
+    // Negative emotions
+    emotionalKeywords_["sad"] = 0.7;
+    emotionalKeywords_["angry"] = 0.85;
+    emotionalKeywords_["fear"] = 0.9;
+    emotionalKeywords_["danger"] = 0.95;
+    emotionalKeywords_["urgent"] = 0.9;
+    emotionalKeywords_["critical"] = 0.95;
+    emotionalKeywords_["error"] = 0.8;
+    emotionalKeywords_["warning"] = 0.75;
+    
+    // Cognitive importance
+    emotionalKeywords_["important"] = 0.85;
+    emotionalKeywords_["remember"] = 0.7;
+    emotionalKeywords_["priority"] = 0.8;
+    emotionalKeywords_["deadline"] = 0.9;
+}
+
+SaliencyDetector::SaliencyFeatures SaliencyDetector::calculateSaliency(
+    const std::string& content,
+    const std::vector<std::string>& context,
+    const std::vector<std::string>& currentGoals) {
+    
+    SaliencyFeatures features;
+    
+    // Initialize emotional keywords if not done
+    if (emotionalKeywords_.empty()) {
+        initializeEmotionalKeywords();
+    }
+    
+    // Calculate semantic saliency based on content length and complexity
+    double wordCount = 0;
+    double uniqueChars = 0;
+    std::unordered_set<char> charSet;
+    for (char c : content) {
+        charSet.insert(c);
+        if (c == ' ') wordCount++;
+    }
+    wordCount = std::max(1.0, wordCount);
+    uniqueChars = static_cast<double>(charSet.size());
+    features.semanticSaliency = std::min(1.0, (uniqueChars / 52.0) * 0.5 + 
+                                              (std::min(wordCount, 100.0) / 100.0) * 0.5);
+    
+    // Calculate emotional saliency
+    std::string lowerContent = content;
+    std::transform(lowerContent.begin(), lowerContent.end(), 
+                   lowerContent.begin(), ::tolower);
+    
+    double maxEmotional = 0.0;
+    int emotionalMatches = 0;
+    for (const auto& [keyword, score] : emotionalKeywords_) {
+        if (lowerContent.find(keyword) != std::string::npos) {
+            maxEmotional = std::max(maxEmotional, score);
+            emotionalMatches++;
+        }
+    }
+    features.emotionalSaliency = maxEmotional * (1.0 + std::min(emotionalMatches, 5) * 0.1);
+    features.emotionalSaliency = std::min(1.0, features.emotionalSaliency);
+    
+    // Calculate goal relevance
+    double goalRelevance = 0.0;
+    for (const auto& goal : currentGoals) {
+        std::string lowerGoal = goal;
+        std::transform(lowerGoal.begin(), lowerGoal.end(), lowerGoal.begin(), ::tolower);
+        
+        // Check for keyword overlap
+        std::istringstream goalStream(lowerGoal);
+        std::string goalWord;
+        while (goalStream >> goalWord) {
+            if (goalWord.length() > 3 && lowerContent.find(goalWord) != std::string::npos) {
+                goalRelevance += 0.2;
+            }
+        }
+    }
+    features.goalRelevance = std::min(1.0, goalRelevance);
+    
+    // Calculate temporal saliency (based on recency in context)
+    if (!context.empty()) {
+        // Check if content appears in recent context
+        for (size_t i = 0; i < std::min(context.size(), size_t(5)); i++) {
+            if (context[i].find(content.substr(0, std::min(size_t(20), content.size()))) 
+                != std::string::npos) {
+                features.temporalSaliency = 1.0 - (i * 0.15);
+                break;
+            }
+        }
+    }
+    
+    // Visual saliency - detect special formatting or structure
+    int specialChars = 0;
+    for (char c : content) {
+        if (c == '!' || c == '?' || c == '*' || c == '#' || c == '@') {
+            specialChars++;
+        }
+    }
+    features.visualSaliency = std::min(1.0, specialChars * 0.1);
+    
+    return features;
+}
+
+std::vector<UUID> SaliencyDetector::identifyAttentionShiftTargets(
+    const std::unordered_map<UUID, AttentionValue>& currentAttention,
+    const std::vector<std::pair<UUID, SaliencyFeatures>>& candidates,
+    size_t maxShifts) {
+    
+    std::vector<std::pair<UUID, double>> scoredCandidates;
+    
+    for (const auto& [id, features] : candidates) {
+        double saliencyScore = features.getOverallSaliency();
+        
+        // Check current attention - prefer items not already attended
+        double currentAttentionPenalty = 0.0;
+        auto it = currentAttention.find(id);
+        if (it != currentAttention.end()) {
+            currentAttentionPenalty = it->second.sti() * 0.3;
+        }
+        
+        double finalScore = saliencyScore - currentAttentionPenalty;
+        scoredCandidates.emplace_back(id, finalScore);
+    }
+    
+    // Sort by score descending
+    std::sort(scoredCandidates.begin(), scoredCandidates.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    
+    // Extract top targets
+    std::vector<UUID> targets;
+    for (size_t i = 0; i < std::min(maxShifts, scoredCandidates.size()); i++) {
+        if (scoredCandidates[i].second > 0.1) {  // Minimum threshold
+            targets.push_back(scoredCandidates[i].first);
+        }
+    }
+    
+    return targets;
+}
+
+void SaliencyDetector::setWeights(double visual, double semantic, double temporal,
+                                  double emotional, double goal) {
+    visualWeight_ = visual;
+    semanticWeight_ = semantic;
+    temporalWeight_ = temporal;
+    emotionalWeight_ = emotional;
+    goalWeight_ = goal;
+}
+
+// ============================================================================
+// Phase 1.3: AttentionCostBudget Implementation
+// ============================================================================
+
+AttentionCostBudget::AttentionCostBudget(double totalBudget, double regenerationRate)
+    : totalBudget_(totalBudget)
+    , availableBudget_(totalBudget)
+    , regenerationRate_(regenerationRate) {}
+
+AttentionCostBudget::AllocationResult AttentionCostBudget::requestAllocation(
+    const AllocationRequest& request) {
+    
+    std::lock_guard<std::mutex> lock(budgetMutex_);
+    
+    AllocationResult result;
+    double available = availableBudget_.load();
+    
+    if (available < 0.01) {
+        result.success = false;
+        result.allocatedAmount = 0.0;
+        result.remainingBudget = available;
+        result.reason = "Budget exhausted";
+        return result;
+    }
+    
+    double toAllocate = request.requestedAmount;
+    
+    if (toAllocate > available) {
+        if (request.canPartialAllocate) {
+            toAllocate = available;
+        } else {
+            result.success = false;
+            result.allocatedAmount = 0.0;
+            result.remainingBudget = available;
+            result.reason = "Insufficient budget for full allocation";
+            return result;
+        }
+    }
+    
+    // Perform allocation
+    availableBudget_.store(availableBudget_.load() - toAllocate);
+    activeAllocations_[request.targetId] += toAllocate;
+    
+    // Record history
+    AllocationHistory hist;
+    hist.targetId = request.targetId;
+    hist.amount = toAllocate;
+    hist.allocatedAt = std::chrono::system_clock::now();
+    hist.isActive = true;
+    history_.push_back(hist);
+    
+    result.success = true;
+    result.allocatedAmount = toAllocate;
+    result.remainingBudget = availableBudget_.load();
+    result.reason = "Allocated successfully";
+    
+    return result;
+}
+
+void AttentionCostBudget::releaseAttention(const UUID& targetId, double amount) {
+    std::lock_guard<std::mutex> lock(budgetMutex_);
+    
+    auto it = activeAllocations_.find(targetId);
+    if (it != activeAllocations_.end()) {
+        double toRelease = std::min(amount, it->second);
+        it->second -= toRelease;
+        
+        if (it->second <= 0.01) {
+            activeAllocations_.erase(it);
+        }
+        
+        double newBudget = availableBudget_.load() + toRelease;
+        availableBudget_.store(std::min(newBudget, totalBudget_));
+        
+        // Update history
+        for (auto& hist : history_) {
+            if (hist.targetId == targetId && hist.isActive) {
+                hist.isActive = false;
+                break;
+            }
+        }
+    }
+}
+
+double AttentionCostBudget::getAvailableBudget() const {
+    return availableBudget_.load();
+}
+
+void AttentionCostBudget::setTotalBudget(double budget) {
+    std::lock_guard<std::mutex> lock(budgetMutex_);
+    double diff = budget - totalBudget_;
+    totalBudget_ = budget;
+    if (diff > 0) {
+        availableBudget_.store(availableBudget_.load() + diff);
+    }
+}
+
+void AttentionCostBudget::setRegenerationRate(double rate) {
+    regenerationRate_ = rate;
+}
+
+void AttentionCostBudget::tick(double deltaSeconds) {
+    double regeneration = regenerationRate_ * deltaSeconds;
+    double newBudget = availableBudget_.load() + regeneration;
+    availableBudget_.store(std::min(newBudget, totalBudget_));
+}
+
+std::vector<AttentionCostBudget::AllocationHistory> 
+AttentionCostBudget::getAllocationHistory() const {
+    std::lock_guard<std::mutex> lock(budgetMutex_);
+    return history_;
+}
+
+void AttentionCostBudget::emergencyRelease(double threshold) {
+    std::lock_guard<std::mutex> lock(budgetMutex_);
+    
+    if (availableBudget_.load() < totalBudget_ * threshold) {
+        // Release all non-critical allocations
+        double released = 0.0;
+        for (auto it = activeAllocations_.begin(); it != activeAllocations_.end();) {
+            released += it->second;
+            it = activeAllocations_.erase(it);
+        }
+        
+        double newBudget = availableBudget_.load() + released;
+        availableBudget_.store(std::min(newBudget, totalBudget_));
+        
+        // Mark all history as inactive
+        for (auto& hist : history_) {
+            hist.isActive = false;
+        }
+    }
+}
+
+// ============================================================================
+// Phase 1.3: AttentionPatternLearner Implementation
+// ============================================================================
+
+AttentionPatternLearner::AttentionPatternLearner() {
+    eventHistory_.reserve(1000);
+}
+
+void AttentionPatternLearner::recordEvent(const AttentionEvent& event) {
+    std::lock_guard<std::mutex> lock(learnerMutex_);
+    
+    eventHistory_.push_back(event);
+    
+    // Trim history if too large
+    if (eventHistory_.size() > maxHistorySize_) {
+        eventHistory_.erase(eventHistory_.begin(), 
+                           eventHistory_.begin() + (eventHistory_.size() - maxHistorySize_));
+    }
+}
+
+void AttentionPatternLearner::detectTemporalPatterns() {
+    // Detect daily/hourly patterns
+    std::unordered_map<int, std::vector<UUID>> hourlyTargets;
+    
+    for (const auto& event : eventHistory_) {
+        auto time = std::chrono::system_clock::to_time_t(event.timestamp);
+        std::tm* tm = std::localtime(&time);
+        int hour = tm->tm_hour;
+        hourlyTargets[hour].push_back(event.targetId);
+    }
+    
+    // Find consistent hourly patterns
+    for (const auto& [hour, targets] : hourlyTargets) {
+        if (targets.size() >= 3) {  // At least 3 occurrences
+            // Count target frequencies
+            std::unordered_map<UUID, int> targetCounts;
+            for (const auto& t : targets) {
+                targetCounts[t]++;
+            }
+            
+            // Find frequent targets
+            std::vector<UUID> frequentTargets;
+            for (const auto& [target, count] : targetCounts) {
+                if (count >= 2) {
+                    frequentTargets.push_back(target);
+                }
+            }
+            
+            if (!frequentTargets.empty()) {
+                LearnedPattern pattern;
+                pattern.patternType = "temporal";
+                pattern.triggers.push_back("hour:" + std::to_string(hour));
+                pattern.predictedTargets = frequentTargets;
+                pattern.confidence = static_cast<double>(frequentTargets.size()) / targets.size();
+                pattern.occurrenceCount = static_cast<int>(targets.size());
+                learnedPatterns_.push_back(pattern);
+            }
+        }
+    }
+}
+
+void AttentionPatternLearner::detectContextualPatterns() {
+    // Group events by context
+    std::unordered_map<std::string, std::vector<UUID>> contextTargets;
+    
+    for (const auto& event : eventHistory_) {
+        for (const auto& [key, value] : event.context) {
+            std::string contextKey = key + ":" + value;
+            contextTargets[contextKey].push_back(event.targetId);
+        }
+    }
+    
+    // Find patterns
+    for (const auto& [context, targets] : contextTargets) {
+        if (targets.size() >= 3) {
+            std::unordered_map<UUID, int> targetCounts;
+            for (const auto& t : targets) {
+                targetCounts[t]++;
+            }
+            
+            std::vector<UUID> frequentTargets;
+            for (const auto& [target, count] : targetCounts) {
+                if (count >= 2) {
+                    frequentTargets.push_back(target);
+                }
+            }
+            
+            if (!frequentTargets.empty()) {
+                LearnedPattern pattern;
+                pattern.patternType = "contextual";
+                pattern.triggers.push_back(context);
+                pattern.predictedTargets = frequentTargets;
+                pattern.confidence = static_cast<double>(frequentTargets.size()) / targets.size();
+                pattern.occurrenceCount = static_cast<int>(targets.size());
+                learnedPatterns_.push_back(pattern);
+            }
+        }
+    }
+}
+
+void AttentionPatternLearner::detectSequentialPatterns() {
+    // Detect A -> B sequential patterns
+    if (eventHistory_.size() < 2) return;
+    
+    std::map<std::pair<UUID, UUID>, int> sequenceCounts;
+    
+    for (size_t i = 1; i < eventHistory_.size(); i++) {
+        // Check if events are close in time (within 5 minutes)
+        auto timeDiff = eventHistory_[i].timestamp - eventHistory_[i-1].timestamp;
+        if (timeDiff < std::chrono::minutes(5)) {
+            auto key = std::make_pair(eventHistory_[i-1].targetId, eventHistory_[i].targetId);
+            sequenceCounts[key]++;
+        }
+    }
+    
+    // Create patterns for frequent sequences
+    for (const auto& [sequence, count] : sequenceCounts) {
+        if (count >= 3) {
+            LearnedPattern pattern;
+            pattern.patternType = "sequential";
+            pattern.triggers.push_back("after:" + sequence.first);
+            pattern.predictedTargets.push_back(sequence.second);
+            pattern.confidence = std::min(1.0, count / 10.0);
+            pattern.occurrenceCount = count;
+            learnedPatterns_.push_back(pattern);
+        }
+    }
+}
+
+void AttentionPatternLearner::learnPatterns() {
+    std::lock_guard<std::mutex> lock(learnerMutex_);
+    
+    // Clear old patterns
+    learnedPatterns_.clear();
+    
+    // Detect different types of patterns
+    detectTemporalPatterns();
+    detectContextualPatterns();
+    detectSequentialPatterns();
+    
+    // Prune low-confidence patterns
+    learnedPatterns_.erase(
+        std::remove_if(learnedPatterns_.begin(), learnedPatterns_.end(),
+            [this](const LearnedPattern& p) { 
+                return p.confidence < minPatternConfidence_; 
+            }),
+        learnedPatterns_.end());
+}
+
+std::vector<std::pair<UUID, double>> AttentionPatternLearner::predictAttentionNeeds(
+    const std::unordered_map<std::string, std::string>& currentContext,
+    size_t maxPredictions) {
+    
+    std::lock_guard<std::mutex> lock(learnerMutex_);
+    
+    std::unordered_map<UUID, double> predictions;
+    
+    // Get current hour
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    std::tm* tm = std::localtime(&time);
+    int currentHour = tm->tm_hour;
+    
+    for (const auto& pattern : learnedPatterns_) {
+        bool triggered = false;
+        
+        // Check temporal triggers
+        for (const auto& trigger : pattern.triggers) {
+            if (trigger.find("hour:") == 0) {
+                int hour = std::stoi(trigger.substr(5));
+                if (hour == currentHour) {
+                    triggered = true;
+                    break;
+                }
+            }
+            
+            // Check contextual triggers
+            for (const auto& [key, value] : currentContext) {
+                if (trigger == key + ":" + value) {
+                    triggered = true;
+                    break;
+                }
+            }
+            
+            if (triggered) break;
+        }
+        
+        if (triggered) {
+            for (const auto& target : pattern.predictedTargets) {
+                predictions[target] += pattern.confidence;
+            }
+        }
+    }
+    
+    // Sort by prediction confidence
+    std::vector<std::pair<UUID, double>> result(predictions.begin(), predictions.end());
+    std::sort(result.begin(), result.end(),
+              [](const auto& a, const auto& b) { return a.second > b.second; });
+    
+    if (result.size() > maxPredictions) {
+        result.resize(maxPredictions);
+    }
+    
+    return result;
+}
+
+std::vector<AttentionPatternLearner::LearnedPattern> 
+AttentionPatternLearner::getPatterns() const {
+    std::lock_guard<std::mutex> lock(learnerMutex_);
+    return learnedPatterns_;
+}
+
+void AttentionPatternLearner::prunePatterns(double minConfidence) {
+    std::lock_guard<std::mutex> lock(learnerMutex_);
+    
+    learnedPatterns_.erase(
+        std::remove_if(learnedPatterns_.begin(), learnedPatterns_.end(),
+            [minConfidence](const LearnedPattern& p) { 
+                return p.confidence < minConfidence; 
+            }),
+        learnedPatterns_.end());
+}
+
+// ============================================================================
+// Phase 1.3: AttentionTransferProtocol Implementation
+// ============================================================================
+
+AttentionTransferProtocol::AttentionTransferProtocol(const std::string& agentId)
+    : agentId_(agentId) {}
+
+AttentionTransferProtocol::~AttentionTransferProtocol() {
+    // Ensure we are not left dangling inside a bus registry.
+    disconnectFromBus();
+}
+
+void AttentionTransferProtocol::trackTransferLocked(const AttentionTransferRequest& request) {
+    ActiveTransfer transfer;
+    transfer.request = request;
+    transfer.startTime = std::chrono::system_clock::now();
+    transfer.expiresAt = transfer.startTime + request.duration;
+    transfer.isIncoming = (request.targetAgentId == agentId_);
+    activeTransfers_.push_back(transfer);
+}
+
+void AttentionTransferProtocol::cleanupExpiredTransfers() {
+    auto now = std::chrono::system_clock::now();
+    
+    activeTransfers_.erase(
+        std::remove_if(activeTransfers_.begin(), activeTransfers_.end(),
+            [&now](const ActiveTransfer& t) { return now > t.expiresAt; }),
+        activeTransfers_.end());
+}
+
+AttentionTransferProtocol::AttentionTransferResponse 
+AttentionTransferProtocol::requestTransfer(const AttentionTransferRequest& request) {
+    // If connected to a bus and the request targets a different, registered
+    // agent, route it across the boundary so the *target* decides.
+    AttentionMessageBus* bus = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(transferMutex_);
+        bus = bus_;
+    }
+    if (bus && !request.targetAgentId.empty() && request.targetAgentId != agentId_) {
+        if (!bus->isRegistered(request.targetAgentId)) {
+            // Explicit cross-agent request to a target that is not on the bus:
+            // reject as undeliverable rather than silently self-accepting.
+            AttentionTransferResponse response;
+            response.accepted = false;
+            response.actualAmount = 0.0;
+            response.message = "Target agent '" + request.targetAgentId +
+                               "' not registered on bus";
+            return response;
+        }
+        AttentionTransferRequestEnvelope envelope;
+        envelope.sourceAgentId = request.sourceAgentId.empty() ? agentId_ : request.sourceAgentId;
+        envelope.targetAgentId = request.targetAgentId;
+        envelope.memoryOrTaskId = request.memoryOrTaskId;
+        envelope.attentionAmount = request.attentionAmount;
+        envelope.reason = request.reason;
+        envelope.duration = request.duration;
+        auto routed = bus->routeTransfer(envelope);
+
+        AttentionTransferResponse response;
+        response.accepted = routed.accepted;
+        response.actualAmount = routed.actualAmount;
+        response.message = routed.message;
+
+        // Record the outgoing transfer locally when the remote accepted.
+        if (response.accepted) {
+            std::lock_guard<std::mutex> lock(transferMutex_);
+            trackTransferLocked(request);
+            cleanupExpiredTransfers();
+        }
+        return response;
+    }
+
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    AttentionTransferResponse response = evaluateTransferLocked(request);
+    if (response.accepted) {
+        trackTransferLocked(request);
+    }
+    cleanupExpiredTransfers();
+    return response;
+}
+
+AttentionTransferProtocol::AttentionTransferResponse
+AttentionTransferProtocol::handleRoutedTransfer(const AttentionTransferRequest& request) {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    AttentionTransferResponse response = evaluateTransferLocked(request);
+    if (response.accepted) {
+        // The receiving agent records this as an incoming transfer.
+        AttentionTransferRequest incoming = request;
+        incoming.targetAgentId = agentId_;
+        trackTransferLocked(incoming);
+    }
+    cleanupExpiredTransfers();
+    return response;
+}
+
+void AttentionTransferProtocol::setTransferHandler(TransferHandler handler) {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    transferHandler_ = handler;
+}
+
+size_t AttentionTransferProtocol::broadcastFocus(const std::vector<UUID>& focusedItems) {
+    // Always trigger the locally-installed handler (back-compatible behavior).
+    FocusBroadcastHandler localHandler;
+    AttentionMessageBus* bus = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(transferMutex_);
+        localHandler = focusBroadcastHandler_;
+        bus = bus_;
+    }
+    if (localHandler) {
+        localHandler(agentId_, focusedItems);
+    }
+    // When connected to a bus, publish across the agent boundary to every
+    // other registered endpoint and any out-of-band listeners.
+    if (bus) {
+        return bus->publishFocus(agentId_, focusedItems);
+    }
+    return 0;
+}
+
+void AttentionTransferProtocol::deliverFocusBroadcast(const std::string& sourceAgentId,
+                                                      const std::vector<UUID>& focusedItems) {
+    FocusBroadcastHandler localHandler;
+    {
+        std::lock_guard<std::mutex> lock(transferMutex_);
+        localHandler = focusBroadcastHandler_;
+    }
+    if (localHandler) {
+        localHandler(sourceAgentId, focusedItems);
+    }
+}
+
+void AttentionTransferProtocol::setFocusBroadcastHandler(FocusBroadcastHandler handler) {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    focusBroadcastHandler_ = handler;
+}
+
+void AttentionTransferProtocol::connectToBus(AttentionMessageBus* bus) {
+    AttentionMessageBus* previous = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(transferMutex_);
+        previous = bus_;
+        bus_ = bus;
+    }
+    if (previous && previous != bus) {
+        previous->unregisterAgent(agentId_);
+    }
+    if (bus) {
+        bus->registerAgent(agentId_, this);
+    }
+}
+
+void AttentionTransferProtocol::disconnectFromBus() {
+    AttentionMessageBus* previous = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(transferMutex_);
+        previous = bus_;
+        bus_ = nullptr;
+    }
+    if (previous) {
+        previous->unregisterAgent(agentId_);
+    }
+}
+
+bool AttentionTransferProtocol::isConnectedToBus() const {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    return bus_ != nullptr;
+}
+
+void AttentionTransferProtocol::contributeToPool(const std::string& poolId, double amount) {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    attentionPools_[poolId] += amount;
+}
+
+double AttentionTransferProtocol::withdrawFromPool(const std::string& poolId, 
+                                                   double requestedAmount) {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    
+    auto it = attentionPools_.find(poolId);
+    if (it == attentionPools_.end()) {
+        return 0.0;
+    }
+    
+    double withdrawn = std::min(requestedAmount, it->second);
+    it->second -= withdrawn;
+    
+    if (it->second <= 0.01) {
+        attentionPools_.erase(it);
+    }
+    
+    return withdrawn;
+}
+
+double AttentionTransferProtocol::getPoolBalance(const std::string& poolId) const {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    
+    auto it = attentionPools_.find(poolId);
+    return (it != attentionPools_.end()) ? it->second : 0.0;
+}
+
+std::vector<AttentionTransferProtocol::ActiveTransfer> 
+AttentionTransferProtocol::getActiveTransfers() const {
+    std::lock_guard<std::mutex> lock(transferMutex_);
+    return activeTransfers_;
+}
+
+AttentionTransferProtocol::AttentionTransferResponse
+AttentionTransferProtocol::evaluateTransferLocked(const AttentionTransferRequest& request) {
+    AttentionTransferResponse response;
+    if (transferHandler_) {
+        response = transferHandler_(request);
+    } else {
+        // Default policy: accept transfers at or below the threshold.
+        if (request.attentionAmount <= 10.0) {
+            response.accepted = true;
+            response.actualAmount = request.attentionAmount;
+            response.message = "Transfer accepted";
+        } else {
+            response.accepted = false;
+            response.actualAmount = 0.0;
+            response.message = "Transfer amount too high";
+        }
+    }
+    return response;
+}
+
+// ============================================================================
+// Phase 1.3: AttentionMessageBus Implementation
+// ============================================================================
+
+AttentionMessageBus& AttentionMessageBus::instance() {
+    static AttentionMessageBus bus;
+    return bus;
+}
+
+void AttentionMessageBus::registerAgent(const std::string& agentId,
+                                        AttentionTransferProtocol* protocol) {
+    if (agentId.empty() || protocol == nullptr) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(busMutex_);
+    endpoints_[agentId] = protocol;
+}
+
+void AttentionMessageBus::unregisterAgent(const std::string& agentId) {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    endpoints_.erase(agentId);
+}
+
+bool AttentionMessageBus::isRegistered(const std::string& agentId) const {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    return endpoints_.find(agentId) != endpoints_.end();
+}
+
+size_t AttentionMessageBus::agentCount() const {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    return endpoints_.size();
+}
+
+size_t AttentionMessageBus::publishFocus(const std::string& sourceAgentId,
+                                         const std::vector<UUID>& focusedItems) {
+    // Snapshot endpoints and listeners under lock, then dispatch without the
+    // lock held to avoid re-entrant deadlocks if a listener calls back in.
+    std::vector<AttentionTransferProtocol*> targets;
+    std::vector<FocusListener> listenerSnapshot;
+    {
+        std::lock_guard<std::mutex> lock(busMutex_);
+        targets.reserve(endpoints_.size());
+        for (const auto& kv : endpoints_) {
+            if (kv.first != sourceAgentId && kv.second != nullptr) {
+                targets.push_back(kv.second);
+            }
+        }
+        listenerSnapshot.reserve(listeners_.size());
+        for (const auto& kv : listeners_) {
+            listenerSnapshot.push_back(kv.second);
+        }
+    }
+    for (auto* target : targets) {
+        target->deliverFocusBroadcast(sourceAgentId, focusedItems);
+    }
+    for (auto& listener : listenerSnapshot) {
+        if (listener) {
+            listener(sourceAgentId, focusedItems);
+        }
+    }
+    return targets.size();
+}
+
+size_t AttentionMessageBus::subscribe(FocusListener listener) {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    size_t id = nextSubscriptionId_++;
+    listeners_[id] = std::move(listener);
+    return id;
+}
+
+void AttentionMessageBus::unsubscribe(size_t subscriptionId) {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    listeners_.erase(subscriptionId);
+}
+
+AttentionMessageBus::RoutedTransferResult
+AttentionMessageBus::routeTransfer(const AttentionTransferRequestEnvelope& envelope) {
+    AttentionTransferProtocol* target = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(busMutex_);
+        auto it = endpoints_.find(envelope.targetAgentId);
+        if (it != endpoints_.end()) {
+            target = it->second;
+        }
+    }
+
+    RoutedTransferResult result;
+    if (target == nullptr) {
+        result.delivered = false;
+        result.accepted = false;
+        result.actualAmount = 0.0;
+        result.message = "Target agent '" + envelope.targetAgentId + "' not registered on bus";
+        return result;
+    }
+
+    AttentionTransferProtocol::AttentionTransferRequest request;
+    request.sourceAgentId = envelope.sourceAgentId;
+    request.targetAgentId = envelope.targetAgentId;
+    request.memoryOrTaskId = envelope.memoryOrTaskId;
+    request.attentionAmount = envelope.attentionAmount;
+    request.reason = envelope.reason;
+    request.duration = envelope.duration;
+
+    auto response = target->handleRoutedTransfer(request);
+    result.delivered = true;
+    result.accepted = response.accepted;
+    result.actualAmount = response.actualAmount;
+    result.message = response.message;
+    return result;
+}
+
+void AttentionMessageBus::contributeToSharedPool(const std::string& poolId, double amount) {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    sharedPools_[poolId] += amount;
+}
+
+double AttentionMessageBus::withdrawFromSharedPool(const std::string& poolId,
+                                                   double requestedAmount) {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    auto it = sharedPools_.find(poolId);
+    if (it == sharedPools_.end()) {
+        return 0.0;
+    }
+    double withdrawn = std::min(requestedAmount, it->second);
+    it->second -= withdrawn;
+    if (it->second <= 0.01) {
+        sharedPools_.erase(it);
+    }
+    return withdrawn;
+}
+
+double AttentionMessageBus::getSharedPoolBalance(const std::string& poolId) const {
+    std::lock_guard<std::mutex> lock(busMutex_);
+    auto it = sharedPools_.find(poolId);
+    return (it != sharedPools_.end()) ? it->second : 0.0;
+}
+
+// ============================================================================
+// Phase 1.3: EnhancedAttentionAllocator Implementation
+// ============================================================================
+
+EnhancedAttentionAllocator::EnhancedAttentionAllocator(const std::string& agentId, 
+                                                       double initialBudget)
+    : AttentionAllocator()
+    , agentId_(agentId)
+    , saliencyDetector_(std::make_unique<SaliencyDetector>())
+    , costBudget_(std::make_unique<AttentionCostBudget>(initialBudget))
+    , patternLearner_(std::make_unique<AttentionPatternLearner>())
+    , transferProtocol_(std::make_unique<AttentionTransferProtocol>(agentId)) {}
+
+void EnhancedAttentionAllocator::updateTemporalAttention(const UUID& elementId, 
+                                                         const Timestamp& eventTime) {
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    auto it = temporalWindows_.find(elementId);
+    if (it == temporalWindows_.end()) {
+        temporalWindows_[elementId] = TemporalAttentionWindow{};
+        temporalWindows_[elementId].windowStart = std::chrono::system_clock::now();
+    }
+    
+    temporalWindows_[elementId].updateFromEvent(eventTime);
+}
+
+TemporalAttentionWindow EnhancedAttentionAllocator::getTemporalWindow(
+    const UUID& elementId) const {
+    
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    auto it = temporalWindows_.find(elementId);
+    if (it != temporalWindows_.end()) {
+        return it->second;
+    }
+    
+    return TemporalAttentionWindow{};
+}
+
+void EnhancedAttentionAllocator::decayAllTemporalWindows() {
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    for (auto& [id, window] : temporalWindows_) {
+        window.decay();
+    }
+}
+
+void EnhancedAttentionAllocator::enableSaliencyShifting(bool enable) {
+    saliencyShiftingEnabled_ = enable;
+}
+
+std::vector<UUID> EnhancedAttentionAllocator::computeSaliencyBasedShifts(
+    const std::vector<std::pair<UUID, std::string>>& candidates) {
+    
+    if (!saliencyShiftingEnabled_ || !saliencyDetector_) {
+        return {};
+    }
+    
+    std::vector<std::pair<UUID, SaliencyDetector::SaliencyFeatures>> saliencyCandidates;
+    
+    for (const auto& [id, content] : candidates) {
+        auto features = saliencyDetector_->calculateSaliency(content);
+        saliencyCandidates.emplace_back(id, features);
+    }
+    
+    // Get current attention values
+    std::unordered_map<UUID, AttentionValue> currentAttention;
+    for (const auto& [id, content] : candidates) {
+        currentAttention[id] = getAttentionValue(id);
+    }
+    
+    return saliencyDetector_->identifyAttentionShiftTargets(currentAttention, saliencyCandidates);
+}
+
+AttentionCostBudget::AllocationResult EnhancedAttentionAllocator::allocateWithCost(
+    const UUID& targetId, double amount, double priority) {
+    
+    if (!costBudget_) {
+        AttentionCostBudget::AllocationResult result;
+        result.success = false;
+        result.reason = "Budget system not initialized";
+        return result;
+    }
+    
+    AttentionCostBudget::AllocationRequest request;
+    request.targetId = targetId;
+    request.requestedAmount = amount;
+    request.priority = priority;
+    request.canPartialAllocate = true;
+    
+    auto result = costBudget_->requestAllocation(request);
+    
+    if (result.success) {
+        // Update attention value
+        AttentionValue current = getAttentionValue(targetId);
+        current.setSTI(std::min(current.sti() + result.allocatedAmount * 0.1, MAX_STI));
+        updateAttentionValue(targetId, current);
+    }
+    
+    return result;
+}
+
+void EnhancedAttentionAllocator::tickBudget(double deltaSeconds) {
+    if (costBudget_) {
+        costBudget_->tick(deltaSeconds);
+    }
+}
+
+void EnhancedAttentionAllocator::enablePatternLearning(bool enable) {
+    patternLearningEnabled_ = enable;
+}
+
+void EnhancedAttentionAllocator::recordAttentionEvent(
+    const AttentionPatternLearner::AttentionEvent& event) {
+    
+    if (patternLearningEnabled_ && patternLearner_) {
+        patternLearner_->recordEvent(event);
+    }
+}
+
+std::vector<std::pair<UUID, double>> EnhancedAttentionAllocator::getPredictedNeeds() {
+    if (!patternLearningEnabled_ || !patternLearner_) {
+        return {};
+    }
+    
+    // Learn patterns first
+    patternLearner_->learnPatterns();
+    
+    // Get predictions with empty context (could be enhanced with actual context)
+    std::unordered_map<std::string, std::string> context;
+    return patternLearner_->predictAttentionNeeds(context);
+}
+
+void EnhancedAttentionAllocator::enableInterAgentTransfer(bool enable) {
+    interAgentTransferEnabled_ = enable;
+}
+
+AttentionTransferProtocol& EnhancedAttentionAllocator::getTransferProtocol() {
+    return *transferProtocol_;
+}
+
+double EnhancedAttentionAllocator::getEnhancedAttentionScore(const UUID& elementId) const {
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    // Base attention
+    AttentionValue base = getAttentionValue(elementId);
+    double baseScore = (base.sti() / MAX_STI) * 0.5 + (base.lti() / MAX_LTI) * 0.3;
+    
+    // Temporal component
+    double temporalScore = 0.0;
+    auto temporalIt = temporalWindows_.find(elementId);
+    if (temporalIt != temporalWindows_.end()) {
+        temporalScore = temporalIt->second.getCompositeAttention() * 0.2;
+    }
+    
+    return std::min(1.0, baseScore + temporalScore);
+}
+
+EnhancedAttentionAllocator::EnhancedStatistics 
+EnhancedAttentionAllocator::getEnhancedStatistics() const {
+    
+    std::lock_guard<std::mutex> lock(enhancedMutex_);
+    
+    EnhancedStatistics stats;
+    stats.base = getStatistics();
+    
+    // Calculate average temporal score
+    if (!temporalWindows_.empty()) {
+        double totalTemporal = 0.0;
+        for (const auto& [id, window] : temporalWindows_) {
+            totalTemporal += window.getCompositeAttention();
+        }
+        stats.averageTemporalScore = totalTemporal / temporalWindows_.size();
+    }
+    
+    // Budget utilization
+    if (costBudget_) {
+        stats.budgetUtilization = 1.0 - (costBudget_->getAvailableBudget() / 
+                                          costBudget_->getTotalBudget());
+    }
+    
+    // Pattern count
+    if (patternLearner_) {
+        stats.patternsPredicted = static_cast<int>(patternLearner_->getPatterns().size());
+    }
+    
+    // Active transfers
+    if (transferProtocol_) {
+        stats.activeTransfers = static_cast<int>(transferProtocol_->getActiveTransfers().size());
+    }
+    
+    return stats;
+}
+
+// ============================================================================
+// Phase 1.3: AttentionAwareMemoryManager Enhanced Methods
+// ============================================================================
+
+std::shared_ptr<EnhancedAttentionAllocator> 
+AttentionAwareMemoryManager::getEnhancedAllocator() const {
+    return enhancedAllocator_;
+}
+
+void AttentionAwareMemoryManager::enableEnhancedAttention(const std::string& agentId) {
+    if (!enhancedAllocator_) {
+        enhancedAllocator_ = std::make_shared<EnhancedAttentionAllocator>(agentId);
+    }
+}
+
+// ============================================================================
+// Phase 1.3: Enhanced Convenience Functions
+// ============================================================================
+
+namespace attention {
+
+void enableEnhanced(const std::string& agentId) {
+    getGlobalAttentionAwareMemoryManager().enableEnhancedAttention(agentId);
+}
+
+double getEnhancedScore(const UUID& elementId) {
+    auto enhanced = getGlobalAttentionAwareMemoryManager().getEnhancedAllocator();
+    if (enhanced) {
+        return enhanced->getEnhancedAttentionScore(elementId);
+    }
+    return 0.0;
+}
+
+std::vector<std::pair<UUID, double>> predictNeeds() {
+    auto enhanced = getGlobalAttentionAwareMemoryManager().getEnhancedAllocator();
+    if (enhanced) {
+        return enhanced->getPredictedNeeds();
+    }
+    return {};
+}
+
+void recordEvent(const std::string& category, const UUID& targetId, double level) {
+    auto enhanced = getGlobalAttentionAwareMemoryManager().getEnhancedAllocator();
+    if (enhanced) {
+        AttentionPatternLearner::AttentionEvent event;
+        event.targetId = targetId;
+        event.category = category;
+        event.attentionLevel = level;
+        event.timestamp = std::chrono::system_clock::now();
+        enhanced->recordAttentionEvent(event);
+    }
+}
+
+} // namespace attention
 
 } // namespace elizaos
