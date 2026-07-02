@@ -277,6 +277,37 @@ TEST(HomeworkLoop, DefaultProviderRewardsRunningAgent) {
     EXPECT_GE(sumAfter, sumBefore);
 }
 
+TEST(HomeworkLoop, DestructiveSignalStaysFalseEveryCycle) {
+    // The non-destructive guarantee is now an explicitly-established per-cycle
+    // signal (issuedDestructiveCommand_ is reset to false at the top of every
+    // runHomeworkCycleOnce). Verify it is observably false after each individual
+    // cycle, not merely after a batch -- so the guarantee is a live, checked
+    // property rather than dead default state.
+    AutonomousStarter agent(makeConfig());
+    auto provider = std::make_shared<FixtureEvidenceProvider>(
+        CenterId::Autonomy, CenterId::Protocol);
+    HomeworkLoop loop(agent, CognitiveCurriculum(), provider);
+
+    for (int i = 0; i < 5; ++i) {
+        loop.runHomeworkCycleOnce();
+        EXPECT_FALSE(loop.issuedDestructiveCommand())
+            << "homework loop issued a destructive command on cycle " << (i + 1);
+    }
+}
+
+TEST(HomeworkLoop, HomeworkKeepsUnderlyingAgentAlive) {
+    // The homework loop drives the real AutonomousStarter cognitive cycle. Because
+    // the agent now enforces the never-dead-end invariant post-cycle, an agent
+    // exercised purely through homework must still always have open work to do.
+    AutonomousStarter agent(makeConfig());
+    auto provider = std::make_shared<FixtureEvidenceProvider>(
+        CenterId::Memory, CenterId::Endocrine);
+    HomeworkLoop loop(agent, CognitiveCurriculum(), provider);
+
+    loop.runHomework(8);
+    EXPECT_GE(agent.getOpenGoalCount(), 1u);
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

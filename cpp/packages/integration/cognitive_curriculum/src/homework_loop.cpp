@@ -111,6 +111,13 @@ std::string HomeworkLoop::buildHandoffSignal(std::size_t iteration,
 HomeworkResult HomeworkLoop::runHomeworkCycleOnce() {
     HomeworkResult result;
 
+    // Non-destructive guarantee (explicit, per-cycle): the homework loop only ever
+    // PROPOSES improvements -- it never widens shell access and never issues a
+    // destructive command. Establishing this signal at the top of every cycle makes
+    // the guarantee a live, test-observable property (see issuedDestructiveCommand())
+    // rather than dead default state. (Cross-fork parity with hurdcog/elizaos.cpp.)
+    issuedDestructiveCommand_ = false;
+
     // Step 1-2: score all centers and select the weakest (the gradient rule).
     auto before = selectWeakestCenter();
     result.targetCenter = before.center;

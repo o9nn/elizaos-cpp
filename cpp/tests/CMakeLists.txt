@@ -553,10 +553,14 @@ if(TARGET comprehensive_autonomy_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS comprehensive_autonomy_e2e_test)
 endif()
 
-add_custom_target(ksm_canonical_tests
-    DEPENDS ${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
-)
-
+# NOTE: add_custom_target snapshots its DEPENDS list at creation time. Several
+# ksm-labeled tests are registered and list(APPEND ...)-ed to
+# ELIZAOS_KSM_CANONICAL_TEST_TARGETS LATER in this file (eliza_paths_test,
+# bridge/embodiment integration, autonomy optimizer/reflection/evolution,
+# attention bus, closed-loop autonomy, homework loop). Creating the custom target
+# here would silently exclude all of them from `ninja ksm_canonical_tests` even
+# though `ctest -L ksm` still runs them (the "Not Run" trap). The target is
+# therefore assembled once at the END of this file, after every append.
 set_tests_properties(${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
     PROPERTIES LABELS "ksm;canonical"
 )
@@ -632,3 +636,22 @@ add_real_test(real_attention_bus_test src/test_attention_bus.cpp)
 if(TARGET real_attention_bus_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_attention_bus_test)
 endif()
+
+# ============================================================================
+# KSM canonical target assembly (MUST be last)
+# ============================================================================
+# homework_loop_test is registered and labeled "ksm" near the top of this file
+# but was never folded into the canonical target. Add it (guarded) so the focused
+# `ninja ksm_canonical_tests` lane builds exactly what `ctest -L ksm` runs.
+if(TARGET homework_loop_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS homework_loop_test)
+endif()
+
+add_custom_target(ksm_canonical_tests
+    DEPENDS ${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
+)
+
+# Re-label the full, final canonical set (idempotent for already-labeled targets).
+set_tests_properties(${ELIZAOS_KSM_CANONICAL_TEST_TARGETS}
+    PROPERTIES LABELS "ksm;canonical"
+)

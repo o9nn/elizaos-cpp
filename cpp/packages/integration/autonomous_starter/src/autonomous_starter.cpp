@@ -848,6 +848,21 @@ std::size_t AutonomousStarter::runCognitiveCycleOnce() {
     token = reasoningStep(token);
     token = actionStep(token);
     reflectionStep(token);
+
+    // Never-dead-end invariant (post-cycle safety net): a cognitive cycle must
+    // never terminate with zero open goals -- an agent with no open goal has no
+    // drive and is effectively cognitively dead. Goal completion has two
+    // evidence-gated paths: evaluateGoalProgress() (action phase, completes the
+    // active goal and reseeds inline) and advanceGoalLifecycle() (reflection
+    // phase, completes the focused goal). Only the former reseeds, so when the
+    // reflection path retires the last open goal the cycle would otherwise end
+    // dead-ended. We reconcile here, after the cycle has fully settled, so a
+    // freshly-seeded exploratory goal never swaps a dominant goal's objective
+    // mid-window -- it only fires once no open goal remains at all. (Cross-fork
+    // parity with hurdcog/elizaos.cpp.)
+    if (getOpenGoalCount() == 0) {
+        seedAdaptiveGoal();
+    }
     return cognitiveCycle_;
 }
 
