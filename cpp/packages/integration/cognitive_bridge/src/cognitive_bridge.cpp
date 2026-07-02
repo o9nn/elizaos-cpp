@@ -156,6 +156,14 @@ void CognitiveBridge::stopEchobeats() {
 
 void CognitiveBridge::echobeatsLoop(std::chrono::milliseconds stepInterval, std::string agentId) {
     int step = 0;
+    // Anchor the beat schedule to a fixed origin so the heartbeat cadence does
+    // not drift when subscriber callbacks (which run synchronously in
+    // publishCognitiveState) take a variable amount of time. Each beat's
+    // deadline is startTime + step * stepInterval, i.e. a fixed grid, rather
+    // than "now() + stepInterval" measured after the callback returns. This
+    // keeps every Echobeats phase (perception/reasoning/action/reflection)
+    // recurring on its true cadence even under heavy per-beat work.
+    const auto startTime = std::chrono::steady_clock::now();
     while (echobeatsRunning_.load()) {
         step = (step % 12) + 1;
         currentStep_.store(step);
@@ -172,10 +180,12 @@ void CognitiveBridge::echobeatsLoop(std::chrono::milliseconds stepInterval, std:
         s.focus = "echobeats";
         publishCognitiveState(s);
 
-        // Sleep in small slices so stop is responsive.
-        const auto endTime = std::chrono::steady_clock::now() + stepInterval;
+        // Sleep until this beat's grid deadline in small slices so stop stays
+        // responsive. If the beat overran its slot (slow callback), the
+        // deadline is already in the past and we proceed immediately to catch up.
+        const auto endTime = startTime + step * stepInterval;
         while (echobeatsRunning_.load() && std::chrono::steady_clock::now() < endTime) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
         }
     }
 }
