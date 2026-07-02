@@ -94,6 +94,12 @@ add_subdirectory(cpp/packages/applications/goal_manager)
 # Integration modules
 add_subdirectory(cpp/packages/integration/auto_fun)
 add_subdirectory(cpp/packages/integration/autonomous_starter)
+# Cognitive curriculum + homework loop (elizaos-cognitive_curriculum): the
+# autonomy self-strengthening subsystem that homework_loop_test links against.
+# Guarded so a partial checkout without the package still configures.
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cpp/packages/integration/cognitive_curriculum/CMakeLists.txt)
+    add_subdirectory(cpp/packages/integration/cognitive_curriculum)
+endif()
 add_subdirectory(cpp/packages/integration/sweagent)
 add_subdirectory(cpp/packages/integration/mcp_gateway)
 add_subdirectory(cpp/packages/integration/cognitive_bridge)

@@ -207,3 +207,56 @@ TEST_F(ClosedLoopAutonomyTest, ProgressIsDeterministicAcrossIdenticalRuns) {
     EXPECT_EQ(agent_->getCompletedGoalCount(), secondAgent->getCompletedGoalCount());
     secondAgent->stop();
 }
+
+// ---------------------------------------------------------------------------
+// Never-dead-end invariant regression coverage.
+//
+// The autonomy engine has TWO evidence-gated goal-completion paths:
+//   * evaluateGoalProgress() (action phase) completes the active goal and
+//     reseeds inline, and
+//   * advanceGoalLifecycle() (reflection phase) completes the focused goal.
+// A prior defect left the reflection path with no post-completion reseed, so
+// when it retired the final open goal the cycle ended with zero open goals --
+// a cognitively dead agent. The tests below lock in the post-cycle safety net
+// so the invariant holds after EVERY cycle regardless of which path fires.
+// ---------------------------------------------------------------------------
+
+TEST_F(ClosedLoopAutonomyTest, OpenGoalCountNeverReachesZeroAtAnyCycleBoundary) {
+    // The strong form of the invariant: it is not enough that open goals exist
+    // "eventually"; there must be at least one open goal at the end of EVERY
+    // single cycle, so the next perception step always has something to pursue.
+    for (int i = 0; i < 30; ++i) {
+        agent_->runCognitiveCycleOnce();
+        EXPECT_GE(agent_->getOpenGoalCount(), 1u)
+            << "agent dead-ended (zero open goals) at cycle boundary " << (i + 1);
+    }
+}
+
+TEST_F(ClosedLoopAutonomyTest, SustainedRunKeepsCompletingGoalsWithoutDeadEnd) {
+    // Over a long run the agent must keep making progress (completing goals) AND
+    // never dead-end -- proving the reseed keeps genuinely new open work flowing
+    // rather than parking on a single stale goal.
+    for (int i = 0; i < 40; ++i) {
+        agent_->runCognitiveCycleOnce();
+    }
+    EXPECT_GE(agent_->getCompletedGoalCount(), 3u);
+    EXPECT_GE(agent_->getOpenGoalCount(), 1u);
+    // The goal list must have grown well beyond the two seed goals via adaptive
+    // re-seeding, confirming the never-dead-end drive is generative.
+    EXPECT_GT(agent_->getState().getGoals().size(), 2u);
+}
+
+TEST_F(ClosedLoopAutonomyTest, DeterministicNoDeadEndAcrossIdenticalLongRuns) {
+    // Two independent agents driven identically must agree on both progress and
+    // the still-open invariant, proving the reseed is deterministic (not a race).
+    auto other = std::make_shared<AutonomousStarter>(makeConfig("ClosedLoop-Agent-ND"));
+    other->start();
+    for (int i = 0; i < 25; ++i) {
+        agent_->runCognitiveCycleOnce();
+        other->runCognitiveCycleOnce();
+        EXPECT_GE(agent_->getOpenGoalCount(), 1u);
+        EXPECT_GE(other->getOpenGoalCount(), 1u);
+    }
+    EXPECT_EQ(agent_->getCompletedGoalCount(), other->getCompletedGoalCount());
+    other->stop();
+}
