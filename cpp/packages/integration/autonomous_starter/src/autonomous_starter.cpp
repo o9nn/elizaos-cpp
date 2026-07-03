@@ -925,6 +925,19 @@ void AutonomousStarter::refreshGoalAttention() {
                                                  : std::min(1.0, av.novelty + 0.3);
         av.activation = open ? std::min(1.0, av.activation + 0.2)
                              : std::max(0.0, av.activation * 0.5);
+        // Focus-retention (hysteresis): the currently-focused goal, while it is
+        // still open, gets its activation pinned high. The composite-score
+        // novelty term (weight 0.2) swings by ~0.06 per cycle and would
+        // otherwise flip the winner between equally-important co-active goals
+        // every single cycle, causing the agent to thrash between objectives and
+        // never converge on the one it is pursuing. Pinning activation (weight
+        // 0.1) gives the incumbent focus a +0.1 composite edge that outweighs
+        // the novelty swing, so attention commits to a goal until it completes
+        // or its importance/urgency drops (e.g. it becomes blocked) -- a stable
+        // attention economy rather than an oscillating one.
+        if (open && goal.id == focusedGoalId_) {
+            av.activation = 1.0;
+        }
         goalAttention_.updateAttentionValue(goal.id, av);
     }
 }

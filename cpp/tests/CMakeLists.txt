@@ -94,6 +94,16 @@ if(TARGET elizaos-persistence)
 endif()
 add_test(NAME comprehensive_autonomy_e2e_test COMMAND comprehensive_autonomy_e2e_test)
 
+# Comprehensive E2E contract test - validates the public comprehensive_e2e.hpp API
+# (Stage enum stability, PipelineSnapshot semantics, latency normalization).
+add_executable(comprehensive_e2e_test comprehensive_e2e_contract_test.cpp)
+target_link_libraries(comprehensive_e2e_test
+    gtest
+    gtest_main
+    Threads::Threads
+)
+add_test(NAME comprehensive_e2e_test COMMAND comprehensive_e2e_test)
+
 add_executable(awesome_eliza_test awesome_eliza_test.cpp)
 target_link_libraries(awesome_eliza_test elizaos-awesome_eliza gtest gtest_main Threads::Threads)
 add_test(NAME awesome_eliza_test COMMAND awesome_eliza_test)
@@ -207,6 +217,10 @@ add_test(NAME ontogenesis_test COMMAND ontogenesis_test)
 add_executable(otaku_test otaku_test.cpp)
 target_link_libraries(otaku_test elizaos-otaku gtest gtest_main Threads::Threads)
 add_test(NAME otaku_test COMMAND otaku_test)
+
+add_executable(otaku_liquidity_test otaku_liquidity_test.cpp)
+target_link_libraries(otaku_liquidity_test elizaos-otaku gtest gtest_main Threads::Threads)
+add_test(NAME otaku_liquidity_test COMMAND otaku_liquidity_test)
 
 add_executable(otc_agent_test otc_agent_test.cpp)
 target_link_libraries(otc_agent_test elizaos-otc_agent gtest gtest_main Threads::Threads)

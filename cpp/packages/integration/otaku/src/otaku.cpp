@@ -1292,7 +1292,11 @@ LiquidityPosition OtakuAgent::addLiquidity(
     position.apr = 15.5;
     position.chainId = currentChain_;
     position.protocol = protocol;
-
+    // Track the opened position so it can be queried and removed later.
+    {
+        std::lock_guard<std::mutex> lock(liquidityMutex_);
+        liquidityPositions_.push_back(position);
+    }
     return position;
 }
 
@@ -1300,12 +1304,32 @@ bool OtakuAgent::removeLiquidity(const std::string& positionId, double percentag
     std::ostringstream oss;
     oss << "Removing " << percentage << "% liquidity from position " << positionId;
     elizaos::logInfo(oss.str(), "otaku");
-
+    // Clamp the requested percentage to a sane range.
+    if (percentage < 0.0) percentage = 0.0;
+    if (percentage > 100.0) percentage = 100.0;
+    std::lock_guard<std::mutex> lock(liquidityMutex_);
+    auto it = std::find_if(liquidityPositions_.begin(), liquidityPositions_.end(),
+                           [&positionId](const LiquidityPosition& p) {
+                               return p.positionId == positionId;
+                           });
+    if (it == liquidityPositions_.end()) {
+        return false;  // Unknown position id.
+    }
+    if (percentage >= 100.0) {
+        liquidityPositions_.erase(it);
+    } else {
+        const double remaining = 1.0 - (percentage / 100.0);
+        it->amount0 *= remaining;
+        it->amount1 *= remaining;
+        it->liquidityTokens *= remaining;
+        it->currentValue *= remaining;
+    }
     return true;
 }
 
 std::vector<LiquidityPosition> OtakuAgent::getLiquidityPositions() {
-    return {}; // Would return user's actual positions
+    std::lock_guard<std::mutex> lock(liquidityMutex_);
+    return liquidityPositions_;
 }
 
 double OtakuAgent::getPoolApr(const std::string& poolAddress, DexProtocol protocol) {

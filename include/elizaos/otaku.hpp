@@ -547,6 +547,10 @@ private:
     // Thread safety
     mutable std::mutex agentMutex_;
 
+    // Liquidity position tracking
+    std::vector<LiquidityPosition> liquidityPositions_;
+    mutable std::mutex liquidityMutex_;
+
     // Internal helpers
     void initializeSubManagers();
     void logStatus(const std::string& status);
