@@ -652,6 +652,18 @@ if(TARGET real_attention_bus_test)
 endif()
 
 # ============================================================================
+# Autonomy Health Report + ElizaStarter + Cross-Fork Parity E2E Tests
+# Validates the AutonomyHealthReport diagnostics surface, completed ElizaStarter
+# processConversation/updateMemories, expanded adaptive goal rotation (7 patterns),
+# and cross-fork parity invariants (never-dead-end, bounded competence/stagnation).
+# ============================================================================
+add_real_test(real_autonomy_health_starter_test src/test_autonomy_health_and_starter.cpp)
+if(TARGET real_autonomy_health_starter_test)
+    target_link_libraries(real_autonomy_health_starter_test elizaos-cognitive_curriculum elizaos-eliza_starter)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_health_starter_test)
+endif()
+
+# ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================
 # homework_loop_test is registered and labeled "ksm" near the top of this file

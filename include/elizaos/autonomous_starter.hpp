@@ -117,6 +117,30 @@ public:
     // Task management
     UUID executeShellCommandAsTask(const std::string& command);
 
+    // Comprehensive autonomy health diagnostics. Returns a structured report
+    // summarizing the agent's current operational state, goal convergence,
+    // competence trajectory, and memory health for supervisory systems.
+    struct AutonomyHealthReport {
+        double competence = 0.0;
+        std::size_t openGoals = 0;
+        std::size_t completedGoals = 0;
+        std::size_t totalCycles = 0;
+        std::size_t totalActions = 0;
+        std::size_t successfulActions = 0;
+        std::size_t failedActions = 0;
+        std::size_t consecutiveFailures = 0;
+        std::size_t stagnationCount = 0;
+        std::size_t reflections = 0;
+        std::string focusedGoalId;
+        std::string lastPlan;
+        std::string lastReflection;
+        double goalCompletionRate = 0.0;
+        double actionSuccessRate = 0.0;
+        bool isHealthy = true;
+        std::string healthSummary;
+    };
+    AutonomyHealthReport getAutonomyHealthReport() const;
+
 private:
     // Goal-driven autonomy helpers
     void ensureCoreAutonomyGoals();

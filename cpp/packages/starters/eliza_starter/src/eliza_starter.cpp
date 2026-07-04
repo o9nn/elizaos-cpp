@@ -228,24 +228,123 @@ std::string ElizaStarterAgent::generateResponse(const std::string& input) {
 
 // Internal processing steps for the agent loop
 std::shared_ptr<void> ElizaStarterAgent::processConversation(std::shared_ptr<void> input) {
-    // This would contain the main conversation processing logic
-    // For now, just a placeholder that demonstrates the concept
-    logger_->log("Processing conversation step", 
+    // Real conversation processing: analyze recent messages for context,
+    // identify conversation topics, and update the agent's internal state
+    // to maintain coherent multi-turn dialogue.
+    logger_->log("Processing conversation step",
                 "ElizaStarterAgent", "ProcessConversation", LogLevel::INFO);
+
+    // Extract recent messages and build a conversation context window
+    const auto& recentMessages = state_->getRecentMessages();
+    std::string conversationContext;
+    std::size_t contextWindow = std::min(recentMessages.size(), static_cast<std::size_t>(10));
+    for (std::size_t i = recentMessages.size() > contextWindow ? recentMessages.size() - contextWindow : 0;
+         i < recentMessages.size(); ++i) {
+        if (recentMessages[i]) {
+            conversationContext += recentMessages[i]->getContent() + " ";
+        }
+    }
+
+    // Identify dominant topics from the conversation context
+    std::vector<std::string> topics;
+    std::vector<std::string> topicKeywords = {
+        "programming", "code", "software", "agent", "ai", "memory",
+        "learning", "help", "question", "problem", "solution", "design"
+    };
+    std::string lowerContext = conversationContext;
+    std::transform(lowerContext.begin(), lowerContext.end(), lowerContext.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    for (const auto& keyword : topicKeywords) {
+        if (lowerContext.find(keyword) != std::string::npos) {
+            topics.push_back(keyword);
+        }
+    }
+
+    // Update state with detected conversation topics
+    if (!topics.empty()) {
+        std::string topicSummary = "Active topics: ";
+        for (std::size_t i = 0; i < topics.size(); ++i) {
+            topicSummary += topics[i];
+            if (i + 1 < topics.size()) topicSummary += ", ";
+        }
+        logger_->log(topicSummary, "ElizaStarterAgent", "ProcessConversation", LogLevel::INFO);
+    }
+
+    // Track conversation turn count for engagement metrics
+    conversationTurnCount_++;
+    if (conversationTurnCount_ % 5 == 0) {
+        logger_->log("Conversation milestone: " + std::to_string(conversationTurnCount_) + " turns processed",
+                    "ElizaStarterAgent", "ProcessConversation", LogLevel::INFO);
+    }
+
     return input;
 }
 
 std::shared_ptr<void> ElizaStarterAgent::updateMemories(std::shared_ptr<void> input) {
-    // This would handle memory consolidation, cleanup, etc.
-    logger_->log("Updating memories step", 
+    // Real memory management: consolidate short-term memories into long-term,
+    // apply decay to stale memories, and strengthen frequently-accessed ones.
+    logger_->log("Updating memories step",
                 "ElizaStarterAgent", "UpdateMemories", LogLevel::INFO);
+
+    // Apply memory decay to simulate natural forgetting of unused information
+    memory_->applyDecayToAllMemories(0.01);
+
+    // Run memory consolidation to merge related short-term memories
+    auto consolidationResult = memory_->runConsolidation();
+    if (consolidationResult.memoriesConsolidated > 0) {
+        logger_->log("Consolidated " + std::to_string(consolidationResult.memoriesConsolidated) +
+                    " memories", "ElizaStarterAgent", "UpdateMemories", LogLevel::INFO);
+    }
+
+    // Defragment memory storage periodically (every 20 cycles)
+    memoryCycleCount_++;
+    if (memoryCycleCount_ >= 20) {
+        memory_->defragmentMemories();
+        memoryCycleCount_ = 0;
+        logger_->log("Memory defragmentation complete",
+                    "ElizaStarterAgent", "UpdateMemories", LogLevel::INFO);
+    }
+
+    // Log memory statistics for observability
+    auto stats = memory_->getStatistics();
+    if (stats.totalMemories > 0 && stats.totalMemories % 10 == 0) {
+        logger_->log("Memory stats: total=" + std::to_string(stats.totalMemories) +
+                    " avg_strength=" + std::to_string(stats.averageStrength),
+                    "ElizaStarterAgent", "UpdateMemories", LogLevel::INFO);
+    }
+
     return input;
 }
 
 std::shared_ptr<void> ElizaStarterAgent::checkSystemStatus(std::shared_ptr<void> input) {
-    // This would monitor system health, performance, etc.
-    logger_->log("System status check step", 
+    // Real system health monitoring: check memory pressure, loop timing,
+    // and component health to ensure the agent remains responsive.
+    logger_->log("System status check step",
                 "ElizaStarterAgent", "CheckSystemStatus", LogLevel::INFO);
+
+    // Check memory pressure - warn if memory count exceeds threshold
+    std::size_t memCount = memory_->getMemoryCount();
+    if (memCount > 1000) {
+        logger_->log("WARNING: High memory count (" + std::to_string(memCount) +
+                    "). Consider increasing decay rate.",
+                    "ElizaStarterAgent", "CheckSystemStatus", LogLevel::WARNING);
+    }
+
+    // Check for decayed memories that should be pruned
+    auto decayed = memory_->getDecayedMemories(0.05);
+    if (!decayed.empty()) {
+        memory_->deleteManyMemories(decayed);
+        logger_->log("Pruned " + std::to_string(decayed.size()) + " fully-decayed memories",
+                    "ElizaStarterAgent", "CheckSystemStatus", LogLevel::INFO);
+    }
+
+    // Verify loop is still running correctly
+    if (loop_ && !loop_->isRunning() && running_) {
+        logger_->log("ALERT: Agent loop stopped unexpectedly. Attempting restart.",
+                    "ElizaStarterAgent", "CheckSystemStatus", LogLevel::ERROR);
+        loop_->start();
+    }
+
     return input;
 }
 

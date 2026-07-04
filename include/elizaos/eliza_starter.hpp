@@ -52,6 +52,8 @@ private:
     std::unique_ptr<CharacterManager> character_;
     std::unique_ptr<AgentLoop> loop_;
     bool running_;
+    std::size_t conversationTurnCount_ = 0;
+    std::size_t memoryCycleCount_ = 0;
     
 public:
     /**

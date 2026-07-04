@@ -438,10 +438,14 @@ bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal
 
 void AutonomousStarter::seedAdaptiveGoal() {
     const Timestamp now = std::chrono::system_clock::now();
-    static const std::array<const char*, 3> rotations = {{
+    static const std::array<const char*, 7> rotations = {{
         "Sample repository source files to deepen project understanding",
         "Self-audit test and validation surfaces for autonomy health",
-        "Inspect system identity and runtime context for situational grounding"
+        "Inspect system identity and runtime context for situational grounding",
+        "Evaluate memory coherence and consolidation effectiveness",
+        "Assess goal completion velocity and plan diversity metrics",
+        "Survey available tooling and runtime capabilities for expansion",
+        "Verify shell safety boundaries and command validation integrity"
     }};
     const std::string description = rotations[adaptiveGoalCounter_ % rotations.size()];
     ++adaptiveGoalCounter_;
@@ -1489,6 +1493,62 @@ bool autonomous_starter_self_check() {
 void autonomous_starter_placeholder() {
     const bool ok = autonomous_starter_self_check();
     logInfo(std::string("AutonomousStarter module loaded; self-check=") + (ok ? "ok" : "failed"));
+}
+
+AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthReport() const {
+    AutonomyHealthReport report;
+    report.competence = competenceSignal_;
+    report.openGoals = getOpenGoalCount();
+    report.completedGoals = getCompletedGoalCount();
+    report.totalCycles = cognitiveCycle_;
+    report.totalActions = actionCounter_;
+    report.successfulActions = successfulActionCount_;
+    report.failedActions = failedActionCount_;
+    report.consecutiveFailures = consecutiveActionFailures_;
+    report.stagnationCount = stagnationCounter_;
+    report.reflections = reflectionCount_;
+    report.focusedGoalId = focusedGoalId_;
+    report.lastPlan = lastPlan_;
+    report.lastReflection = lastReflection_;
+
+    // Compute rates
+    const std::size_t totalGoals = report.openGoals + report.completedGoals;
+    report.goalCompletionRate = totalGoals > 0
+        ? static_cast<double>(report.completedGoals) / static_cast<double>(totalGoals)
+        : 0.0;
+    report.actionSuccessRate = report.totalActions > 0
+        ? static_cast<double>(report.successfulActions) / static_cast<double>(report.totalActions)
+        : 0.0;
+
+    // Health assessment
+    std::string summary;
+    report.isHealthy = true;
+
+    if (report.consecutiveFailures >= 3) {
+        report.isHealthy = false;
+        summary += "CRITICAL: " + std::to_string(report.consecutiveFailures) +
+                   " consecutive action failures. ";
+    }
+    if (report.competence < 0.2 && report.totalCycles > 5) {
+        report.isHealthy = false;
+        summary += "WARNING: Low competence (" + std::to_string(report.competence) +
+                   ") after " + std::to_string(report.totalCycles) + " cycles. ";
+    }
+    if (report.stagnationCount >= 2) {
+        summary += "NOTICE: Stagnation detected (" + std::to_string(report.stagnationCount) +
+                   " repeats). ";
+    }
+    if (report.openGoals == 0 && report.totalCycles > 0) {
+        summary += "INFO: All goals completed; adaptive exploration active. ";
+    }
+    if (summary.empty()) {
+        summary = "HEALTHY: Agent operating normally. competence=" +
+                  std::to_string(report.competence) + " cycles=" +
+                  std::to_string(report.totalCycles) + " success_rate=" +
+                  std::to_string(report.actionSuccessRate);
+    }
+    report.healthSummary = summary;
+    return report;
 }
 
 } // namespace elizaos
