@@ -339,6 +339,7 @@ function(add_real_test name src_file)
         elizaos-cognitive_bridge
         elizaos-persistence
         elizaos-autonomous_starter
+        elizaos-endocrine
     )
     foreach(real_test_target IN LISTS real_test_optional_elizaos_targets)
         if(TARGET ${real_test_target})
@@ -384,6 +385,12 @@ add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
 # hurdcog canonical fork, plus o9nn-specific repairs: memory deadlock, clear()
 # full-state reset, and AgentLogger Task 1.4 feature parity).
 add_real_test(real_repair_regressions_test  src/test_repair_regressions.cpp)
+
+# Virtual Endocrine System: 10-gland hormone bus, valence-arousal, cognitive mode.
+add_real_test(real_endocrine_test            src/test_endocrine.cpp)
+if(TARGET real_endocrine_test)
+    target_link_libraries(real_endocrine_test elizaos-endocrine)
+endif()
 
 # Regression test for public API drift between include/ and cpp/include/.
 # This target intentionally searches cpp/include first so stale duplicate
