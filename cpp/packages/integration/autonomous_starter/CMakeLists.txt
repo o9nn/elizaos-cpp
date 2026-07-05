@@ -14,6 +14,7 @@ target_link_libraries(elizaos-autonomous_starter
     elizaos-agentshell
     elizaos-agentlogger
     elizaos-agentmemory
+    elizaos-endocrine
     Threads::Threads
 )
 

@@ -670,6 +670,14 @@ if(TARGET real_autonomy_health_starter_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_health_starter_test)
 endif()
 
+# Endocrine-autonomy integration E2E: hormone-driven cognitive mode biasing,
+# stimulus routing from action outcomes, cross-fork parity invariants.
+add_real_test(real_endocrine_autonomy_integration_test src/test_endocrine_autonomy_integration.cpp)
+if(TARGET real_endocrine_autonomy_integration_test)
+    target_link_libraries(real_endocrine_autonomy_integration_test elizaos-endocrine elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_autonomy_integration_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================

@@ -496,6 +496,8 @@ void AutonomousStarter::evaluateGoalProgress(const std::string& plan,
             state_.updateGoalStatus(activeGoalId_, "completed");
             appendMemory("Goal completed: " + completedDescription +
                          " (satisfied by reliable plan='" + plan + "').");
+            lastCompletedGoalDescription_ = completedDescription;
+            goalCompletedThisCycleById_ = true;
             activeGoalId_ = "";
         }
     }
@@ -954,13 +956,34 @@ const StateGoal* AutonomousStarter::selectFocusGoal() {
     }
     refreshGoalAttention();
 
+    // Single-intent coherence: perception (selectActiveGoal) has already promoted
+    // exactly one in-flight goal into activeGoalId_. Reasoning MUST plan for that
+    // same goal -- otherwise perception's primary_goal context and the reasoning
+    // plan describe two different objectives in one cycle, and the closed loop
+    // cannot converge. Honor the in-flight active goal as the focus whenever it
+    // is still open; the attention economy still governs which PENDING goal
+    // selectActiveGoal promotes next once the current one is done.
+    auto isOpen = [](std::string status) {
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return status == "active" || status == "in_progress" || status == "pending";
+    };
+    if (!activeGoalId_.empty()) {
+        for (const auto& goal : goals) {
+            if (goal.id == activeGoalId_ && isOpen(goal.status)) {
+                focusedGoalId_ = goal.id;
+                return &goal;
+            }
+        }
+    }
+
+    // No in-flight active goal (transient between completion and next promotion):
+    // fall back to the attention economy to choose the most important/urgent/
+    // novel open goal as the next focus.
     const StateGoal* best = nullptr;
     double bestScore = -1.0;
     for (const auto& goal : goals) {
-        std::string status = goal.status;
-        std::transform(status.begin(), status.end(), status.begin(),
-                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-        if (status != "active" && status != "in_progress" && status != "pending") {
+        if (!isOpen(goal.status)) {
             continue;
         }
         const double score =
@@ -1043,6 +1066,9 @@ void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actio
 
 std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> input) {
     ++cognitiveCycle_;
+    // New cycle: clear the per-cycle id-completion guard so reflectionStep can
+    // tell whether evaluateGoalProgress already retired a goal this cycle.
+    goalCompletedThisCycleById_ = false;
 
     // Resolve which goal we are pursuing this cycle (promotes a pending goal to
     // active if nothing is active), so the whole observe-reason-act pass is
@@ -1259,6 +1285,21 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
                  " action: command='" + command + "', success=" +
                  std::string(result.success ? "true" : "false") +
                  ", exitCode=" + std::to_string(result.exitCode) + ".");
+
+    // Endocrine stimulus: feed the action outcome into the virtual endocrine system
+    // so hormone levels modulate subsequent plan selection and memory consolidation.
+    if (result.success) {
+        endocrine_.submitStimulus(Stimulus("action_success", 0.7));
+        if (getOpenGoalCount() == 0) {
+            endocrine_.submitStimulus(Stimulus("goal_completed", 0.9));
+        }
+    } else {
+        endocrine_.submitStimulus(Stimulus("error_detected", 0.6));
+        if (consecutiveActionFailures_ >= 3) {
+            endocrine_.submitStimulus(Stimulus("sustained_failure", 0.8));
+        }
+    }
+    endocrine_.tick();
 
     // Close the loop: feed the action outcome back into goal state so successful,
     // aligned actions complete the active goal and promote the next one. This is

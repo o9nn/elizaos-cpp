@@ -13,6 +13,7 @@
 #include "elizaos/agentloop.hpp"
 #include "elizaos/agentshell.hpp"
 #include "elizaos/attention.hpp"
+#include "elizaos/endocrine.hpp"
 
 #include <atomic>
 #include <chrono>
@@ -270,6 +271,20 @@ private:
     // goal-selection accessors can update transient attention bookkeeping.
     mutable AttentionAllocator goalAttention_;
     UUID focusedGoalId_;
+
+    // Theme of the most recently completed goal. seedAdaptiveGoal() uses this to
+    // keep a freshly-idle agent's next self-seeded goal coherent with the drive
+    // it was just pursuing (intent continuity) rather than topic-hopping.
+    std::string lastCompletedGoalDescription_;
+    // Per-cycle guard: set true when evaluateGoalProgress() (actionStep) has
+    // already completed the active goal by id this cycle, so reflectionStep()
+    // does not redundantly complete a SECOND goal by description in the same
+    // cycle. Reset at the start of every cycle in perceptionStep().
+    bool goalCompletedThisCycleById_{false};
+
+    // Virtual endocrine system: provides hormone-based affect signaling that
+    // modulates plan selection (CognitiveMode) and memory consolidation.
+    EndocrineSystem endocrine_;
 };
 
 std::shared_ptr<AutonomousStarter> createAutolizaAgent();
