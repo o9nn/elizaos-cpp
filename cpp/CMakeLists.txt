@@ -45,6 +45,7 @@ add_subdirectory(packages/core/agentmemory)
 add_subdirectory(packages/core/agentaction)
 add_subdirectory(packages/core/agentagenda)
 add_subdirectory(packages/core/persistence)
+add_subdirectory(packages/core/endocrine)
 
 # Infrastructure modules - support services
 add_subdirectory(packages/infrastructure/agentcomms)

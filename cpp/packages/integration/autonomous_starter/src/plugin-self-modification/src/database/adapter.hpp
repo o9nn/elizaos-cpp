@@ -1,255 +1,276 @@
-#include "types.hpp"
+#pragma once
+
 #include "elizaos/core.hpp"
+#include <chrono>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
+// ============================================================================
+// Character Modification Data Structures
+// ============================================================================
 
+struct CharacterModification {
+    std::string id;
+    std::string agentId;
+    int versionNumber{0};
+    std::string diffXml;
+    std::string reasoning;
+    std::chrono::system_clock::time_point appliedAt;
+    std::optional<std::chrono::system_clock::time_point> rolledBackAt;
+    std::chrono::system_clock::time_point createdAt;
+};
 
+struct CharacterSnapshot {
+    std::string id;
+    std::string agentId;
+    int versionNumber{0};
+    std::string characterData;  // JSON string
+    std::chrono::system_clock::time_point createdAt;
+};
+
+struct RateLimitStatus {
+    int hourlyCount{0};
+    int dailyCount{0};
+};
+
+struct LockStatus {
+    bool locked{false};
+    std::string lockedBy;
+    std::string lockReason;
+};
+
+struct EvolutionRecommendation {
+    std::string id;
+    std::string recommendation;
+    std::string analysisResult;
+    std::chrono::system_clock::time_point createdAt;
+};
+
+// ============================================================================
+// In-Memory Database Adapter for Character Modification
+// ============================================================================
 
 /**
- * Database adapter for character modification data
- * Provides database-agnostic interface for both SQLite and PostgreSQL
+ * Database adapter for character modification data.
+ * Provides an in-memory implementation that can be backed by SQLite or PostgreSQL
+ * when those backends become available. All operations are thread-safe.
  */
 class CharacterModificationDatabaseAdapter {
-  constructor(private adapter: IDatabaseAdapter) {}
+public:
+    CharacterModificationDatabaseAdapter() = default;
 
-  /**
-   * Get database type to handle SQL differences
-   */
-      // Try to get connection and determine type
-      
-      // Check if it's a Sqlite or Pool (PostgreSQL)
-      
-      // Check if it's SQLite (by attempting a SQLite-specific query)
-        // Not SQLite
+    /**
+     * Save a character modification to the database.
+     */
+    void saveModification(const CharacterModification& modification) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        modifications_[modification.agentId].push_back(modification);
+    }
 
-  /**
-   * Initialize database schema with compatibility for both SQLite and PostgreSQL
-   */
+    /**
+     * Save a character snapshot to the database.
+     */
+    void saveSnapshot(const CharacterSnapshot& snapshot) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        snapshots_[snapshot.agentId].push_back(snapshot);
+    }
 
-    // SQLite-compatible schema
-      // Character modifications table
-      
-      // Indexes
-      
-      // Character snapshots table
-      
-      // Indexes for snapshots
-      
-      // Rate limiting table
-      
-      // Index for rate limits
-      
-      // Character modification lock table
-      
-      // Evolution recommendations table
-      
-      // Indexes for recommendations
+    /**
+     * Load modification history for an agent, ordered by version number ascending.
+     */
+    std::vector<CharacterModification> loadModifications(const std::string& agentId) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = modifications_.find(agentId);
+        if (it == modifications_.end()) {
+            return {};
+        }
+        auto result = it->second;
+        std::sort(result.begin(), result.end(),
+                  [](const CharacterModification& a, const CharacterModification& b) {
+                      return a.versionNumber < b.versionNumber;
+                  });
+        return result;
+    }
 
-    // Execute all queries
+    /**
+     * Load snapshots for an agent, ordered by version number ascending.
+     */
+    std::vector<CharacterSnapshot> loadSnapshots(const std::string& agentId) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = snapshots_.find(agentId);
+        if (it == snapshots_.end()) {
+            return {};
+        }
+        auto result = it->second;
+        std::sort(result.begin(), result.end(),
+                  [](const CharacterSnapshot& a, const CharacterSnapshot& b) {
+                      return a.versionNumber < b.versionNumber;
+                  });
+        return result;
+    }
 
-    // PostgreSQL schema from the original schema.sql file
+    /**
+     * Mark modifications as rolled back from a given version forward.
+     */
+    void rollbackModifications(const std::string& agentId, int fromVersion) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = modifications_.find(agentId);
+        if (it == modifications_.end()) return;
+        const auto now = std::chrono::system_clock::now();
+        for (auto& mod : it->second) {
+            if (mod.versionNumber > fromVersion) {
+                mod.rolledBackAt = now;
+            }
+        }
+    }
 
-  /**
-   * Generate a UUID compatible with the database type
-   */
-    
-      // Generate UUID v4 for SQLite
-      // PostgreSQL will auto-generate UUIDs using gen_random_uuid()
+    /**
+     * Save rate limit attempt for an agent.
+     */
+    void saveRateLimitAttempt(const std::string& agentId, bool successful) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        rateLimitAttempts_[agentId].push_back({std::chrono::system_clock::now(), successful});
+    }
 
-  /**
-   * Get current timestamp in database-compatible format
-   */
+    /**
+     * Check rate limit for an agent. Returns hourly and daily counts of successful attempts.
+     */
+    RateLimitStatus checkRateLimit(const std::string& agentId) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = rateLimitAttempts_.find(agentId);
+        if (it == rateLimitAttempts_.end()) {
+            return {0, 0};
+        }
+        const auto now = std::chrono::system_clock::now();
+        const auto oneHourAgo = now - std::chrono::hours(1);
+        const auto oneDayAgo = now - std::chrono::hours(24);
+        RateLimitStatus status;
+        for (const auto& [timestamp, successful] : it->second) {
+            if (successful) {
+                if (timestamp > oneHourAgo) ++status.hourlyCount;
+                if (timestamp > oneDayAgo) ++status.dailyCount;
+            }
+        }
+        return status;
+    }
 
-  /**
-   * Save a character modification to the database
-   */
-      // TODO: Implement when character_modifications table is available
-      // await this.adapter.query(`
-      //   INSERT INTO character_modifications
-      //   (id, agent_id, version_number, diff_xml, reasoning, applied_at, created_at)
-      //   VALUES ($1, $2, $3, $4, $5, $6, $7)
-      // `, [
-      //   modification.id,
-      //   modification.agentId,
-      //   modification.versionNumber,
-      //   modification.diffXml,
-      //   modification.reasoning,
-      //   modification.appliedAt,
-      //   modification.createdAt
-      // ]);
+    /**
+     * Get lock status for an agent.
+     */
+    LockStatus getLockStatus(const std::string& agentId) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = locks_.find(agentId);
+        if (it == locks_.end()) {
+            return {false, "", ""};
+        }
+        return it->second;
+    }
 
-  /**
-   * Save a character snapshot to the database
-   */
-      // TODO: Implement when character_snapshots table is available
-      // await this.adapter.query(`
-      //   INSERT INTO character_snapshots
-      //   (id, agent_id, version_number, character_data, created_at)
-      //   VALUES ($1, $2, $3, $4, $5)
-      // `, [
-      //   snapshot.id,
-      //   snapshot.agentId,
-      //   snapshot.versionNumber,
-      //   JSON.stringify(snapshot.characterData),
-      //   snapshot.createdAt
-      // ]);
+    /**
+     * Set lock status for an agent.
+     */
+    void setLockStatus(const std::string& agentId, bool locked,
+                       const std::string& lockedBy = "",
+                       const std::string& lockReason = "") {
+        std::lock_guard<std::mutex> lock(mutex_);
+        locks_[agentId] = {locked, lockedBy, lockReason};
+    }
 
-  /**
-   * Load modification history for an agent
-   */
-      // TODO: Implement when character_modifications table is available
-      // const result = await this.adapter.query(`
-      //   SELECT * FROM character_modifications
-      //   WHERE agent_id = $1
-      //   ORDER BY version_number ASC
-      // `, [agentId]);
-      //
-      // return result.rows.std::map(row => ({
-      //   id: row.id,
-      //   agentId: row.agent_id,
-      //   versionNumber: row.version_number,
-      //   diffXml: row.diff_xml,
-      //   reasoning: row.reasoning,
-      //   appliedAt: new Date(row.applied_at),
-      //   rolledBackAt: row.rolled_back_at ? new Date(row.rolled_back_at) : undefined,
-      //   createdAt: new Date(row.created_at)
-      // }));
+    /**
+     * Save evolution recommendation from evaluator.
+     */
+    void saveEvolutionRecommendation(const std::string& agentId,
+                                     const std::string& roomId,
+                                     const std::string& conversationId,
+                                     const std::string& recommendation,
+                                     const std::string& analysisResult) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        EvolutionRecommendation rec;
+        rec.id = generateUUID();
+        rec.recommendation = recommendation;
+        rec.analysisResult = analysisResult;
+        rec.createdAt = std::chrono::system_clock::now();
+        recommendations_[agentId].push_back(std::move(rec));
+        (void)roomId;
+        (void)conversationId;
+    }
 
-  /**
-   * Load snapshots for an agent
-   */
-      // TODO: Implement when character_snapshots table is available
-      // const result = await this.adapter.query(`
-      //   SELECT * FROM character_snapshots
-      //   WHERE agent_id = $1
-      //   ORDER BY version_number ASC
-      // `, [agentId]);
-      //
-      // return result.rows.std::map(row => ({
-      //   id: row.id,
-      //   agentId: row.agent_id,
-      //   versionNumber: row.version_number,
-      //   characterData: JSON.parse(row.character_data),
-      //   createdAt: new Date(row.created_at)
-      // }));
+    /**
+     * Get unprocessed evolution recommendations for an agent (up to 10).
+     */
+    std::vector<EvolutionRecommendation> getUnprocessedRecommendations(
+        const std::string& agentId, std::size_t limit = 10) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = recommendations_.find(agentId);
+        if (it == recommendations_.end()) {
+            return {};
+        }
+        auto result = it->second;
+        std::sort(result.begin(), result.end(),
+                  [](const EvolutionRecommendation& a, const EvolutionRecommendation& b) {
+                      return a.createdAt < b.createdAt;
+                  });
+        if (result.size() > limit) {
+            result.resize(limit);
+        }
+        return result;
+    }
 
-  /**
-   * Mark modifications as rolled back
-   */
-      // TODO: Implement when character_modifications table is available
-      // await this.adapter.query(`
-      //   UPDATE character_modifications
-      //   SET rolled_back_at = CURRENT_TIMESTAMP
-      //   WHERE agent_id = $1 AND version_number > $2
-      // `, [agentId, fromVersion]);
+    /**
+     * Mark recommendations as processed (remove from unprocessed list).
+     */
+    void markRecommendationsProcessed(const std::string& agentId,
+                                      const std::vector<std::string>& ids) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = recommendations_.find(agentId);
+        if (it == recommendations_.end()) return;
+        auto& recs = it->second;
+        recs.erase(std::remove_if(recs.begin(), recs.end(),
+                                  [&ids](const EvolutionRecommendation& r) {
+                                      return std::find(ids.begin(), ids.end(), r.id) != ids.end();
+                                  }),
+                   recs.end());
+    }
 
-  /**
-   * Save rate limit attempt
-   */
-      // TODO: Implement when character_modification_rate_limits table is available
-      // await this.adapter.query(`
-      //   INSERT INTO character_modification_rate_limits
-      //   (agent_id, attempted_at, successful)
-      //   VALUES ($1, CURRENT_TIMESTAMP, $2)
-      // `, [agentId, successful]);
+    /**
+     * Get the latest version number for an agent.
+     */
+    int getLatestVersion(const std::string& agentId) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = modifications_.find(agentId);
+        if (it == modifications_.end() || it->second.empty()) {
+            return 0;
+        }
+        int maxVersion = 0;
+        for (const auto& mod : it->second) {
+            if (mod.versionNumber > maxVersion && !mod.rolledBackAt.has_value()) {
+                maxVersion = mod.versionNumber;
+            }
+        }
+        return maxVersion;
+    }
 
-  /**
-   * Check rate limit for an agent
-   */
-      // TODO: Implement when character_modification_rate_limits table is available
-      // const result = await this.adapter.query(`
-      //   SELECT
-      //     COUNT(CASE WHEN attempted_at > CURRENT_TIMESTAMP - INTERVAL '1 hour' THEN 1 END) as hourly_count,
-      //     COUNT(CASE WHEN attempted_at > CURRENT_TIMESTAMP - INTERVAL '24 hours' THEN 1 END) as daily_count
-      //   FROM character_modification_rate_limits
-      //   WHERE agent_id = $1 AND successful = true
-      // `, [agentId]);
-      //
-      // return {
-      //   hourlyCount: parseInt(result.rows[0].hourly_count),
-      //   dailyCount: parseInt(result.rows[0].daily_count)
-      // };
+private:
+    mutable std::mutex mutex_;
 
-  /**
-   * Get or create lock status for an agent
-   */
-      // TODO: Implement when character_modification_locks table is available
-      // const result = await this.adapter.query(`
-      //   SELECT locked, locked_by, lock_reason
-      //   FROM character_modification_locks
-      //   WHERE agent_id = $1
-      // `, [agentId]);
-      //
-      // if (result.rows.length === 0) {
-      //   return { locked: false };
-      // }
-      //
-      // return {
-      //   locked: result.rows[0].locked,
-      //   lockedBy: result.rows[0].locked_by,
-      //   lockReason: result.rows[0].lock_reason
-      // };
+    // In-memory storage (to be replaced by SQLite/PostgreSQL backend)
+    std::unordered_map<std::string, std::vector<CharacterModification>> modifications_;
+    std::unordered_map<std::string, std::vector<CharacterSnapshot>> snapshots_;
 
-  /**
-   * Set lock status for an agent
-   */
-      // TODO: Implement when character_modification_locks table is available
-      // await this.adapter.query(`
-      //   INSERT INTO character_modification_locks
-      //   (agent_id, locked, locked_by, locked_at, lock_reason)
-      //   VALUES ($1, $2, $3, $4, $5)
-      //   ON CONFLICT (agent_id) DO UPDATE SET
-      //     locked = EXCLUDED.locked,
-      //     locked_by = EXCLUDED.locked_by,
-      //     locked_at = CASE WHEN EXCLUDED.locked THEN CURRENT_TIMESTAMP ELSE NULL END,
-      //     lock_reason = EXCLUDED.lock_reason,
-      //     updated_at = CURRENT_TIMESTAMP
-      // `, [
-      //   agentId,
-      //   locked,
-      //   lockedBy,
-      //   locked ? new Date() : null,
-      //   lockReason
-      // ]);
-
-  /**
-   * Save evolution recommendation from evaluator
-   */
-      // TODO: Implement when character_evolution_recommendations table is available
-      // await this.adapter.query(`
-      //   INSERT INTO character_evolution_recommendations
-      //   (agent_id, room_id, conversation_id, recommendation, analysis_result)
-      //   VALUES ($1, $2, $3, $4, $5)
-      // `, [agentId, roomId, conversationId, recommendation, analysisResult]);
-
-  /**
-   * Get unprocessed evolution recommendations
-   */
-      // TODO: Implement when character_evolution_recommendations table is available
-      // const result = await this.adapter.query(`
-      //   SELECT id, recommendation, analysis_result, created_at
-      //   FROM character_evolution_recommendations
-      //   WHERE agent_id = $1 AND processed = false
-      //   ORDER BY created_at ASC
-      //   LIMIT 10
-      // `, [agentId]);
-      //
-      // return result.rows.std::map(row => ({
-      //   id: row.id,
-      //   recommendation: row.recommendation,
-      //   analysisResult: row.analysis_result,
-      //   createdAt: new Date(row.created_at)
-      // }));
-
+    struct RateLimitEntry {
+        std::chrono::system_clock::time_point timestamp;
+        bool successful;
+    };
+    std::unordered_map<std::string, std::vector<RateLimitEntry>> rateLimitAttempts_;
+    std::unordered_map<std::string, LockStatus> locks_;
+    std::unordered_map<std::string, std::vector<EvolutionRecommendation>> recommendations_;
+};
 
 } // namespace elizaos

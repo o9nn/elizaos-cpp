@@ -678,6 +678,38 @@ if(TARGET real_endocrine_autonomy_integration_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_autonomy_integration_test)
 endif()
 
+# Homework loop E2E: curriculum integration, property coherence scoring,
+# bounded assignments, topic rotation, destructive command prevention.
+add_real_test(real_homework_loop_e2e_test src/test_homework_loop_e2e.cpp)
+if(TARGET real_homework_loop_e2e_test)
+    target_link_libraries(real_homework_loop_e2e_test elizaos-endocrine elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_homework_loop_e2e_test)
+endif()
+
+# Intent continuity E2E: self-audit continuation sprint, unique pass descriptions,
+# never-dead-end invariant with continuation, cross-fork parity.
+add_real_test(real_intent_continuity_test src/test_intent_continuity.cpp)
+if(TARGET real_intent_continuity_test)
+    target_link_libraries(real_intent_continuity_test elizaos-endocrine elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_intent_continuity_test)
+endif()
+
+# Self-modification database adapter: CRUD, rollback, rate limiting, locking,
+# evolution recommendations, version tracking, thread safety.
+add_real_test(real_self_modification_adapter_test src/test_self_modification_adapter.cpp)
+if(TARGET real_self_modification_adapter_test)
+    target_link_libraries(real_self_modification_adapter_test elizaos-endocrine)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_self_modification_adapter_test)
+endif()
+
+# Endocrine cognitive mode biasing: Alarm/Rest/Exploration/Exploitation overrides,
+# stimulus submission, cross-fork parity.
+add_real_test(real_endocrine_cognitive_biasing_test src/test_endocrine_cognitive_biasing.cpp)
+if(TARGET real_endocrine_cognitive_biasing_test)
+    target_link_libraries(real_endocrine_cognitive_biasing_test elizaos-endocrine elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_cognitive_biasing_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================

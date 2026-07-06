@@ -447,8 +447,38 @@ void AutonomousStarter::seedAdaptiveGoal() {
         "Survey available tooling and runtime capabilities for expansion",
         "Verify shell safety boundaries and command validation integrity"
     }};
-    const std::string description = rotations[adaptiveGoalCounter_ % rotations.size()];
-    ++adaptiveGoalCounter_;
+    // Intent continuity: detect if the last completed goal was a self-audit
+    // theme. If so, seed ONE bounded continuation pass before broadening into
+    // exploratory rotation. This keeps the agent coherently anchored to
+    // verifying its own health rather than abruptly topic-hopping.
+    const std::string lastTheme = toLowerAscii(lastCompletedGoalDescription_);
+    const bool lastWasSelfAudit =
+        lastTheme.find("self-audit") != std::string::npos ||
+        lastTheme.find("validation") != std::string::npos ||
+        (lastTheme.find("audit") != std::string::npos &&
+         lastTheme.find("autonomy") != std::string::npos);
+
+    std::string description;
+    if (lastWasSelfAudit && !selfAuditContinued_ && selfAuditSprintRemaining_ == 0) {
+        // Begin a bounded self-audit verification sprint (1 continuation pass).
+        selfAuditSprintRemaining_ = 1;
+        selfAuditContinued_ = true;
+    }
+
+    if (selfAuditSprintRemaining_ > 0) {
+        // Issue a uniquely-named continuation pass so completion-by-description
+        // can never ambiguously retire multiple identically-named goals.
+        ++selfAuditPass_;
+        --selfAuditSprintRemaining_;
+        description = "Self-audit continuation pass #" + std::to_string(selfAuditPass_) +
+                      ": verify autonomy health metrics and goal lifecycle integrity";
+    } else {
+        // Normal exploratory rotation: deterministic round-robin through themes.
+        selfAuditContinued_ = false;  // Reset latch for next self-audit cycle.
+        description = rotations[adaptiveGoalCounter_ % rotations.size()];
+        ++adaptiveGoalCounter_;
+    }
+
     state_.addGoal(StateGoal{
         generateUUID(),
         description,
@@ -1196,6 +1226,29 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     candidatePlans.push_back("sample repository source files");
     candidatePlans.push_back("inspect system identity and kernel context");
     candidatePlans.push_back("maintain lightweight environmental awareness");
+
+    // Endocrine-driven cognitive mode biasing: the virtual endocrine system
+    // provides a CognitiveMode (Exploration/Exploitation/Rest/Alarm) that
+    // modulates plan selection. In Alarm mode, prefer safe awareness plans;
+    // in Exploration mode, prefer novel/diverse plans; in Rest mode, prefer
+    // lightweight maintenance; in Exploitation mode, deepen the current focus.
+    const CognitiveMode cogMode = endocrine_.cognitiveMode();
+    if (cogMode == CognitiveMode::Alarm) {
+        // Under alarm: override to safe fallback regardless of goal
+        lastPlan_ = "establish situational awareness with pwd and directory inspection";
+        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+                     " reasoning: endocrine alarm mode detected, overriding to safe plan.");
+        logInfo("Reasoning: endocrine alarm override to safe plan");
+        return input;
+    } else if (cogMode == CognitiveMode::Rest && competenceSignal_ > 0.8) {
+        // High competence + rest mode: lightweight maintenance
+        lastPlan_ = "maintain lightweight environmental awareness";
+        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+                     " reasoning: endocrine rest mode + high competence, selecting maintenance plan.");
+        logInfo("Reasoning: endocrine rest mode, maintenance plan");
+        return input;
+    }
+    // For Exploration/Exploitation modes, proceed with outcome-based plan selection.
 
     // Outcome-based plan adaptation: pick the candidate with the highest learned
     // success bias. Ties are broken by candidate order (goal-relevant plans are

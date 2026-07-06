@@ -276,6 +276,13 @@ private:
     // keep a freshly-idle agent's next self-seeded goal coherent with the drive
     // it was just pursuing (intent continuity) rather than topic-hopping.
     std::string lastCompletedGoalDescription_;
+    // One-shot continuation latch for intent continuity in seedAdaptiveGoal():
+    // true once a self-audit theme has already earned its single continuation
+    // pass, reset when the agent broadens into exploratory rotation.
+    bool selfAuditContinued_{false};
+    std::size_t selfAuditPass_{0};
+    // Remaining passes in the current bounded self-audit verification sprint.
+    std::size_t selfAuditSprintRemaining_{0};
     // Per-cycle guard: set true when evaluateGoalProgress() (actionStep) has
     // already completed the active goal by id this cycle, so reflectionStep()
     // does not redundantly complete a SECOND goal by description in the same
