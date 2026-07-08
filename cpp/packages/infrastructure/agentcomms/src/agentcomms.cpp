@@ -8,11 +8,28 @@
 #include <random>
 #include <cstring>
 #include <cerrno>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+// Compatibility shims: Windows sockets API differences.
+#define SHUT_RDWR SD_BOTH
+inline int close_socket(int fd) { return ::closesocket(fd); }
+// Windows send() uses int length and has no MSG_NOSIGNAL.
+#define MSG_NOSIGNAL 0
+#ifndef _SSIZE_T_DEFINED
+using ssize_t = int;
+#define _SSIZE_T_DEFINED
+#endif
+#else
 #include <netdb.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
+inline int close_socket(int fd) { return ::close(fd); }
+#endif
 
 namespace elizaos {
 
@@ -205,8 +222,8 @@ void CommChannel::processMessages() {
 
     while (true) {
         // Wait for messages or stop signal. stopRequested_ is modified while
-        // holding queueMutex_, which prevents a lost wake-up that can otherwise
-        // leave idle channels blocked forever during stop().
+        // holding queueMutex_, which prevents the lost wake-up that previously
+        // let idle channels hang forever during stop().
         queueCondition_.wait(lock, [this] {
             return !messageQueue_.empty() || stopRequested_.load();
         });
@@ -625,7 +642,7 @@ bool TCPConnector::connect(const std::string& connectionString) {
             break;
         }
 
-        ::close(candidateSocket);
+        close_socket(candidateSocket);
         candidateSocket = -1;
     }
 
@@ -638,7 +655,8 @@ bool TCPConnector::connect(const std::string& connectionString) {
     timeval receiveTimeout{};
     receiveTimeout.tv_sec = 0;
     receiveTimeout.tv_usec = 100000;
-    (void)::setsockopt(candidateSocket, SOL_SOCKET, SO_RCVTIMEO, &receiveTimeout, sizeof(receiveTimeout));
+    (void)::setsockopt(candidateSocket, SOL_SOCKET, SO_RCVTIMEO,
+                       reinterpret_cast<const char*>(&receiveTimeout), sizeof(receiveTimeout));
 
     {
         std::lock_guard<std::mutex> lock(socketMutex_);
@@ -664,7 +682,7 @@ void TCPConnector::closeSocketNoThrow() {
     std::lock_guard<std::mutex> lock(socketMutex_);
     if (socket_fd_ >= 0) {
         ::shutdown(socket_fd_, SHUT_RDWR);
-        ::close(socket_fd_);
+        close_socket(socket_fd_);
         socket_fd_ = -1;
     }
 }

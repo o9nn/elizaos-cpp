@@ -437,6 +437,9 @@ bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal
 }
 
 void AutonomousStarter::seedAdaptiveGoal() {
+    // Deterministic exploratory rotation: when the agent has satisfied every
+    // standing goal it widens understanding across distinct themes so it never
+    // loops a single plan forever (the anti-dead-end / anti-stagnation drive).
     const Timestamp now = std::chrono::system_clock::now();
     static const std::array<const char*, 7> rotations = {{
         "Sample repository source files to deepen project understanding",
@@ -447,10 +450,17 @@ void AutonomousStarter::seedAdaptiveGoal() {
         "Survey available tooling and runtime capabilities for expansion",
         "Verify shell safety boundaries and command validation integrity"
     }};
-    // Intent continuity: detect if the last completed goal was a self-audit
-    // theme. If so, seed ONE bounded continuation pass before broadening into
-    // exploratory rotation. This keeps the agent coherently anchored to
-    // verifying its own health rather than abruptly topic-hopping.
+
+    // Intent continuity (one continuation per theme switch): an agent that just
+    // finished a validation/self-audit objective should run ONE more self-audit
+    // pass before broadening into exploration, rather than abruptly topic-
+    // hopping mid-drive. This keeps a validation-seeded agent coherently anchored
+    // to verifying its own health across the immediate next cycle, then resumes
+    // the exploratory rotation so it still never dead-ends or loops. The
+    // continuation is given a UNIQUE description (a pass counter) so completion
+    // by-description can never ambiguously retire several identically-named
+    // goals at once -- which would otherwise let the open-goal count fall to
+    // zero and break the never-dead-end invariant.
     const std::string lastTheme = toLowerAscii(lastCompletedGoalDescription_);
     const bool lastWasSelfAudit =
         lastTheme.find("self-audit") != std::string::npos ||
@@ -458,6 +468,11 @@ void AutonomousStarter::seedAdaptiveGoal() {
         (lastTheme.find("audit") != std::string::npos &&
          lastTheme.find("autonomy") != std::string::npos);
 
+    // --- Intent continuity implementation ---
+    // If the last completed goal was a self-audit theme and we haven't yet
+    // issued the bounded continuation sprint, seed ONE continuation pass
+    // before broadening into exploratory rotation. This keeps the agent
+    // coherently anchored to verifying its own health before topic-hopping.
     std::string description;
     if (lastWasSelfAudit && !selfAuditContinued_ && selfAuditSprintRemaining_ == 0) {
         // Begin a bounded self-audit verification sprint (1 continuation pass).
@@ -894,8 +909,7 @@ std::size_t AutonomousStarter::runCognitiveCycleOnce() {
     // reflection path retires the last open goal the cycle would otherwise end
     // dead-ended. We reconcile here, after the cycle has fully settled, so a
     // freshly-seeded exploratory goal never swaps a dominant goal's objective
-    // mid-window -- it only fires once no open goal remains at all. (Cross-fork
-    // parity with hurdcog/elizaos.cpp.)
+    // mid-window -- it only fires once no open goal remains at all.
     if (getOpenGoalCount() == 0) {
         seedAdaptiveGoal();
     }
@@ -956,7 +970,9 @@ void AutonomousStarter::refreshGoalAttention() {
             av.importance = 0.1;
             av.urgency = 0.1;
         }
-        // Novelty rewards goals the agent has not focused on recently.
+        // Novelty rewards goals the agent has not focused on recently. This is
+        // an exploration pressure: it nudges attention toward goals the agent
+        // has not yet served.
         av.novelty = (goal.id == focusedGoalId_) ? std::max(0.0, av.novelty * 0.6)
                                                  : std::min(1.0, av.novelty + 0.3);
         av.activation = open ? std::min(1.0, av.activation + 0.2)
@@ -1133,14 +1149,26 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
 std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> input) {
     const std::size_t memoryCount = state_.getRecentMessages().size();
 
-    // Attention-weighted goal selection: focus on the highest-scoring open goal
-    // rather than the first active one. This makes the agent's attention an
-    // economic resource that shifts toward important/urgent/novel goals.
+    // Attention bookkeeping: refresh the attention economy and the focused-goal
+    // id every cycle so attention-bus introspection and novelty/importance
+    // dynamics stay live. selectFocusGoal() also keeps focusedGoalId_ aligned
+    // with the in-flight active goal (it honours activeGoalId_ when still open).
     const StateGoal* focus = selectFocusGoal();
-    const std::string goalContext = focus ? (focus->description.empty()
-                                                 ? selectGoalContext()
-                                                 : focus->description)
-                                          : selectGoalContext();
+
+    // Plan intent source: the plan must serve the goal the agent has actually
+    // COMMITTED to this cycle -- the active (or next-pending) goal resolved by
+    // perception via selectGoalContext(). This preserves the foundational
+    // contract that a goal under pursuit keeps producing topically-aligned
+    // plans until it is genuinely satisfied (a goal-first, single-tasking
+    // drive). The attention focus is used only as a fallback when there is no
+    // open goal context at all, so the attention economy can still suggest an
+    // objective in the otherwise-idle case without yanking the plan away from
+    // an actively pursued goal mid-drive.
+    std::string goalContext = selectGoalContext();
+    if ((goalContext.empty() || goalContext == "maintain safe baseline awareness") &&
+        focus != nullptr && !focus->description.empty()) {
+        goalContext = focus->description;
+    }
     std::string normalizedGoal = goalContext;
     std::transform(normalizedGoal.begin(), normalizedGoal.end(), normalizedGoal.begin(),
                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
@@ -1250,12 +1278,32 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     }
     // For Exploration/Exploitation modes, proceed with outcome-based plan selection.
 
-    // Outcome-based plan adaptation: pick the candidate with the highest learned
-    // success bias. Ties are broken by candidate order (goal-relevant plans are
-    // listed first), which preserves the previous deterministic preference while
-    // letting accumulated feedback override it once evidence exists.
-    lastPlan_ = candidatePlans.front();
-    double bestBias = -1.0;
+    // Goal-first precedence: the if/else chain above already resolved the plan
+    // that directly serves the active goal into lastPlan_. That plan is the
+    // preferred candidate -- promote it to the front of the candidate list so a
+    // closed loop can actually converge on the goal it is pursuing. Without this
+    // the candidate-bias loop below would discard the goal-relevant plan in
+    // favour of an exploratory one whenever their success priors tie.
+    const std::string goalPreferredPlan = lastPlan_;
+    {
+        auto existing = std::find(candidatePlans.begin(), candidatePlans.end(),
+                                  goalPreferredPlan);
+        if (existing != candidatePlans.end()) {
+            candidatePlans.erase(existing);
+        }
+        if (!goalPreferredPlan.empty()) {
+            candidatePlans.insert(candidatePlans.begin(), goalPreferredPlan);
+        }
+    }
+
+    // Outcome-based plan adaptation: start from the goal-preferred plan and only
+    // switch to another candidate when it has STRICTLY better measured evidence.
+    // A strict ' > bestBias' comparison keyed off the preferred plan's own bias
+    // means unseen-plan priors (all 0.5) and equal success ratios can never
+    // displace the goal-relevant choice; accumulated outcomes still can.
+    lastPlan_ = goalPreferredPlan.empty() ? candidatePlans.front()
+                                          : goalPreferredPlan;
+    double bestBias = planBias(lastPlan_);
     for (const auto& plan : candidatePlans) {
         const double bias = planBias(plan);
         if (bias > bestBias) {
@@ -1362,9 +1410,26 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
 }
 
 std::string AutonomousStarter::activeGoalDescriptionForPlan() const {
-    // The currently-serving goal is the first non-terminal goal, matching the
-    // selection precedence used by selectGoalContext().
+    // The goal actually served this cycle is the one perception/reasoning
+    // committed to: activeGoalId_. Reflection must complete THAT goal -- the one
+    // whose topic drove plan selection and whose probe just ran -- otherwise it
+    // completes an unrelated first-open goal while the plan served a different
+    // one, desynchronising plan / completion / focus (the cause of the plan
+    // drifting away from the goal under pursuit). Only when no goal is in flight
+    // do we fall back to the first open goal in selection precedence.
     const auto& goals = state_.getGoals();
+    if (!activeGoalId_.empty()) {
+        for (const auto& goal : goals) {
+            if (goal.id == activeGoalId_) {
+                const std::string status = toLowerAscii(goal.status);
+                if (status == "active" || status == "in_progress" ||
+                    status == "pending") {
+                    return goal.description;
+                }
+                break;
+            }
+        }
+    }
     for (const auto& goal : goals) {
         std::string status = toLowerAscii(goal.status);
         if (status == "active" || status == "in_progress" || status == "pending") {
@@ -1459,6 +1524,32 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
             reflection << "; lesson=high competence, free to pursue more novel goals";
         } else {
             reflection << "; lesson=steady progress, continuing current strategy";
+        }
+    }
+
+    // --- 3. Active-goal reconciliation --------------------------------------
+    // Three mechanisms can advance goal status within a single cycle:
+    //   * evaluateGoalProgress() completes the active goal by id (actionStep),
+    //   * advanceGoalLifecycle() advances the focused goal by focusedGoalId_,
+    //   * the reflection block above completes the active goal by description.
+    // Only the first keeps activeGoalId_ in sync. If either of the other two
+    // transitions the goal activeGoalId_ points at into a non-open state, the
+    // id would be left dangling on a completed/blocked goal, violating the
+    // invariant that getActiveGoalId() either is empty or references an open
+    // goal. Reconcile here: if activeGoalId_ no longer references an open goal,
+    // clear it so the next cycle's selectActiveGoal() promotes a valid one.
+    if (!activeGoalId_.empty()) {
+        bool stillOpen = false;
+        for (const auto& goal : state_.getGoals()) {
+            if (goal.id == activeGoalId_) {
+                const std::string status = toLowerAscii(goal.status);
+                stillOpen = (status == "active" || status == "in_progress" ||
+                             status == "pending");
+                break;
+            }
+        }
+        if (!stillOpen) {
+            activeGoalId_ = "";
         }
     }
 

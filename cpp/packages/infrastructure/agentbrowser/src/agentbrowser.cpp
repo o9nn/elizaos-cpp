@@ -13,6 +13,12 @@
 #include <curl/curl.h>
 #include <gumbo.h>
 
+// curl/curl.h may pull in <windows.h> which defines ERROR as a macro.
+// Re-suppress it so LogLevel::ERROR compiles cleanly.
+#ifdef ERROR
+#undef ERROR
+#endif
+
 #include <algorithm>
 #include <cctype>
 #include <cstring>

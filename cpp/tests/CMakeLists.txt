@@ -694,6 +694,13 @@ if(TARGET real_intent_continuity_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_intent_continuity_test)
 endif()
 
+# Goal-first plan convergence and active-goal reconciliation.
+add_real_test(real_goal_first_convergence_test src/test_goal_first_convergence.cpp)
+if(TARGET real_goal_first_convergence_test)
+    target_link_libraries(real_goal_first_convergence_test elizaos-endocrine elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_goal_first_convergence_test)
+endif()
+
 # Self-modification database adapter: CRUD, rollback, rate limiting, locking,
 # evolution recommendations, version tracking, thread safety.
 add_real_test(real_self_modification_adapter_test src/test_self_modification_adapter.cpp)
