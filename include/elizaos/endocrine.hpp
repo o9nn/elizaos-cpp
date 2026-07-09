@@ -236,7 +236,7 @@ private:
 
     HormoneBus bus_;
     ValenceArousalState vaState_;
-    CognitiveMode mode_ = CognitiveMode::Exploitation;
+    CognitiveMode mode_ = CognitiveMode::Exploration;
     std::vector<VirtualGland> glands_;
     std::vector<Stimulus> pendingStimuli_;
     std::size_t tickCount_ = 0;
