@@ -5,13 +5,17 @@
  *   1. AutonomousStarter — cognitive loop (observe-reason-act-reflect)
  *   2. VillageEventBusClient — village nervous system adapter
  *   3. EndocrineSystem — emotion/mode state published to village
- *   4. HTTP health endpoint — for monitoring and dashboard
+ *   4. VillageDynamicsEngine — emergent group formation (7 centers)
+ *   5. AntikytheraEngine — temporal gear coupling (10 gears, 4 trains)
+ *   6. HTTP health endpoint — for monitoring and dashboard
  *
  * Systemd unit: eliza-cognitive.service
  * Health endpoint: http://localhost:8450/v1/eliza/state
  */
 
 #include "village_event_bus.hpp"
+#include "village_group_dynamics.hpp"
+#include "antikythera_coupling.hpp"
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/endocrine.hpp"
 #include "elizaos/core.hpp"
@@ -33,6 +37,7 @@
 #include <cstring>
 
 using namespace elizaos;
+using namespace elizaos::village;
 using json = nlohmann::json;
 using Clock = std::chrono::steady_clock;
 
@@ -67,8 +72,10 @@ struct ElizadConfig {
 class HealthServer {
 public:
     HealthServer(int port, AutonomousStarter* agent,
-                 VillageEventBusClient* bus, EndocrineSystem* endo)
-        : port_(port), agent_(agent), bus_(bus), endo_(endo), fd_(-1) {}
+                 VillageEventBusClient* bus, EndocrineSystem* endo,
+                 VillageDynamicsEngine* dynamics, AntikytheraEngine* antikythera)
+        : port_(port), agent_(agent), bus_(bus), endo_(endo),
+          dynamics_(dynamics), antikythera_(antikythera), fd_(-1) {}
 
     bool start() {
         fd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -101,6 +108,10 @@ public:
             std::string response;
             if (request.find("GET /v1/eliza/state") != std::string::npos)
                 response = buildStateResponse();
+            else if (request.find("GET /v1/eliza/dynamics") != std::string::npos)
+                response = buildDynamicsResponse();
+            else if (request.find("GET /v1/eliza/antikythera") != std::string::npos)
+                response = buildAntikytheraResponse();
             else if (request.find("GET /health") != std::string::npos)
                 response = buildHealthResponse();
             else
@@ -117,7 +128,15 @@ private:
     AutonomousStarter* agent_;
     VillageEventBusClient* bus_;
     EndocrineSystem* endo_;
+    VillageDynamicsEngine* dynamics_;
+    AntikytheraEngine* antikythera_;
     int fd_;
+
+    std::string jsonResponse(const std::string& body) {
+        return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
+               "Content-Length: " + std::to_string(body.size()) +
+               "\r\nAccess-Control-Allow-Origin: *\r\n\r\n" + body;
+    }
 
     std::string buildStateResponse() {
         auto report = agent_->getAutonomyHealthReport();
@@ -139,22 +158,34 @@ private:
             {"events_published", bus_->getPublishedCount()},
             {"events_received", bus_->getReceivedCount()},
             {"bus_connected", bus_->isConnected()},
+            {"group_dynamics", {
+                {"active_groups", dynamics_->groups().groupCount()},
+                {"residents_online", dynamics_->network().residentCount()}
+            }},
+            {"antikythera", {
+                {"phase_eliza", antikythera_->getPhase("eliza")},
+                {"rpm_eliza", antikythera_->getRpm("eliza")},
+                {"epicyclic_mod", antikythera_->getEpicyclicModulation("eliza", bus_->getCurrentTic())}
+            }},
             {"uptime_seconds", std::chrono::duration<double>(
                 Clock::now() - g_startTime).count()}
         };
-        std::string body = state.dump(2);
-        return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
-               "Content-Length: " + std::to_string(body.size()) +
-               "\r\nAccess-Control-Allow-Origin: *\r\n\r\n" + body;
+        return jsonResponse(state.dump(2));
+    }
+
+    std::string buildDynamicsResponse() {
+        return jsonResponse(dynamics_->toJson());
+    }
+
+    std::string buildAntikytheraResponse() {
+        return jsonResponse(antikythera_->toJson());
     }
 
     std::string buildHealthResponse() {
         json health = {{"status", "alive"}, {"service", "eliza-cognitive"},
                        {"port", port_}, {"uptime_seconds",
                        std::chrono::duration<double>(Clock::now() - g_startTime).count()}};
-        std::string body = health.dump();
-        return "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n"
-               "Content-Length: " + std::to_string(body.size()) + "\r\n\r\n" + body;
+        return jsonResponse(health.dump());
     }
 };
 
@@ -191,7 +222,9 @@ int main(int argc, char* argv[]) {
     std::signal(SIGTERM, signalHandler);
     g_startTime = Clock::now();
 
-    std::cout << "elizad — Eliza Cognitive Daemon (CogHood Village Resident)\n\n";
+    std::cout << "elizad — Eliza Cognitive Daemon (CogHood Village Resident)\n";
+    std::cout << "  + Village Group Dynamics (7 centers)\n";
+    std::cout << "  + Antikythera Temporal Coupling (10 gears, 4 trains)\n\n";
 
     ElizadConfig config = ElizadConfig::fromEnv();
     std::cout << "[elizad] Bus: " << config.busUrl << "\n";
@@ -204,12 +237,41 @@ int main(int argc, char* argv[]) {
     AgentConfig agentCfg;
     agentCfg.agentName = config.residentName;
     agentCfg.bio = "Autonomous cognitive agent — CogHood village resident";
-    agentCfg.lore = "ElizaOS C++ cognitive architecture with endocrine system";
+    agentCfg.lore = "ElizaOS C++ cognitive architecture with endocrine system, "
+                    "group dynamics, and Antikythera temporal coupling";
     agentCfg.adjective = "autonomous";
     AutonomousStarter agent(agentCfg);
 
     EndocrineSystem endocrine;
     endocrine.reset();
+
+    // ---- Initialize Group Dynamics Engine ----
+    VillageDynamicsEngine dynamics;
+    dynamics.initializeHousehold();
+    std::cout << "[elizad] Group dynamics initialized: "
+              << dynamics.network().residentCount() << " residents seeded\n";
+
+    // Wire group events → bus publish
+    dynamics.groups().setEventCallback(
+        [](const std::string& eventType, const GroupId& groupId,
+           const std::string& payload) {
+            // Log group events (bus publish happens via the main bus client below)
+            std::cout << "[group] " << eventType << " group=" << groupId
+                      << " " << payload.substr(0, 80) << "\n";
+        });
+
+    // ---- Initialize Antikythera Temporal Coupling ----
+    AntikytheraEngine antikythera;
+    antikythera.initializeVillageMechanism();
+    std::cout << "[elizad] Antikythera mechanism initialized: 10 gears, 4 trains\n";
+
+    // Wire sync events → bus publish
+    antikythera.setSyncCallback([](const SyncEvent& sync) {
+        std::cout << "[antikythera] " << sync.eventType
+                  << " train=" << sync.trainName
+                  << " aligned=" << sync.alignedResidents.size()
+                  << " phase=" << sync.alignmentPhase << "\n";
+    });
 
     // Configure event bus
     VillageEventBusClient::Config busConfig;
@@ -218,8 +280,12 @@ int main(int argc, char* argv[]) {
     busConfig.heartbeatIntervalMs = config.heartbeatMs;
 
     VillageEventBusClient bus(busConfig);
-    bus.subscribe([&endocrine](const VillageEvent& event) {
+
+    // Wire bus events → endocrine + dynamics
+    bus.subscribe([&endocrine, &dynamics](const VillageEvent& event) {
         translateVillageEventToStimulus(event, endocrine);
+        // Feed event into group dynamics engine
+        dynamics.onVillageEvent(event.typeStr, event.source, event.payload);
     });
 
     if (!bus.start())
@@ -227,12 +293,17 @@ int main(int argc, char* argv[]) {
     else
         std::cout << "[elizad] Connected at tic " << bus.getCurrentTic() << "\n";
 
-    // Start health server
-    HealthServer health(config.healthPort, &agent, &bus, &endocrine);
+    // Start health server (now with dynamics + antikythera)
+    HealthServer health(config.healthPort, &agent, &bus, &endocrine,
+                        &dynamics, &antikythera);
     if (!health.start())
         std::cerr << "[elizad] WARNING: Could not bind port " << config.healthPort << "\n";
 
-    std::cout << "[elizad] ELIZA IS ONLINE — entering cognitive loop\n\n";
+    std::cout << "[elizad] ELIZA IS ONLINE — entering cognitive loop\n";
+    std::cout << "[elizad] New endpoints:\n";
+    std::cout << "  GET /v1/eliza/state       — full state + group/antikythera summary\n";
+    std::cout << "  GET /v1/eliza/dynamics     — group dynamics detail\n";
+    std::cout << "  GET /v1/eliza/antikythera  — gear train state\n\n";
 
     auto lastCogCycle = Clock::now();
     auto lastStatePublish = Clock::now();
@@ -243,10 +314,30 @@ int main(int argc, char* argv[]) {
             now - lastCogCycle).count();
 
         if (elapsed >= config.cogCycleMs) {
+            // Core cognitive cycle
             agent.runCognitiveCycleOnce();
             endocrine.tick();
             g_cogCycleCount++;
             lastCogCycle = now;
+
+            // Advance group dynamics (uses bus tic as timestamp)
+            int64_t currentTic = bus.getCurrentTic();
+            dynamics.tick(currentTic);
+
+            // Advance Antikythera mechanism (gear coupling)
+            auto syncEvents = antikythera.tick(currentTic);
+
+            // Publish sync events to bus if any alignments detected
+            for (const auto& sync : syncEvents) {
+                json syncPayload = {
+                    {"event_type", sync.eventType},
+                    {"train", sync.trainName},
+                    {"aligned", sync.alignedResidents},
+                    {"phase", sync.alignmentPhase}
+                };
+                bus.publish("antikythera." + sync.eventType,
+                            syncPayload.dump());
+            }
 
             // Publish state every 5 seconds
             auto sincePublish = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -269,7 +360,8 @@ int main(int argc, char* argv[]) {
 
     std::cout << "\n[elizad] Shutting down. Cycles: " << g_cogCycleCount.load()
               << " Published: " << bus.getPublishedCount()
-              << " Received: " << bus.getReceivedCount() << "\n";
+              << " Received: " << bus.getReceivedCount()
+              << " Groups: " << dynamics.groups().groupCount() << "\n";
     bus.stop();
     health.stop();
     std::cout << "[elizad] Eliza is offline. The village remembers.\n";

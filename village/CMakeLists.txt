@@ -38,6 +38,8 @@ target_include_directories(elizad PRIVATE
 # Link all required libraries from the main build
 target_link_libraries(elizad PRIVATE
     village_event_bus
+    village_group_dynamics
+    antikythera_coupling
     ${ELIZAOS_BUILD_DIR}/cpp/packages/integration/autonomous_starter/libelizaos-autonomous_starter.a
     ${ELIZAOS_BUILD_DIR}/cpp/packages/core/endocrine/libelizaos-endocrine.a
     ${ELIZAOS_BUILD_DIR}/cpp/packages/core/core/libelizaos-core.a
