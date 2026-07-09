@@ -1,0 +1,23 @@
+[Unit]
+Description=Eliza Cognitive Daemon — ElizaOS C++ village resident
+After=network.target dovecot.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/elizaos-cpp
+Environment="ELIZA_BUS_URL=http://cogcity.coghood.com"
+Environment="ELIZA_RESIDENT_NAME=eliza"
+Environment="ELIZA_HEALTH_PORT=8450"
+Environment="ELIZA_COG_CYCLE_MS=1000"
+Environment="ELIZA_HEARTBEAT_MS=500"
+ExecStart=/home/ubuntu/elizaos-cpp/build/bin/elizad
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/var/log/elizad.log
+StandardError=append:/var/log/elizad.log
+
+[Install]
+WantedBy=multi-user.target

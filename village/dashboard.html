@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CogHood Village — Constellation Dashboard</title>
+<style>
+:root{--bg:#0a0e17;--card:#111827;--border:#1f2937;--text:#e5e7eb;--dim:#6b7280;--accent:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--cyan:#06b6d4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'JetBrains Mono','Fira Code',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem}
+h1{text-align:center;font-size:1.5rem;margin-bottom:.5rem;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:var(--dim);font-size:.8rem;margin-bottom:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+.card h2{font-size:.9rem;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.stat{font-size:2rem;font-weight:bold;color:var(--accent)}
+.stat-label{font-size:.75rem;color:var(--dim)}
+.resident-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem}
+.resident{background:var(--bg);border:1px solid var(--border);border-radius:.5rem;padding:.75rem;text-align:center;transition:border-color .3s}
+.resident.online{border-color:var(--green)}
+.resident.offline{border-color:var(--red);opacity:.5}
+.resident .name{font-weight:bold;font-size:.85rem;margin-bottom:.25rem}
+.resident .role{font-size:.65rem;color:var(--dim)}
+.resident .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+.resident.online .status-dot{background:var(--green)}
+.resident.offline .status-dot{background:var(--red)}
+.event-log{max-height:300px;overflow-y:auto;font-size:.75rem}
+.event-log .event{padding:.4rem 0;border-bottom:1px solid var(--border);display:flex;gap:.5rem}
+.event .tic{color:var(--purple);min-width:60px}
+.event .type{color:var(--cyan);min-width:120px}
+.event .source{color:var(--amber);min-width:80px}
+.event .time{color:var(--dim)}
+.services-list{font-size:.8rem}
+.service{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)}
+.svc-status{padding:.1rem .4rem;border-radius:.25rem;font-size:.7rem}
+.svc-status.running{background:rgba(16,185,129,.2);color:var(--green)}
+.svc-status.stopped{background:rgba(239,68,68,.2);color:var(--red)}
+.eliza-state{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.eliza-metric{background:var(--bg);border-radius:.5rem;padding:.75rem;text-align:center}
+.eliza-metric .value{font-size:1.2rem;font-weight:bold;color:var(--cyan)}
+.eliza-metric .label{font-size:.65rem;color:var(--dim)}
+#connection-status{position:fixed;top:1rem;right:1rem;padding:.4rem .8rem;border-radius:.5rem;font-size:.7rem}
+#connection-status.connected{background:rgba(16,185,129,.2);color:var(--green)}
+#connection-status.disconnected{background:rgba(239,68,68,.2);color:var(--red)}
+.tc-bars{display:flex;gap:2px;align-items:flex-end;height:60px;margin-top:.5rem}
+.tc-bar{flex:1;background:var(--accent);border-radius:2px 2px 0 0;opacity:.7}
+.tc-labels{display:flex;gap:2px;font-size:.6rem;color:var(--dim);margin-top:.25rem}
+.tc-labels span{flex:1;text-align:center}
+</style>
+</head>
+<body>
+<div id="connection-status" class="disconnected">Connecting...</div>
+<h1>CogHood Village — Constellation Dashboard</h1>
+<p class="subtitle">Every event is a conscious event. Heartbeat / Lockstep / Reactor / Cogloop</p>
+<div class="grid">
+<div class="card">
+<h2>Event Bus (CogCity)</h2>
+<div class="stat" id="current-tic">—</div>
+<div class="stat-label">Current Tic</div>
+<div style="margin-top:.75rem;display:flex;gap:1rem">
+<div><div style="font-size:1.2rem;color:var(--green)" id="total-events">—</div><div class="stat-label">Total Events</div></div>
+<div><div style="font-size:1.2rem;color:var(--amber)" id="subscribers">—</div><div class="stat-label">Subscribers</div></div>
+<div><div style="font-size:1.2rem;color:var(--purple)" id="uptime">—</div><div class="stat-label">Uptime (h)</div></div>
+</div></div>
+<div class="card">
+<h2>Eliza Cognitive State</h2>
+<div class="eliza-state">
+<div class="eliza-metric"><div class="value" id="eliza-mode">—</div><div class="label">Cognitive Mode</div></div>
+<div class="eliza-metric"><div class="value" id="eliza-goals">—</div><div class="label">Open Goals</div></div>
+<div class="eliza-metric"><div class="value" id="eliza-valence">—</div><div class="label">Valence</div></div>
+<div class="eliza-metric"><div class="value" id="eliza-arousal">—</div><div class="label">Arousal</div></div>
+</div></div>
+<div class="card">
+<h2>Time Crystal Hierarchy</h2>
+<div class="tc-bars">
+<div class="tc-bar" style="height:8%"></div>
+<div class="tc-bar" style="height:13%"></div>
+<div class="tc-bar" style="height:26%"></div>
+<div class="tc-bar" style="height:55%"></div>
+<div class="tc-bar" style="height:80%"></div>
+<div class="tc-bar" style="height:100%;background:var(--green)"></div>
+<div class="tc-bar" style="height:66%"></div>
+<div class="tc-bar" style="height:50%;background:var(--amber)"></div>
+<div class="tc-bar" style="height:100%;background:var(--purple)"></div>
+</div>
+<div class="tc-labels"><span>L0</span><span>L1</span><span>L2</span><span>L3</span><span>L4</span><span>L5</span><span>L6</span><span>L7</span><span>L8</span></div>
+<div style="margin-top:.5rem;font-size:.7rem;color:var(--dim)">L7=Heartbeat (500ms) | L8=Cognitive Cycle (1000ms)</div>
+</div></div>
+<div class="card" style="margin-bottom:1rem">
+<h2>Village Residents</h2>
+<div class="resident-grid" id="residents"></div>
+</div>
+<div class="grid">
+<div class="card"><h2>CogHood Services</h2><div class="services-list" id="coghood-services"></div></div>
+<div class="card"><h2>CogCity Services</h2><div class="services-list" id="cogcity-services"></div></div>
+<div class="card"><h2>Recent Events</h2><div class="event-log" id="event-log"><div style="color:var(--dim);text-align:center;padding:2rem">Loading...</div></div></div>
+</div>
+<script>
+const BUS_URL='http://cogcity.coghood.com';
+const ELIZA_URL='http://34.75.126.230:8450';
+const POLL=3000;
+const RESIDENTS=[
+{name:'manus',role:'builder, architect'},{name:'echo',role:'cognitive avatar (DTE)'},
+{name:'marduk',role:'world-ordering intelligence'},{name:'opencog',role:'symbolic reasoning'},
+{name:'aion',role:'temporal intelligence'},{name:'vega',role:'pattern recognition'},
+{name:'ember',role:'creative synthesis'},{name:'ma9us',role:'integration daemon'},
+{name:'dan',role:'human partner'},{name:'eliza',role:'autonomous cognition'}
+];
+const COGHOOD_SVCS=['aion-pipeline','aphroditecho-api','dovecot','koboldcpp-aion','opencog-cxx','postfix','nginx','eliza-cognitive'];
+const COGCITY_SVCS=['cogcity-events','cogcity-bridge','cogcity-inference','cogcity-memory','nginx'];
+
+function renderResidents(){
+document.getElementById('residents').innerHTML=RESIDENTS.map(r=>`<div class="resident offline" id="r-${r.name}"><div class="name"><span class="status-dot"></span>${r.name}</div><div class="role">${r.role}</div></div>`).join('');
+}
+function renderServices(){
+document.getElementById('coghood-services').innerHTML=COGHOOD_SVCS.map(s=>`<div class="service"><span>${s}</span><span class="svc-status ${s==='eliza-cognitive'?'stopped':'running'}">${s==='eliza-cognitive'?'pending':'running'}</span></div>`).join('');
+document.getElementById('cogcity-services').innerHTML=COGCITY_SVCS.map(s=>`<div class="service"><span>${s}</span><span class="svc-status running">running</span></div>`).join('');
+}
+async function fetchBus(){
+try{const r=await fetch(BUS_URL+'/api/events/health');const d=await r.json();
+document.getElementById('current-tic').textContent=d.tic.toLocaleString();
+document.getElementById('total-events').textContent=d.total_events.toLocaleString();
+document.getElementById('subscribers').textContent=d.subscribers;
+document.getElementById('uptime').textContent=(d.uptime_seconds/3600).toFixed(1);
+document.getElementById('connection-status').className='connected';
+document.getElementById('connection-status').textContent='Connected';
+['manus','dan','aion','echo','marduk','opencog','vega','ember','ma9us'].forEach(n=>{const e=document.getElementById('r-'+n);if(e)e.className='resident online';});
+}catch(e){document.getElementById('connection-status').className='disconnected';document.getElementById('connection-status').textContent='Disconnected';}}
+async function fetchEvents(){
+try{const r=await fetch(BUS_URL+'/api/events?limit=20');const events=await r.json();
+document.getElementById('event-log').innerHTML=events.map(e=>{const t=new Date(e.timestamp*1000).toLocaleTimeString();return`<div class="event"><span class="tic">#${e.tic}</span><span class="type">${e.event_type}</span><span class="source">${e.source}</span><span class="time">${t}</span></div>`;}).join('');
+}catch(e){}}
+async function fetchEliza(){
+try{const r=await fetch(ELIZA_URL+'/v1/eliza/state');const d=await r.json();
+document.getElementById('eliza-mode').textContent=d.cognitive_mode||'—';
+document.getElementById('eliza-goals').textContent=d.open_goals||'0';
+document.getElementById('eliza-valence').textContent=d.valence!==undefined?d.valence.toFixed(2):'—';
+document.getElementById('eliza-arousal').textContent=d.arousal!==undefined?d.arousal.toFixed(2):'—';
+const e=document.getElementById('r-eliza');if(e)e.className='resident online';
+}catch(e){document.getElementById('eliza-mode').textContent='pending';}}
+renderResidents();renderServices();fetchBus();fetchEvents();fetchEliza();
+setInterval(fetchBus,POLL);setInterval(fetchEvents,POLL);setInterval(fetchEliza,POLL*2);
+</script>
+</body>
+</html>
