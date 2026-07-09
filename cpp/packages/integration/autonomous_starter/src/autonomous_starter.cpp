@@ -501,6 +501,11 @@ void AutonomousStarter::seedAdaptiveGoal() {
         now,
         now
     });
+    // Emit a novelty stimulus to the endocrine system when seeding new
+    // exploration goals. This reinforces the Exploration cognitive mode,
+    // keeping the agent's curiosity drive active and preventing premature
+    // convergence into Exploitation when all goals are satisfied.
+    endocrine_.submitStimulus(Stimulus("novelty_detected", 0.5));
     appendMemory("Adaptive goal seeded: " + description +
                  " (all prior goals satisfied; autonomy continues exploring).");
 }

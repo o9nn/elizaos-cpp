@@ -296,7 +296,8 @@ TEST(EndocrineSystem, ResetClearsState) {
     
     system.reset();
     EXPECT_EQ(system.tickCount(), 0u);
-    EXPECT_EQ(system.cognitiveMode(), CognitiveMode::Exploitation);
+    // After reset, mode is derived from baselines -> Exploration.
+    EXPECT_EQ(system.cognitiveMode(), CognitiveMode::Exploration);
 }
 
 TEST(EndocrineSystem, HormoneLevelsMapHasAllHormones) {

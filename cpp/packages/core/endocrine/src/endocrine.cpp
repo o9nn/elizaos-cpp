@@ -72,7 +72,7 @@ EndocrineSystem::EndocrineSystem() {
     glands_.emplace_back(GlandConfig{HormoneId::Cortisol,       0.3, 0.05, 1.2, 0.25});
     glands_.emplace_back(GlandConfig{HormoneId::Dopamine,       0.4, 0.08, 1.0, 0.30});
     glands_.emplace_back(GlandConfig{HormoneId::Serotonin,      0.5, 0.03, 0.8, 0.20});
-    glands_.emplace_back(GlandConfig{HormoneId::Norepinephrine, 0.3, 0.10, 1.5, 0.35});
+    glands_.emplace_back(GlandConfig{HormoneId::Norepinephrine, 0.4, 0.10, 1.5, 0.35});
     glands_.emplace_back(GlandConfig{HormoneId::Oxytocin,       0.4, 0.04, 0.7, 0.15});
     glands_.emplace_back(GlandConfig{HormoneId::Thyroxine,      0.5, 0.02, 0.6, 0.10});
     glands_.emplace_back(GlandConfig{HormoneId::Melatonin,      0.3, 0.06, 0.9, 0.20});
@@ -110,7 +110,8 @@ void EndocrineSystem::tick() {
         } else if (stimulus.source == "social_interaction" || stimulus.source == "cooperation") {
             // Social pathway: oxytocin up
             glands_[static_cast<std::size_t>(HormoneId::Oxytocin)].respond(stimulus, bus_);
-        } else if (stimulus.source == "novelty" || stimulus.source == "exploration") {
+        } else if (stimulus.source == "novelty" || stimulus.source == "exploration" ||
+                   stimulus.source == "novelty_detected") {
             // Curiosity pathway: dopamine + norepinephrine up
             glands_[static_cast<std::size_t>(HormoneId::Dopamine)].respond(
                 Stimulus(stimulus.source, stimulus.intensity * 0.7), bus_);
@@ -195,9 +196,14 @@ void EndocrineSystem::reset() {
         bus_.set(gland.hormoneId(), gland.baseline());
     }
     vaState_ = ValenceArousalState{};
-    mode_ = CognitiveMode::Exploitation;
     pendingStimuli_.clear();
     tickCount_ = 0;
+    // Derive the initial cognitive mode from the actual baseline hormone levels
+    // rather than hardcoding, so the mode is consistent with the gland configuration.
+    // With balanced baselines the agent starts in Exploration (positive valence,
+    // non-negative arousal) -- the natural starting disposition for a curious agent.
+    computeValenceArousal();
+    computeCognitiveMode();
 }
 
 std::map<std::string, double> EndocrineSystem::hormoneLevelsMap() const {

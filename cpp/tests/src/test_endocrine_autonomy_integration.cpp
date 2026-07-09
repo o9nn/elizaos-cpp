@@ -37,8 +37,9 @@ protected:
 };
 
 TEST_F(EndocrineAutonomyTest, FreshEndocrineSystemStartsInExploitation) {
+    // With balanced baselines the initial mode is Exploration (positive valence, non-negative arousal).
     EndocrineSystem endo;
-    EXPECT_EQ(endo.cognitiveMode(), CognitiveMode::Exploitation);
+    EXPECT_EQ(endo.cognitiveMode(), CognitiveMode::Exploration);
     EXPECT_EQ(endo.tickCount(), 0u);
 }
 
@@ -98,7 +99,8 @@ TEST_F(EndocrineAutonomyTest, ResetClearsAllState) {
     endo.tick();
     endo.reset();
     EXPECT_EQ(endo.tickCount(), 0u);
-    EXPECT_EQ(endo.cognitiveMode(), CognitiveMode::Exploitation);
+    // After reset, mode is derived from baselines -> Exploration.
+    EXPECT_EQ(endo.cognitiveMode(), CognitiveMode::Exploration);
 }
 
 TEST_F(EndocrineAutonomyTest, HormoneLevelsMapReturnsAllHormones) {

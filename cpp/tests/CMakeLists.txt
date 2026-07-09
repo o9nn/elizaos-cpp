@@ -717,6 +717,14 @@ if(TARGET real_endocrine_cognitive_biasing_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_cognitive_biasing_test)
 endif()
 
+# Endocrine novelty-autonomy integration E2E: novelty stimulus pathway,
+# early-return pattern, exploration reinforcement, cross-fork parity.
+add_real_test(real_endocrine_novelty_autonomy_test src/test_endocrine_novelty_autonomy.cpp)
+if(TARGET real_endocrine_novelty_autonomy_test)
+    target_link_libraries(real_endocrine_novelty_autonomy_test elizaos-endocrine elizaos-autonomous_starter elizaos-cognitive_curriculum)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_novelty_autonomy_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================
