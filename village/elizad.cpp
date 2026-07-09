@@ -14,7 +14,6 @@
 #include "village_event_bus.hpp"
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/endocrine.hpp"
-#include "elizaos/cognitive_bridge.hpp"
 #include "elizaos/core.hpp"
 
 #include <nlohmann/json.hpp>
@@ -61,6 +60,10 @@ struct ElizadConfig {
     }
 };
 
+// ============================================================================
+// Health Server — minimal HTTP for monitoring
+// ============================================================================
+
 class HealthServer {
 public:
     HealthServer(int port, AutonomousStarter* agent,
@@ -102,7 +105,7 @@ public:
                 response = buildHealthResponse();
             else
                 response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-            write(clientFd, response.c_str(), response.size());
+            (void)write(clientFd, response.c_str(), response.size());
         }
         close(clientFd);
     }
@@ -118,13 +121,14 @@ private:
 
     std::string buildStateResponse() {
         auto report = agent_->getAutonomyHealthReport();
-        auto endoState = endo_->getState();
+        auto va = endo_->valenceArousal();
+        auto mode = endo_->cognitiveMode();
         json state = {
             {"resident", "eliza"},
             {"status", report.isHealthy ? "healthy" : "degraded"},
-            {"cognitive_mode", endoState.modeStr},
-            {"valence", endoState.valence},
-            {"arousal", endoState.arousal},
+            {"cognitive_mode", cognitiveModeName(mode)},
+            {"valence", va.valence},
+            {"arousal", va.arousal},
             {"open_goals", report.openGoals},
             {"completed_goals", report.completedGoals},
             {"total_actions", report.totalActions},
@@ -154,19 +158,32 @@ private:
     }
 };
 
+// ============================================================================
+// Village Event → Endocrine Stimulus Translation
+// ============================================================================
+
 static void translateVillageEventToStimulus(const VillageEvent& event,
                                             EndocrineSystem& endo) {
-    if (event.type == VillageEventType::CogloopThinking)
-        endo.applyStimulus("curiosity", 0.1);
-    else if (event.type == VillageEventType::ResidentJoined)
-        endo.applyStimulus("social_connection", 0.2);
-    else if (event.type == VillageEventType::ResidentLeft)
-        endo.applyStimulus("social_loss", 0.1);
-    else if (event.typeStr.find("error") != std::string::npos)
-        endo.applyStimulus("threat", 0.15);
-    else if (event.target == "eliza")
-        endo.applyStimulus("directed_attention", 0.3);
+    Stimulus stim;
+    if (event.type == VillageEventType::CogloopThinking) {
+        stim = Stimulus("curiosity", 0.1);
+    } else if (event.type == VillageEventType::ResidentJoined) {
+        stim = Stimulus("social_connection", 0.2);
+    } else if (event.type == VillageEventType::ResidentLeft) {
+        stim = Stimulus("social_loss", 0.1);
+    } else if (event.typeStr.find("error") != std::string::npos) {
+        stim = Stimulus("threat", 0.15);
+    } else if (event.target == "eliza") {
+        stim = Stimulus("directed_attention", 0.3);
+    } else {
+        return;  // No stimulus for unrecognized events
+    }
+    endo.submitStimulus(stim);
 }
+
+// ============================================================================
+// Main — The Daemon
+// ============================================================================
 
 int main(int argc, char* argv[]) {
     (void)argc; (void)argv;
@@ -183,10 +200,18 @@ int main(int argc, char* argv[]) {
     std::cout << "[elizad] Cognitive cycle: " << config.cogCycleMs << "ms (L8)\n";
     std::cout << "[elizad] Heartbeat: " << config.heartbeatMs << "ms (L7)\n\n";
 
-    AutonomousStarter agent;
+    // Initialize agent with village config
+    AgentConfig agentCfg;
+    agentCfg.agentName = config.residentName;
+    agentCfg.bio = "Autonomous cognitive agent — CogHood village resident";
+    agentCfg.lore = "ElizaOS C++ cognitive architecture with endocrine system";
+    agentCfg.adjective = "autonomous";
+    AutonomousStarter agent(agentCfg);
+
     EndocrineSystem endocrine;
     endocrine.reset();
 
+    // Configure event bus
     VillageEventBusClient::Config busConfig;
     busConfig.busUrl = config.busUrl;
     busConfig.residentName = config.residentName;
@@ -202,6 +227,7 @@ int main(int argc, char* argv[]) {
     else
         std::cout << "[elizad] Connected at tic " << bus.getCurrentTic() << "\n";
 
+    // Start health server
     HealthServer health(config.healthPort, &agent, &bus, &endocrine);
     if (!health.start())
         std::cerr << "[elizad] WARNING: Could not bind port " << config.healthPort << "\n";
@@ -222,13 +248,17 @@ int main(int argc, char* argv[]) {
             g_cogCycleCount++;
             lastCogCycle = now;
 
+            // Publish state every 5 seconds
             auto sincePublish = std::chrono::duration_cast<std::chrono::milliseconds>(
                 now - lastStatePublish).count();
             if (sincePublish >= 5000) {
-                auto endoState = endocrine.getState();
+                auto va = endocrine.valenceArousal();
+                auto mode = endocrine.cognitiveMode();
                 auto report = agent.getAutonomyHealthReport();
-                bus.publishCognitiveState(endoState.modeStr, endoState.valence,
-                    endoState.arousal, report.openGoals, report.completedGoals);
+                bus.publishCognitiveState(
+                    cognitiveModeName(mode), va.valence, va.arousal,
+                    static_cast<int>(report.openGoals),
+                    static_cast<int>(report.completedGoals));
                 lastStatePublish = now;
             }
         }

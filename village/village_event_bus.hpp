@@ -93,7 +93,8 @@ public:
         bool enableHeartbeat = true;
     };
 
-    explicit VillageEventBusClient(const Config& config = Config{});
+    explicit VillageEventBusClient(const Config& config);
+    VillageEventBusClient() : VillageEventBusClient(Config{}) {}
     ~VillageEventBusClient();
 
     VillageEventBusClient(const VillageEventBusClient&) = delete;
