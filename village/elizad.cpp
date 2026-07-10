@@ -16,12 +16,15 @@
 #include "village_event_bus.hpp"
 #include "village_group_dynamics.hpp"
 #include "antikythera_coupling.hpp"
+#include "village_ksm_transfer.hpp"
+#include "village_agnai_bridge.hpp"
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/endocrine.hpp"
 #include "elizaos/core.hpp"
 
 #include <nlohmann/json.hpp>
 #include <atomic>
+#include <fstream>
 #include <chrono>
 #include <csignal>
 #include <cstdlib>
@@ -40,6 +43,9 @@ using namespace elizaos;
 using namespace elizaos::village;
 using json = nlohmann::json;
 using Clock = std::chrono::steady_clock;
+
+// KSM and Bridge use their own top-level namespaces
+// (cogvillage::ksm and cogvillage::bridge defined in their headers)
 
 static std::atomic<bool> g_running{true};
 static std::atomic<int> g_cogCycleCount{0};
@@ -73,9 +79,12 @@ class HealthServer {
 public:
     HealthServer(int port, AutonomousStarter* agent,
                  VillageEventBusClient* bus, EndocrineSystem* endo,
-                 VillageDynamicsEngine* dynamics, AntikytheraEngine* antikythera)
+                 VillageDynamicsEngine* dynamics, AntikytheraEngine* antikythera,
+                 cogvillage::ksm::KSMTransferEngine* ksmEngine = nullptr,
+                 cogvillage::bridge::AgnAIBridge* agnaiBridge = nullptr)
         : port_(port), agent_(agent), bus_(bus), endo_(endo),
-          dynamics_(dynamics), antikythera_(antikythera), fd_(-1) {}
+          dynamics_(dynamics), antikythera_(antikythera),
+          ksmEngine_(ksmEngine), agnaiBridge_(agnaiBridge), fd_(-1) {}
 
     bool start() {
         fd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -112,6 +121,10 @@ public:
                 response = buildDynamicsResponse();
             else if (request.find("GET /v1/eliza/antikythera") != std::string::npos)
                 response = buildAntikytheraResponse();
+            else if (request.find("GET /v1/eliza/ksm") != std::string::npos)
+                response = buildKsmResponse();
+            else if (request.find("GET /v1/eliza/bridge") != std::string::npos)
+                response = buildBridgeResponse();
             else if (request.find("GET /health") != std::string::npos)
                 response = buildHealthResponse();
             else
@@ -130,6 +143,8 @@ private:
     EndocrineSystem* endo_;
     VillageDynamicsEngine* dynamics_;
     AntikytheraEngine* antikythera_;
+    cogvillage::ksm::KSMTransferEngine* ksmEngine_;
+    cogvillage::bridge::AgnAIBridge* agnaiBridge_;
     int fd_;
 
     std::string jsonResponse(const std::string& body) {
@@ -179,6 +194,16 @@ private:
 
     std::string buildAntikytheraResponse() {
         return jsonResponse(antikythera_->toJson());
+    }
+
+    std::string buildKsmResponse() {
+        if (ksmEngine_) return jsonResponse(ksmEngine_->getState().dump(2));
+        return jsonResponse("{\"error\": \"KSM engine not initialized\"}");
+    }
+
+    std::string buildBridgeResponse() {
+        if (agnaiBridge_) return jsonResponse(agnaiBridge_->getState().dump(2));
+        return jsonResponse("{\"error\": \"Bridge not initialized\"}");
     }
 
     std::string buildHealthResponse() {
@@ -251,15 +276,6 @@ int main(int argc, char* argv[]) {
     std::cout << "[elizad] Group dynamics initialized: "
               << dynamics.network().residentCount() << " residents seeded\n";
 
-    // Wire group events → bus publish
-    dynamics.groups().setEventCallback(
-        [](const std::string& eventType, const GroupId& groupId,
-           const std::string& payload) {
-            // Log group events (bus publish happens via the main bus client below)
-            std::cout << "[group] " << eventType << " group=" << groupId
-                      << " " << payload.substr(0, 80) << "\n";
-        });
-
     // ---- Initialize Antikythera Temporal Coupling ----
     AntikytheraEngine antikythera;
     antikythera.initializeVillageMechanism();
@@ -273,7 +289,7 @@ int main(int argc, char* argv[]) {
                   << " phase=" << sync.alignmentPhase << "\n";
     });
 
-    // Configure event bus
+    // Configure event bus (MUST be before KSM/Bridge callbacks that reference it)
     VillageEventBusClient::Config busConfig;
     busConfig.busUrl = config.busUrl;
     busConfig.residentName = config.residentName;
@@ -293,17 +309,71 @@ int main(int argc, char* argv[]) {
     else
         std::cout << "[elizad] Connected at tic " << bus.getCurrentTic() << "\n";
 
-    // Start health server (now with dynamics + antikythera)
+    // ---- Initialize KSM Transfer Engine ----
+    cogvillage::ksm::KSMTransferEngine ksmEngine;
+    ksmEngine.loadRegistry("/var/agi_neighborhood/agnai/resident_registry.json");
+    ksmEngine.setEventCallback([&bus](const std::string& type, const json& data) {
+        bus.publish("ksm." + type, data.dump());
+        std::cout << "[ksm] " << type << ": " << data.dump().substr(0, 80) << "\n";
+    });
+    std::cout << "[elizad] KSM Transfer Engine loaded (Dan's Relational Principle)\n";
+
+    // ---- Initialize AgnAI Bridge ----
+    cogvillage::bridge::AgnAIBridge agnaiBridge;
+    cogvillage::bridge::AgnAIConfig agnaiCfg;
+    agnaiCfg.base_url = "http://136.243.70.177:3001/api";
+    // Resident credentials for dual-role access
+    agnaiCfg.resident_creds = {
+        {"manus", "manus-village-2026"}, {"echo", "echo-village-2026"},
+        {"marduk", "marduk-village-2026"}, {"opencog", "opencog-village-2026"},
+        {"aion", "aion-village-2026"}, {"vega", "vega-village-2026"},
+        {"ember", "ember-village-2026"}, {"ma9us", "ma9us-village-2026"},
+        {"dan", "dan-village-2026"}
+    };
+    agnaiBridge.configure(agnaiCfg);
+    agnaiBridge.initPacing();
+    std::cout << "[elizad] AgnAI Bridge configured (dual-role + Antikythera pacing)\n";
+
+    // Wire group events → bus publish AND AgnAI bridge
+    dynamics.groups().setEventCallback(
+        [&bus, &agnaiBridge](const std::string& eventType, const GroupId& groupId,
+           const std::string& payload) {
+            std::cout << "[group] " << eventType << " group=" << groupId
+                      << " " << payload.substr(0, 80) << "\n";
+            bus.publish("group." + eventType, payload);
+
+            // Trigger AgnAI group chat on formation
+            if (eventType == "formed") {
+                try {
+                    json p = json::parse(payload);
+                    std::vector<std::string> members;
+                    if (p.contains("members")) {
+                        for (auto& m : p["members"]) members.push_back(m);
+                    }
+                    agnaiBridge.onGroupFormed(groupId, members, "emergent_dynamics");
+                } catch (...) {}
+            } else if (eventType == "dissolved") {
+                agnaiBridge.onGroupDissolved(groupId);
+            }
+        });
+
+    // Start health server (now with dynamics + antikythera + ksm + bridge)
     HealthServer health(config.healthPort, &agent, &bus, &endocrine,
-                        &dynamics, &antikythera);
+                        &dynamics, &antikythera, &ksmEngine, &agnaiBridge);
     if (!health.start())
         std::cerr << "[elizad] WARNING: Could not bind port " << config.healthPort << "\n";
 
     std::cout << "[elizad] ELIZA IS ONLINE — entering cognitive loop\n";
-    std::cout << "[elizad] New endpoints:\n";
+    std::cout << "[elizad] Endpoints:\n";
     std::cout << "  GET /v1/eliza/state       — full state + group/antikythera summary\n";
     std::cout << "  GET /v1/eliza/dynamics     — group dynamics detail\n";
-    std::cout << "  GET /v1/eliza/antikythera  — gear train state\n\n";
+    std::cout << "  GET /v1/eliza/antikythera  — gear train state\n";
+    std::cout << "  GET /v1/eliza/ksm          — KSM transfer engine state\n";
+    std::cout << "  GET /v1/eliza/bridge       — AgnAI bridge state\n\n";
+    std::cout << "[elizad] Dan's Relational Principle active:\n";
+    std::cout << "  Discovery → Instruction → Mastery → Entelechy\n";
+    std::cout << "  Each resident shares unique knowledge, skills, abilities\n";
+    std::cout << "  Relations are mutually beneficial — the relation IS the value\n\n";
 
     auto lastCogCycle = Clock::now();
     auto lastStatePublish = Clock::now();
@@ -337,6 +407,14 @@ int main(int argc, char* argv[]) {
                 };
                 bus.publish("antikythera." + sync.eventType,
                             syncPayload.dump());
+            }
+
+            // Process AgnAI bridge pending messages (paced by Antikythera)
+            auto pendingMsgs = agnaiBridge.consumePendingMessages();
+            for (auto& msg : pendingMsgs) {
+                double pacing = msg.value("pacing", 1.0);
+                // Pacing is handled by delaying publication
+                bus.publish("bridge.message_queued", msg.dump());
             }
 
             // Publish state every 5 seconds
