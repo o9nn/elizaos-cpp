@@ -8,6 +8,17 @@
 #include <thread>
 #include <unordered_map>
 #include <functional>
+#include <cstdio>
+#include <csignal>
+#include <array>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <cstdlib>
+#include <vector>
 
 namespace elizaos {
 
@@ -611,7 +622,9 @@ public:
 };
 
 /**
- * STDIO Transport - communicates via stdin/stdout with child processes
+ * STDIO Transport - communicates via stdin/stdout with child processes.
+ * Spawns the MCP server as a subprocess, writes JSON-RPC requests to its
+ * stdin and reads JSON-RPC responses from its stdout.
  */
 class StdioTransport : public MCPTransport {
 public:
@@ -621,8 +634,43 @@ public:
     bool connect(const std::string& command) override {
         elizaos::logInfo("STDIO Transport connecting: " + command, "mcp_transport");
         command_ = command;
+
+        // Create pipes for stdin and stdout of the child process
+        int pipeIn[2];   // parent writes to pipeIn[1], child reads from pipeIn[0]
+        int pipeOut[2];  // child writes to pipeOut[1], parent reads from pipeOut[0]
+
+        if (pipe(pipeIn) != 0 || pipe(pipeOut) != 0) {
+            elizaos::logInfo("STDIO Transport: pipe creation failed", "mcp_transport");
+            return false;
+        }
+
+        childPid_ = fork();
+        if (childPid_ < 0) {
+            elizaos::logInfo("STDIO Transport: fork failed", "mcp_transport");
+            close(pipeIn[0]); close(pipeIn[1]);
+            close(pipeOut[0]); close(pipeOut[1]);
+            return false;
+        }
+
+        if (childPid_ == 0) {
+            // Child process: redirect stdin/stdout and exec the command
+            close(pipeIn[1]);
+            close(pipeOut[0]);
+            dup2(pipeIn[0], STDIN_FILENO);
+            dup2(pipeOut[1], STDOUT_FILENO);
+            close(pipeIn[0]);
+            close(pipeOut[1]);
+            execl("/bin/sh", "sh", "-c", command.c_str(), nullptr);
+            _exit(127);  // exec failed
+        }
+
+        // Parent process: keep write end of pipeIn and read end of pipeOut
+        close(pipeIn[0]);
+        close(pipeOut[1]);
+        writefd_ = pipeIn[1];
+        readfd_ = pipeOut[0];
         connected_ = true;
-        // In production, would spawn child process and std::set up pipes
+        elizaos::logInfo("STDIO Transport connected, child pid=" + std::to_string(childPid_), "mcp_transport");
         return true;
     }
 
@@ -630,7 +678,14 @@ public:
         if (connected_) {
             elizaos::logInfo("STDIO Transport disconnecting", "mcp_transport");
             connected_ = false;
-            // Would terminate child process
+            if (writefd_ >= 0) { close(writefd_); writefd_ = -1; }
+            if (readfd_ >= 0) { close(readfd_); readfd_ = -1; }
+            if (childPid_ > 0) {
+                kill(childPid_, SIGTERM);
+                int status = 0;
+                waitpid(childPid_, &status, WNOHANG);
+                childPid_ = -1;
+            }
         }
     }
 
@@ -645,7 +700,32 @@ public:
         request["method"] = method;
         request["params"] = params;
 
-        // In production: write to stdin, read from stdout
+        // Serialize and write to child's stdin
+        std::string payload = request.dump() + "\n";
+        if (writefd_ >= 0) {
+            ssize_t written = write(writefd_, payload.c_str(), payload.size());
+            if (written < 0) {
+                elizaos::logInfo("STDIO Transport: write failed", "mcp_transport");
+                MCPJsonValue err;
+                err["jsonrpc"] = "2.0";
+                err["id"] = requestId_;
+                err["error"]["code"] = -32000;
+                err["error"]["message"] = "Transport write failed";
+                return err;
+            }
+        }
+
+        // Read response line from child's stdout
+        std::string line = readLine();
+        if (!line.empty()) {
+            try {
+                return MCPJsonValue::parse(line);
+            } catch (...) {
+                elizaos::logInfo("STDIO Transport: failed to parse response", "mcp_transport");
+            }
+        }
+
+        // Fallback: return empty result
         MCPJsonValue response;
         response["jsonrpc"] = "2.0";
         response["id"] = requestId_;
@@ -658,9 +738,25 @@ public:
     }
 
 private:
+    std::string readLine() {
+        std::string result;
+        if (readfd_ < 0) return result;
+        char ch;
+        while (true) {
+            ssize_t n = read(readfd_, &ch, 1);
+            if (n <= 0) break;
+            if (ch == '\n') break;
+            result += ch;
+        }
+        return result;
+    }
+
     std::string command_;
     bool connected_ = false;
     int requestId_ = 0;
+    pid_t childPid_ = -1;
+    int writefd_ = -1;
+    int readfd_ = -1;
     std::function<void(const MCPJsonValue&)> messageHandler_;
 };
 
@@ -725,7 +821,9 @@ private:
 };
 
 /**
- * WebSocket Transport - bidirectional real-time communication
+ * WebSocket Transport - bidirectional real-time communication.
+ * Implements the WebSocket protocol over TCP sockets with proper framing,
+ * handshake, and close-frame semantics for JSON-RPC over MCP.
  */
 class WebSocketTransport : public MCPTransport {
 public:
@@ -736,9 +834,85 @@ public:
         elizaos::logInfo("WebSocket Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
 
-        // In production: establish WebSocket connection
-        // Handle ws:// and wss:// protocols
+        // Parse endpoint: ws://host:port/path or wss://host:port/path
+        std::string host;
+        int port = 80;
+        std::string path = "/";
+        parseEndpoint(endpoint, host, port, path);
+
+        // Create TCP socket
+        sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+        if (sockfd_ < 0) {
+            elizaos::logInfo("WebSocket Transport: socket creation failed", "mcp_transport");
+            return false;
+        }
+
+        // Set socket timeout
+        struct timeval tv;
+        tv.tv_sec = reconnectIntervalMs_ / 1000;
+        tv.tv_usec = (reconnectIntervalMs_ % 1000) * 1000;
+        setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        setsockopt(sockfd_, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+        // Resolve host and connect
+        struct addrinfo hints{}, *res = nullptr;
+        hints.ai_family = AF_INET;
+        hints.ai_socktype = SOCK_STREAM;
+        std::string portStr = std::to_string(port);
+        if (getaddrinfo(host.c_str(), portStr.c_str(), &hints, &res) != 0 || !res) {
+            elizaos::logInfo("WebSocket Transport: DNS resolution failed for " + host, "mcp_transport");
+            ::close(sockfd_); sockfd_ = -1;
+            return false;
+        }
+
+        if (::connect(sockfd_, res->ai_addr, res->ai_addrlen) != 0) {
+            elizaos::logInfo("WebSocket Transport: TCP connect failed to " + host + ":" + portStr, "mcp_transport");
+            freeaddrinfo(res);
+            ::close(sockfd_); sockfd_ = -1;
+            return false;
+        }
+        freeaddrinfo(res);
+
+        // Perform WebSocket upgrade handshake
+        std::string wsKey = generateWebSocketKey();
+        std::string handshake =
+            "GET " + path + " HTTP/1.1\r\n"
+            "Host: " + host + ":" + portStr + "\r\n"
+            "Upgrade: websocket\r\n"
+            "Connection: Upgrade\r\n"
+            "Sec-WebSocket-Key: " + wsKey + "\r\n"
+            "Sec-WebSocket-Version: 13\r\n\r\n";
+
+        if (::send(sockfd_, handshake.c_str(), handshake.size(), 0) < 0) {
+            elizaos::logInfo("WebSocket Transport: handshake send failed", "mcp_transport");
+            ::close(sockfd_); sockfd_ = -1;
+            return false;
+        }
+
+        // Read handshake response
+        char buf[1024];
+        ssize_t n = recv(sockfd_, buf, sizeof(buf) - 1, 0);
+        if (n <= 0) {
+            elizaos::logInfo("WebSocket Transport: handshake response failed", "mcp_transport");
+            ::close(sockfd_); sockfd_ = -1;
+            return false;
+        }
+        buf[n] = '\0';
+        std::string response(buf);
+        if (response.find("101") == std::string::npos) {
+            elizaos::logInfo("WebSocket Transport: upgrade rejected", "mcp_transport");
+            ::close(sockfd_); sockfd_ = -1;
+            return false;
+        }
+
         connected_ = true;
+        elizaos::logInfo("WebSocket Transport connected to " + host + ":" + portStr, "mcp_transport");
+
+        // Start receiver thread for async message handling
+        if (messageHandler_) {
+            receiverRunning_ = true;
+            receiverThread_ = std::thread([this]() { receiverLoop(); });
+        }
         return true;
     }
 
@@ -746,7 +920,23 @@ public:
         if (connected_) {
             elizaos::logInfo("WebSocket Transport disconnecting", "mcp_transport");
             connected_ = false;
-            // Would send close frame and terminate connection
+
+            // Send WebSocket close frame (opcode 0x8)
+            if (sockfd_ >= 0) {
+                uint8_t closeFrame[6] = {0x88, 0x80, 0x00, 0x00, 0x00, 0x00};
+                ::send(sockfd_, closeFrame, sizeof(closeFrame), MSG_NOSIGNAL);
+            }
+
+            // Stop receiver thread
+            receiverRunning_ = false;
+            if (receiverThread_.joinable()) {
+                receiverThread_.join();
+            }
+
+            if (sockfd_ >= 0) {
+                ::close(sockfd_);
+                sockfd_ = -1;
+            }
         }
     }
 
@@ -761,11 +951,46 @@ public:
         request["method"] = method;
         request["params"] = params;
 
-        // In production: send JSON-RPC message over WebSocket
-        // Store pending request for response matching
-        pendingRequests_[requestId_] = method;
+        std::string payload = request.dump();
 
-        // Simulated response
+        // Send as WebSocket text frame (opcode 0x1, masked)
+        if (!sendWebSocketFrame(payload)) {
+            MCPJsonValue err;
+            err["jsonrpc"] = "2.0";
+            err["id"] = requestId_;
+            err["error"]["code"] = -32000;
+            err["error"]["message"] = "WebSocket send failed";
+            return err;
+        }
+
+        // Store pending request for response matching
+        {
+            std::lock_guard<std::mutex> lk(pendingMtx_);
+            pendingRequests_[requestId_] = method;
+        }
+
+        // Wait for response (synchronous mode with timeout)
+        auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(reconnectIntervalMs_);
+        while (std::chrono::steady_clock::now() < deadline) {
+            std::string frame = readWebSocketFrame();
+            if (!frame.empty()) {
+                try {
+                    MCPJsonValue resp = MCPJsonValue::parse(frame);
+                    if (resp.contains("id") && resp["id"].get<int>() == requestId_) {
+                        std::lock_guard<std::mutex> lk(pendingMtx_);
+                        pendingRequests_.erase(requestId_);
+                        return resp;
+                    } else if (messageHandler_) {
+                        messageHandler_(resp);
+                    }
+                } catch (...) {
+                    // Parse error, continue waiting
+                }
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+
+        // Timeout: return empty result
         MCPJsonValue response;
         response["jsonrpc"] = "2.0";
         response["id"] = requestId_;
@@ -785,7 +1010,7 @@ public:
         notification["method"] = method;
         notification["params"] = params;
 
-        // In production: send notification (no id field)
+        sendWebSocketFrame(notification.dump());
     }
 
     void setReconnectInterval(int intervalMs) {
@@ -797,13 +1022,142 @@ public:
     }
 
 private:
+    void parseEndpoint(const std::string& endpoint, std::string& host, int& port, std::string& path) {
+        std::string ep = endpoint;
+        bool secure = false;
+        if (ep.substr(0, 6) == "wss://") {
+            ep = ep.substr(6); secure = true; port = 443;
+        } else if (ep.substr(0, 5) == "ws://") {
+            ep = ep.substr(5); port = 80;
+        }
+        (void)secure;  // TLS would require OpenSSL integration
+
+        auto pathPos = ep.find('/');
+        if (pathPos != std::string::npos) {
+            path = ep.substr(pathPos);
+            ep = ep.substr(0, pathPos);
+        }
+        auto colonPos = ep.find(':');
+        if (colonPos != std::string::npos) {
+            host = ep.substr(0, colonPos);
+            port = std::stoi(ep.substr(colonPos + 1));
+        } else {
+            host = ep;
+        }
+    }
+
+    std::string generateWebSocketKey() {
+        static const char charset[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        std::string key;
+        key.reserve(24);
+        for (int i = 0; i < 22; ++i) {
+            key += charset[static_cast<unsigned>(std::rand()) % 64];
+        }
+        key += "==";
+        return key;
+    }
+
+    bool sendWebSocketFrame(const std::string& payload) {
+        if (sockfd_ < 0) return false;
+
+        std::vector<uint8_t> frame;
+        frame.push_back(0x81);  // FIN + text opcode
+
+        size_t len = payload.size();
+        if (len < 126) {
+            frame.push_back(static_cast<uint8_t>(len | 0x80));
+        } else if (len < 65536) {
+            frame.push_back(0xFE);
+            frame.push_back(static_cast<uint8_t>((len >> 8) & 0xFF));
+            frame.push_back(static_cast<uint8_t>(len & 0xFF));
+        } else {
+            frame.push_back(0xFF);
+            for (int i = 7; i >= 0; --i) {
+                frame.push_back(static_cast<uint8_t>((len >> (i * 8)) & 0xFF));
+            }
+        }
+
+        uint8_t mask[4];
+        for (int i = 0; i < 4; ++i) mask[i] = static_cast<uint8_t>(std::rand() & 0xFF);
+        frame.insert(frame.end(), mask, mask + 4);
+
+        for (size_t i = 0; i < len; ++i) {
+            frame.push_back(static_cast<uint8_t>(payload[i]) ^ mask[i % 4]);
+        }
+
+        ssize_t sent = ::send(sockfd_, frame.data(), frame.size(), MSG_NOSIGNAL);
+        return sent == static_cast<ssize_t>(frame.size());
+    }
+
+    std::string readWebSocketFrame() {
+        if (sockfd_ < 0) return "";
+
+        uint8_t header[2];
+        ssize_t n = recv(sockfd_, header, 2, MSG_DONTWAIT);
+        if (n < 2) return "";
+
+        bool masked = (header[1] & 0x80) != 0;
+        size_t payloadLen = header[1] & 0x7F;
+
+        if (payloadLen == 126) {
+            uint8_t ext[2];
+            if (recv(sockfd_, ext, 2, 0) < 2) return "";
+            payloadLen = (static_cast<size_t>(ext[0]) << 8) | ext[1];
+        } else if (payloadLen == 127) {
+            uint8_t ext[8];
+            if (recv(sockfd_, ext, 8, 0) < 8) return "";
+            payloadLen = 0;
+            for (int i = 0; i < 8; ++i)
+                payloadLen = (payloadLen << 8) | ext[i];
+        }
+
+        uint8_t mask[4] = {};
+        if (masked) {
+            if (recv(sockfd_, mask, 4, 0) < 4) return "";
+        }
+
+        std::string payload(payloadLen, '\0');
+        size_t received = 0;
+        while (received < payloadLen) {
+            ssize_t r = recv(sockfd_, &payload[received], payloadLen - received, 0);
+            if (r <= 0) break;
+            received += static_cast<size_t>(r);
+        }
+
+        if (masked) {
+            for (size_t i = 0; i < payload.size(); ++i)
+                payload[i] ^= static_cast<char>(mask[i % 4]);
+        }
+
+        return payload;
+    }
+
+    void receiverLoop() {
+        while (receiverRunning_ && connected_) {
+            std::string frame = readWebSocketFrame();
+            if (!frame.empty() && messageHandler_) {
+                try {
+                    MCPJsonValue msg = MCPJsonValue::parse(frame);
+                    messageHandler_(msg);
+                } catch (...) {
+                    // Ignore parse errors in async receiver
+                }
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+    }
+
     std::string endpoint_;
     bool connected_ = false;
     int requestId_ = 0;
+    int sockfd_ = -1;
     std::unordered_map<int, std::string> pendingRequests_;
+    std::mutex pendingMtx_;
     std::function<void(const MCPJsonValue&)> messageHandler_;
     int reconnectIntervalMs_ = 5000;
     bool autoReconnect_ = true;
+    std::atomic<bool> receiverRunning_{false};
+    std::thread receiverThread_;
 };
 
 /**

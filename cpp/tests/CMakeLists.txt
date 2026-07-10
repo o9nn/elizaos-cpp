@@ -531,10 +531,14 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     agentloop_test
     agentmemory_test
     agentshell_test
+    autonomous_starter_test
     characterfile_test
     characters_test
     core_test
+    comprehensive_e2e_test
+    goal_manager_test
     knowledge_test
+    otaku_liquidity_test
     cognitive_pipeline_e2e_test
     real_core_test
     real_agentaction_test
@@ -725,12 +729,23 @@ if(TARGET real_endocrine_novelty_autonomy_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_novelty_autonomy_test)
 endif()
 
+# MCP Transport E2E: StdioTransport fork/exec/pipe lifecycle, WebSocket framing,
+# TransportFactory dispatch, cross-fork parity invariants.
+add_real_test(real_mcp_transport_e2e_test src/test_mcp_transport_e2e.cpp)
+if(TARGET real_mcp_transport_e2e_test)
+    target_link_libraries(real_mcp_transport_e2e_test elizaos-mcp_gateway)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_mcp_transport_e2e_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================
 # homework_loop_test is registered and labeled "ksm" near the top of this file
 # but was never folded into the canonical target. Add it (guarded) so the focused
 # `ninja ksm_canonical_tests` lane builds exactly what `ctest -L ksm` runs.
+if(TARGET real_endocrine_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_endocrine_test)
+endif()
 if(TARGET homework_loop_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS homework_loop_test)
 endif()
