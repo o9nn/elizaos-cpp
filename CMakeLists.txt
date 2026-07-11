@@ -213,6 +213,11 @@ add_subdirectory(cpp/external/sandbox_template_cloud)
 add_subdirectory(cpp/external/test_hybrid)
 
 # ============================================================================
+# Village Module (elizad daemon, group dynamics, antikythera coupling)
+# ============================================================================
+add_subdirectory(village)
+
+# ============================================================================
 # Testing
 # ============================================================================
 add_subdirectory(cpp/tests)

@@ -365,21 +365,9 @@ add_real_test(real_attention_test           src/test_attention_allocation.cpp)
 add_real_test(real_characters_test          src/test_characters.cpp)
 add_real_test(real_knowledge_test           src/test_knowledge.cpp)
 add_real_test(real_knowledge_hypergraph_test src/test_knowledge_hypergraph.cpp)
-if(TARGET elizaos-embodiment)
-    add_real_test(real_embodiment_test      src/test_embodiment.cpp)
-else()
-    message(STATUS "Skipping real_embodiment_test: elizaos-embodiment target is unavailable in this checkout")
-endif()
-if(TARGET elizaos-evolutionary)
-    add_real_test(real_evolutionary_test    src/test_evolutionary.cpp)
-else()
-    message(STATUS "Skipping real_evolutionary_test: elizaos-evolutionary target is unavailable in this checkout")
-endif()
-if(TARGET elizaos-ontogenesis)
-    add_real_test(real_ontogenesis_test     src/test_ontogenesis.cpp)
-else()
-    message(STATUS "Skipping real_ontogenesis_test: elizaos-ontogenesis target is unavailable in this checkout")
-endif()
+add_real_test(real_embodiment_test          src/test_embodiment.cpp)
+add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
+add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
 # KSM structure-preserving repair regression lane (ported to parity with the
 # hurdcog canonical fork, plus o9nn-specific repairs: memory deadlock, clear()
@@ -735,6 +723,39 @@ add_real_test(real_mcp_transport_e2e_test src/test_mcp_transport_e2e.cpp)
 if(TARGET real_mcp_transport_e2e_test)
     target_link_libraries(real_mcp_transport_e2e_test elizaos-mcp_gateway)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_mcp_transport_e2e_test)
+endif()
+
+# Village Module E2E: KSM Transfer Engine, AgnAI Bridge, Group Dynamics,
+# Antikythera Temporal Coupling — full village subsystem integration.
+add_real_test(real_village_e2e_test src/test_village_e2e.cpp)
+target_include_directories(real_village_e2e_test PRIVATE ${CMAKE_SOURCE_DIR}/village)
+target_link_libraries(real_village_e2e_test village_group_dynamics antikythera_coupling nlohmann_json::nlohmann_json)
+if(TARGET real_village_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_village_e2e_test)
+endif()
+
+# Persistence Module E2E: SQLiteBackend CRUD, transactions, batch ops,
+# schema operations, async queries, concurrent access.
+add_real_test(real_persistence_e2e_test src/test_persistence_e2e.cpp)
+target_link_libraries(real_persistence_e2e_test elizaos-persistence)
+if(TARGET real_persistence_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_persistence_e2e_test)
+endif()
+
+# GoalManager E2E: lifecycle, hierarchy, dependencies, scoring,
+# callbacks, serialization, thread safety.
+add_real_test(real_goal_manager_e2e_test src/test_goal_manager_e2e.cpp)
+target_link_libraries(real_goal_manager_e2e_test elizaos-goal_manager)
+if(TARGET real_goal_manager_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_goal_manager_e2e_test)
+endif()
+
+# AutonomousStarter + CognitiveCurriculum E2E: lifecycle, cognitive cycle,
+# shell access, health report, curriculum scoring, integration.
+add_real_test(real_autonomous_cognitive_e2e_test src/test_autonomous_cognitive_e2e.cpp)
+target_link_libraries(real_autonomous_cognitive_e2e_test elizaos-autonomous_starter elizaos-cognitive_curriculum elizaos-endocrine)
+if(TARGET real_autonomous_cognitive_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomous_cognitive_e2e_test)
 endif()
 
 # ============================================================================
