@@ -11,6 +11,12 @@ namespace elizaos {
 
 namespace {
 
+// Constants for display formatting
+constexpr size_t MAX_COMPLETED_STEP_DISPLAY_LENGTH = 60;
+constexpr size_t MAX_REMAINING_STEP_DISPLAY_LENGTH = 55;
+constexpr size_t MAX_CONTEXT_STEP_LENGTH = 50;
+constexpr size_t MAX_REMAINING_STEPS_TO_SHOW = 3;
+
 std::string toLowerCopy(std::string value) {
     std::transform(value.begin(), value.end(), value.begin(),
         [](unsigned char ch) { return static_cast<char>(std::tolower(ch)); });
@@ -133,6 +139,10 @@ std::chrono::system_clock::time_point AgentAgenda::stringToTimestamp(const std::
     std::istringstream ss(timestamp_str);
     ss >> parsed;
     if (!ss || !ss.eof()) {
+        // Backward compatibility: legacy records serialized as whole seconds are
+        // far smaller than a nanosecond tick count but still parse as an integer,
+        // so a parse failure here means genuinely malformed data -- fall back to
+        // "now" rather than fabricating an epoch time.
         return std::chrono::system_clock::now();
     }
     return std::chrono::system_clock::time_point(std::chrono::nanoseconds(parsed));
@@ -484,6 +494,126 @@ bool AgentAgenda::updatePlan(const std::string& task_id, const std::string& plan
     
     saveTaskToMemory(task);
     return true;
+}
+
+std::string AgentAgenda::planAgain(const std::string& task_id, 
+                                    const std::string& context,
+                                    bool regenerate_steps) {
+    auto task = getTaskById(task_id);
+    if (task.id.empty()) {
+        return "";
+    }
+    
+    // Analyze current task state
+    size_t completed_count = 0;
+    size_t total_steps = task.steps.size();
+    std::vector<std::string> completed_step_contents;
+    std::vector<std::string> remaining_step_contents;
+    
+    for (const auto& step : task.steps) {
+        if (step.completed) {
+            completed_count++;
+            completed_step_contents.push_back(step.content);
+        } else {
+            remaining_step_contents.push_back(step.content);
+        }
+    }
+    
+    // Build the new plan based on current progress
+    std::stringstream new_plan;
+    
+    // Add context header
+    new_plan << "Re-planned for goal: " << task.goal << "\n\n";
+    
+    // Add progress summary
+    if (total_steps > 0) {
+        new_plan << "Progress Summary:\n";
+        new_plan << "  - Completed: " << completed_count << "/" << total_steps << " steps\n";
+        
+        if (!completed_step_contents.empty()) {
+            new_plan << "  - Already done:\n";
+            for (const auto& done : completed_step_contents) {
+                new_plan << "    * " << (done.size() > MAX_COMPLETED_STEP_DISPLAY_LENGTH ? 
+                    done.substr(0, MAX_COMPLETED_STEP_DISPLAY_LENGTH - 3) + "..." : done) << "\n";
+            }
+        }
+        new_plan << "\n";
+    }
+    
+    // Add re-planning context if provided
+    if (!context.empty()) {
+        new_plan << "Re-planning context: " << context << "\n\n";
+    }
+    
+    // Generate the new plan strategy
+    new_plan << "Revised Strategy:\n";
+    
+    if (remaining_step_contents.empty()) {
+        // All steps completed - suggest verification or extension
+        new_plan << "  1. Verify all completed work meets the original goal criteria\n";
+        new_plan << "  2. Document any lessons learned or improvements identified\n";
+        new_plan << "  3. Consider if additional scope or follow-up tasks are needed\n";
+        new_plan << "  4. Mark task as complete or extend with new steps\n";
+    } else {
+        // Some steps remaining - create adapted plan
+        new_plan << "  1. Review remaining work against original goal\n";
+        new_plan << "  2. Prioritize remaining steps based on current context\n";
+        new_plan << "  3. Execute highest-priority remaining actions:\n";
+        
+        size_t step_num = 0;
+        for (const auto& remaining : remaining_step_contents) {
+            if (step_num >= MAX_REMAINING_STEPS_TO_SHOW) {
+                new_plan << "       (" << (remaining_step_contents.size() - MAX_REMAINING_STEPS_TO_SHOW) << " more steps...)\n";
+                break;
+            }
+            new_plan << "     - " << (remaining.size() > MAX_REMAINING_STEP_DISPLAY_LENGTH ? 
+                remaining.substr(0, MAX_REMAINING_STEP_DISPLAY_LENGTH - 3) + "..." : remaining) << "\n";
+            step_num++;
+        }
+        
+        new_plan << "  4. Validate results against the goal: " << task.goal << "\n";
+    }
+    
+    std::string plan_result = new_plan.str();
+    
+    // Update the task with the new plan
+    task.plan = plan_result;
+    task.updated_at = std::chrono::system_clock::now();
+    
+    // Optionally regenerate steps
+    if (regenerate_steps) {
+        // Keep completed steps, regenerate remaining ones
+        std::vector<AgendaTaskStep> new_steps;
+        
+        // Preserve completed steps
+        for (const auto& step : task.steps) {
+            if (step.completed) {
+                new_steps.push_back(step);
+            }
+        }
+        
+        // Add new steps based on revised plan
+        if (!context.empty()) {
+            new_steps.emplace_back("Address re-planning context: " + 
+                (context.size() > MAX_CONTEXT_STEP_LENGTH ? 
+                    context.substr(0, MAX_CONTEXT_STEP_LENGTH - 3) + "..." : context), false);
+        }
+        
+        // Add verification step
+        new_steps.emplace_back("Verify revised approach aligns with goal: " + task.goal, false);
+        
+        // Add execution steps
+        new_steps.emplace_back("Execute revised plan actions", false);
+        
+        // Add completion step
+        new_steps.emplace_back("Validate final results and document completion", false);
+        
+        task.steps = new_steps;
+    }
+    
+    saveTaskToMemory(task);
+    
+    return plan_result;
 }
 
 std::vector<AgendaTaskStep> AgentAgenda::createSteps(const std::string& goal, const std::string& plan) {

@@ -176,8 +176,15 @@ void CognitiveBridge::echobeatsLoop(std::chrono::milliseconds stepInterval, std:
         s.agentId = agentId;
         s.echobeatsStep = step;
         s.echobeatsPhase = phaseForStep(step);
-        s.mood = "ticking";
-        s.focus = "echobeats";
+        // Emit phase-semantic labels so avatar/web frontends receive meaningful
+        // cognitive state. The four Echobeats phases map to the cognitive cycle:
+        // 0=perception, 1=reasoning, 2=action, 3=reflection.
+        switch (s.echobeatsPhase) {
+            case 0: s.mood = "perceiving"; s.focus = "perception"; break;
+            case 1: s.mood = "reasoning";  s.focus = "reasoning";  break;
+            case 2: s.mood = "acting";     s.focus = "action";     break;
+            default: s.mood = "reflecting"; s.focus = "reflection"; break;
+        }
         publishCognitiveState(s);
 
         // Sleep until this beat's grid deadline in small slices so stop stays

@@ -9,6 +9,11 @@
 #include <stdexcept>
 #include <filesystem>
 
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
+
 namespace elizaos {
 namespace runtime {
 
@@ -35,9 +40,12 @@ std::pair<std::string, int> runShell(const std::string& cmd, const std::string& 
     int exitCode = 0;
     if (status == -1) {
         exitCode = -1;
+#ifndef _WIN32
     } else if (WIFEXITED(status)) {
         exitCode = WEXITSTATUS(status);
+#endif
     } else {
+        // On Windows, pclose() returns the exit code directly.
         exitCode = status;
     }
     return {output, exitCode};

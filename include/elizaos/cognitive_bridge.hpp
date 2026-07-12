@@ -193,3 +193,203 @@ private:
 };
 
 } // namespace elizaos
+
+// ============================================================================
+// Phase 3.2: Distributed Cognitive State System
+// ============================================================================
+
+namespace elizaos {
+
+/**
+ * Compressed cognitive state for network transfer
+ */
+struct CompressedCognitiveState {
+    std::vector<uint8_t> data;
+    std::string compressionAlgorithm;  // "lz4", "zstd", "none"
+    size_t originalSize;
+    std::string checksum;
+    
+    static CompressedCognitiveState compress(const CognitiveState& state, 
+                                             const std::string& algorithm = "lz4");
+    CognitiveState decompress() const;
+};
+
+/**
+ * Cognitive state snapshot for replay/debugging
+ */
+struct CognitiveSnapshot {
+    std::string snapshotId;
+    std::vector<CognitiveState> states;
+    std::chrono::system_clock::time_point startTime;
+    std::chrono::system_clock::time_point endTime;
+    std::string agentId;
+    std::unordered_map<std::string, std::string> annotations;
+};
+
+/**
+ * Multi-agent cognitive synchronization protocol
+ */
+class CognitiveSyncProtocol {
+public:
+    enum class SyncMode {
+        LEADER_FOLLOWER,   // One agent leads, others follow
+        CONSENSUS,         // Distributed consensus (Raft-like)
+        EVENTUAL,          // Eventually consistent
+        REAL_TIME          // Strong real-time sync
+    };
+    
+    struct SyncConfig {
+        SyncMode mode = SyncMode::EVENTUAL;
+        std::chrono::milliseconds syncInterval{100};
+        double conflictThreshold = 0.1;  // Max acceptable state divergence
+        int quorumSize = 0;              // For consensus mode
+    };
+    
+    CognitiveSyncProtocol(const std::string& agentId, const SyncConfig& config);
+    ~CognitiveSyncProtocol();
+    
+    // Agent registration
+    void registerAgent(const std::string& agentId);
+    void unregisterAgent(const std::string& agentId);
+    std::vector<std::string> getRegisteredAgents() const;
+    
+    // State synchronization
+    void publishLocalState(const CognitiveState& state);
+    std::vector<CognitiveState> getRemoteStates() const;
+    CognitiveState getConsensusState() const;
+    
+    // Conflict handling
+    struct ConflictInfo {
+        std::string field;
+        std::vector<std::pair<std::string, std::string>> agentValues;  // agentId -> value
+        std::string resolvedValue;
+        bool autoResolved;
+    };
+    std::vector<ConflictInfo> detectConflicts() const;
+    void resolveConflict(const std::string& field, const std::string& resolution);
+    
+    // Leader election (for LEADER_FOLLOWER mode)
+    void nominateSelfAsLeader();
+    std::string getCurrentLeader() const;
+    bool isLeader() const;
+    
+    // Synchronization status
+    struct SyncStatus {
+        bool synchronized;
+        double divergenceScore;
+        std::chrono::milliseconds lastSyncLatency;
+        int pendingUpdates;
+    };
+    SyncStatus getSyncStatus() const;
+    
+private:
+    std::string localAgentId_;
+    SyncConfig config_;
+    std::unordered_map<std::string, CognitiveState> remoteStates_;
+    std::string currentLeader_;
+    mutable std::mutex syncMutex_;
+    std::thread syncThread_;
+    std::atomic<bool> running_{false};
+};
+
+/**
+ * State visualization export for dashboards
+ */
+class CognitiveStateVisualizer {
+public:
+    enum class ExportFormat {
+        JSON,
+        GRAPHVIZ_DOT,
+        D3_COMPATIBLE,
+        PROMETHEUS_METRICS
+    };
+    
+    CognitiveStateVisualizer();
+    
+    // Add states for visualization
+    void addState(const CognitiveState& state);
+    void addTransition(const CognitiveState& from, const CognitiveState& to);
+    
+    // Export
+    std::string exportTimeline(ExportFormat format = ExportFormat::JSON) const;
+    std::string exportStateGraph(ExportFormat format = ExportFormat::GRAPHVIZ_DOT) const;
+    std::string exportMetrics(ExportFormat format = ExportFormat::PROMETHEUS_METRICS) const;
+    
+    // Real-time streaming
+    using StreamCallback = std::function<void(const std::string& data)>;
+    void startStreaming(StreamCallback callback, std::chrono::milliseconds interval);
+    void stopStreaming();
+    
+private:
+    /// Render Prometheus metrics; caller must hold vizMutex_.
+    std::string exportMetricsUnlocked() const;
+
+    std::vector<CognitiveState> states_;
+    std::vector<std::pair<size_t, size_t>> transitions_;
+    StreamCallback streamCallback_;
+    std::thread streamThread_;
+    std::atomic<bool> streaming_{false};
+    mutable std::mutex vizMutex_;
+};
+
+/**
+ * Enhanced cognitive bridge with distributed capabilities
+ */
+class EnhancedCognitiveBridge : public CognitiveBridge {
+public:
+    EnhancedCognitiveBridge(const std::string& bridgeId = "enhanced-cognitive-bridge");
+    ~EnhancedCognitiveBridge();
+    
+    // Distributed sync
+    CognitiveSyncProtocol& getSyncProtocol();
+    void enableDistributedSync(CognitiveSyncProtocol::SyncMode mode);
+    void joinSyncCluster(const std::string& clusterUrl);
+    void leaveSyncCluster();
+    
+    // State compression for network
+    void enableCompression(const std::string& algorithm = "lz4");
+    CompressedCognitiveState getCompressedState() const;
+    
+    // Snapshot/replay
+    std::string createSnapshot(const std::string& name = "");
+    void loadSnapshot(const std::string& snapshotId);
+    std::vector<CognitiveSnapshot> listSnapshots() const;
+    void replaySnapshot(const std::string& snapshotId, double speedMultiplier = 1.0);
+    void stopReplay();
+    
+    // Visualization
+    CognitiveStateVisualizer& getVisualizer();
+    std::string exportForDashboard() const;
+    
+    // Multi-agent coordination
+    void broadcastToCluster(const CognitiveState& state);
+    void sendToAgent(const std::string& agentId, const CognitiveState& state);
+    
+    // Enhanced statistics
+    struct EnhancedStats {
+        Stats base;
+        uint64_t syncEvents;
+        uint64_t conflictsResolved;
+        double averageSyncLatency;
+        size_t compressedBytesTransferred;
+    };
+    EnhancedStats getEnhancedStats() const;
+    
+private:
+    std::unique_ptr<CognitiveSyncProtocol> syncProtocol_;
+    std::unique_ptr<CognitiveStateVisualizer> visualizer_;
+    std::vector<CognitiveSnapshot> snapshots_;
+    std::string compressionAlgorithm_;
+    bool compressionEnabled_ = false;
+    std::string clusterUrl_;
+    bool joinedCluster_ = false;
+    mutable std::uint64_t syncEvents_ = 0;
+    mutable std::uint64_t conflictsResolved_ = 0;
+    mutable std::uint64_t compressedBytesTransferred_ = 0;
+    mutable std::mutex enhancedMutex_;
+    
+    std::thread replayThread_;
+    std::atomic<bool> replaying_{false};
+};
+
+} // namespace elizaos

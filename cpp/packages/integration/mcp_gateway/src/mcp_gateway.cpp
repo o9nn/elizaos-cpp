@@ -608,12 +608,14 @@ void MCPServer::stopListening() {
 // Transport Layer Implementations
 // =============================================================================
 
+namespace {  // Anonymous namespace for local transport implementations
+
 /**
  * Transport base class for MCP protocol communication
  */
-class MCPTransport {
+class MCPTransportImpl {
 public:
-    virtual ~MCPTransport() = default;
+    virtual ~MCPTransportImpl() = default;
     virtual bool connect(const std::string& endpoint) = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
@@ -626,7 +628,7 @@ public:
  * Spawns the MCP server as a subprocess, writes JSON-RPC requests to its
  * stdin and reads JSON-RPC responses from its stdout.
  */
-class StdioTransport : public MCPTransport {
+class StdioTransport : public MCPTransportImpl {
 public:
     StdioTransport() = default;
     ~StdioTransport() override { disconnect(); }
@@ -763,7 +765,7 @@ private:
 /**
  * HTTP Transport - REST API communication
  */
-class HttpTransport : public MCPTransport {
+class HttpTransport : public MCPTransportImpl {
 public:
     HttpTransport() = default;
     ~HttpTransport() override { disconnect(); }
@@ -825,10 +827,10 @@ private:
  * Implements the WebSocket protocol over TCP sockets with proper framing,
  * handshake, and close-frame semantics for JSON-RPC over MCP.
  */
-class WebSocketTransport : public MCPTransport {
+class WebSocketTransportImpl : public MCPTransportImpl {
 public:
-    WebSocketTransport() = default;
-    ~WebSocketTransport() override { disconnect(); }
+    WebSocketTransportImpl() = default;
+    ~WebSocketTransportImpl() override { disconnect(); }
 
     bool connect(const std::string& endpoint) override {
         elizaos::logInfo("WebSocket Transport connecting: " + endpoint, "mcp_transport");
@@ -981,6 +983,7 @@ public:
                         pendingRequests_.erase(requestId_);
                         return resp;
                     } else if (messageHandler_) {
+                        // It's a notification or response to another request
                         messageHandler_(resp);
                     }
                 } catch (...) {
@@ -1047,6 +1050,7 @@ private:
     }
 
     std::string generateWebSocketKey() {
+        // Generate a random 16-byte base64-encoded key
         static const char charset[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         std::string key;
         key.reserve(24);
@@ -1061,26 +1065,30 @@ private:
         if (sockfd_ < 0) return false;
 
         std::vector<uint8_t> frame;
-        frame.push_back(0x81);  // FIN + text opcode
+        // FIN + text opcode
+        frame.push_back(0x81);
 
+        // Payload length with mask bit set (client must mask)
         size_t len = payload.size();
         if (len < 126) {
             frame.push_back(static_cast<uint8_t>(len | 0x80));
         } else if (len < 65536) {
-            frame.push_back(0xFE);
+            frame.push_back(0xFE);  // 126 | 0x80
             frame.push_back(static_cast<uint8_t>((len >> 8) & 0xFF));
             frame.push_back(static_cast<uint8_t>(len & 0xFF));
         } else {
-            frame.push_back(0xFF);
+            frame.push_back(0xFF);  // 127 | 0x80
             for (int i = 7; i >= 0; --i) {
                 frame.push_back(static_cast<uint8_t>((len >> (i * 8)) & 0xFF));
             }
         }
 
+        // Masking key (random)
         uint8_t mask[4];
         for (int i = 0; i < 4; ++i) mask[i] = static_cast<uint8_t>(std::rand() & 0xFF);
         frame.insert(frame.end(), mask, mask + 4);
 
+        // Masked payload
         for (size_t i = 0; i < len; ++i) {
             frame.push_back(static_cast<uint8_t>(payload[i]) ^ mask[i % 4]);
         }
@@ -1163,10 +1171,10 @@ private:
 /**
  * SSE (Server-Sent Events) Transport - unidirectional streaming
  */
-class SSETransport : public MCPTransport {
+class SSETransportImpl : public MCPTransportImpl {
 public:
-    SSETransport() = default;
-    ~SSETransport() override { disconnect(); }
+    SSETransportImpl() = default;
+    ~SSETransportImpl() override { disconnect(); }
 
     bool connect(const std::string& endpoint) override {
         elizaos::logInfo("SSE Transport connecting: " + endpoint, "mcp_transport");
@@ -1217,21 +1225,23 @@ private:
  */
 class TransportFactory {
 public:
-    static std::unique_ptr<MCPTransport> create(const std::string& transportType) {
+    static std::unique_ptr<MCPTransportImpl> create(const std::string& transportType) {
         if (transportType == "stdio") {
             return std::make_unique<StdioTransport>();
         } else if (transportType == "http") {
             return std::make_unique<HttpTransport>();
         } else if (transportType == "websocket") {
-            return std::make_unique<WebSocketTransport>();
+            return std::make_unique<WebSocketTransportImpl>();
         } else if (transportType == "sse") {
-            return std::make_unique<SSETransport>();
+            return std::make_unique<SSETransportImpl>();
         }
 
         elizaos::logWarning("Unknown transport type: " + transportType + ", defaulting to HTTP", "mcp_transport");
         return std::make_unique<HttpTransport>();
     }
 };
+
+}  // end anonymous namespace
 
 /**
  * MCPConnection - manages connection to a single MCP server
@@ -1340,7 +1350,7 @@ public:
 
 private:
     MCPServerConfig config_;
-    std::unique_ptr<MCPTransport> transport_;
+    std::unique_ptr<MCPTransportImpl> transport_;
     bool initialized_ = false;
 };
 

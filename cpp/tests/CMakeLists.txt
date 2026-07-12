@@ -758,6 +758,24 @@ if(TARGET real_autonomous_cognitive_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomous_cognitive_e2e_test)
 endif()
 
+# Phase 3.2 Distributed Cognitive State System E2E: compression round-trip,
+# sync protocol (registration/consensus/conflicts/leader election), visualizer
+# exports/streaming, snapshots/replay, cluster lifecycle.
+add_real_test(real_enhanced_cognitive_bridge_e2e_test src/test_enhanced_cognitive_bridge_e2e.cpp)
+target_link_libraries(real_enhanced_cognitive_bridge_e2e_test elizaos-cognitive_bridge)
+if(TARGET real_enhanced_cognitive_bridge_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_enhanced_cognitive_bridge_e2e_test)
+endif()
+
+# Phase 3.1 Enhanced MCP Transport System E2E: WebSocket/SSE loopback
+# lifecycle, multiplexer routing/broadcast/failover, gateway pooling and
+# deterministic x402 payment verification.
+add_real_test(real_enhanced_mcp_gateway_e2e_test src/test_enhanced_mcp_gateway_e2e.cpp)
+target_link_libraries(real_enhanced_mcp_gateway_e2e_test elizaos-mcp_gateway nlohmann_json::nlohmann_json)
+if(TARGET real_enhanced_mcp_gateway_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_enhanced_mcp_gateway_e2e_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================

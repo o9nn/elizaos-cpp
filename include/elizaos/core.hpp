@@ -144,7 +144,8 @@ struct StateGoal {
     Timestamp createdAt;
     Timestamp updatedAt;
 };
-// When goal_manager.hpp is not included, provide backward-compatible alias
+
+// Backward compatibility: use StateGoal as Goal when goal_manager.hpp is not included
 #ifndef ELIZAOS_GOAL_MANAGER_HPP
 using Goal = StateGoal;
 #endif
@@ -155,6 +156,8 @@ using Goal = StateGoal;
  */
 class Memory {
 public:
+    Memory() : id_(""), content_(""), entityId_(""), agentId_(""), 
+               createdAt_(std::chrono::system_clock::now()), unique_(false), similarity_(0.0) {}
     Memory(const UUID& id, const std::string& content, const UUID& entityId, const UUID& agentId);
     Memory(const UUID& id, const std::string& content, const UUID& entityId, const UUID& agentId, 
            const MemoryMetadata& metadata);
@@ -162,6 +165,7 @@ public:
     // Basic accessors
     const UUID& getId() const { return id_; }
     const std::string& getContent() const { return content_; }
+    void setContent(const std::string& content) { content_ = content; }
     const UUID& getEntityId() const { return entityId_; }
     const UUID& getAgentId() const { return agentId_; }
     const UUID& getRoomId() const { return roomId_; }
@@ -344,7 +348,7 @@ public:
     void addActor(const Actor& actor);
     void addGoal(const StateGoal& goal);
     void addRecentMessage(std::shared_ptr<Memory> memory);
-    
+
     const std::vector<Actor>& getActors() const { return actors_; }
     const std::vector<StateGoal>& getGoals() const { return goals_; }
     const std::vector<std::shared_ptr<Memory>>& getRecentMessages() const { return recentMessages_; }

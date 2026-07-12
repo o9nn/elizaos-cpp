@@ -284,8 +284,7 @@ void AgentMemoryManager::clear() {
         memoryTables_.clear();
         memoryTables_["memories"] = {}; // Re-initialize default table
         // Reset the full memory state so that strengths, associations and the
-        // hierarchical index do not leak across logical sessions (also fixes
-        // cross-test state leakage in the statistics aggregation path).
+        // hierarchical index do not leak across logical sessions.
         hierarchicalIndex_ = HierarchicalIndex{};
     });
     {
@@ -415,16 +414,15 @@ std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getMemoriesByType(Hiera
         std::vector<std::shared_ptr<Memory>> result;
         auto ids = hierarchicalIndex_.getByType(type);
 
-        // NOTE: resolve IDs lock-free here. Calling getMemoryById() (which
-        // re-acquires withLock/memoryMutex_) would self-deadlock on the
-        // non-recursive mutex when thread-safety is enabled.
+        // Resolve IDs lock-free to avoid self-deadlock on the non-recursive
+        // mutex (getMemoryById would re-acquire withLock/memoryMutex_).
         for (const auto& id : ids) {
             auto memory = findMemoryByIdUnlocked(id);
             if (memory) {
                 result.push_back(memory);
             }
         }
-
+        
         return result;
     });
 }
@@ -441,7 +439,7 @@ std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getMemoriesByConcept(co
                 result.push_back(memory);
             }
         }
-
+        
         return result;
     });
 }
@@ -616,18 +614,16 @@ std::shared_ptr<Memory> MemoryConsolidationEngine::mergeMemories(
     const MemoryStrength& s1,
     const MemoryStrength& s2) {
     
-    // Create merged memory with combined content.
-    // o9nn's Memory has no default constructor / setContent(); construct
-    // directly from the stronger source memory's fields instead.
-    const std::shared_ptr<Memory>& stronger =
-        (s1.currentStrength >= s2.currentStrength) ? m1 : m2;
-    auto merged = std::make_shared<Memory>(
-        stronger->getId(),
-        stronger->getContent(),
-        stronger->getEntityId(),
-        stronger->getAgentId());
-    merged->setRoomId(stronger->getRoomId());
-
+    // Create merged memory with combined content
+    auto merged = std::make_shared<Memory>();
+    
+    // Take the content from the stronger memory
+    if (s1.currentStrength >= s2.currentStrength) {
+        merged->setContent(m1->getContent());
+    } else {
+        merged->setContent(m2->getContent());
+    }
+    
     // Combine embeddings (average)
     if (m1->getEmbedding() && m2->getEmbedding()) {
         EmbeddingVector avgEmbedding;

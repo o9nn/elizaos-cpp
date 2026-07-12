@@ -2,6 +2,7 @@
 # cognitive state, sensory input, speech output, and Echobeats heartbeat.
 add_library(elizaos-cognitive_bridge STATIC
     src/cognitive_bridge.cpp
+    src/cognitive_bridge_enhanced.cpp
 )
 
 target_include_directories(elizaos-cognitive_bridge PUBLIC

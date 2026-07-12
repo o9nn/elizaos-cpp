@@ -1,10 +1,10 @@
 #include "elizaos/core.hpp"
+#include <cctype>
 #include <random>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
 #include <cmath>
-#include <cctype>
 
 namespace elizaos {
 
@@ -110,14 +110,14 @@ void State::addActor(const Actor& actor) {
     actors_.push_back(actor);
 }
 
-void State::addGoal(const Goal& goal) {
+void State::addGoal(const StateGoal& goal) {
     goals_.push_back(goal);
 }
 
 namespace {
 // Case-insensitive ASCII equality used by the goal-status helpers so that
 // callers can match "Active"/"active"/"ACTIVE" interchangeably.
-bool iequalsAsciiGoalStatus(const std::string& a, const std::string& b) {
+bool iequalsAscii(const std::string& a, const std::string& b) {
     if (a.size() != b.size()) {
         return false;
     }
@@ -145,7 +145,7 @@ bool State::updateGoalStatus(const UUID& goalId, const std::string& status) {
 bool State::updateGoalStatusByDescription(const std::string& description,
                                           const std::string& status) {
     for (auto& goal : goals_) {
-        if (iequalsAsciiGoalStatus(goal.description, description)) {
+        if (iequalsAscii(goal.description, description)) {
             goal.status = status;
             goal.updatedAt = std::chrono::system_clock::now();
             return true;
@@ -157,7 +157,7 @@ bool State::updateGoalStatusByDescription(const std::string& description,
 std::size_t State::countGoalsWithStatus(const std::string& status) const {
     std::size_t count = 0;
     for (const auto& goal : goals_) {
-        if (iequalsAsciiGoalStatus(goal.status, status)) {
+        if (iequalsAscii(goal.status, status)) {
             ++count;
         }
     }

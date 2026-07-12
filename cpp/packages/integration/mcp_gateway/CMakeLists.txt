@@ -2,6 +2,7 @@
 
 add_library(elizaos-mcp_gateway STATIC
     src/mcp_gateway.cpp
+    src/mcp_gateway_enhanced.cpp
 )
 
 target_include_directories(elizaos-mcp_gateway PUBLIC

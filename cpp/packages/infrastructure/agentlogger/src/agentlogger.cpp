@@ -7,8 +7,8 @@
 #include <vector>
 #include <fstream>
 #include <random>
+#include <filesystem>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <cstdlib>
 #include <cstdio>
 
@@ -590,32 +590,35 @@ void AgentLogger::enforceRotationRetention(const std::string& baseFilename) {
         return; // 0 => unlimited retention
     }
 
-    // Split baseFilename into directory + leaf prefix.
-    std::string dir = ".";
-    std::string prefix = baseFilename;
-    const auto slash = baseFilename.find_last_of('/');
-    if (slash != std::string::npos) {
-        dir = baseFilename.substr(0, slash);
-        prefix = baseFilename.substr(slash + 1);
-    }
+    namespace fs = std::filesystem;
+
+    const fs::path basePath(baseFilename);
+    const fs::path dirPath = basePath.has_parent_path() ? basePath.parent_path() : fs::path(".");
+    const std::string prefix = basePath.filename().string();
 
     // Collect rotated siblings: leaf starts with "<prefix>" but is not the
     // active log file itself (which has leaf == prefix exactly).
-    struct Rotated { std::string path; time_t mtime; };
+    struct Rotated { fs::path path; fs::file_time_type mtime; };
     std::vector<Rotated> rotated;
 
-    if (DIR* d = ::opendir(dir.c_str())) {
-        while (struct dirent* ent = ::readdir(d)) {
-            const std::string leaf = ent->d_name;
-            if (leaf == prefix) continue;                       // active log
-            if (leaf.rfind(prefix, 0) != 0) continue;           // not our family
-            const std::string full = dir + "/" + leaf;
-            struct stat st;
-            if (::stat(full.c_str(), &st) == 0 && S_ISREG(st.st_mode)) {
-                rotated.push_back({full, st.st_mtime});
-            }
-        }
-        ::closedir(d);
+    std::error_code ec;
+    const fs::directory_iterator end;
+    fs::directory_iterator it(dirPath, ec);
+    if (ec) return;
+
+    for (; it != end; it.increment(ec)) {
+        if (ec) return;
+
+        const auto& entry = *it;
+
+        const std::string leaf = entry.path().filename().string();
+        if (leaf == prefix) continue;                 // active log
+        if (leaf.rfind(prefix, 0) != 0) continue;    // not our family
+        if (!entry.is_regular_file(ec) || ec) continue;
+
+        const auto mtime = entry.last_write_time(ec);
+        if (ec) continue;
+        rotated.push_back({entry.path(), mtime});
     }
 
     if (rotated.size() <= rotationConfig_.maxFiles) {
@@ -628,7 +631,7 @@ void AgentLogger::enforceRotationRetention(const std::string& baseFilename) {
 
     const size_t toRemove = rotated.size() - rotationConfig_.maxFiles;
     for (size_t i = 0; i < toRemove; ++i) {
-        std::remove(rotated[i].path.c_str());
+        fs::remove(rotated[i].path, ec);
     }
 }
 
