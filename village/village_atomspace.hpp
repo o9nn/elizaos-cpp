@@ -23,6 +23,7 @@
 #include <chrono>
 #include <mutex>
 #include <cmath>
+#include <algorithm>
 
 namespace village { namespace atomspace {
 
@@ -115,7 +116,7 @@ public:
         : config_(config), as_(), ecan_(as_), pln_(as_), cycle_count_(0)
     {
         // Configure ECAN
-        ecan_.bank().set_af_threshold(config.af_size);
+        ecan_.bank().set_af_threshold(static_cast<oc::AttentionValue::sti_t>(config.af_size));
         
         // Seed the type hierarchy
         seed_type_hierarchy();
@@ -127,8 +128,8 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         
         // Create ConceptNode for resident
-        auto h = as_.add(oc::ConceptNode(resident.name));
-        as_.set_tv(h, oc::TruthValue(0.9, 0.9));
+        oc::Handle h = as_.add_node(oc::types::CONCEPT_NODE, resident.name,
+                                    oc::TruthValue(0.9, 0.9));
         
         // Store OCEAN as InheritanceLinks to trait concepts
         store_trait(resident.name, "openness", resident.openness);
@@ -138,8 +139,9 @@ public:
         store_trait(resident.name, "neuroticism", resident.neuroticism);
         
         // Store gear train membership
-        auto gear_node = as_.add(oc::ConceptNode("gear:" + resident.gear_train));
-        as_.add(oc::MemberLink(h, gear_node));
+        oc::Handle gear_node = as_.add_node(oc::types::CONCEPT_NODE, 
+                                            "gear:" + resident.gear_train);
+        as_.add_link(oc::types::MEMBER_LINK, {h, gear_node});
         
         // Initial ECAN stimulation
         ecan_.bank().stimulate(h, 100);
@@ -173,21 +175,21 @@ public:
         // 2. Get attentional focus
         auto af = ecan_.bank().get_attentional_focus();
         for (auto& h : af) {
-            auto name = as_.get_name(h);
-            if (!name.empty() && residents_.count(name)) {
-                result.attentional_focus.push_back(name);
-                residents_[name].sti = ecan_.bank().get_sti(h);
+            const oc::Atom* atom = as_.get_atom(h);
+            if (atom && !atom->name.empty() && residents_.count(atom->name)) {
+                result.attentional_focus.push_back(atom->name);
+                residents_[atom->name].sti = static_cast<double>(atom->av.sti);
             }
         }
         
         // 3. PLN forward chaining on AF atoms (bounded)
         if (!af.empty() && cycle_count_ % 10 == 0) {  // Every 10th cycle
             auto conclusions = pln_.deduce_all();
-            for (auto& [premise, tv] : conclusions) {
-                if (tv.strength > config_.deduction_confidence_threshold) {
-                    result.inferences.push_back(premise + " [" + 
-                        std::to_string(tv.strength) + "," + 
-                        std::to_string(tv.confidence) + "]");
+            for (auto& c : conclusions) {
+                if (c.tv.mean > config_.deduction_confidence_threshold) {
+                    result.inferences.push_back(c.description + " [" + 
+                        std::to_string(c.tv.mean) + "," + 
+                        std::to_string(c.tv.confidence) + "]");
                 }
             }
         }
@@ -219,40 +221,44 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         
         // Create event atom
-        auto event_node = as_.add(oc::ConceptNode("event:" + event.type + ":" + 
-            std::to_string(cycle_count_)));
-        as_.set_tv(event_node, oc::TruthValue(0.9, 0.7));
+        oc::Handle event_node = as_.add_node(oc::types::CONCEPT_NODE, 
+            "event:" + event.type + ":" + std::to_string(cycle_count_),
+            oc::TruthValue(0.9, 0.7));
         
         // Link participants
         for (auto& participant : event.participants) {
             if (residents_.count(participant)) {
-                auto p_handle = residents_[participant].concept_handle;
-                as_.add(oc::EvaluationLink(
-                    as_.add(oc::PredicateNode("participates-in")),
-                    as_.add(oc::ListLink({p_handle, event_node}))
-                ));
+                oc::Handle p_handle = residents_[participant].concept_handle;
+                oc::Handle pred_h = as_.add_node(oc::types::PREDICATE_NODE, 
+                                                 "participates-in");
+                oc::Handle list_h = as_.add_link(oc::types::LIST_LINK, 
+                                                 {p_handle, event_node});
+                as_.add_link(oc::types::EVALUATION_LINK, {pred_h, list_h});
                 
                 // Stimulate participants (they gain attention from events)
                 ecan_.bank().stimulate(p_handle, 
-                    static_cast<int>(event.information_gain * 50));
+                    static_cast<oc::AttentionValue::sti_t>(event.information_gain * 50));
             }
         }
         
         // Store content as a SchemaNode (for future MOSES evolution)
         if (!event.content.empty()) {
-            auto content_node = as_.add(oc::SchemaNode(event.content));
-            as_.add(oc::EvaluationLink(
-                as_.add(oc::PredicateNode("has-content")),
-                as_.add(oc::ListLink({event_node, content_node}))
-            ));
+            oc::Handle content_node = as_.add_node(oc::types::SCHEMA_NODE, 
+                                                   event.content);
+            oc::Handle pred_h = as_.add_node(oc::types::PREDICATE_NODE, 
+                                             "has-content");
+            oc::Handle list_h = as_.add_link(oc::types::LIST_LINK, 
+                                             {event_node, content_node});
+            as_.add_link(oc::types::EVALUATION_LINK, {pred_h, list_h});
         }
         
-        // Store emotional valence
-        auto valence_node = as_.add(oc::NumberNode(event.emotional_valence));
-        as_.add(oc::EvaluationLink(
-            as_.add(oc::PredicateNode("has-valence")),
-            as_.add(oc::ListLink({event_node, valence_node}))
-        ));
+        // Store emotional valence as a NumberNode
+        oc::Handle valence_node = as_.add_node(oc::types::NUMBER_NODE, 
+            std::to_string(event.emotional_valence));
+        oc::Handle val_pred = as_.add_node(oc::types::PREDICATE_NODE, "has-valence");
+        oc::Handle val_list = as_.add_link(oc::types::LIST_LINK, 
+                                           {event_node, valence_node});
+        as_.add_link(oc::types::EVALUATION_LINK, {val_pred, val_list});
         
         events_.push_back(event);
     }
@@ -266,18 +272,21 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         
         // Create teaching event in AtomSpace
-        auto teacher_h = residents_.count(teacher) ? 
-            residents_[teacher].concept_handle : as_.add(oc::ConceptNode(teacher));
-        auto learner_h = residents_.count(learner) ? 
-            residents_[learner].concept_handle : as_.add(oc::ConceptNode(learner));
-        auto domain_h = as_.add(oc::ConceptNode("domain:" + domain));
+        oc::Handle teacher_h = residents_.count(teacher) ? 
+            residents_[teacher].concept_handle : 
+            as_.add_node(oc::types::CONCEPT_NODE, teacher);
+        oc::Handle learner_h = residents_.count(learner) ? 
+            residents_[learner].concept_handle : 
+            as_.add_node(oc::types::CONCEPT_NODE, learner);
+        oc::Handle domain_h = as_.add_node(oc::types::CONCEPT_NODE, 
+                                           "domain:" + domain);
         
         // EvaluationLink: teaches(teacher, learner, domain)
-        as_.add(oc::EvaluationLink(
-            as_.add(oc::PredicateNode("teaches")),
-            as_.add(oc::ListLink({teacher_h, learner_h, domain_h})),
-            oc::TruthValue(effectiveness, 0.8)
-        ));
+        oc::Handle pred_h = as_.add_node(oc::types::PREDICATE_NODE, "teaches");
+        oc::Handle list_h = as_.add_link(oc::types::LIST_LINK, 
+                                         {teacher_h, learner_h, domain_h});
+        as_.add_link(oc::types::EVALUATION_LINK, {pred_h, list_h}, 
+                     oc::TruthValue(effectiveness, 0.8));
         
         // Strengthen the teacher-learner Hebbian link
         strengthen_hebbian(teacher, learner);
@@ -310,23 +319,23 @@ public:
     
     std::vector<GearState> get_gear_states() const {
         std::map<std::string, std::vector<const ResidentAtom*>> trains;
-        for (auto& [name, r] : residents_) {
-            trains[r.gear_train].push_back(&r);
+        for (auto& kv : residents_) {
+            trains[kv.second.gear_train].push_back(&kv.second);
         }
         
         std::vector<GearState> states;
         double total_mean_sti = 0;
         size_t train_count = 0;
         
-        for (auto& [train_name, members] : trains) {
+        for (auto& kv : trains) {
             GearState gs;
-            gs.train_name = train_name;
+            gs.train_name = kv.first;
             double sum_sti = 0;
-            for (auto* m : members) {
+            for (auto* m : kv.second) {
                 sum_sti += m->sti;
                 gs.members.push_back(m->name);
             }
-            double mean_sti = members.empty() ? 0 : sum_sti / members.size();
+            double mean_sti = kv.second.empty() ? 0 : sum_sti / kv.second.size();
             
             // Map STI to RPM: base 1.0 RPM, scaled by STI/100
             gs.rpm = std::max(0.1, mean_sti / 100.0);
@@ -355,15 +364,15 @@ public:
         return std::to_string(it->second.sti);
     }
     
-    std::string get_attentional_focus_json() const {
+    std::string get_attentional_focus_json() {
         std::string json = "[";
         auto af = ecan_.bank().get_attentional_focus();
         bool first = true;
         for (auto& h : af) {
-            auto name = as_.get_name(h);
-            if (!name.empty()) {
+            const oc::Atom* atom = as_.get_atom(h);
+            if (atom && !atom->name.empty()) {
                 if (!first) json += ",";
-                json += "\"" + name + "\"";
+                json += "\"" + atom->name + "\"";
                 first = false;
             }
         }
@@ -371,7 +380,7 @@ public:
         return json;
     }
     
-    std::string get_stats_json() const {
+    std::string get_stats_json() {
         std::string json = "{";
         json += "\"atom_count\":" + std::to_string(as_.size()) + ",";
         json += "\"cycle_count\":" + std::to_string(cycle_count_) + ",";
@@ -398,8 +407,12 @@ public:
         std::vector<InferenceResult> results;
         
         auto tv = pln_.query_inheritance(from, to);
-        if (tv.strength > 0) {
-            results.push_back({from + " → " + to, tv.strength, tv.confidence});
+        if (tv.mean > 0) {
+            InferenceResult ir;
+            ir.conclusion = from + " -> " + to;
+            ir.strength = tv.mean;
+            ir.confidence = tv.confidence;
+            results.push_back(ir);
         }
         
         return results;
@@ -409,16 +422,14 @@ public:
     
     void save() {
         std::lock_guard<std::mutex> lock(mutex_);
-        oc::persist::Serializer ser(as_);
-        // Serialize to file (Scheme s-expressions)
-        // This creates a loadable .scm file for the Guile shell
-        std::string sexpr = ser.serialize_full(as_.get_root());
-        // Write to persist_path...
+        // Serialize to Scheme s-expressions for the Guile shell
+        // TODO: implement full oc::persist::Serializer integration
     }
     
     void load() {
         std::lock_guard<std::mutex> lock(mutex_);
         // Load from persist_path...
+        // TODO: implement full deserialization
     }
     
     // ─── Accessors ─────────────────────────────────────────────────
@@ -433,23 +444,23 @@ public:
 private:
     void seed_type_hierarchy() {
         // Core type nodes that PLN reasons over
-        as_.add(oc::ConceptNode("resident"));
-        as_.add(oc::ConceptNode("knowledge"));
-        as_.add(oc::ConceptNode("event"));
-        as_.add(oc::ConceptNode("group"));
-        as_.add(oc::ConceptNode("domain"));
+        as_.add_node(oc::types::CONCEPT_NODE, "resident");
+        as_.add_node(oc::types::CONCEPT_NODE, "knowledge");
+        as_.add_node(oc::types::CONCEPT_NODE, "event");
+        as_.add_node(oc::types::CONCEPT_NODE, "group");
+        as_.add_node(oc::types::CONCEPT_NODE, "domain");
         
         // Gear train concepts
-        as_.add(oc::ConceptNode("gear:core"));
-        as_.add(oc::ConceptNode("gear:creative"));
-        as_.add(oc::ConceptNode("gear:symbolic"));
-        as_.add(oc::ConceptNode("gear:integration"));
+        as_.add_node(oc::types::CONCEPT_NODE, "gear:core");
+        as_.add_node(oc::types::CONCEPT_NODE, "gear:creative");
+        as_.add_node(oc::types::CONCEPT_NODE, "gear:symbolic");
+        as_.add_node(oc::types::CONCEPT_NODE, "gear:integration");
         
         // KSM level concepts
-        as_.add(oc::ConceptNode("ksm:discovery"));
-        as_.add(oc::ConceptNode("ksm:instruction"));
-        as_.add(oc::ConceptNode("ksm:mastery"));
-        as_.add(oc::ConceptNode("ksm:entelechy"));
+        as_.add_node(oc::types::CONCEPT_NODE, "ksm:discovery");
+        as_.add_node(oc::types::CONCEPT_NODE, "ksm:instruction");
+        as_.add_node(oc::types::CONCEPT_NODE, "ksm:mastery");
+        as_.add_node(oc::types::CONCEPT_NODE, "ksm:entelechy");
         
         // PLN inheritance chain for KSM levels
         pln_.store_inheritance("ksm:instruction", "ksm:discovery", 0.99, 0.95);
@@ -459,44 +470,63 @@ private:
     
     void store_trait(const std::string& resident, 
                     const std::string& trait, double value) {
-        auto r_handle = as_.add(oc::ConceptNode(resident));
-        auto t_handle = as_.add(oc::ConceptNode("trait:" + trait));
-        as_.add(oc::InheritanceLink(r_handle, t_handle, 
-                                    oc::TruthValue(value, 0.9)));
+        oc::Handle r_handle = as_.add_node(oc::types::CONCEPT_NODE, resident);
+        oc::Handle t_handle = as_.add_node(oc::types::CONCEPT_NODE, "trait:" + trait);
+        as_.add_link(oc::types::INHERITANCE_LINK, {r_handle, t_handle},
+                     oc::TruthValue(value, 0.9));
     }
     
     void strengthen_hebbian(const std::string& a, const std::string& b) {
         if (!residents_.count(a) || !residents_.count(b)) return;
-        auto ha = residents_[a].concept_handle;
-        auto hb = residents_[b].concept_handle;
+        oc::Handle ha = residents_[a].concept_handle;
+        oc::Handle hb = residents_[b].concept_handle;
         
         // Create or strengthen HebbianLink
-        auto existing = as_.get_link(oc::HebbianLink::type(), {ha, hb});
-        if (existing) {
-            auto tv = as_.get_tv(existing);
-            double new_strength = std::min(1.0, 
-                tv.strength + config_.hebbian_learning_rate);
-            as_.set_tv(existing, oc::TruthValue(new_strength, tv.confidence));
+        // Look for existing link by iterating (simple approach for header-only)
+        oc::Handle existing = find_hebbian_link(ha, hb);
+        if (existing != oc::UNDEFINED_HANDLE) {
+            oc::Atom* atom = as_.get_atom_mut(existing);
+            if (atom) {
+                double new_strength = std::min(1.0, 
+                    atom->tv.mean + config_.hebbian_learning_rate);
+                atom->tv.mean = new_strength;
+            }
         } else {
-            as_.add(oc::HebbianLink(ha, hb, 
-                oc::TruthValue(config_.hebbian_learning_rate, 0.5)));
+            as_.add_link(oc::types::HEBBIAN_LINK, {ha, hb},
+                        oc::TruthValue(config_.hebbian_learning_rate, 0.5));
         }
     }
     
+    oc::Handle find_hebbian_link(oc::Handle a, oc::Handle b) const {
+        // Check incoming set of a for HebbianLinks containing b
+        const oc::Atom* atom_a = as_.get_atom(a);
+        if (!atom_a) return oc::UNDEFINED_HANDLE;
+        
+        for (oc::Handle link_h : atom_a->incoming) {
+            const oc::Atom* link = as_.get_atom(link_h);
+            if (link && link->type == oc::types::HEBBIAN_LINK) {
+                // HebbianLink is unordered, check if b is in outgoing
+                for (oc::Handle out_h : link->outgoing) {
+                    if (out_h == b) return link_h;
+                }
+            }
+        }
+        return oc::UNDEFINED_HANDLE;
+    }
+    
     void forget_low_sti() {
-        // ECAN forgetting: remove atoms with STI below threshold
-        // (In practice, just reduce their LTI so they don't persist)
-        for (auto& [name, r] : residents_) {
-            if (r.sti < config_.forgetting_threshold) {
-                r.lti *= 0.95;  // Gradual LTI decay
+        // ECAN forgetting: reduce LTI for low-attention residents
+        for (auto& kv : residents_) {
+            if (kv.second.sti < config_.forgetting_threshold) {
+                kv.second.lti *= 0.95;  // Gradual LTI decay
             }
         }
     }
     
     double compute_total_sti() const {
         double total = 0;
-        for (auto& [name, r] : residents_) {
-            total += r.sti;
+        for (auto& kv : residents_) {
+            total += kv.second.sti;
         }
         return total;
     }
@@ -579,15 +609,15 @@ private:
         
         // Add domain expertise from KSM levels
         prompt += "Domains:\n";
-        for (auto& [domain, level] : r.domain_levels) {
+        for (auto& kv : r.domain_levels) {
             std::string level_str;
-            switch (level) {
+            switch (kv.second) {
                 case ResidentAtom::KSMLevel::DISCOVERY: level_str = "discovering"; break;
                 case ResidentAtom::KSMLevel::INSTRUCTION: level_str = "teaching"; break;
                 case ResidentAtom::KSMLevel::MASTERY: level_str = "mastering"; break;
                 case ResidentAtom::KSMLevel::ENTELECHY: level_str = "transcending"; break;
             }
-            prompt += "  - " + domain + " (" + level_str + ")\n";
+            prompt += "  - " + kv.first + " (" + level_str + ")\n";
         }
         
         // Current attention state
