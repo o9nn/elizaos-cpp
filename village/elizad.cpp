@@ -18,6 +18,7 @@
 #include "antikythera_coupling.hpp"
 #include "village_ksm_transfer.hpp"
 #include "village_agnai_bridge.hpp"
+#include "village_atomspace.hpp"
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/endocrine.hpp"
 #include "elizaos/core.hpp"
@@ -81,10 +82,12 @@ public:
                  VillageEventBusClient* bus, EndocrineSystem* endo,
                  VillageDynamicsEngine* dynamics, AntikytheraEngine* antikythera,
                  cogvillage::ksm::KSMTransferEngine* ksmEngine = nullptr,
-                 cogvillage::bridge::AgnAIBridge* agnaiBridge = nullptr)
+                 cogvillage::bridge::AgnAIBridge* agnaiBridge = nullptr,
+                 ::village::atomspace::VillageAtomSpace* atomspace = nullptr)
         : port_(port), agent_(agent), bus_(bus), endo_(endo),
           dynamics_(dynamics), antikythera_(antikythera),
-          ksmEngine_(ksmEngine), agnaiBridge_(agnaiBridge), fd_(-1) {}
+          ksmEngine_(ksmEngine), agnaiBridge_(agnaiBridge),
+          atomspace_(atomspace), fd_(-1) {}
 
     bool start() {
         fd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -123,6 +126,8 @@ public:
                 response = buildAntikytheraResponse();
             else if (request.find("GET /v1/eliza/ksm") != std::string::npos)
                 response = buildKsmResponse();
+            else if (request.find("GET /v1/eliza/atomspace") != std::string::npos)
+                response = buildAtomSpaceResponse();
             else if (request.find("GET /v1/eliza/bridge") != std::string::npos)
                 response = buildBridgeResponse();
             else if (request.find("GET /health") != std::string::npos)
@@ -145,6 +150,7 @@ private:
     AntikytheraEngine* antikythera_;
     cogvillage::ksm::KSMTransferEngine* ksmEngine_;
     cogvillage::bridge::AgnAIBridge* agnaiBridge_;
+    ::village::atomspace::VillageAtomSpace* atomspace_;
     int fd_;
 
     std::string jsonResponse(const std::string& body) {
@@ -204,6 +210,37 @@ private:
     std::string buildBridgeResponse() {
         if (agnaiBridge_) return jsonResponse(agnaiBridge_->getState().dump(2));
         return jsonResponse("{\"error\": \"Bridge not initialized\"}");
+    }
+
+
+    std::string buildAtomSpaceResponse() {
+        if (!atomspace_) return jsonResponse("{\"error\": \"AtomSpace not initialized\"}");
+        std::string body = "{";
+        body += "\"stats\":" + atomspace_->get_stats_json() + ",";
+        body += "\"attentional_focus\":" + atomspace_->get_attentional_focus_json() + ",";
+        body += "\"gear_states\":[";
+        auto gears = atomspace_->get_gear_states();
+        bool first = true;
+        for (auto& gs : gears) {
+            if (!first) body += ",";
+            body += "{\"train\":\"" + gs.train_name + "\",";
+            body += "\"rpm\":" + std::to_string(gs.rpm) + ",";
+            body += "\"modulation\":" + std::to_string(gs.modulation) + ",";
+            body += "\"members\":[";
+            bool mfirst = true;
+            for (auto& m : gs.members) {
+                if (!mfirst) body += ",";
+                body += "\"" + m + "\"";
+                mfirst = false;
+            }
+            body += "],";
+        // Live Antikythera RPMs (ECAN-modulated)
+        body += "\"antikythera_coupling\":{\"enabled\":true,\"blend_factor\":0.2}";
+        body += "}";
+            first = false;
+        }
+        body += "]}";
+        return jsonResponse(body);
     }
 
     std::string buildHealthResponse() {
@@ -289,6 +326,33 @@ int main(int argc, char* argv[]) {
                   << " phase=" << sync.alignmentPhase << "\n";
     });
 
+    // ---- Initialize Village AtomSpace (ATenStyx Foundation Layer) ----
+    ::village::atomspace::AtomSpaceConfig asConfig;
+    asConfig.af_size = 20;
+    asConfig.spreading_rate = 0.3;
+    asConfig.persist_path = "/var/agi_neighborhood/atomspace/village.scm";
+    ::village::atomspace::VillageAtomSpace villageAtomSpace(asConfig);
+    
+    // Seed residents from the same registry JSON used by KSM
+    {
+        std::ifstream regFile("/var/agi_neighborhood/agnai/resident_registry.json");
+        if (regFile.is_open()) {
+            json regData = json::parse(regFile);
+            for (auto& [name, data] : regData["residents"].items()) {
+                ::village::atomspace::ResidentAtom ra;
+                ra.name = data["handle"].get<std::string>();
+                ra.gear_train = data["gear_train"].get<std::string>();
+                ra.gear_rpm_multiplier = data["gear_teeth"].get<double>() / 30.0;
+                // Default OCEAN (will be refined per-resident via LoRA training)
+                ra.openness = 0.7; ra.conscientiousness = 0.7;
+                ra.extraversion = 0.5; ra.agreeableness = 0.6; ra.neuroticism = 0.3;
+                villageAtomSpace.add_resident(ra);
+            }
+        }
+    }
+    std::cout << "[elizad] VillageAtomSpace initialized: "
+              << villageAtomSpace.residents().size() << " residents seeded\n";
+
     // Configure event bus (MUST be before KSM/Bridge callbacks that reference it)
     VillageEventBusClient::Config busConfig;
     busConfig.busUrl = config.busUrl;
@@ -302,12 +366,24 @@ int main(int argc, char* argv[]) {
         translateVillageEventToStimulus(event, endocrine);
         // Feed event into group dynamics engine
         dynamics.onVillageEvent(event.typeStr, event.source, event.payload);
+
     });
 
     if (!bus.start())
         std::cerr << "[elizad] WARNING: Could not connect to event bus.\n";
     else
         std::cout << "[elizad] Connected at tic " << bus.getCurrentTic() << "\n";
+
+    // Wire bus events -> AtomSpace (symbolic grounding)
+    bus.subscribe([&villageAtomSpace](const VillageEvent& event) {
+        ::village::atomspace::CognitiveEvent cogEvent;
+        cogEvent.type = event.typeStr;
+        cogEvent.participants = {event.source};
+        cogEvent.content = event.payload.substr(0, 200);
+        cogEvent.emotional_valence = 0.0;
+        cogEvent.information_gain = 0.5;
+        villageAtomSpace.process_event(cogEvent);
+    });
 
     // ---- Initialize KSM Transfer Engine ----
     cogvillage::ksm::KSMTransferEngine ksmEngine;
@@ -317,6 +393,8 @@ int main(int argc, char* argv[]) {
         std::cout << "[ksm] " << type << ": " << data.dump().substr(0, 80) << "\n";
     });
     std::cout << "[elizad] KSM Transfer Engine loaded (Dan's Relational Principle)\n";
+
+
 
     // ---- Initialize AgnAI Bridge ----
     cogvillage::bridge::AgnAIBridge agnaiBridge;
@@ -359,7 +437,8 @@ int main(int argc, char* argv[]) {
 
     // Start health server (now with dynamics + antikythera + ksm + bridge)
     HealthServer health(config.healthPort, &agent, &bus, &endocrine,
-                        &dynamics, &antikythera, &ksmEngine, &agnaiBridge);
+                        &dynamics, &antikythera, &ksmEngine, &agnaiBridge,
+                        &villageAtomSpace);
     if (!health.start())
         std::cerr << "[elizad] WARNING: Could not bind port " << config.healthPort << "\n";
 
@@ -369,6 +448,7 @@ int main(int argc, char* argv[]) {
     std::cout << "  GET /v1/eliza/dynamics     — group dynamics detail\n";
     std::cout << "  GET /v1/eliza/antikythera  — gear train state\n";
     std::cout << "  GET /v1/eliza/ksm          — KSM transfer engine state\n";
+    std::cout << "  GET /v1/eliza/atomspace    — AtomSpace + ECAN + PLN state\n";
     std::cout << "  GET /v1/eliza/bridge       — AgnAI bridge state\n\n";
     std::cout << "[elizad] Dan's Relational Principle active:\n";
     std::cout << "  Discovery → Instruction → Mastery → Entelechy\n";
@@ -393,6 +473,67 @@ int main(int argc, char* argv[]) {
             // Advance group dynamics (uses bus tic as timestamp)
             int64_t currentTic = bus.getCurrentTic();
             dynamics.tick(currentTic);
+
+
+            // Advance AtomSpace (ECAN spreading + PLN inference)
+            auto asCycleResult = villageAtomSpace.run_cycle();
+
+            // Self-stimulation: feed elizad's own cognitive state into AtomSpace
+            // This breaks STI equilibrium based on what the agent is actually doing
+            {
+                auto report = agent.getAutonomyHealthReport();
+                auto va = endocrine.valenceArousal();
+                // Stimulate "eliza" resident based on action count
+                ::village::atomspace::CognitiveEvent selfEvent;
+                selfEvent.type = "cognitive_cycle";
+                selfEvent.participants = {"eliza", "manus"};
+                selfEvent.content = "cycle_" + std::to_string(g_cogCycleCount.load());
+                selfEvent.emotional_valence = va.valence;
+                selfEvent.information_gain = (report.openGoals > 0) ? 0.7 : 0.3;
+                villageAtomSpace.process_event(selfEvent);
+
+                // Every 10 cycles, stimulate the creative train
+                if (g_cogCycleCount.load() % 10 == 0) {
+                    ::village::atomspace::CognitiveEvent creativeEvent;
+                    creativeEvent.type = "creative_pulse";
+                    creativeEvent.participants = {"echo", "ember", "vega"};
+                    creativeEvent.content = "creative_pulse";
+                    creativeEvent.emotional_valence = 0.5;
+                    creativeEvent.information_gain = 0.8;
+                    villageAtomSpace.process_event(creativeEvent);
+                }
+
+                // Every 20 cycles, stimulate the symbolic train
+                if (g_cogCycleCount.load() % 20 == 0) {
+                    ::village::atomspace::CognitiveEvent symbolicEvent;
+                    symbolicEvent.type = "symbolic_inference";
+                    symbolicEvent.participants = {"opencog", "aion"};
+                    symbolicEvent.content = "pln_inference_cycle";
+                    symbolicEvent.emotional_valence = 0.0;
+                    symbolicEvent.information_gain = 0.9;
+                    villageAtomSpace.process_event(symbolicEvent);
+                }
+            }
+
+            // ---- ECAN → Antikythera Coupling (attention drives temporal pacing) ----
+            // Map STI-derived gear states to Antikythera RPMs
+            // Key insight: gs.rpm = mean_STI/100 for the train
+            // So gs.rpm=1.0 means "normal attention", >1 means "elevated"
+            auto gearStates = villageAtomSpace.get_gear_states();
+            for (const auto& gs : gearStates) {
+                for (const auto& member : gs.members) {
+                    auto* gear = const_cast<Gear*>(antikythera.getGear(member));
+                    if (gear) {
+                        // Base RPM derived from gear teeth ratio (fixed reference)
+                        double baseRpm = 60.0 * 30.0 / std::max(1, gear->teeth);
+                        // Target = base * ECAN attention factor (clamped 0.5x to 3x)
+                        double attnFactor = std::max(0.5, std::min(3.0, gs.rpm * gs.modulation));
+                        double targetRpm = baseRpm * attnFactor;
+                        // Smooth blend: 95% current + 5% target (slow adaptation)
+                        gear->rpm = 0.95 * gear->rpm + 0.05 * targetRpm;
+                    }
+                }
+            }
 
             // Advance Antikythera mechanism (gear coupling)
             auto syncEvents = antikythera.tick(currentTic);

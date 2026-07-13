@@ -33,6 +33,7 @@ target_link_libraries(antikythera_coupling PUBLIC nlohmann_json::nlohmann_json)
 # elizad daemon — links against main project targets
 add_executable(elizad elizad.cpp)
 target_include_directories(elizad PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${ELIZAOS_VILLAGE_INCLUDE}
 )
@@ -60,5 +61,5 @@ target_link_libraries(elizad PRIVATE
 install(TARGETS elizad RUNTIME DESTINATION bin)
 install(TARGETS village_event_bus village_group_dynamics antikythera_coupling ARCHIVE DESTINATION lib)
 install(FILES village_event_bus.hpp village_group_dynamics.hpp antikythera_coupling.hpp
-              village_ksm_transfer.hpp village_agnai_bridge.hpp
+              village_ksm_transfer.hpp village_agnai_bridge.hpp village_atomspace.hpp
         DESTINATION include/elizaos)
