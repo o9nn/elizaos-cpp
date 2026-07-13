@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "elizaos/ljspeechtools.hpp"
 #include "elizaos/agentlogger.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 
@@ -53,7 +54,7 @@ TEST_F(LJSpeechToolsTest, InitializationTest) {
 }
 
 TEST_F(LJSpeechToolsTest, AudioProcessorLoadTest) {
-    AudioData audio = AudioProcessor::loadAudioFile(input_dir_ / "test_audio_0.wav");
+    AudioData audio = AudioProcessor::loadAudioFile((input_dir_ / "test_audio_0.wav").string());
     
     EXPECT_EQ(audio.sample_rate, 44100);
     EXPECT_EQ(audio.channels, 1);

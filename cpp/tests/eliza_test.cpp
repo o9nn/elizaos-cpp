@@ -125,3 +125,154 @@ TEST(ElizaPatterns, GreetingsAndDefaults) {
     EXPECT_GE(a.size(), g.size());
     EXPECT_GE(a.size(), d.size());
 }
+
+// =====================================================
+// DialogueStateMachine Tests (Task 2.1.3)
+// =====================================================
+
+TEST(DialogueStateMachine, InitialState) {
+    DialogueStateMachine dsm;
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::IDLE);
+    EXPECT_EQ(dsm.getCurrentStateString(), "IDLE");
+}
+
+TEST(DialogueStateMachine, GreetingTransition) {
+    DialogueStateMachine dsm;
+    ConversationContext ctx("test-session", "test-user");
+    
+    std::string response = dsm.processInput("Hello!", ctx);
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::GREETING);
+    EXPECT_FALSE(response.empty());
+}
+
+TEST(DialogueStateMachine, IntentDetection) {
+    DialogueStateMachine dsm;
+    
+    EXPECT_EQ(dsm.detectIntent("Hello there!"), DialogueIntent::GREETING);
+    EXPECT_EQ(dsm.detectIntent("Goodbye"), DialogueIntent::GOODBYE);
+    EXPECT_EQ(dsm.detectIntent("What time is it?"), DialogueIntent::QUESTION);
+    EXPECT_EQ(dsm.detectIntent("Yes, that's correct"), DialogueIntent::CONFIRMATION);
+    EXPECT_EQ(dsm.detectIntent("No, I don't think so"), DialogueIntent::NEGATION);
+}
+
+TEST(DialogueStateMachine, EntityExtraction) {
+    DialogueStateMachine dsm;
+    
+    auto entities = dsm.extractEntities("My name is Alice and my email is alice@example.com");
+    EXPECT_TRUE(entities.find("name") != entities.end() || entities.find("email") != entities.end());
+}
+
+TEST(DialogueStateMachine, StateHistory) {
+    DialogueStateMachine dsm;
+    ConversationContext ctx("test-session", "test-user");
+    
+    dsm.processInput("Hi", ctx);
+    dsm.processInput("I need help", ctx);
+    
+    auto history = dsm.getStateHistory();
+    EXPECT_GE(history.size(), 1u);
+}
+
+TEST(DialogueStateMachine, Reset) {
+    DialogueStateMachine dsm;
+    ConversationContext ctx("test-session", "test-user");
+    
+    dsm.processInput("Hello", ctx);
+    EXPECT_NE(dsm.getCurrentState(), DialogueState::IDLE);
+    
+    dsm.reset();
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::IDLE);
+    EXPECT_TRUE(dsm.getStateHistory().empty());
+}
+
+TEST(DialogueStateMachine, TransitionTo) {
+    DialogueStateMachine dsm;
+    
+    dsm.transitionTo(DialogueState::PROCESSING);
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::PROCESSING);
+}
+
+TEST(DialogueStateMachine, FrameManagement) {
+    DialogueStateMachine dsm;
+    
+    DialogueFrame frame;
+    frame.name = "test_frame";
+    frame.description = "Test frame";
+    
+    DialogueSlot slot;
+    slot.name = "username";
+    slot.type = "string";
+    slot.required = true;
+    slot.prompt = "What is your username?";
+    frame.slots.push_back(slot);
+    
+    dsm.pushFrame(frame);
+    
+    auto currentFrame = dsm.getCurrentFrame();
+    EXPECT_TRUE(currentFrame.has_value());
+    EXPECT_EQ(currentFrame->name, "test_frame");
+    EXPECT_FALSE(currentFrame->allSlotsFilledStatus());
+    
+    dsm.fillSlot("username", std::string("testuser"));
+    
+    currentFrame = dsm.getCurrentFrame();
+    EXPECT_TRUE(currentFrame.has_value());
+    EXPECT_TRUE(currentFrame->allSlotsFilledStatus());
+}
+
+TEST(DialogueStateMachine, GoodbyeTransition) {
+    DialogueStateMachine dsm;
+    ConversationContext ctx("test-session", "test-user");
+    
+    dsm.processInput("Hello", ctx);
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::GREETING);
+    
+    dsm.processInput("Goodbye", ctx);
+    EXPECT_EQ(dsm.getCurrentState(), DialogueState::CLOSING);
+}
+
+TEST(DialogueSlot, Validation) {
+    DialogueSlot slot;
+    slot.name = "status";
+    slot.type = "enum";
+    slot.allowedValues = {"active", "inactive", "pending"};
+    
+    EXPECT_TRUE(slot.validate(std::string("active")));
+    EXPECT_FALSE(slot.validate(std::string("unknown")));
+}
+
+TEST(DialogueUtilities, StateToString) {
+    EXPECT_EQ(dialogueStateToString(DialogueState::IDLE), "IDLE");
+    EXPECT_EQ(dialogueStateToString(DialogueState::GREETING), "GREETING");
+    EXPECT_EQ(dialogueStateToString(DialogueState::PROCESSING), "PROCESSING");
+    EXPECT_EQ(dialogueStateToString(DialogueState::CLOSING), "CLOSING");
+}
+
+TEST(DialogueUtilities, StringToState) {
+    EXPECT_EQ(stringToDialogueState("IDLE"), DialogueState::IDLE);
+    EXPECT_EQ(stringToDialogueState("GREETING"), DialogueState::GREETING);
+    EXPECT_EQ(stringToDialogueState("PROCESSING"), DialogueState::PROCESSING);
+    EXPECT_EQ(stringToDialogueState("INVALID"), DialogueState::IDLE);
+}
+
+TEST(DialogueUtilities, IntentToString) {
+    EXPECT_EQ(dialogueIntentToString(DialogueIntent::GREETING), "GREETING");
+    EXPECT_EQ(dialogueIntentToString(DialogueIntent::QUESTION), "QUESTION");
+    EXPECT_EQ(dialogueIntentToString(DialogueIntent::GOODBYE), "GOODBYE");
+}
+
+TEST(DialogueUtilities, StringToIntent) {
+    EXPECT_EQ(stringToDialogueIntent("GREETING"), DialogueIntent::GREETING);
+    EXPECT_EQ(stringToDialogueIntent("QUESTION"), DialogueIntent::QUESTION);
+    EXPECT_EQ(stringToDialogueIntent("INVALID"), DialogueIntent::UNKNOWN);
+}
+
+TEST(DialogueStateMachine, ToJson) {
+    DialogueStateMachine dsm;
+    dsm.transitionTo(DialogueState::GREETING);
+    
+    auto json = dsm.toJson();
+    auto it = json.find("currentState");
+    EXPECT_NE(it, json.end());
+}
+

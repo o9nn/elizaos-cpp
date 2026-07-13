@@ -513,6 +513,7 @@ TEST(CognitiveBridgeEchobeats, TickPayloadCarriesAgentFocusMoodAndPhase) {
 
     const auto recent = bridge.recentCognitiveStates(16);
     ASSERT_FALSE(recent.empty());
+
     // The Echobeats loop now emits phase-semantic labels mapping the four
     // cognitive phases (0=perception, 1=reasoning, 2=action, 3=reflection).
     auto expectedMoodForPhase = [](int phase) -> std::string {
@@ -531,6 +532,7 @@ TEST(CognitiveBridgeEchobeats, TickPayloadCarriesAgentFocusMoodAndPhase) {
             default: return "reflection";
         }
     };
+
     bool sawPayload = false;
     for (const auto& state : recent) {
         if (state.agentId == "echo-payload") {
@@ -540,6 +542,7 @@ TEST(CognitiveBridgeEchobeats, TickPayloadCarriesAgentFocusMoodAndPhase) {
             EXPECT_EQ(state.focus, expectedFocusForPhase(state.echobeatsPhase));
         }
     }
+
     EXPECT_TRUE(sawPayload);
     EXPECT_FALSE(bridge.isEchobeatsRunning());
     EXPECT_GE(bridge.stats().echobeatsTicks, 1u);

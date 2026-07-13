@@ -83,7 +83,7 @@ TEST_F(KnowledgeTest, KnowledgeEntryConfidenceUpdate) {
     
     entry.updateConfidence(ConfidenceLevel::HIGH);
     EXPECT_EQ(entry.confidence, ConfidenceLevel::HIGH);
-    EXPECT_GT(entry.updated_at, originalTime);
+    EXPECT_TRUE(entry.updated_at > originalTime);
 }
 
 TEST_F(KnowledgeTest, KnowledgeEntrySerialization) {

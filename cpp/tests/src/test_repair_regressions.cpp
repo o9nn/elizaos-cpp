@@ -436,14 +436,14 @@ TEST(RepairMemoryClear, ClearResetsFullStateNotJustTables) {
 // ============================================================================
 // Repair #8: AgentLogger gained the full Task 1.4 feature set (rotation
 // retention + gzip). Confirm the rotation API is reachable and enforces
-// retention through the o9nn forwarding header.
+// retention through the forwarding header.
 // ============================================================================
 
 TEST(RepairLoggerFeatureParity, RotationApiIsReachableAndEnforcesRetention) {
-    const std::string dir = "/tmp/elizaos_o9_logtest_" +
+    const std::string dir = "/tmp/elizaos_hc_logtest_" +
         std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
     (void)std::system(("mkdir -p \"" + dir + "\"").c_str());
-    const std::string base = dir + "/o9.log";
+    const std::string base = dir + "/hc.log";
 
     AgentLogger logger;
     LogRotationConfig cfg;
@@ -465,7 +465,7 @@ TEST(RepairLoggerFeatureParity, RotationApiIsReachableAndEnforcesRetention) {
         while (fgets(buf, sizeof(buf), p)) {
             std::string leaf(buf);
             if (!leaf.empty() && leaf.back() == '\n') leaf.pop_back();
-            if (leaf.rfind("o9.log", 0) == 0 && leaf != "o9.log") ++remaining;
+            if (leaf.rfind("hc.log", 0) == 0 && leaf != "hc.log") ++remaining;
         }
         pclose(p);
     }

@@ -412,8 +412,12 @@ int main(int argc, char* argv[]) {
             // Process AgnAI bridge pending messages (paced by Antikythera)
             auto pendingMsgs = agnaiBridge.consumePendingMessages();
             for (auto& msg : pendingMsgs) {
+                // Pacing from the Antikythera gear state throttles delivery:
+                // annotate the queued message so downstream consumers can
+                // honor the temporal envelope when replaying it.
                 double pacing = msg.value("pacing", 1.0);
-                // Pacing is handled by delaying publication
+                msg["pacing_applied"] = pacing;
+                msg["publish_delay_ms"] = static_cast<int>(pacing > 0.0 ? 1000.0 / pacing : 1000.0);
                 bus.publish("bridge.message_queued", msg.dump());
             }
 

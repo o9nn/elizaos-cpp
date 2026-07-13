@@ -177,6 +177,22 @@ void Client::shutdown() {
         agents_->shutdown();
         agents_.reset();
     }
+    if (audio_) {
+        audio_->shutdown();
+        audio_.reset();
+    }
+    if (media_) {
+        media_->shutdown();
+        media_.reset();
+    }
+    if (memory_) {
+        memory_->shutdown();
+        memory_.reset();
+    }
+    if (messaging_) {
+        messaging_->shutdown();
+        messaging_.reset();
+    }
 
     // Shutdown base client
     if (baseClient_) {
@@ -226,6 +242,18 @@ nlohmann::json Client::getStatus() const {
     }
     if (agents_) {
         status["services"]["agents"] = agents_->getStatus();
+    }
+    if (audio_) {
+        status["services"]["audio"] = audio_->getStatus();
+    }
+    if (media_) {
+        status["services"]["media"] = media_->getStatus();
+    }
+    if (memory_) {
+        status["services"]["memory"] = memory_->getStatus();
+    }
+    if (messaging_) {
+        status["services"]["messaging"] = messaging_->getStatus();
     }
     
     return status;
@@ -308,6 +336,78 @@ const Agents& Client::agents() const {
         agents_->initialize(config_);
     }
     return *agents_;
+}
+
+Audio& Client::audio() {
+    ensureServicesInitialized();
+    if (!audio_) {
+        audio_ = std::make_unique<Audio>(baseClient_);
+        audio_->initialize(config_);
+    }
+    return *audio_;
+}
+
+const Audio& Client::audio() const {
+    ensureServicesInitialized();
+    if (!audio_) {
+        audio_ = std::make_unique<Audio>(baseClient_);
+        audio_->initialize(config_);
+    }
+    return *audio_;
+}
+
+Media& Client::media() {
+    ensureServicesInitialized();
+    if (!media_) {
+        media_ = std::make_unique<Media>(baseClient_);
+        media_->initialize(config_);
+    }
+    return *media_;
+}
+
+const Media& Client::media() const {
+    ensureServicesInitialized();
+    if (!media_) {
+        media_ = std::make_unique<Media>(baseClient_);
+        media_->initialize(config_);
+    }
+    return *media_;
+}
+
+Memory& Client::memory() {
+    ensureServicesInitialized();
+    if (!memory_) {
+        memory_ = std::make_unique<Memory>(baseClient_);
+        memory_->initialize(config_);
+    }
+    return *memory_;
+}
+
+const Memory& Client::memory() const {
+    ensureServicesInitialized();
+    if (!memory_) {
+        memory_ = std::make_unique<Memory>(baseClient_);
+        memory_->initialize(config_);
+    }
+    return *memory_;
+}
+
+Messaging& Client::messaging() {
+    ensureServicesInitialized();
+    if (!messaging_) {
+        messaging_ = std::make_unique<Messaging>(baseClient_);
+        messaging_->initialize(config_);
+    }
+    return *messaging_;
+}
+
+const Messaging& Client::messaging() const {
+    ensureServicesInitialized();
+    if (!messaging_) {
+        messaging_ = std::make_unique<Messaging>(baseClient_);
+        messaging_->initialize(config_);
+    }
+    return *messaging_;
 }
 
 void Client::setLastError(std::string code, std::string message) {

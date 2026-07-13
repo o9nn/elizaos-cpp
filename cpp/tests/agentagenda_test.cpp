@@ -131,3 +131,51 @@ TEST_F(AgentAgendaTest, LastCreatedAndUpdated) {
     auto last_updated = agenda.getLastUpdatedTask();
     EXPECT_EQ(last_updated.id, a.id);
 }
+
+TEST_F(AgentAgendaTest, PlanAgainBasic) {
+    auto t = agenda.createTask("complete the project");
+    auto new_plan = agenda.planAgain(t.id);
+    EXPECT_FALSE(new_plan.empty());
+    EXPECT_NE(new_plan.find("Re-planned"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithContext) {
+    auto t = agenda.createTask("build feature");
+    auto new_plan = agenda.planAgain(t.id, "requirements changed");
+    EXPECT_NE(new_plan.find("Re-planning context"), std::string::npos);
+    EXPECT_NE(new_plan.find("requirements changed"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithProgress) {
+    std::vector<AgendaTaskStep> steps{
+        AgendaTaskStep("step 1 done", true),
+        AgendaTaskStep("step 2 pending", false)
+    };
+    auto t = agenda.createTask("multi-step task", "original plan", steps);
+    auto new_plan = agenda.planAgain(t.id);
+    EXPECT_NE(new_plan.find("Progress Summary"), std::string::npos);
+    EXPECT_NE(new_plan.find("Completed:"), std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainRegenerateSteps) {
+    std::vector<AgendaTaskStep> steps{
+        AgendaTaskStep("done step", true),
+        AgendaTaskStep("pending step", false)
+    };
+    auto t = agenda.createTask("task to replan", "original plan", steps);
+    auto new_plan = agenda.planAgain(t.id, "need new approach", true);
+    EXPECT_FALSE(new_plan.empty());
+    
+    auto updated = agenda.getTaskById(t.id);
+    // Completed step should be preserved
+    bool found_done = false;
+    for (const auto& s : updated.steps) {
+        if (s.content == "done step" && s.completed) found_done = true;
+    }
+    EXPECT_TRUE(found_done);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainNonExistent) {
+    auto result = agenda.planAgain("non-existent-id");
+    EXPECT_TRUE(result.empty());
+}

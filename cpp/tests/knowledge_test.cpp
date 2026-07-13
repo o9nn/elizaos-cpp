@@ -129,32 +129,21 @@ TEST_F(KnowledgeBaseTest, ClearEmpties) {
 }
 
 TEST_F(KnowledgeBaseTest, HelpersIngestReconstructAndSelfCheck) {
-    const std::string documentName = "helpers_e2e.rule";
-    const std::string text =
-        "observe sensor drift\n"
-        "if drift exceeds threshold then recalibrate actuator\n"
-        "record calibration evidence for future autonomy decisions";
-
-    const auto chunks = knowledge::chunkText(text, 32, 8);
+    const std::string text = "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu";
+    auto chunks = knowledge::chunkText(text, 24, 6);
     ASSERT_GE(chunks.size(), 2u);
-    EXPECT_NE(chunks.front().find("observe"), std::string::npos);
 
-    const auto ids = knowledge::ingestText(kb, text, documentName,
-                                           KnowledgeType::RULE,
-                                           {"autonomy", "e2e"}, 32, 8);
-    ASSERT_EQ(ids.size(), chunks.size());
-    EXPECT_EQ(kb.getKnowledgeCount(), ids.size());
+    auto ids = knowledge::ingestText(kb, "  " + text + "  ", "helpers_e2e.rule",
+                                     KnowledgeType::RULE, {"helpers", "e2e"}, 24, 6);
+    EXPECT_EQ(ids.size(), chunks.size());
 
-    auto stored = knowledge::findChunksByDocument(kb, documentName);
-    ASSERT_EQ(stored.size(), ids.size());
-    EXPECT_EQ(stored.front().metadata["document"], documentName);
-    EXPECT_EQ(stored.front().metadata["chunk_index"], "0");
-    EXPECT_TRUE(stored.front().hasTag("autonomy"));
-
-    const auto reconstructed = knowledge::reconstructDocument(kb, documentName);
-    EXPECT_NE(reconstructed.find("observe sensor drift"), std::string::npos);
-    EXPECT_NE(reconstructed.find("future autonomy decisions"), std::string::npos);
+    auto storedChunks = knowledge::findChunksByDocument(kb, "helpers_e2e.rule");
+    ASSERT_EQ(storedChunks.size(), ids.size());
+    EXPECT_EQ(storedChunks.front().type, KnowledgeType::RULE);
+    EXPECT_TRUE(storedChunks.front().hasTag("helpers"));
+    EXPECT_EQ(knowledge::reconstructDocument(kb, "helpers_e2e.rule"), text);
     EXPECT_TRUE(knowledge::knowledge_helpers_self_check());
+    EXPECT_NO_THROW(knowledge::knowledge_helpers_placeholder());
 }
 
 TEST_F(KnowledgeBaseTest, QueryWithFilter) {

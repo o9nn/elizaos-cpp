@@ -407,3 +407,126 @@ TEST_F(AgentAgendaTest, RejectedCurrentTaskChangePreservesExistingCurrentTask) {
     EXPECT_FALSE(agenda->getTaskById(completed.id).current);
 }
 
+TEST_F(AgentAgendaTest, PlanAgainBasic) {
+    auto task = agenda->createTask("Complete important project");
+    
+    // Re-plan the task
+    auto new_plan = agenda->planAgain(task.id);
+    
+    EXPECT_FALSE(new_plan.empty());
+    EXPECT_TRUE(new_plan.find("Re-planned for goal:") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Complete important project") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Revised Strategy:") != std::string::npos);
+    
+    // Verify the task's plan was updated
+    auto updated_task = agenda->getTaskById(task.id);
+    EXPECT_EQ(updated_task.plan, new_plan);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithContext) {
+    auto task = agenda->createTask("Build feature X");
+    
+    // Re-plan with context
+    std::string context = "Requirements changed, need to pivot";
+    auto new_plan = agenda->planAgain(task.id, context);
+    
+    EXPECT_TRUE(new_plan.find("Re-planning context:") != std::string::npos);
+    EXPECT_TRUE(new_plan.find(context) != std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainWithProgress) {
+    auto task = agenda->createTask("Multi-step task");
+    
+    // Complete some steps
+    if (!task.steps.empty()) {
+        agenda->finishStep(task.id, task.steps[0].content);
+    }
+    
+    // Re-plan
+    auto new_plan = agenda->planAgain(task.id);
+    
+    EXPECT_TRUE(new_plan.find("Progress Summary:") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Completed:") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Already done:") != std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainRegenerateSteps) {
+    std::vector<AgendaTaskStep> steps = {
+        AgendaTaskStep("Step 1 - completed", false),
+        AgendaTaskStep("Step 2 - incomplete", false),
+        AgendaTaskStep("Step 3 - incomplete", false)
+    };
+    
+    auto task = agenda->createTask("Task with steps to regenerate", "Original plan", steps);
+    
+    // Complete the first step
+    agenda->finishStep(task.id, "Step 1 - completed");
+    
+    // Re-plan with step regeneration
+    std::string context = "Need to adjust approach";
+    auto new_plan = agenda->planAgain(task.id, context, true);
+    
+    EXPECT_FALSE(new_plan.empty());
+    
+    // Check that steps were regenerated
+    auto updated_task = agenda->getTaskById(task.id);
+    
+    // Should have kept completed step + new steps
+    EXPECT_GE(updated_task.steps.size(), 2);
+    
+    // First step should still be the completed one
+    bool found_completed = false;
+    for (const auto& step : updated_task.steps) {
+        if (step.content == "Step 1 - completed" && step.completed) {
+            found_completed = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(found_completed);
+    
+    // Should have new steps related to the context
+    bool has_context_step = false;
+    for (const auto& step : updated_task.steps) {
+        if (step.content.find("re-planning context") != std::string::npos ||
+            step.content.find("Address") != std::string::npos) {
+            has_context_step = true;
+            break;
+        }
+    }
+    EXPECT_TRUE(has_context_step);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainAllStepsCompleted) {
+    std::vector<AgendaTaskStep> steps = {
+        AgendaTaskStep("Done step 1", true),
+        AgendaTaskStep("Done step 2", true)
+    };
+    
+    auto task = agenda->createTask("Completed work task", "Original plan", steps);
+    
+    // Re-plan when all steps are done
+    auto new_plan = agenda->planAgain(task.id);
+    
+    EXPECT_TRUE(new_plan.find("Revised Strategy:") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Verify all completed work") != std::string::npos);
+    EXPECT_TRUE(new_plan.find("Document any lessons learned") != std::string::npos);
+}
+
+TEST_F(AgentAgendaTest, PlanAgainNonExistentTask) {
+    auto result = agenda->planAgain("non-existent-task-id");
+    
+    EXPECT_TRUE(result.empty());
+}
+
+TEST_F(AgentAgendaTest, PlanAgainUpdatesTimestamp) {
+    auto task = agenda->createTask("Task for timestamp check");
+    auto original_updated = task.updated_at;
+    
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    
+    agenda->planAgain(task.id);
+    
+    auto updated_task = agenda->getTaskById(task.id);
+    EXPECT_GT(updated_task.updated_at, original_updated);
+}
+

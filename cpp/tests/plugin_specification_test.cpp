@@ -44,3 +44,40 @@ TEST(PluginCapability, EnumValuesDistinct) {
     EXPECT_NE(static_cast<int>(PluginCapability::ACTION_PROCESSING),
               static_cast<int>(PluginCapability::CUSTOM));
 }
+
+// =====================================================
+// Dynamic Plugin Loading Tests (Task 4.1.1)
+// =====================================================
+
+TEST(PluginRegistry, LoadPluginEmptyPathReturnsNull) {
+    PluginRegistry registry;
+    auto plugin = registry.loadPlugin("");
+    EXPECT_EQ(plugin, nullptr);
+}
+
+TEST(PluginRegistry, LoadPluginNonexistentPathReturnsNull) {
+    PluginRegistry registry;
+    auto plugin = registry.loadPlugin("/nonexistent/path/to/plugin.so");
+    EXPECT_EQ(plugin, nullptr);
+}
+
+TEST(PluginRegistry, IsDynamicPluginFalseForUnknown) {
+    PluginRegistry registry;
+    EXPECT_FALSE(registry.isDynamicPlugin("unknown_plugin"));
+}
+
+TEST(PluginRegistry, GetDynamicPluginsInitiallyEmpty) {
+    PluginRegistry registry;
+    auto plugins = registry.getDynamicPlugins();
+    EXPECT_TRUE(plugins.empty());
+}
+
+TEST(PluginRegistry, UnloadNonexistentPluginReturnsFalse) {
+    PluginRegistry registry;
+    EXPECT_FALSE(registry.unloadPlugin("nonexistent_plugin"));
+}
+
+TEST(PluginRegistry, HotReloadNonexistentPluginReturnsFalse) {
+    PluginRegistry registry;
+    EXPECT_FALSE(registry.hotReloadPlugin("nonexistent_plugin"));
+}

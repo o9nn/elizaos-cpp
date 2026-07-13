@@ -51,7 +51,8 @@ TEST(StateGoalLifecycleTest, UpdateGoalStatusTransitionsExistingGoal) {
     EXPECT_TRUE(updated);
     EXPECT_EQ(state.getGoals().front().status, "active");
     // updatedAt must advance (monotonic, never regress).
-    EXPECT_GE(state.getGoals().front().updatedAt, before);
+    EXPECT_GE(state.getGoals().front().updatedAt.time_since_epoch().count(),
+              before.time_since_epoch().count());
 }
 
 TEST(StateGoalLifecycleTest, UpdateGoalStatusReturnsFalseForUnknownGoal) {

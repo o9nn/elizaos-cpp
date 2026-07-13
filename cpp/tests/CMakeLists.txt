@@ -449,6 +449,7 @@ add_executable(public_header_forwarding_all_test
     public_header_forwarding_headers/autonomous_starter_hpp_test.cpp
     public_header_forwarding_headers/awesome_eliza_hpp_test.cpp
     public_header_forwarding_headers/brandkit_hpp_test.cpp
+    public_header_forwarding_headers/character_json_loader_hpp_test.cpp
     public_header_forwarding_headers/characterfile_hpp_test.cpp
     public_header_forwarding_headers/characters_hpp_test.cpp
     public_header_forwarding_headers/classified_hpp_test.cpp
@@ -478,6 +479,7 @@ add_executable(public_header_forwarding_all_test
     public_header_forwarding_headers/mcp_gateway_hpp_test.cpp
     public_header_forwarding_headers/ontogenesis_hpp_test.cpp
     public_header_forwarding_headers/otaku_hpp_test.cpp
+    public_header_forwarding_headers/persistence_hpp_test.cpp
     public_header_forwarding_headers/otc_agent_hpp_test.cpp
     public_header_forwarding_headers/plugin_specification_hpp_test.cpp
     public_header_forwarding_headers/plugins_automation_hpp_test.cpp
@@ -732,6 +734,18 @@ target_include_directories(real_village_e2e_test PRIVATE ${CMAKE_SOURCE_DIR}/vil
 target_link_libraries(real_village_e2e_test village_group_dynamics antikythera_coupling nlohmann_json::nlohmann_json)
 if(TARGET real_village_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_village_e2e_test)
+endif()
+
+# Village AtomSpace E2E: OpenCog-hpp cognitive substrate — residents as
+# ConceptNodes, ECAN cycles, PLN knowledge transfer, KSM progression,
+# Antikythera gear mapping, AphroditeBridge, save/load persistence.
+add_real_test(real_village_atomspace_e2e_test src/test_village_atomspace_e2e.cpp)
+target_include_directories(real_village_atomspace_e2e_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/village
+    ${CMAKE_SOURCE_DIR}/village/include
+)
+if(TARGET real_village_atomspace_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_village_atomspace_e2e_test)
 endif()
 
 # Persistence Module E2E: SQLiteBackend CRUD, transactions, batch ops,

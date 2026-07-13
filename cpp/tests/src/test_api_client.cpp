@@ -255,4 +255,164 @@ TEST(ApiClientClientBoundaryTest, InitializeIsIdempotentAfterSuccessfulInitializ
     EXPECT_EQ(client.resolveEndpoint("status"), "https://first.example.test/status");
 }
 
+TEST(ApiClientRepairedServicesTest, AudioServiceValidatesAndDispatchesConfiguredEndpoints) {
+    auto transport = std::make_shared<FakeTransport>();
+    Client client;
+    ASSERT_TRUE(client.initialize({
+        {"baseUrl", "https://agent.example.test"},
+        {"speechPath", "/v1/audio/speech/"},
+        {"transcription_path", "/v1/audio/transcriptions/"},
+        {"voicesPath", "/v1/audio/voices/"}
+    }));
+    client.setTransport(transport);
+
+    auto& audio = client.audio();
+    EXPECT_TRUE(audio.isInitialized());
+    EXPECT_FALSE(audio.synthesizeSpeech({{"voice", "eliza"}}).ok);
+    EXPECT_EQ(audio.synthesizeSpeech({{"voice", "eliza"}}).errorCode, "missing_speech_text");
+    EXPECT_FALSE(audio.transcribeAudio({{"language", "en"}}).ok);
+    EXPECT_EQ(audio.transcribeAudio({{"language", "en"}}).errorCode, "missing_audio_source");
+
+    ASSERT_TRUE(audio.synthesizeSpeech({{"text", "hello"}, {"voice", "eliza"}}).ok);
+    ASSERT_TRUE(audio.transcribeAudio({{"audioUrl", "s3://bucket/audio.wav"}}).ok);
+    ASSERT_TRUE(audio.listVoices().ok);
+
+    ASSERT_EQ(transport->requests.size(), 3U);
+    EXPECT_EQ(transport->requests[0].method, "POST");
+    EXPECT_EQ(transport->requests[0].path, "/v1/audio/speech");
+    EXPECT_EQ(transport->requests[1].method, "POST");
+    EXPECT_EQ(transport->requests[1].path, "/v1/audio/transcriptions");
+    EXPECT_EQ(transport->requests[2].method, "GET");
+    EXPECT_EQ(transport->requests[2].path, "/v1/audio/voices");
+
+    const auto status = client.getStatus();
+    ASSERT_TRUE(status.at("services").contains("audio"));
+    EXPECT_EQ(status.at("services").at("audio").at("speechPath"), "/v1/audio/speech");
+}
+
+TEST(ApiClientRepairedServicesTest, MediaServiceCoversUploadListGetAndDelete) {
+    auto transport = std::make_shared<FakeTransport>();
+    Client client;
+    ASSERT_TRUE(client.initialize({{"baseUrl", "https://agent.example.test"}, {"media_path", "/v1/media/"}}));
+    client.setTransport(transport);
+
+    auto& media = client.media();
+    EXPECT_FALSE(media.uploadMedia(nlohmann::json::object()).ok);
+    EXPECT_EQ(media.uploadMedia(nlohmann::json::object()).errorCode, "empty_media_descriptor");
+    EXPECT_FALSE(media.getMedia("").ok);
+    EXPECT_EQ(media.getMedia("").errorCode, "missing_media_id");
+
+    ASSERT_TRUE(media.uploadMedia({{"url", "s3://bucket/image.png"}, {"kind", "image"}}).ok);
+    ASSERT_TRUE(media.listMedia().ok);
+    ASSERT_TRUE(media.getMedia("media-42").ok);
+    ASSERT_TRUE(media.deleteMedia("media-42").ok);
+
+    ASSERT_EQ(transport->requests.size(), 4U);
+    EXPECT_EQ(transport->requests[0].method, "POST");
+    EXPECT_EQ(transport->requests[0].path, "/v1/media");
+    EXPECT_EQ(transport->requests[1].method, "GET");
+    EXPECT_EQ(transport->requests[1].path, "/v1/media");
+    EXPECT_EQ(transport->requests[2].method, "GET");
+    EXPECT_EQ(transport->requests[2].path, "/v1/media/media-42");
+    EXPECT_EQ(transport->requests[3].method, "DELETE");
+    EXPECT_EQ(transport->requests[3].path, "/v1/media/media-42");
+}
+
+TEST(ApiClientRepairedServicesTest, MemoryServiceCoversLifecycleAndSearchValidation) {
+    auto transport = std::make_shared<FakeTransport>();
+    Client client;
+    ASSERT_TRUE(client.initialize({
+        {"baseUrl", "https://agent.example.test"},
+        {"memoryPath", "/v1/memory/"},
+        {"memory_search_path", "/v1/memory/query/"}
+    }));
+    client.setTransport(transport);
+
+    auto& memory = client.memory();
+    EXPECT_FALSE(memory.createMemory(nlohmann::json::object()).ok);
+    EXPECT_EQ(memory.createMemory(nlohmann::json::object()).errorCode, "invalid_memory");
+    EXPECT_FALSE(memory.searchMemories({{"limit", 3}}).ok);
+    EXPECT_EQ(memory.searchMemories({{"limit", 3}}).errorCode, "invalid_memory_query");
+    EXPECT_FALSE(memory.deleteMemory("").ok);
+    EXPECT_EQ(memory.deleteMemory("").errorCode, "missing_memory_id");
+
+    ASSERT_TRUE(memory.createMemory({{"id", "m1"}, {"text", "Dan prefers real functionality"}}).ok);
+    ASSERT_TRUE(memory.listMemories().ok);
+    ASSERT_TRUE(memory.getMemory("m1").ok);
+    ASSERT_TRUE(memory.searchMemories({{"query", "real functionality"}, {"limit", 5}}).ok);
+    ASSERT_TRUE(memory.deleteMemory("m1").ok);
+
+    ASSERT_EQ(transport->requests.size(), 5U);
+    EXPECT_EQ(transport->requests[0].method, "POST");
+    EXPECT_EQ(transport->requests[0].path, "/v1/memory");
+    EXPECT_EQ(transport->requests[1].method, "GET");
+    EXPECT_EQ(transport->requests[1].path, "/v1/memory");
+    EXPECT_EQ(transport->requests[2].method, "GET");
+    EXPECT_EQ(transport->requests[2].path, "/v1/memory/m1");
+    EXPECT_EQ(transport->requests[3].method, "POST");
+    EXPECT_EQ(transport->requests[3].path, "/v1/memory/query");
+    EXPECT_EQ(transport->requests[4].method, "DELETE");
+    EXPECT_EQ(transport->requests[4].path, "/v1/memory/m1");
+}
+
+TEST(ApiClientRepairedServicesTest, MessagingServiceCoversConversationAndReadPaths) {
+    auto transport = std::make_shared<FakeTransport>();
+    Client client;
+    ASSERT_TRUE(client.initialize({
+        {"baseUrl", "https://agent.example.test"},
+        {"messagesPath", "/v1/messages/"},
+        {"conversations_path", "/v1/conversations/"}
+    }));
+    client.setTransport(transport);
+
+    auto& messaging = client.messaging();
+    EXPECT_FALSE(messaging.sendMessage({{"channel", "room-1"}}).ok);
+    EXPECT_EQ(messaging.sendMessage({{"channel", "room-1"}}).errorCode, "invalid_message");
+    EXPECT_FALSE(messaging.getConversation("").ok);
+    EXPECT_EQ(messaging.getConversation("").errorCode, "missing_conversation_id");
+    EXPECT_FALSE(messaging.markMessageRead("").ok);
+    EXPECT_EQ(messaging.markMessageRead("").errorCode, "missing_message_id");
+
+    ASSERT_TRUE(messaging.sendMessage({{"text", "hello"}, {"conversationId", "c1"}}).ok);
+    ASSERT_TRUE(messaging.listMessages().ok);
+    ASSERT_TRUE(messaging.getConversation("c1").ok);
+    ASSERT_TRUE(messaging.markMessageRead("msg-1").ok);
+    ASSERT_TRUE(messaging.deleteMessage("msg-1").ok);
+
+    ASSERT_EQ(transport->requests.size(), 5U);
+    EXPECT_EQ(transport->requests[0].method, "POST");
+    EXPECT_EQ(transport->requests[0].path, "/v1/messages");
+    EXPECT_EQ(transport->requests[1].method, "GET");
+    EXPECT_EQ(transport->requests[1].path, "/v1/messages");
+    EXPECT_EQ(transport->requests[2].method, "GET");
+    EXPECT_EQ(transport->requests[2].path, "/v1/conversations/c1");
+    EXPECT_EQ(transport->requests[3].method, "POST");
+    EXPECT_EQ(transport->requests[3].path, "/v1/messages/msg-1/read");
+    EXPECT_TRUE(transport->requests[3].body.is_object());
+    EXPECT_EQ(transport->requests[4].method, "DELETE");
+    EXPECT_EQ(transport->requests[4].path, "/v1/messages/msg-1");
+}
+
+TEST(ApiClientRepairedServicesTest, ClientShutdownResetsAllLazyRepairedServices) {
+    auto transport = std::make_shared<FakeTransport>();
+    Client client;
+    ASSERT_TRUE(client.initialize(validConfig()));
+    client.setTransport(transport);
+
+    EXPECT_TRUE(client.audio().listVoices().ok);
+    EXPECT_TRUE(client.media().listMedia().ok);
+    EXPECT_TRUE(client.memory().listMemories().ok);
+    EXPECT_TRUE(client.messaging().listMessages().ok);
+    ASSERT_TRUE(client.getStatus().at("services").contains("audio"));
+    ASSERT_TRUE(client.getStatus().at("services").contains("media"));
+    ASSERT_TRUE(client.getStatus().at("services").contains("memory"));
+    ASSERT_TRUE(client.getStatus().at("services").contains("messaging"));
+
+    client.shutdown();
+
+    EXPECT_FALSE(client.isInitialized());
+    EXPECT_FALSE(client.getStatus().contains("services"));
+    EXPECT_THROW(client.audio(), std::logic_error);
+}
+
 } // namespace

@@ -3,7 +3,18 @@
 #include <cstdlib>
 #include <filesystem>
 #include <string>
+
+#ifdef _WIN32
+#include <stdlib.h>
+inline int setenv(const char* name, const char* value, int /*overwrite*/) {
+    return _putenv_s(name, value);
+}
+inline int unsetenv(const char* name) {
+    return _putenv_s(name, "");
+}
+#else
 #include <unistd.h>
+#endif
 
 namespace elizaos {
 namespace eliza {

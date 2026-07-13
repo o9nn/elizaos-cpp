@@ -24,6 +24,9 @@
 #include <mutex>
 #include <cmath>
 #include <algorithm>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
 
 namespace village { namespace atomspace {
 
@@ -419,17 +422,78 @@ public:
     }
     
     // ─── Persistence ───────────────────────────────────────────────
-    
-    void save() {
+    // Serialize the full AtomSpace to Scheme s-expressions at
+    // config_.persist_path so the Guile shell (and future sessions) can
+    // reload the village's cognitive state.
+    // Returns true when the snapshot was written successfully.
+    bool save() {
         std::lock_guard<std::mutex> lock(mutex_);
-        // Serialize to Scheme s-expressions for the Guile shell
-        // TODO: implement full oc::persist::Serializer integration
+        namespace fs = std::filesystem;
+        try {
+            fs::path path(config_.persist_path);
+            if (path.has_parent_path()) {
+                std::error_code ec;
+                fs::create_directories(path.parent_path(), ec);
+                if (ec) return false;
+            }
+            oc::persist::Serializer ser(as_);
+            // Write atomically: serialize to a temp file, then rename.
+            fs::path tmp = path;
+            tmp += ".tmp";
+            {
+                std::ofstream out(tmp, std::ios::trunc);
+                if (!out) return false;
+                out << ";; VillageAtomSpace snapshot (Atomese s-expressions)\n";
+                out << ";; cycles: " << cycle_count_
+                    << " residents: " << residents_.size() << "\n";
+                out << ser.serialize_atomspace();
+                if (!out.good()) return false;
+            }
+            std::error_code ec;
+            fs::rename(tmp, path, ec);
+            if (ec) {
+                // Fall back to copy+remove across filesystems.
+                fs::copy_file(tmp, path, fs::copy_options::overwrite_existing, ec);
+                fs::remove(tmp);
+                if (ec) return false;
+            }
+            return true;
+        } catch (const std::exception&) {
+            return false;
+        }
     }
-    
-    void load() {
+
+    // Load a previously saved snapshot from config_.persist_path, merging
+    // the persisted atoms into the current AtomSpace and re-binding resident
+    // ConceptNode handles. Returns the number of top-level atoms restored.
+    size_t load() {
         std::lock_guard<std::mutex> lock(mutex_);
-        // Load from persist_path...
-        // TODO: implement full deserialization
+        std::ifstream in(config_.persist_path);
+        if (!in) return 0;
+        oc::persist::Serializer ser(as_);
+        size_t restored = 0;
+        std::string line;
+        while (std::getline(in, line)) {
+            // Skip comments and blank lines.
+            size_t first = line.find_first_not_of(" \t");
+            if (first == std::string::npos || line[first] == ';') continue;
+            // Accumulate until parens balance so multi-line s-exprs work.
+            std::string sexpr = line;
+            long depth = 0;
+            for (char c : sexpr) depth += (c == '(') - (c == ')');
+            while (depth > 0 && std::getline(in, line)) {
+                sexpr += "\n" + line;
+                for (char c : line) depth += (c == '(') - (c == ')');
+            }
+            oc::Handle h = ser.deserialize(sexpr, as_);
+            if (h != oc::UNDEFINED_HANDLE) restored++;
+        }
+        // Re-bind resident concept handles to the (possibly merged) nodes.
+        for (auto& kv : residents_) {
+            oc::Handle h = as_.add_node(oc::types::CONCEPT_NODE, kv.first);
+            kv.second.concept_handle = h;
+        }
+        return restored;
     }
     
     // ─── Accessors ─────────────────────────────────────────────────
@@ -595,7 +659,7 @@ public:
 
 private:
     static std::string build_system_prompt(
-        const VillageAtomSpace& vas, const ResidentAtom& r) 
+        [[maybe_unused]] const VillageAtomSpace& vas, const ResidentAtom& r) 
     {
         // Lucid v1 Nemo format: writer character {name}
         std::string prompt = "writer character " + r.name + "\n\n";

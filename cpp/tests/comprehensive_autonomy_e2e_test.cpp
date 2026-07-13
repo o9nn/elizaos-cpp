@@ -83,8 +83,48 @@ TEST_F(ComprehensiveAutonomyE2E, AutonomousStarterLifecycleAndCognitiveCycle) {
     // Verify action counter incremented
     EXPECT_GE(agent.getActionCount(), 1u);
 
+    // Verify the fourth phase (reflection) executed and closed the loop:
+    // reflection summary populated, competence signal bounded in [0,1], and the
+    // attention-prioritized goal resolves to a seeded goal.
+    EXPECT_FALSE(agent.getLastReflection().empty());
+    EXPECT_GE(agent.getCompetenceSignal(), 0.0);
+    EXPECT_LE(agent.getCompetenceSignal(), 1.0);
+    EXPECT_EQ(agent.getSuccessfulActionCount() + agent.getFailedActionCount(), 1u);
+    EXPECT_FALSE(agent.getAttentionPrioritizedGoal().empty());
+
     agent.stop();
     EXPECT_FALSE(agent.isRunning());
+}
+
+TEST_F(ComprehensiveAutonomyE2E, AutonomousStarterClosedLoopReflectionAndCompetence) {
+    auto config = makeConfig("ClosedLoop-Agent");
+    AutonomousStarter agent(config);
+    agent.start();
+
+    const double initialCompetence = agent.getCompetenceSignal();
+
+    // Run several cycles of safe (succeeding) actions. Competence should grow
+    // monotonically toward 1.0 and remain bounded, while every cycle leaves a
+    // fresh reflection trace referencing its cycle number.
+    double previous = initialCompetence;
+    for (int i = 1; i <= 4; ++i) {
+        agent.runCognitiveCycleOnce();
+        const double current = agent.getCompetenceSignal();
+        EXPECT_GE(current, 0.0);
+        EXPECT_LE(current, 1.0);
+        EXPECT_GE(current + 1e-9, previous);
+        previous = current;
+
+        const std::string reflection = agent.getLastReflection();
+        EXPECT_NE(reflection.find("Cycle " + std::to_string(i) + " reflection:"),
+                  std::string::npos);
+    }
+
+    EXPECT_GT(agent.getCompetenceSignal(), initialCompetence);
+    EXPECT_TRUE(agent.lastActionSucceeded());
+    EXPECT_EQ(agent.getFailedActionCount(), 0u);
+
+    agent.stop();
 }
 
 TEST_F(ComprehensiveAutonomyE2E, AutonomousStarterGoalDrivenBehavior) {
@@ -268,6 +308,9 @@ TEST_F(ComprehensiveAutonomyE2E, CognitiveBridgeMultipleSubscribers) {
 
     auto id1 = bridge.subscribeCognitiveState([&count1](const CognitiveState&) { count1++; });
     auto id2 = bridge.subscribeCognitiveState([&count2](const CognitiveState&) { count2++; });
+    // Distinct subscribers must receive distinct subscription handles so they
+    // can be unsubscribed independently.
+    EXPECT_NE(id1, id2);
 
     CognitiveState cs; cs.mood = "test";
     bridge.publishCognitiveState(cs);
@@ -280,6 +323,12 @@ TEST_F(ComprehensiveAutonomyE2E, CognitiveBridgeMultipleSubscribers) {
 
     EXPECT_EQ(count1.load(), 1); // unsubscribed
     EXPECT_EQ(count2.load(), 2); // still active
+
+    // Unsubscribing the second handler must also stop its delivery.
+    bridge.unsubscribeCognitiveState(id2);
+    bridge.publishCognitiveState(cs);
+    EXPECT_EQ(count1.load(), 1);
+    EXPECT_EQ(count2.load(), 2);
 }
 
 TEST_F(ComprehensiveAutonomyE2E, CognitiveBridgeEchobeatsLifecycle) {
@@ -804,6 +853,7 @@ TEST_F(ComprehensiveAutonomyE2E, AgentActionRegistrationAndExecution) {
 
     ManagedAction greetAction("greet", "Greet the user", "Say hello",
         [](const JsonValue& args) -> JsonValue {
+            (void)args;
             JsonValue result;
             result["message"] = "Hello!";
             result["success"] = true;
@@ -1413,4 +1463,85 @@ TEST_F(ComprehensiveAutonomyE2E, FullCognitiveLoopWithAllSystems) {
 
 TEST_F(ComprehensiveAutonomyE2E, SelfCheckExercisesEntireStack) {
     EXPECT_TRUE(autonomous_starter_self_check());
+}
+
+// ===========================================================================
+// Durable Goal Lifecycle + Ephemeral Working-State E2E
+// ---------------------------------------------------------------------------
+// Exercises a realistic autonomy episode end-to-end through the living centers:
+//   1. A GoalManager drives a goal from creation -> progress -> completion.
+//   2. Durable goal state is serialized into the persistent KeyValueStore.
+//   3. Ephemeral "scratch" working-memory is written with a TTL via
+//      KeyValueStore::setWithExpiry, including a non-positive TTL that must
+//      expire immediately (regression lock for the '+-N seconds' modifier bug
+//      fixed in persistence.cpp).
+//   4. A simulated restart proves durable goal state survives while expired
+//      scratch state does NOT leak across the boundary.
+//
+// This closes a real coverage gap: prior persistence E2E only covered the
+// happy path of KV set/get + simple goal serialization, never the expiry
+// semantics that protect an autonomous agent from acting on stale scratch.
+// ===========================================================================
+TEST_F(ComprehensiveAutonomyE2E, DurableGoalLifecycleWithEphemeralWorkingState) {
+    auto& mgr = StorageManager::getInstance();
+    ASSERT_TRUE(mgr.initialize(StorageConfig::inMemory()));
+    auto kvs = mgr.getKeyValueStore();
+    ASSERT_NE(kvs, nullptr);
+
+    // --- 1. Goal-driven autonomy episode ---------------------------------
+    GoalManager goals;
+    auto primary = goals.createGoal("Map project structure",
+        "Enumerate the canonical C++ centers",
+        GoalPriority::HIGH, GoalType::ACHIEVEMENT);
+    ASSERT_NE(primary, nullptr);
+    const UUID primaryId = primary->getId();
+
+    ASSERT_TRUE(goals.activateGoal(primaryId));
+    EXPECT_TRUE(goals.updateProgress(primaryId, 0.5));
+    EXPECT_NEAR(goals.getGoal(primaryId)->getProgress(), 0.5, 1e-9);
+    EXPECT_TRUE(goals.completeGoal(primaryId));
+    EXPECT_EQ(goals.getGoal(primaryId)->getStatus(), GoalStatus::COMPLETED);
+    EXPECT_EQ(goals.getCompletedGoalCount(), 1u);
+
+    // --- 2. Persist durable goal state -----------------------------------
+    const std::string serialized = goals.serialize();
+    ASSERT_TRUE(kvs->set("goals.state", serialized).success);
+
+    // --- 3. Ephemeral working-state with TTL semantics -------------------
+    // A long-lived scratch note (positive TTL) must remain visible now.
+    ASSERT_TRUE(kvs->setWithExpiry("scratch.current_plan",
+        "inspect persistence center", std::chrono::seconds(3600)).success);
+    EXPECT_TRUE(kvs->exists("scratch.current_plan"));
+
+    // An already-expired scratch note (non-positive TTL) must be invisible
+    // immediately. Before the fix this silently persisted forever.
+    ASSERT_TRUE(kvs->setWithExpiry("scratch.stale_observation",
+        "value from a previous cycle", std::chrono::seconds(0)).success);
+    EXPECT_FALSE(kvs->exists("scratch.stale_observation"));
+    EXPECT_FALSE(kvs->get("scratch.stale_observation").success);
+
+    ASSERT_TRUE(kvs->setWithExpiry("scratch.negative_ttl",
+        "should not survive", std::chrono::seconds(-5)).success);
+    EXPECT_FALSE(kvs->exists("scratch.negative_ttl"));
+
+    // --- 4. Simulated restart --------------------------------------------
+    // Durable goal state survives; expired scratch never crosses the boundary.
+    GoalManager restored;
+    auto loaded = kvs->get("goals.state");
+    ASSERT_TRUE(loaded.success);
+    ASSERT_TRUE(restored.deserialize(*loaded.value));
+    EXPECT_EQ(restored.getTotalGoalCount(), goals.getTotalGoalCount());
+    EXPECT_EQ(restored.getCompletedGoalCount(), 1u);
+
+    // The valid scratch note is still reachable; the expired ones are gone.
+    EXPECT_TRUE(kvs->get("scratch.current_plan").success);
+    EXPECT_FALSE(kvs->get("scratch.stale_observation").success);
+    EXPECT_FALSE(kvs->get("scratch.negative_ttl").success);
+
+    // cleanupExpired must physically purge the expired rows, leaving only the
+    // durable goal key and the single live scratch note.
+    kvs->cleanupExpired();
+    EXPECT_EQ(kvs->countByPrefix("scratch."), 1);
+
+    mgr.shutdown();
 }

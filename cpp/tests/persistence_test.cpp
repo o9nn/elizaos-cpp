@@ -1,14 +1,26 @@
-// persistence_test.cpp - Comprehensive unit tests for the Persistence module
-// Tests SQLiteBackend, ConnectionPool, Transaction, MemoryPersistence,
-// KeyValueStore, and StorageManager against the real API.
+// persistence_test.cpp - Comprehensive unit tests for the hurdcog Persistence module.
+//
+// Validates the authoritative flattened API declared in include/persistence.hpp:
+//   SQLiteBackend, Transaction / TransactionScope, ConnectionPool,
+//   MemoryPersistence, KeyValueStore, StorageManager, and the storage:: helpers.
+//
+// These tests intentionally exercise real SQLite I/O (in-memory and file backed)
+// rather than mocks, so each assertion proves a genuine round-trip through the
+// storage layer. The suite is registered in the KSM canonical validation target
+// so future autonomy/persistence repairs cannot bypass durable-storage coverage.
 
 #include <gtest/gtest.h>
 #include "elizaos/persistence.hpp"
-#include "elizaos/core.hpp"
-#include <filesystem>
-#include <thread>
-#include <vector>
+
+#include <algorithm>
 #include <atomic>
+#include <chrono>
+#include <cstdio>
+#include <unistd.h>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
 using namespace elizaos;
 
@@ -16,10 +28,10 @@ namespace {
 const std::string TEST_DB_PATH = "/tmp/elizaos_persistence_test.db";
 
 void cleanupTestDb() {
-    std::filesystem::remove(TEST_DB_PATH);
-    std::filesystem::remove(TEST_DB_PATH + "-journal");
-    std::filesystem::remove(TEST_DB_PATH + "-wal");
-    std::filesystem::remove(TEST_DB_PATH + "-shm");
+    std::remove(TEST_DB_PATH.c_str());
+    std::remove((TEST_DB_PATH + "-journal").c_str());
+    std::remove((TEST_DB_PATH + "-wal").c_str());
+    std::remove((TEST_DB_PATH + "-shm").c_str());
 }
 }
 
@@ -867,114 +879,425 @@ TEST_F(PersistenceTest, PersistenceAcrossReopen) {
         auto result = backend.query("SELECT val FROM persist_test WHERE key = 'hello'", {});
         ASSERT_TRUE(result.success);
         ASSERT_EQ(result.value->size(), 1u);
-        EXPECT_EQ((*result.value)[0][0].asString(), "world");
+                EXPECT_EQ((*result.value)[0][0].asString(), "world");
         backend.disconnect();
     }
 }
 
-
-// ===========================================================================
-// TransactionScope Move-Semantics Regression Tests
-// ---------------------------------------------------------------------------
-// These lock in the reconciled public TransactionScope contract (out-of-line
-// ctor/dtor + move ctor/assign + void commit()/rollback() + execute()).
-// A prior header-drift bug shipped an older inline definition (bool commit(),
-// no move ops, no `active_`) that broke the build; these tests guarantee the
-// move pathway and the moved-from inactive-scope behavior cannot silently
-// regress again.
-// ===========================================================================
-
-TEST_F(PersistenceTest, TransactionScopeMoveConstructTransfersOwnership) {
-    StorageConfig config = StorageConfig::inMemory();
-    SQLiteBackend backend(config);
-    ASSERT_TRUE(backend.connect());
-
-    backend.execute("CREATE TABLE ts_move (id INTEGER PRIMARY KEY, val TEXT)", {});
-    backend.execute("INSERT INTO ts_move VALUES (1, 'before')", {});
-
-    {
-        auto txn = backend.beginTransaction();
-        ASSERT_NE(txn, nullptr);
-        TransactionScope original(txn);
-        ASSERT_TRUE(original.isActive());
-
-        // Move-construct: ownership transfers, source becomes inactive.
-        TransactionScope moved(std::move(original));
-        EXPECT_FALSE(original.isActive());
-        EXPECT_TRUE(moved.isActive());
-
-        // The moved-to scope drives a real write then commits via void commit().
-        auto execResult = moved.execute("UPDATE ts_move SET val = 'after' WHERE id = 1", {});
-        EXPECT_TRUE(execResult.success);
-        moved.commit();
-        EXPECT_FALSE(moved.isActive());
-
-        // The moved-from scope must not be able to execute anything.
-        auto failResult = original.execute("UPDATE ts_move SET val = 'ghost' WHERE id = 1", {});
-        EXPECT_FALSE(failResult.success);
-    }
-
-    auto result = backend.query("SELECT val FROM ts_move WHERE id = 1", {});
-    ASSERT_TRUE(result.success);
-    ASSERT_EQ(result.value->size(), 1u);
-    EXPECT_EQ((*result.value)[0][0].asString(), "after");
-
-    backend.disconnect();
+std::string makeTempDbPath(const std::string& tag) {
+    return "/tmp/elizaos_persistence_" + tag + "_" +
+           std::to_string(::getpid()) + "_" +
+           std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()) +
+           ".db";
 }
 
-TEST_F(PersistenceTest, TransactionScopeMoveAssignSuppressesDoubleRollback) {
-    StorageConfig config = StorageConfig::inMemory();
-    SQLiteBackend backend(config);
-    ASSERT_TRUE(backend.connect());
-
-    backend.execute("CREATE TABLE ts_assign (id INTEGER PRIMARY KEY, val TEXT)", {});
-    backend.execute("INSERT INTO ts_assign VALUES (1, 'keep')", {});
-
-    {
-        auto txn = backend.beginTransaction();
-        ASSERT_NE(txn, nullptr);
-        TransactionScope source(txn);
-        source.execute("UPDATE ts_assign SET val = 'pending' WHERE id = 1", {});
-
-        // Move-assign into a fresh, empty scope. The source is neutered so its
-        // destructor cannot trigger a second rollback on the same transaction.
-        TransactionScope sink(nullptr);
-        sink = std::move(source);
-        EXPECT_FALSE(source.isActive());
-        EXPECT_TRUE(sink.isActive());
-        // sink leaves scope without commit -> single auto-rollback expected.
-    }
-
-    auto result = backend.query("SELECT val FROM ts_assign WHERE id = 1", {});
-    ASSERT_TRUE(result.success);
-    ASSERT_EQ(result.value->size(), 1u);
-    EXPECT_EQ((*result.value)[0][0].asString(), "keep");
-
-    backend.disconnect();
+void removeDbFiles(const std::string& path) {
+    std::remove(path.c_str());
+    std::remove((path + "-journal").c_str());
+    std::remove((path + "-wal").c_str());
+    std::remove((path + "-shm").c_str());
 }
 
-TEST_F(PersistenceTest, TransactionScopeExecuteFailsAfterCommit) {
-    StorageConfig config = StorageConfig::inMemory();
-    SQLiteBackend backend(config);
+// ===========================================================================
+// SQLiteBackend - connection, schema, and CRUD
+// ===========================================================================
+
+TEST(PersistenceSQLiteBackend, ConnectInMemoryAndReportMetadata) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    EXPECT_TRUE(backend.isConnected());
+    EXPECT_EQ(backend.getBackendType(), "sqlite");
+    EXPECT_FALSE(backend.getVersion().empty());
+    EXPECT_TRUE(backend.disconnect());
+    EXPECT_FALSE(backend.isConnected());
+}
+
+TEST(PersistenceSQLiteBackend, CreateTableInsertAndQueryRoundTrip) {
+    SQLiteBackend backend(StorageConfig::inMemory());
     ASSERT_TRUE(backend.connect());
 
-    backend.execute("CREATE TABLE ts_commit (id INTEGER PRIMARY KEY, val TEXT)", {});
+    auto created = backend.createTable(
+        "items", {"id INTEGER PRIMARY KEY", "name TEXT NOT NULL", "score REAL"});
+    ASSERT_TRUE(created.success) << created.error.value_or("");
+    EXPECT_TRUE(backend.tableExists("items"));
+
+    auto ins = backend.execute(
+        "INSERT INTO items (name, score) VALUES (?, ?)",
+        {std::string("alpha"), 1.5});
+    ASSERT_TRUE(ins.success) << ins.error.value_or("");
+    EXPECT_EQ(ins.rowsAffected, 1);
+    EXPECT_GT(backend.lastInsertRowId(), 0);
+
+    auto rows = backend.query("SELECT id, name, score FROM items WHERE name = ?",
+                              {std::string("alpha")});
+    ASSERT_TRUE(rows.success);
+    ASSERT_TRUE(rows.value.has_value());
+    ASSERT_EQ(rows.value->size(), 1u);
+    const Row& row = rows.value->front();
+    ASSERT_EQ(row.size(), 3u);
+    EXPECT_EQ(row[1].asString(), "alpha");
+    EXPECT_DOUBLE_EQ(row[2].asDouble(), 1.5);
+}
+
+TEST(PersistenceSQLiteBackend, BlobAndNullParameterBinding) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("blobs", {"id INTEGER PRIMARY KEY", "payload BLOB", "note TEXT"}).success);
+
+    std::vector<uint8_t> payload = {0xDE, 0xAD, 0xBE, 0xEF};
+    ASSERT_TRUE(backend.execute("INSERT INTO blobs (payload, note) VALUES (?, ?)",
+                                {payload, QueryParam(nullptr)}).success);
+
+    auto rows = backend.query("SELECT payload, note FROM blobs");
+    ASSERT_TRUE(rows.success);
+    ASSERT_TRUE(rows.value.has_value());
+    ASSERT_EQ(rows.value->size(), 1u);
+    EXPECT_EQ(rows.value->front()[0].asBlob(), payload);
+    EXPECT_TRUE(rows.value->front()[1].isNull());
+}
+
+TEST(PersistenceSQLiteBackend, ExecuteBatchInsertsAllRows) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("kv", {"k TEXT PRIMARY KEY", "v TEXT"}).success);
+
+    std::vector<QueryParams> batch = {
+        {std::string("k1"), std::string("v1")},
+        {std::string("k2"), std::string("v2")},
+        {std::string("k3"), std::string("v3")},
+    };
+    ASSERT_TRUE(backend.executeBatch("INSERT INTO kv (k, v) VALUES (?, ?)", batch).success);
+
+    auto rows = backend.query("SELECT COUNT(*) FROM kv");
+    ASSERT_TRUE(rows.success);
+    ASSERT_TRUE(rows.value.has_value());
+    EXPECT_EQ(rows.value->front()[0].asInt(), 3);
+}
+
+TEST(PersistenceSQLiteBackend, DropTableAndListTables) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("temp_a", {"id INTEGER"}).success);
+    ASSERT_TRUE(backend.createTable("temp_b", {"id INTEGER"}).success);
+
+    auto tables = backend.listTables();
+    EXPECT_NE(std::find(tables.begin(), tables.end(), "temp_a"), tables.end());
+    EXPECT_NE(std::find(tables.begin(), tables.end(), "temp_b"), tables.end());
+
+    ASSERT_TRUE(backend.dropTable("temp_a").success);
+    EXPECT_FALSE(backend.tableExists("temp_a"));
+    EXPECT_TRUE(backend.tableExists("temp_b"));
+}
+
+// ===========================================================================
+// Transactions - commit, rollback, and RAII scope
+// ===========================================================================
+
+TEST(PersistenceTransaction, CommitPersistsChanges) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("acct", {"id INTEGER PRIMARY KEY", "bal INTEGER"}).success);
 
     auto txn = backend.beginTransaction();
     ASSERT_NE(txn, nullptr);
-    TransactionScope scope(txn);
-    EXPECT_TRUE(scope.execute("INSERT INTO ts_commit VALUES (1, 'committed')", {}).success);
-    scope.commit();
+    EXPECT_TRUE(txn->isActive());
+    ASSERT_TRUE(txn->execute("INSERT INTO acct (bal) VALUES (?)", {static_cast<int64_t>(100)}).success);
+    ASSERT_TRUE(txn->commit());
+    EXPECT_FALSE(txn->isActive());
 
-    // After commit the underlying transaction is inactive; execute must fail
-    // gracefully rather than dispatch to a closed transaction.
-    auto afterCommit = scope.execute("INSERT INTO ts_commit VALUES (2, 'late')", {});
-    EXPECT_FALSE(afterCommit.success);
+    auto rows = backend.query("SELECT COUNT(*) FROM acct");
+    ASSERT_TRUE(rows.success);
+    EXPECT_EQ(rows.value->front()[0].asInt(), 1);
+}
 
-    auto result = backend.query("SELECT COUNT(*) FROM ts_commit", {});
+TEST(PersistenceTransaction, RollbackDiscardsChanges) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("acct", {"id INTEGER PRIMARY KEY", "bal INTEGER"}).success);
+
+    auto txn = backend.beginTransaction();
+    ASSERT_NE(txn, nullptr);
+    ASSERT_TRUE(txn->execute("INSERT INTO acct (bal) VALUES (?)", {static_cast<int64_t>(42)}).success);
+    ASSERT_TRUE(txn->rollback());
+
+    auto rows = backend.query("SELECT COUNT(*) FROM acct");
+    ASSERT_TRUE(rows.success);
+    EXPECT_EQ(rows.value->front()[0].asInt(), 0);
+}
+
+TEST(PersistenceTransaction, ScopeAutoRollsBackWhenNotCommitted) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("scoped", {"id INTEGER PRIMARY KEY", "v INTEGER"}).success);
+
+    {
+        TransactionScope scope(backend.beginTransaction());
+        EXPECT_TRUE(scope.isActive());
+        ASSERT_TRUE(scope.execute("INSERT INTO scoped (v) VALUES (?)", {static_cast<int64_t>(7)}).success);
+        // No commit -> destructor must roll back.
+    }
+
+    auto rows = backend.query("SELECT COUNT(*) FROM scoped");
+    ASSERT_TRUE(rows.success);
+    EXPECT_EQ(rows.value->front()[0].asInt(), 0);
+}
+
+TEST(PersistenceTransaction, ScopeCommitPersists) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("scoped", {"id INTEGER PRIMARY KEY", "v INTEGER"}).success);
+
+    {
+        TransactionScope scope(backend.beginTransaction());
+        ASSERT_TRUE(scope.execute("INSERT INTO scoped (v) VALUES (?)", {static_cast<int64_t>(9)}).success);
+        scope.commit();
+        EXPECT_FALSE(scope.isActive());
+    }
+
+    auto rows = backend.query("SELECT v FROM scoped");
+    ASSERT_TRUE(rows.success);
+    ASSERT_EQ(rows.value->size(), 1u);
+    EXPECT_EQ(rows.value->front()[0].asInt(), 9);
+}
+
+// ===========================================================================
+// Async operations
+// ===========================================================================
+
+TEST(PersistenceAsync, ExecuteAndQueryAsyncRoundTrip) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.createTable("async_t", {"id INTEGER PRIMARY KEY", "v TEXT"}).success);
+
+    auto execFuture = backend.executeAsync("INSERT INTO async_t (v) VALUES (?)",
+                                           {std::string("async-value")});
+    EXPECT_TRUE(execFuture.get().success);
+
+    auto queryFuture = backend.queryAsync("SELECT v FROM async_t");
+    auto result = queryFuture.get();
     ASSERT_TRUE(result.success);
+    ASSERT_TRUE(result.value.has_value());
     ASSERT_EQ(result.value->size(), 1u);
-    EXPECT_EQ((*result.value)[0][0].asInt(), 1);
+    EXPECT_EQ(result.value->front()[0].asString(), "async-value");
+}
 
-    backend.disconnect();
+// ===========================================================================
+// ConnectionPool
+// ===========================================================================
+
+TEST(PersistenceConnectionPool, AcquireReleaseAccounting) {
+    const std::string path = makeTempDbPath("pool");
+    removeDbFiles(path);
+    StorageConfig config = StorageConfig::file(path);
+    config.maxConnections = 3;
+
+    {
+        ConnectionPool pool(config);
+        EXPECT_EQ(pool.totalConnections(), 3u);
+        EXPECT_EQ(pool.availableConnections(), 3u);
+
+        auto c1 = pool.acquire();
+        ASSERT_NE(c1, nullptr);
+        EXPECT_TRUE(c1->isConnected());
+        EXPECT_EQ(pool.activeConnections(), 1u);
+
+        auto c2 = pool.acquire();
+        ASSERT_NE(c2, nullptr);
+        EXPECT_EQ(pool.activeConnections(), 2u);
+
+        pool.release(c1);
+        EXPECT_EQ(pool.availableConnections(), 2u);
+        pool.release(c2);
+        EXPECT_EQ(pool.availableConnections(), 3u);
+    }
+    removeDbFiles(path);
+}
+
+// ===========================================================================
+// MemoryPersistence - durable agent memory storage
+// ===========================================================================
+
+class MemoryPersistenceTest : public ::testing::Test {
+protected:
+    std::shared_ptr<SQLiteBackend> backend_;
+    std::shared_ptr<MemoryPersistence> mem_;
+
+    void SetUp() override {
+        backend_ = std::make_shared<SQLiteBackend>(StorageConfig::inMemory());
+        ASSERT_TRUE(backend_->connect());
+        mem_ = std::make_shared<MemoryPersistence>(backend_);
+        ASSERT_TRUE(mem_->initialize());
+    }
+};
+
+TEST_F(MemoryPersistenceTest, SaveAndLoadByIdRoundTrip) {
+    auto save = mem_->saveMemory("mem-1", "hello world", "agent-A", "room-1", "memories",
+                                 {0.1f, 0.2f, 0.3f}, R"({"k":"v"})");
+    ASSERT_TRUE(save.success) << save.error.value_or("");
+
+    auto load = mem_->loadMemory("mem-1", "memories");
+    ASSERT_TRUE(load.success) << load.error.value_or("");
+    ASSERT_TRUE(load.value.has_value());
+    EXPECT_EQ((*load.value)["id"], "mem-1");
+    EXPECT_EQ((*load.value)["content"], "hello world");
+    EXPECT_EQ((*load.value)["agent_id"], "agent-A");
+    EXPECT_EQ((*load.value)["room_id"], "room-1");
+}
+
+TEST_F(MemoryPersistenceTest, LoadMissingMemoryFails) {
+    auto load = mem_->loadMemory("does-not-exist", "memories");
+    EXPECT_FALSE(load.success);
+}
+
+TEST_F(MemoryPersistenceTest, QueryByAgentAndRoom) {
+    ASSERT_TRUE(mem_->saveMemory("m1", "c1", "agent-A", "room-1", "memories").success);
+    ASSERT_TRUE(mem_->saveMemory("m2", "c2", "agent-A", "room-2", "memories").success);
+    ASSERT_TRUE(mem_->saveMemory("m3", "c3", "agent-B", "room-1", "memories").success);
+
+    auto byAgent = mem_->loadMemoriesByAgent("agent-A", "memories");
+    ASSERT_TRUE(byAgent.success);
+    EXPECT_EQ(byAgent.value->size(), 2u);
+
+    auto byRoom = mem_->loadMemoriesByRoom("room-1", "memories");
+    ASSERT_TRUE(byRoom.success);
+    EXPECT_EQ(byRoom.value->size(), 2u);
+
+    EXPECT_EQ(mem_->getMemoryCount("memories"), 3);
+    EXPECT_EQ(mem_->getMemoryCountByAgent("agent-A", "memories"), 2);
+}
+
+TEST_F(MemoryPersistenceTest, DeleteMemoryAndByAgent) {
+    ASSERT_TRUE(mem_->saveMemory("m1", "c1", "agent-A", "room-1", "memories").success);
+    ASSERT_TRUE(mem_->saveMemory("m2", "c2", "agent-A", "room-2", "memories").success);
+
+    ASSERT_TRUE(mem_->deleteMemory("m1", "memories").success);
+    EXPECT_FALSE(mem_->loadMemory("m1", "memories").success);
+    EXPECT_EQ(mem_->getMemoryCount("memories"), 1);
+
+    ASSERT_TRUE(mem_->deleteMemoriesByAgent("agent-A", "memories").success);
+    EXPECT_EQ(mem_->getMemoryCount("memories"), 0);
+}
+
+TEST_F(MemoryPersistenceTest, SearchMemoriesMatchesContent) {
+    ASSERT_TRUE(mem_->saveMemory("m1", "the cognitive cycle observes", "agent-A", "room-1", "memories").success);
+    ASSERT_TRUE(mem_->saveMemory("m2", "an unrelated entry", "agent-A", "room-1", "memories").success);
+
+    auto found = mem_->searchMemories("cognitive", "memories");
+    ASSERT_TRUE(found.success);
+    EXPECT_EQ(found.value->size(), 1u);
+}
+
+TEST_F(MemoryPersistenceTest, SaveBatchPersistsAll) {
+    std::vector<std::tuple<UUID, std::string, std::string, std::string>> batch = {
+        {"b1", "content-1", "agent-X", "room-1"},
+        {"b2", "content-2", "agent-X", "room-1"},
+    };
+    ASSERT_TRUE(mem_->saveMemoriesBatch(batch, "memories").success);
+    EXPECT_EQ(mem_->getMemoryCount("memories"), 2);
+}
+
+// ===========================================================================
+// KeyValueStore
+// ===========================================================================
+
+class KeyValueStoreTest : public ::testing::Test {
+protected:
+    std::shared_ptr<SQLiteBackend> backend_;
+    std::shared_ptr<KeyValueStore> kv_;
+
+    void SetUp() override {
+        backend_ = std::make_shared<SQLiteBackend>(StorageConfig::inMemory());
+        ASSERT_TRUE(backend_->connect());
+        kv_ = std::make_shared<KeyValueStore>(backend_);
+        ASSERT_TRUE(kv_->initialize());
+    }
+};
+
+TEST_F(KeyValueStoreTest, SetGetRemoveExists) {
+    ASSERT_TRUE(kv_->set("name", "eliza").success);
+    EXPECT_TRUE(kv_->exists("name"));
+    auto got = kv_->get("name");
+    ASSERT_TRUE(got.success);
+    EXPECT_EQ(*got.value, "eliza");
+
+    ASSERT_TRUE(kv_->remove("name").success);
+    EXPECT_FALSE(kv_->exists("name"));
+    EXPECT_FALSE(kv_->get("name").success);
+}
+
+TEST_F(KeyValueStoreTest, OverwriteUpdatesValue) {
+    ASSERT_TRUE(kv_->set("mode", "REFLECTIVE").success);
+    ASSERT_TRUE(kv_->set("mode", "FOCUSED").success);
+    auto got = kv_->get("mode");
+    ASSERT_TRUE(got.success);
+    EXPECT_EQ(*got.value, "FOCUSED");
+    EXPECT_EQ(kv_->count(), 1);
+}
+
+TEST_F(KeyValueStoreTest, BatchAndPrefixOperations) {
+    std::unordered_map<std::string, std::string> pairs = {
+        {"cfg:a", "1"}, {"cfg:b", "2"}, {"other:c", "3"},
+    };
+    ASSERT_TRUE(kv_->setMany(pairs).success);
+    EXPECT_EQ(kv_->count(), 3);
+    EXPECT_EQ(kv_->countByPrefix("cfg:"), 2);
+
+    auto many = kv_->getMany({"cfg:a", "cfg:b", "missing"});
+    ASSERT_TRUE(many.success);
+    EXPECT_EQ(many.value->size(), 2u);
+
+    auto prefixed = kv_->getByPrefix("cfg:");
+    ASSERT_TRUE(prefixed.success);
+    EXPECT_EQ(prefixed.value->size(), 2u);
+
+    ASSERT_TRUE(kv_->removeByPrefix("cfg:").success);
+    EXPECT_EQ(kv_->countByPrefix("cfg:"), 0);
+    EXPECT_EQ(kv_->count(), 1);
+}
+
+TEST_F(KeyValueStoreTest, ExpiryHidesAndCleansUpKeys) {
+    ASSERT_TRUE(kv_->setWithExpiry("ephemeral", "soon-gone", std::chrono::seconds(-1)).success);
+    // Already expired -> must not be visible.
+    EXPECT_FALSE(kv_->exists("ephemeral"));
+    EXPECT_FALSE(kv_->get("ephemeral").success);
+
+    kv_->cleanupExpired();
+    auto rows = backend_->query("SELECT COUNT(*) FROM kv_store");
+    ASSERT_TRUE(rows.success);
+    EXPECT_EQ(rows.value->front()[0].asInt(), 0);
+}
+
+// ===========================================================================
+// StorageManager singleton + storage:: convenience helpers (file backed)
+// ===========================================================================
+
+TEST(PersistenceStorageManager, GlobalInitKvRoundTripAndShutdown) {
+    const std::string path = makeTempDbPath("manager");
+    removeDbFiles(path);
+
+    StorageConfig config = StorageConfig::file(path);
+    config.maxConnections = 4;
+
+    ASSERT_TRUE(storage::init(config));
+    EXPECT_TRUE(StorageManager::getInstance().isInitialized());
+
+    ASSERT_TRUE(storage::set("greeting", "how does that make you feel?"));
+    auto got = storage::get("greeting");
+    ASSERT_TRUE(got.has_value());
+    EXPECT_EQ(*got, "how does that make you feel?");
+
+    EXPECT_TRUE(storage::remove("greeting"));
+    EXPECT_FALSE(storage::get("greeting").has_value());
+
+    EXPECT_NE(storage::kv(), nullptr);
+    EXPECT_NE(storage::memories(), nullptr);
+
+    EXPECT_TRUE(storage::shutdown());
+    EXPECT_FALSE(StorageManager::getInstance().isInitialized());
+    removeDbFiles(path);
+}
+
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

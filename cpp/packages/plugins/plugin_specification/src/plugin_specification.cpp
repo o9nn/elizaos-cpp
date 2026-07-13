@@ -5,8 +5,14 @@
 #include <filesystem>
 #include <fstream>
 #include <unordered_set>
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <dlfcn.h>
+#else
+#include <windows.h>
+// Re-suppress ERROR macro from windows.h
+#ifdef ERROR
+#undef ERROR
+#endif
 #endif
 
 namespace elizaos {
@@ -385,15 +391,196 @@ std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std::string& d
 }
 
 std::shared_ptr<PluginInterface> PluginRegistry::loadPlugin(const std::string& pluginPath) {
-    // Simplified plugin loading - in a real implementation would use dlopen/dlsym
-    // For now, return nullptr to indicate loading not supported
-    
-    // Use pluginPath to avoid warning
     if (pluginPath.empty()) {
         return nullptr;
     }
     
-    return nullptr;
+    // Check if file exists
+    if (!std::filesystem::exists(pluginPath)) {
+        return nullptr;
+    }
+    
+#ifndef _WIN32
+    // POSIX: Use dlopen for dynamic loading
+    void* handle = dlopen(pluginPath.c_str(), RTLD_NOW | RTLD_LOCAL);
+    if (!handle) {
+        // dlerror() contains the error message
+        return nullptr;
+    }
+    
+    // Look for the plugin creation function
+    // Expected signature: extern "C" PluginInterface* elizaos_create_plugin()
+    using PluginCreateFunc = PluginInterface* (*)();
+    
+    // Clear any existing error
+    dlerror();
+    
+    PluginCreateFunc createFunc = reinterpret_cast<PluginCreateFunc>(
+        dlsym(handle, "elizaos_create_plugin")
+    );
+    
+    const char* dlsym_error = dlerror();
+    if (dlsym_error || !createFunc) {
+        dlclose(handle);
+        return nullptr;
+    }
+    
+    // Create the plugin
+    PluginInterface* rawPlugin = createFunc();
+    if (!rawPlugin) {
+        dlclose(handle);
+        return nullptr;
+    }
+    
+    // Wrap in shared_ptr with custom deleter that closes the library
+    // Note: We capture the handle so it's properly closed when the plugin is destroyed
+    std::shared_ptr<PluginInterface> plugin(rawPlugin, [handle](PluginInterface* p) {
+        // Call plugin's shutdown before deletion
+        if (p) {
+            p->shutdown();
+            delete p;
+        }
+        // Close the dynamic library handle to prevent resource leaks
+        if (handle) {
+            dlclose(handle);
+        }
+    });
+    
+    // Validate the plugin
+    if (!validatePlugin(plugin)) {
+        dlclose(handle);
+        return nullptr;
+    }
+    
+    // Register the plugin
+    std::lock_guard<std::mutex> lock(pluginsMutex_);
+    const auto& metadata = plugin->getMetadata();
+    plugins_[metadata.name] = plugin;
+    
+    // Track as dynamic plugin
+    DynamicPluginInfo info;
+    info.handle = handle;
+    info.path = pluginPath;
+    info.loadTime = std::chrono::system_clock::now();
+    dynamicPlugins_[metadata.name] = info;
+    
+    return plugin;
+#else
+    // Windows: Be water — use the host's native dynamic loading.
+    HMODULE handle = LoadLibraryA(pluginPath.c_str());
+    if (!handle) {
+        return nullptr;
+    }
+
+    using PluginCreateFunc = PluginInterface* (*)();
+    PluginCreateFunc createFunc = reinterpret_cast<PluginCreateFunc>(
+        GetProcAddress(handle, "elizaos_create_plugin")
+    );
+
+    if (!createFunc) {
+        FreeLibrary(handle);
+        return nullptr;
+    }
+
+    PluginInterface* rawPlugin = createFunc();
+    if (!rawPlugin) {
+        FreeLibrary(handle);
+        return nullptr;
+    }
+
+    std::shared_ptr<PluginInterface> plugin(rawPlugin, [handle](PluginInterface* p) {
+        if (p) {
+            p->shutdown();
+            delete p;
+        }
+        if (handle) {
+            FreeLibrary(handle);
+        }
+    });
+
+    if (!validatePlugin(plugin)) {
+        FreeLibrary(handle);
+        return nullptr;
+    }
+
+    std::lock_guard<std::mutex> lock(pluginsMutex_);
+    const auto& metadata = plugin->getMetadata();
+    plugins_[metadata.name] = plugin;
+
+    DynamicPluginInfo info;
+    info.handle = reinterpret_cast<void*>(handle);
+    info.path = pluginPath;
+    info.loadTime = std::chrono::system_clock::now();
+    dynamicPlugins_[metadata.name] = info;
+
+    return plugin;
+#endif
+}
+
+bool PluginRegistry::unloadPlugin(const std::string& pluginName) {
+    std::lock_guard<std::mutex> lock(pluginsMutex_);
+    
+    auto dynIt = dynamicPlugins_.find(pluginName);
+    if (dynIt == dynamicPlugins_.end()) {
+        return false; // Not a dynamic plugin
+    }
+    
+    auto pluginIt = plugins_.find(pluginName);
+    if (pluginIt != plugins_.end()) {
+        // Remove from plugins first
+        plugins_.erase(pluginIt);
+    }
+    
+#ifndef _WIN32
+    // Close the dynamic library
+    if (dynIt->second.handle) {
+        dlclose(dynIt->second.handle);
+    }
+#else
+    if (dynIt->second.handle) {
+        FreeLibrary(reinterpret_cast<HMODULE>(dynIt->second.handle));
+    }
+#endif
+    
+    dynamicPlugins_.erase(dynIt);
+    return true;
+}
+
+bool PluginRegistry::isDynamicPlugin(const std::string& pluginName) const {
+    std::lock_guard<std::mutex> lock(pluginsMutex_);
+    return dynamicPlugins_.find(pluginName) != dynamicPlugins_.end();
+}
+
+std::vector<std::string> PluginRegistry::getDynamicPlugins() const {
+    std::lock_guard<std::mutex> lock(pluginsMutex_);
+    std::vector<std::string> result;
+    result.reserve(dynamicPlugins_.size());
+    for (const auto& [name, info] : dynamicPlugins_) {
+        result.push_back(name);
+    }
+    return result;
+}
+
+bool PluginRegistry::hotReloadPlugin(const std::string& pluginName) {
+    std::string pluginPath;
+    
+    {
+        std::lock_guard<std::mutex> lock(pluginsMutex_);
+        auto dynIt = dynamicPlugins_.find(pluginName);
+        if (dynIt == dynamicPlugins_.end()) {
+            return false; // Not a dynamic plugin
+        }
+        pluginPath = dynIt->second.path;
+    }
+    
+    // Unload the plugin
+    if (!unloadPlugin(pluginName)) {
+        return false;
+    }
+    
+    // Reload the plugin
+    auto plugin = loadPlugin(pluginPath);
+    return plugin != nullptr;
 }
 
 bool PluginRegistry::validateDependencies(const PluginMetadata& plugin) const {

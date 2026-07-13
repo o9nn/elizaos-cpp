@@ -1303,4 +1303,579 @@ std::vector<ResponsePattern> getAllPatterns() {
 
 } // namespace ElizaPatterns
 
+// =====================================================
+// DialogueSlot Implementation
+// =====================================================
+
+bool DialogueSlot::validate(const std::any& val) const {
+    if (!val.has_value()) {
+        return !required;
+    }
+    
+    try {
+        if (type == "string") {
+            auto str = std::any_cast<std::string>(val);
+            if (!allowedValues.empty()) {
+                return std::find(allowedValues.begin(), allowedValues.end(), str) != allowedValues.end();
+            }
+            return true;
+        } else if (type == "number") {
+            std::any_cast<double>(val);
+            return true;
+        } else if (type == "boolean") {
+            std::any_cast<bool>(val);
+            return true;
+        } else if (type == "enum") {
+            auto str = std::any_cast<std::string>(val);
+            return std::find(allowedValues.begin(), allowedValues.end(), str) != allowedValues.end();
+        }
+    } catch (const std::bad_any_cast&) {
+        return false;
+    }
+    
+    return true;
+}
+
+std::string DialogueSlot::getPrompt() const {
+    if (!prompt.empty()) {
+        return prompt;
+    }
+    return "Please provide " + name + ":";
+}
+
+// =====================================================
+// DialogueFrame Implementation
+// =====================================================
+
+bool DialogueFrame::allSlotsFilledStatus() const {
+    for (const auto& slot : slots) {
+        if (slot.required && !slot.filled) {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::vector<std::string> DialogueFrame::getMissingSlots() const {
+    std::vector<std::string> missing;
+    for (const auto& slot : slots) {
+        if (slot.required && !slot.filled) {
+            missing.push_back(slot.name);
+        }
+    }
+    return missing;
+}
+
+std::string DialogueFrame::getNextPrompt() const {
+    for (const auto& slot : slots) {
+        if (slot.required && !slot.filled) {
+            return slot.getPrompt();
+        }
+    }
+    return "";
+}
+
+// =====================================================
+// DialogueStateMachine Implementation
+// =====================================================
+
+DialogueStateMachine::DialogueStateMachine() {
+    loadIntentPatterns();
+    loadEntityPatterns();
+    initializeDefaultTransitions();
+}
+
+void DialogueStateMachine::loadIntentPatterns() {
+    intentPatterns_[DialogueIntent::GREETING] = {
+        std::regex(R"(\b(hi|hello|hey|greetings|good\s*(morning|afternoon|evening))\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::GOODBYE] = {
+        std::regex(R"(\b(bye|goodbye|see\s*you|farewell|take\s*care)\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::QUESTION] = {
+        std::regex(R"(\b(what|who|where|when|why|how|can|could|would|should|is|are|do|does)\b.*\?)", std::regex::icase),
+        std::regex(R"(\?$)")
+    };
+    
+    intentPatterns_[DialogueIntent::CONFIRMATION] = {
+        std::regex(R"(\b(yes|yeah|yep|sure|okay|ok|correct|right|exactly|absolutely)\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::NEGATION] = {
+        std::regex(R"(\b(no|nope|not|never|neither|none|don't|doesn't|won't|can't)\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::HELP] = {
+        std::regex(R"(\b(help|assist|support|guide|explain)\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::CLARIFICATION] = {
+        std::regex(R"(\b(what\s*do\s*you\s*mean|could\s*you\s*clarify|i\s*don't\s*understand|sorry\s*what)\b)", std::regex::icase)
+    };
+    
+    intentPatterns_[DialogueIntent::TOPIC_CHANGE] = {
+        std::regex(R"(\b(by\s*the\s*way|anyway|speaking\s*of|let's\s*talk\s*about|changing\s*topic)\b)", std::regex::icase)
+    };
+}
+
+void DialogueStateMachine::loadEntityPatterns() {
+    entityPatterns_.push_back({"name", std::regex(R"(\b(my\s*name\s*is|i'm|i\s*am)\s+([A-Za-z]+))", std::regex::icase)});
+    entityPatterns_.push_back({"email", std::regex(R"(\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b)")});
+    entityPatterns_.push_back({"number", std::regex(R"(\b(\d+(?:\.\d+)?)\b)")});
+    entityPatterns_.push_back({"date", std::regex(R"(\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b)")});
+}
+
+void DialogueStateMachine::initializeDefaultTransitions() {
+    // IDLE -> GREETING
+    transitions_.push_back({
+        DialogueState::IDLE,
+        DialogueIntent::GREETING,
+        DialogueState::GREETING,
+        "Hello! How can I help you today?",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    // GREETING -> TOPIC_DISCOVERY
+    transitions_.push_back({
+        DialogueState::GREETING,
+        DialogueIntent::STATEMENT,
+        DialogueState::TOPIC_DISCOVERY,
+        "I see. Tell me more about that.",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    transitions_.push_back({
+        DialogueState::GREETING,
+        DialogueIntent::QUESTION,
+        DialogueState::PROCESSING,
+        "",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    // TOPIC_DISCOVERY -> INFORMATION_GATHERING
+    transitions_.push_back({
+        DialogueState::TOPIC_DISCOVERY,
+        DialogueIntent::STATEMENT,
+        DialogueState::INFORMATION_GATHERING,
+        "That's interesting. Can you provide more details?",
+        nullptr,
+        nullptr,
+        0.8f
+    });
+    
+    // INFORMATION_GATHERING -> PROCESSING
+    transitions_.push_back({
+        DialogueState::INFORMATION_GATHERING,
+        DialogueIntent::CONFIRMATION,
+        DialogueState::PROCESSING,
+        "Great, let me process that information.",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    // PROCESSING -> RESPONSE_DELIVERY
+    transitions_.push_back({
+        DialogueState::PROCESSING,
+        DialogueIntent::UNKNOWN,
+        DialogueState::RESPONSE_DELIVERY,
+        "",
+        nullptr,
+        nullptr,
+        0.5f
+    });
+    
+    // RESPONSE_DELIVERY -> FOLLOW_UP
+    transitions_.push_back({
+        DialogueState::RESPONSE_DELIVERY,
+        DialogueIntent::QUESTION,
+        DialogueState::FOLLOW_UP,
+        "",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    // FOLLOW_UP -> PROCESSING
+    transitions_.push_back({
+        DialogueState::FOLLOW_UP,
+        DialogueIntent::STATEMENT,
+        DialogueState::PROCESSING,
+        "",
+        nullptr,
+        nullptr,
+        0.8f
+    });
+    
+    // Any state -> CLOSING on goodbye
+    for (auto state : {DialogueState::GREETING, DialogueState::TOPIC_DISCOVERY, 
+                       DialogueState::INFORMATION_GATHERING, DialogueState::RESPONSE_DELIVERY,
+                       DialogueState::FOLLOW_UP}) {
+        transitions_.push_back({
+            state,
+            DialogueIntent::GOODBYE,
+            DialogueState::CLOSING,
+            "Goodbye! It was nice talking with you.",
+            nullptr,
+            nullptr,
+            2.0f  // High priority
+        });
+    }
+    
+    // CLOSING -> IDLE
+    transitions_.push_back({
+        DialogueState::CLOSING,
+        DialogueIntent::UNKNOWN,
+        DialogueState::IDLE,
+        "",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+    
+    // Any state -> CLARIFICATION
+    for (auto state : {DialogueState::TOPIC_DISCOVERY, DialogueState::INFORMATION_GATHERING,
+                       DialogueState::RESPONSE_DELIVERY}) {
+        transitions_.push_back({
+            state,
+            DialogueIntent::CLARIFICATION,
+            DialogueState::CLARIFICATION,
+            "Let me explain that more clearly...",
+            nullptr,
+            nullptr,
+            1.5f
+        });
+    }
+    
+    // CLARIFICATION -> previous state or TOPIC_DISCOVERY
+    transitions_.push_back({
+        DialogueState::CLARIFICATION,
+        DialogueIntent::CONFIRMATION,
+        DialogueState::TOPIC_DISCOVERY,
+        "Great, I'm glad that's clearer now.",
+        nullptr,
+        nullptr,
+        1.0f
+    });
+}
+
+DialogueIntent DialogueStateMachine::detectIntent(const std::string& input) const {
+    std::string normalizedInput = toLowercase(trim(input));
+    
+    // Check each intent pattern
+    for (const auto& [intent, patterns] : intentPatterns_) {
+        for (const auto& pattern : patterns) {
+            if (std::regex_search(normalizedInput, pattern)) {
+                return intent;
+            }
+        }
+    }
+    
+    // Default to statement if no other intent detected
+    if (!input.empty()) {
+        return DialogueIntent::STATEMENT;
+    }
+    
+    return DialogueIntent::UNKNOWN;
+}
+
+std::unordered_map<std::string, std::string> DialogueStateMachine::extractEntities(const std::string& input) const {
+    std::unordered_map<std::string, std::string> entities;
+    
+    for (const auto& [entityType, pattern] : entityPatterns_) {
+        std::smatch match;
+        if (std::regex_search(input, match, pattern)) {
+            // Get the last capture group (the actual value)
+            entities[entityType] = match[match.size() - 1].str();
+        }
+    }
+    
+    return entities;
+}
+
+DialogueTransition* DialogueStateMachine::findTransition(DialogueState fromState, DialogueIntent intent, const ConversationContext& context) {
+    DialogueTransition* bestMatch = nullptr;
+    float bestPriority = -1.0f;
+    
+    for (auto& transition : transitions_) {
+        if (transition.fromState == fromState && transition.intent == intent) {
+            if (transition.priority > bestPriority) {
+                // Check guard condition if present - evaluate with context
+                if (!transition.guard || transition.guard(context)) {
+                    bestMatch = &transition;
+                    bestPriority = transition.priority;
+                }
+            }
+        }
+    }
+    
+    // If no exact match, try with UNKNOWN intent as fallback
+    if (!bestMatch && intent != DialogueIntent::UNKNOWN) {
+        for (auto& transition : transitions_) {
+            if (transition.fromState == fromState && transition.intent == DialogueIntent::UNKNOWN) {
+                if (transition.priority > bestPriority) {
+                    // Check guard condition for fallback transitions too
+                    if (!transition.guard || transition.guard(context)) {
+                        bestMatch = &transition;
+                        bestPriority = transition.priority;
+                    }
+                }
+            }
+        }
+    }
+    
+    return bestMatch;
+}
+
+std::string DialogueStateMachine::executeTransition(DialogueTransition& transition, 
+                                                     ConversationContext& context) {
+    DialogueState oldState = currentState_;
+    
+    // Execute action if present
+    if (transition.action) {
+        transition.action(context);
+    }
+    
+    // Transition to new state
+    currentState_ = transition.toState;
+    recordStateTransition(oldState, currentState_);
+    
+    return transition.responseTemplate;
+}
+
+void DialogueStateMachine::recordStateTransition(DialogueState from, DialogueState to) {
+    // Maintain an ordered trace of visited states. Seed the trace with the
+    // originating state the first time, then always append the destination so
+    // that both endpoints of every transition (including forceState() jumps)
+    // are captured. Previously only `from` was recorded, which silently
+    // dropped the destination state from getStateHistory() until the *next*
+    // transition and lost forced-state targets entirely.
+    if (stateHistory_.empty()) {
+        stateHistory_.push_back(from);
+    }
+    stateHistory_.push_back(to);
+    while (stateHistory_.size() > 100) {
+        stateHistory_.erase(stateHistory_.begin());
+    }
+}
+
+std::string DialogueStateMachine::processInput(const std::string& input, ConversationContext& context) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    
+    // Detect intent
+    DialogueIntent intent = detectIntent(input);
+    
+    // Extract entities and store in context
+    auto entities = extractEntities(input);
+    for (const auto& [key, value] : entities) {
+        context.setSessionData("entity_" + key, value);
+    }
+    
+    // Try to fill slots in current frame
+    if (!frameStack_.empty()) {
+        auto& currentFrame = frameStack_.back();
+        for (auto& slot : currentFrame.slots) {
+            if (!slot.filled) {
+                auto it = entities.find(slot.name);
+                if (it != entities.end()) {
+                    slot.value = it->second;
+                    slot.filled = true;
+                }
+            }
+        }
+        
+        // Check if all required slots are filled
+        if (currentFrame.allSlotsFilledStatus()) {
+            currentFrame.completed = true;
+        }
+    }
+    
+    // Find and execute transition
+    DialogueTransition* transition = findTransition(currentState_, intent, context);
+    if (transition) {
+        return executeTransition(*transition, context);
+    }
+    
+    // No valid transition found - stay in current state
+    return "I understand. Please continue.";
+}
+
+DialogueState DialogueStateMachine::getCurrentState() const {
+    return currentState_;
+}
+
+std::string DialogueStateMachine::getCurrentStateString() const {
+    return dialogueStateToString(currentState_);
+}
+
+void DialogueStateMachine::transitionTo(DialogueState newState) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    recordStateTransition(currentState_, newState);
+    currentState_ = newState;
+}
+
+void DialogueStateMachine::registerTransition(const DialogueTransition& transition) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    transitions_.push_back(transition);
+}
+
+void DialogueStateMachine::clearTransitions() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    transitions_.clear();
+}
+
+void DialogueStateMachine::pushFrame(const DialogueFrame& frame) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    frameStack_.push_back(frame);
+}
+
+std::optional<DialogueFrame> DialogueStateMachine::popFrame() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (frameStack_.empty()) {
+        return std::nullopt;
+    }
+    DialogueFrame frame = frameStack_.back();
+    frameStack_.pop_back();
+    return frame;
+}
+
+std::optional<DialogueFrame> DialogueStateMachine::getCurrentFrame() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (frameStack_.empty()) {
+        return std::nullopt;
+    }
+    return frameStack_.back();
+}
+
+bool DialogueStateMachine::fillSlot(const std::string& slotName, const std::any& value) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (frameStack_.empty()) {
+        return false;
+    }
+    
+    auto& currentFrame = frameStack_.back();
+    for (auto& slot : currentFrame.slots) {
+        if (slot.name == slotName) {
+            if (slot.validate(value)) {
+                slot.value = value;
+                slot.filled = true;
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+void DialogueStateMachine::reset() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    currentState_ = DialogueState::IDLE;
+    frameStack_.clear();
+    stateHistory_.clear();
+}
+
+std::vector<DialogueState> DialogueStateMachine::getStateHistory() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return stateHistory_;
+}
+
+JsonValue DialogueStateMachine::toJson() const {
+    JsonValue json;
+    json["currentState"] = getCurrentStateString();
+    json["historySize"] = std::to_string(stateHistory_.size());
+    json["frameStackSize"] = std::to_string(frameStack_.size());
+    return json;
+}
+
+std::unique_ptr<DialogueStateMachine> DialogueStateMachine::fromJson(const JsonValue& json) {
+    auto machine = std::make_unique<DialogueStateMachine>();
+    auto it = json.find("currentState");
+    if (it != json.end()) {
+        try {
+            std::string stateStr = std::any_cast<std::string>(it->second);
+            machine->transitionTo(stringToDialogueState(stateStr));
+        } catch (const std::bad_any_cast&) {
+            // Keep default state
+        }
+    }
+    return machine;
+}
+
+// =====================================================
+// Utility Functions
+// =====================================================
+
+std::string dialogueStateToString(DialogueState state) {
+    switch (state) {
+        case DialogueState::IDLE: return "IDLE";
+        case DialogueState::GREETING: return "GREETING";
+        case DialogueState::TOPIC_DISCOVERY: return "TOPIC_DISCOVERY";
+        case DialogueState::INFORMATION_GATHERING: return "INFORMATION_GATHERING";
+        case DialogueState::CLARIFICATION: return "CLARIFICATION";
+        case DialogueState::PROCESSING: return "PROCESSING";
+        case DialogueState::RESPONSE_DELIVERY: return "RESPONSE_DELIVERY";
+        case DialogueState::CONFIRMATION: return "CONFIRMATION";
+        case DialogueState::FOLLOW_UP: return "FOLLOW_UP";
+        case DialogueState::CLOSING: return "CLOSING";
+        case DialogueState::ERROR_RECOVERY: return "ERROR_RECOVERY";
+        default: return "UNKNOWN";
+    }
+}
+
+DialogueState stringToDialogueState(const std::string& str) {
+    if (str == "IDLE") return DialogueState::IDLE;
+    if (str == "GREETING") return DialogueState::GREETING;
+    if (str == "TOPIC_DISCOVERY") return DialogueState::TOPIC_DISCOVERY;
+    if (str == "INFORMATION_GATHERING") return DialogueState::INFORMATION_GATHERING;
+    if (str == "CLARIFICATION") return DialogueState::CLARIFICATION;
+    if (str == "PROCESSING") return DialogueState::PROCESSING;
+    if (str == "RESPONSE_DELIVERY") return DialogueState::RESPONSE_DELIVERY;
+    if (str == "CONFIRMATION") return DialogueState::CONFIRMATION;
+    if (str == "FOLLOW_UP") return DialogueState::FOLLOW_UP;
+    if (str == "CLOSING") return DialogueState::CLOSING;
+    if (str == "ERROR_RECOVERY") return DialogueState::ERROR_RECOVERY;
+    return DialogueState::IDLE;
+}
+
+std::string dialogueIntentToString(DialogueIntent intent) {
+    switch (intent) {
+        case DialogueIntent::UNKNOWN: return "UNKNOWN";
+        case DialogueIntent::GREETING: return "GREETING";
+        case DialogueIntent::QUESTION: return "QUESTION";
+        case DialogueIntent::STATEMENT: return "STATEMENT";
+        case DialogueIntent::REQUEST: return "REQUEST";
+        case DialogueIntent::CONFIRMATION: return "CONFIRMATION";
+        case DialogueIntent::NEGATION: return "NEGATION";
+        case DialogueIntent::CLARIFICATION: return "CLARIFICATION";
+        case DialogueIntent::GOODBYE: return "GOODBYE";
+        case DialogueIntent::HELP: return "HELP";
+        case DialogueIntent::EMOTION_EXPRESSION: return "EMOTION_EXPRESSION";
+        case DialogueIntent::TOPIC_CHANGE: return "TOPIC_CHANGE";
+        default: return "UNKNOWN";
+    }
+}
+
+DialogueIntent stringToDialogueIntent(const std::string& str) {
+    if (str == "GREETING") return DialogueIntent::GREETING;
+    if (str == "QUESTION") return DialogueIntent::QUESTION;
+    if (str == "STATEMENT") return DialogueIntent::STATEMENT;
+    if (str == "REQUEST") return DialogueIntent::REQUEST;
+    if (str == "CONFIRMATION") return DialogueIntent::CONFIRMATION;
+    if (str == "NEGATION") return DialogueIntent::NEGATION;
+    if (str == "CLARIFICATION") return DialogueIntent::CLARIFICATION;
+    if (str == "GOODBYE") return DialogueIntent::GOODBYE;
+    if (str == "HELP") return DialogueIntent::HELP;
+    if (str == "EMOTION_EXPRESSION") return DialogueIntent::EMOTION_EXPRESSION;
+    if (str == "TOPIC_CHANGE") return DialogueIntent::TOPIC_CHANGE;
+    return DialogueIntent::UNKNOWN;
+}
+
 } // namespace elizaos

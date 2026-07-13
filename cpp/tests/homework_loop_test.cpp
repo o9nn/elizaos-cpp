@@ -277,6 +277,12 @@ TEST(HomeworkLoop, DefaultProviderRewardsRunningAgent) {
     EXPECT_GE(sumAfter, sumBefore);
 }
 
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+
 TEST(HomeworkLoop, DestructiveSignalStaysFalseEveryCycle) {
     // The non-destructive guarantee is now an explicitly-established per-cycle
     // signal (issuedDestructiveCommand_ is reset to false at the top of every
@@ -306,9 +312,4 @@ TEST(HomeworkLoop, HomeworkKeepsUnderlyingAgentAlive) {
 
     loop.runHomework(8);
     EXPECT_GE(agent.getOpenGoalCount(), 1u);
-}
-
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

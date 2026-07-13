@@ -146,5 +146,7 @@ TEST(HatsUtils, CreateDataSourceFromConfig) {
     cfg.location = "/tmp/none";
     auto ds = hats_utils::createDataSource(cfg);
     EXPECT_NE(ds, nullptr);
-    if (ds) EXPECT_EQ(ds->getId(), "auto");
+    if (ds) {
+        EXPECT_EQ(ds->getId(), "auto");
+    }
 }

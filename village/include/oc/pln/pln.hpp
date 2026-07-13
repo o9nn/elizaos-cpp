@@ -20,7 +20,7 @@ namespace formulas {
 // Deduction: A→B, B→C  ⊢  A→C
 // sAC = sAB * sBC + (1 - sAB) * (sC - sB * sBC) / (1 - sB)
 inline TruthValue deduction(const TruthValue& AB, const TruthValue& BC,
-                             double sA, double sB, double sC) {
+                             [[maybe_unused]] double sA, double sB, double sC) {
     double sAB = AB.mean;
     double sBC = BC.mean;
 
@@ -42,7 +42,7 @@ inline TruthValue deduction(const TruthValue& AB, const TruthValue& BC,
 // Induction: A→B, A→C  ⊢  B→C
 // sBC = sAB * sAC + (1 - sAB) * (sC - sA * sAC) / (1 - sA)
 inline TruthValue induction(const TruthValue& AB, const TruthValue& AC,
-                              double sA, double sB, double sC) {
+                              double sA, [[maybe_unused]] double sB, double sC) {
     double sAB = AB.mean;
     double sAC = AC.mean;
 
@@ -63,7 +63,7 @@ inline TruthValue induction(const TruthValue& AB, const TruthValue& AC,
 // Abduction: B→A, B→C  ⊢  A→C
 // sAC = sBA * sBC + (1 - sBA) * (sC - sB * sBC) / (1 - sB)
 inline TruthValue abduction(const TruthValue& BA, const TruthValue& BC,
-                              double sA, double sB, double sC) {
+                              [[maybe_unused]] double sA, double sB, double sC) {
     double sBA = BA.mean;
     double sBC = BC.mean;
 

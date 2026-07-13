@@ -256,4 +256,214 @@ namespace ElizaPatterns {
     std::vector<ResponsePattern> getAllPatterns();
 }
 
+// =====================================================
+// Dialogue State Machine for Multi-Turn Conversations
+// Task 2.1.3: Multi-turn dialogue management with state machines
+// =====================================================
+
+/**
+ * Dialogue state types
+ */
+enum class DialogueState {
+    IDLE,               // No active conversation
+    GREETING,           // Initial greeting phase
+    TOPIC_DISCOVERY,    // Discovering conversation topic
+    INFORMATION_GATHERING, // Collecting information from user
+    CLARIFICATION,      // Asking for clarification
+    PROCESSING,         // Processing user request
+    RESPONSE_DELIVERY,  // Delivering response
+    CONFIRMATION,       // Confirming understanding
+    FOLLOW_UP,          // Following up on previous topic
+    CLOSING,            // Ending conversation
+    ERROR_RECOVERY      // Recovering from error state
+};
+
+/**
+ * Dialogue intent types
+ */
+enum class DialogueIntent {
+    UNKNOWN,
+    GREETING,
+    QUESTION,
+    STATEMENT,
+    REQUEST,
+    CONFIRMATION,
+    NEGATION,
+    CLARIFICATION,
+    GOODBYE,
+    HELP,
+    EMOTION_EXPRESSION,
+    TOPIC_CHANGE
+};
+
+/**
+ * Dialogue transition for state machine
+ */
+struct DialogueTransition {
+    DialogueState fromState;
+    DialogueIntent intent;
+    DialogueState toState;
+    std::string responseTemplate;
+    std::function<bool(const ConversationContext&)> guard;
+    std::function<void(ConversationContext&)> action;
+    float priority = 1.0f;
+};
+
+/**
+ * Slot for information gathering
+ */
+struct DialogueSlot {
+    std::string name;
+    std::string type;           // "string", "number", "date", "boolean", "enum"
+    bool required = false;
+    bool filled = false;
+    std::any value;
+    std::string prompt;         // Prompt to ask for this slot
+    std::vector<std::string> allowedValues; // For enum type
+    
+    bool validate(const std::any& val) const;
+    std::string getPrompt() const;
+};
+
+/**
+ * Dialogue frame for tracking conversation goals
+ */
+struct DialogueFrame {
+    std::string name;
+    std::string description;
+    std::vector<DialogueSlot> slots;
+    DialogueState entryState;
+    DialogueState exitState;
+    std::chrono::system_clock::time_point createdAt;
+    bool completed = false;
+    
+    bool allSlotsFilledStatus() const;
+    std::vector<std::string> getMissingSlots() const;
+    std::string getNextPrompt() const;
+};
+
+/**
+ * Dialogue state machine for managing multi-turn conversations
+ */
+class DialogueStateMachine {
+public:
+    DialogueStateMachine();
+    ~DialogueStateMachine() = default;
+    
+    /**
+     * Process user input and transition state
+     * @param input User input text
+     * @param context Current conversation context
+     * @return Response to user
+     */
+    std::string processInput(const std::string& input, ConversationContext& context);
+    
+    /**
+     * Get current dialogue state
+     */
+    DialogueState getCurrentState() const;
+    
+    /**
+     * Get current dialogue state as string
+     */
+    std::string getCurrentStateString() const;
+    
+    /**
+     * Force state transition (for external control)
+     */
+    void transitionTo(DialogueState newState);
+    
+    /**
+     * Register custom transition
+     */
+    void registerTransition(const DialogueTransition& transition);
+    
+    /**
+     * Clear all transitions
+     */
+    void clearTransitions();
+    
+    /**
+     * Push a dialogue frame onto the stack
+     */
+    void pushFrame(const DialogueFrame& frame);
+    
+    /**
+     * Pop current frame from stack
+     */
+    std::optional<DialogueFrame> popFrame();
+    
+    /**
+     * Get current frame
+     */
+    std::optional<DialogueFrame> getCurrentFrame() const;
+    
+    /**
+     * Fill slot in current frame
+     */
+    bool fillSlot(const std::string& slotName, const std::any& value);
+    
+    /**
+     * Detect intent from input
+     */
+    DialogueIntent detectIntent(const std::string& input) const;
+    
+    /**
+     * Extract entities from input
+     */
+    std::unordered_map<std::string, std::string> extractEntities(const std::string& input) const;
+    
+    /**
+     * Reset state machine
+     */
+    void reset();
+    
+    /**
+     * Get state history
+     */
+    std::vector<DialogueState> getStateHistory() const;
+    
+    /**
+     * Serialize to JSON
+     */
+    JsonValue toJson() const;
+    
+    /**
+     * Load from JSON
+     */
+    static std::unique_ptr<DialogueStateMachine> fromJson(const JsonValue& json);
+    
+    /**
+     * Initialize with default transitions
+     */
+    void initializeDefaultTransitions();
+
+private:
+    DialogueState currentState_ = DialogueState::IDLE;
+    std::vector<DialogueTransition> transitions_;
+    std::vector<DialogueFrame> frameStack_;
+    std::vector<DialogueState> stateHistory_;
+    mutable std::mutex mutex_;
+    
+    // Intent detection patterns
+    std::unordered_map<DialogueIntent, std::vector<std::regex>> intentPatterns_;
+    
+    // Entity extraction patterns
+    std::vector<std::pair<std::string, std::regex>> entityPatterns_;
+    
+    DialogueTransition* findTransition(DialogueState fromState, DialogueIntent intent, const ConversationContext& context);
+    std::string executeTransition(DialogueTransition& transition, ConversationContext& context);
+    void recordStateTransition(DialogueState from, DialogueState to);
+    void loadIntentPatterns();
+    void loadEntityPatterns();
+};
+
+/**
+ * Utility functions for dialogue state machine
+ */
+std::string dialogueStateToString(DialogueState state);
+DialogueState stringToDialogueState(const std::string& str);
+std::string dialogueIntentToString(DialogueIntent intent);
+DialogueIntent stringToDialogueIntent(const std::string& str);
+
 } // namespace elizaos

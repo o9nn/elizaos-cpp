@@ -417,7 +417,6 @@ TEST_F(AgentMemoryTest, ClearAllMemories) {
     EXPECT_EQ(memory::retrieve("mem1"), nullptr);
     EXPECT_EQ(memory::retrieve("mem2"), nullptr);
 }
-
 // ============================================================================
 // Hierarchical / Associative Memory Subsystem E2E Tests
 // Validates the ported memory-strength decay, consolidation, hierarchical

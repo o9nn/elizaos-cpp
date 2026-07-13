@@ -9,22 +9,57 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <future>
 
 using namespace elizaos;
+
+// Helper to run test code with a timeout to prevent stuck tests
+// WARNING: On timeout, the thread is detached (not killed) - it may continue running
+// This is acceptable for tests where the alternative is hanging indefinitely
+template<typename Func>
+void runWithTimeout(Func f, int timeoutMs = 5000) {
+    std::promise<void> promise;
+    std::future<void> future = promise.get_future();
+    
+    // Capture f by value to ensure it remains valid even if thread is detached
+    std::thread t([p = std::move(promise), func = std::move(f)]() mutable {
+        try {
+            func();
+            p.set_value();
+        } catch (...) {
+            p.set_exception(std::current_exception());
+        }
+    });
+    
+    auto status = future.wait_for(std::chrono::milliseconds(timeoutMs));
+    if (status == std::future_status::timeout) {
+        t.detach(); // Thread abandoned - unavoidable for stuck tests
+        FAIL() << "Test timed out after " << timeoutMs << "ms (thread detached)";
+    } else {
+        t.join();
+        future.get(); // Re-throw any exception from the test
+    }
+}
 
 // Test Fixture for agentloop
 class AgentLoopTest : public ::testing::Test {
 protected:
     std::atomic<int> stepCounter{0};
     std::atomic<int> failCounter{0};
+    std::unique_ptr<AgentLoop> activeLoop_; // Track active loop for cleanup
     
     void SetUp() override {
         stepCounter = 0;
         failCounter = 0;
+        activeLoop_.reset();
     }
     
     void TearDown() override {
-        // Cleanup test environment
+        // Force stop any running loops to prevent test hangs
+        if (activeLoop_) {
+            activeLoop_->stop();
+            activeLoop_.reset();
+        }
     }
     
     // Helper: Create simple counting step
@@ -724,6 +759,197 @@ TEST_F(AgentLoopTest, ErrorThresholdTriggersDegraded) {
     EXPECT_TRUE(finalHealth == HealthStatus::DEGRADED ||
                 finalHealth == HealthStatus::UNHEALTHY ||
                 finalHealth == HealthStatus::STOPPED);
+}
+
+// ============================================================================
+// Task 1.1.2: Circuit Breaker Tests
+// ============================================================================
+
+TEST(CircuitBreakerTest, StartsInClosedState) {
+    CircuitBreaker cb;
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    EXPECT_EQ(cb.getStateString(), "CLOSED");
+}
+
+TEST(CircuitBreakerTest, AllowsRequestsWhenClosed) {
+    CircuitBreaker cb;
+    EXPECT_TRUE(cb.allowRequest());
+    EXPECT_TRUE(cb.allowRequest());
+    EXPECT_TRUE(cb.allowRequest());
+}
+
+TEST(CircuitBreakerTest, OpensAfterFailureThreshold) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 3;
+    CircuitBreaker cb(config);
+    
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    EXPECT_EQ(cb.getStateString(), "OPEN");
+}
+
+TEST(CircuitBreakerTest, RejectsRequestsWhenOpen) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 2;
+    config.timeoutMs = 10000; // Long timeout so it stays open
+    CircuitBreaker cb(config);
+    
+    // Open the circuit
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    
+    // Should reject requests
+    EXPECT_FALSE(cb.allowRequest());
+}
+
+TEST(CircuitBreakerTest, TransitionsToHalfOpenAfterTimeout) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 2;
+    config.timeoutMs = 50; // Short timeout for testing
+    CircuitBreaker cb(config);
+    
+    // Open the circuit
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    
+    // Wait for timeout
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    
+    // Should transition to half-open on next request
+    EXPECT_TRUE(cb.allowRequest());
+    EXPECT_EQ(cb.getState(), CircuitState::HALF_OPEN);
+}
+
+TEST(CircuitBreakerTest, ClosesAfterSuccessInHalfOpen) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 2;
+    config.successThreshold = 2;
+    config.timeoutMs = 10;
+    CircuitBreaker cb(config);
+    
+    // Open and wait for half-open
+    cb.recordFailure();
+    cb.recordFailure();
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    cb.allowRequest();
+    
+    // Record successes
+    cb.recordSuccess();
+    cb.recordSuccess();
+    
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+}
+
+TEST(CircuitBreakerTest, ReturnsToOpenOnFailureInHalfOpen) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 2;
+    config.timeoutMs = 10;
+    CircuitBreaker cb(config);
+    
+    // Open and wait for half-open
+    cb.recordFailure();
+    cb.recordFailure();
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    cb.allowRequest();
+    EXPECT_EQ(cb.getState(), CircuitState::HALF_OPEN);
+    
+    // Record failure in half-open
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+}
+
+TEST(CircuitBreakerTest, Reset) {
+    CircuitBreakerConfig config;
+    config.failureThreshold = 2;
+    CircuitBreaker cb(config);
+    
+    cb.recordFailure();
+    cb.recordFailure();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    
+    cb.reset();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    EXPECT_EQ(cb.getFailureCount(), 0);
+    EXPECT_EQ(cb.getSuccessCount(), 0);
+}
+
+TEST(CircuitBreakerTest, ForceOpenAndClosed) {
+    CircuitBreaker cb;
+    
+    cb.forceOpen();
+    EXPECT_EQ(cb.getState(), CircuitState::OPEN);
+    
+    cb.forceClosed();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+}
+
+TEST(CircuitBreakerTest, TracksCounts) {
+    CircuitBreaker cb;
+    
+    cb.recordSuccess();
+    cb.recordSuccess();
+    cb.recordFailure();
+    
+    EXPECT_EQ(cb.getSuccessCount(), 2);
+    EXPECT_EQ(cb.getFailureCount(), 1);
+    EXPECT_EQ(cb.getTotalCalls(), 3);
+}
+
+TEST(CircuitBreakerTest, CalculatesFailureRate) {
+    CircuitBreakerConfig config;
+    config.evaluationWindow = 4;
+    CircuitBreaker cb(config);
+    
+    cb.recordSuccess();
+    cb.recordFailure();
+    cb.recordSuccess();
+    cb.recordFailure();
+    
+    EXPECT_NEAR(cb.getFailureRate(), 0.5, 0.01);
+}
+
+TEST(CircuitBreakerTest, PrometheusMetrics) {
+    CircuitBreaker cb;
+    cb.recordSuccess();
+    cb.recordFailure();
+    
+    auto metrics = cb.toPrometheusFormat("test_cb");
+    EXPECT_NE(metrics.find("test_cb_state"), std::string::npos);
+    EXPECT_NE(metrics.find("test_cb_requests_total"), std::string::npos);
+    EXPECT_NE(metrics.find("test_cb_failure_rate"), std::string::npos);
+}
+
+TEST(CircuitBreakerTest, AgentLoopIntegration) {
+    std::vector<LoopStep> steps = {
+        LoopStep{
+            [](std::shared_ptr<void> input) -> std::shared_ptr<void> {
+                return input;
+            },
+            "simple"
+        }
+    };
+    AgentLoop loop(steps, false, 0.1);
+    
+    EXPECT_FALSE(loop.isCircuitBreakerEnabled());
+    
+    loop.enableCircuitBreaker(true);
+    EXPECT_TRUE(loop.isCircuitBreakerEnabled());
+    
+    CircuitBreaker& cb = loop.getCircuitBreaker();
+    EXPECT_EQ(cb.getState(), CircuitState::CLOSED);
+    
+    CircuitBreakerConfig config;
+    config.failureThreshold = 10;
+    loop.setCircuitBreakerConfig(config);
 }
 
 int main(int argc, char **argv) {

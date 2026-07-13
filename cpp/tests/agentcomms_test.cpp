@@ -7,11 +7,23 @@
 #include <thread>
 #include <condition_variable>
 #include <mutex>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#define SHUT_RDWR SD_BOTH
+#define MSG_NOSIGNAL 0
+inline int test_close_socket(int fd) { return ::closesocket(fd); }
+using socklen_t = int;
+#else
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+inline int test_close_socket(int fd) { return ::close(fd); }
+#endif
 
 using namespace elizaos;
 
@@ -68,7 +80,8 @@ public:
         serverFd_ = ::socket(AF_INET, SOCK_STREAM, 0);
         EXPECT_GE(serverFd_, 0);
         int opt = 1;
-        EXPECT_EQ(::setsockopt(serverFd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)), 0);
+        EXPECT_EQ(::setsockopt(serverFd_, SOL_SOCKET, SO_REUSEADDR,
+                              reinterpret_cast<const char*>(&opt), sizeof(opt)), 0);
 
         sockaddr_in addr{};
         addr.sin_family = AF_INET;
@@ -99,12 +112,12 @@ public:
         if (!running_.exchange(false)) return;
         if (serverFd_ >= 0) {
             ::shutdown(serverFd_, SHUT_RDWR);
-            ::close(serverFd_);
+            test_close_socket(serverFd_);
             serverFd_ = -1;
         }
         if (clientFd_ >= 0) {
             ::shutdown(clientFd_, SHUT_RDWR);
-            ::close(clientFd_);
+            test_close_socket(clientFd_);
             clientFd_ = -1;
         }
         if (worker_.joinable()) worker_.join();

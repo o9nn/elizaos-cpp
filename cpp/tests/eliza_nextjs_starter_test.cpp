@@ -9,11 +9,15 @@ using namespace elizaos::nextjs_starter;
 
 TEST(NextJSTemplateGenerator, ConstructAndUse) {
     NextJSTemplateGenerator g;
+    // Touch the instance so the object is genuinely constructed/destructed and
+    // not optimized away (also silences -Wunused-variable).
+    (void)&g;
     SUCCEED();
 }
 
 TEST(WebSocketIntegration, ConstructAndUse) {
     WebSocketIntegration w;
+    (void)&w;
     SUCCEED();
 }
 
@@ -24,7 +28,8 @@ TEST(GenerateNextJSProject, RunsWithoutCrash) {
         (void)r;
     });
     std::string cmd = "rm -rf " + path;
-    std::system(cmd.c_str());
+    int rc = std::system(cmd.c_str());
+    (void)rc;  // best-effort cleanup; test outcome does not depend on it
 }
 
 // generateNextJSProjectWithWebSocket is declared in the header but not

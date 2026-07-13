@@ -75,7 +75,9 @@ TEST(CharacterProfile, ValidateAfterCreation) {
     CharacterProfile cp("Bob", "");
     auto ok = cp.validate();
     auto errs = cp.getValidationErrors();
-    if (!ok) EXPECT_FALSE(errs.empty());
+    if (!ok) {
+        EXPECT_FALSE(errs.empty());
+    }
 }
 
 TEST(CharacterProfile, GeneratesResponseAndEmotionalState) {

@@ -260,10 +260,7 @@ TEST_F(AgentLoopTest, InputTypeConversionSafety) {
     EXPECT_TRUE(qValue == 'q');
     EXPECT_FALSE(eofValue == ' ');
     EXPECT_FALSE(eofValue == 'q');
-}
-
-
-// ============================================================================
+}// ============================================================================
 // Autonomy Optimisation E2E Tests
 // Validates the ported CircuitBreaker, CognitiveLoad, graceful degradation,
 // priority-step execution, latency percentiles, and Prometheus export.

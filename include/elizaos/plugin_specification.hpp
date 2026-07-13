@@ -9,8 +9,8 @@
 #include <any>
 #include <mutex>
 #include <chrono>
-#include "core.hpp"
-#include "agentmemory.hpp"
+#include "elizaos/core.hpp"
+#include "elizaos/agentmemory.hpp"
 
 namespace elizaos {
 
@@ -256,10 +256,39 @@ public:
     std::vector<PluginMetadata> discoverPlugins(const std::string& directory) const;
     
     /**
-     * Load plugin from file
+     * Load plugin from file (dynamic loading via dlopen/LoadLibrary)
+     * @param pluginPath Path to the shared library (.so/.dll/.dylib)
+     * @return Loaded plugin interface or nullptr on failure
      */
     std::shared_ptr<PluginInterface> loadPlugin(const std::string& pluginPath);
-    
+
+    /**
+     * Unload a dynamically loaded plugin
+     * @param pluginName Name of the plugin to unload
+     * @return true if successfully unloaded
+     */
+    bool unloadPlugin(const std::string& pluginName);
+
+    /**
+     * Check if a plugin was dynamically loaded
+     * @param pluginName Name of the plugin
+     * @return true if dynamically loaded
+     */
+    bool isDynamicPlugin(const std::string& pluginName) const;
+
+    /**
+     * Get all dynamically loaded plugins
+     * @return List of dynamic plugin names
+     */
+    std::vector<std::string> getDynamicPlugins() const;
+
+    /**
+     * Hot-reload a plugin (unload and reload)
+     * @param pluginName Name of the plugin to reload
+     * @return true if successfully reloaded
+     */
+    bool hotReloadPlugin(const std::string& pluginName);
+
     /**
      * Validate plugin dependencies
      */
@@ -278,6 +307,14 @@ public:
 private:
     std::unordered_map<std::string, std::shared_ptr<PluginInterface>> plugins_;
     mutable std::mutex pluginsMutex_;
+    
+    // Dynamic plugin tracking
+    struct DynamicPluginInfo {
+        void* handle;           // dlopen handle
+        std::string path;       // Original path
+        std::chrono::system_clock::time_point loadTime;
+    };
+    std::unordered_map<std::string, DynamicPluginInfo> dynamicPlugins_;
     
     bool validatePlugin(std::shared_ptr<PluginInterface> plugin) const;
 };

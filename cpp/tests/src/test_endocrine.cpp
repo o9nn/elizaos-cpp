@@ -296,7 +296,8 @@ TEST(EndocrineSystem, ResetClearsState) {
     
     system.reset();
     EXPECT_EQ(system.tickCount(), 0u);
-    // After reset, mode is derived from baselines -> Exploration.
+    // After reset, the mode is derived from baseline hormone levels.
+    // With balanced baselines the agent starts in Exploration (positive valence, non-negative arousal).
     EXPECT_EQ(system.cognitiveMode(), CognitiveMode::Exploration);
 }
 
