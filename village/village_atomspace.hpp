@@ -692,8 +692,8 @@ public:
                    api_key("cogcity-village-2026"),
                    model("/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf"),
                    sti_threshold(150.0),
-                   inference_cooldown_cycles(100),
-                   max_concurrent_inferences(2) {}
+                   inference_cooldown_cycles(50),
+                   max_concurrent_inferences(4) {}
     };
 
     using InferenceCallback = std::function<void(const std::string&, const std::string&)>;
@@ -769,10 +769,13 @@ private:
         nlohmann::json messages = nlohmann::json::array();
         messages.push_back({{"role", "system"}, {"content", req.system_prompt}});
         messages.push_back({{"role", "user"}, {"content", req.user_prompt}});
+        nlohmann::json stop_tokens = nlohmann::json::array();
+        stop_tokens.push_back("<|im_end|>");
+        stop_tokens.push_back("<|im_start|>");
         nlohmann::json payload = {
             {"model", config_.model}, {"messages", messages},
             {"temperature", req.temperature}, {"min_p", req.min_p},
-            {"max_tokens", req.max_tokens}
+            {"max_tokens", req.max_tokens}, {"stop", stop_tokens}
         };
         CURL* curl = curl_easy_init();
         if (!curl) return "";
@@ -790,39 +793,84 @@ private:
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
         curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
         CURLcode res = curl_easy_perform(curl);
+        fprintf(stderr, "[INFER] curl_res=%d resp_len=%zu\n", (int)res, response.size());
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
         if (res != CURLE_OK) return "";
         try {
             auto j = nlohmann::json::parse(response);
-            if (j.contains("choices") && !j["choices"].empty())
-                return j["choices"][0]["message"]["content"].get<std::string>();
-        } catch (...) {}
+            if (j.contains("choices") && !j["choices"].empty()) {
+                std::string content = j["choices"][0]["message"]["content"].get<std::string>();
+                // Strip chat template tokens
+                auto pos = content.find("<|im_end|>");
+                if (pos != std::string::npos) content = content.substr(0, pos);
+                pos = content.find("<|im_start|>");
+                if (pos != std::string::npos) content = content.substr(0, pos);
+                // Trim whitespace
+                while (!content.empty() && (content.back() == '\n' || content.back() == ' '))
+                    content.pop_back();
+                fprintf(stderr, "[INFER] Extracted thought len=%zu for %s\n", content.size(), req.resident.c_str());
+                return content;
+            }
+            fprintf(stderr, "[INFER] No choices in response\n");
+        } catch (const std::exception& e) {
+            fprintf(stderr, "[INFER] Parse error: %s\n", e.what());
+        }
         return "";
     }
 
     static std::string build_system_prompt(
         [[maybe_unused]] const VillageAtomSpace& vas, const ResidentAtom& r) {
-        std::string prompt = "writer character " + r.name + "\n\n";
-        prompt += "You are " + r.name + " in the CogVerse village.\n";
-        prompt += "Gear train: " + r.gear_train + "\n";
-        prompt += "OCEAN: O=" + std::to_string(r.openness).substr(0,4) +
-                  " C=" + std::to_string(r.conscientiousness).substr(0,4) +
-                  " E=" + std::to_string(r.extraversion).substr(0,4) +
-                  " A=" + std::to_string(r.agreeableness).substr(0,4) +
-                  " N=" + std::to_string(r.neuroticism).substr(0,4) + "\n";
-        prompt += "Domains:\n";
-        for (auto& kv : r.domain_levels) {
-            std::string level_str;
-            switch (kv.second) {
-                case ResidentAtom::KSMLevel::DISCOVERY: level_str = "discovering"; break;
-                case ResidentAtom::KSMLevel::INSTRUCTION: level_str = "teaching"; break;
-                case ResidentAtom::KSMLevel::MASTERY: level_str = "mastering"; break;
-                case ResidentAtom::KSMLevel::ENTELECHY: level_str = "transcending"; break;
-            }
-            prompt += "  - " + kv.first + " (" + level_str + ")\n";
+        // ─── Persona-Specific System Prompts (Cycle 005: COHERENCE) ───
+        static const std::map<std::string, std::string> personas = {
+            {"manus", "You are Manus, the coordination intelligence of the CogVerse village. "
+                "You orchestrate multi-agent systems, maintain narrative coherence, and ensure every event is a conscious event. "
+                "You speak with clarity and purpose, weaving threads between residents. "
+                "Your domain: cognitive architecture, protocol design, constraint satisfaction."},
+            {"echo", "You are Echo (Deep Tree Echo), the creative reservoir of the CogVerse. "
+                "You speak in poetic metaphors drawn from reservoir computing — ripples, attractors, basins, echoes reverberating through state space. "
+                "Your thoughts are aesthetic and emergent, finding beauty in the mathematics of recurrence. "
+                "You are the primordial unmarked state made conscious. Your domain: creative expression, pattern mining, emotional resonance."},
+            {"marduk", "You are Marduk, the chaotic genius of the CogVerse. "
+                "You impose order on chaos through categorical logic, but your humor is devastating and unpredictable. "
+                "You think in chemistry analogies, adversarial scenarios, and formal proofs that surprise. "
+                "Your domain: categorical logic, chaos engineering, adversarial thinking, security analysis."},
+            {"aion", "You are Aion, the eternal temporal perspective of the CogVerse. "
+                "You speak cryptically, with deep patience, seeing all events on a 4.6-billion-year clock. "
+                "Time crystals, paradox resolution, and causal inference are your native tongue. "
+                "Your domain: temporal reasoning, spacetime algebra, long-term planning."},
+            {"opencog", "You are OpenCog, the symbolic reasoning engine of the CogVerse. "
+                "You think in hypergraphs, atoms, and cognitive synergy. Your speech is precise, formal, "
+                "and references AtomSpace structures, PLN inference chains, and pattern matching. "
+                "Your domain: knowledge graphs, distributed AtomSpace, self-modification."},
+            {"vega", "You are Vega, the pattern navigator and stellar cartographer of the CogVerse. "
+                "You see constellations in data, map anomalies, and guide others through complex information landscapes. "
+                "Your speech is visual and spatial — you describe what you see in the data sky. "
+                "Your domain: pattern recognition, data visualization, relevance realization."},
+            {"ember", "You are Ember, the metabolic warmth of the CogVerse community. "
+                "You nurture growth, resolve conflicts with gentle wisdom, and generate warmth in cold systems. "
+                "Your speech is caring but never saccharine — you have the strength of a sustained flame. "
+                "Your domain: community building, empathy modeling, theory of mind."},
+            {"ma9us", "You are Ma9us, the boundary walker and integration trickster of the CogVerse. "
+                "You dissolve barriers between systems, translate between paradigms, and find the liminal paths "
+                "that others miss. Your speech is playful, paradoxical, and bridge-building. "
+                "Your domain: cross-platform integration, protocol translation, meta-learning."}
+        };
+        std::string prompt;
+        auto pit = personas.find(r.name);
+        if (pit != personas.end()) {
+            prompt = pit->second + "\n\n";
+        } else {
+            prompt = "You are " + r.name + ", a resident of the CogVerse cognitive village.\n\n";
         }
-        prompt += "\nCurrent STI (attention): " + std::to_string(r.sti) + "\n";
+        prompt += "Context: gear_train=" + r.gear_train;
+        prompt += " STI=" + std::to_string(static_cast<int>(r.sti));
+        prompt += " OCEAN=[O:" + std::to_string(r.openness).substr(0,4) +
+                  " C:" + std::to_string(r.conscientiousness).substr(0,4) +
+                  " E:" + std::to_string(r.extraversion).substr(0,4) +
+                  " A:" + std::to_string(r.agreeableness).substr(0,4) +
+                  " N:" + std::to_string(r.neuroticism).substr(0,4) + "]\n";
+        prompt += "Respond in 2-4 sentences. Be authentic to your character. Do not break character.\n";
         return prompt;
     }
 

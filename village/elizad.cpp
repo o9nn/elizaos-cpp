@@ -49,6 +49,15 @@ using Clock = std::chrono::steady_clock;
 // (cogvillage::ksm and cogvillage::bridge defined in their headers)
 
 static std::atomic<bool> g_running{true};
+
+// Thread-safe queue for thoughts from inference threads
+struct PendingThought {
+    std::string resident;
+    std::string thought;
+    int inference_id;
+};
+static std::mutex g_thoughtMutex;
+static std::vector<PendingThought> g_pendingThoughts;
 static std::atomic<int> g_cogCycleCount{0};
 static Clock::time_point g_startTime;
 
@@ -478,15 +487,16 @@ int main(int argc, char* argv[]) {
     // Inference callback: when a resident thinks, publish to bus + ingest to AtomSpace
     auto onInferenceComplete = [&bus, &villageAtomSpace, &inferenceCount](
         const std::string& resident, const std::string& thought) {
+        try {
         inferenceCount++;
         // Publish thought to the village bus
-        json thoughtPayload = {
-            {"resident", resident},
-            {"thought", thought},
-            {"kind", "inference"},
-            {"inference_id", inferenceCount.load()}
-        };
-        bus.publish("resident.thought", thoughtPayload.dump());
+        fprintf(stderr, "[CB] %s thought=%zu\n", resident.c_str(), thought.size());
+        // Queue for main loop to publish (thread-safe)
+        {
+            std::lock_guard<std::mutex> lock(g_thoughtMutex);
+            g_pendingThoughts.push_back({resident, thought, static_cast<int>(inferenceCount.load())});
+        }
+        fprintf(stderr, "[CB] Queued for publish OK\n");
 
         // Ingest into AtomSpace as a cognitive event (thread-safe queue)
         ::village::atomspace::CognitiveEvent ev;
@@ -496,10 +506,60 @@ int main(int argc, char* argv[]) {
         ev.emotional_valence = 0.6;
         ev.information_gain = 0.9;
         villageAtomSpace.enqueue_event(ev);
+        } catch (const std::exception& e) { fprintf(stderr, "[CB-ERR] %s\n", e.what()); } catch (...) { fprintf(stderr, "[CB-ERR] unknown\n"); }
     };
 
     std::cout << "  Aphrodite bridge: " << config.aphroditeUrl << "\n";
     std::cout << "  STI threshold: " << config.inferenceSTIThreshold << "\n";
+
+
+    // ─── Direct Stimulus + Multi-Resident Conversation (Cycle 005: COHERENCE) ───
+    bus.subscribe([&aphroditeBridge, &villageAtomSpace, &onInferenceComplete](const VillageEvent& event) {
+        // 1. Direct stimulus: bypass STI threshold for named targets
+        if (event.typeStr == "resident.stimulus") {
+            std::string target = event.target;
+            if (target.empty()) {
+                try {
+                    auto j = json::parse(event.payload);
+                    if (j.contains("target")) target = j["target"].get<std::string>();
+                } catch (...) {}
+            }
+            if (!target.empty() && target != "eliza" && target != "dan") {
+                std::string message = "You have been addressed. Respond authentically.";
+                try {
+                    auto j = json::parse(event.payload);
+                    if (j.contains("message")) message = j["message"].get<std::string>();
+                } catch (...) {}
+                aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete);
+            }
+        }
+        // 2. Multi-resident conversation: thoughts propagate within gear trains
+        if (event.typeStr == "resident.thought") {
+            try {
+                auto j = json::parse(event.payload);
+                std::string thinker = j.value("resident", "");
+                std::string thought = j.value("thought", "");
+                if (!thinker.empty() && !thought.empty()) {
+                    const auto& residents = villageAtomSpace.residents();
+                    auto it = residents.find(thinker);
+                    if (it != residents.end()) {
+                        std::string train = it->second.gear_train;
+                        // Find ONE other resident in the same train to respond
+                        for (const auto& [name, ra] : residents) {
+                            if (name == thinker || name == "eliza" || name == "dan") continue;
+                            if (ra.gear_train == train) {
+                                std::string stimulus = thinker + " said: \"" +
+                                    thought.substr(0, 300) + "\" — What is your response?";
+                                aphroditeBridge.infer_async(
+                                    villageAtomSpace, name, stimulus, onInferenceComplete);
+                                break; // Only one respondent per thought
+                            }
+                        }
+                    }
+                }
+            } catch (...) {}
+        }
+    });
 
     while (g_running.load()) {
         auto now = Clock::now();
@@ -560,15 +620,32 @@ int main(int argc, char* argv[]) {
 
             // ---- Drain pending inference results into AtomSpace ----
             villageAtomSpace.drain_pending_events();
+            // Drain pending thoughts from inference threads (publish to bus from main thread)
+            {
+                std::lock_guard<std::mutex> lock(g_thoughtMutex);
+                for (auto& pt : g_pendingThoughts) {
+                    json thoughtPayload = {
+                        {"resident", pt.resident},
+                        {"thought", pt.thought},
+                        {"kind", "inference"},
+                        {"inference_id", pt.inference_id}
+                    };
+                    bus.publish("resident.thought", thoughtPayload.dump());
+                    fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
+                }
+                g_pendingThoughts.clear();
+            }
 
             // ---- Inference Trigger (attention overflow → resident thinks) ----
             // Every 50 cycles, check if any resident in the AF should speak
             if (g_cogCycleCount.load() % 50 == 0) {
+                std::cout << "[DEBUG] Inference check at cycle " << g_cogCycleCount.load() << " active=" << aphroditeBridge.active_count() << std::endl;
                 auto afNames = villageAtomSpace.get_attentional_focus_names();
                 for (const auto& name : afNames) {
                     // Skip "eliza" and "dan" (they are the daemon and the human)
                     if (name == "eliza" || name == "dan") continue;
                     double sti = villageAtomSpace.get_resident_sti(name);
+                    std::cout << "[DEBUG] AF: " << name << " sti=" << sti << " should_infer=" << aphroditeBridge.should_infer(name, sti) << std::endl;
                     if (aphroditeBridge.should_infer(name, sti)) {
                         std::string stimulus = "The village is alive. You feel the attention of the collective upon you (STI=" +
                             std::to_string(static_cast<int>(sti)) + "). What thought arises?";
