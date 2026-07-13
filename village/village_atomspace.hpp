@@ -863,6 +863,14 @@ private:
         } else {
             prompt = "You are " + r.name + ", a resident of the CogVerse cognitive village.\n\n";
         }
+        // Action capability instruction
+        prompt += "\n\nYou can propose actions by including [ACTION:type]{json} blocks in your response. "
+                  "Available actions:\n"
+                  "  [ACTION:write_stone]{\"title\": \"...\", \"content\": \"...\"}\n"
+                  "  [ACTION:adjust_gear]{\"train\": \"...\", \"factor\": 1.2}\n"
+                  "  [ACTION:emit_event]{\"type\": \"...\", \"payload\": {...}}\n"
+                  "  [ACTION:observe_state]{\"target\": \"atomspace|gears|residents\"}\n"
+                  "Only propose actions when they serve the village. Most responses need no action.\n\n";
         prompt += "Context: gear_train=" + r.gear_train;
         prompt += " STI=" + std::to_string(static_cast<int>(r.sti));
         prompt += " OCEAN=[O:" + std::to_string(r.openness).substr(0,4) +

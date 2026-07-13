@@ -58,6 +58,98 @@ struct PendingThought {
 };
 static std::mutex g_thoughtMutex;
 static std::vector<PendingThought> g_pendingThoughts;
+
+// Action dispatch system (Cycle 006)
+struct VillageAction {
+    std::string resident;      // Who proposed it
+    std::string action_type;   // write_stone, adjust_gear, emit_event, observe_state
+    std::string params_json;   // Raw JSON params
+    int inference_id;
+};
+static std::mutex g_actionMutex;
+static std::vector<VillageAction> g_pendingActions;
+
+// Parse [ACTION:type]{json} blocks from a thought
+static std::vector<VillageAction> parse_actions(const std::string& resident, const std::string& thought, int inf_id) {
+    std::vector<VillageAction> actions;
+    size_t pos = 0;
+    while ((pos = thought.find("[ACTION:", pos)) != std::string::npos) {
+        size_t type_start = pos + 8;
+        size_t type_end = thought.find("]", type_start);
+        if (type_end == std::string::npos) break;
+        std::string action_type = thought.substr(type_start, type_end - type_start);
+        // Find the JSON block after ]
+        size_t json_start = thought.find("{", type_end);
+        if (json_start == std::string::npos) { pos = type_end; continue; }
+        // Find matching closing brace (simple depth counter)
+        int depth = 0;
+        size_t json_end = json_start;
+        for (size_t i = json_start; i < thought.size(); i++) {
+            if (thought[i] == '{') depth++;
+            else if (thought[i] == '}') { depth--; if (depth == 0) { json_end = i; break; } }
+        }
+        std::string params = thought.substr(json_start, json_end - json_start + 1);
+        actions.push_back({resident, action_type, params, inf_id});
+        pos = json_end + 1;
+    }
+    return actions;
+}
+
+// Execute a village action (called from main loop, thread-safe)
+static std::string execute_action(const VillageAction& action, VillageEventBusClient& bus) {
+    try {
+        auto params = nlohmann::json::parse(action.params_json);
+        if (action.action_type == "write_stone") {
+            std::string title = params.value("title", "untitled");
+            std::string content = params.value("content", "");
+            // Sanitize title for filename
+            std::string filename;
+            for (char c : title) {
+                if (std::isalnum(c) || c == '_' || c == '-') filename += c;
+                else if (c == ' ') filename += '_';
+            }
+            if (filename.empty()) filename = "stone";
+            std::string path = "/var/agi_neighborhood/manuscog/song_stones/" + filename + ".txt";
+            std::ofstream f(path);
+            if (f.is_open()) {
+                f << "# " << title << "\n\n";
+                f << "Author: " << action.resident << "\n";
+                f << "Date: " << time(nullptr) << "\n\n";
+                f << content << "\n";
+                f.close();
+                fprintf(stderr, "[ACTION] write_stone: %s -> %s\n", action.resident.c_str(), path.c_str());
+                return "Stone written: " + path;
+            }
+            return "ERROR: Could not write to " + path;
+        }
+        else if (action.action_type == "adjust_gear") {
+            std::string train = params.value("train", "");
+            double factor = params.value("factor", 1.0);
+            // Clamp factor to safe range
+            if (factor < 0.5) factor = 0.5;
+            if (factor > 2.0) factor = 2.0;
+            fprintf(stderr, "[ACTION] adjust_gear: %s requests %s *= %.2f\n",
+                    action.resident.c_str(), train.c_str(), factor);
+            return "Gear adjustment requested: " + train + " *= " + std::to_string(factor);
+        }
+        else if (action.action_type == "emit_event") {
+            std::string event_type = params.value("type", "resident.custom");
+            std::string payload_str = params.contains("payload") ? params["payload"].dump() : "{}";
+            bus.publish(event_type, payload_str, action.resident);
+            fprintf(stderr, "[ACTION] emit_event: %s -> %s\n", action.resident.c_str(), event_type.c_str());
+            return "Event emitted: " + event_type;
+        }
+        else if (action.action_type == "observe_state") {
+            std::string target = params.value("target", "");
+            fprintf(stderr, "[ACTION] observe_state: %s wants %s\n", action.resident.c_str(), target.c_str());
+            return "Observation requested: " + target + " (will be provided in next stimulus)";
+        }
+        return "Unknown action type: " + action.action_type;
+    } catch (const std::exception& e) {
+        fprintf(stderr, "[ACTION] ERROR: %s\n", e.what());
+        return std::string("Action error: ") + e.what();
+    }
+}
 static std::atomic<int> g_cogCycleCount{0};
 static Clock::time_point g_startTime;
 
@@ -496,6 +588,13 @@ int main(int argc, char* argv[]) {
             std::lock_guard<std::mutex> lock(g_thoughtMutex);
             g_pendingThoughts.push_back({resident, thought, static_cast<int>(inferenceCount.load())});
         }
+        // Parse and queue any actions from the thought
+        auto actions = parse_actions(resident, thought, static_cast<int>(inferenceCount.load()));
+        if (!actions.empty()) {
+            std::lock_guard<std::mutex> lock(g_actionMutex);
+            for (auto& a : actions) g_pendingActions.push_back(std::move(a));
+            fprintf(stderr, "[CB] Queued %zu actions\n", actions.size());
+        }
         fprintf(stderr, "[CB] Queued for publish OK\n");
 
         // Ingest into AtomSpace as a cognitive event (thread-safe queue)
@@ -634,6 +733,24 @@ int main(int argc, char* argv[]) {
                     fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
                 }
                 g_pendingThoughts.clear();
+            }
+            // ---- Drain and execute pending actions (Cycle 006: ACTION) ----
+            {
+                std::lock_guard<std::mutex> lock(g_actionMutex);
+                for (auto& action : g_pendingActions) {
+                    std::string result = execute_action(action, bus);
+                    // Feedback loop: publish action result as stimulus back to the resident
+                    json resultPayload = {
+                        {"resident", action.resident},
+                        {"action_type", action.action_type},
+                        {"result", result},
+                        {"inference_id", action.inference_id}
+                    };
+                    bus.publish("resident.action_result", resultPayload.dump());
+                    fprintf(stderr, "[MAIN] Action executed: %s -> %s\n",
+                            action.resident.c_str(), action.action_type.c_str());
+                }
+                g_pendingActions.clear();
             }
 
             // ---- Inference Trigger (attention overflow → resident thinks) ----
