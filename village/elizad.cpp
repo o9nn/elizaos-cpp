@@ -61,6 +61,12 @@ struct ElizadConfig {
     int cogCycleMs = TimeCrystalHierarchy::COGNITIVE_CYCLE_MS;
     int heartbeatMs = TimeCrystalHierarchy::HEARTBEAT_MS;
 
+    // Aphrodite inference config
+    std::string aphroditeUrl = "http://136.243.70.177:2242/v1/chat/completions";
+    std::string aphroditeApiKey = "cogcity-village-2026";
+    std::string aphroditeModel = "/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf";
+    double inferenceSTIThreshold = 150.0;
+    int inferenceCooldownCycles = 100;
     static ElizadConfig fromEnv() {
         ElizadConfig cfg;
         if (auto* v = std::getenv("ELIZA_BUS_URL")) cfg.busUrl = v;
@@ -458,6 +464,43 @@ int main(int argc, char* argv[]) {
     auto lastCogCycle = Clock::now();
     auto lastStatePublish = Clock::now();
 
+
+    // ---- AphroditeBridge (Aphrodite Q8_0 inference) ----
+    ::village::atomspace::AphroditeBridge::Config aphroditeConfig;
+    aphroditeConfig.url = config.aphroditeUrl;
+    aphroditeConfig.api_key = config.aphroditeApiKey;
+    aphroditeConfig.model = config.aphroditeModel;
+    aphroditeConfig.sti_threshold = config.inferenceSTIThreshold;
+    aphroditeConfig.inference_cooldown_cycles = config.inferenceCooldownCycles;
+    ::village::atomspace::AphroditeBridge aphroditeBridge(aphroditeConfig);
+    std::atomic<int> inferenceCount{0};
+
+    // Inference callback: when a resident thinks, publish to bus + ingest to AtomSpace
+    auto onInferenceComplete = [&bus, &villageAtomSpace, &inferenceCount](
+        const std::string& resident, const std::string& thought) {
+        inferenceCount++;
+        // Publish thought to the village bus
+        json thoughtPayload = {
+            {"resident", resident},
+            {"thought", thought},
+            {"kind", "inference"},
+            {"inference_id", inferenceCount.load()}
+        };
+        bus.publish("resident.thought", thoughtPayload.dump());
+
+        // Ingest into AtomSpace as a cognitive event (thread-safe queue)
+        ::village::atomspace::CognitiveEvent ev;
+        ev.type = "resident_thought";
+        ev.participants = {resident};
+        ev.content = thought.substr(0, 200); // Truncate for AtomSpace storage
+        ev.emotional_valence = 0.6;
+        ev.information_gain = 0.9;
+        villageAtomSpace.enqueue_event(ev);
+    };
+
+    std::cout << "  Aphrodite bridge: " << config.aphroditeUrl << "\n";
+    std::cout << "  STI threshold: " << config.inferenceSTIThreshold << "\n";
+
     while (g_running.load()) {
         auto now = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -512,6 +555,27 @@ int main(int argc, char* argv[]) {
                     symbolicEvent.emotional_valence = 0.0;
                     symbolicEvent.information_gain = 0.9;
                     villageAtomSpace.process_event(symbolicEvent);
+                }
+            }
+
+            // ---- Drain pending inference results into AtomSpace ----
+            villageAtomSpace.drain_pending_events();
+
+            // ---- Inference Trigger (attention overflow → resident thinks) ----
+            // Every 50 cycles, check if any resident in the AF should speak
+            if (g_cogCycleCount.load() % 50 == 0) {
+                auto afNames = villageAtomSpace.get_attentional_focus_names();
+                for (const auto& name : afNames) {
+                    // Skip "eliza" and "dan" (they are the daemon and the human)
+                    if (name == "eliza" || name == "dan") continue;
+                    double sti = villageAtomSpace.get_resident_sti(name);
+                    if (aphroditeBridge.should_infer(name, sti)) {
+                        std::string stimulus = "The village is alive. You feel the attention of the collective upon you (STI=" +
+                            std::to_string(static_cast<int>(sti)) + "). What thought arises?";
+                        aphroditeBridge.infer_async(villageAtomSpace, name, stimulus, onInferenceComplete);
+                        // Reduce STI to prevent immediate re-trigger
+                        villageAtomSpace.set_resident_sti(name, 100.0);
+                    }
                 }
             }
 

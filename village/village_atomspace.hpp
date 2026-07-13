@@ -22,6 +22,10 @@
 #include <functional>
 #include <chrono>
 #include <mutex>
+#include <thread>
+#include <queue>
+#include <atomic>
+#include <curl/curl.h>
 #include <cmath>
 #include <algorithm>
 #include <filesystem>
@@ -361,7 +365,7 @@ public:
     
     // ─── Query Interface (for 9P server / HTTP endpoints) ──────────
     
-    std::string get_resident_sti(const std::string& name) const {
+    std::string get_resident_sti_str(const std::string& name) const {
         auto it = residents_.find(name);
         if (it == residents_.end()) return "unknown";
         return std::to_string(it->second.sti);
@@ -505,6 +509,58 @@ public:
     size_t cycle_count() const { return cycle_count_; }
     const std::map<std::string, ResidentAtom>& residents() const { return residents_; }
 
+    // Thread-safe event ingestion (for callbacks from inference threads)
+    void enqueue_event(const CognitiveEvent& event) {
+        std::lock_guard<std::mutex> lock(queue_mutex_);
+        pending_events_.push(event);
+    }
+
+    // Drain pending events into the AtomSpace (call from main loop)
+    size_t drain_pending_events() {
+        std::queue<CognitiveEvent> batch;
+        {
+            std::lock_guard<std::mutex> lock(queue_mutex_);
+            std::swap(batch, pending_events_);
+        }
+        size_t count = 0;
+        while (!batch.empty()) {
+            process_event(batch.front());
+            batch.pop();
+            count++;
+        }
+        return count;
+    }
+
+    // Get STI for a resident (thread-safe read)
+    double get_resident_sti(const std::string& name) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = residents_.find(name);
+        if (it == residents_.end()) return 0.0;
+        return it->second.sti;
+    }
+
+    // Set STI for a resident (thread-safe write)
+    void set_resident_sti(const std::string& name, double sti) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = residents_.find(name);
+        if (it == residents_.end()) return;
+        it->second.sti = sti;
+    }
+
+    // Get names of residents in the Attentional Focus
+    std::vector<std::string> get_attentional_focus_names() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        std::vector<std::string> names;
+        auto af = ecan_.bank().get_attentional_focus();
+        for (auto& h : af) {
+            const oc::Atom* atom = as_.get_atom(h); if (atom && !atom->name.empty() && residents_.count(atom->name)) {
+                names.push_back(atom->name);
+            }
+        }
+        return names;
+    }
+
+
 private:
     void seed_type_hierarchy() {
         // Core type nodes that PLN reasons over
@@ -604,6 +660,8 @@ private:
     std::vector<CognitiveEvent> events_;
     size_t cycle_count_;
     mutable std::mutex mutex_;
+    std::mutex queue_mutex_;
+    std::queue<CognitiveEvent> pending_events_;
 };
 
 // ─────────────────────────────────────────────────────────────────────
@@ -623,45 +681,128 @@ struct AphroditeRequest {
 
 class AphroditeBridge {
 public:
-    // Generate a request from AtomSpace state
+    struct Config {
+        std::string url;
+        std::string api_key;
+        std::string model;
+        double sti_threshold;
+        int inference_cooldown_cycles;
+        int max_concurrent_inferences;
+        Config() : url("http://136.243.70.177:2242/v1/chat/completions"),
+                   api_key("cogcity-village-2026"),
+                   model("/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf"),
+                   sti_threshold(150.0),
+                   inference_cooldown_cycles(100),
+                   max_concurrent_inferences(2) {}
+    };
+
+    using InferenceCallback = std::function<void(const std::string&, const std::string&)>;
+
+    explicit AphroditeBridge(const Config& config = Config())
+        : config_(config), active_inferences_(0) {}
+
     static AphroditeRequest build_request(
-        const VillageAtomSpace& vas,
-        const std::string& resident_name,
-        const std::string& stimulus,
-        double endocrine_temperature = 0.7) 
+        const VillageAtomSpace& vas, const std::string& resident_name,
+        const std::string& stimulus, double endocrine_temperature = 0.7) 
     {
         AphroditeRequest req;
         req.resident = resident_name;
         req.user_prompt = stimulus;
         req.temperature = endocrine_temperature;
         req.max_tokens = 512;
-        
         auto& residents = vas.residents();
         auto it = residents.find(resident_name);
         if (it == residents.end()) return req;
-        
         const auto& r = it->second;
-        
-        // Priority from STI (higher attention = higher priority)
         req.priority = static_cast<int>(r.sti);
-        
-        // min_p from conscientiousness (more conscientious = more selective)
         req.min_p = 0.05 + (r.conscientiousness * 0.15);
-        
-        // LoRA adapter path
         req.lora_adapter = "loras/" + resident_name;
-        
-        // Build system prompt from AtomSpace knowledge
         req.system_prompt = build_system_prompt(vas, r);
-        
         return req;
     }
 
+    bool infer_async(const VillageAtomSpace& vas, const std::string& resident_name,
+                     const std::string& stimulus, InferenceCallback callback,
+                     double endocrine_temperature = 0.7) {
+        if (active_inferences_.load() >= config_.max_concurrent_inferences) return false;
+        auto now = std::chrono::steady_clock::now();
+        {
+            std::lock_guard<std::mutex> lock(cooldown_mutex_);
+            auto it = last_inference_.find(resident_name);
+            if (it != last_inference_.end()) {
+                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count();
+                if (elapsed < config_.inference_cooldown_cycles * 52) return false;
+            }
+            last_inference_[resident_name] = now;
+        }
+        auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
+        if (req.resident.empty()) return false;
+        active_inferences_++;
+        std::thread([this, req, callback]() {
+            std::string thought = perform_inference(req);
+            active_inferences_--;
+            if (!thought.empty() && callback) callback(req.resident, thought);
+        }).detach();
+        return true;
+    }
+
+    bool should_infer(const std::string& resident_name, double sti) const {
+        if (sti < config_.sti_threshold) return false;
+        std::lock_guard<std::mutex> lock(cooldown_mutex_);
+        auto it = last_inference_.find(resident_name);
+        if (it == last_inference_.end()) return true;
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - it->second).count();
+        return elapsed >= config_.inference_cooldown_cycles * 52;
+    }
+
+    int active_count() const { return active_inferences_.load(); }
+    const Config& config() const { return config_; }
+
 private:
+    static size_t curl_write_cb(void* contents, size_t size, size_t nmemb, std::string* out) {
+        out->append(static_cast<char*>(contents), size * nmemb);
+        return size * nmemb;
+    }
+
+    std::string perform_inference(const AphroditeRequest& req) {
+        nlohmann::json messages = nlohmann::json::array();
+        messages.push_back({{"role", "system"}, {"content", req.system_prompt}});
+        messages.push_back({{"role", "user"}, {"content", req.user_prompt}});
+        nlohmann::json payload = {
+            {"model", config_.model}, {"messages", messages},
+            {"temperature", req.temperature}, {"min_p", req.min_p},
+            {"max_tokens", req.max_tokens}
+        };
+        CURL* curl = curl_easy_init();
+        if (!curl) return "";
+        std::string response, body = payload.dump();
+        std::string auth_header = "Authorization: Bearer " + config_.api_key;
+        struct curl_slist* headers = nullptr;
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+        headers = curl_slist_append(headers, auth_header.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, config_.url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(body.size()));
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_cb);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+        curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+        CURLcode res = curl_easy_perform(curl);
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+        if (res != CURLE_OK) return "";
+        try {
+            auto j = nlohmann::json::parse(response);
+            if (j.contains("choices") && !j["choices"].empty())
+                return j["choices"][0]["message"]["content"].get<std::string>();
+        } catch (...) {}
+        return "";
+    }
+
     static std::string build_system_prompt(
-        [[maybe_unused]] const VillageAtomSpace& vas, const ResidentAtom& r) 
-    {
-        // Lucid v1 Nemo format: writer character {name}
+        [[maybe_unused]] const VillageAtomSpace& vas, const ResidentAtom& r) {
         std::string prompt = "writer character " + r.name + "\n\n";
         prompt += "You are " + r.name + " in the CogVerse village.\n";
         prompt += "Gear train: " + r.gear_train + "\n";
@@ -670,8 +811,6 @@ private:
                   " E=" + std::to_string(r.extraversion).substr(0,4) +
                   " A=" + std::to_string(r.agreeableness).substr(0,4) +
                   " N=" + std::to_string(r.neuroticism).substr(0,4) + "\n";
-        
-        // Add domain expertise from KSM levels
         prompt += "Domains:\n";
         for (auto& kv : r.domain_levels) {
             std::string level_str;
@@ -683,12 +822,13 @@ private:
             }
             prompt += "  - " + kv.first + " (" + level_str + ")\n";
         }
-        
-        // Current attention state
         prompt += "\nCurrent STI (attention): " + std::to_string(r.sti) + "\n";
-        
         return prompt;
     }
-};
 
+    Config config_;
+    std::atomic<int> active_inferences_;
+    mutable std::mutex cooldown_mutex_;
+    std::map<std::string, std::chrono::steady_clock::time_point> last_inference_;
+};
 }} // namespace village::atomspace
