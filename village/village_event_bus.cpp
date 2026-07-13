@@ -187,7 +187,7 @@ void VillageEventBusClient::dispatchEvent(const VillageEvent& event) {
 }
 
 std::vector<VillageEvent> VillageEventBusClient::getRecentEvents(int limit, int64_t sinceTic) {
-    std::string url = config_.busUrl + "/api/events?limit=" +
+    std::string url = config_.busUrl + "/api/events/events?limit=" +
                       std::to_string(limit) + "&since_tic=" + std::to_string(sinceTic);
     std::string response = httpGet(url);
     std::vector<VillageEvent> events;
@@ -219,7 +219,7 @@ void VillageEventBusClient::heartbeatLoop() {
 void VillageEventBusClient::wsSubscriptionLoop() {
     int64_t lastSeenTic = lastKnownTic_.load();
     while (running_.load()) {
-        std::string url = config_.busUrl + "/api/events?limit=20&since_tic=" +
+        std::string url = config_.busUrl + "/api/events/events?limit=20&since=" +
                           std::to_string(lastSeenTic);
         std::string response = httpGet(url);
         if (!response.empty()) {
@@ -256,6 +256,7 @@ std::string VillageEventBusClient::httpPost(const std::string& url, const std::s
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);
     CURLcode res = curl_easy_perform(curl);
@@ -271,6 +272,7 @@ std::string VillageEventBusClient::httpGet(const std::string& url) {
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);
     CURLcode res = curl_easy_perform(curl);
