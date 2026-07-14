@@ -323,4 +323,77 @@ TEST_F(VillageAtomSpaceE2ETest, FullCognitivePipelineEndToEnd) {
     EXPECT_GT(successor.load(), 0u);
 }
 
+// ── Thread-safe event queue (inference-thread → main-loop handoff) ───
+
+TEST_F(VillageAtomSpaceE2ETest, EnqueueAndDrainProcessesPendingEvents) {
+    addDefaultResidents();
+
+    const size_t before = vas_->raw_atomspace().size();
+    for (int i = 0; i < 4; ++i) {
+        CognitiveEvent ev;
+        ev.type = "inference";
+        ev.participants = {"ada"};
+        ev.content = "queued thought " + std::to_string(i);
+        ev.emotional_valence = 0.1;
+        ev.information_gain = 0.6;
+        vas_->enqueue_event(ev);
+    }
+
+    // Nothing is applied until the main loop drains the queue.
+    EXPECT_EQ(vas_->raw_atomspace().size(), before);
+
+    EXPECT_EQ(vas_->drain_pending_events(), 4u);
+    EXPECT_GT(vas_->raw_atomspace().size(), before);
+
+    // Queue must be empty after a drain.
+    EXPECT_EQ(vas_->drain_pending_events(), 0u);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ConcurrentEnqueueFromWorkerThreadsIsSafe) {
+    addDefaultResidents();
+
+    constexpr int kThreads = 4;
+    constexpr int kEventsPerThread = 25;
+    std::vector<std::thread> workers;
+    workers.reserve(kThreads);
+    for (int t = 0; t < kThreads; ++t) {
+        workers.emplace_back([this, t]() {
+            for (int i = 0; i < kEventsPerThread; ++i) {
+                CognitiveEvent ev;
+                ev.type = "utterance";
+                ev.participants = {"turing"};
+                ev.content = "t" + std::to_string(t) + "-e" + std::to_string(i);
+                ev.emotional_valence = 0.0;
+                ev.information_gain = 0.3;
+                vas_->enqueue_event(ev);
+            }
+        });
+    }
+    for (auto& w : workers) w.join();
+
+    EXPECT_EQ(vas_->drain_pending_events(),
+              static_cast<size_t>(kThreads * kEventsPerThread));
+}
+
+// ── Thread-safe STI accessors ───────────────────────────────────
+
+TEST_F(VillageAtomSpaceE2ETest, StiAccessorsReadAndWriteResidentImportance) {
+    addDefaultResidents();
+
+    // add_resident() normalises every newcomer to STI 100 via an initial
+    // ECAN stimulation, regardless of the STI carried by the ResidentAtom.
+    EXPECT_DOUBLE_EQ(vas_->get_resident_sti("ada"), 100.0);
+    EXPECT_DOUBLE_EQ(vas_->get_resident_sti("nobody"), 0.0);
+
+    vas_->set_resident_sti("ada", 55.5);
+    EXPECT_DOUBLE_EQ(vas_->get_resident_sti("ada"), 55.5);
+
+    // Writing to an unknown resident must be a harmless no-op.
+    vas_->set_resident_sti("nobody", 99.0);
+    EXPECT_DOUBLE_EQ(vas_->get_resident_sti("nobody"), 0.0);
+
+    // The string diagnostic accessor stays consistent with the numeric one.
+    EXPECT_FALSE(vas_->get_resident_sti_str("ada").empty());
+}
+
 } // namespace

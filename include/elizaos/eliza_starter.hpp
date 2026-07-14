@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <optional>
 
 namespace elizaos {
 
@@ -54,6 +55,7 @@ private:
     bool running_;
     std::size_t conversationTurnCount_ = 0;
     std::size_t memoryCycleCount_ = 0;
+    std::string currentCharacterId_;
     
 public:
     /**
@@ -134,6 +136,13 @@ public:
      * @param strength Strength of the trait (0.0 to 1.0)
      */
     void addPersonalityTrait(const std::string& trait, const std::string& description, double strength);
+    
+    /**
+     * Get the agent's registered character profile, when one exists.
+     * @return The current CharacterProfile, or std::nullopt when no character
+     *         has been configured yet.
+     */
+    std::optional<CharacterProfile> getCharacterProfile() const;
     
     /**
      * Generate a response to user input using simple pattern matching

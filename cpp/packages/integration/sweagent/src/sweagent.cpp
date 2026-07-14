@@ -432,16 +432,21 @@ std::vector<SolutionResult> SWEAgentManager::solveIssuesParallel(const std::vect
         std::min<size_t>(pool.size(), static_cast<size_t>(maxParallel)));
 
     results.resize(issues.size());
-    std::atomic<size_t> nextIndex{0};
     std::vector<std::future<void>> futures;
     futures.reserve(workers);
 
+    // Deterministic strided distribution: worker w handles issues w, w+workers,
+    // w+2*workers, ... This guarantees every worker participates whenever
+    // issues.size() >= workers, keeping each agent's history balanced and
+    // reproducible. A pure work-stealing queue allowed a fast first worker to
+    // drain the entire queue before the second worker was even scheduled,
+    // which starved that agent's history and made parallel-history assertions
+    // flaky under load. Result ordering stays index-stable because each worker
+    // writes only to its own strided slots.
     for (size_t w = 0; w < workers; ++w) {
         auto agent = pool[w];
-        futures.push_back(std::async(std::launch::async, [&, agent]() {
-            while (true) {
-                const size_t i = nextIndex.fetch_add(1);
-                if (i >= issues.size()) break;
+        futures.push_back(std::async(std::launch::async, [&, agent, w]() {
+            for (size_t i = w; i < issues.size(); i += workers) {
                 results[i] = agent->solveIssue(issues[i]);
             }
         }));

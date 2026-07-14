@@ -1011,9 +1011,12 @@ const StateGoal* AutonomousStarter::selectFocusGoal() {
     // exactly one in-flight goal into activeGoalId_. Reasoning MUST plan for that
     // same goal -- otherwise perception's primary_goal context and the reasoning
     // plan describe two different objectives in one cycle, and the closed loop
-    // cannot converge. Honor the in-flight active goal as the focus whenever it
-    // is still open; the attention economy still governs which PENDING goal
-    // selectActiveGoal promotes next once the current one is done.
+    // cannot converge. Previously selectFocusGoal independently picked the
+    // highest attention-scoring open goal, which (with several co-active goals)
+    // routinely diverged from activeGoalId_ and made the plan thrash between
+    // objectives. We therefore honor the in-flight active goal as the focus
+    // whenever it is still open; the attention economy still governs which
+    // PENDING goal selectActiveGoal promotes next once the current one is done.
     auto isOpen = [](std::string status) {
         std::transform(status.begin(), status.end(), status.begin(),
                        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });

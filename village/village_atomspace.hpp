@@ -26,6 +26,7 @@
 #include <queue>
 #include <atomic>
 #include <curl/curl.h>
+#include <nlohmann/json.hpp>
 #include <cmath>
 #include <algorithm>
 #include <filesystem>

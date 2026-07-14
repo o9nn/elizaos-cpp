@@ -183,8 +183,12 @@ TEST(SWEAgentManagerDepth, ParallelSolvingPreservesIssueOrderAndAgentHistory) {
 
     const auto h1 = a1->getHistory();
     const auto h2 = a2->getHistory();
-    EXPECT_GT(h1.size(), 0u);
-    EXPECT_GT(h2.size(), 0u);
+    // Strided distribution is deterministic: with 2 workers and 12 issues,
+    // each agent must solve exactly half. This also guards the regression
+    // where a pure work-stealing queue let one fast agent drain the entire
+    // queue under load and left the other agent with an empty history.
+    EXPECT_EQ(h1.size(), issues.size() / 2);
+    EXPECT_EQ(h2.size(), issues.size() / 2);
     EXPECT_EQ(h1.size() + h2.size(), issues.size());
 
     const auto statuses = mgr.getAgentStatuses();

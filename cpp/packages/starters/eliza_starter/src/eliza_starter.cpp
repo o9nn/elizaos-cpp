@@ -181,25 +181,85 @@ std::vector<std::shared_ptr<Memory>> ElizaStarterAgent::getRecentMemories(size_t
 }
 
 void ElizaStarterAgent::setCharacter(const std::string& name, const std::string& bio, const std::string& lore) {
-    if (state_) {
-        // Update the state with character information
-        // This would be expanded to work with the character manager
-        logger_->log("Setting character: " + name, 
-                    "ElizaStarterAgent", "SetCharacter", LogLevel::INFO);
-        logger_->log("Bio: " + bio, 
-                    "ElizaStarterAgent", "SetCharacter", LogLevel::INFO);
-        logger_->log("Lore: " + lore, 
-                    "ElizaStarterAgent", "SetCharacter", LogLevel::INFO);
+    if (!character_) {
+        logger_->log("Character manager unavailable; cannot set character",
+                    "ElizaStarterAgent", "SetCharacter", LogLevel::ERROR);
+        return;
     }
+
+    // Build (or rebuild) the agent's character profile against the real
+    // CharacterManager API. Repeated calls update the existing registration
+    // in place instead of accumulating duplicate profiles.
+    CharacterProfile profile;
+    if (!currentCharacterId_.empty()) {
+        auto existing = character_->getCharacter(currentCharacterId_);
+        if (existing.has_value()) {
+            profile = *existing;
+        }
+    }
+
+    profile.name = name;
+    profile.description = bio;
+    profile.background.backstory = lore;
+
+    if (currentCharacterId_.empty()) {
+        currentCharacterId_ = character_->registerCharacter(profile);
+    } else {
+        profile.id = currentCharacterId_;
+        character_->updateCharacter(currentCharacterId_, profile);
+    }
+
+    logger_->log("Character set: " + name + " (id=" + currentCharacterId_ + ")",
+                "ElizaStarterAgent", "SetCharacter", LogLevel::INFO);
 }
 
 void ElizaStarterAgent::addPersonalityTrait(const std::string& trait, const std::string& description, double strength) {
-    // Suppress unused parameter warning
-    (void)description;
-    
-    logger_->log("Added personality trait: " + trait + " (" + std::to_string(strength) + ")", 
+    if (!character_) {
+        logger_->log("Character manager unavailable; cannot add trait",
+                    "ElizaStarterAgent", "AddPersonalityTrait", LogLevel::ERROR);
+        return;
+    }
+
+    // Ensure a character profile exists to attach the trait to.
+    if (currentCharacterId_.empty()) {
+        setCharacter(state_ ? state_->getAgentName() : "ElizaStarter",
+                     state_ ? state_->getBio() : "",
+                     state_ ? state_->getLore() : "");
+    }
+
+    auto existing = character_->getCharacter(currentCharacterId_);
+    if (!existing.has_value()) {
+        logger_->log("Character profile missing; cannot add trait: " + trait,
+                    "ElizaStarterAgent", "AddPersonalityTrait", LogLevel::ERROR);
+        return;
+    }
+
+    // Bounded numeric trait value (0.0 - 1.0), replacing any prior trait of
+    // the same name so repeated configuration remains idempotent.
+    const float bounded = static_cast<float>(std::max(0.0, std::min(1.0, strength)));
+    CharacterProfile profile = *existing;
+    profile.traits.erase(
+        std::remove_if(profile.traits.begin(), profile.traits.end(),
+                       [&trait](const CharacterTrait& t) { return t.name == trait; }),
+        profile.traits.end());
+
+    CharacterTrait newTrait(trait, description, TraitCategory::PERSONALITY,
+                            TraitValueType::NUMERIC);
+    newTrait.setNumericValue(bounded);
+    newTrait.weight = bounded;
+    profile.traits.push_back(newTrait);
+
+    character_->updateCharacter(currentCharacterId_, profile);
+
+    logger_->log("Added personality trait: " + trait + " (" + std::to_string(bounded) + ")",
                 "ElizaStarterAgent", "AddPersonalityTrait", LogLevel::INFO);
-    // This would be expanded to work with the character system
+}
+
+std::optional<CharacterProfile> ElizaStarterAgent::getCharacterProfile() const {
+    if (!character_ || currentCharacterId_.empty()) {
+        return std::nullopt;
+    }
+    return character_->getCharacter(currentCharacterId_);
 }
 
 std::string ElizaStarterAgent::generateResponse(const std::string& input) {
