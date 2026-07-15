@@ -20,7 +20,7 @@ agentshell_demo
 shell_demo
 simple_agentcomms_demo
 simple_shell_test
-test_agentcomms_*
+/test_agentcomms_*
 demo_status
 
 # CMake
