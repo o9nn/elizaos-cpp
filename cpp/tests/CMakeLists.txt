@@ -790,6 +790,26 @@ if(TARGET real_enhanced_mcp_gateway_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_enhanced_mcp_gateway_e2e_test)
 endif()
 
+# Phase 3.3 Advanced Inter-Agent Communication E2E: completes the previously
+# declared-but-undefined NegotiationProtocol, ContractManager, GossipProtocol,
+# SecureMessaging, MessageTracer, and EnhancedAgentComms classes (backported
+# from hurdcog with the enhanced implementation).
+add_real_test(real_agentcomms_enhanced_test src/test_agentcomms_enhanced.cpp)
+target_link_libraries(real_agentcomms_enhanced_test elizaos-agentcomms)
+if(TARGET real_agentcomms_enhanced_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_agentcomms_enhanced_test)
+endif()
+
+# Task 10.1.1 llama.cpp integration E2E: completes the previously fully
+# declared-but-undefined llama_cpp.hpp surface with a self-contained CPU
+# reference engine (deterministic tokenizer, n-gram logits, full sampling
+# stack, sessions, async tasks, model manager, GGUF validation utils).
+add_real_test(real_llama_cpp_e2e_test src/test_llama_cpp_e2e.cpp)
+target_link_libraries(real_llama_cpp_e2e_test elizaos-llama_cpp)
+if(TARGET real_llama_cpp_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_llama_cpp_e2e_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================

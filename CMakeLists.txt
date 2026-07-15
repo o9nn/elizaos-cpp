@@ -103,6 +103,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cpp/packages/integration/cognitive_curricu
 endif()
 add_subdirectory(cpp/packages/integration/sweagent)
 add_subdirectory(cpp/packages/integration/mcp_gateway)
+add_subdirectory(cpp/packages/integration/llama_cpp)
 add_subdirectory(cpp/packages/integration/cognitive_bridge)
 add_subdirectory(cpp/packages/integration/otaku)
 add_subdirectory(cpp/packages/integration/otc_agent)

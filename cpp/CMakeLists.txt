@@ -108,6 +108,7 @@ elizaos_add_subdirectory_if_exists(packages/integration/sweagent)
 add_subdirectory(packages/integration/otaku)
 add_subdirectory(packages/integration/otc_agent)
 add_subdirectory(packages/integration/mcp_gateway)
+add_subdirectory(packages/integration/llama_cpp)
 elizaos_add_subdirectory_if_exists(packages/integration/cognitive_bridge)
 
 # ==============================================================================
