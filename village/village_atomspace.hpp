@@ -663,6 +663,153 @@ private:
     mutable std::mutex mutex_;
     std::mutex queue_mutex_;
     std::queue<CognitiveEvent> pending_events_;
+
+    // === CYCLE 007: MEMORY SYSTEM ===
+    
+    struct EpisodicEntry {
+        std::string type;
+        std::string content;
+        uint64_t timestamp;
+    };
+    std::unordered_map<std::string, std::deque<EpisodicEntry>> episodic_memory_;
+    
+    struct ConversationEntry {
+        std::string stimulus;
+        std::string response;
+        uint64_t timestamp;
+    };
+    std::unordered_map<std::string, std::deque<ConversationEntry>> conversation_history_;
+    
+    std::string persist_path_ = "/var/agi_neighborhood/atomspace/village.json";
+    
+public:
+    void set_persist_path(const std::string& p) { persist_path_ = p; }
+    
+    void add_episodic(const std::string& resident, const std::string& type, const std::string& content) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto& mem = episodic_memory_[resident];
+        mem.push_back({type, content, static_cast<uint64_t>(time(nullptr))});
+        while (mem.size() > 10) mem.pop_front();
+    }
+    
+    void add_conversation(const std::string& resident, const std::string& stim, const std::string& resp) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto& conv = conversation_history_[resident];
+        conv.push_back({stim, resp, static_cast<uint64_t>(time(nullptr))});
+        while (conv.size() > 5) conv.pop_front();
+    }
+    
+    std::string get_episodic_context(const std::string& resident) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = episodic_memory_.find(resident);
+        if (it == episodic_memory_.end() || it->second.empty()) return "";
+        std::string ctx = "\n[Recent memory]\n";
+        for (auto& e : it->second) {
+            ctx += "- [" + e.type + "] " + e.content.substr(0, 120) + "\n";
+        }
+        return ctx;
+    }
+    
+    std::string get_conversation_context(const std::string& resident) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = conversation_history_.find(resident);
+        if (it == conversation_history_.end() || it->second.empty()) return "";
+        std::string ctx = "\n[Conversation history]\n";
+        for (auto& c : it->second) {
+            ctx += "Q: " + c.stimulus.substr(0, 80) + "\n";
+            ctx += "A: " + c.response.substr(0, 120) + "\n";
+        }
+        return ctx;
+    }
+    
+    bool persist() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        try {
+            nlohmann::json j;
+            j["timestamp"] = time(nullptr);
+            j["total_atoms"] = residents_.size();
+            nlohmann::json atoms_j = nlohmann::json::array();
+            for (auto& [name, atom] : residents_) {
+                nlohmann::json aj;
+                aj["name"] = atom.name;
+                aj["type"] = "ConceptNode";
+                aj["sti"] = atom.sti;
+                aj["lti"] = atom.lti;
+                aj["gear_train"] = atom.gear_train;
+                atoms_j.push_back(aj);
+            }
+            j["atoms"] = atoms_j;
+            nlohmann::json ep_j;
+            for (auto& [res, entries] : episodic_memory_) {
+                nlohmann::json arr = nlohmann::json::array();
+                for (auto& e : entries) { nlohmann::json ej; ej["type"] = e.type; ej["content"] = e.content; ej["ts"] = e.timestamp; arr.push_back(ej); }
+                ep_j[res] = arr;
+            }
+            j["episodic_memory"] = ep_j;
+            nlohmann::json conv_j;
+            for (auto& [res, entries] : conversation_history_) {
+                nlohmann::json arr = nlohmann::json::array();
+                for (auto& c : entries) { nlohmann::json cj; cj["stimulus"] = c.stimulus; cj["response"] = c.response; cj["ts"] = c.timestamp; arr.push_back(cj); }
+                conv_j[res] = arr;
+            }
+            j["conversation_history"] = conv_j;
+            // Gear states are computed from residents, not persisted separately
+            j["gear_states"] = nlohmann::json::array();
+            std::string tmp = persist_path_ + ".tmp";
+            std::ofstream out(tmp);
+            if (!out.is_open()) return false;
+            out << j.dump(2);
+            out.close();
+            rename(tmp.c_str(), persist_path_.c_str());
+            fprintf(stderr, "[PERSIST] Saved %zu residents, %zu episodic to %s\n",
+                    residents_.size(), episodic_memory_.size(), persist_path_.c_str());
+            return true;
+        } catch (...) { return false; }
+    }
+    
+    bool load_persisted() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        try {
+            std::ifstream in(persist_path_);
+            if (!in.is_open()) { fprintf(stderr, "[PERSIST] No file at %s\n", persist_path_.c_str()); return false; }
+            nlohmann::json j; in >> j; in.close();
+            if (j.contains("atoms")) {
+                for (auto& a : j["atoms"]) {
+                    std::string name = a.value("name", "");
+                    if (name.empty()) continue;
+                    residents_[name].name = name;
+                    // type not stored in ResidentAtom
+                    residents_[name].sti = a.value("sti", 100.0);
+                    residents_[name].lti = a.value("lti", 0.0);
+                    residents_[name].gear_train = a.value("gear_train", "");
+                }
+            }
+            if (j.contains("episodic_memory")) {
+                for (auto& [res, entries] : j["episodic_memory"].items()) {
+                    for (auto& e : entries)
+                        episodic_memory_[res].push_back({e.value("type",""), e.value("content",""), e.value("ts",(uint64_t)0)});
+                }
+            }
+            if (j.contains("conversation_history")) {
+                for (auto& [res, entries] : j["conversation_history"].items()) {
+                    for (auto& e : entries)
+                        conversation_history_[res].push_back({e.value("stimulus",""), e.value("response",""), e.value("ts",(uint64_t)0)});
+                }
+            }
+            if (j.contains("gear_states")) {
+                // gear_states_ computed at runtime
+                for (auto& g : j["gear_states"]) {
+                    GearState gs; gs.train_name = g.value("train",""); gs.rpm = g.value("rpm",1.0);
+                    gs.members = g.value("members", std::vector<std::string>{});
+                    // gear_states_ computed at runtime
+                }
+            }
+            fprintf(stderr, "[PERSIST] Loaded %zu residents, %zu episodic from %s\n",
+                    residents_.size(), episodic_memory_.size(), persist_path_.c_str());
+            return true;
+        } catch (const std::exception& e) { fprintf(stderr, "[PERSIST] Error: %s\n", e.what()); return false; }
+    }
+
 };
 
 // ─────────────────────────────────────────────────────────────────────
@@ -737,6 +884,9 @@ public:
             last_inference_[resident_name] = now;
         }
         auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
+        // Cycle 007: Append episodic memory and conversation context
+        req.system_prompt += const_cast<VillageAtomSpace&>(vas).get_episodic_context(resident_name);
+        req.system_prompt += const_cast<VillageAtomSpace&>(vas).get_conversation_context(resident_name);
         if (req.resident.empty()) return false;
         active_inferences_++;
         std::thread([this, req, callback]() {

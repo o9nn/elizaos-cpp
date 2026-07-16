@@ -163,7 +163,7 @@ struct ElizadConfig {
     int heartbeatMs = TimeCrystalHierarchy::HEARTBEAT_MS;
 
     // Aphrodite inference config
-    std::string aphroditeUrl = "http://136.243.70.177:2242/v1/chat/completions";
+    std::string aphroditeUrl = "http://127.0.0.1:2242/v1/chat/completions";
     std::string aphroditeApiKey = "cogcity-village-2026";
     std::string aphroditeModel = "/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf";
     double inferenceSTIThreshold = 150.0;
@@ -385,6 +385,18 @@ static void translateVillageEventToStimulus(const VillageEvent& event,
 // Main — The Daemon
 // ============================================================================
 
+
+// === Cycle 007: SIGTERM persistence handler ===
+static void* g_atomspace_ptr = nullptr;
+static void sigterm_handler(int sig) {
+    if (g_atomspace_ptr) {
+        auto* as = static_cast<::village::atomspace::VillageAtomSpace*>(g_atomspace_ptr);
+        as->persist();
+        fprintf(stderr, "[MEMORY] Signal %d: persisted AtomSpace before exit\n", sig);
+    }
+    _exit(0);
+}
+
 int main(int argc, char* argv[]) {
     (void)argc; (void)argv;
     std::signal(SIGINT, signalHandler);
@@ -439,6 +451,16 @@ int main(int argc, char* argv[]) {
     asConfig.spreading_rate = 0.3;
     asConfig.persist_path = "/var/agi_neighborhood/atomspace/village.scm";
     ::village::atomspace::VillageAtomSpace villageAtomSpace(asConfig);
+    
+        // === Cycle 007: MEMORY initialization ===
+    g_atomspace_ptr = &villageAtomSpace;
+    signal(SIGTERM, sigterm_handler);
+    signal(SIGINT, sigterm_handler);
+    villageAtomSpace.set_persist_path("/var/agi_neighborhood/atomspace/village.json");
+    bool restored = villageAtomSpace.load_persisted();
+    if (restored) {
+        fprintf(stderr, "[MEMORY] Restored previous AtomSpace state\n");
+    }
     
     // Seed residents from the same registry JSON used by KSM
     {
@@ -623,13 +645,17 @@ int main(int argc, char* argv[]) {
                     if (j.contains("target")) target = j["target"].get<std::string>();
                 } catch (...) {}
             }
+            fprintf(stderr, "[STIMULUS] received: target=%s\n", target.c_str());
             if (!target.empty() && target != "eliza" && target != "dan") {
                 std::string message = "You have been addressed. Respond authentically.";
                 try {
                     auto j = json::parse(event.payload);
                     if (j.contains("message")) message = j["message"].get<std::string>();
                 } catch (...) {}
+                fprintf(stderr, "[STIMULUS] calling infer_async for %s: %s\n", target.c_str(), message.substr(0,50).c_str());
                 aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete);
+                // Cycle 007: Record stimulus in episodic memory
+                villageAtomSpace.add_episodic(target, "stimulus", message);
             }
         }
         // 2. Multi-resident conversation: thoughts propagate within gear trains
@@ -670,6 +696,10 @@ int main(int argc, char* argv[]) {
             agent.runCognitiveCycleOnce();
             endocrine.tick();
             g_cogCycleCount++;
+            // Cycle 007: Persist every 100 cycles
+            if (g_cogCycleCount.load() % 100 == 0) {
+                villageAtomSpace.persist();
+            }
             lastCogCycle = now;
 
             // Advance group dynamics (uses bus tic as timestamp)
@@ -731,6 +761,8 @@ int main(int argc, char* argv[]) {
                     };
                     bus.publish("resident.thought", thoughtPayload.dump());
                     fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
+                    // Cycle 007: Record in episodic memory
+                    villageAtomSpace.add_episodic(pt.resident, "thought", pt.thought);
                 }
                 g_pendingThoughts.clear();
             }
