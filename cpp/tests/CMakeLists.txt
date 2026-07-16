@@ -810,6 +810,15 @@ if(TARGET real_llama_cpp_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_llama_cpp_e2e_test)
 endif()
 
+# Character-persona wiring + attention spreading-parameter regression E2E:
+# germinates two previously-dead centers (ElizaCore::processInput fetched the
+# session character then discarded it; AttentionAllocator::setSpreadingParameters
+# was a dead-store stub). Guards against regression to fetch-then-discard.
+add_real_test(real_eliza_character_attention_test src/test_eliza_character_attention.cpp)
+if(TARGET real_eliza_character_attention_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_eliza_character_attention_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================

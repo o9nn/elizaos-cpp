@@ -496,9 +496,9 @@ void EmbodimentManager::coherenceValidationLoop() {
 void EmbodimentManager::updateSystemMetrics() const {
     std::lock_guard<std::mutex> lock(systemMutex_);
     
-    // Update performance metrics - need to make performanceMetrics_ mutable
-    // For now, let's create a local copy and return it
-    auto& metrics = const_cast<std::unordered_map<std::string, double>&>(performanceMetrics_);
+    // performanceMetrics_ is mutable: monitoring refresh is logically const
+    // and guarded by systemMutex_, so we write through it directly.
+    auto& metrics = performanceMetrics_;
     
     // Update performance metrics
     if (perceptionActionLoop_) {

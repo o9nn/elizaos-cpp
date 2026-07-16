@@ -404,7 +404,9 @@ private:
     
     // System metrics
     CoherenceReport lastCoherenceReport_;
-    std::unordered_map<std::string, double> performanceMetrics_;
+    // Mutable: refreshed from const monitoring paths (updateSystemMetrics)
+    // under systemMutex_, which is the intended logical-const pattern.
+    mutable std::unordered_map<std::string, double> performanceMetrics_;
 };
 
 // Default interface implementations for common use cases

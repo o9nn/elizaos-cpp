@@ -997,6 +997,54 @@ void AutonomousStarter::refreshGoalAttention() {
         }
         goalAttention_.updateAttentionValue(goal.id, av);
     }
+
+    // Thematic continuity (activation spreading): link goals that share a
+    // dominant theme word so the focused goal leaks a controlled amount of
+    // activation into its thematic neighbours. When the incumbent completes,
+    // the successor chosen by the attention economy is then biased toward a
+    // RELATED objective instead of an arbitrary co-active one, preserving
+    // train-of-thought across goal transitions. The spreading rate is kept
+    // deliberately low (0.15) and the threshold high enough (0.05) that
+    // background goals cannot echo activation among themselves; only the
+    // pinned focus (activation 1.0) meaningfully spreads. This relies on the
+    // completed AttentionAllocator::setSpreadingParameters, which now tunes
+    // the LIVE network instead of being a dead-store stub.
+    goalAttention_.setSpreadingParameters(0.15, 0.05);
+    auto themeOf = [](const std::string& description) -> std::string {
+        // Dominant theme = longest word of 5+ chars (cheap, deterministic).
+        std::string best;
+        std::string word;
+        for (char c : description + " ") {
+            if (std::isalnum(static_cast<unsigned char>(c))) {
+                word += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+            } else {
+                if (word.size() >= 5 && word.size() > best.size()) {
+                    best = word;
+                }
+                word.clear();
+            }
+        }
+        return best;
+    };
+    for (std::size_t i = 0; i < goals.size(); ++i) {
+        const std::string themeA = themeOf(goals[i].description);
+        if (themeA.empty()) continue;
+        for (std::size_t j = i + 1; j < goals.size(); ++j) {
+            if (themeOf(goals[j].description) == themeA) {
+                goalAttention_.addAttentionLink(goals[i].id, goals[j].id, 1.0);
+                goalAttention_.addAttentionLink(goals[j].id, goals[i].id, 1.0);
+            }
+        }
+    }
+    goalAttention_.spreadActivation(1);
+    // Re-pin the focused goal after spreading: spreading decays the source's
+    // activation by (1 - rate), which would erode the hysteresis edge that
+    // keeps the incumbent focus stable (the exact thrash the pin prevents).
+    if (!focusedGoalId_.empty() && goalAttention_.hasAttentionValue(focusedGoalId_)) {
+        AttentionValue pinned = goalAttention_.getAttentionValue(focusedGoalId_);
+        pinned.activation = 1.0;
+        goalAttention_.updateAttentionValue(focusedGoalId_, pinned);
+    }
 }
 
 const StateGoal* AutonomousStarter::selectFocusGoal() {

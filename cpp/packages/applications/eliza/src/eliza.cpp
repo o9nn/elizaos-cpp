@@ -643,13 +643,25 @@ std::string ElizaCore::processInput(const std::string& input,
         updateEmotionalState(activeSessionId, processedInput);
     }
     
-    // Generate response
-    CharacterProfile* character = nullptr;
+    // Generate response. When character personality is enabled and the
+    // session is bound to a character, resolve the profile through the
+    // character manager (which owns its own mutex, distinct from
+    // sessionsMutex_, so no lock-order inversion) and keep it alive in a
+    // local optional for the duration of response generation. A profile
+    // that fails structural validation is treated as absent so generation
+    // degrades gracefully to knowledge/pattern responses instead of
+    // speaking through a corrupt persona.
+    std::optional<CharacterProfile> sessionCharacter;
+    const CharacterProfile* character = nullptr;
     if (characterPersonalityEnabled_ && characterManager_ && !context.characterId.empty()) {
         auto charOpt = characterManager_->getCharacter(context.characterId);
-        if (charOpt) {
-            // We need to store the character somewhere accessible
-            // For now, we'll generate without character-specific response
+        if (charOpt && charOpt->validate()) {
+            sessionCharacter = std::move(charOpt);
+            character = &(*sessionCharacter);
+        } else if (charOpt) {
+            logger_->log("Character profile failed validation; generating without persona: " +
+                             context.characterId,
+                         "warning", "eliza");
         }
     }
     

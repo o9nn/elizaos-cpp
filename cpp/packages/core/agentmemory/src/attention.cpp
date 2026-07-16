@@ -313,6 +313,24 @@ void ActivationSpreadingNetwork::clear() {
     nodes_.clear();
 }
 
+void ActivationSpreadingNetwork::setSpreadingParameters(double spreadingRate, double activationThreshold) {
+    std::lock_guard<std::mutex> lock(networkMutex_);
+    // Clamp to stable ranges: a spreading rate above 1.0 would amplify
+    // activation without bound, and a negative threshold is meaningless.
+    spreadingRate_ = std::clamp(spreadingRate, 0.0, 1.0);
+    activationThreshold_ = std::max(0.0, activationThreshold);
+}
+
+double ActivationSpreadingNetwork::getSpreadingRate() const {
+    std::lock_guard<std::mutex> lock(networkMutex_);
+    return spreadingRate_;
+}
+
+double ActivationSpreadingNetwork::getActivationThreshold() const {
+    std::lock_guard<std::mutex> lock(networkMutex_);
+    return activationThreshold_;
+}
+
 // AttentionAllocator Implementation
 AttentionAllocator::AttentionAllocator(double initialBudget) {
     budget_ = std::make_unique<AttentionBudget>(initialBudget);
@@ -574,11 +592,12 @@ void AttentionAllocator::setBudgetSize(double newBudget) {
 }
 
 void AttentionAllocator::setSpreadingParameters(double spreadingRate, double threshold) {
-    // Store parameters for std::future use
-    (void)spreadingRate; // Suppress unused warning
-    (void)threshold;     // Suppress unused warning
-    // Implementation depends on ActivationSpreadingNetwork having setters
-    // For now, we'll store these and use them when creating new networks
+    // Propagate the tuning directly into the live spreading network. The
+    // network clamps values to sane ranges, so a misconfigured caller cannot
+    // destabilize activation dynamics (rate in [0,1], threshold >= 0).
+    if (spreadingNetwork_) {
+        spreadingNetwork_->setSpreadingParameters(spreadingRate, threshold);
+    }
 }
 
 // Helper methods implementation

@@ -138,6 +138,12 @@ public:
     void decayActivations(double decayRate = 0.95);
     void normalizeActivations();
     void clear();
+
+    // Spreading configuration: bounded setters so the owning allocator can
+    // retune the live network instead of only affecting future networks.
+    void setSpreadingParameters(double spreadingRate, double activationThreshold);
+    double getSpreadingRate() const;
+    double getActivationThreshold() const;
     
 private:
     struct Node {
