@@ -2,6 +2,7 @@
 # Included as subdirectory from the main project CMakeLists.txt
 
 find_package(CURL REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 # Include paths
 set(ELIZAOS_VILLAGE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
@@ -54,9 +55,13 @@ target_link_libraries(elizad PRIVATE
     elizaos-agentlogger
     CURL::libcurl
     nlohmann_json::nlohmann_json
-    pthread
-    sqlite3
+    Threads::Threads
+    SQLite::SQLite3
 )
+
+if(WIN32)
+    target_link_libraries(elizad PRIVATE ws2_32)
+endif()
 
 install(TARGETS elizad RUNTIME DESTINATION bin)
 install(TARGETS village_event_bus village_group_dynamics antikythera_coupling ARCHIVE DESTINATION lib)

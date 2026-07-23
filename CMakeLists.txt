@@ -19,6 +19,10 @@ endif()
 # Compiler-specific options - use warnings but NOT -Werror to allow builds to complete
 if(MSVC)
     add_compile_options(/W3)
+    # Prevent <windows.h> (pulled in via curl and other deps) from defining
+    # min/max function-style macros that break std::min/std::max, and
+    # silence CRT deprecation warnings (e.g. localtime).
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -19,6 +19,15 @@
 #undef ERROR
 #endif
 
+// <windows.h> also defines min/max function-style macros unless NOMINMAX is
+// set, which breaks std::min/std::max calls below. Re-suppress them too.
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+
 #include <algorithm>
 #include <cctype>
 #include <cstring>

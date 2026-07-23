@@ -11,14 +11,47 @@
 #include <cstdio>
 #include <csignal>
 #include <array>
+#include <cstdlib>
+#include <vector>
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <io.h>
+#pragma comment(lib, "ws2_32.lib")
+// Compatibility shims: Windows sockets API differences.
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+#ifndef MSG_DONTWAIT
+#define MSG_DONTWAIT 0
+#endif
+#ifndef _SSIZE_T_DEFINED
+using ssize_t = long long;
+#define _SSIZE_T_DEFINED
+#endif
+using pid_t = int;
+namespace {
+inline int close_socket_fd(int fd) { return ::closesocket(static_cast<SOCKET>(fd)); }
+// One-time Winsock initialization for the socket transports.
+struct WinsockInit {
+    WinsockInit() { WSADATA d; WSAStartup(MAKEWORD(2, 2), &d); }
+    ~WinsockInit() { WSACleanup(); }
+};
+inline void ensureWinsock() { static WinsockInit init; }
+} // namespace
+#else
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
-#include <cstdlib>
-#include <vector>
+namespace {
+inline int close_socket_fd(int fd) { return ::close(fd); }
+inline void ensureWinsock() {}
+} // namespace
+#endif
 
 namespace elizaos {
 
@@ -637,6 +670,14 @@ public:
         elizaos::logInfo("STDIO Transport connecting: " + command, "mcp_transport");
         command_ = command;
 
+#ifdef _WIN32
+        // fork/exec-based process spawning is not available on Windows.
+        // Report an explicit, truthful unsupported state instead of
+        // fabricating a connection.
+        elizaos::logInfo("STDIO Transport: subprocess spawning not supported on Windows", "mcp_transport");
+        return false;
+    }
+#else
         // Create pipes for stdin and stdout of the child process
         int pipeIn[2];   // parent writes to pipeIn[1], child reads from pipeIn[0]
         int pipeOut[2];  // child writes to pipeOut[1], parent reads from pipeOut[0]
@@ -675,8 +716,10 @@ public:
         elizaos::logInfo("STDIO Transport connected, child pid=" + std::to_string(childPid_), "mcp_transport");
         return true;
     }
+#endif
 
     void disconnect() override {
+#ifndef _WIN32
         if (connected_) {
             elizaos::logInfo("STDIO Transport disconnecting", "mcp_transport");
             connected_ = false;
@@ -689,6 +732,9 @@ public:
                 childPid_ = -1;
             }
         }
+#else
+        connected_ = false;
+#endif
     }
 
     bool isConnected() const override { return connected_; }
@@ -704,6 +750,7 @@ public:
 
         // Serialize and write to child's stdin
         std::string payload = request.dump() + "\n";
+#ifndef _WIN32
         if (writefd_ >= 0) {
             ssize_t written = write(writefd_, payload.c_str(), payload.size());
             if (written < 0) {
@@ -726,6 +773,9 @@ public:
                 elizaos::logInfo("STDIO Transport: failed to parse response", "mcp_transport");
             }
         }
+#else
+        (void)payload;
+#endif
 
         // Fallback: return empty result
         MCPJsonValue response;
@@ -742,6 +792,7 @@ public:
 private:
     std::string readLine() {
         std::string result;
+#ifndef _WIN32
         if (readfd_ < 0) return result;
         char ch;
         while (true) {
@@ -750,6 +801,7 @@ private:
             if (ch == '\n') break;
             result += ch;
         }
+#endif
         return result;
     }
 
@@ -843,18 +895,25 @@ public:
         parseEndpoint(endpoint, host, port, path);
 
         // Create TCP socket
-        sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+        ensureWinsock();
+        sockfd_ = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
         if (sockfd_ < 0) {
             elizaos::logInfo("WebSocket Transport: socket creation failed", "mcp_transport");
             return false;
         }
 
         // Set socket timeout
+#ifdef _WIN32
+        DWORD timeoutMs = static_cast<DWORD>(reconnectIntervalMs_);
+        setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeoutMs), sizeof(timeoutMs));
+        setsockopt(sockfd_, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<const char*>(&timeoutMs), sizeof(timeoutMs));
+#else
         struct timeval tv;
         tv.tv_sec = reconnectIntervalMs_ / 1000;
         tv.tv_usec = (reconnectIntervalMs_ % 1000) * 1000;
         setsockopt(sockfd_, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
         setsockopt(sockfd_, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+#endif
 
         // Resolve host and connect
         struct addrinfo hints{}, *res = nullptr;
@@ -863,14 +922,14 @@ public:
         std::string portStr = std::to_string(port);
         if (getaddrinfo(host.c_str(), portStr.c_str(), &hints, &res) != 0 || !res) {
             elizaos::logInfo("WebSocket Transport: DNS resolution failed for " + host, "mcp_transport");
-            ::close(sockfd_); sockfd_ = -1;
+            close_socket_fd(sockfd_); sockfd_ = -1;
             return false;
         }
 
-        if (::connect(sockfd_, res->ai_addr, res->ai_addrlen) != 0) {
+        if (::connect(sockfd_, res->ai_addr, static_cast<int>(res->ai_addrlen)) != 0) {
             elizaos::logInfo("WebSocket Transport: TCP connect failed to " + host + ":" + portStr, "mcp_transport");
             freeaddrinfo(res);
-            ::close(sockfd_); sockfd_ = -1;
+            close_socket_fd(sockfd_); sockfd_ = -1;
             return false;
         }
         freeaddrinfo(res);
@@ -885,9 +944,9 @@ public:
             "Sec-WebSocket-Key: " + wsKey + "\r\n"
             "Sec-WebSocket-Version: 13\r\n\r\n";
 
-        if (::send(sockfd_, handshake.c_str(), handshake.size(), 0) < 0) {
+        if (::send(sockfd_, handshake.c_str(), static_cast<int>(handshake.size()), 0) < 0) {
             elizaos::logInfo("WebSocket Transport: handshake send failed", "mcp_transport");
-            ::close(sockfd_); sockfd_ = -1;
+            close_socket_fd(sockfd_); sockfd_ = -1;
             return false;
         }
 
@@ -896,14 +955,14 @@ public:
         ssize_t n = recv(sockfd_, buf, sizeof(buf) - 1, 0);
         if (n <= 0) {
             elizaos::logInfo("WebSocket Transport: handshake response failed", "mcp_transport");
-            ::close(sockfd_); sockfd_ = -1;
+            close_socket_fd(sockfd_); sockfd_ = -1;
             return false;
         }
         buf[n] = '\0';
         std::string response(buf);
         if (response.find("101") == std::string::npos) {
             elizaos::logInfo("WebSocket Transport: upgrade rejected", "mcp_transport");
-            ::close(sockfd_); sockfd_ = -1;
+            close_socket_fd(sockfd_); sockfd_ = -1;
             return false;
         }
 
@@ -925,7 +984,7 @@ public:
 
             // Send WebSocket close frame (opcode 0x8)
             if (sockfd_ >= 0) {
-                uint8_t closeFrame[6] = {0x88, 0x80, 0x00, 0x00, 0x00, 0x00};
+                const char closeFrame[6] = {'\x88', '\x80', '\x00', '\x00', '\x00', '\x00'};
                 ::send(sockfd_, closeFrame, sizeof(closeFrame), MSG_NOSIGNAL);
             }
 
@@ -936,7 +995,7 @@ public:
             }
 
             if (sockfd_ >= 0) {
-                ::close(sockfd_);
+                close_socket_fd(sockfd_);
                 sockfd_ = -1;
             }
         }
@@ -1093,7 +1152,8 @@ private:
             frame.push_back(static_cast<uint8_t>(payload[i]) ^ mask[i % 4]);
         }
 
-        ssize_t sent = ::send(sockfd_, frame.data(), frame.size(), MSG_NOSIGNAL);
+        ssize_t sent = ::send(sockfd_, reinterpret_cast<const char*>(frame.data()),
+                              static_cast<int>(frame.size()), MSG_NOSIGNAL);
         return sent == static_cast<ssize_t>(frame.size());
     }
 
@@ -1101,7 +1161,7 @@ private:
         if (sockfd_ < 0) return "";
 
         uint8_t header[2];
-        ssize_t n = recv(sockfd_, header, 2, MSG_DONTWAIT);
+        ssize_t n = recv(sockfd_, reinterpret_cast<char*>(header), 2, MSG_DONTWAIT);
         if (n < 2) return "";
 
         bool masked = (header[1] & 0x80) != 0;
@@ -1109,11 +1169,11 @@ private:
 
         if (payloadLen == 126) {
             uint8_t ext[2];
-            if (recv(sockfd_, ext, 2, 0) < 2) return "";
+            if (recv(sockfd_, reinterpret_cast<char*>(ext), 2, 0) < 2) return "";
             payloadLen = (static_cast<size_t>(ext[0]) << 8) | ext[1];
         } else if (payloadLen == 127) {
             uint8_t ext[8];
-            if (recv(sockfd_, ext, 8, 0) < 8) return "";
+            if (recv(sockfd_, reinterpret_cast<char*>(ext), 8, 0) < 8) return "";
             payloadLen = 0;
             for (int i = 0; i < 8; ++i)
                 payloadLen = (payloadLen << 8) | ext[i];
@@ -1121,13 +1181,13 @@ private:
 
         uint8_t mask[4] = {};
         if (masked) {
-            if (recv(sockfd_, mask, 4, 0) < 4) return "";
+            if (recv(sockfd_, reinterpret_cast<char*>(mask), 4, 0) < 4) return "";
         }
 
         std::string payload(payloadLen, '\0');
         size_t received = 0;
         while (received < payloadLen) {
-            ssize_t r = recv(sockfd_, &payload[received], payloadLen - received, 0);
+            ssize_t r = recv(sockfd_, &payload[received], static_cast<int>(payloadLen - received), 0);
             if (r <= 0) break;
             received += static_cast<size_t>(r);
         }

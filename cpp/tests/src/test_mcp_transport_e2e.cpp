@@ -14,9 +14,11 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#ifndef _WIN32
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#endif
 
 using namespace elizaos;
 

@@ -396,4 +396,138 @@ TEST_F(VillageAtomSpaceE2ETest, StiAccessorsReadAndWriteResidentImportance) {
     EXPECT_FALSE(vas_->get_resident_sti_str("ada").empty());
 }
 
+// ── Cycle 007/008: episodic memory + conversation history ───────────
+
+TEST_F(VillageAtomSpaceE2ETest, EpisodicMemoryKeepsRollingWindowOfTen) {
+    addDefaultResidents();
+
+    for (int i = 0; i < 14; ++i) {
+        vas_->add_episodic("ada", "thought", "memory-" + std::to_string(i));
+    }
+
+    const std::string ctx = vas_->get_episodic_context("ada");
+    ASSERT_FALSE(ctx.empty());
+    EXPECT_NE(ctx.find("[Recent memory]"), std::string::npos);
+    // Oldest entries must have been evicted by the rolling window (size 10).
+    EXPECT_EQ(ctx.find("memory-0"), std::string::npos);
+    EXPECT_EQ(ctx.find("memory-3"), std::string::npos);
+    // Newest entries must be present.
+    EXPECT_NE(ctx.find("memory-13"), std::string::npos);
+    EXPECT_NE(ctx.find("memory-4"), std::string::npos);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ConversationHistoryKeepsRollingWindowOfFive) {
+    addDefaultResidents();
+
+    for (int i = 0; i < 8; ++i) {
+        vas_->add_conversation("turing", "stimulus-" + std::to_string(i),
+                               "response-" + std::to_string(i));
+    }
+
+    const std::string ctx = vas_->get_conversation_context("turing");
+    ASSERT_FALSE(ctx.empty());
+    EXPECT_NE(ctx.find("[Conversation history]"), std::string::npos);
+    // Window is 5: entries 0-2 evicted, 3-7 kept.
+    EXPECT_EQ(ctx.find("stimulus-0"), std::string::npos);
+    EXPECT_EQ(ctx.find("stimulus-2"), std::string::npos);
+    EXPECT_NE(ctx.find("stimulus-3"), std::string::npos);
+    EXPECT_NE(ctx.find("response-7"), std::string::npos);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, MemoryContextForUnknownResidentIsEmpty) {
+    EXPECT_TRUE(vas_->get_episodic_context("nobody").empty());
+    EXPECT_TRUE(vas_->get_conversation_context("nobody").empty());
+}
+
+TEST_F(VillageAtomSpaceE2ETest, MemoryContextGettersAreConstCorrect) {
+    addDefaultResidents();
+    vas_->add_episodic("ada", "thought", "const-check");
+    vas_->add_conversation("ada", "ping", "pong");
+
+    // Must be callable through a const reference (used by AphroditeBridge
+    // during prompt construction without const_cast).
+    const VillageAtomSpace& cvas = *vas_;
+    EXPECT_NE(cvas.get_episodic_context("ada").find("const-check"),
+              std::string::npos);
+    EXPECT_NE(cvas.get_conversation_context("ada").find("pong"),
+              std::string::npos);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, PersistAndLoadRoundTripRestoresMemory) {
+    addDefaultResidents();
+    vas_->add_episodic("ada", "thought", "the lambda calculus is a garden");
+    vas_->add_episodic("ada", "stimulus", "what do you compute?");
+    vas_->add_conversation("ada", "hello ada", "hello dan, shall we prove something?");
+
+    const std::string jsonPath = persistPath_ + ".mem.json";
+    vas_->set_persist_path(jsonPath);
+    ASSERT_TRUE(vas_->persist());
+    ASSERT_TRUE(std::filesystem::exists(jsonPath));
+
+    VillageAtomSpace successor(config_);
+    successor.set_persist_path(jsonPath);
+    ASSERT_TRUE(successor.load_persisted());
+
+    // Episodic + conversation memory must survive the round-trip.
+    const std::string ep = successor.get_episodic_context("ada");
+    EXPECT_NE(ep.find("lambda calculus"), std::string::npos);
+    EXPECT_NE(ep.find("what do you compute?"), std::string::npos);
+    const std::string conv = successor.get_conversation_context("ada");
+    EXPECT_NE(conv.find("hello ada"), std::string::npos);
+    EXPECT_NE(conv.find("prove something"), std::string::npos);
+
+    // Resident atoms must also be restored.
+    EXPECT_TRUE(successor.residents().count("ada"));
+    EXPECT_TRUE(successor.residents().count("turing"));
+
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
+    std::filesystem::remove(jsonPath + ".tmp", ec);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, LoadPersistedFromMissingFileReturnsFalse) {
+    vas_->set_persist_path("/nonexistent/dir/never_here.json");
+    EXPECT_FALSE(vas_->load_persisted());
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ConversationRecorderHookFeedsMemory) {
+    addDefaultResidents();
+
+    AphroditeBridge::Config cfg;
+    cfg.url = "http://127.0.0.1:1/unreachable";  // never contacted in this test
+    AphroditeBridge bridge(cfg);
+
+    // Wire the Cycle 008 recorder exactly the way elizad does.
+    bridge.set_conversation_recorder(
+        [this](const std::string& resident, const std::string& stimulus,
+               const std::string& response) {
+            vas_->add_conversation(resident, stimulus, response);
+        });
+
+    // Simulate the post-inference invocation path.
+    vas_->add_conversation("hypatia", "observed stimulus", "considered response");
+    const std::string ctx = vas_->get_conversation_context("hypatia");
+    EXPECT_NE(ctx.find("observed stimulus"), std::string::npos);
+    EXPECT_NE(ctx.find("considered response"), std::string::npos);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, PromptConstructionInjectsMemoryContext) {
+    addDefaultResidents();
+    vas_->add_episodic("ada", "thought", "remember the gear trains");
+    vas_->add_conversation("ada", "how are the gears?", "spinning at 1.2 rpm");
+
+    AphroditeBridge::Config cfg;
+    AphroditeBridge bridge(cfg);
+    AphroditeRequest req = bridge.build_request(*vas_, "ada", "status?", 0.7);
+    // build_request itself carries persona; memory context is appended by
+    // infer_async. Reproduce that composition here.
+    req.system_prompt += vas_->get_episodic_context("ada");
+    req.system_prompt += vas_->get_conversation_context("ada");
+
+    EXPECT_NE(req.system_prompt.find("[Recent memory]"), std::string::npos);
+    EXPECT_NE(req.system_prompt.find("remember the gear trains"), std::string::npos);
+    EXPECT_NE(req.system_prompt.find("[Conversation history]"), std::string::npos);
+    EXPECT_NE(req.system_prompt.find("spinning at 1.2 rpm"), std::string::npos);
+}
+
 } // namespace

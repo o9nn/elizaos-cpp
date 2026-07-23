@@ -145,7 +145,9 @@ std::chrono::system_clock::time_point AgentAgenda::stringToTimestamp(const std::
         // "now" rather than fabricating an epoch time.
         return std::chrono::system_clock::now();
     }
-    return std::chrono::system_clock::time_point(std::chrono::nanoseconds(parsed));
+    return std::chrono::system_clock::time_point(
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(
+            std::chrono::nanoseconds(parsed)));
 }
 
 std::string AgentAgenda::serializeSteps(const std::vector<AgendaTaskStep>& steps) {

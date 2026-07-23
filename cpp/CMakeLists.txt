@@ -7,6 +7,13 @@ project(ElizaOS_CPP VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(MSVC)
+    # Prevent <windows.h> (pulled in via curl and other deps) from defining
+    # min/max function-style macros that break std::min/std::max, and
+    # silence CRT deprecation warnings (e.g. localtime).
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
+endif()
+
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
 find_package(PkgConfig REQUIRED)

@@ -16,11 +16,17 @@
 #include <atomic>
 #include <chrono>
 #include <cstdio>
-#include <unistd.h>
 #include <string>
 #include <thread>
 #include <unordered_map>
 #include <vector>
+
+#ifdef _WIN32
+#include <process.h>
+#define getpid _getpid
+#else
+#include <unistd.h>
+#endif
 
 using namespace elizaos;
 

@@ -17,3 +17,7 @@ target_link_libraries(elizaos-mcp_gateway
     nlohmann_json::nlohmann_json
     Threads::Threads
 )
+
+if(WIN32)
+    target_link_libraries(elizaos-mcp_gateway ws2_32)
+endif()

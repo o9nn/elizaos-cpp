@@ -17,7 +17,11 @@ target_link_libraries(elizaos-registry
 
 # Add libcurl if available for HTTP registry access
 if(CURL_FOUND)
-    target_link_libraries(elizaos-registry ${CURL_LIBRARIES})
-    target_include_directories(elizaos-registry PRIVATE ${CURL_INCLUDE_DIRS})
+    if(TARGET CURL::libcurl)
+        target_link_libraries(elizaos-registry CURL::libcurl)
+    else()
+        target_link_libraries(elizaos-registry ${CURL_LIBRARIES})
+        target_include_directories(elizaos-registry PRIVATE ${CURL_INCLUDE_DIRS})
+    endif()
     target_compile_definitions(elizaos-registry PRIVATE LIBCURL_FOUND)
 endif()

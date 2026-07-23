@@ -699,7 +699,7 @@ public:
         while (conv.size() > 5) conv.pop_front();
     }
     
-    std::string get_episodic_context(const std::string& resident) {
+    std::string get_episodic_context(const std::string& resident) const {
         std::lock_guard<std::mutex> lock(mutex_);
         auto it = episodic_memory_.find(resident);
         if (it == episodic_memory_.end() || it->second.empty()) return "";
@@ -710,7 +710,7 @@ public:
         return ctx;
     }
     
-    std::string get_conversation_context(const std::string& resident) {
+    std::string get_conversation_context(const std::string& resident) const {
         std::lock_guard<std::mutex> lock(mutex_);
         auto it = conversation_history_.find(resident);
         if (it == conversation_history_.end() || it->second.empty()) return "";
@@ -885,16 +885,29 @@ public:
         }
         auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
         // Cycle 007: Append episodic memory and conversation context
-        req.system_prompt += const_cast<VillageAtomSpace&>(vas).get_episodic_context(resident_name);
-        req.system_prompt += const_cast<VillageAtomSpace&>(vas).get_conversation_context(resident_name);
+        req.system_prompt += vas.get_episodic_context(resident_name);
+        req.system_prompt += vas.get_conversation_context(resident_name);
         if (req.resident.empty()) return false;
         active_inferences_++;
         std::thread([this, req, callback]() {
             std::string thought = perform_inference(req);
             active_inferences_--;
             if (!thought.empty() && callback) callback(req.resident, thought);
+            // Cycle 008: record the stimulus/response pair so future prompts carry
+            // conversation history (previously add_conversation was never invoked).
+            if (!thought.empty() && conversation_recorder_) {
+                conversation_recorder_(req.resident, req.user_prompt, thought);
+            }
         }).detach();
         return true;
+    }
+
+    // Cycle 008: optional hook invoked after each successful inference with
+    // (resident, stimulus, response) — wired by elizad to VillageAtomSpace::add_conversation.
+    using ConversationRecorder =
+        std::function<void(const std::string&, const std::string&, const std::string&)>;
+    void set_conversation_recorder(ConversationRecorder rec) {
+        conversation_recorder_ = std::move(rec);
     }
 
     bool should_infer(const std::string& resident_name, double sti) const {
@@ -1037,5 +1050,6 @@ private:
     std::atomic<int> active_inferences_;
     mutable std::mutex cooldown_mutex_;
     std::map<std::string, std::chrono::steady_clock::time_point> last_inference_;
+    ConversationRecorder conversation_recorder_;  // Cycle 008
 };
 }} // namespace village::atomspace

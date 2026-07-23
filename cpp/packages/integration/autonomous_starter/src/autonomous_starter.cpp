@@ -437,10 +437,10 @@ bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal
 }
 
 void AutonomousStarter::seedAdaptiveGoal() {
+    const Timestamp now = std::chrono::system_clock::now();
     // Deterministic exploratory rotation: when the agent has satisfied every
     // standing goal it widens understanding across distinct themes so it never
     // loops a single plan forever (the anti-dead-end / anti-stagnation drive).
-    const Timestamp now = std::chrono::system_clock::now();
     static const std::array<const char*, 7> rotations = {{
         "Sample repository source files to deepen project understanding",
         "Self-audit test and validation surfaces for autonomy health",
@@ -544,10 +544,10 @@ void AutonomousStarter::evaluateGoalProgress(const std::string& plan,
             planIsReliable) {
             const std::string completedDescription = activeGoal->description;
             state_.updateGoalStatus(activeGoalId_, "completed");
-            appendMemory("Goal completed: " + completedDescription +
-                         " (satisfied by reliable plan='" + plan + "').");
             lastCompletedGoalDescription_ = completedDescription;
             goalCompletedThisCycleById_ = true;
+            appendMemory("Goal completed: " + completedDescription +
+                         " (satisfied by reliable plan='" + plan + "').");
             activeGoalId_ = "";
         }
     }
@@ -1731,11 +1731,6 @@ bool autonomous_starter_self_check() {
     }
 }
 
-void autonomous_starter_placeholder() {
-    const bool ok = autonomous_starter_self_check();
-    logInfo(std::string("AutonomousStarter module loaded; self-check=") + (ok ? "ok" : "failed"));
-}
-
 AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthReport() const {
     AutonomyHealthReport report;
     report.competence = competenceSignal_;
@@ -1752,7 +1747,6 @@ AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthRepo
     report.lastPlan = lastPlan_;
     report.lastReflection = lastReflection_;
 
-    // Compute rates
     const std::size_t totalGoals = report.openGoals + report.completedGoals;
     report.goalCompletionRate = totalGoals > 0
         ? static_cast<double>(report.completedGoals) / static_cast<double>(totalGoals)
@@ -1761,7 +1755,6 @@ AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthRepo
         ? static_cast<double>(report.successfulActions) / static_cast<double>(report.totalActions)
         : 0.0;
 
-    // Health assessment
     std::string summary;
     report.isHealthy = true;
 
@@ -1790,6 +1783,11 @@ AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthRepo
     }
     report.healthSummary = summary;
     return report;
+}
+
+void autonomous_starter_placeholder() {
+    const bool ok = autonomous_starter_self_check();
+    logInfo(std::string("AutonomousStarter module loaded; self-check=") + (ok ? "ok" : "failed"));
 }
 
 } // namespace elizaos

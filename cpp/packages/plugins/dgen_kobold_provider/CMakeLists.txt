@@ -21,7 +21,11 @@ target_link_libraries(elizaos-dgen_kobold_provider
 
 # Link libcurl if available (for HTTP client)
 if(CURL_FOUND)
-    target_link_libraries(elizaos-dgen_kobold_provider ${CURL_LIBRARIES})
-    target_include_directories(elizaos-dgen_kobold_provider PRIVATE ${CURL_INCLUDE_DIRS})
+    if(TARGET CURL::libcurl)
+        target_link_libraries(elizaos-dgen_kobold_provider CURL::libcurl)
+    else()
+        target_link_libraries(elizaos-dgen_kobold_provider ${CURL_LIBRARIES})
+        target_include_directories(elizaos-dgen_kobold_provider PRIVATE ${CURL_INCLUDE_DIRS})
+    endif()
     target_compile_definitions(elizaos-dgen_kobold_provider PRIVATE HAS_LIBCURL=1)
 endif()

@@ -908,9 +908,19 @@ bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::
         cmd += " -H \"Content-Type: application/json\"";
         cmd += " --data-binary @" + body_file.string();
     }
-    cmd += " " + url + " 2>/dev/null";
+    cmd += " " + url;
+#ifdef _WIN32
+    cmd += " 2>NUL";
+#else
+    cmd += " 2>/dev/null";
+#endif
 
-    FILE* pipe = popen(cmd.c_str(), "r");
+    FILE* pipe = nullptr;
+#ifdef _WIN32
+    pipe = _popen(cmd.c_str(), "r");
+#else
+    pipe = popen(cmd.c_str(), "r");
+#endif
     if (!pipe) {
         cleanup();
         return false;
@@ -921,7 +931,11 @@ bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         raw += buffer;
     }
+#ifdef _WIN32
+    _pclose(pipe);
+#else
     pclose(pipe);
+#endif
     cleanup();
 
     // The last line from curl -w "\n%{http_code}" is the HTTP status code

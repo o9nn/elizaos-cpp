@@ -26,10 +26,36 @@
 #include <random>
 #include <sstream>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+// Compatibility shims: Windows sockets API differences.
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0
+#endif
+#ifndef _SSIZE_T_DEFINED
+using ssize_t = long long;
+#define _SSIZE_T_DEFINED
+#endif
+namespace {
+inline int mcp_close_socket(int fd) { return ::closesocket(static_cast<SOCKET>(fd)); }
+struct McpWinsockInit {
+    McpWinsockInit() { WSADATA d; WSAStartup(MAKEWORD(2, 2), &d); }
+    ~McpWinsockInit() { WSACleanup(); }
+};
+inline void mcpEnsureWinsock() { static McpWinsockInit init; }
+} // namespace
+#else
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+namespace {
+inline int mcp_close_socket(int fd) { return ::close(fd); }
+inline void mcpEnsureWinsock() {}
+} // namespace
+#endif
 
 namespace elizaos {
 
@@ -152,21 +178,22 @@ bool WebSocketTransport::connect() {
     hints.ai_socktype = SOCK_STREAM;
     struct addrinfo* res = nullptr;
     const std::string portStr = std::to_string(port);
+    mcpEnsureWinsock();
     if (getaddrinfo(host.c_str(), portStr.c_str(), &hints, &res) != 0 || !res) {
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("DNS resolution failed for " + host);
         return false;
     }
-    int fd = ::socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    int fd = static_cast<int>(::socket(res->ai_family, res->ai_socktype, res->ai_protocol));
     if (fd < 0) {
         freeaddrinfo(res);
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("socket() failed");
         return false;
     }
-    if (::connect(fd, res->ai_addr, res->ai_addrlen) != 0) {
+    if (::connect(fd, res->ai_addr, static_cast<int>(res->ai_addrlen)) != 0) {
         freeaddrinfo(res);
-        ::close(fd);
+        mcp_close_socket(fd);
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("TCP connect failed to " + host + ":" + portStr);
         return false;
@@ -182,8 +209,8 @@ bool WebSocketTransport::connect() {
         "Sec-WebSocket-Key: " + wsKey + "\r\n"
         "Sec-WebSocket-Protocol: " + config_.subprotocol + "\r\n"
         "Sec-WebSocket-Version: 13\r\n\r\n";
-    if (::send(fd, handshake.c_str(), handshake.size(), MSG_NOSIGNAL) < 0) {
-        ::close(fd);
+    if (::send(fd, handshake.c_str(), static_cast<int>(handshake.size()), MSG_NOSIGNAL) < 0) {
+        mcp_close_socket(fd);
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("WebSocket handshake send failed");
         return false;
@@ -191,14 +218,14 @@ bool WebSocketTransport::connect() {
     char buf[1024];
     const ssize_t n = ::recv(fd, buf, sizeof(buf) - 1, 0);
     if (n <= 0) {
-        ::close(fd);
+        mcp_close_socket(fd);
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("WebSocket handshake response failed");
         return false;
     }
     buf[n] = '\0';
     if (std::string(buf).find("101") == std::string::npos) {
-        ::close(fd);
+        mcp_close_socket(fd);
         state_.store(State::FAILED);
         if (errorHandler_) errorHandler_("WebSocket upgrade rejected");
         return false;
@@ -218,9 +245,9 @@ void WebSocketTransport::disconnect() {
     const int fd = wsGetSocket(this);
     if (fd >= 0) {
         // WebSocket close frame (opcode 0x8, masked empty payload).
-        uint8_t closeFrame[6] = {0x88, 0x80, 0x00, 0x00, 0x00, 0x00};
+        const char closeFrame[6] = {'\x88', '\x80', '\x00', '\x00', '\x00', '\x00'};
         ::send(fd, closeFrame, sizeof(closeFrame), MSG_NOSIGNAL);
-        ::close(fd);
+        mcp_close_socket(fd);
         wsSetSocket(this, -1);
     }
     const State prev = state_.exchange(State::DISCONNECTED);
@@ -283,7 +310,8 @@ void WebSocketTransport::send(const MCPJsonValue& message) {
     for (size_t i = 0; i < len; ++i) {
         frame.push_back(static_cast<uint8_t>(payload[i]) ^ mask[i % 4]);
     }
-    ::send(fd, frame.data(), frame.size(), MSG_NOSIGNAL);
+    ::send(fd, reinterpret_cast<const char*>(frame.data()),
+           static_cast<int>(frame.size()), MSG_NOSIGNAL);
 }
 
 void WebSocketTransport::setMessageHandler(MessageHandler handler) {

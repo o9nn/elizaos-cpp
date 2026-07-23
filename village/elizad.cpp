@@ -33,11 +33,49 @@
 #include <string>
 #include <thread>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
+#ifndef _SSIZE_T_DEFINED
+using ssize_t = long long;
+#define _SSIZE_T_DEFINED
+#endif
+using socklen_t = int;
+namespace {
+inline int elizad_close(int fd) { return ::closesocket(static_cast<SOCKET>(fd)); }
+inline ssize_t elizad_read(int fd, char* buf, size_t len) {
+    return ::recv(fd, buf, static_cast<int>(len), 0);
+}
+inline ssize_t elizad_write(int fd, const char* buf, size_t len) {
+    return ::send(fd, buf, static_cast<int>(len), 0);
+}
+inline void elizad_set_nonblocking(int fd) {
+    u_long mode = 1;
+    ::ioctlsocket(fd, FIONBIO, &mode);
+}
+struct ElizadWinsockInit {
+    ElizadWinsockInit() { WSADATA d; WSAStartup(MAKEWORD(2, 2), &d); }
+    ~ElizadWinsockInit() { WSACleanup(); }
+};
+inline void elizadEnsureWinsock() { static ElizadWinsockInit init; }
+} // namespace
+#else
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <fcntl.h>
+namespace {
+inline int elizad_close(int fd) { return ::close(fd); }
+inline ssize_t elizad_read(int fd, char* buf, size_t len) { return ::read(fd, buf, len); }
+inline ssize_t elizad_write(int fd, const char* buf, size_t len) { return ::write(fd, buf, len); }
+inline void elizad_set_nonblocking(int fd) {
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+}
+inline void elizadEnsureWinsock() {}
+} // namespace
+#endif
 #include <cstring>
 
 using namespace elizaos;
@@ -175,6 +213,7 @@ struct ElizadConfig {
         if (auto* v = std::getenv("ELIZA_HEALTH_PORT")) cfg.healthPort = std::atoi(v);
         if (auto* v = std::getenv("ELIZA_COG_CYCLE_MS")) cfg.cogCycleMs = std::atoi(v);
         if (auto* v = std::getenv("ELIZA_HEARTBEAT_MS")) cfg.heartbeatMs = std::atoi(v);
+        if (auto* v = std::getenv("ELIZAD_APHRODITE_URL")) cfg.aphroditeUrl = v;
         return cfg;
     }
 };
@@ -197,17 +236,19 @@ public:
           atomspace_(atomspace), fd_(-1) {}
 
     bool start() {
-        fd_ = socket(AF_INET, SOCK_STREAM, 0);
+        elizadEnsureWinsock();
+        fd_ = static_cast<int>(socket(AF_INET, SOCK_STREAM, 0));
         if (fd_ < 0) return false;
         int opt = 1;
-        setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-        fcntl(fd_, F_SETFL, fcntl(fd_, F_GETFL, 0) | O_NONBLOCK);
+        setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR,
+                   reinterpret_cast<const char*>(&opt), sizeof(opt));
+        elizad_set_nonblocking(fd_);
         struct sockaddr_in addr{};
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = INADDR_ANY;
         addr.sin_port = htons(port_);
         if (bind(fd_, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-            close(fd_); fd_ = -1; return false;
+            elizad_close(fd_); fd_ = -1; return false;
         }
         listen(fd_, 5);
         return true;
@@ -217,10 +258,10 @@ public:
         if (fd_ < 0) return;
         struct sockaddr_in clientAddr{};
         socklen_t addrLen = sizeof(clientAddr);
-        int clientFd = accept(fd_, (struct sockaddr*)&clientAddr, &addrLen);
+        int clientFd = static_cast<int>(accept(fd_, (struct sockaddr*)&clientAddr, &addrLen));
         if (clientFd < 0) return;
         char buf[1024];
-        ssize_t n = read(clientFd, buf, sizeof(buf) - 1);
+        ssize_t n = elizad_read(clientFd, buf, sizeof(buf) - 1);
         if (n > 0) {
             buf[n] = '\0';
             std::string request(buf);
@@ -241,12 +282,12 @@ public:
                 response = buildHealthResponse();
             else
                 response = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\n\r\n";
-            (void)write(clientFd, response.c_str(), response.size());
+            (void)elizad_write(clientFd, response.c_str(), response.size());
         }
-        close(clientFd);
+        elizad_close(clientFd);
     }
 
-    void stop() { if (fd_ >= 0) { close(fd_); fd_ = -1; } }
+    void stop() { if (fd_ >= 0) { elizad_close(fd_); fd_ = -1; } }
 
 private:
     int port_;
@@ -386,16 +427,11 @@ static void translateVillageEventToStimulus(const VillageEvent& event,
 // ============================================================================
 
 
-// === Cycle 007: SIGTERM persistence handler ===
-static void* g_atomspace_ptr = nullptr;
-static void sigterm_handler(int sig) {
-    if (g_atomspace_ptr) {
-        auto* as = static_cast<::village::atomspace::VillageAtomSpace*>(g_atomspace_ptr);
-        as->persist();
-        fprintf(stderr, "[MEMORY] Signal %d: persisted AtomSpace before exit\n", sig);
-    }
-    _exit(0);
-}
+// === Cycle 007/008: signal-driven graceful shutdown ===
+// Signals only flip the async-signal-safe g_running flag; AtomSpace persistence
+// happens deterministically on the normal shutdown path after the main loop
+// (persist() takes a mutex and does JSON + file I/O, which is not safe inside a
+// signal handler and previously skipped bus/health teardown via _exit).
 
 int main(int argc, char* argv[]) {
     (void)argc; (void)argv;
@@ -452,11 +488,14 @@ int main(int argc, char* argv[]) {
     asConfig.persist_path = "/var/agi_neighborhood/atomspace/village.scm";
     ::village::atomspace::VillageAtomSpace villageAtomSpace(asConfig);
     
-        // === Cycle 007: MEMORY initialization ===
-    g_atomspace_ptr = &villageAtomSpace;
-    signal(SIGTERM, sigterm_handler);
-    signal(SIGINT, sigterm_handler);
-    villageAtomSpace.set_persist_path("/var/agi_neighborhood/atomspace/village.json");
+    // === Cycle 007/008: MEMORY initialization ===
+    // Persist path is env-overridable so tests and non-CogCity deployments work
+    // without the /var/agi_neighborhood tree.
+    {
+        std::string persistPath = "/var/agi_neighborhood/atomspace/village.json";
+        if (const char* v = std::getenv("ELIZAD_PERSIST_PATH")) persistPath = v;
+        villageAtomSpace.set_persist_path(persistPath);
+    }
     bool restored = villageAtomSpace.load_persisted();
     if (restored) {
         fprintf(stderr, "[MEMORY] Restored previous AtomSpace state\n");
@@ -596,6 +635,13 @@ int main(int argc, char* argv[]) {
     aphroditeConfig.sti_threshold = config.inferenceSTIThreshold;
     aphroditeConfig.inference_cooldown_cycles = config.inferenceCooldownCycles;
     ::village::atomspace::AphroditeBridge aphroditeBridge(aphroditeConfig);
+    // Cycle 008: record each stimulus/response pair into rolling conversation
+    // history so subsequent prompts include [Conversation history] context.
+    aphroditeBridge.set_conversation_recorder(
+        [&villageAtomSpace](const std::string& resident, const std::string& stimulus,
+                            const std::string& response) {
+            villageAtomSpace.add_conversation(resident, stimulus, response);
+        });
     std::atomic<int> inferenceCount{0};
 
     // Inference callback: when a resident thinks, publish to bus + ingest to AtomSpace
@@ -875,6 +921,11 @@ int main(int argc, char* argv[]) {
               << " Published: " << bus.getPublishedCount()
               << " Received: " << bus.getReceivedCount()
               << " Groups: " << dynamics.groups().groupCount() << "\n";
+    // Cycle 007/008: persist AtomSpace + memory on graceful shutdown (SIGTERM/SIGINT
+    // flip g_running, so this runs for systemd stop/restart as well).
+    if (villageAtomSpace.persist()) {
+        fprintf(stderr, "[MEMORY] Persisted AtomSpace state on shutdown\n");
+    }
     bus.stop();
     health.stop();
     std::cout << "[elizad] Eliza is offline. The village remembers.\n";
