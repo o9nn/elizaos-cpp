@@ -39,6 +39,25 @@ struct HomeworkResult {
     std::size_t stepsRun = 0;      // KSM analytic steps exercised (<= 10, the propose bound)
     bool proposedMutation = false; // true if a mutation goal was queued (never executed)
     std::string handoffSignal;     // seed observation for the next developmental phase
+    std::size_t practiceDepth = 1; // bounded cognitive cycles run for this pass (adaptive)
+};
+
+/**
+ * CoherenceTrend - the longitudinal coherence trajectory of one living center.
+ *
+ * The homework loop accumulates one sample per cycle in which the center was the
+ * homework target, so the developmental phase can read the direction of travel
+ * (improving / flat / regressing) rather than a single-cycle snapshot. slope is the
+ * least-squares gradient of coherence over the sample index; a stagnant center
+ * (|slope| < 1e-6 over >= 3 samples) is a signal that homework alone cannot lift it
+ * and a developmental (human-led) mutation is required.
+ */
+struct CoherenceTrend {
+    CenterId center = CenterId::Autonomy;
+    std::string name;
+    std::vector<double> samples;   // coherenceAfter per targeting cycle, oldest first
+    double slope = 0.0;            // least-squares gradient over sample index
+    bool stagnant = false;         // >= 3 samples and |slope| below the stagnation floor
 };
 
 /**
@@ -99,6 +118,28 @@ public:
     /// Whether a destructive shell command was ever issued by homework (must stay false).
     bool issuedDestructiveCommand() const { return issuedDestructiveCommand_; }
 
+    /**
+     * Longitudinal coherence trend for a center (empty samples if never targeted).
+     * The trend is recomputed on demand from accumulated per-cycle samples.
+     */
+    CoherenceTrend coherenceTrend(CenterId center) const;
+
+    /// Trends for every center that has been targeted at least once, canonical order.
+    std::vector<CoherenceTrend> allCoherenceTrends() const;
+
+    /**
+     * Adaptive practice depth for the next cycle targeting `center`: starts at 1 bounded
+     * cognitive cycle and deepens (up to maxPracticeDepth) while the center's trend is
+     * flat or regressing, mirroring how a student spends longer on stubborn material.
+     * Depth never exceeds the propose boundary semantics: all cycles remain analytic and
+     * non-destructive.
+     */
+    std::size_t adaptivePracticeDepth(CenterId center) const;
+
+    /// Upper bound for adaptive practice depth (default 3, small to stay bounded).
+    void setMaxPracticeDepth(std::size_t depth) { maxPracticeDepth_ = depth == 0 ? 1 : depth; }
+    std::size_t maxPracticeDepth() const { return maxPracticeDepth_; }
+
 private:
     // Build the read-only practice goal description for a center (drives the KSM pass).
     std::string buildPracticeGoal(const CenterScore& target) const;
@@ -114,6 +155,12 @@ private:
     std::string lastHandoffSignal_;
     std::size_t homeworkCycleCount_ = 0;
     bool issuedDestructiveCommand_ = false;
+
+    // Longitudinal coherence samples per center (only cycles where the center was
+    // the homework target append a sample). Drives coherenceTrend() and
+    // adaptivePracticeDepth().
+    std::map<CenterId, std::vector<double>> coherenceHistory_;
+    std::size_t maxPracticeDepth_ = 3;
 };
 
 }  // namespace elizaos

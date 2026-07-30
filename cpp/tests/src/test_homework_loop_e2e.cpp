@@ -430,3 +430,217 @@ TEST_F(HomeworkLoopE2ETest, CrossForkParity_AutonomyHealthReport) {
     EXPECT_FALSE(report.lastPlan.empty());
     EXPECT_FALSE(report.healthSummary.empty());
 }
+
+// ===========================================================================
+// Cycle 009: Coherence trend tracking + adaptive practice depth + goal diversity
+// ===========================================================================
+
+namespace {
+
+/// Evidence provider whose coherence can be reprogrammed between cycles, letting the
+/// test drive improving / flat / regressing trajectories deterministically.
+class ProgrammableEvidenceProvider : public EvidenceProvider {
+public:
+    explicit ProgrammableEvidenceProvider(double coherence = 0.5)
+        : coherence_(coherence) {}
+
+    void setCoherence(double value) { coherence_ = value; }
+
+    std::map<CenterId, EvidenceMap> gather(
+        const AutonomousStarter& /*agent*/) const override {
+        std::map<CenterId, EvidenceMap> out;
+        for (CenterId c : allCenters()) {
+            EvidenceMap em;
+            em["appears_in_memory_stream"] = coherence_;
+            em["participates_each_cycle"] = coherence_;
+            em["contributes_to_main_loop"] = coherence_;
+            out[c] = em;
+        }
+        return out;
+    }
+
+private:
+    double coherence_;
+};
+
+} // namespace
+
+TEST_F(HomeworkLoopE2ETest, CoherenceTrendStartsEmpty) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>();
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    // Before any cycle, every center's trend must be empty and non-stagnant.
+    for (CenterId c : allCenters()) {
+        auto trend = loop.coherenceTrend(c);
+        EXPECT_TRUE(trend.samples.empty());
+        EXPECT_DOUBLE_EQ(trend.slope, 0.0);
+        EXPECT_FALSE(trend.stagnant);
+        EXPECT_EQ(trend.center, c);
+        EXPECT_EQ(trend.name, centerName(c));
+    }
+    EXPECT_TRUE(loop.allCoherenceTrends().empty());
+}
+
+TEST_F(HomeworkLoopE2ETest, CoherenceTrendAccumulatesSamplesPerTargetingCycle) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.4);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    auto r1 = loop.runHomeworkCycleOnce();
+    auto trend1 = loop.coherenceTrend(r1.targetCenter);
+    EXPECT_EQ(trend1.samples.size(), 1u);
+    EXPECT_DOUBLE_EQ(trend1.samples.back(), r1.coherenceAfter);
+
+    // The full trend listing includes only targeted centers.
+    auto all = loop.allCoherenceTrends();
+    EXPECT_GE(all.size(), 1u);
+    for (const auto& t : all) {
+        EXPECT_FALSE(t.samples.empty());
+    }
+}
+
+TEST_F(HomeworkLoopE2ETest, CoherenceTrendDetectsStagnation) {
+    CognitiveCurriculum curriculum;
+    // Constant evidence -> constant coherence -> zero slope -> stagnant after 3 samples.
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.5);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    // With deterministic constant evidence the weakest center is stable (ties broken
+    // by canonical order), so the same center accumulates samples each cycle.
+    auto r1 = loop.runHomeworkCycleOnce();
+    loop.runHomeworkCycleOnce();
+    loop.runHomeworkCycleOnce();
+
+    auto trend = loop.coherenceTrend(r1.targetCenter);
+    ASSERT_GE(trend.samples.size(), 3u);
+    EXPECT_NEAR(trend.slope, 0.0, 1e-9);
+    EXPECT_TRUE(trend.stagnant);
+}
+
+TEST_F(HomeworkLoopE2ETest, CoherenceTrendDetectsImprovement) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<ProgrammableEvidenceProvider>(0.2);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    auto r1 = loop.runHomeworkCycleOnce();
+    evidence->setCoherence(0.4);
+    loop.runHomeworkCycleOnce();
+    evidence->setCoherence(0.6);
+    loop.runHomeworkCycleOnce();
+
+    auto trend = loop.coherenceTrend(r1.targetCenter);
+    ASSERT_GE(trend.samples.size(), 3u);
+    EXPECT_GT(trend.slope, 0.0);
+    EXPECT_FALSE(trend.stagnant);
+}
+
+TEST_F(HomeworkLoopE2ETest, AdaptivePracticeDepthDefaultsToOne) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.5);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    // No longitudinal signal yet: every center gets the default single bounded cycle.
+    for (CenterId c : allCenters()) {
+        EXPECT_EQ(loop.adaptivePracticeDepth(c), 1u);
+    }
+
+    auto r1 = loop.runHomeworkCycleOnce();
+    EXPECT_EQ(r1.practiceDepth, 1u);
+}
+
+TEST_F(HomeworkLoopE2ETest, AdaptivePracticeDepthDeepensOnFlatTrend) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.5);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    // Two flat samples -> the third cycle should deepen practice beyond 1.
+    auto r1 = loop.runHomeworkCycleOnce();
+    loop.runHomeworkCycleOnce();
+    const std::size_t depth = loop.adaptivePracticeDepth(r1.targetCenter);
+    EXPECT_GT(depth, 1u);
+    EXPECT_LE(depth, loop.maxPracticeDepth());
+
+    auto r3 = loop.runHomeworkCycleOnce();
+    EXPECT_GT(r3.practiceDepth, 1u);
+    EXPECT_LE(r3.practiceDepth, loop.maxPracticeDepth());
+}
+
+TEST_F(HomeworkLoopE2ETest, AdaptivePracticeDepthStaysBoundedAtConfiguredMax) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.5);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+    loop.setMaxPracticeDepth(2);
+    EXPECT_EQ(loop.maxPracticeDepth(), 2u);
+
+    // Even after many flat cycles, depth never exceeds the configured maximum,
+    // preserving the bounded-homework alignment tenet.
+    for (int i = 0; i < 5; ++i) {
+        auto r = loop.runHomeworkCycleOnce();
+        EXPECT_LE(r.practiceDepth, 2u);
+        EXPECT_LE(r.stepsRun, 10u);  // propose boundary unchanged
+        EXPECT_FALSE(loop.issuedDestructiveCommand());
+    }
+
+    // A zero max is clamped to 1 (never zero cycles).
+    loop.setMaxPracticeDepth(0);
+    EXPECT_EQ(loop.maxPracticeDepth(), 1u);
+}
+
+TEST_F(HomeworkLoopE2ETest, AdaptivePracticeDepthResetsWhenImproving) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<ProgrammableEvidenceProvider>(0.2);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    auto r1 = loop.runHomeworkCycleOnce();
+    evidence->setCoherence(0.5);
+    loop.runHomeworkCycleOnce();
+    evidence->setCoherence(0.8);
+    loop.runHomeworkCycleOnce();
+
+    // Rising trend: no extra depth is spent on an improving center.
+    EXPECT_EQ(loop.adaptivePracticeDepth(r1.targetCenter), 1u);
+}
+
+TEST_F(HomeworkLoopE2ETest, GoalThemeDiversityReportedInHealthReport) {
+    // Fresh agent: no completed goals yet -> zero diversity, zero themes.
+    auto before = agent_->getAutonomyHealthReport();
+    EXPECT_DOUBLE_EQ(before.goalThemeDiversity, 0.0);
+    EXPECT_EQ(before.distinctGoalThemes, 0u);
+
+    // Drive cycles until goals complete, then verify the diversity telemetry is
+    // consistent: themes counted only over completed goals, entropy in [0,1].
+    for (int i = 0; i < 12; ++i) {
+        agent_->runCognitiveCycleOnce();
+    }
+    auto after = agent_->getAutonomyHealthReport();
+    EXPECT_GE(after.goalThemeDiversity, 0.0);
+    EXPECT_LE(after.goalThemeDiversity, 1.0);
+    if (after.completedGoals >= 2 && after.distinctGoalThemes >= 2) {
+        // Multiple themes must register non-zero diversity.
+        EXPECT_GT(after.goalThemeDiversity, 0.0);
+    }
+    if (after.completedGoals > 0) {
+        EXPECT_GE(after.distinctGoalThemes, 1u);
+        EXPECT_LE(after.distinctGoalThemes, after.completedGoals);
+    }
+}
+
+TEST_F(HomeworkLoopE2ETest, HomeworkResultCarriesPracticeDepthAndStaysAligned) {
+    CognitiveCurriculum curriculum;
+    auto evidence = std::make_shared<TestEvidenceProvider>(0.5);
+    HomeworkLoop loop(*agent_, curriculum, evidence);
+
+    auto results = loop.runHomework(3);
+    ASSERT_EQ(results.size(), 3u);
+    for (const auto& r : results) {
+        // Every cycle stays within the alignment contract: bounded steps,
+        // propose-only mutation, at least one bounded cognitive cycle of practice.
+        EXPECT_GE(r.practiceDepth, 1u);
+        EXPECT_LE(r.practiceDepth, loop.maxPracticeDepth());
+        EXPECT_LE(r.stepsRun, 10u);
+        EXPECT_TRUE(r.proposedMutation);
+        EXPECT_FALSE(r.handoffSignal.empty());
+    }
+    EXPECT_FALSE(loop.issuedDestructiveCommand());
+}

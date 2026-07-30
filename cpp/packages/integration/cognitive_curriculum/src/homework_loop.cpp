@@ -8,6 +8,8 @@
 
 #include "elizaos/homework_loop.hpp"
 
+#include <algorithm>
+#include <cmath>
 #include <sstream>
 #include <utility>
 
@@ -132,8 +134,17 @@ HomeworkResult HomeworkLoop::runHomeworkCycleOnce() {
 
     // The analytic pass exercises the agent's observe-reason-act loop. We deliberately
     // stop short of step 7's destructive mutation: homework only PROPOSES.
+    //
+    // Adaptive practice depth (autonomy optimization): a center whose coherence trend
+    // is flat or regressing earns extra bounded cycles this pass (up to
+    // maxPracticeDepth_), the way a student lingers on stubborn material. Every extra
+    // cycle remains analytic and shell-guarded, so the propose boundary is unchanged.
+    const std::size_t depth = adaptivePracticeDepth(before.center);
+    result.practiceDepth = depth;
     std::size_t steps = 0;
-    agent_.runCognitiveCycleOnce();  // observe-reason-act (bounded, guarded)
+    for (std::size_t i = 0; i < depth; ++i) {
+        agent_.runCognitiveCycleOnce();  // observe-reason-act (bounded, guarded)
+    }
     steps = 9;                       // analytic steps 1-9 exercised
 
     // Step 10 (propose, never commit): queue a StateGoal describing the proposed
@@ -162,6 +173,11 @@ HomeworkResult HomeworkLoop::runHomeworkCycleOnce() {
     result.coherenceAfter = after.coherence;
     result.delta = result.coherenceAfter - result.coherenceBefore;
 
+    // Longitudinal memory: append this cycle's post-practice coherence to the target
+    // center's trend so future cycles (and the developmental phase) can read the
+    // direction of travel instead of a single-cycle snapshot.
+    coherenceHistory_[before.center].push_back(result.coherenceAfter);
+
     // Step 12 (bootstrap): emit the handoff signal seeding the next developmental phase,
     // and record it to memory so the handoff is visible.
     ++homeworkCycleCount_;
@@ -179,6 +195,74 @@ std::vector<HomeworkResult> HomeworkLoop::runHomework(std::size_t n) {
         results.push_back(runHomeworkCycleOnce());
     }
     return results;
+}
+
+namespace {
+
+/// Least-squares slope of y over index x = 0..n-1. Returns 0 for fewer than 2 samples.
+double leastSquaresSlope(const std::vector<double>& y) {
+    const std::size_t n = y.size();
+    if (n < 2) {
+        return 0.0;
+    }
+    const double nd = static_cast<double>(n);
+    double sumX = 0.0, sumY = 0.0, sumXY = 0.0, sumXX = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+        const double x = static_cast<double>(i);
+        sumX += x;
+        sumY += y[i];
+        sumXY += x * y[i];
+        sumXX += x * x;
+    }
+    const double denom = nd * sumXX - sumX * sumX;
+    if (denom == 0.0) {
+        return 0.0;
+    }
+    return (nd * sumXY - sumX * sumY) / denom;
+}
+
+constexpr double kStagnationSlopeFloor = 1e-6;
+
+}  // namespace
+
+CoherenceTrend HomeworkLoop::coherenceTrend(CenterId center) const {
+    CoherenceTrend trend;
+    trend.center = center;
+    trend.name = centerName(center);
+    auto it = coherenceHistory_.find(center);
+    if (it != coherenceHistory_.end()) {
+        trend.samples = it->second;
+    }
+    trend.slope = leastSquaresSlope(trend.samples);
+    trend.stagnant = trend.samples.size() >= 3 && std::abs(trend.slope) < kStagnationSlopeFloor;
+    return trend;
+}
+
+std::vector<CoherenceTrend> HomeworkLoop::allCoherenceTrends() const {
+    std::vector<CoherenceTrend> trends;
+    for (CenterId c : allCenters()) {
+        auto it = coherenceHistory_.find(c);
+        if (it != coherenceHistory_.end() && !it->second.empty()) {
+            trends.push_back(coherenceTrend(c));
+        }
+    }
+    return trends;
+}
+
+std::size_t HomeworkLoop::adaptivePracticeDepth(CenterId center) const {
+    auto it = coherenceHistory_.find(center);
+    if (it == coherenceHistory_.end() || it->second.size() < 2) {
+        return 1;  // Not enough longitudinal signal: default single bounded cycle.
+    }
+    const double slope = leastSquaresSlope(it->second);
+    if (slope > kStagnationSlopeFloor) {
+        return 1;  // Improving: no extra depth needed.
+    }
+    // Flat or regressing: deepen practice with the number of samples observed so far,
+    // capped at the configured bound so homework stays strictly bounded.
+    const std::size_t depth = 1 + std::min<std::size_t>(it->second.size() - 1,
+                                                        maxPracticeDepth_ - 1);
+    return std::min(depth, maxPracticeDepth_);
 }
 
 }  // namespace elizaos

@@ -1781,6 +1781,43 @@ AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthRepo
                   std::to_string(report.totalCycles) + " success_rate=" +
                   std::to_string(report.actionSuccessRate);
     }
+    // Goal-diversity telemetry: compute normalized Shannon entropy over completed
+    // goal themes. Themes are derived from the first 3 words of each completed goal's
+    // description, which clusters goals by intent (e.g. "strengthen center memory",
+    // "explore knowledge graph") without requiring an external taxonomy.
+    {
+        std::unordered_map<std::string, std::size_t> themeCounts;
+        for (const auto& g : state_.getGoals()) {
+            if (toLowerAscii(g.status) == "completed" && !g.description.empty()) {
+                // Theme bucket: first 3 whitespace-delimited tokens of description.
+                std::string theme;
+                std::size_t tokens = 0;
+                for (std::size_t i = 0; i < g.description.size() && tokens < 3; ++i) {
+                    if (g.description[i] == ' ') {
+                        ++tokens;
+                    }
+                    theme += g.description[i];
+                }
+                ++themeCounts[theme];
+            }
+        }
+        report.distinctGoalThemes = themeCounts.size();
+        if (themeCounts.size() > 1) {
+            double entropy = 0.0;
+            const double total = static_cast<double>(report.completedGoals);
+            for (const auto& [_, count] : themeCounts) {
+                const double p = static_cast<double>(count) / total;
+                if (p > 0.0) {
+                    entropy -= p * std::log2(p);
+                }
+            }
+            const double maxEntropy = std::log2(static_cast<double>(themeCounts.size()));
+            report.goalThemeDiversity = maxEntropy > 0.0 ? entropy / maxEntropy : 0.0;
+        } else {
+            report.goalThemeDiversity = 0.0;
+        }
+    }
+
     report.healthSummary = summary;
     return report;
 }

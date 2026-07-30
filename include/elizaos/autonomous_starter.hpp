@@ -137,6 +137,14 @@ public:
         std::string lastReflection;
         double goalCompletionRate = 0.0;
         double actionSuccessRate = 0.0;
+        // Goal-diversity telemetry (autonomy optimization): measures how evenly the
+        // agent's completed goals are spread across distinct goal themes. A collapsed
+        // diversity (near 0 with several completions) means the agent is looping one
+        // theme; healthy exploration keeps diversity above the 0.3 floor once enough
+        // goals have completed. Computed as normalized Shannon entropy over completed
+        // goal theme buckets in [0,1].
+        double goalThemeDiversity = 0.0;
+        std::size_t distinctGoalThemes = 0;
         bool isHealthy = true;
         std::string healthSummary;
     };

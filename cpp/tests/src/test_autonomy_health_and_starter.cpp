@@ -557,15 +557,49 @@ TEST_F(CrossForkParityTest, MemoryAccumulatesWithCycles) {
     auto agent = std::make_shared<AutonomousStarter>(makeConfig());
     agent->enableShellAccess(true);
     agent->start();
-
     std::size_t memBefore = agent->getState().getRecentMessages().size();
-
     for (int i = 0; i < 5; ++i) {
         agent->runCognitiveCycleOnce();
     }
-
     std::size_t memAfter = agent->getState().getRecentMessages().size();
     EXPECT_GT(memAfter, memBefore);
+    agent->stop();
+}
 
+// ===========================================================================
+// Cycle 009: Goal-diversity telemetry (cross-fork parity)
+// ===========================================================================
+
+TEST_F(CrossForkParityTest, GoalThemeDiversityFieldsPresent) {
+    // Both forks must expose goalThemeDiversity and distinctGoalThemes on the
+    // health report, defaulting to zero on a fresh agent.
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->start();
+    auto report = agent->getAutonomyHealthReport();
+    EXPECT_DOUBLE_EQ(report.goalThemeDiversity, 0.0);
+    EXPECT_EQ(report.distinctGoalThemes, 0u);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, GoalThemeDiversityBoundedAndConsistent) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    for (int i = 0; i < 15; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    // Entropy normalization keeps the diversity metric inside [0,1].
+    EXPECT_GE(report.goalThemeDiversity, 0.0);
+    EXPECT_LE(report.goalThemeDiversity, 1.0);
+    // Theme count can never exceed the number of completed goals.
+    EXPECT_LE(report.distinctGoalThemes, report.completedGoals);
+    // A single theme (or none) must yield exactly zero diversity; multiple
+    // themes must register strictly positive diversity.
+    if (report.distinctGoalThemes <= 1) {
+        EXPECT_DOUBLE_EQ(report.goalThemeDiversity, 0.0);
+    } else {
+        EXPECT_GT(report.goalThemeDiversity, 0.0);
+    }
     agent->stop();
 }
