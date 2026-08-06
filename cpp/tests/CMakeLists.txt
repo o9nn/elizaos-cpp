@@ -772,6 +772,12 @@ if(TARGET real_autonomous_cognitive_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomous_cognitive_e2e_test)
 endif()
 
+add_real_test(real_autonomy_pipeline_integration_e2e_test src/test_autonomy_pipeline_integration_e2e.cpp)
+target_link_libraries(real_autonomy_pipeline_integration_e2e_test elizaos-autonomous_starter elizaos-cognitive_curriculum elizaos-endocrine)
+if(TARGET real_autonomy_pipeline_integration_e2e_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_autonomy_pipeline_integration_e2e_test)
+endif()
+
 # Phase 3.2 Distributed Cognitive State System E2E: compression round-trip,
 # sync protocol (registration/consensus/conflicts/leader election), visualizer
 # exports/streaming, snapshots/replay, cluster lifecycle.

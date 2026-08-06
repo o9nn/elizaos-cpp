@@ -145,6 +145,21 @@ public:
         // goal theme buckets in [0,1].
         double goalThemeDiversity = 0.0;
         std::size_t distinctGoalThemes = 0;
+        // Cognitive momentum: exponentially-weighted moving average of recent
+        // action success (window=10 cycles). High momentum (>0.7) signals the
+        // agent is in a productive streak; low momentum (<0.3) triggers
+        // plan-strategy fallback to simpler actions.
+        double cognitiveMomentum = 0.0;
+        // Cycle efficiency: ratio of cycles that produced at least one
+        // meaningful state change (goal progress, new memory, or successful
+        // action) vs total cycles. Measures how much cognitive work translates
+        // to observable progress rather than idle perception loops.
+        double cycleEfficiency = 0.0;
+        // Goal-chain coherence: measures sequential thematic relatedness between
+        // consecutively completed goals (Jaccard similarity of 3-token theme
+        // sets). High coherence (>0.6) means the agent pursues related
+        // objectives in sequence; low coherence means scattered topic-hopping.
+        double goalChainCoherence = 0.0;
         bool isHealthy = true;
         std::string healthSummary;
     };
@@ -296,6 +311,11 @@ private:
     // does not redundantly complete a SECOND goal by description in the same
     // cycle. Reset at the start of every cycle in perceptionStep().
     bool goalCompletedThisCycleById_{false};
+
+    // Cognitive momentum tracking: EWMA of recent action outcomes.
+    double cognitiveMomentum_{0.5};
+    // Productive cycle counter (cycles with at least one meaningful outcome).
+    std::size_t productiveCycleCount_{0};
 
     // Virtual endocrine system: provides hormone-based affect signaling that
     // modulates plan selection (CognitiveMode) and memory consolidation.

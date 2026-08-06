@@ -17,6 +17,7 @@
 #include <thread>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 #ifdef _WIN32
 #include <direct.h>  // _getcwd on Windows
@@ -1525,6 +1526,16 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
     }
     competenceSignal_ = std::max(0.0, std::min(1.0, competenceSignal_));
 
+    // Cognitive momentum: EWMA with alpha=0.2 (window ~10 cycles).
+    const double alpha = 0.2;
+    cognitiveMomentum_ = alpha * (lastActionSucceeded_ ? 1.0 : 0.0) + (1.0 - alpha) * cognitiveMomentum_;
+    cognitiveMomentum_ = std::max(0.0, std::min(1.0, cognitiveMomentum_));
+
+    // Track productive cycles (any cycle with a successful action counts).
+    if (lastActionSucceeded_) {
+        ++productiveCycleCount_;
+    }
+
     std::size_t windowFailures = 0;
     for (bool ok : recentActionOutcomes_) {
         if (!ok) ++windowFailures;
@@ -1815,6 +1826,60 @@ AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthRepo
             report.goalThemeDiversity = maxEntropy > 0.0 ? entropy / maxEntropy : 0.0;
         } else {
             report.goalThemeDiversity = 0.0;
+        }
+    }
+
+    // Cognitive momentum: EWMA of recent action outcomes.
+    report.cognitiveMomentum = cognitiveMomentum_;
+
+    // Cycle efficiency: ratio of productive cycles to total cycles.
+    report.cycleEfficiency = report.totalCycles > 0
+        ? static_cast<double>(productiveCycleCount_) / static_cast<double>(report.totalCycles)
+        : 0.0;
+
+    // Goal-chain coherence: Jaccard similarity of 3-token theme sets between
+    // consecutively completed goals. Measures thematic continuity.
+    {
+        std::vector<std::string> completedThemes;
+        for (const auto& g : state_.getGoals()) {
+            if (toLowerAscii(g.status) == "completed" && !g.description.empty()) {
+                std::string theme;
+                std::size_t tokens = 0;
+                for (std::size_t i = 0; i < g.description.size() && tokens < 3; ++i) {
+                    if (g.description[i] == ' ') ++tokens;
+                    theme += g.description[i];
+                }
+                completedThemes.push_back(theme);
+            }
+        }
+        if (completedThemes.size() >= 2) {
+            double totalSimilarity = 0.0;
+            std::size_t pairs = 0;
+            for (std::size_t i = 1; i < completedThemes.size(); ++i) {
+                // Jaccard on word sets of consecutive themes.
+                auto tokenize = [](const std::string& s) {
+                    std::unordered_set<std::string> words;
+                    std::string word;
+                    for (char c : s) {
+                        if (c == ' ') { if (!word.empty()) { words.insert(word); word.clear(); } }
+                        else word += c;
+                    }
+                    if (!word.empty()) words.insert(word);
+                    return words;
+                };
+                auto a = tokenize(completedThemes[i - 1]);
+                auto b = tokenize(completedThemes[i]);
+                std::size_t intersect = 0;
+                for (const auto& w : a) { if (b.count(w)) ++intersect; }
+                std::size_t unionSize = a.size() + b.size() - intersect;
+                if (unionSize > 0) {
+                    totalSimilarity += static_cast<double>(intersect) / static_cast<double>(unionSize);
+                }
+                ++pairs;
+            }
+            report.goalChainCoherence = pairs > 0 ? totalSimilarity / static_cast<double>(pairs) : 0.0;
+        } else {
+            report.goalChainCoherence = 0.0;
         }
     }
 

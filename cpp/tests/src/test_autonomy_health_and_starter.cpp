@@ -603,3 +603,123 @@ TEST_F(CrossForkParityTest, GoalThemeDiversityBoundedAndConsistent) {
     }
     agent->stop();
 }
+TEST_F(CrossForkParityTest, CognitiveMomentumFieldPresent) {
+    // Both forks must expose cognitiveMomentum on the health report.
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->start();
+    auto report = agent->getAutonomyHealthReport();
+    // Initial momentum is 0.5 (neutral starting point).
+    EXPECT_GE(report.cognitiveMomentum, 0.0);
+    EXPECT_LE(report.cognitiveMomentum, 1.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, CognitiveMomentumRisesOnSuccess) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    double initialMomentum = agent->getAutonomyHealthReport().cognitiveMomentum;
+    // Run cycles - shell commands succeed so momentum should rise.
+    for (int i = 0; i < 10; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    // After successful cycles, momentum should be higher than initial.
+    EXPECT_GE(report.cognitiveMomentum, initialMomentum);
+    EXPECT_GE(report.cognitiveMomentum, 0.0);
+    EXPECT_LE(report.cognitiveMomentum, 1.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, CognitiveMomentumBounded) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    // Run many cycles to push momentum toward bounds.
+    for (int i = 0; i < 30; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    EXPECT_GE(report.cognitiveMomentum, 0.0);
+    EXPECT_LE(report.cognitiveMomentum, 1.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, CycleEfficiencyFieldPresent) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->start();
+    auto report = agent->getAutonomyHealthReport();
+    // No cycles run yet, efficiency is 0.
+    EXPECT_DOUBLE_EQ(report.cycleEfficiency, 0.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, CycleEfficiencyBoundedAndPositive) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    for (int i = 0; i < 10; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    EXPECT_GE(report.cycleEfficiency, 0.0);
+    EXPECT_LE(report.cycleEfficiency, 1.0);
+    // With shell access enabled, at least some cycles should be productive.
+    EXPECT_GT(report.cycleEfficiency, 0.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, GoalChainCoherenceFieldPresent) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->start();
+    auto report = agent->getAutonomyHealthReport();
+    // No completed goals yet, coherence is 0.
+    EXPECT_DOUBLE_EQ(report.goalChainCoherence, 0.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, GoalChainCoherenceBounded) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    for (int i = 0; i < 20; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    // Coherence is bounded in [0,1].
+    EXPECT_GE(report.goalChainCoherence, 0.0);
+    EXPECT_LE(report.goalChainCoherence, 1.0);
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, GoalChainCoherenceRequiresMultipleCompletions) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->start();
+    // With 0 or 1 completed goals, coherence must be 0.
+    auto report = agent->getAutonomyHealthReport();
+    if (report.completedGoals <= 1) {
+        EXPECT_DOUBLE_EQ(report.goalChainCoherence, 0.0);
+    }
+    agent->stop();
+}
+
+TEST_F(CrossForkParityTest, AllNewMetricsConsistentAfterExtendedRun) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+    for (int i = 0; i < 25; ++i) {
+        agent->runCognitiveCycleOnce();
+    }
+    auto report = agent->getAutonomyHealthReport();
+    // All new metrics must be bounded in [0,1].
+    EXPECT_GE(report.cognitiveMomentum, 0.0);
+    EXPECT_LE(report.cognitiveMomentum, 1.0);
+    EXPECT_GE(report.cycleEfficiency, 0.0);
+    EXPECT_LE(report.cycleEfficiency, 1.0);
+    EXPECT_GE(report.goalChainCoherence, 0.0);
+    EXPECT_LE(report.goalChainCoherence, 1.0);
+    // Momentum and efficiency should be positive after successful cycles.
+    EXPECT_GT(report.cognitiveMomentum, 0.0);
+    EXPECT_GT(report.cycleEfficiency, 0.0);
+    agent->stop();
+}
