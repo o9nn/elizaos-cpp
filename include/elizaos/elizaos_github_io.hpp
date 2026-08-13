@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <filesystem>
 #include <chrono>
+#include <atomic>
+#include <mutex>
+#include <thread>
 
 namespace elizaos {
 
@@ -260,6 +263,7 @@ public:
     bool enableAutoDeployment(const std::string& trigger_branch = "main");
     bool disableAutoDeployment();
     bool watchForChanges(const std::filesystem::path& watch_dir);
+    bool isWatching() const { return watcher_running_; }
     
 private:
     GitHubPagesConfig config_;
@@ -267,11 +271,20 @@ private:
     std::shared_ptr<GitHubPagesDeployer> deployer_;
     std::shared_ptr<MarkdownProcessor> markdown_processor_;
     bool initialized_ = false;
-    bool deployment_in_progress_ = false;
-    bool auto_deployment_enabled_ = false;
+    std::atomic<bool> deployment_in_progress_{false};
+    std::atomic<bool> auto_deployment_enabled_{false};
+    std::atomic<bool> watcher_running_{false};
+    std::string auto_deployment_branch_ = "main";
+    std::filesystem::path watch_dir_;
+    std::thread watcher_thread_;
+    mutable std::mutex watcher_mutex_;
+    std::unordered_map<std::string, std::filesystem::file_time_type> watch_snapshot_;
     
     bool setupWorkspace();
     bool validateEnvironment();
+    void stopWatcher();
+    std::unordered_map<std::string, std::filesystem::file_time_type>
+        snapshotDirectory(const std::filesystem::path& directory) const;
 };
 
 } // namespace elizaos

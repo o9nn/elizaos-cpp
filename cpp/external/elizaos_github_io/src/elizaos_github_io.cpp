@@ -969,7 +969,9 @@ std::string GitHubPagesDeployer::getAuthorizationHeader() const {
 
 // ElizaOSGitHubIO main implementation
 ElizaOSGitHubIO::ElizaOSGitHubIO(const GitHubPagesConfig& config) : config_(config) {}
-ElizaOSGitHubIO::~ElizaOSGitHubIO() = default;
+ElizaOSGitHubIO::~ElizaOSGitHubIO() {
+    stopWatcher();
+}
 
 bool ElizaOSGitHubIO::initialize() {
     if (!setupWorkspace()) {
@@ -993,16 +995,17 @@ bool ElizaOSGitHubIO::initialize() {
 }
 
 bool ElizaOSGitHubIO::generateAndDeploy() {
-    if (!initialized_) {
-        return false;
+    if (!initialized_) return false;
+    bool expected = false;
+    if (!deployment_in_progress_.compare_exchange_strong(expected, true)) return false;
+    bool success = false;
+    try {
+        success = generateDocumentation() && deployToGitHubPages();
+    } catch (const std::exception& error) {
+        g_github_logger.log("Automatic deployment failed: " + std::string(error.what()),
+                            "", "elizaos_github_io", LogLevel::ERROR);
     }
-    
-    deployment_in_progress_ = true;
-    
-    bool success = generateDocumentation() && deployToGitHubPages();
-    
     deployment_in_progress_ = false;
-    
     return success;
 }
 
@@ -1042,8 +1045,14 @@ GitHubPagesDeployer::DeploymentStatus ElizaOSGitHubIO::getDeploymentStatus() con
 }
 
 bool ElizaOSGitHubIO::enableAutoDeployment(const std::string& trigger_branch) {
+    if (trigger_branch.empty()) return false;
+    {
+        std::lock_guard<std::mutex> lock(watcher_mutex_);
+        auto_deployment_branch_ = trigger_branch;
+    }
     auto_deployment_enabled_ = true;
-    g_github_logger.log("Auto-deployment enabled for branch: " + trigger_branch, "", "elizaos_github_io", LogLevel::INFO);
+    g_github_logger.log("Auto-deployment enabled for branch: " + trigger_branch,
+                        "", "elizaos_github_io", LogLevel::INFO);
     return true;
 }
 
@@ -1054,9 +1063,81 @@ bool ElizaOSGitHubIO::disableAutoDeployment() {
 }
 
 bool ElizaOSGitHubIO::watchForChanges(const std::filesystem::path& watch_dir) {
+    std::error_code ec;
+    if (!initialized_ || watch_dir.empty() ||
+        !std::filesystem::is_directory(watch_dir, ec) || ec) {
+        return false;
+    }
+    stopWatcher();
+    {
+        std::lock_guard<std::mutex> lock(watcher_mutex_);
+        watch_dir_ = std::filesystem::weakly_canonical(watch_dir, ec);
+        if (ec) watch_dir_ = watch_dir;
+        watch_snapshot_ = snapshotDirectory(watch_dir_);
+    }
+    watcher_running_ = true;
+    watcher_thread_ = std::thread([this] {
+        while (watcher_running_) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            if (!watcher_running_) break;
+            std::filesystem::path directory;
+            {
+                std::lock_guard<std::mutex> lock(watcher_mutex_);
+                directory = watch_dir_;
+            }
+            auto current = snapshotDirectory(directory);
+            bool changed = false;
+            {
+                std::lock_guard<std::mutex> lock(watcher_mutex_);
+                changed = current != watch_snapshot_;
+                if (changed) watch_snapshot_ = current;
+            }
+            if (!changed) continue;
+            g_github_logger.log("Detected documentation change in: " + directory.string(),
+                                "", "elizaos_github_io", LogLevel::INFO);
+            if (auto_deployment_enabled_ && initialized_) {
+                const bool deployed = generateAndDeploy();
+                g_github_logger.log(
+                    deployed ? "Automatic documentation deployment completed" :
+                               "Automatic documentation deployment did not complete",
+                    "", "elizaos_github_io",
+                    deployed ? LogLevel::INFO : LogLevel::WARNING);
+                auto refreshed = snapshotDirectory(directory);
+                std::lock_guard<std::mutex> lock(watcher_mutex_);
+                watch_snapshot_ = std::move(refreshed);
+            }
+        }
+    });
     g_github_logger.log("File watching enabled for: " + watch_dir.string(),
-                       "", "elizaos_github_io", LogLevel::INFO);
+                        "", "elizaos_github_io", LogLevel::INFO);
     return true;
+}
+
+void ElizaOSGitHubIO::stopWatcher() {
+    watcher_running_ = false;
+    if (watcher_thread_.joinable()) watcher_thread_.join();
+}
+
+std::unordered_map<std::string, std::filesystem::file_time_type>
+ElizaOSGitHubIO::snapshotDirectory(const std::filesystem::path& directory) const {
+    std::unordered_map<std::string, std::filesystem::file_time_type> snapshot;
+    std::error_code ec;
+    if (!std::filesystem::is_directory(directory, ec) || ec) return snapshot;
+    const auto options = std::filesystem::directory_options::skip_permission_denied;
+    std::filesystem::recursive_directory_iterator iterator(directory, options, ec);
+    const std::filesystem::recursive_directory_iterator end;
+    while (!ec && iterator != end) {
+        if (iterator->is_regular_file(ec) && !ec) {
+            const auto relative = std::filesystem::relative(iterator->path(), directory, ec);
+            if (!ec) {
+                const auto modified = iterator->last_write_time(ec);
+                if (!ec) snapshot[relative.generic_string()] = modified;
+            }
+        }
+        ec.clear();
+        iterator.increment(ec);
+    }
+    return snapshot;
 }
 
 bool ElizaOSGitHubIO::setupWorkspace() {
@@ -1070,8 +1151,31 @@ bool ElizaOSGitHubIO::setupWorkspace() {
 }
 
 bool ElizaOSGitHubIO::validateEnvironment() {
-    // Check if git is available
-    // In a real implementation, we'd check for git executable
+    if (config_.docs_dir.empty() || config_.output_dir.empty()) {
+        g_github_logger.log("GitHub Pages environment is missing workspace configuration",
+                            "", "elizaos_github_io", LogLevel::ERROR);
+        return false;
+    }
+#ifdef _WIN32
+    constexpr const char* command = "git --version >NUL 2>&1";
+#else
+    constexpr const char* command = "git --version >/dev/null 2>&1";
+#endif
+    const int status = std::system(command);
+    if (status != 0) {
+        g_github_logger.log("Git executable is unavailable", "", "elizaos_github_io",
+                            LogLevel::ERROR);
+        return false;
+    }
+    std::error_code ec;
+    const auto docsParent = config_.docs_dir.parent_path();
+    const auto outputParent = config_.output_dir.parent_path();
+    if ((!docsParent.empty() && !std::filesystem::exists(docsParent, ec) && ec) ||
+        (!outputParent.empty() && !std::filesystem::exists(outputParent, ec) && ec)) {
+        g_github_logger.log("GitHub Pages workspace parent is inaccessible", "",
+                            "elizaos_github_io", LogLevel::ERROR);
+        return false;
+    }
     return true;
 }
 

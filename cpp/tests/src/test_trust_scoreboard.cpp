@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "elizaos/trust_scoreboard.hpp"
 #include "elizaos/agentmemory.hpp"
 #include <memory>
@@ -7,7 +6,6 @@
 #include <vector>
 
 using namespace elizaos;
-using namespace ::testing;
 
 class TrustScoreboardTest : public ::testing::Test {
 protected:
@@ -324,3 +322,119 @@ TEST_F(TrustScoreboardTest, GetTrustLevel) {
     EXPECT_FALSE(level.empty());
 }
 
+
+// ============================================================================
+// Persistence and Native Memory Integration Tests
+// ============================================================================
+
+TEST_F(TrustScoreboardTest, PersistenceRoundTripRestoresScoresEventsAndConfiguration) {
+    TrustConfig config;
+    config.reliabilityWeight = 0.30;
+    config.responsivenessWeight = 0.10;
+    config.qualityWeight = 0.20;
+    config.collaborationWeight = 0.15;
+    config.communicationWeight = 0.15;
+    config.complianceWeight = 0.10;
+    config.decay.decayInterval = std::chrono::hours(48);
+    config.decay.decayRate = 0.02;
+    config.decay.minimumScore = 0.2;
+    config.anomalyThreshold = 0.25;
+    config.anomalyWindowEvents = 7;
+    config.minEventsForConfidence = 3;
+    config.maxEventsForConfidence = 30;
+    scoreboard_->updateConfig(config);
+
+    scoreboard_->recordEvent("agent-alpha", TrustEventType::TASK_COMPLETED,
+                             TrustOutcome::POSITIVE, 0.4, "completed calibration");
+    scoreboard_->recordEvent("agent-alpha", TrustEventType::COMMUNICATION_CLEAR,
+                             TrustOutcome::POSITIVE, 0.2, "clear handoff");
+    scoreboard_->recordEvent("agent-beta", TrustEventType::RULE_VIOLATION,
+                             TrustOutcome::NEGATIVE, -0.3, "unsafe command");
+
+    const TrustScore alphaBefore = scoreboard_->getTrustScore("agent-alpha");
+    const TrustScore betaBefore = scoreboard_->getTrustScore("agent-beta");
+    const auto alphaEventsBefore = scoreboard_->getEventHistory("agent-alpha");
+    ASSERT_TRUE(scoreboard_->saveTrustData());
+
+    TrustScoreboard restored(memoryMgr_);
+    ASSERT_TRUE(restored.loadTrustData());
+    EXPECT_EQ(restored.getTotalAgents(), 2);
+    EXPECT_EQ(restored.getTotalEvents(), 3);
+
+    const TrustScore alphaAfter = restored.getTrustScore("agent-alpha");
+    const TrustScore betaAfter = restored.getTrustScore("agent-beta");
+    EXPECT_EQ(alphaAfter.agentId, alphaBefore.agentId);
+    EXPECT_EQ(alphaAfter.totalEvents, alphaBefore.totalEvents);
+    EXPECT_EQ(alphaAfter.positiveEvents, alphaBefore.positiveEvents);
+    EXPECT_NEAR(alphaAfter.overallScore, alphaBefore.overallScore, 1e-9);
+    EXPECT_NEAR(alphaAfter.collaborationScore, alphaBefore.collaborationScore, 1e-9);
+    EXPECT_EQ(betaAfter.negativeEvents, betaBefore.negativeEvents);
+    EXPECT_NEAR(betaAfter.complianceScore, betaBefore.complianceScore, 1e-9);
+
+    const auto alphaEventsAfter = restored.getEventHistory("agent-alpha");
+    ASSERT_EQ(alphaEventsAfter.size(), alphaEventsBefore.size());
+    for (std::size_t index = 0; index < alphaEventsBefore.size(); ++index) {
+        EXPECT_EQ(alphaEventsAfter[index].eventId, alphaEventsBefore[index].eventId);
+        EXPECT_EQ(alphaEventsAfter[index].type, alphaEventsBefore[index].type);
+        EXPECT_EQ(alphaEventsAfter[index].outcome, alphaEventsBefore[index].outcome);
+        EXPECT_EQ(alphaEventsAfter[index].context, alphaEventsBefore[index].context);
+        EXPECT_DOUBLE_EQ(alphaEventsAfter[index].impactScore,
+                         alphaEventsBefore[index].impactScore);
+    }
+
+    const TrustConfig restoredConfig = restored.getConfig();
+    EXPECT_DOUBLE_EQ(restoredConfig.reliabilityWeight, config.reliabilityWeight);
+    EXPECT_DOUBLE_EQ(restoredConfig.communicationWeight, config.communicationWeight);
+    EXPECT_EQ(restoredConfig.decay.decayInterval, config.decay.decayInterval);
+    EXPECT_DOUBLE_EQ(restoredConfig.decay.decayRate, config.decay.decayRate);
+    EXPECT_EQ(restoredConfig.anomalyWindowEvents, config.anomalyWindowEvents);
+    EXPECT_EQ(restoredConfig.maxEventsForConfidence, config.maxEventsForConfidence);
+}
+
+TEST_F(TrustScoreboardTest, SavingAgainAtomicallyReplacesPriorSnapshot) {
+    scoreboard_->recordCollaboration("agent", true);
+    ASSERT_TRUE(scoreboard_->saveTrustData());
+    auto snapshots = memoryMgr_->getAllMemoriesFromTable("trust_scoreboard");
+    ASSERT_EQ(snapshots.size(), 1u);
+    const UUID firstId = snapshots.front()->getId();
+
+    scoreboard_->recordCommunication("agent", true);
+    ASSERT_TRUE(scoreboard_->saveTrustData());
+    snapshots = memoryMgr_->getAllMemoriesFromTable("trust_scoreboard");
+    ASSERT_EQ(snapshots.size(), 1u);
+    EXPECT_NE(snapshots.front()->getId(), firstId);
+
+    TrustScoreboard restored(memoryMgr_);
+    ASSERT_TRUE(restored.loadTrustData());
+    EXPECT_EQ(restored.getTotalEvents(), 2);
+    EXPECT_EQ(restored.getEventHistory("agent").size(), 2u);
+}
+
+TEST_F(TrustScoreboardTest, MissingOrNullMemoryManagerReportsFailure) {
+    TrustScoreboard withoutMemory(nullptr);
+    EXPECT_FALSE(withoutMemory.saveTrustData());
+    EXPECT_FALSE(withoutMemory.loadTrustData());
+
+    auto emptyMemory = std::make_shared<AgentMemoryManager>();
+    TrustScoreboard empty(emptyMemory);
+    EXPECT_FALSE(empty.loadTrustData());
+}
+
+TEST_F(TrustScoreboardTest, CorruptedSnapshotIsRejectedWithoutMutatingLiveState) {
+    scoreboard_->recordTaskCompletion("persisted-agent", true, std::chrono::milliseconds(10));
+    ASSERT_TRUE(scoreboard_->saveTrustData());
+    auto snapshots = memoryMgr_->getAllMemoriesFromTable("trust_scoreboard");
+    ASSERT_EQ(snapshots.size(), 1u);
+    snapshots.front()->setContent("{not valid json");
+
+    TrustScoreboard live(memoryMgr_);
+    live.recordRuleViolation("live-agent", "must survive failed load");
+    const TrustScore before = live.getTrustScore("live-agent");
+    const auto eventsBefore = live.getEventHistory("live-agent");
+
+    EXPECT_FALSE(live.loadTrustData());
+    EXPECT_EQ(live.getTotalAgents(), 1);
+    EXPECT_EQ(live.getTotalEvents(), 1);
+    EXPECT_EQ(live.getEventHistory("live-agent").size(), eventsBefore.size());
+    EXPECT_NEAR(live.getTrustScore("live-agent").overallScore, before.overallScore, 1e-9);
+}

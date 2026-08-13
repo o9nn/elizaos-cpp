@@ -41,8 +41,9 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, HttpRespo
 #endif
 
 EasyCompletionClient::EasyCompletionClient(const CompletionConfig& config) : config_(config) {
-    // Set defaults from environment variables if not specified
-    if (config_.api_key.empty()) {
+    // Set defaults from environment variables if not specified and the caller
+    // has not requested an explicitly credentialed, deterministic client.
+    if (config_.api_key.empty() && config_.use_environment_api_key) {
         config_.api_key = get_env_var("EASYCOMPLETION_API_KEY", get_env_var("OPENAI_API_KEY"));
     }
     

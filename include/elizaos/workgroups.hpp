@@ -170,6 +170,8 @@ public:
     bool hasPermission(const AgentId& agentId, const std::string& action) const;
     
 private:
+    friend class WorkgroupManager;
+
     std::string id_;
     WorkgroupConfig config_;
     AgentId creator_;
@@ -237,6 +239,8 @@ private:
     
     // Helper methods
     std::string generateWorkgroupId();
+    std::string serializeWorkgroup(const Workgroup& workgroup) const;
+    std::shared_ptr<Workgroup> deserializeWorkgroup(const std::string& data) const;
     void indexWorkgroup(const std::string& workgroupId, const AgentId& agentId);
     void unindexWorkgroup(const std::string& workgroupId, const AgentId& agentId);
 };

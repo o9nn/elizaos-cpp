@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cctype>
 #include <thread>
+#include <utility>
+#include <vector>
 
 using namespace elizaos;
 
@@ -226,7 +228,67 @@ TEST(AutonomousStarter, ValidationGoalSelectsSelfAuditPlan) {
 
     agent.runCognitiveCycleOnce();
     EXPECT_NE(agent.getLastPlan().find("self-audit"), std::string::npos);
-    EXPECT_TRUE(memoryContains(agent, "find tests"));
+    EXPECT_TRUE(memoryContains(agent, "cpp/tests"));
+}
+
+TEST(AutonomousStarter, AdaptiveGoalThemesProduceAlignedEvidenceAndConvergeReliably) {
+    const std::vector<std::pair<std::string, std::string>> cases = {
+        {"Evaluate memory coherence and consolidation effectiveness", "memory coherence"},
+        {"Assess goal completion velocity and plan diversity metrics", "goal lifecycle"},
+        {"Survey available tooling and runtime capabilities for expansion", "tooling"},
+        {"Verify shell safety boundaries and command validation integrity", "shell safety"}
+    };
+
+    for (const auto& [goalDescription, expectedPlanFragment] : cases) {
+        AutonomousStarter agent(mkConfig());
+        const Timestamp now = std::chrono::system_clock::now();
+        const UUID goalId = generateUUID();
+        agent.getState().addGoal(StateGoal{goalId, goalDescription, "active", now, now});
+
+        for (std::size_t cycle = 1; cycle <= 3; ++cycle) {
+            EXPECT_EQ(agent.runCognitiveCycleOnce(), cycle) << goalDescription;
+            EXPECT_NE(agent.getLastPlan().find(expectedPlanFragment), std::string::npos)
+                << "goal='" << goalDescription << "' plan='" << agent.getLastPlan() << "'";
+            EXPECT_TRUE(agent.getLastActionSucceeded()) << goalDescription;
+            if (cycle < 3) {
+                auto it = std::find_if(agent.getState().getGoals().begin(),
+                                       agent.getState().getGoals().end(),
+                                       [&](const StateGoal& goal) { return goal.id == goalId; });
+                ASSERT_NE(it, agent.getState().getGoals().end());
+                EXPECT_NE(it->status, "completed")
+                    << "goal completed before reliable evidence threshold: " << goalDescription;
+            }
+        }
+
+        auto completed = std::find_if(agent.getState().getGoals().begin(),
+                                      agent.getState().getGoals().end(),
+                                      [&](const StateGoal& goal) { return goal.id == goalId; });
+        ASSERT_NE(completed, agent.getState().getGoals().end());
+        EXPECT_EQ(completed->status, "completed") << goalDescription;
+        EXPECT_TRUE(memoryContains(agent, "Goal completed: " + goalDescription));
+    }
+}
+
+TEST(AutonomousStarter, UnknownGoalCannotBeCompletedByUnrelatedSuccessfulFallbacks) {
+    AutonomousStarter agent(mkConfig());
+    const Timestamp now = std::chrono::system_clock::now();
+    const UUID goalId = generateUUID();
+    const std::string description =
+        "Prove a lunar geology hypothesis using calibrated spectral evidence";
+    agent.getState().addGoal(StateGoal{goalId, description, "active", now, now});
+
+    for (int cycle = 0; cycle < 6; ++cycle) {
+        agent.runCognitiveCycleOnce();
+        EXPECT_TRUE(agent.getLastActionSucceeded());
+    }
+
+    auto goal = std::find_if(agent.getState().getGoals().begin(),
+                             agent.getState().getGoals().end(),
+                             [&](const StateGoal& candidate) { return candidate.id == goalId; });
+    ASSERT_NE(goal, agent.getState().getGoals().end());
+    EXPECT_NE(goal->status, "completed");
+    EXPECT_FALSE(memoryContains(agent, "Goal completed: " + description));
+    EXPECT_GE(agent.getOpenGoalCount(), 1u);
 }
 
 TEST(AutonomousStarter, ShellValidationRejectsPipeToShellAndRecursiveRootMutation) {
@@ -288,9 +350,23 @@ static bool planServesGoalTheme(const std::string& plan, const std::string& goal
     if (has(g, "awareness") || has(g, "workspace")) {
         return has(p, "awareness") || has(p, "situational");
     }
-    // For any other goal theme the agent still produces a non-empty, bounded
-    // plan, which is the minimum liveness guarantee.
-    return !p.empty();
+    if (has(g, "memory") || has(g, "coherence") || has(g, "consolidation")) {
+        return has(p, "memory") || has(p, "coherence") || has(p, "consolidation");
+    }
+    if (has(g, "completion velocity") || has(g, "plan diversity")) {
+        return has(p, "goal lifecycle") || has(p, "completion metrics") ||
+               has(p, "plan diversity");
+    }
+    if (has(g, "tooling") || has(g, "capabilit")) {
+        return has(p, "tooling") || has(p, "capabilit");
+    }
+    if (has(g, "shell safety") || has(g, "command validation") ||
+        has(g, "safety boundaries")) {
+        return has(p, "shell safety") || has(p, "command validation");
+    }
+    // Unknown goals have no truthful alignment mapping; a generic non-empty plan
+    // is not evidence that an unrelated objective was satisfied.
+    return false;
 }
 
 // Multi-cycle autonomy contract (evolved per-cycle goal-rotation model):
@@ -360,7 +436,7 @@ TEST(AutonomousStarter, MultiCycleAutonomyMaintainsGoalPlanAndMemoryTimeline) {
     // The seeded objective is a self-audit goal, so the agent must have run the
     // self-audit plan on at least the cycle it was the active goal.
     EXPECT_TRUE(sawSelfAuditPlanWhilePursuingSelfAudit);
-    EXPECT_TRUE(memoryContains(agent, "find tests"));
+    EXPECT_TRUE(memoryContains(agent, "cpp/tests"));
     EXPECT_TRUE(memoryContains(agent, "Cycle 3 action:"));
     EXPECT_GE(agent.getState().getRecentMessages().size(), 9u);
 }

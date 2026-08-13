@@ -9,6 +9,8 @@
 #include <future>
 #include <functional>
 #include <mutex>
+#include <atomic>
+#include <thread>
 
 namespace elizaos {
 
@@ -178,6 +180,8 @@ private:
     bool containsProfanity(const std::string& content);
 };
 
+class DiscordDataManager;
+
 // Channel summarization engine
 class ChannelSummarizer {
 public:
@@ -205,11 +209,14 @@ public:
     void setTopUsersLimit(int limit);
     void setTopTopicsLimit(int limit);
     void setMinimumMessages(int minimum);
+    void setDataSources(DiscordDataManager* dataManager, MessageAnalyzer* analyzer);
     
 private:
     int topUsersLimit_;
     int topTopicsLimit_;
     int minimumMessages_;
+    DiscordDataManager* dataManager_;
+    MessageAnalyzer* analyzer_;
     mutable std::mutex summarizerMutex_;
     
     // Analysis helpers
@@ -243,6 +250,7 @@ public:
     void setCacheSize(size_t maxEntries);
     void clearCache();
     void enablePersistence(const std::string& dataPath);
+    std::vector<std::string> getCachedChannelIds() const;
     
 private:
     std::unordered_map<std::string, DiscordMessage> messageCache_;
@@ -257,6 +265,9 @@ private:
     // Persistence helpers
     bool saveToFile(const std::string& filePath, const std::string& data);
     std::string loadFromFile(const std::string& filePath);
+    bool persistUnlocked();
+    bool loadPersistenceUnlocked();
+    void enforceCacheLimitUnlocked();
 };
 
 // Main Discord summarizer

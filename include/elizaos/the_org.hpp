@@ -299,7 +299,10 @@ protected:
     State state_;
     std::vector<std::shared_ptr<Memory>> memoryStore_;
     std::unordered_map<PlatformType, PlatformConfig> platforms_;
+    std::unordered_map<PlatformType,
+        std::unordered_map<std::string, std::vector<std::string>>> platformMessages_;
     std::queue<std::string> incomingMessages_;
+    std::unordered_map<UUID, std::shared_ptr<Task>> tasks_;
     std::atomic<bool> running_{false};
     std::atomic<bool> paused_{false};
     std::unordered_map<std::string, std::string> settings_;
@@ -307,10 +310,12 @@ protected:
     mutable std::mutex memoryMutex_;
     mutable std::mutex platformMutex_;
     mutable std::mutex messageMutex_;
+    mutable std::mutex taskMutex_;
     mutable std::mutex settingsMutex_;
     
     // Internal helper methods
     virtual void processLoop() = 0;
+    std::optional<std::string> popIncomingMessage();
     virtual bool validateMessage(const std::string& message) const;
     virtual std::string formatResponse(const std::string& response, PlatformType platform) const;
 };
@@ -322,6 +327,7 @@ protected:
 class CommunityManagerAgent : public TheOrgAgent {
 public:
     CommunityManagerAgent(const AgentConfig& config);
+    ~CommunityManagerAgent() override { stop(); }
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -372,12 +378,26 @@ private:
     std::unordered_map<std::string, std::pair<ModerationAction, std::string>> moderationRules_;
     std::vector<ModerationEvent> moderationHistory_;
     CommunityMetrics currentMetrics_;
+    struct CommunityEventRecord {
+        std::string id;
+        std::string name;
+        std::string description;
+        Timestamp scheduledTime{};
+        std::vector<std::string> channels;
+        std::vector<std::string> participants;
+    };
+
     std::unordered_map<std::string, std::vector<Timestamp>> userActivity_;
+    std::unordered_map<std::string,
+        std::vector<std::pair<Timestamp, std::string>>> userActivityDetails_;
+    std::unordered_map<std::string, CommunityEventRecord> communityEvents_;
     std::thread processingThread_;
+    std::uint64_t nextEventId_{0};
     
     mutable std::mutex rulesMutex_;
     mutable std::mutex metricsMutex_;
     mutable std::mutex activityMutex_;
+    mutable std::mutex communityEventMutex_;
 };
 
 /**
@@ -387,6 +407,7 @@ private:
 class DeveloperRelationsAgent : public TheOrgAgent {
 public:
     DeveloperRelationsAgent(const AgentConfig& config);
+    ~DeveloperRelationsAgent() override { stop(); }
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -469,6 +490,7 @@ private:
 class CommunityLiaisonAgent : public TheOrgAgent {
 public:
     CommunityLiaisonAgent(const AgentConfig& config);
+    ~CommunityLiaisonAgent() override { stop(); }
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -556,6 +578,7 @@ private:
 class ProjectManagerAgent : public TheOrgAgent {
 public:
     ProjectManagerAgent(const AgentConfig& config);
+    ~ProjectManagerAgent() override { stop(); }
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -661,6 +684,7 @@ private:
 class SocialMediaManagerAgent : public TheOrgAgent {
 public:
     SocialMediaManagerAgent(const AgentConfig& config);
+    ~SocialMediaManagerAgent() override { stop(); }
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -887,6 +911,7 @@ private:
     std::string logPath_;
     std::string logLevel_ = "INFO";
     std::vector<std::string> eventLog_;
+    std::vector<std::pair<Timestamp, std::string>> eventHistory_;
     mutable std::mutex logMutex_;
 };
 

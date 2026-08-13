@@ -12,4 +12,5 @@ target_link_libraries(elizaos-trust_scoreboard
     elizaos-agentmemory
     elizaos-agentcomms
     elizaos-agentlogger
+    nlohmann_json::nlohmann_json
 )

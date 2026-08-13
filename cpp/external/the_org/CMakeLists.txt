@@ -14,5 +14,6 @@ target_link_libraries(elizaos-the_org
     elizaos-agentlogger
     elizaos-agentmemory
     elizaos-agentloop
+    nlohmann_json::nlohmann_json
     Threads::Threads
 )

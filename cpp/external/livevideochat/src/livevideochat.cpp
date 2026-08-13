@@ -156,8 +156,15 @@ public:
     Impl() : state_(PeerConnectionState::New) {}
     
     bool initialize(const VideoChatConfig& config) {
+        if (config.video_width <= 0 || config.video_height <= 0 || config.video_fps <= 0 ||
+            config.audio_sample_rate <= 0 || config.audio_channels <= 0 ||
+            (!config.enable_video && !config.enable_audio)) {
+            return false;
+        }
         std::lock_guard<std::mutex> lock(mutex_);
         config_ = config;
+        local_sdp_.clear();
+        remote_sdp_.clear();
         state_ = PeerConnectionState::New;
         g_logger.log("WebRTC peer connection initialized", "", "livevideochat", LogLevel::INFO);
         return true;
@@ -217,14 +224,21 @@ public:
     }
     
     bool setRemoteDescription(const std::string& sdp) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        remote_sdp_ = sdp;
-        state_ = PeerConnectionState::Connected;
+        if (sdp.empty()) return false;
+        std::shared_ptr<MediaStreamCallbacks> callbacks;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            remote_sdp_ = sdp;
+            state_ = PeerConnectionState::Connected;
+            callbacks = callbacks_;
+        }
+        if (callbacks) callbacks->onPeerConnectionStateChange("loopback", PeerConnectionState::Connected);
         g_logger.log("Set remote SDP description", "", "livevideochat", LogLevel::INFO);
         return true;
     }
     
     bool setLocalDescription(const std::string& sdp) {
+        if (sdp.empty()) return false;
         std::lock_guard<std::mutex> lock(mutex_);
         local_sdp_ = sdp;
         g_logger.log("Set local SDP description", "", "livevideochat", LogLevel::INFO);
@@ -232,7 +246,10 @@ public:
     }
     
     bool addIceCandidate(const std::string& candidate) {
+        if (candidate.empty()) return false;
         std::lock_guard<std::mutex> lock(mutex_);
+        if (state_ == PeerConnectionState::Closed || state_ == PeerConnectionState::Failed)
+            return false;
         g_logger.log("Added ICE candidate: " + candidate, "", "livevideochat", LogLevel::INFO);
         return true;
     }
@@ -244,16 +261,46 @@ public:
     }
     
     bool sendVideoFrame(const VideoFrame& frame) {
-        // Mock implementation - in real version would encode and send via WebRTC
-        g_logger.log("Sending video frame: " + 
+        std::shared_ptr<MediaStreamCallbacks> callbacks;
+        std::string error;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (state_ != PeerConnectionState::Connected) error = "Peer connection is not connected";
+            else if (!config_.enable_video) error = "Video is disabled";
+            else if (frame.width <= 0 || frame.height <= 0 || frame.stride <= 0 ||
+                     frame.data.empty() || frame.format.empty()) error = "Invalid video frame";
+            callbacks = callbacks_;
+            if (error.empty() && !callbacks) error = "No media transport callback is configured";
+        }
+        if (!error.empty()) {
+            if (callbacks) callbacks->onError("loopback", error);
+            return false;
+        }
+        callbacks->onVideoFrame("loopback", frame);
+        g_logger.log("Delivered in-process video frame: " +
             std::to_string(frame.width) + "x" + std::to_string(frame.height),
             "", "livevideochat", LogLevel::INFO, LogColor::BLUE, true, false);
         return true;
     }
     
     bool sendAudioFrame(const AudioFrame& frame) {
-        // Mock implementation - in real version would encode and send via WebRTC
-        g_logger.log("Sending audio frame: " + 
+        std::shared_ptr<MediaStreamCallbacks> callbacks;
+        std::string error;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (state_ != PeerConnectionState::Connected) error = "Peer connection is not connected";
+            else if (!config_.enable_audio) error = "Audio is disabled";
+            else if (frame.sample_rate <= 0 || frame.channels <= 0 || frame.samples.empty())
+                error = "Invalid audio frame";
+            callbacks = callbacks_;
+            if (error.empty() && !callbacks) error = "No media transport callback is configured";
+        }
+        if (!error.empty()) {
+            if (callbacks) callbacks->onError("loopback", error);
+            return false;
+        }
+        callbacks->onAudioFrame("loopback", frame);
+        g_logger.log("Delivered in-process audio frame: " +
             std::to_string(frame.samples.size()) + " samples",
             "", "livevideochat", LogLevel::INFO, LogColor::BLUE, true, false);
         return true;
@@ -265,8 +312,13 @@ public:
     }
     
     void close() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        state_ = PeerConnectionState::Closed;
+        std::shared_ptr<MediaStreamCallbacks> callbacks;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            state_ = PeerConnectionState::Closed;
+            callbacks = callbacks_;
+        }
+        if (callbacks) callbacks->onPeerConnectionStateChange("loopback", PeerConnectionState::Closed);
         g_logger.log("WebRTC peer connection closed", "", "livevideochat", LogLevel::INFO);
     }
 };

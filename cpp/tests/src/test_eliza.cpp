@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "elizaos/eliza.hpp"
 #include "elizaos/core.hpp"
 #include <memory>

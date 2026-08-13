@@ -2,7 +2,11 @@
 #include "elizaos/the_org.hpp"
 #include "elizaos/agentlogger.hpp"
 
+#include <filesystem>
+#include <fstream>
+
 using namespace elizaos;
+namespace fs = std::filesystem;
 
 class TheOrgTest : public ::testing::Test {
 protected:
@@ -549,4 +553,204 @@ TEST_F(TheOrgTest, ErrorHandlingAndEdgeCases) {
     DeveloperRelationsAgent eddy(eddyConfig);
     std::string knowledge = eddy.retrieveKnowledge("completely-unknown-topic");
     EXPECT_TRUE(knowledge.find("not found") != std::string::npos);
+}
+
+TEST_F(TheOrgTest, PlatformHistoryAndTaskLifecycleAreStateful) {
+    CommunityManagerAgent eli5(eli5Config);
+    PlatformConfig discord{};
+    discord.type = PlatformType::DISCORD;
+    discord.applicationId = "app";
+    eli5.addPlatform(discord);
+
+    EXPECT_TRUE(eli5.sendMessage(PlatformType::DISCORD, "general", "first"));
+    EXPECT_TRUE(eli5.sendMessage(PlatformType::DISCORD, "general", "second"));
+    EXPECT_TRUE(eli5.sendMessage(PlatformType::DISCORD, "general", "third"));
+    const auto recent = eli5.getRecentMessages(PlatformType::DISCORD, "general", 2);
+    ASSERT_EQ(recent.size(), 2u);
+    EXPECT_NE(recent.front().find("second"), std::string::npos);
+    EXPECT_NE(recent.back().find("third"), std::string::npos);
+
+    const UUID low = eli5.createTask("low", "low priority", 1);
+    const UUID high = eli5.createTask("high", "high priority", 9);
+    ASSERT_FALSE(low.empty());
+    ASSERT_FALSE(high.empty());
+    auto pending = eli5.getPendingTasks();
+    ASSERT_EQ(pending.size(), 2u);
+    EXPECT_EQ(pending.front()->getId(), high);
+    EXPECT_TRUE(eli5.completeTask(high));
+    EXPECT_FALSE(eli5.completeTask(high));
+    pending = eli5.getPendingTasks();
+    ASSERT_EQ(pending.size(), 1u);
+    EXPECT_EQ(pending.front()->getId(), low);
+    EXPECT_TRUE(eli5.createTask("", "invalid").empty());
+}
+
+TEST_F(TheOrgTest, ManagerInfersAgentsBroadcastsAndDeliversEvents) {
+    TheOrgManager manager;
+    manager.initializeAllAgents({eli5Config, eddyConfig, jimmyConfig});
+    ASSERT_EQ(manager.getAllAgents().size(), 3u);
+
+    auto community = manager.getAgentByRole(AgentRole::COMMUNITY_MANAGER);
+    auto developer = manager.getAgentByRole(AgentRole::DEVELOPER_RELATIONS);
+    ASSERT_NE(community, nullptr);
+    ASSERT_NE(developer, nullptr);
+
+    manager.broadcastMessage("targeted announcement", developer->getId(),
+                             {AgentRole::COMMUNITY_MANAGER});
+    auto messages = community->getIncomingMessages();
+    ASSERT_FALSE(messages.empty());
+    EXPECT_NE(messages.front().find("targeted announcement"), std::string::npos);
+
+    manager.subscribeToEvents(community->getId(), {"build_complete"});
+    manager.publishEvent("build_complete", "all targets passed", developer->getId());
+    messages = community->getIncomingMessages();
+    bool delivered = false;
+    while (!messages.empty()) {
+        delivered = delivered || messages.front().find("build_complete:all targets passed") != std::string::npos;
+        messages.pop();
+    }
+    EXPECT_TRUE(delivered);
+    const auto events = manager.getRecentEvents(std::chrono::hours(24));
+    ASSERT_EQ(events.size(), 1u);
+    EXPECT_NE(events.front().find("build_complete"), std::string::npos);
+}
+
+TEST_F(TheOrgTest, ManagerConfigurationRoundTripIsTransactional) {
+    const auto unique = std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count());
+    const fs::path root = fs::temp_directory_path() / ("the_org_config_" + unique);
+    const fs::path configPath = root / "manager.json";
+    const fs::path eventPath = root / "events.log";
+
+    TheOrgManager original;
+    original.updateGlobalSetting("mode", "autonomous");
+    PlatformConfig discord{};
+    discord.type = PlatformType::DISCORD;
+    discord.applicationId = "application";
+    discord.apiToken = "token";
+    discord.webhookUrl = "https://example.test/hook";
+    discord.additionalSettings["guild"] = "test";
+    original.addGlobalPlatform(discord);
+    original.enableEventLogging(eventPath.string());
+    original.setLogLevel("warning");
+    original.saveConfiguration(configPath.string());
+    ASSERT_TRUE(fs::exists(configPath));
+
+    TheOrgManager restored;
+    restored.loadConfiguration(configPath.string());
+    EXPECT_EQ(restored.getGlobalSetting("mode"), "autonomous");
+    auto community = std::make_shared<CommunityManagerAgent>(eli5Config);
+    restored.addAgent(community);
+    restored.propagatePlatformToAgents(PlatformType::DISCORD,
+                                       {AgentRole::COMMUNITY_MANAGER});
+    EXPECT_TRUE(community->sendMessage(PlatformType::DISCORD, "general", "restored"));
+    restored.publishEvent("restored", "configuration", "test");
+    EXPECT_TRUE(fs::exists(eventPath));
+    EXPECT_FALSE(restored.getRecentEvents(std::chrono::hours(24)).empty());
+
+    restored.updateGlobalSetting("sentinel", "preserve");
+    {
+        std::ofstream malformed(configPath, std::ios::trunc);
+        malformed << "{ invalid json";
+    }
+    restored.loadConfiguration(configPath.string());
+    EXPECT_EQ(restored.getGlobalSetting("sentinel"), "preserve");
+    fs::remove_all(root);
+}
+
+TEST_F(TheOrgTest, ProjectProductivityCheckinsAndBlockersAreDerivedFromState) {
+    ProjectManagerAgent jimmy(jimmyConfig);
+    TeamMember member{};
+    member.name = "Engineer";
+    const UUID memberId = jimmy.addTeamMember(member);
+    const UUID projectId = jimmy.createProject("Autonomy", "Strengthen the loop", {memberId});
+    ASSERT_FALSE(projectId.empty());
+
+    DailyUpdate update{};
+    update.teamMemberId = memberId;
+    update.projectId = projectId;
+    update.summary = "Closed the loop";
+    update.accomplishments = {"Added evidence gate", "Expanded tests"};
+    update.blockers = {"External WebRTC transport"};
+    jimmy.recordDailyUpdate(update);
+    jimmy.scheduleDailyCheckins(projectId);
+
+    const auto pending = jimmy.getPendingTasks();
+    ASSERT_EQ(pending.size(), 1u);
+    EXPECT_NE(pending.front()->getDescription().find(projectId), std::string::npos);
+    const std::string report = jimmy.generateTeamProductivityReport(
+        {memberId}, std::chrono::hours(24));
+    EXPECT_NE(report.find("updates=1"), std::string::npos);
+    EXPECT_NE(report.find("accomplishments=2"), std::string::npos);
+    const auto blockers = jimmy.getActiveBlockers(projectId);
+    ASSERT_EQ(blockers.size(), 1u);
+    EXPECT_EQ(blockers.front(), "External WebRTC transport");
+}
+
+TEST_F(TheOrgTest, DeveloperRelationsOutputsAreEvidenceBased) {
+    const auto unique = std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count());
+    const fs::path path = fs::temp_directory_path() / ("the_org_api_" + unique + ".md");
+    {
+        std::ofstream output(path);
+        output << "# WidgetAPI\nWidgetAPI::run performs a bounded operation.";
+    }
+    DeveloperRelationsAgent eddy(eddyConfig);
+    eddy.indexDocumentation(path.string(), "2.0");
+    const std::string reference = eddy.provideAPIReference("WidgetAPI");
+    EXPECT_NE(reference.find("WidgetAPI::run"), std::string::npos);
+    EXPECT_NE(reference.find("Version: 2.0"), std::string::npos);
+
+    const std::string diagnosis = eddy.diagnoseIssue(
+        "undefined reference to run", "linking the integration target");
+    EXPECT_NE(diagnosis.find("target linkage"), std::string::npos);
+    const auto solutions = eddy.suggestSolutions("thread race causes crash");
+    EXPECT_GE(solutions.size(), 5u);
+    const std::string tutorial = eddy.generateTutorial("Autonomy", "advanced");
+    EXPECT_EQ(tutorial.find("Mock"), std::string::npos);
+    EXPECT_NE(tutorial.find("sanitizers"), std::string::npos);
+    const std::string review = eddy.reviewCode("int main() {\n // TODO repair\n}\n", "C++");
+    EXPECT_NE(review.find("1 unresolved markers"), std::string::npos);
+    fs::remove(path);
+}
+
+TEST(TheOrgCommunityLiaison, DerivesParallelTopicsAndProcessesQueuedWork) {
+    AgentConfig config;
+    config.agentId = "liaison-test";
+    config.agentName = "Ruby";
+    config.bio = "Community liaison";
+    CommunityLiaisonAgent liaison(config);
+
+    OrganizationConfig first{};
+    first.id = "org-a";
+    first.name = "Organization A";
+    OrganizationConfig second{};
+    second.id = "org-b";
+    second.name = "Organization B";
+    liaison.addOrganization(first);
+    liaison.addOrganization(second);
+
+    liaison.trackDiscussion(first.id, "autonomy", "Evidence-gated goals", "general");
+    liaison.trackDiscussion(second.id, "autonomy", "Bounded homework loops", "research");
+    liaison.trackDiscussion("unknown", "autonomy", "must be ignored", "general");
+
+    const auto topics = liaison.identifyParallelTopics(std::chrono::hours(24));
+    ASSERT_EQ(topics.size(), 1u);
+    EXPECT_EQ(topics.front().topic, "autonomy");
+    EXPECT_EQ(topics.front().organizationIds.size(), 2u);
+    EXPECT_EQ(topics.front().recentDiscussions.size(), 2u);
+    EXPECT_GT(topics.front().relevanceScore, 0.0);
+
+    const auto report = liaison.generateDailyReport({first.id, second.id});
+    EXPECT_FALSE(report.id.empty());
+    EXPECT_EQ(report.type, ReportType::DAILY);
+    EXPECT_EQ(report.recipientOrgIds.size(), 2u);
+    EXPECT_EQ(report.content.parallelTopics.size(), 1u);
+    EXPECT_FALSE(report.content.collaborationOpportunities.empty());
+
+    liaison.start();
+    liaison.processMessage("share autonomy findings", "manager");
+    std::this_thread::sleep_for(std::chrono::milliseconds(350));
+    liaison.stop();
+    EXPECT_FALSE(liaison.searchMemories("Processed liaison message").empty());
 }

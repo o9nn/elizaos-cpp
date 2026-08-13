@@ -365,7 +365,7 @@ bool AutonomousStarter::planSatisfiesGoal(const StateGoal& goal,
     // will keep working (or escalate via the stagnation guard) until it produces
     // real evidence. This is the behavioral consequence that makes the goal
     // center "living" rather than a decorative status field.
-    if (!result.success) {
+    if (!result.success || trim(result.output).empty()) {
         return false;
     }
 
@@ -389,17 +389,36 @@ bool AutonomousStarter::planSatisfiesGoal(const StateGoal& goal,
     if (mentions(goalText, {"project structure", "c++", "source", "cmake", "code actions"})) {
         return mentions(planText, {"project structure", "source", "c++", "cmake", "repository source"});
     }
+    // Shell-safety goals must be classified before generic "validation": the
+    // phrase "command validation" describes a safety boundary, not a test sweep.
+    if (mentions(goalText, {"shell safety", "command validation", "safety boundaries"})) {
+        return mentions(planText, {"shell safety", "command validation", "safety boundaries"});
+    }
     // Test/validation goals.
     if (mentions(goalText, {"test", "validation", "self-audit"})) {
         return mentions(planText, {"test", "validation", "self-audit"});
+    }
+    // Tooling/capability goals must precede broad runtime matching because
+    // "runtime capabilities" names an inventory objective, not system identity.
+    if (mentions(goalText, {"tooling", "capabilities", "capability"})) {
+        return mentions(planText, {"tooling", "capability", "tool inventory"});
     }
     // Runtime/system goals.
     if (mentions(goalText, {"runtime", "system", "kernel", "identity"})) {
         return mentions(planText, {"runtime", "system", "kernel", "identity"});
     }
-
-    // Generic exploration goals are satisfied by any successful action.
-    return true;
+    // Memory/consolidation goals require direct memory-surface evidence.
+    if (mentions(goalText, {"memory", "coherence", "consolidation"})) {
+        return mentions(planText, {"memory", "coherence", "consolidation"});
+    }
+    // Goal/plan telemetry goals require direct lifecycle/metrics evidence.
+    if (mentions(goalText, {"completion velocity", "plan diversity", "goal metric", "plan metric"})) {
+        return mentions(planText, {"goal lifecycle", "plan diversity", "completion metrics", "plan metrics"});
+    }
+    // Unknown objectives are not truthfully complete merely because an unrelated
+    // command exited zero. They remain open until a planner supplies explicit
+    // topical evidence or supervision refines the objective.
+    return false;
 }
 
 bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal,
@@ -426,14 +445,26 @@ bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal
     if (mentions(goalText, {"project structure", "c++", "source", "cmake", "code actions"})) {
         return mentions(planText, {"project structure", "source", "c++", "cmake", "repository source"});
     }
+    if (mentions(goalText, {"shell safety", "command validation", "safety boundaries"})) {
+        return mentions(planText, {"shell safety", "command validation", "safety boundaries"});
+    }
     if (mentions(goalText, {"test", "validation", "self-audit", "audit"})) {
         return mentions(planText, {"test", "validation", "self-audit"});
+    }
+    if (mentions(goalText, {"tooling", "capabilities", "capability"})) {
+        return mentions(planText, {"tooling", "capability", "tool inventory"});
     }
     if (mentions(goalText, {"runtime", "system", "kernel", "identity"})) {
         return mentions(planText, {"runtime", "system", "kernel", "identity"});
     }
-    // For generic goals no specific plan is privileged, so repetition of any plan
-    // is treated as aimless and remains subject to the stagnation guard.
+    if (mentions(goalText, {"memory", "coherence", "consolidation"})) {
+        return mentions(planText, {"memory", "coherence", "consolidation"});
+    }
+    if (mentions(goalText, {"completion velocity", "plan diversity", "goal metric", "plan metric"})) {
+        return mentions(planText, {"goal lifecycle", "plan diversity", "completion metrics", "plan metrics"});
+    }
+    // For unknown goals no specific plan is privileged, so repetition of a generic
+    // probe is aimless and remains subject to the stagnation guard.
     return false;
 }
 
@@ -665,16 +696,16 @@ std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan
         normalizedPlan.find("source discovery") != std::string::npos ||
         normalizedPlan.find("c++") != std::string::npos ||
         normalizedPlan.find("cmake") != std::string::npos) {
-        return "find . -maxdepth 3 \\( -name CMakeLists.txt -o -name '*.cpp' -o -name '*.hpp' \\) | sort | head -20";
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 \\( -name CMakeLists.txt -o -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -20";
     }
     if (normalizedPlan.find("sample repository source") != std::string::npos ||
         normalizedPlan.find("source files") != std::string::npos) {
-        return "find . -maxdepth 4 -type f \\( -name '*.cpp' -o -name '*.hpp' \\) | sort | head -25";
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 -type f \\( -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -25";
     }
     if (normalizedPlan.find("test") != std::string::npos ||
         normalizedPlan.find("validation") != std::string::npos ||
         normalizedPlan.find("self-audit") != std::string::npos) {
-        return "find tests -maxdepth 3 -type f 2>/dev/null | sort | head -25";
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root/cpp/tests\" -maxdepth 4 -type f 2>/dev/null | sort -u | head -25";
     }
     if (normalizedPlan.find("system identity") != std::string::npos ||
         normalizedPlan.find("runtime") != std::string::npos ||
@@ -684,6 +715,25 @@ std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan
     if (normalizedPlan.find("situational awareness") != std::string::npos ||
         normalizedPlan.find("workspace") != std::string::npos) {
         return "pwd && ls -la | head -20";
+    }
+    if (normalizedPlan.find("memory coherence") != std::string::npos ||
+        normalizedPlan.find("consolidation") != std::string::npos) {
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 -type f \\( -iname '*memory*' -o -iname '*persistence*' -o -iname '*consolidat*' \\) 2>/dev/null | sort -u | head -30";
+    }
+    if (normalizedPlan.find("goal lifecycle") != std::string::npos ||
+        normalizedPlan.find("plan diversity") != std::string::npos ||
+        normalizedPlan.find("completion metrics") != std::string::npos) {
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; grep -RIn --include='*.cpp' --include='*.hpp' -E 'planStats_|getPlanSuccessRatio|Goal completed|goal lifecycle|plan diversity' \"$root/cpp\" \"$root/include\" 2>/dev/null | head -30";
+    }
+    if (normalizedPlan.find("tooling") != std::string::npos ||
+        normalizedPlan.find("capability") != std::string::npos ||
+        normalizedPlan.find("tool inventory") != std::string::npos) {
+        return "for tool in cmake c++ git ninja ctest; do command -v \"$tool\" 2>/dev/null || true; done";
+    }
+    if (normalizedPlan.find("shell safety") != std::string::npos ||
+        normalizedPlan.find("command validation") != std::string::npos ||
+        normalizedPlan.find("safety boundaries") != std::string::npos) {
+        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; grep -RIn --include='*.cpp' --include='*.hpp' -E 'validateShellCommand|forbiddenPatterns|shell safety|remote script' \"$root/cpp\" \"$root/include\" 2>/dev/null | head -30";
     }
 
     static const std::array<const char*, 3> safeDefaultCommands = {{
@@ -1104,16 +1154,25 @@ const StateGoal* AutonomousStarter::selectFocusGoal() {
 }
 
 void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actionSucceeded) {
-    if (focusedGoalId_.empty() || !actionSucceeded) {
+    if (focusedGoalId_.empty() || !actionSucceeded || trim(lastActionOutput_).empty()) {
         return;
     }
-    // Find the focused goal's current status.
+    // Find the focused goal and require the same topical alignment used by the
+    // action-phase completion gate. Reflection sees the updated reliability
+    // statistics, so without this check it could retire an unrelated goal on the
+    // third successful fallback probe even though evaluateGoalProgress rejected it.
+    const StateGoal* focusedGoal = nullptr;
     std::string currentStatus;
     for (const auto& goal : state_.getGoals()) {
         if (goal.id == focusedGoalId_) {
+            focusedGoal = &goal;
             currentStatus = goal.status;
             break;
         }
+    }
+    if (focusedGoal == nullptr ||
+        !planSatisfiesGoalTopic(toLowerAscii(focusedGoal->description), plan)) {
+        return;
     }
     std::string lower = currentStatus;
     std::transform(lower.begin(), lower.end(), lower.begin(),
@@ -1235,10 +1294,20 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     // and the closed loop cannot converge. Topic precedence is therefore keyed on
     // the active goal's description, with environmental hints used only as a
     // tie-breaker for goals that are themselves about project structure.
+    const bool shellSafetyGoal =
+        normalizedGoal.find("shell safety") != std::string::npos ||
+        normalizedGoal.find("command validation") != std::string::npos ||
+        normalizedGoal.find("safety boundaries") != std::string::npos;
+    const bool toolingCapabilityGoal =
+        normalizedGoal.find("tooling") != std::string::npos ||
+        normalizedGoal.find("capabilities") != std::string::npos ||
+        normalizedGoal.find("capability") != std::string::npos;
     if (normalizedGoal.find("situational awareness") != std::string::npos ||
         normalizedGoal.find("workspace") != std::string::npos ||
         normalizedGoal.find("awareness") != std::string::npos) {
         lastPlan_ = "establish situational awareness with pwd and directory inspection";
+    } else if (shellSafetyGoal) {
+        lastPlan_ = "inspect shell safety boundaries and command validation";
     } else if (normalizedGoal.find("test") != std::string::npos ||
         normalizedGoal.find("validation") != std::string::npos ||
         normalizedGoal.find("self-audit") != std::string::npos) {
@@ -1248,11 +1317,22 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
                normalizedGoal.find("source") != std::string::npos ||
                normalizedGoal.find("code actions") != std::string::npos) {
         lastPlan_ = "inspect C++ project structure with targeted source discovery";
+    } else if (toolingCapabilityGoal) {
+        lastPlan_ = "inventory tooling and runtime capabilities";
     } else if (normalizedGoal.find("runtime") != std::string::npos ||
                normalizedGoal.find("system") != std::string::npos ||
                normalizedGoal.find("identity") != std::string::npos ||
                normalizedGoal.find("kernel") != std::string::npos) {
         lastPlan_ = "inspect system identity and runtime context";
+    } else if (normalizedGoal.find("memory") != std::string::npos ||
+               normalizedGoal.find("coherence") != std::string::npos ||
+               normalizedGoal.find("consolidation") != std::string::npos) {
+        lastPlan_ = "inspect memory coherence and consolidation surfaces";
+    } else if (normalizedGoal.find("completion velocity") != std::string::npos ||
+               normalizedGoal.find("plan diversity") != std::string::npos ||
+               normalizedGoal.find("goal metric") != std::string::npos ||
+               normalizedGoal.find("plan metric") != std::string::npos) {
+        lastPlan_ = "inspect goal lifecycle completion metrics and plan diversity";
     } else if (memoryCount < 5) {
         lastPlan_ = "establish situational awareness with pwd and directory inspection";
     } else if (actionCounter_ % 4 == 0) {
@@ -1288,9 +1368,9 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
         return input;
     }
 
-    if (normalizedGoal.find("test") != std::string::npos ||
+    if (!shellSafetyGoal && (normalizedGoal.find("test") != std::string::npos ||
         normalizedGoal.find("validation") != std::string::npos ||
-        normalizedGoal.find("self-audit") != std::string::npos) {
+        normalizedGoal.find("self-audit") != std::string::npos)) {
         candidatePlans.push_back("self-audit validation and test surfaces");
     }
     if (normalizedGoal.find("c++") != std::string::npos ||
@@ -1298,9 +1378,26 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
         lastObservationSummary_.find("CMakeLists.txt") != std::string::npos) {
         candidatePlans.push_back("inspect C++ project structure with targeted source discovery");
     }
-    if (normalizedGoal.find("runtime") != std::string::npos ||
-        normalizedGoal.find("system") != std::string::npos) {
+    if (!toolingCapabilityGoal && (normalizedGoal.find("runtime") != std::string::npos ||
+        normalizedGoal.find("system") != std::string::npos)) {
         candidatePlans.push_back("inspect system identity and runtime context");
+    }
+    if (normalizedGoal.find("memory") != std::string::npos ||
+        normalizedGoal.find("coherence") != std::string::npos ||
+        normalizedGoal.find("consolidation") != std::string::npos) {
+        candidatePlans.push_back("inspect memory coherence and consolidation surfaces");
+    }
+    if (normalizedGoal.find("completion velocity") != std::string::npos ||
+        normalizedGoal.find("plan diversity") != std::string::npos ||
+        normalizedGoal.find("goal metric") != std::string::npos ||
+        normalizedGoal.find("plan metric") != std::string::npos) {
+        candidatePlans.push_back("inspect goal lifecycle completion metrics and plan diversity");
+    }
+    if (toolingCapabilityGoal) {
+        candidatePlans.push_back("inventory tooling and runtime capabilities");
+    }
+    if (shellSafetyGoal) {
+        candidatePlans.push_back("inspect shell safety boundaries and command validation");
     }
     if (memoryCount < 5 || normalizedGoal.find("situational awareness") != std::string::npos ||
         normalizedGoal.find("workspace") != std::string::npos) {
@@ -1353,19 +1450,26 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
         }
     }
 
-    // Outcome-based plan adaptation: start from the goal-preferred plan and only
-    // switch to another candidate when it has STRICTLY better measured evidence.
-    // A strict ' > bestBias' comparison keyed off the preferred plan's own bias
-    // means unseen-plan priors (all 0.5) and equal success ratios can never
-    // displace the goal-relevant choice; accumulated outcomes still can.
+    // Outcome-based adaptation must never let a historically successful but
+    // off-topic plan displace the plan that serves the active goal. Doing so
+    // creates a self-reinforcing deadlock: the old plan keeps succeeding while
+    // the current goal never receives aligned evidence and can never complete.
+    // When reasoning has produced a goal-aligned preferred plan, preserve it.
+    // Only use measured bias competition when the objective is unknown and no
+    // candidate is yet recognized as serving it.
     lastPlan_ = goalPreferredPlan.empty() ? candidatePlans.front()
                                           : goalPreferredPlan;
-    double bestBias = planBias(lastPlan_);
-    for (const auto& plan : candidatePlans) {
-        const double bias = planBias(plan);
-        if (bias > bestBias) {
-            bestBias = bias;
-            lastPlan_ = plan;
+    const bool preferredPlanServesGoal =
+        !goalPreferredPlan.empty() &&
+        planSatisfiesGoalTopic(normalizedGoal, goalPreferredPlan);
+    if (!preferredPlanServesGoal) {
+        double bestBias = planBias(lastPlan_);
+        for (const auto& plan : candidatePlans) {
+            const double bias = planBias(plan);
+            if (bias > bestBias) {
+                bestBias = bias;
+                lastPlan_ = plan;
+            }
         }
     }
 
@@ -1421,7 +1525,7 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
                  "; recent experience summary = " + summarizeRecentExperience() +
                  "; competence = " + std::to_string(competenceSignal_) +
                  "; selected plan = " + lastPlan_ +
-                 " (bias=" + std::to_string(bestBias) + ").");
+                 " (bias=" + std::to_string(planBias(lastPlan_)) + ").");
     logInfo("Reasoning selected plan: " + lastPlan_);
     return input;
 }
@@ -1669,22 +1773,23 @@ bool AutonomousStarter::ShellCommandWorker::execute(Task& task, State& state,
                                                    const TaskOptions& options) {
     (void)state;
 
+    if (!starter_) {
+        logError("Shell command worker has no AutonomousStarter instance");
+        return false;
+    }
+
     auto it = options.data.find("command");
     if (it == options.data.end()) {
         logError("Shell command task missing 'command' option");
-        if (starter_) {
-            starter_->appendMemory("Task failed: " + task.getId() + " missing command option.");
-        }
+        starter_->appendMemory("Task failed: " + task.getId() + " missing command option.");
         return false;
     }
 
     auto result = starter_->executeShellCommand(it->second);
-    if (starter_) {
-        starter_->appendMemory("Task completed: " + task.getId() +
-                               " command='" + it->second + "', success=" +
-                               std::string(result.success ? "true" : "false") +
-                               ", exitCode=" + std::to_string(result.exitCode) + ".");
-    }
+    starter_->appendMemory("Task completed: " + task.getId() +
+                           " command='" + it->second + "', success=" +
+                           std::string(result.success ? "true" : "false") +
+                           ", exitCode=" + std::to_string(result.exitCode) + ".");
     return result.success;
 }
 

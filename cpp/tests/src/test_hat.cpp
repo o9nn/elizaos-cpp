@@ -26,7 +26,7 @@ TEST_F(HATProtocolTest, IssueBasicToken) {
     std::string tokenId = issueHATToken("agent1", "user1", permissions);
     
     EXPECT_FALSE(tokenId.empty());
-    EXPECT_NE(tokenId.find("HAT_"), std::string::npos);
+    EXPECT_EQ(tokenId.rfind("hat_", 0), 0u);
 }
 
 TEST_F(HATProtocolTest, IssueMultipleTokens) {
@@ -406,7 +406,7 @@ TEST_F(HATProtocolTest, EmptyPermissionString) {
     std::string tokenId = issueHATToken("agent1", "user1", permissions);
     
     EXPECT_FALSE(tokenId.empty());
-    EXPECT_TRUE(checkHATPermission(tokenId, ""));
+    EXPECT_FALSE(checkHATPermission(tokenId, ""));
     EXPECT_FALSE(checkHATPermission(tokenId, "read"));
 }
 

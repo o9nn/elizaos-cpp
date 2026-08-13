@@ -361,6 +361,8 @@ add_real_test(real_agentcomms_test          src/test_agentcomms.cpp)
 add_real_test(real_agentlogger_test         src/test_agentlogger.cpp)
 add_real_test(real_agentloop_test           src/test_agentloop.cpp)
 add_real_test(real_agentmemory_test         src/test_agentmemory.cpp)
+add_real_test(real_trust_scoreboard_test     src/test_trust_scoreboard.cpp)
+target_link_libraries(real_trust_scoreboard_test elizaos-trust_scoreboard)
 add_real_test(real_attention_test           src/test_attention_allocation.cpp)
 add_real_test(real_characters_test          src/test_characters.cpp)
 add_real_test(real_knowledge_test           src/test_knowledge.cpp)
@@ -373,6 +375,68 @@ add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
 # hurdcog canonical fork, plus o9nn-specific repairs: memory deadlock, clear()
 # full-state reset, and AgentLogger Task 1.4 feature parity).
 add_real_test(real_repair_regressions_test  src/test_repair_regressions.cpp)
+
+# Dormant hand-written canonical suites promoted to executable coverage. These
+# were previously tracked under cpp/tests/src but absent from CTest, leaving
+# hundreds of assertions as dead code. Each suite runs independently to preserve
+# failure attribution and avoid multi-main conflicts.
+add_real_test(real_agentshell_extended_test       src/test_agentshell.cpp)
+add_real_test(real_characterfile_extended_test    src/test_characterfile.cpp)
+target_link_libraries(real_characterfile_extended_test elizaos-characterfile)
+add_real_test(real_easycompletion_extended_test   src/test_easycompletion.cpp)
+target_link_libraries(real_easycompletion_extended_test elizaos-easycompletion)
+add_real_test(real_eliza_extended_test             src/test_eliza.cpp)
+add_real_test(real_elizas_list_extended_test       src/test_elizas_list.cpp)
+target_link_libraries(real_elizas_list_extended_test elizaos-elizas_list gmock)
+add_real_test(real_elizas_world_extended_test      src/test_elizas_world.cpp)
+target_link_libraries(real_elizas_world_extended_test elizaos-elizas_world)
+add_real_test(real_integration_extended_test       src/test_integration.cpp)
+target_link_libraries(real_integration_extended_test gmock)
+add_real_test(real_livevideochat_extended_test     src/test_livevideochat.cpp)
+target_link_libraries(real_livevideochat_extended_test elizaos-livevideochat)
+add_real_test(real_ljspeechtools_extended_test     src/test_ljspeechtools.cpp)
+target_link_libraries(real_ljspeechtools_extended_test elizaos-ljspeechtools)
+add_real_test(real_mcp_gateway_extended_test       src/test_mcp_gateway.cpp)
+target_link_libraries(real_mcp_gateway_extended_test gmock)
+add_real_test(real_spartan_extended_test           src/test_spartan.cpp)
+target_link_libraries(real_spartan_extended_test elizaos-spartan)
+add_real_test(real_stage6_automation_extended_test src/test_stage6_automation.cpp)
+target_link_libraries(real_stage6_automation_extended_test
+    elizaos-plugins_automation
+    elizaos-discord_summarizer
+    elizaos-discrub_ext
+)
+add_real_test(real_sweagent_extended_test          src/test_sweagent.cpp)
+target_link_libraries(real_sweagent_extended_test gmock)
+add_real_test(real_the_org_extended_test           src/test_the_org.cpp)
+target_link_libraries(real_the_org_extended_test elizaos-the_org)
+add_real_test(real_autofun_idl_extended_test        ../external/autofun_idl/tests/test_autofun_idl.cpp)
+target_link_libraries(real_autofun_idl_extended_test elizaos-autofun_idl)
+add_real_test(real_awesome_eliza_extended_test      test_awesome_eliza.cpp)
+target_link_libraries(real_awesome_eliza_extended_test elizaos-awesome_eliza)
+
+function(add_standalone_real_test name src_file module_target)
+    add_executable(${name} ${src_file})
+    target_include_directories(${name} PRIVATE
+        ${CMAKE_SOURCE_DIR}/cpp/include
+        ${CMAKE_SOURCE_DIR}/include
+    )
+    target_link_libraries(${name}
+        ${module_target}
+        gtest
+        nlohmann_json::nlohmann_json
+        Threads::Threads
+    )
+    add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+add_standalone_real_test(real_brandkit_extended_test   src/test_brandkit.cpp   elizaos-brandkit)
+# src/test_classified.cpp is a legacy security-document suite for a different
+# product contract (ClassifiedDocument/SecurityClearance). The canonical module
+# is ClassifiedGame and is covered by classified_test; registering the obsolete
+# file would invent a false API rather than test the shipped implementation.
+add_standalone_real_test(real_hat_extended_test        src/test_hat.cpp        elizaos-hat)
+add_standalone_real_test(real_registry_extended_test   src/test_registry.cpp   elizaos-registry)
 
 # Virtual Endocrine System: 10-gland hormone bus, valence-arousal, cognitive mode.
 add_real_test(real_endocrine_test            src/test_endocrine.cpp)
@@ -538,12 +602,32 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_agentlogger_test
     real_agentloop_test
     real_agentmemory_test
+    real_trust_scoreboard_test
     real_attention_test
     real_characters_test
     real_knowledge_test
     real_knowledge_hypergraph_test
     real_cognitive_primitives_test
     real_repair_regressions_test
+    real_agentshell_extended_test
+    real_characterfile_extended_test
+    real_easycompletion_extended_test
+    real_eliza_extended_test
+    real_elizas_list_extended_test
+    real_elizas_world_extended_test
+    real_integration_extended_test
+    real_livevideochat_extended_test
+    real_ljspeechtools_extended_test
+    real_mcp_gateway_extended_test
+    real_spartan_extended_test
+    real_stage6_automation_extended_test
+    real_sweagent_extended_test
+    real_the_org_extended_test
+    real_autofun_idl_extended_test
+    real_awesome_eliza_extended_test
+    real_brandkit_extended_test
+    real_hat_extended_test
+    real_registry_extended_test
     plugin_specification_test
     public_header_forwarding_test
     api_client_real_test
@@ -823,6 +907,15 @@ endif()
 add_real_test(real_eliza_character_attention_test src/test_eliza_character_attention.cpp)
 if(TARGET real_eliza_character_attention_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_eliza_character_attention_test)
+endif()
+
+# The focused and extended LJSpeech suites exercise the same mock audio
+# workspace and global mock backend. They are individually deterministic but
+# must not overlap during parallel CTest runs; a scoped resource lock preserves
+# suite-wide parallelism while preventing cross-suite fixture deletion races.
+if(TEST ljspeechtools_test AND TEST real_ljspeechtools_extended_test)
+    set_tests_properties(ljspeechtools_test real_ljspeechtools_extended_test
+        PROPERTIES RESOURCE_LOCK ljspeechtools_filesystem)
 endif()
 
 # ============================================================================

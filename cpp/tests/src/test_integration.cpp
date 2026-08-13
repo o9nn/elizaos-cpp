@@ -244,7 +244,7 @@ TEST_F(IntegrationTest, AgentLoopBasicOperations) {
 
     // Create agent loop with steps
     std::vector<LoopStep> steps = {
-        LoopStep(StepFunction1(stepFunc), "counter_step")
+        LoopStep(stepFunc, "counter_step")
     };
 
     AgentLoop loop(steps, true, 0.01);  // Start paused, 10ms interval

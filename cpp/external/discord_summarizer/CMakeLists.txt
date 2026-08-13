@@ -11,5 +11,6 @@ target_include_directories(elizaos-discord_summarizer PUBLIC
 target_link_libraries(elizaos-discord_summarizer 
     elizaos-core
     elizaos-agentlogger
+    nlohmann_json::nlohmann_json
     Threads::Threads
 )

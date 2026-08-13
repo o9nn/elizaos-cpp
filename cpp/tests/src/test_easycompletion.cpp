@@ -107,7 +107,8 @@ TEST_F(EasyCompletionTest, ChunkPrompt) {
 
 TEST_F(EasyCompletionTest, TextCompletionWithoutApiKey) {
     CompletionConfig empty_config;
-    empty_config.api_key = ""; // No API key
+    empty_config.api_key = ""; // No explicit API key
+    empty_config.use_environment_api_key = false;
     
     EasyCompletionClient client(empty_config);
     CompletionResponse response = client.text_completion("Hello, world!");
@@ -119,7 +120,8 @@ TEST_F(EasyCompletionTest, TextCompletionWithoutApiKey) {
 
 TEST_F(EasyCompletionTest, ChatCompletionWithoutApiKey) {
     CompletionConfig empty_config;
-    empty_config.api_key = ""; // No API key
+    empty_config.api_key = ""; // No explicit API key
+    empty_config.use_environment_api_key = false;
     
     EasyCompletionClient client(empty_config);
     std::vector<ChatMessage> messages = {
@@ -135,7 +137,8 @@ TEST_F(EasyCompletionTest, ChatCompletionWithoutApiKey) {
 
 TEST_F(EasyCompletionTest, FunctionCompletionWithoutApiKey) {
     CompletionConfig empty_config;
-    empty_config.api_key = ""; // No API key
+    empty_config.api_key = ""; // No explicit API key
+    empty_config.use_environment_api_key = false;
     
     EasyCompletionClient client(empty_config);
     std::vector<FunctionDefinition> functions = {

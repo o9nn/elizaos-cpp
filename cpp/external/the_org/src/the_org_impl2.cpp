@@ -1416,23 +1416,37 @@ void TheOrgManager::subscribeToEvents(
 
 void TheOrgManager::publishEvent(
     const std::string& eventType, const std::string& data, const UUID& sourceAgentId) {
-    std::lock_guard<std::mutex> lock(eventMutex_);
-
-    // Log event
-    if (eventLoggingEnabled_) {
-        std::lock_guard<std::mutex> lLock(logMutex_);
-        eventLog_.push_back("[" + eventType + "] from " + sourceAgentId + ": " + data);
+    if (eventType.empty()) return;
+    std::vector<EventSubscription> subscriptions;
+    {
+        std::lock_guard<std::mutex> lock(eventMutex_);
+        subscriptions = eventSubscriptions_;
     }
 
-    // Deliver to subscribers
-    for (const auto& sub : eventSubscriptions_) {
-        if (std::find(sub.eventTypes.begin(), sub.eventTypes.end(), eventType) !=
-            sub.eventTypes.end()) {
-            auto agent = getAgent(sub.agentId);
-            if (agent) {
-                agent->processMessage(eventType + ":" + data, sourceAgentId);
-            }
-        }
+    const Timestamp now = std::chrono::system_clock::now();
+    const std::string record = "[" + eventType + "] from " + sourceAgentId + ": " + data;
+    std::string logPath;
+    bool writeToFile = false;
+    {
+        std::lock_guard<std::mutex> lock(logMutex_);
+        eventLog_.push_back(record);
+        eventHistory_.push_back({now, record});
+        constexpr size_t kMaxEvents = 10000;
+        if (eventLog_.size() > kMaxEvents) eventLog_.erase(eventLog_.begin());
+        if (eventHistory_.size() > kMaxEvents) eventHistory_.erase(eventHistory_.begin());
+        writeToFile = eventLoggingEnabled_ && !logPath_.empty();
+        logPath = logPath_;
+    }
+    if (writeToFile) {
+        std::ofstream output(logPath, std::ios::app);
+        if (output) output << the_org_utils::formatTimestamp(now) << ' ' << record << '\n';
+    }
+
+    for (const auto& sub : subscriptions) {
+        if (std::find(sub.eventTypes.begin(), sub.eventTypes.end(), eventType) ==
+            sub.eventTypes.end()) continue;
+        auto agent = getAgent(sub.agentId);
+        if (agent) agent->processMessage(eventType + ":" + data, sourceAgentId);
     }
 }
 

@@ -59,3 +59,24 @@ TEST_F(SpartanAgentTest, RequiresConfirmationFlag) {
 TEST_F(SpartanAgentTest, UpdateConfig) {
     EXPECT_NO_THROW(agent.updateConfig(cfg));
 }
+
+TEST(SpartanAgentRpcBoundary, AcceptsValidHttpEndpoints) {
+    auto config = getDefaultSpartanConfig();
+    config.solanaRpcUrl = "https://rpc.example.test/v1";
+    SpartanAgent agent(config);
+    EXPECT_TRUE(agent.initialize());
+    agent.shutdown();
+}
+
+TEST(SpartanAgentRpcBoundary, RejectsMalformedOrUnsupportedEndpoints) {
+    for (const std::string& endpoint : {
+             std::string("rpc.example.test"),
+             std::string("ftp://rpc.example.test"),
+             std::string("https://"),
+             std::string("https://bad host.example")}) {
+        auto config = getDefaultSpartanConfig();
+        config.solanaRpcUrl = endpoint;
+        SpartanAgent agent(config);
+        EXPECT_FALSE(agent.initialize()) << endpoint;
+    }
+}
