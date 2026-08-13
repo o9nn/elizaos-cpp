@@ -257,6 +257,8 @@ private:
     std::unordered_map<GroupId, std::vector<ConversationTurn>> conversations_;
     GroupEventCallback eventCallback_;
     mutable std::mutex mutex_;
+    std::unordered_map<GroupId, Timestamp> lastCohesionUpdateTick_;
+    Timestamp currentTick_ = 0;
     int nextGroupId_ = 1;
 
     GroupId generateGroupId();

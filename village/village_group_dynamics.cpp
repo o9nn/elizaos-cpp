@@ -202,10 +202,10 @@ GroupId GroupManager::formGroup(const ProtoGroup& proto, const std::string& trig
     Group group;
     group.id = id;
     group.members = proto.candidates;
-    group.formationTime = std::chrono::duration_cast<std::chrono::seconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count();
-    group.cohesion = proto.affinityScore;
+    group.formationTime = currentTick_;
+    group.cohesion = std::clamp(proto.affinityScore, 0.0, 1.0);
     groups_[id] = group;
+    lastCohesionUpdateTick_[id] = currentTick_;
     emitEvent("group.formed", id, "{\"trigger\":\"" + triggerEvent +
               "\",\"members\":" + std::to_string(proto.candidates.size()) + "}");
     return id;
@@ -216,6 +216,7 @@ void GroupManager::dissolveGroup(const GroupId& id, const std::string& reason) {
     emitEvent("group.dissolved", id, "{\"reason\":\"" + reason + "\"}");
     groups_.erase(id);
     conversations_.erase(id);
+    lastCohesionUpdateTick_.erase(id);
 }
 
 GroupId GroupManager::mergeGroups(const GroupId& a, const GroupId& b) {
@@ -226,7 +227,12 @@ GroupId GroupManager::mergeGroups(const GroupId& a, const GroupId& b) {
     merged.candidates = itA->second.members;
     merged.candidates.insert(itB->second.members.begin(), itB->second.members.end());
     merged.affinityScore = (itA->second.cohesion + itB->second.cohesion) / 2.0;
-    groups_.erase(a); groups_.erase(b);
+    groups_.erase(a);
+    groups_.erase(b);
+    conversations_.erase(a);
+    conversations_.erase(b);
+    lastCohesionUpdateTick_.erase(a);
+    lastCohesionUpdateTick_.erase(b);
     lock.unlock();
     return formGroup(merged, "merge");
 }
@@ -246,13 +252,30 @@ void GroupManager::updateCohesion(const GroupId& id, Timestamp currentTick) {
     auto it = groups_.find(id);
     if (it == groups_.end()) return;
     auto& group = it->second;
-    // Decay cohesion over time without interaction
-    Timestamp lastEvent = group.formationTime;
-    if (!group.collectiveMemory.empty())
-        lastEvent = group.collectiveMemory.back().timestamp;
-    double ticksSinceInteraction = static_cast<double>(currentTick - lastEvent);
-    group.cohesion -= config_.cohesionDecayRate * (ticksSinceInteraction / 60.0);
-    group.cohesion = std::max(0.0, group.cohesion);
+    currentTick_ = std::max(currentTick_, currentTick);
+
+    Timestamp lastInteractionTick = group.formationTime;
+    if (!group.collectiveMemory.empty()) {
+        lastInteractionTick =
+            std::max(lastInteractionTick, group.collectiveMemory.back().timestamp);
+    }
+
+    auto cursorIt =
+        lastCohesionUpdateTick_.try_emplace(id, group.formationTime).first;
+    const Timestamp baselineTick =
+        std::max(cursorIt->second, lastInteractionTick);
+    if (currentTick <= baselineTick) {
+        group.cohesion = std::clamp(group.cohesion, 0.0, 1.0);
+        return;
+    }
+
+    const double elapsedTicks =
+        static_cast<double>(currentTick - baselineTick);
+    cursorIt->second = currentTick;
+    group.cohesion = std::clamp(
+        group.cohesion - config_.cohesionDecayRate * (elapsedTicks / 60.0),
+        0.0,
+        1.0);
     if (group.cohesion < config_.dissolutionThreshold) {
         lock.unlock();
         dissolveGroup(id, "cohesion_decay");
@@ -270,9 +293,17 @@ void GroupManager::startGroupConversation(const GroupId& id, const std::string& 
 
 void GroupManager::addConversationTurn(const GroupId& id, const ConversationTurn& turn) {
     std::unique_lock<std::mutex> lock(mutex_);
-    conversations_[id].push_back(turn);
     auto it = groups_.find(id);
-    if (it != groups_.end()) it->second.interactionCount++;
+    if (it == groups_.end()) return;
+
+    ConversationTurn storedTurn = turn;
+    if (storedTurn.timestamp <= 0) storedTurn.timestamp = currentTick_;
+    currentTick_ = std::max(currentTick_, storedTurn.timestamp);
+    conversations_[id].push_back(storedTurn);
+    it->second.interactionCount++;
+    auto cursorIt =
+        lastCohesionUpdateTick_.try_emplace(id, it->second.formationTime).first;
+    cursorIt->second = std::max(cursorIt->second, storedTurn.timestamp);
 }
 
 std::vector<GroupManager::ConversationTurn> GroupManager::getConversationHistory(
@@ -295,8 +326,7 @@ std::string GroupManager::proposeGoal(const GroupId& id, const ResidentId& propo
     goal.description = description;
     goal.status = "proposed";
     goal.proposedBy = proposer;
-    goal.createdAt = std::chrono::duration_cast<std::chrono::seconds>(
-        std::chrono::steady_clock::now().time_since_epoch()).count();
+    goal.createdAt = currentTick_;
     it->second.sharedGoals.push_back(goal);
     emitEvent("group.goal.proposed", id,
               "{\"goal_id\":\"" + goal.id + "\",\"proposer\":\"" + proposer + "\"}");
@@ -337,9 +367,18 @@ void GroupManager::recordGroupEvent(const GroupId& id, const GroupEvent& event) 
     std::unique_lock<std::mutex> lock(mutex_);
     auto it = groups_.find(id);
     if (it == groups_.end()) return;
-    it->second.collectiveMemory.push_back(event);
-    // Positive events boost cohesion
-    it->second.cohesion = std::min(1.0, it->second.cohesion + event.emotionalValence * 0.1);
+
+    GroupEvent storedEvent = event;
+    if (storedEvent.timestamp <= 0) storedEvent.timestamp = currentTick_;
+    currentTick_ = std::max(currentTick_, storedEvent.timestamp);
+    it->second.collectiveMemory.push_back(storedEvent);
+    it->second.cohesion = std::clamp(
+        it->second.cohesion + storedEvent.emotionalValence * 0.1,
+        0.0,
+        1.0);
+    auto cursorIt =
+        lastCohesionUpdateTick_.try_emplace(id, it->second.formationTime).first;
+    cursorIt->second = std::max(cursorIt->second, storedEvent.timestamp);
 }
 
 std::string GroupManager::generateCollectiveReflection(const GroupId& id) const {
@@ -466,6 +505,7 @@ void GroupManager::tick(Timestamp currentTick, const SocialNetwork& network) {
     std::vector<GroupId> groupIds;
     {
         std::unique_lock<std::mutex> lock(mutex_);
+        currentTick_ = std::max(currentTick_, currentTick);
         for (const auto& [id, _] : groups_) groupIds.push_back(id);
     }
     for (const auto& id : groupIds) updateCohesion(id, currentTick);

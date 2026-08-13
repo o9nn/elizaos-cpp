@@ -34,6 +34,8 @@
 namespace elizaos {
 namespace village {
 
+inline constexpr double kAntikytheraPi = 3.141592653589793238462643383279502884;
+
 // ============================================================================
 // Gear — A single rotating element representing a resident's cognitive cadence
 // ============================================================================
@@ -46,7 +48,7 @@ struct Gear {
     int timeCrystalLevel;  // Which level in the hierarchy this gear lives at
 
     // Derived
-    double angularVelocity() const { return rpm * 2.0 * M_PI / 60.0; }
+    double angularVelocity() const { return rpm * 2.0 * kAntikytheraPi / 60.0; }
     double periodMs() const { return (teeth > 0) ? (60000.0 / rpm) : 1000.0; }
 };
 

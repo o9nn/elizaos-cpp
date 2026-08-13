@@ -245,14 +245,42 @@ TEST_F(GroupManagerTest, CohesionUpdate) {
     auto groupId = groups_.formGroup(proto, "task");
     const Group* before = groups_.getGroup(groupId);
     ASSERT_NE(before, nullptr);
-    double initialCohesion = before->cohesion;
-    // Tick updates cohesion based on network state
+    EXPECT_DOUBLE_EQ(before->cohesion, 0.8);
+
     groups_.tick(100, network_);
-    const Group* after = groups_.getGroup(groupId);
-    ASSERT_NE(after, nullptr);
-    // Cohesion should change (direction depends on network state)
-    // With no interactions, it may increase or decay depending on implementation
-    EXPECT_NE(after->cohesion, 0.0);
+    const Group* after100 = groups_.getGroup(groupId);
+    ASSERT_NE(after100, nullptr);
+    const double cohesionAfter100 = after100->cohesion;
+    EXPECT_NEAR(cohesionAfter100, 0.8 - 0.01 * (100.0 / 60.0), 1e-9);
+
+    groups_.tick(160, network_);
+    const Group* after160 = groups_.getGroup(groupId);
+    ASSERT_NE(after160, nullptr);
+    const double cohesionAfter160 = after160->cohesion;
+    EXPECT_NEAR(cohesionAfter160, cohesionAfter100 - 0.01, 1e-9);
+
+    // A stale tick must not reverse decay or inflate cohesion.
+    groups_.tick(120, network_);
+    const Group* afterStaleTick = groups_.getGroup(groupId);
+    ASSERT_NE(afterStaleTick, nullptr);
+    EXPECT_DOUBLE_EQ(afterStaleTick->cohesion, cohesionAfter160);
+
+    // A timestamped interaction boosts cohesion within bounds and resets decay.
+    GroupEvent interaction;
+    interaction.eventType = "achievement";
+    interaction.timestamp = 200;
+    interaction.emotionalValence = 0.5;
+    groups_.recordGroupEvent(groupId, interaction);
+    const Group* afterInteraction = groups_.getGroup(groupId);
+    ASSERT_NE(afterInteraction, nullptr);
+    const double boostedCohesion =
+        std::min(1.0, cohesionAfter160 + interaction.emotionalValence * 0.1);
+    EXPECT_NEAR(afterInteraction->cohesion, boostedCohesion, 1e-9);
+
+    groups_.tick(200, network_);
+    const Group* afterInteractionTick = groups_.getGroup(groupId);
+    ASSERT_NE(afterInteractionTick, nullptr);
+    EXPECT_NEAR(afterInteractionTick->cohesion, boostedCohesion, 1e-9);
 }
 
 TEST_F(GroupManagerTest, ConsensusReached) {
@@ -333,7 +361,7 @@ TEST_F(AntikytheraTest, AngularVelocity) {
     auto* dan = engine_.getGear("dan");
     ASSERT_NE(dan, nullptr);
     // 1 rpm = 2π/60 rad/s ≈ 0.1047 rad/s
-    EXPECT_NEAR(dan->angularVelocity(), 2.0 * M_PI / 60.0, 0.001);
+    EXPECT_NEAR(dan->angularVelocity(), 2.0 * kAntikytheraPi / 60.0, 0.001);
 }
 
 TEST_F(AntikytheraTest, PeriodComputation) {
@@ -348,7 +376,7 @@ TEST_F(AntikytheraTest, PhaseAdvancement) {
     auto* dan = engine_.getGear("dan");
     ASSERT_NE(dan, nullptr);
     EXPECT_GT(dan->phase, 0.0);
-    EXPECT_LT(dan->phase, 2.0 * M_PI);
+    EXPECT_LT(dan->phase, 2.0 * kAntikytheraPi);
 }
 
 TEST_F(AntikytheraTest, GearRatioComputation) {
@@ -514,6 +542,9 @@ TEST_F(KSMTransferTest, StateSnapshot) {
     EXPECT_EQ(state["engine"], "KSMTransferEngine");
     EXPECT_EQ(state["principle"], "Dan's Relational Principle");
     EXPECT_EQ(state["total_residents"], 0);
+    EXPECT_EQ(state["total_artifacts"], 0);
+    EXPECT_EQ(state["total_learning_events"], 0);
+    EXPECT_EQ(state["total_knowledge_received"], 0);
 }
 
 TEST_F(KSMTransferTest, LoadRegistryFromFile) {
@@ -563,6 +594,9 @@ TEST_F(KSMTransferTest, LearningWithRegisteredResidents) {
 
     engine_.loadRegistry(registryPath);
     engine_.recordLearning("dan", "manus", "ka_001", 0.9);
+    auto state = engine_.getState();
+    EXPECT_EQ(state["total_learning_events"], 1);
+    EXPECT_EQ(state["total_knowledge_received"], 1);
     // Should emit a learning event
     EXPECT_GE(events_.size(), 1u);
     if (!events_.empty()) {
