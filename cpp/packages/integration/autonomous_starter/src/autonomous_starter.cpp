@@ -168,6 +168,61 @@ std::filesystem::path defaultHomePath() {
     return std::filesystem::current_path();
 }
 
+bool isElizaProjectRoot(const std::filesystem::path& candidate) {
+    std::error_code ec;
+    const bool hasRootCMake =
+        std::filesystem::is_regular_file(candidate / "CMakeLists.txt", ec);
+    ec.clear();
+    const bool hasCppTree = std::filesystem::is_directory(candidate / "cpp", ec);
+    ec.clear();
+    const bool hasPublicHeaders =
+        std::filesystem::is_directory(candidate / "include" / "elizaos", ec);
+    return hasRootCMake && hasCppTree && hasPublicHeaders;
+}
+
+std::filesystem::path findElizaProjectRoot(std::filesystem::path candidate) {
+    std::error_code ec;
+    candidate = std::filesystem::weakly_canonical(candidate, ec);
+    if (ec) return {};
+
+    if (std::filesystem::is_regular_file(candidate, ec)) {
+        candidate = candidate.parent_path();
+    }
+    while (!candidate.empty()) {
+        if (isElizaProjectRoot(candidate)) return candidate;
+        const auto parent = candidate.parent_path();
+        if (parent == candidate) break;
+        candidate = parent;
+    }
+    return {};
+}
+
+std::filesystem::path discoverElizaProjectRoot(const std::string& workspace) {
+    std::vector<std::filesystem::path> candidates;
+    if (const char* configured = std::getenv("ELIZAOS_SOURCE_ROOT"); configured && *configured) {
+        candidates.emplace_back(configured);
+    }
+    if (!workspace.empty()) candidates.emplace_back(workspace);
+
+    std::error_code ec;
+    const auto processDirectory = std::filesystem::current_path(ec);
+    if (!ec) candidates.push_back(processDirectory);
+
+    std::filesystem::path compiledSource(__FILE__);
+    if (compiledSource.is_relative() && !ec) {
+        compiledSource = processDirectory / compiledSource;
+    }
+    candidates.push_back(compiledSource.parent_path());
+
+    for (const auto& candidate : candidates) {
+        const auto root = findElizaProjectRoot(candidate);
+        if (!root.empty()) return root;
+    }
+
+    const auto workspacePath = findElizaProjectRoot(workspace);
+    return workspacePath.empty() ? std::filesystem::path(workspace) : workspacePath;
+}
+
 } // namespace
 
 AutonomousStarter::AutonomousStarter(const AgentConfig& config)
@@ -691,21 +746,27 @@ std::string AutonomousStarter::getAttentionPrioritizedGoal() const {
 
 std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan) const {
     const std::string normalizedPlan = toLowerAscii(plan);
+    const std::filesystem::path sourceRoot =
+        discoverElizaProjectRoot(currentWorkingDirectory_);
+    const std::string quotedSourceRoot = shellQuote(sourceRoot.string());
 
     if (normalizedPlan.find("project structure") != std::string::npos ||
         normalizedPlan.find("source discovery") != std::string::npos ||
         normalizedPlan.find("c++") != std::string::npos ||
         normalizedPlan.find("cmake") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 \\( -name CMakeLists.txt -o -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -20";
+        return "find " + quotedSourceRoot +
+               " -maxdepth 7 \\( -name CMakeLists.txt -o -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -20";
     }
     if (normalizedPlan.find("sample repository source") != std::string::npos ||
         normalizedPlan.find("source files") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 -type f \\( -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -25";
+        return "find " + quotedSourceRoot +
+               " -maxdepth 7 -type f \\( -name '*.cpp' -o -name '*.hpp' \\) 2>/dev/null | sort -u | head -25";
     }
     if (normalizedPlan.find("test") != std::string::npos ||
         normalizedPlan.find("validation") != std::string::npos ||
         normalizedPlan.find("self-audit") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root/cpp/tests\" -maxdepth 4 -type f 2>/dev/null | sort -u | head -25";
+        return "find " + shellQuote((sourceRoot / "cpp" / "tests").string()) +
+               " -maxdepth 4 -type f 2>/dev/null | sort -u | head -25";
     }
     if (normalizedPlan.find("system identity") != std::string::npos ||
         normalizedPlan.find("runtime") != std::string::npos ||
@@ -718,12 +779,17 @@ std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan
     }
     if (normalizedPlan.find("memory coherence") != std::string::npos ||
         normalizedPlan.find("consolidation") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; find \"$root\" -maxdepth 7 -type f \\( -iname '*memory*' -o -iname '*persistence*' -o -iname '*consolidat*' \\) 2>/dev/null | sort -u | head -30";
+        return "find " + quotedSourceRoot +
+               " -maxdepth 7 -type f \\( -iname '*memory*' -o -iname '*persistence*' -o -iname '*consolidat*' \\) 2>/dev/null | sort -u | head -30";
     }
     if (normalizedPlan.find("goal lifecycle") != std::string::npos ||
         normalizedPlan.find("plan diversity") != std::string::npos ||
         normalizedPlan.find("completion metrics") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; grep -RIn --include='*.cpp' --include='*.hpp' -E 'planStats_|getPlanSuccessRatio|Goal completed|goal lifecycle|plan diversity' \"$root/cpp\" \"$root/include\" 2>/dev/null | head -30";
+        return "grep -RIn --include='*.cpp' --include='*.hpp' -E "
+               "'planStats_|getPlanSuccessRatio|Goal completed|goal lifecycle|plan diversity' " +
+               shellQuote((sourceRoot / "cpp").string()) + " " +
+               shellQuote((sourceRoot / "include").string()) +
+               " 2>/dev/null | head -30";
     }
     if (normalizedPlan.find("tooling") != std::string::npos ||
         normalizedPlan.find("capability") != std::string::npos ||
@@ -733,7 +799,11 @@ std::string AutonomousStarter::buildActionCommandForPlan(const std::string& plan
     if (normalizedPlan.find("shell safety") != std::string::npos ||
         normalizedPlan.find("command validation") != std::string::npos ||
         normalizedPlan.find("safety boundaries") != std::string::npos) {
-        return "root=.; for candidate in . .. ../.. ../../.. ../../../..; do if [ -f \"$candidate/CMakeLists.txt\" ] && [ -d \"$candidate/cpp\" ]; then root=\"$candidate\"; break; fi; done; grep -RIn --include='*.cpp' --include='*.hpp' -E 'validateShellCommand|forbiddenPatterns|shell safety|remote script' \"$root/cpp\" \"$root/include\" 2>/dev/null | head -30";
+        return "grep -RIn --include='*.cpp' --include='*.hpp' -E "
+               "'validateShellCommand|forbiddenPatterns|shell safety|remote script' " +
+               shellQuote((sourceRoot / "cpp").string()) + " " +
+               shellQuote((sourceRoot / "include").string()) +
+               " 2>/dev/null | head -30";
     }
 
     static const std::array<const char*, 3> safeDefaultCommands = {{

@@ -16,11 +16,6 @@ using namespace elizaos;
 
 namespace {
 
-std::string testAgentId() {
-    static std::string id = generateUUID();
-    return id;
-}
-
 CharacterModification makeModification(const std::string& agentId, int version) {
     CharacterModification mod;
     mod.id = generateUUID();

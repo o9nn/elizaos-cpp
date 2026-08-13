@@ -268,8 +268,9 @@ TEST_F(AutonomyPipelineIntegrationTest, FocusedGoalRetainedAcrossCycles) {
                 break;
             }
         }
-        // Focus change is only valid if the goal was completed or a new goal
-        // was seeded (never-dead-end). Either way, there must be open goals.
+        EXPECT_TRUE(originalCompleted)
+            << "Focus changed before the original goal completed";
+        // The never-dead-end invariant must keep another goal available.
         EXPECT_GE(agent->getOpenGoalCount(), 1u);
     }
     agent->stop();
