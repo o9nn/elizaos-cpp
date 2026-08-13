@@ -395,7 +395,7 @@ private:
 }
 
 TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/index.html", R"HTML(
             <html>
               <head><title>ElizaOS Browser Fixture</title></head>
@@ -492,7 +492,7 @@ TEST_F(AgentBrowserTest, RealHttpNavigationSelectorsFormsArtifactsAndHistory) {
 
 
 TEST_F(AgentBrowserTest, SubmitPostFormSendsScopedEncodedBodyAndUpdatesPage) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/post-form.html", R"HTML(
             <html>
               <head><title>POST Form</title></head>
@@ -554,7 +554,7 @@ TEST_F(AgentBrowserTest, SubmitPostFormSendsScopedEncodedBodyAndUpdatesPage) {
 }
 
 TEST_F(AgentBrowserTest, FormControlValidationRejectsWrongControlsAndMissingOptions) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/controls.html", R"HTML(
             <html>
               <head><title>Control Validation</title></head>
@@ -588,7 +588,7 @@ TEST_F(AgentBrowserTest, FormControlValidationRejectsWrongControlsAndMissingOpti
 }
 
 TEST_F(AgentBrowserTest, RealHttpRelativeLinkNavigationAndJavaScriptLimits) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/nested/start.html", R"HTML(
             <html>
               <head><title>Relative Start</title></head>
@@ -629,7 +629,7 @@ TEST_F(AgentBrowserTest, RealHttpRelativeLinkNavigationAndJavaScriptLimits) {
 }
 
 TEST_F(AgentBrowserTest, SubmitFormIncludesScopedHtmlDefaultsAndUserOverrides) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/forms.html", R"HTML(
             <html>
               <head><title>Scoped Form Defaults</title></head>
