@@ -1,7 +1,9 @@
 # AgentBrowser - Web automation interface for ElizaOS agents
 
 find_package(Threads REQUIRED)
-find_package(CURL REQUIRED)
+if(NOT TARGET CURL::libcurl)
+    find_package(CURL REQUIRED)
+endif()
 find_package(PkgConfig QUIET)
 option(ELIZAOS_FORCE_BUNDLED_GUMBO "Build the pinned Gumbo fallback even when a system package is available" OFF)
 

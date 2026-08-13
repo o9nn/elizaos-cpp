@@ -470,7 +470,9 @@ target_include_directories(api_client_real_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
-find_package(CURL REQUIRED)
+if(NOT TARGET CURL::libcurl)
+    find_package(CURL REQUIRED)
+endif()
 target_link_libraries(api_client_real_test
     elizaos-eliza-api-client
     gtest
@@ -487,7 +489,9 @@ target_include_directories(real_api_client_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/packages/applications/eliza/packages/api-client/src
 )
-find_package(CURL REQUIRED)
+if(NOT TARGET CURL::libcurl)
+    find_package(CURL REQUIRED)
+endif()
 target_link_libraries(real_api_client_test
     elizaos-eliza-api-client
     gtest

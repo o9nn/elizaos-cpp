@@ -2,7 +2,9 @@
 cmake_minimum_required(VERSION 3.16)
 
 # CurlTransport provides the real HTTP backend for the API client.
-find_package(CURL REQUIRED)
+if(NOT TARGET CURL::libcurl)
+    find_package(CURL REQUIRED)
+endif()
 
 # Collect all source files
 file(GLOB_RECURSE SOURCES "src/*.cpp")

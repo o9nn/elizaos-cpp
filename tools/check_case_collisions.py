@@ -11,12 +11,14 @@ from __future__ import annotations
 import subprocess
 import sys
 from collections import defaultdict
+from pathlib import Path
 
 
 def main() -> int:
     try:
+        repository = str(Path.cwd().resolve())
         result = subprocess.run(
-            ["git", "ls-files"],
+            ["git", "-c", f"safe.directory={repository}", "ls-files"],
             check=True,
             capture_output=True,
             text=True,

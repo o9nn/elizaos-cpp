@@ -12,23 +12,25 @@ target_link_libraries(elizaos-easycompletion
     elizaos-core
 )
 
-# Try to link libcurl if available (for HTTP requests)
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(CURL QUIET libcurl)
-endif()
-
-if(NOT CURL_FOUND)
-    find_package(CURL QUIET)
-endif()
-
-if(CURL_FOUND)
-    if(TARGET CURL::libcurl)
-        target_link_libraries(elizaos-easycompletion CURL::libcurl)
-    else()
-        target_link_libraries(elizaos-easycompletion ${CURL_LIBRARIES})
-        target_include_directories(elizaos-easycompletion PRIVATE ${CURL_INCLUDE_DIRS})
+# Try to link libcurl if available (for HTTP requests). Reuse the root
+# FetchContent target on minimal Windows builders before probing system paths.
+if(NOT TARGET CURL::libcurl)
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(CURL QUIET libcurl)
     endif()
+
+    if(NOT CURL_FOUND)
+        find_package(CURL QUIET)
+    endif()
+endif()
+
+if(TARGET CURL::libcurl)
+    target_link_libraries(elizaos-easycompletion CURL::libcurl)
+    target_compile_definitions(elizaos-easycompletion PRIVATE HAVE_CURL)
+elseif(CURL_FOUND)
+    target_link_libraries(elizaos-easycompletion ${CURL_LIBRARIES})
+    target_include_directories(elizaos-easycompletion PRIVATE ${CURL_INCLUDE_DIRS})
     target_compile_definitions(elizaos-easycompletion PRIVATE HAVE_CURL)
 endif()
 
