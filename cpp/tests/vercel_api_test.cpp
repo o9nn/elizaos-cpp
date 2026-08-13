@@ -35,3 +35,23 @@ TEST(VercelProject, BasicConstruction) {
     VercelProject p;
     SUCCEED();
 }
+
+TEST(VercelAPI, AddDomainRejectsMissingDomainWithoutNetworkCall) {
+    VercelConfig cfg;
+    VercelAPI api(cfg);
+    const VercelDomain domain = api.addDomain("", "project-id");
+    EXPECT_TRUE(domain.name.empty());
+    ASSERT_TRUE(api.hasError());
+    EXPECT_EQ(api.getLastError().code, 400);
+    EXPECT_NE(api.getLastError().message.find("Domain name"), std::string::npos);
+}
+
+TEST(VercelAPI, AddDomainRejectsMissingProjectWithoutNetworkCall) {
+    VercelConfig cfg;
+    VercelAPI api(cfg);
+    const VercelDomain domain = api.addDomain("example.test", "");
+    EXPECT_TRUE(domain.project_id.empty());
+    ASSERT_TRUE(api.hasError());
+    EXPECT_EQ(api.getLastError().code, 400);
+    EXPECT_NE(api.getLastError().message.find("project ID"), std::string::npos);
+}

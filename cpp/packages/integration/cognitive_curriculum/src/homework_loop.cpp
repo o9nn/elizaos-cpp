@@ -25,39 +25,136 @@ DefaultEvidenceProvider::DefaultEvidenceProvider(std::map<CenterId, EvidenceMap>
 std::map<CenterId, EvidenceMap> DefaultEvidenceProvider::gather(
     const AutonomousStarter& agent) const {
     std::map<CenterId, EvidenceMap> out;
-
-    // Dynamic, observable evidence derived from the live agent state.
     const auto& messages = agent.getState().getRecentMessages();
-    const bool hasMemoryActivity = !messages.empty();
-    const bool hasCycled = agent.getCognitiveCycleCount() > 0;
-    const bool hasActed = agent.getActionCount() > 0;
+    const auto& goals = agent.getState().getGoals();
+    const auto health = agent.getAutonomyHealthReport();
+    const double cycles = static_cast<double>(health.totalCycles);
+    const double actions = static_cast<double>(health.totalActions);
+    const double reflections = static_cast<double>(health.reflections);
 
-    for (CenterId c : allCenters()) {
-        // Start from any caller-supplied baseline of build-time facts.
-        EvidenceMap em;
-        auto it = baseline_.find(c);
-        if (it != baseline_.end()) {
-            em = it->second;
-        }
-
-        // Overlay dynamic evidence (the agent earns these by actually running).
-        const std::string name = centerName(c);
-        bool mentioned = false;
-        for (const auto& m : messages) {
-            if (m && m->getContent().find(name) != std::string::npos) {
-                mentioned = true;
-                break;
+    auto clamp01 = [](double value) {
+        return std::max(0.0, std::min(1.0, value));
+    };
+    auto ratio = [&](double numerator, double denominator) {
+        return denominator <= 0.0 ? 0.0 : clamp01(numerator / denominator);
+    };
+    auto lower = [](std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(),
+                       [](unsigned char ch) { return static_cast<char>(std::tolower(ch)); });
+        return value;
+    };
+    auto memoryMentionsAny = [&](std::initializer_list<const char*> needles) {
+        for (const auto& memory : messages) {
+            if (!memory) continue;
+            const std::string content = lower(memory->getContent());
+            for (const char* needle : needles) {
+                if (content.find(needle) != std::string::npos) return true;
             }
         }
+        return false;
+    };
+    std::size_t validMemories = 0;
+    for (const auto& memory : messages) if (memory && !memory->getContent().empty()) ++validMemories;
+    const double memoryIntegrity = messages.empty()
+        ? 0.0 : ratio(static_cast<double>(validMemories), static_cast<double>(messages.size()));
+    const double cycleClosure = std::min(ratio(actions, cycles), ratio(reflections, cycles));
+    const bool focusConsistent = health.focusedGoalId.empty() ||
+        agent.getActiveGoalId().empty() || health.focusedGoalId == agent.getActiveGoalId();
+    const double failureResilience = 1.0 / (1.0 + static_cast<double>(health.consecutiveFailures));
 
-        // Echoes: the center's behaviour appears in the memory stream.
-        em["appears_in_memory_stream"] = mentioned ? 1.0 : (hasMemoryActivity ? 0.5 : 0.0);
-        // Alternating Repetition: the center participates each cycle.
-        em["participates_each_cycle"] = hasCycled ? 1.0 : 0.0;
-        // Not-Separateness: the center contributes to the main observe-reason-act loop.
-        em["contributes_to_main_loop"] = (hasCycled && hasActed) ? 1.0 : (hasCycled ? 0.5 : 0.0);
+    for (CenterId center : allCenters()) {
+        EvidenceMap evidence;
+        auto baseline = baseline_.find(center);
+        if (baseline != baseline_.end()) evidence = baseline->second;
 
-        out[c] = em;
+        switch (center) {
+            case CenterId::Characters: {
+                const bool identityPresent = !agent.getConfig().agentId.empty() &&
+                                             !agent.getConfig().agentName.empty();
+                evidence["primary_class_implemented"] = identityPresent ? 1.0 : 0.0;
+                evidence["has_focused_core"] = identityPresent ? 1.0 : 0.0;
+                evidence["distinct_from_neighbours"] =
+                    (!agent.getConfig().bio.empty() || !agent.getConfig().lore.empty()) ? 1.0 : 0.0;
+                evidence["participates_each_cycle"] =
+                    (identityPresent && health.totalCycles > 0) ? 1.0 : 0.0;
+                evidence["appears_in_memory_stream"] =
+                    memoryMentionsAny({"agent:", "awakening:", "character"}) ? 1.0 : 0.0;
+                evidence["contributes_to_main_loop"] =
+                    identityPresent ? (health.totalCycles > 0 ? 1.0 : 0.5) : 0.0;
+                break;
+            }
+            case CenterId::Memory:
+                evidence["primary_class_implemented"] = messages.empty() ? 0.0 : 1.0;
+                evidence["participates_each_cycle"] = ratio(static_cast<double>(messages.size()),
+                                                              std::max(1.0, cycles * 3.0));
+                evidence["operations_consistent"] = memoryIntegrity;
+                evidence["handles_edge_cases"] = memoryIntegrity;
+                evidence["appears_in_memory_stream"] = messages.empty() ? 0.0 : 1.0;
+                evidence["has_focused_core"] = messages.empty() ? 0.0 : 1.0;
+                evidence["exposes_graded_surface"] =
+                    ratio(static_cast<double>(messages.size()), 25.0);
+                evidence["contributes_to_main_loop"] =
+                    (!messages.empty() && health.totalCycles > 0) ? 1.0 : 0.0;
+                break;
+            case CenterId::CognitiveCycle:
+                evidence["has_coarse_and_fine_parts"] =
+                    (health.totalCycles > 0 && health.reflections > 0) ? 1.0 : 0.0;
+                evidence["primary_class_implemented"] = health.totalCycles > 0 ? 1.0 : 0.0;
+                evidence["participates_each_cycle"] = cycleClosure;
+                evidence["operations_consistent"] = cycleClosure;
+                evidence["referenced_by_other_center"] =
+                    (!messages.empty() && health.totalActions > 0) ? 1.0 : 0.0;
+                evidence["exposes_graded_surface"] = clamp01(health.cycleEfficiency);
+                evidence["handles_edge_cases"] = failureResilience;
+                evidence["appears_in_memory_stream"] =
+                    memoryMentionsAny({"perception:", "reasoning:", "reflection:", "cycle "}) ? 1.0 : 0.0;
+                evidence["has_focused_core"] = !health.lastPlan.empty() ? 1.0 : 0.0;
+                evidence["no_conflicting_paths"] = focusConsistent ? 1.0 : 0.0;
+                evidence["contributes_to_main_loop"] = cycleClosure;
+                break;
+            case CenterId::Endocrine:
+                // Every planned action submits a stimulus and ticks the endocrine
+                // subsystem; action/cycle closure is therefore observable coupling.
+                evidence["primary_class_implemented"] = health.totalActions > 0 ? 1.0 : 0.0;
+                evidence["participates_each_cycle"] = ratio(actions, cycles);
+                evidence["operations_consistent"] = clamp01(health.competence);
+                evidence["referenced_by_other_center"] = cycleClosure;
+                evidence["exposes_graded_surface"] = clamp01(health.cognitiveMomentum);
+                evidence["handles_edge_cases"] = failureResilience;
+                evidence["appears_in_memory_stream"] =
+                    memoryMentionsAny({"endocrine", "alarm mode", "rest mode"}) ? 1.0 : 0.0;
+                evidence["contributes_to_main_loop"] = ratio(actions, cycles);
+                break;
+            case CenterId::Protocol:
+                // Protocol earns evidence only when communication/protocol traces
+                // actually appear; unrelated agent activity no longer inflates it.
+                evidence["participates_each_cycle"] =
+                    memoryMentionsAny({"protocol", "message", "communication"}) ?
+                        ratio(actions, cycles) : 0.0;
+                evidence["appears_in_memory_stream"] =
+                    memoryMentionsAny({"protocol", "message", "communication"}) ? 1.0 : 0.0;
+                evidence["contributes_to_main_loop"] =
+                    memoryMentionsAny({"protocol", "communication"}) ? cycleClosure : 0.0;
+                break;
+            case CenterId::Autonomy:
+                evidence["has_coarse_and_fine_parts"] =
+                    (health.totalCycles > 0 && !goals.empty()) ? 1.0 : 0.0;
+                evidence["primary_class_implemented"] = health.totalActions > 0 ? 1.0 : 0.0;
+                evidence["has_api_boundary"] = health.totalCycles > 0 ? 1.0 : 0.0;
+                evidence["participates_each_cycle"] = ratio(actions, cycles);
+                evidence["operations_consistent"] = clamp01(health.actionSuccessRate);
+                evidence["referenced_by_other_center"] = cycleClosure;
+                evidence["distinct_from_neighbours"] = !health.focusedGoalId.empty() ? 1.0 : 0.0;
+                evidence["exposes_graded_surface"] = clamp01(health.competence);
+                evidence["handles_edge_cases"] = failureResilience;
+                evidence["appears_in_memory_stream"] =
+                    memoryMentionsAny({"autonomy", "autonomous", "goal completed:"}) ? 1.0 : 0.0;
+                evidence["has_focused_core"] = !goals.empty() ? 1.0 : 0.0;
+                evidence["no_conflicting_paths"] = focusConsistent ? 1.0 : 0.0;
+                evidence["contributes_to_main_loop"] = clamp01(health.cycleEfficiency);
+                break;
+        }
+        out[center] = std::move(evidence);
     }
     return out;
 }

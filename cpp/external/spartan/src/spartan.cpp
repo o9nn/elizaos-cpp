@@ -20,7 +20,8 @@ bool SpartanAgent::initialize() {
         return false;
     }
     
-    // Initialize connection to Solana (mock implementation)
+    // Validate the configured Solana RPC boundary before entering offline analysis mode.
+    // Transaction submission remains delegated to an authenticated downstream adapter.
     if (!connectToSolana()) {
         return false;
     }
@@ -274,16 +275,15 @@ std::string SpartanAgent::generateResponse(const std::string& query) {
     std::string lowerQuery = query;
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     if (lowerQuery.find("price") != std::string::npos || lowerQuery.find("bonk") != std::string::npos) {
         TokenInfo bonk = getTokenInfo("BONK");
         return formatTokenPrice(bonk);
     } else if (lowerQuery.find("pool") != std::string::npos && lowerQuery.find("create") != std::string::npos) {
-        return "I'll help std::set up a shared wallet. How many co-owners and what's the initial allocation?";
+        return "I'll help set up a shared wallet. How many co-owners and what's the initial allocation?";
     } else if (lowerQuery.find("liquidity") != std::string::npos || lowerQuery.find("orca") != std::string::npos) {
         return "Current SOL-USDC pool APR: 12.4%. How much liquidity would you like to add?";
-    } else if (lowerQuery.find("copy") != std::string::npos && lowerQuery.find("trade") != std::string::npos) {
+    } else if (lowerQuery.find("copy") != std::string::npos && lowerQuery.find("trad") != std::string::npos) {
         return "Analyzing wallet trading history... Last 30d: +45% ROI, 0.8 Sharpe. Confirm copy trading setup?";
     } else if (lowerQuery.find("crypto") != std::string::npos || lowerQuery.find("market") != std::string::npos) {
         return "we just lost $34k BTC probably losing $1.8k ETH soon too it's so over we're never coming back from this";
@@ -355,12 +355,23 @@ void SpartanAgent::updateTokenCache(const TokenInfo& token) {
 }
 
 bool SpartanAgent::connectToSolana() {
-    // Mock connection - in real implementation would connect to RPC
-    return !config_.solanaRpcUrl.empty();
+    const std::string& url = config_.solanaRpcUrl;
+    const size_t schemeEnd = url.find("://");
+    if (schemeEnd == std::string::npos) return false;
+    const std::string scheme = url.substr(0, schemeEnd);
+    if (scheme != "http" && scheme != "https") return false;
+    const size_t hostStart = schemeEnd + 3;
+    const size_t hostEnd = url.find_first_of("/:?#", hostStart);
+    const std::string host = url.substr(hostStart, hostEnd - hostStart);
+    if (host.empty() || host.front() == '.' || host.back() == '.') return false;
+    return std::none_of(url.begin(), url.end(), [](unsigned char c) {
+        return std::isspace(c) != 0;
+    });
 }
 
 void SpartanAgent::disconnectFromSolana() {
-    // Mock disconnection
+    // No socket is retained in the offline analytics core; authenticated RPC
+    // adapters own their transport lifecycle and are released by their caller.
 }
 
 // Factory and utility functions

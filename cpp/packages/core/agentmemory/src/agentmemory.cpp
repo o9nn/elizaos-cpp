@@ -330,18 +330,19 @@ double AgentMemoryManager::calculateEmbeddingSimilarity(const EmbeddingVector& e
 }
 
 std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getAllMemoriesFromTable(const std::string& tableName) {
-    std::vector<std::shared_ptr<Memory>> result;
-    
-    if (memoryTables_.find(tableName) == memoryTables_.end()) {
+    return withLock([&]() {
+        std::vector<std::shared_ptr<Memory>> result;
+        auto tableIt = memoryTables_.find(tableName);
+        if (tableIt == memoryTables_.end()) {
+            return result;
+        }
+        result.reserve(tableIt->second.size());
+        for (const auto& [id, memory] : tableIt->second) {
+            (void)id;
+            result.push_back(memory);
+        }
         return result;
-    }
-    
-    const auto& table = memoryTables_[tableName];
-    for (const auto& [id, memory] : table) {
-        result.push_back(memory);
-    }
-    
-    return result;
+    });
 }
 
 // Global memory manager instance

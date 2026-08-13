@@ -1,8 +1,12 @@
 # Village Module — group dynamics, antikythera coupling, event bus, elizad daemon
 # Included as subdirectory from the main project CMakeLists.txt
 
-find_package(CURL REQUIRED)
-find_package(SQLite3 REQUIRED)
+if(NOT TARGET CURL::libcurl)
+    find_package(CURL REQUIRED)
+endif()
+if(NOT TARGET SQLite::SQLite3)
+    find_package(SQLite3 REQUIRED)
+endif()
 
 # Include paths
 set(ELIZAOS_VILLAGE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../include)

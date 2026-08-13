@@ -10,4 +10,5 @@ target_include_directories(elizaos-elizas_world PUBLIC
 
 target_link_libraries(elizaos-elizas_world 
     elizaos-core
+    nlohmann_json::nlohmann_json
 )

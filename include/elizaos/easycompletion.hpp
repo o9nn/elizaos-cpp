@@ -57,6 +57,9 @@ struct CompletionConfig {
     int chunk_length = 4000;
     float temperature = 0.0f;
     bool debug = false;
+    // Preserve environment-key fallback by default, while allowing deterministic
+    // sandboxed callers and tests to require an explicitly supplied credential.
+    bool use_environment_api_key = true;
 };
 
 /**

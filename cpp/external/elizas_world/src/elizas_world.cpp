@@ -4,8 +4,130 @@
 #include <sstream>
 #include <iomanip>
 #include <random>
+#include <filesystem>
+#include <fstream>
+#include <set>
+#include <system_error>
+
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace {
+
+namespace fs = std::filesystem;
+using json = nlohmann::json;
+
+constexpr int kWorldStateVersion = 1;
+
+std::int64_t toMilliseconds(std::chrono::system_clock::time_point value) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               value.time_since_epoch()).count();
+}
+
+std::chrono::system_clock::time_point fromMilliseconds(std::int64_t value) {
+    return std::chrono::system_clock::time_point(std::chrono::milliseconds(value));
+}
+
+json positionToJson(const WorldPosition& value) {
+    return {{"x", value.x}, {"y", value.y}, {"z", value.z}};
+}
+
+bool finitePosition(const WorldPosition& value) {
+    return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z);
+}
+
+WorldPosition positionFromJson(const json& value) {
+    if (!value.is_object()) throw std::invalid_argument("position must be an object");
+    WorldPosition position(value.at("x").get<double>(), value.at("y").get<double>(),
+                           value.at("z").get<double>());
+    if (!finitePosition(position)) throw std::invalid_argument("position must be finite");
+    return position;
+}
+
+json environmentToJson(const WorldEnvironment& environment) {
+    return {
+        {"id", environment.id}, {"name", environment.name},
+        {"description", environment.description}, {"type", environment.type},
+        {"center", positionToJson(environment.center)}, {"radius", environment.radius},
+        {"properties", environment.properties},
+        {"created_at_ms", toMilliseconds(environment.createdAt)},
+        {"active", environment.active}
+    };
+}
+
+WorldEnvironment environmentFromJson(const json& value) {
+    WorldEnvironment environment;
+    environment.id = value.at("id").get<std::string>();
+    environment.name = value.at("name").get<std::string>();
+    environment.description = value.at("description").get<std::string>();
+    environment.type = value.at("type").get<std::string>();
+    environment.center = positionFromJson(value.at("center"));
+    environment.radius = value.at("radius").get<double>();
+    environment.properties = value.at("properties").get<std::map<std::string, std::string>>();
+    environment.createdAt = fromMilliseconds(value.at("created_at_ms").get<std::int64_t>());
+    environment.active = value.at("active").get<bool>();
+    if (environment.id.empty() || !std::isfinite(environment.radius) || environment.radius < 0.0) {
+        throw std::invalid_argument("environment id/radius is invalid");
+    }
+    return environment;
+}
+
+json agentToJson(const WorldAgent& agent) {
+    return {
+        {"agent_id", agent.agentId}, {"name", agent.name}, {"type", agent.type},
+        {"position", positionToJson(agent.position)},
+        {"velocity", positionToJson(agent.velocity)},
+        {"interaction_radius", agent.interactionRadius},
+        {"current_environment", agent.currentEnvironment},
+        {"attributes", agent.attributes},
+        {"last_update_ms", toMilliseconds(agent.lastUpdate)}, {"online", agent.online}
+    };
+}
+
+WorldAgent agentFromJson(const json& value) {
+    WorldAgent agent;
+    agent.agentId = value.at("agent_id").get<std::string>();
+    agent.name = value.at("name").get<std::string>();
+    agent.type = value.at("type").get<std::string>();
+    agent.position = positionFromJson(value.at("position"));
+    agent.velocity = positionFromJson(value.at("velocity"));
+    agent.interactionRadius = value.at("interaction_radius").get<double>();
+    agent.currentEnvironment = value.at("current_environment").get<std::string>();
+    agent.attributes = value.at("attributes").get<std::map<std::string, std::string>>();
+    agent.lastUpdate = fromMilliseconds(value.at("last_update_ms").get<std::int64_t>());
+    agent.online = value.at("online").get<bool>();
+    if (agent.agentId.empty() || !std::isfinite(agent.interactionRadius) ||
+        agent.interactionRadius < 0.0) {
+        throw std::invalid_argument("agent id/interaction radius is invalid");
+    }
+    return agent;
+}
+
+json interactionToJson(const WorldInteraction& interaction) {
+    return {
+        {"id", interaction.id}, {"initiator_id", interaction.initiatorId},
+        {"target_id", interaction.targetId}, {"type", interaction.type},
+        {"location", positionToJson(interaction.location)},
+        {"timestamp_ms", toMilliseconds(interaction.timestamp)},
+        {"metadata", interaction.metadata}, {"completed", interaction.completed}
+    };
+}
+
+WorldInteraction interactionFromJson(const json& value) {
+    WorldInteraction interaction;
+    interaction.id = value.at("id").get<std::string>();
+    interaction.initiatorId = value.at("initiator_id").get<std::string>();
+    interaction.targetId = value.at("target_id").get<std::string>();
+    interaction.type = value.at("type").get<std::string>();
+    interaction.location = positionFromJson(value.at("location"));
+    interaction.timestamp = fromMilliseconds(value.at("timestamp_ms").get<std::int64_t>());
+    interaction.metadata = value.at("metadata").get<std::map<std::string, std::string>>();
+    interaction.completed = value.at("completed").get<bool>();
+    if (interaction.id.empty()) throw std::invalid_argument("interaction id is empty");
+    return interaction;
+}
+
+}  // namespace
 
 // WorldPosition methods
 double WorldPosition::distanceTo(const WorldPosition& other) const {
@@ -504,28 +626,149 @@ std::vector<std::string> ElizasWorld::getMostActiveAgents(int limit) const {
 }
 
 bool ElizasWorld::saveWorldState(const std::string& filePath) const {
-    // Implementation would save to JSON file
-    // For now, return true as placeholder
-    (void)filePath; // Suppress unused parameter warning
-    return true;
+    if (filePath.empty()) return false;
+    try {
+        const fs::path destination(filePath);
+        std::error_code ec;
+        if (destination.has_parent_path()) {
+            fs::create_directories(destination.parent_path(), ec);
+            if (ec) return false;
+        }
+        fs::path temporary = destination;
+        temporary += ".tmp";
+        {
+            std::ofstream output(temporary, std::ios::binary | std::ios::trunc);
+            if (!output) return false;
+            output << exportWorldData() << '\n';
+            if (!output.good()) {
+                output.close();
+                fs::remove(temporary, ec);
+                return false;
+            }
+        }
+        fs::rename(temporary, destination, ec);
+        if (ec) {
+            // Windows does not replace an existing destination atomically.
+            fs::remove(destination, ec);
+            ec.clear();
+            fs::rename(temporary, destination, ec);
+        }
+        if (ec) {
+            fs::remove(temporary, ec);
+            return false;
+        }
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 bool ElizasWorld::loadWorldState(const std::string& filePath) {
-    // Implementation would load from JSON file
-    // For now, return true as placeholder
-    (void)filePath; // Suppress unused parameter warning
-    return true;
+    if (filePath.empty()) return false;
+    std::ifstream input(filePath, std::ios::binary);
+    if (!input) return false;
+    std::ostringstream buffer;
+    buffer << input.rdbuf();
+    if ((!input.good() && !input.eof()) || buffer.str().empty()) return false;
+    return importWorldData(buffer.str());
 }
 
 std::string ElizasWorld::exportWorldData() const {
-    // Implementation would export to JSON std::string
-    return "{}";
+    json environments = json::array();
+    for (const auto& environment : environments_) environments.push_back(environmentToJson(environment));
+    json agents = json::array();
+    for (const auto& agent : agents_) agents.push_back(agentToJson(agent));
+    json interactions = json::array();
+    for (const auto& interaction : interactions_) interactions.push_back(interactionToJson(interaction));
+
+    const json document = {
+        {"schema", "elizaos.world_state"},
+        {"version", kWorldStateVersion},
+        {"world_bounds", {{"min", positionToJson(worldMin_)}, {"max", positionToJson(worldMax_)}}},
+        {"simulation", {
+            {"speed", simulationSpeed_}, {"auto_update", autoUpdateEnabled_},
+            {"update_interval", updateInterval_},
+            {"last_update_ms", toMilliseconds(lastUpdate_)}
+        }},
+        {"environments", std::move(environments)},
+        {"agents", std::move(agents)},
+        {"interactions", std::move(interactions)}
+    };
+    return document.dump(2);
 }
 
 bool ElizasWorld::importWorldData(const std::string& data) {
-    // Implementation would import from JSON std::string
-    (void)data; // Suppress unused parameter warning
-    return true;
+    try {
+        const json document = json::parse(data);
+        if (!document.is_object() || document.value("schema", "") != "elizaos.world_state" ||
+            document.value("version", 0) != kWorldStateVersion) {
+            return false;
+        }
+
+        const auto& bounds = document.at("world_bounds");
+        WorldPosition newMin = positionFromJson(bounds.at("min"));
+        WorldPosition newMax = positionFromJson(bounds.at("max"));
+        if (newMin.x > newMax.x || newMin.y > newMax.y || newMin.z > newMax.z) return false;
+
+        const auto& simulation = document.at("simulation");
+        const double newSpeed = simulation.at("speed").get<double>();
+        const double newInterval = simulation.at("update_interval").get<double>();
+        if (!std::isfinite(newSpeed) || newSpeed < 0.0 || !std::isfinite(newInterval) ||
+            newInterval <= 0.0) return false;
+        const bool newAutoUpdate = simulation.at("auto_update").get<bool>();
+        const auto newLastUpdate = fromMilliseconds(
+            simulation.at("last_update_ms").get<std::int64_t>());
+
+        const auto& environmentValues = document.at("environments");
+        const auto& agentValues = document.at("agents");
+        const auto& interactionValues = document.at("interactions");
+        if (!environmentValues.is_array() || !agentValues.is_array() ||
+            !interactionValues.is_array()) return false;
+
+        std::vector<WorldEnvironment> newEnvironments;
+        std::vector<WorldAgent> newAgents;
+        std::vector<WorldInteraction> newInteractions;
+        std::set<std::string> environmentIds;
+        std::set<std::string> agentIds;
+        std::set<std::string> interactionIds;
+
+        for (const auto& value : environmentValues) {
+            auto environment = environmentFromJson(value);
+            if (!environmentIds.insert(environment.id).second) return false;
+            newEnvironments.push_back(std::move(environment));
+        }
+        for (const auto& value : agentValues) {
+            auto agent = agentFromJson(value);
+            if (!agentIds.insert(agent.agentId).second) return false;
+            if (!agent.currentEnvironment.empty() &&
+                environmentIds.count(agent.currentEnvironment) == 0) return false;
+            if (agent.position.x < newMin.x || agent.position.x > newMax.x ||
+                agent.position.y < newMin.y || agent.position.y > newMax.y ||
+                agent.position.z < newMin.z || agent.position.z > newMax.z) return false;
+            newAgents.push_back(std::move(agent));
+        }
+        for (const auto& value : interactionValues) {
+            auto interaction = interactionFromJson(value);
+            if (!interactionIds.insert(interaction.id).second) return false;
+            if ((!interaction.initiatorId.empty() && agentIds.count(interaction.initiatorId) == 0) ||
+                (!interaction.targetId.empty() && agentIds.count(interaction.targetId) == 0)) return false;
+            newInteractions.push_back(std::move(interaction));
+        }
+
+        // Commit only after the complete document has parsed and validated.
+        environments_.swap(newEnvironments);
+        agents_.swap(newAgents);
+        interactions_.swap(newInteractions);
+        worldMin_ = newMin;
+        worldMax_ = newMax;
+        simulationSpeed_ = newSpeed;
+        autoUpdateEnabled_ = newAutoUpdate;
+        updateInterval_ = newInterval;
+        lastUpdate_ = newLastUpdate;
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 void ElizasWorld::setWorldBounds(const WorldPosition& min, const WorldPosition& max) {

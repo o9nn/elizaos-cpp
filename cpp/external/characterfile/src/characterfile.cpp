@@ -6,6 +6,8 @@
 #include <regex>
 #include <iomanip>
 #include <cctype>
+#include <atomic>
+#include <ctime>
 
 namespace elizaos {
 
@@ -1082,11 +1084,14 @@ bool CharacterFileTemplate::saveTemplate(const JsonValue& templateJson, const st
 namespace CharacterFileUtils {
 
 std::string generateCharacterId() {
-    auto now = std::chrono::system_clock::now();
-    auto time_t = std::chrono::system_clock::to_time_t(now);
-    
+    static std::atomic<std::uint64_t> sequence{0};
+    const auto now = std::chrono::system_clock::now();
+    const auto ticks = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        now.time_since_epoch()).count();
+    const auto ordinal = sequence.fetch_add(1, std::memory_order_relaxed);
+
     std::ostringstream oss;
-    oss << "char-" << time_t << "-" << std::hash<std::string>{}(getCurrentTimestamp());
+    oss << "char-" << ticks << "-" << ordinal;
     return oss.str();
 }
 
@@ -1155,13 +1160,19 @@ std::string getCurrentTimestamp() {
 }
 
 std::chrono::system_clock::time_point parseTimestamp(const std::string& timestamp) {
-    // Simple timestamp parsing - in a real implementation would use proper date parsing
-    try {
-        time_t time = std::stoll(timestamp);
-        return std::chrono::system_clock::from_time_t(time);
-    } catch (const std::exception&) {
+    std::tm parsed{};
+    parsed.tm_isdst = -1;  // Let the C runtime resolve daylight-saving state.
+    std::istringstream input(timestamp);
+    input >> std::get_time(&parsed, "%Y-%m-%d %H:%M:%S");
+    if (input.fail() || input.peek() != std::char_traits<char>::eof()) {
         return std::chrono::system_clock::now();
     }
+
+    const std::time_t value = std::mktime(&parsed);
+    if (value == static_cast<std::time_t>(-1)) {
+        return std::chrono::system_clock::now();
+    }
+    return std::chrono::system_clock::from_time_t(value);
 }
 
 } // namespace CharacterFileUtils

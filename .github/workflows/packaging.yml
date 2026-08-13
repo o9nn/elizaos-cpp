@@ -37,14 +37,14 @@ jobs:
     - name: Install git and dependencies
       run: |
         apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev pkg-config rpm dpkg-dev ca-certificates
+        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev pkg-config rpm dpkg-dev ca-certificates python3
     
     - uses: actions/checkout@v4
     
     - name: Validate case-insensitive path safety
       shell: bash
       run: |
-        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+        python3 tools/check_case_collisions.py || python tools/check_case_collisions.py
     
     - name: Verify directory structure
       run: |
@@ -155,7 +155,7 @@ jobs:
     - name: Validate case-insensitive path safety
       shell: bash
       run: |
-        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+        python3 tools/check_case_collisions.py || python tools/check_case_collisions.py
     
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
@@ -235,7 +235,7 @@ jobs:
     - name: Validate case-insensitive path safety
       shell: bash
       run: |
-        python3 scripts/check_case_collisions.py || python scripts/check_case_collisions.py
+        python3 tools/check_case_collisions.py || python tools/check_case_collisions.py
     
     - name: Install dependencies
       run: |

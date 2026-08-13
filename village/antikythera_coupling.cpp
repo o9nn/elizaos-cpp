@@ -57,7 +57,7 @@ std::vector<SyncEvent> AntikytheraEngine::tick(int64_t villageTic) {
     // Advance all gear phases
     for (auto& [id, gear] : gears_) {
         double dPhase = gear.angularVelocity() * dt;
-        gear.phase = std::fmod(gear.phase + dPhase, 2.0 * M_PI);
+        gear.phase = std::fmod(gear.phase + dPhase, 2.0 * kAntikytheraPi);
     }
 
     // Propagate ratios through joints
@@ -91,7 +91,7 @@ bool AntikytheraEngine::areAligned(const std::string& a, const std::string& b) c
     auto itA = gears_.find(a), itB = gears_.find(b);
     if (itA == gears_.end() || itB == gears_.end()) return false;
     double diff = std::abs(itA->second.phase - itB->second.phase);
-    diff = std::min(diff, 2.0 * M_PI - diff);
+    diff = std::min(diff, 2.0 * kAntikytheraPi - diff);
     return diff < config_.phaseAlignmentTolerance;
 }
 
@@ -103,7 +103,7 @@ double AntikytheraEngine::getGearRatio(const std::string& a, const std::string& 
     return itA->second.rpm / itB->second.rpm;
 }
 
-double AntikytheraEngine::getEpicyclicModulation(const std::string& residentId, int64_t tic) const {
+double AntikytheraEngine::getEpicyclicModulation(const std::string& residentId, int64_t /*tic*/) const {
     std::lock_guard<std::mutex> lock(mutex_);
     // Find epicyclic joints involving this resident
     for (const auto& [_, joint] : joints_) {
@@ -154,7 +154,7 @@ void AntikytheraEngine::initializeVillageMechanism() {
 
     // Train 4: Integration (coaxial + revolute)
     addJoint({"j_manus_ma9us", "manus", "ma9us", JointType::CoaxialShaft, 1.0, 0, 0});
-    addJoint({"j_manus_marduk", "manus", "marduk", JointType::RevoluteJoint, 1.0, M_PI / 4, 0});
+    addJoint({"j_manus_marduk", "manus", "marduk", JointType::RevoluteJoint, 1.0, kAntikytheraPi / 4, 0});
 
     // Epicyclic: echo ↔ eliza (attention modulation)
     addJoint({"j_echo_eliza_epic", "echo", "eliza", JointType::EpicyclicPin, 1.0, 0, 0.11});
@@ -206,7 +206,7 @@ std::vector<SyncEvent> AntikytheraEngine::detectAlignments(int64_t tic) {
         auto itA = gears_.find(joint.gearA), itB = gears_.find(joint.gearB);
         if (itA == gears_.end() || itB == gears_.end()) continue;
         double phaseDiff = std::abs(itA->second.phase - itB->second.phase - joint.lockPhase);
-        phaseDiff = std::min(phaseDiff, 2.0 * M_PI - phaseDiff);
+        phaseDiff = std::min(phaseDiff, 2.0 * kAntikytheraPi - phaseDiff);
         if (phaseDiff < config_.phaseAlignmentTolerance) {
             events.push_back({"", {joint.gearA, joint.gearB},
                              itA->second.phase, tic, "phase_lock"});
@@ -219,7 +219,7 @@ std::vector<SyncEvent> AntikytheraEngine::detectAlignments(int64_t tic) {
             auto it = gears_.find(gid);
             if (it == gears_.end()) { allAligned = false; break; }
             if (it->second.phase > config_.phaseAlignmentTolerance &&
-                it->second.phase < (2.0 * M_PI - config_.phaseAlignmentTolerance)) {
+                it->second.phase < (2.0 * kAntikytheraPi - config_.phaseAlignmentTolerance)) {
                 allAligned = false; break;
             }
         }

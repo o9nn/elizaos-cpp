@@ -241,6 +241,7 @@ TEST_F(LiveVideoChatTest, WebRTCPeerConnectionTest) {
     // Test ICE candidates
     std::string candidate = "candidate:1 1 UDP 2130706431 192.168.1.100 54400 typ host";
     EXPECT_TRUE(peer_conn.addIceCandidate(candidate));
+    EXPECT_FALSE(peer_conn.addIceCandidate(""));
     
     peer_conn.close();
     peer_conn2.close();
@@ -251,29 +252,47 @@ TEST_F(LiveVideoChatTest, WebRTCPeerConnectionTest) {
 
 TEST_F(LiveVideoChatTest, WebRTCMediaTest) {
     WebRTCPeerConnection peer_conn;
-    peer_conn.initialize(config_);
+    ASSERT_TRUE(peer_conn.initialize(config_));
     peer_conn.setCallbacks(callbacks_);
-    
-    // Test sending video frame
-    VideoFrame video_frame;
+
+    VideoFrame video_frame{};
     video_frame.width = 640;
     video_frame.height = 480;
+    video_frame.stride = 640 * 3;
     video_frame.data.resize(640 * 480 * 3, 128);
     video_frame.format = "RGB24";
     video_frame.timestamp_ms = 1000;
-    
+
+    EXPECT_FALSE(peer_conn.sendVideoFrame(video_frame));
+    EXPECT_EQ(callbacks_->getErrors(), 1);
+    EXPECT_NE(callbacks_->getLastError().find("not connected"), std::string::npos);
+
+    ASSERT_TRUE(peer_conn.setRemoteDescription("v=0\r\n"));
+    EXPECT_EQ(callbacks_->getStateChanges(), 1);
+    EXPECT_EQ(callbacks_->getLastState(), PeerConnectionState::Connected);
     EXPECT_TRUE(peer_conn.sendVideoFrame(video_frame));
-    
-    // Test sending audio frame
-    AudioFrame audio_frame;
+    ASSERT_EQ(callbacks_->getVideoFramesReceived(), 1);
+    EXPECT_EQ(callbacks_->getLastPeerId(), "loopback");
+    EXPECT_EQ(callbacks_->getLastVideoFrame().data, video_frame.data);
+
+    AudioFrame audio_frame{};
     audio_frame.sample_rate = 48000;
     audio_frame.channels = 2;
     audio_frame.samples.resize(480, 0.5f);
     audio_frame.timestamp_ms = 1000;
-    
     EXPECT_TRUE(peer_conn.sendAudioFrame(audio_frame));
-    
+    ASSERT_EQ(callbacks_->getAudioFramesReceived(), 1);
+    EXPECT_EQ(callbacks_->getLastAudioFrame().samples, audio_frame.samples);
+
+    VideoFrame invalid_frame{};
+    EXPECT_FALSE(peer_conn.sendVideoFrame(invalid_frame));
+    EXPECT_EQ(callbacks_->getErrors(), 2);
+    EXPECT_NE(callbacks_->getLastError().find("Invalid video frame"), std::string::npos);
+
     peer_conn.close();
+    EXPECT_EQ(callbacks_->getStateChanges(), 2);
+    EXPECT_EQ(callbacks_->getLastState(), PeerConnectionState::Closed);
+    EXPECT_FALSE(peer_conn.sendAudioFrame(audio_frame));
 }
 
 TEST_F(LiveVideoChatTest, VideoChatSessionTest) {

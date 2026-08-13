@@ -28,11 +28,15 @@ ContentScanner::ContentScanner()
     allowedDomains_ = {"discord.com", "github.com", "google.com"};
     blockedDomains_ = {"suspicious-site.com", "malware.net"};
     
-    // Add default filters
-    addFilter(ContentFilter("profanity", "\\b(damn|hell|crap)\\b", FilterAction::WARN, 3));
-    addFilter(ContentFilter("spam_repetition", "(.{1})\\1{5,}", FilterAction::DELETE, 5));
-    addFilter(ContentFilter("excessive_caps", "[A-Z]{10,}", FilterAction::WARN, 2));
-    addFilter(ContentFilter("invite_links", "discord\\.gg/\\w+", FilterAction::DELETE, 4));
+    // Install defaults without invoking the logging convenience layer. This
+    // scanner is also constructed by a cross-translation-unit global instance,
+    // so logging here would depend on AgentLogger dynamic-initialization order.
+    filters_ = {
+        ContentFilter("profanity", "\\b(damn|hell|crap)\\b", FilterAction::WARN, 3),
+        ContentFilter("spam_repetition", "(.{1})\\1{5,}", FilterAction::DELETE, 5),
+        ContentFilter("excessive_caps", "[A-Z]{10,}", FilterAction::WARN, 2),
+        ContentFilter("invite_links", "discord\\.gg/\\w+", FilterAction::DELETE, 4)
+    };
 }
 
 ContentScanner::~ContentScanner() {}
@@ -347,7 +351,9 @@ ModerationAnalytics::~ModerationAnalytics() {}
 DiscrubExtension::DiscrubExtension() : monitoring_(false) {}
 
 DiscrubExtension::~DiscrubExtension() {
-    stopMonitoring();
+    // Do not log from a global destructor: AgentLogger may already have been
+    // destroyed because cross-translation-unit teardown order is unspecified.
+    monitoring_.store(false);
 }
 
 bool DiscrubExtension::initializeWithDiscord(std::shared_ptr<DiscordClient> client) {

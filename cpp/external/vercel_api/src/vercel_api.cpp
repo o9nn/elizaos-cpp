@@ -787,7 +787,7 @@ std::string VercelIntegration::generateProjectName(const std::string& base_name)
     return name;
 }
 
-// Stub implementations for methods that require actual API calls
+// Remote API implementations
 bool VercelAPI::deleteProject(const std::string& project_id) {
     auto response = http_client_->del(buildApiUrl("/projects/" + project_id));
     return handleApiResponse(response, "Delete project");
@@ -834,7 +834,7 @@ std::vector<VercelDeployment> VercelAPI::listDeployments(const std::string& proj
     return deployments;
 }
 
-// Additional stub implementations
+// Additional remote API implementations
 bool VercelAPI::setEnvironmentVariable(const std::string& project_id, const std::string& key, 
                                       const std::string& value, const std::string& target) {
     json request_data;
@@ -849,14 +849,111 @@ bool VercelAPI::setEnvironmentVariable(const std::string& project_id, const std:
 
 std::vector<VercelDomain> VercelAPI::listDomains() {
     std::vector<VercelDomain> domains;
-    // Implementation would parse domains from API response
+    const auto response = http_client_->get(buildApiUrl("/domains"));
+    if (!response.success) {
+        last_error_ = ApiError(response.status_code,
+            "Failed to list domains: " + response.error_message);
+        return domains;
+    }
+
+    try {
+        const auto document = json::parse(response.body);
+        if (!document.contains("domains") || !document["domains"].is_array()) {
+            last_error_ = ApiError(500, "Domains response did not contain a domains array");
+            return domains;
+        }
+        for (const auto& value : document["domains"]) {
+            if (!value.is_object()) continue;
+            VercelDomain domain;
+            domain.name = value.value("name", std::string{});
+            if (domain.name.empty()) continue;
+            domain.apex_name = value.value("apexName", std::string{});
+            domain.project_id = value.value("projectId", std::string{});
+            domain.git_branch = value.value("gitBranch", std::string{});
+            domain.verified = value.value("verified", false);
+            const auto created = value.value("createdAt", std::int64_t{0});
+            if (created > 0) {
+                const auto milliseconds = created > 100000000000LL ? created : created * 1000;
+                domain.created_at = std::chrono::system_clock::time_point(
+                    std::chrono::milliseconds(milliseconds));
+            }
+            if (value.contains("verification") && value["verification"].is_array()) {
+                for (const auto& challenge : value["verification"]) {
+                    if (challenge.is_string()) {
+                        domain.verification_challenges.push_back(challenge.get<std::string>());
+                    } else if (challenge.is_object()) {
+                        std::string description = challenge.value("type", std::string{});
+                        const std::string challengeDomain = challenge.value("domain", std::string{});
+                        const std::string challengeValue = challenge.value("value", std::string{});
+                        const std::string reason = challenge.value("reason", std::string{});
+                        if (!challengeDomain.empty()) description += " " + challengeDomain;
+                        if (!challengeValue.empty()) description += "=" + challengeValue;
+                        if (!reason.empty()) description += " (" + reason + ")";
+                        if (!description.empty()) domain.verification_challenges.push_back(description);
+                    }
+                }
+            }
+            domains.push_back(std::move(domain));
+        }
+        std::sort(domains.begin(), domains.end(), [](const auto& left, const auto& right) {
+            return left.name < right.name;
+        });
+        last_error_ = ApiError{};
+    } catch (const std::exception& e) {
+        last_error_ = ApiError(500, "Failed to parse domains response: " + std::string(e.what()));
+        domains.clear();
+    }
     return domains;
 }
 
-VercelDomain VercelAPI::addDomain(const std::string& domain_name, const std::string& project_id) {
-    VercelDomain domain(domain_name);
-    domain.project_id = project_id;
-    // Implementation would make API call to add domain
+VercelDomain VercelAPI::addDomain(const std::string& domain_name,
+                                  const std::string& project_id) {
+    VercelDomain domain;
+    if (domain_name.empty() || project_id.empty()) {
+        last_error_ = ApiError(400, "Domain name and project ID are required");
+        return domain;
+    }
+
+    json requestData = {{"name", domain_name}};
+    const std::string endpoint = "/projects/" + http_client_->urlEncode(project_id) + "/domains";
+    const auto response = http_client_->post(buildApiUrl(endpoint), requestData.dump());
+    if (!response.success) {
+        last_error_ = ApiError(response.status_code,
+            "Failed to add domain: " + response.error_message);
+        return domain;
+    }
+
+    try {
+        const auto value = json::parse(response.body);
+        domain.name = value.value("name", domain_name);
+        domain.apex_name = value.value("apexName", std::string{});
+        domain.project_id = value.value("projectId", project_id);
+        domain.git_branch = value.value("gitBranch", std::string{});
+        domain.verified = value.value("verified", false);
+        const auto created = value.value("createdAt", std::int64_t{0});
+        domain.created_at = created > 0
+            ? std::chrono::system_clock::time_point(std::chrono::milliseconds(
+                created > 100000000000LL ? created : created * 1000))
+            : std::chrono::system_clock::now();
+        if (value.contains("verification") && value["verification"].is_array()) {
+            for (const auto& challenge : value["verification"]) {
+                if (challenge.is_string())
+                    domain.verification_challenges.push_back(challenge.get<std::string>());
+                else if (challenge.is_object()) {
+                    std::string description = challenge.value("type", std::string{});
+                    const std::string challengeValue = challenge.value("value", std::string{});
+                    if (!challengeValue.empty()) description += "=" + challengeValue;
+                    if (!description.empty()) domain.verification_challenges.push_back(description);
+                }
+            }
+        }
+        last_error_ = ApiError{};
+        g_vercel_logger.log("Added domain " + domain.name + " to project " + project_id,
+                           "", "vercel_api", LogLevel::INFO);
+    } catch (const std::exception& e) {
+        last_error_ = ApiError(500, "Failed to parse add-domain response: " + std::string(e.what()));
+        return VercelDomain{};
+    }
     return domain;
 }
 

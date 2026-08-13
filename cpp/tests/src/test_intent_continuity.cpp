@@ -39,14 +39,6 @@ std::size_t countGoalsContaining(const std::vector<StateGoal>& goals, const std:
     });
 }
 
-// Helper: find the first goal containing a substring
-const StateGoal* findGoalContaining(const std::vector<StateGoal>& goals, const std::string& substr) {
-    auto it = std::find_if(goals.begin(), goals.end(), [&substr](const StateGoal& g) {
-        return g.description.find(substr) != std::string::npos;
-    });
-    return it != goals.end() ? &(*it) : nullptr;
-}
-
 } // namespace
 
 // ===========================================================================

@@ -3,7 +3,12 @@
 #include "elizaos/discord_summarizer.hpp"
 #include "elizaos/discrub_ext.hpp"
 
+#include <chrono>
+#include <filesystem>
+#include <fstream>
+
 using namespace elizaos;
+namespace fs = std::filesystem;
 
 // Test for Plugins Automation Module
 class PluginsAutomationTest : public ::testing::Test {
@@ -29,17 +34,32 @@ TEST_F(PluginsAutomationTest, PluginRegistryBasicOperations) {
 }
 
 TEST_F(PluginsAutomationTest, AutomatedOperations) {
-    // Test automated plugin setup
-    bool result = automation->automatedPluginSetup("test_plugin", "basic_template");
-    EXPECT_TRUE(result);
-    
-    // Test automated build and test
-    result = automation->automatedBuildAndTest("/tmp/test_plugin");
-    EXPECT_TRUE(result);
-    
-    // Test automated deployment
-    result = automation->automatedDeployment("test_plugin", "/tmp/deploy");
-    EXPECT_TRUE(result);
+    const fs::path root = fs::temp_directory_path() /
+        ("stage6_plugins_" + std::to_string(
+            std::chrono::steady_clock::now().time_since_epoch().count()));
+    const fs::path outputRoot = root / "generated";
+    const fs::path configPath = root / "automation.json";
+    const fs::path deploymentTarget = root / "deploy";
+    fs::create_directories(root);
+    {
+        std::ofstream config(configPath);
+        config << "{\n"
+               << "  \"output_root\": \"" << outputRoot.string() << "\",\n"
+               << "  \"build_command\": \"true\",\n"
+               << "  \"test_command\": \"true\",\n"
+               << "  \"deploy_command\": \"true\"\n"
+               << "}\n";
+    }
+    automation->loadConfiguration(configPath.string());
+
+    ASSERT_TRUE(automation->automatedPluginSetup("test_plugin", "basic_template"));
+    const fs::path pluginPath = outputRoot / "test_plugin";
+    EXPECT_TRUE(fs::is_regular_file(pluginPath / "CMakeLists.txt"));
+    EXPECT_TRUE(automation->automatedBuildAndTest(pluginPath.string()));
+    EXPECT_TRUE(automation->automatedDeployment(pluginPath.string(), deploymentTarget.string()));
+
+    std::error_code ec;
+    fs::remove_all(root, ec);
 }
 
 TEST_F(PluginsAutomationTest, ConfigurationManagement) {
@@ -73,20 +93,22 @@ TEST_F(DiscordSummarizerTest, InitializationWithToken) {
 }
 
 TEST_F(DiscordSummarizerTest, ChannelSummaryGeneration) {
-    // Initialize first
-    summarizer->initializeWithToken("test_token");
-    
-    auto now = std::chrono::system_clock::now();
-    auto yesterday = now - std::chrono::hours(24);
-    
-    // Generate channel summary
-    auto std::future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
-    auto summary = future.get();
-    
+    ASSERT_TRUE(summarizer->initializeWithToken("test_token"));
+    ASSERT_TRUE(summarizer->getClient().sendMessage(
+        "test_channel_123", "AI automation is excellent"));
+    ASSERT_TRUE(summarizer->getClient().sendMessage(
+        "test_channel_123", "Robotics software is great"));
+
+    const auto now = std::chrono::system_clock::now();
+    const auto summary = summarizer->generateChannelSummary(
+        "test_channel_123", now - std::chrono::hours(24),
+        now + std::chrono::minutes(1)).get();
+
     EXPECT_EQ(summary.channelId, "test_channel_123");
-    EXPECT_GT(summary.totalMessages, 0);
-    EXPECT_GT(summary.uniqueUsers, 0);
+    EXPECT_EQ(summary.totalMessages, 2);
+    EXPECT_EQ(summary.uniqueUsers, 1);
     EXPECT_FALSE(summary.topUsers.empty());
+    EXPECT_GT(summary.averageSentiment, 0.0);
 }
 
 TEST_F(DiscordSummarizerTest, MessageAnalyzer) {
@@ -109,9 +131,9 @@ TEST_F(DiscordSummarizerTest, MessageAnalyzer) {
 }
 
 TEST_F(DiscordSummarizerTest, MonitoringControl) {
-    // Test monitoring start/stop
     EXPECT_FALSE(summarizer->isMonitoring());
-    
+    ASSERT_TRUE(summarizer->initializeWithToken("test_token"));
+
     std::vector<std::string> channels = {"channel1", "channel2", "channel3"};
     summarizer->startMonitoring(channels);
     EXPECT_TRUE(summarizer->isMonitoring());
@@ -282,6 +304,10 @@ TEST_F(Stage6IntegrationTest, ModulesWorkTogether) {
     // Process with both modules
     EXPECT_NO_THROW(extension->processIncomingMessage(testMessage));
     
-    // Test plugin automation
-    EXPECT_TRUE(automation->automatedPluginSetup("integration_plugin", "test_template"));
+    // Test plugin automation through an isolated, rerunnable generated project.
+    const std::string pluginName = "integration_plugin_" + std::to_string(
+        std::chrono::steady_clock::now().time_since_epoch().count());
+    ASSERT_TRUE(automation->automatedPluginSetup(pluginName, "test_template"));
+    std::error_code ec;
+    fs::remove_all(fs::path("generated_plugins") / pluginName, ec);
 }

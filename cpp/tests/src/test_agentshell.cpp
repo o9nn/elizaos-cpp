@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "elizaos/agentshell.hpp"
 #include <memory>
 #include <string>
@@ -147,10 +146,11 @@ TEST_F(AgentShellTest, RegisterCommandWithArguments) {
 
     shell_->executeCommand("argcmd arg1 arg2 arg3");
 
-    EXPECT_EQ(receivedArgs.size(), 3);
-    EXPECT_EQ(receivedArgs[0], "arg1");
-    EXPECT_EQ(receivedArgs[1], "arg2");
-    EXPECT_EQ(receivedArgs[2], "arg3");
+    ASSERT_EQ(receivedArgs.size(), 4);
+    EXPECT_EQ(receivedArgs[0], "argcmd");
+    EXPECT_EQ(receivedArgs[1], "arg1");
+    EXPECT_EQ(receivedArgs[2], "arg2");
+    EXPECT_EQ(receivedArgs[3], "arg3");
 }
 
 TEST_F(AgentShellTest, UnregisterCommand) {

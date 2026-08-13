@@ -259,6 +259,7 @@ public:
         }
         state["total_artifacts"] = total_artifacts;
         state["total_learning_events"] = total_shared;
+        state["total_knowledge_received"] = total_received;
         
         return state;
     }

@@ -62,7 +62,7 @@ struct DocumentMetadata : BaseMetadata {
 
 struct FragmentMetadata : BaseMetadata {
     UUID documentId;
-    size_t position;
+    size_t position{0};
     FragmentMetadata() { type = MemoryType::FRAGMENT; }
 };
 

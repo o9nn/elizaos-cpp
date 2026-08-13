@@ -553,12 +553,12 @@ std::vector<ContentCleaner::CleanupResult> ContentCleaner::cleanAllChannels(
 
     {
         std::lock_guard<std::mutex> lock(cleanerMutex_);
-        for (const auto& [channelId, _] : scheduledCleanups_) {
-            bool preserved = std::any_of(config.preserveChannels.begin(),
-                                         config.preserveChannels.end(),
-                                         [&channelId](const std::string& c) {
-                                             return c == channelId;
-                                         });
+        for (const auto& scheduledCleanup : scheduledCleanups_) {
+            const auto& channelId = scheduledCleanup.first;
+            const bool preserved =
+                std::find(config.preserveChannels.begin(),
+                          config.preserveChannels.end(),
+                          channelId) != config.preserveChannels.end();
             if (!preserved) {
                 channels.push_back(channelId);
             }

@@ -170,6 +170,8 @@ public:
     
     // Workflow actions
     bool createPluginTemplate(const std::string& pluginName, const std::string& outputPath);
+    bool createPluginTemplate(const std::string& pluginName, const std::string& templateName,
+                              const std::string& outputPath);
     bool generatePluginDocs(const std::string& pluginPath);
     bool validatePluginStructure(const std::string& pluginPath);
     bool packagePlugin(const std::string& pluginPath, const std::string& outputPath);

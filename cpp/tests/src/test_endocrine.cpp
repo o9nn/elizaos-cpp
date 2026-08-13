@@ -373,8 +373,9 @@ TEST(EndocrineSystem, GenericStimulusHasMildEffect) {
     
     double after = system.hormoneLevel(HormoneId::Dopamine);
     // Generic stimulus should have a mild effect (30% of intensity)
-    double expected_change = 0.5 * 0.3 * 1.0;  // intensity * 0.3 * sensitivity
+    const double expected_change = 0.5 * 0.3 * 1.0;  // intensity * 0.3 * sensitivity
     EXPECT_GT(after, before);
+    EXPECT_LE(after - before, expected_change);  // homeostatic decay reduces the raw response
 }
 
 TEST(EndocrineSystem, RepairStimulusActivatesCytokine) {

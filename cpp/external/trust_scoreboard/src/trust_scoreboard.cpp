@@ -4,8 +4,171 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
+#include <atomic>
+#include <limits>
+#include <set>
+
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
+namespace {
+
+using json = nlohmann::json;
+constexpr int kTrustSnapshotVersion = 1;
+constexpr const char* kTrustSnapshotSchema = "elizaos.trust_scoreboard";
+constexpr const char* kTrustSnapshotTable = "trust_scoreboard";
+constexpr const char* kTrustSnapshotRoom = "trust-scoreboard-snapshot";
+
+std::int64_t trustTimeToMilliseconds(std::chrono::system_clock::time_point value) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(value.time_since_epoch()).count();
+}
+
+std::chrono::system_clock::time_point trustTimeFromMilliseconds(std::int64_t value) {
+    return std::chrono::system_clock::time_point(std::chrono::milliseconds(value));
+}
+
+bool bounded01(double value) {
+    return std::isfinite(value) && value >= 0.0 && value <= 1.0;
+}
+
+json trustConfigToJson(const TrustConfig& config) {
+    return {
+        {"reliability_weight", config.reliabilityWeight},
+        {"responsiveness_weight", config.responsivenessWeight},
+        {"quality_weight", config.qualityWeight},
+        {"collaboration_weight", config.collaborationWeight},
+        {"communication_weight", config.communicationWeight},
+        {"compliance_weight", config.complianceWeight},
+        {"decay", {
+            {"enabled", config.decay.enabled},
+            {"interval_hours", config.decay.decayInterval.count()},
+            {"rate", config.decay.decayRate},
+            {"minimum_score", config.decay.minimumScore}
+        }},
+        {"anomaly_threshold", config.anomalyThreshold},
+        {"anomaly_window_events", config.anomalyWindowEvents},
+        {"min_events_for_confidence", config.minEventsForConfidence},
+        {"max_events_for_confidence", config.maxEventsForConfidence}
+    };
+}
+
+TrustConfig trustConfigFromJson(const json& value) {
+    TrustConfig config;
+    config.reliabilityWeight = value.at("reliability_weight").get<double>();
+    config.responsivenessWeight = value.at("responsiveness_weight").get<double>();
+    config.qualityWeight = value.at("quality_weight").get<double>();
+    config.collaborationWeight = value.at("collaboration_weight").get<double>();
+    config.communicationWeight = value.at("communication_weight").get<double>();
+    config.complianceWeight = value.at("compliance_weight").get<double>();
+    const double weightSum = config.reliabilityWeight + config.responsivenessWeight +
+        config.qualityWeight + config.collaborationWeight +
+        config.communicationWeight + config.complianceWeight;
+    if (!bounded01(config.reliabilityWeight) || !bounded01(config.responsivenessWeight) ||
+        !bounded01(config.qualityWeight) || !bounded01(config.collaborationWeight) ||
+        !bounded01(config.communicationWeight) || !bounded01(config.complianceWeight) ||
+        std::abs(weightSum - 1.0) > 1e-6) {
+        throw std::invalid_argument("trust component weights must be bounded and sum to one");
+    }
+    const auto& decay = value.at("decay");
+    config.decay.enabled = decay.at("enabled").get<bool>();
+    const auto intervalHours = decay.at("interval_hours").get<long long>();
+    config.decay.decayRate = decay.at("rate").get<double>();
+    config.decay.minimumScore = decay.at("minimum_score").get<double>();
+    if (intervalHours <= 0 || !bounded01(config.decay.decayRate) ||
+        !bounded01(config.decay.minimumScore)) {
+        throw std::invalid_argument("invalid trust decay configuration");
+    }
+    config.decay.decayInterval = std::chrono::hours(intervalHours);
+    config.anomalyThreshold = value.at("anomaly_threshold").get<double>();
+    config.anomalyWindowEvents = value.at("anomaly_window_events").get<int>();
+    config.minEventsForConfidence = value.at("min_events_for_confidence").get<int>();
+    config.maxEventsForConfidence = value.at("max_events_for_confidence").get<int>();
+    if (!bounded01(config.anomalyThreshold) || config.anomalyWindowEvents <= 0 ||
+        config.minEventsForConfidence < 0 ||
+        config.maxEventsForConfidence < config.minEventsForConfidence) {
+        throw std::invalid_argument("invalid trust anomaly/confidence configuration");
+    }
+    return config;
+}
+
+json trustScoreToJson(const TrustScore& score) {
+    return {
+        {"agent_id", score.agentId}, {"overall", score.overallScore},
+        {"reliability", score.reliabilityScore},
+        {"responsiveness", score.responsivenessScore},
+        {"quality", score.qualityScore}, {"collaboration", score.collaborationScore},
+        {"communication", score.communicationScore}, {"compliance", score.complianceScore},
+        {"total_events", score.totalEvents}, {"positive_events", score.positiveEvents},
+        {"negative_events", score.negativeEvents}, {"neutral_events", score.neutralEvents},
+        {"first_seen_ms", trustTimeToMilliseconds(score.firstSeen)},
+        {"last_updated_ms", trustTimeToMilliseconds(score.lastUpdated)},
+        {"confidence", score.confidence}
+    };
+}
+
+TrustScore trustScoreFromJson(const json& value) {
+    TrustScore score(value.at("agent_id").get<AgentId>());
+    score.overallScore = value.at("overall").get<double>();
+    score.reliabilityScore = value.at("reliability").get<double>();
+    score.responsivenessScore = value.at("responsiveness").get<double>();
+    score.qualityScore = value.at("quality").get<double>();
+    score.collaborationScore = value.at("collaboration").get<double>();
+    score.communicationScore = value.at("communication").get<double>();
+    score.complianceScore = value.at("compliance").get<double>();
+    score.totalEvents = value.at("total_events").get<int>();
+    score.positiveEvents = value.at("positive_events").get<int>();
+    score.negativeEvents = value.at("negative_events").get<int>();
+    score.neutralEvents = value.at("neutral_events").get<int>();
+    score.firstSeen = trustTimeFromMilliseconds(value.at("first_seen_ms").get<std::int64_t>());
+    score.lastUpdated = trustTimeFromMilliseconds(value.at("last_updated_ms").get<std::int64_t>());
+    score.confidence = value.at("confidence").get<double>();
+    if (score.agentId.empty() || !bounded01(score.overallScore) ||
+        !bounded01(score.reliabilityScore) || !bounded01(score.responsivenessScore) ||
+        !bounded01(score.qualityScore) || !bounded01(score.collaborationScore) ||
+        !bounded01(score.communicationScore) || !bounded01(score.complianceScore) ||
+        !bounded01(score.confidence) || score.totalEvents < 0 || score.positiveEvents < 0 ||
+        score.negativeEvents < 0 || score.neutralEvents < 0 ||
+        score.positiveEvents + score.negativeEvents + score.neutralEvents != score.totalEvents) {
+        throw std::invalid_argument("invalid persisted trust score");
+    }
+    return score;
+}
+
+json trustEventToJson(const TrustEvent& event) {
+    return {
+        {"event_id", event.eventId}, {"agent_id", event.agentId},
+        {"type", static_cast<int>(event.type)}, {"outcome", static_cast<int>(event.outcome)},
+        {"impact", event.impactScore}, {"context", event.context},
+        {"timestamp_ms", trustTimeToMilliseconds(event.timestamp)},
+        {"metadata", event.metadata}
+    };
+}
+
+TrustEvent trustEventFromJson(const json& value) {
+    const int typeValue = value.at("type").get<int>();
+    const int outcomeValue = value.at("outcome").get<int>();
+    if (typeValue < static_cast<int>(TrustEventType::TASK_COMPLETED) ||
+        typeValue > static_cast<int>(TrustEventType::HARMFUL_ACTION) ||
+        outcomeValue < static_cast<int>(TrustOutcome::POSITIVE) ||
+        outcomeValue > static_cast<int>(TrustOutcome::NEUTRAL)) {
+        throw std::invalid_argument("invalid persisted trust event enum");
+    }
+    const AgentId agentId = value.at("agent_id").get<AgentId>();
+    const double impact = value.at("impact").get<double>();
+    if (agentId.empty() || !std::isfinite(impact) || impact < -1.0 || impact > 1.0) {
+        throw std::invalid_argument("invalid persisted trust event");
+    }
+    TrustEvent event(agentId, static_cast<TrustEventType>(typeValue),
+                     static_cast<TrustOutcome>(outcomeValue), impact);
+    event.eventId = value.at("event_id").get<std::string>();
+    event.context = value.at("context").get<std::string>();
+    event.timestamp = trustTimeFromMilliseconds(value.at("timestamp_ms").get<std::int64_t>());
+    event.metadata = value.at("metadata").get<std::unordered_map<std::string, std::string>>();
+    if (event.eventId.empty()) throw std::invalid_argument("persisted event id is empty");
+    return event;
+}
+
+}  // namespace
 
 // ============================================================================
 // TrustScoreboard Implementation
@@ -455,15 +618,121 @@ void TrustScoreboard::updateConfig(const TrustConfig& newConfig) {
 }
 
 bool TrustScoreboard::saveTrustData() {
-    // Would integrate with AgentMemoryManager for persistence
-    // Serialize trust scores and events to storage
-    return true;
+    if (!memoryMgr_) return false;
+    try {
+        std::unordered_map<AgentId, TrustScore> scoreSnapshot;
+        std::unordered_map<AgentId, std::vector<TrustEvent>> eventSnapshot;
+        {
+            std::scoped_lock lock(scoresMutex_, eventsMutex_);
+            scoreSnapshot = scores_;
+            eventSnapshot = eventHistory_;
+        }
+
+        json scores = json::array();
+        std::vector<AgentId> scoreIds;
+        scoreIds.reserve(scoreSnapshot.size());
+        for (const auto& [agentId, _] : scoreSnapshot) scoreIds.push_back(agentId);
+        std::sort(scoreIds.begin(), scoreIds.end());
+        for (const auto& agentId : scoreIds) scores.push_back(trustScoreToJson(scoreSnapshot.at(agentId)));
+
+        json histories = json::object();
+        std::vector<AgentId> historyIds;
+        historyIds.reserve(eventSnapshot.size());
+        for (const auto& [agentId, _] : eventSnapshot) historyIds.push_back(agentId);
+        std::sort(historyIds.begin(), historyIds.end());
+        for (const auto& agentId : historyIds) {
+            json events = json::array();
+            for (const auto& event : eventSnapshot.at(agentId)) events.push_back(trustEventToJson(event));
+            histories[agentId] = std::move(events);
+        }
+
+        const json document = {
+            {"schema", kTrustSnapshotSchema}, {"version", kTrustSnapshotVersion},
+            {"saved_at_ms", trustTimeToMilliseconds(std::chrono::system_clock::now())},
+            {"last_decay_ms", trustTimeToMilliseconds(lastDecayTime_)},
+            {"config", trustConfigToJson(config_)},
+            {"scores", std::move(scores)}, {"event_history", std::move(histories)}
+        };
+
+        const auto previous = memoryMgr_->getAllMemoriesFromTable(kTrustSnapshotTable);
+        std::vector<UUID> previousSnapshotIds;
+        for (const auto& memory : previous) {
+            if (memory && memory->getRoomId() == kTrustSnapshotRoom) {
+                previousSnapshotIds.push_back(memory->getId());
+            }
+        }
+
+        const UUID snapshotId = generateUUID();
+        auto memory = std::make_shared<Memory>(snapshotId, document.dump(),
+                                               "trust-scoreboard", "trust-scoreboard");
+        memory->setRoomId(kTrustSnapshotRoom);
+        const UUID storedId = memoryMgr_->createMemory(memory, kTrustSnapshotTable, false);
+        if (storedId != snapshotId || !memoryMgr_->getMemoryById(snapshotId)) return false;
+        for (const auto& id : previousSnapshotIds) memoryMgr_->deleteMemory(id);
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 bool TrustScoreboard::loadTrustData() {
-    // Would integrate with AgentMemoryManager for persistence
-    // Deserialize trust scores and events from storage
-    return true;
+    if (!memoryMgr_) return false;
+    try {
+        const auto memories = memoryMgr_->getAllMemoriesFromTable(kTrustSnapshotTable);
+        std::shared_ptr<Memory> newest;
+        for (const auto& memory : memories) {
+            if (!memory || memory->getRoomId() != kTrustSnapshotRoom) continue;
+            if (!newest || memory->getCreatedAt() > newest->getCreatedAt()) newest = memory;
+        }
+        if (!newest) return false;
+
+        const json document = json::parse(newest->getContent());
+        if (!document.is_object() || document.value("schema", "") != kTrustSnapshotSchema ||
+            document.value("version", 0) != kTrustSnapshotVersion) return false;
+        TrustConfig loadedConfig = trustConfigFromJson(document.at("config"));
+        const auto loadedLastDecay = trustTimeFromMilliseconds(
+            document.at("last_decay_ms").get<std::int64_t>());
+
+        const auto& scoreValues = document.at("scores");
+        const auto& historyValues = document.at("event_history");
+        if (!scoreValues.is_array() || !historyValues.is_object()) return false;
+
+        std::unordered_map<AgentId, TrustScore> loadedScores;
+        std::unordered_map<AgentId, std::vector<TrustEvent>> loadedHistory;
+        for (const auto& value : scoreValues) {
+            TrustScore score = trustScoreFromJson(value);
+            if (!loadedScores.emplace(score.agentId, score).second) return false;
+        }
+        std::set<std::string> eventIds;
+        for (auto it = historyValues.begin(); it != historyValues.end(); ++it) {
+            if (!it.value().is_array() || it.key().empty()) return false;
+            auto& events = loadedHistory[it.key()];
+            for (const auto& eventValue : it.value()) {
+                TrustEvent event = trustEventFromJson(eventValue);
+                if (event.agentId != it.key() || !eventIds.insert(event.eventId).second) return false;
+                events.push_back(std::move(event));
+            }
+        }
+        for (const auto& [agentId, score] : loadedScores) {
+            auto historyIt = loadedHistory.find(agentId);
+            const std::size_t eventCount = historyIt == loadedHistory.end() ? 0 : historyIt->second.size();
+            if (eventCount != static_cast<std::size_t>(score.totalEvents)) return false;
+        }
+        for (const auto& [agentId, _] : loadedHistory) {
+            if (loadedScores.count(agentId) == 0) return false;
+        }
+
+        {
+            std::scoped_lock lock(scoresMutex_, eventsMutex_);
+            scores_.swap(loadedScores);
+            eventHistory_.swap(loadedHistory);
+            config_ = loadedConfig;
+            lastDecayTime_ = loadedLastDecay;
+        }
+        return true;
+    } catch (...) {
+        return false;
+    }
 }
 
 // ============================================================================

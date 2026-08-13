@@ -13,4 +13,5 @@ target_link_libraries(elizaos-workgroups
     elizaos-agentmemory
     elizaos-agentagenda
     elizaos-agentlogger
+    nlohmann_json::nlohmann_json
 )

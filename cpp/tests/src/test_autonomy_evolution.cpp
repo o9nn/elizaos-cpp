@@ -85,7 +85,7 @@ TEST_F(StateGoalLifecycleTest, RefreshesUpdatedTimestamp) {
     state.addGoal(goal);
 
     EXPECT_TRUE(state.updateGoalStatus(goal.id, "completed"));
-    EXPECT_GT(state.getGoals()[0].updatedAt, past);
+    EXPECT_TRUE(state.getGoals()[0].updatedAt > past);
     EXPECT_EQ(state.getGoals()[0].status, "completed");
 }
 

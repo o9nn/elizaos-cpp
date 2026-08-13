@@ -15,6 +15,10 @@ on:
       - 'CMakeLists.txt'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   CMAKE_VERSION: '3.20'
 
@@ -257,9 +261,13 @@ jobs:
 
           if [ -f pr-coverage/coverage-summary.txt ]; then
             echo "### Current PR Coverage" >> coverage-diff.md
+            echo "\`\`\`text" >> coverage-diff.md
+            grep -E '^(Total:|Total Line Coverage:|Total Function Coverage:)' \
+              pr-coverage/coverage-summary.txt | tail -3 >> coverage-diff.md || true
             echo "\`\`\`" >> coverage-diff.md
-            cat pr-coverage/coverage-summary.txt >> coverage-diff.md
-            echo "\`\`\`" >> coverage-diff.md
+            echo "" >> coverage-diff.md
+            echo "The complete per-file report is available in the coverage artifacts." \
+              >> coverage-diff.md
           fi
 
           # Get changed files
@@ -270,15 +278,40 @@ jobs:
           cat coverage-diff.md
 
       - name: Comment on PR
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            const marker = '<!-- elizaos-coverage-report -->';
             const report = fs.readFileSync('coverage-diff.md', 'utf8');
+            const maxBodyLength = 60000;
+            const truncationNotice = '\n\n_Report truncated; see coverage artifacts for full details._';
+            let body = `${marker}\n${report}`;
+            if (body.length > maxBodyLength) {
+              body = body.slice(0, maxBodyLength - truncationNotice.length) + truncationNotice;
+            }
 
-            github.rest.issues.createComment({
+            const issue = {
               issue_number: context.issue.number,
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report
-            });
+              repo: context.repo.repo
+            };
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { ...issue, per_page: 100 }
+            );
+            const existing = comments.find(comment =>
+              comment.user?.type === 'Bot' && comment.body?.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({ ...issue, body });
+            }
