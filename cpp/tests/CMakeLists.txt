@@ -825,6 +825,16 @@ if(TARGET real_eliza_character_attention_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_eliza_character_attention_test)
 endif()
 
+# Cycle 011: Comprehensive E2E tests covering previously untested autonomy,
+# endocrine, embodiment, dialogue state, persistence, and homework loop functions.
+add_real_test(real_comprehensive_autonomy_cycle011_test src/test_comprehensive_autonomy_cycle011.cpp)
+target_link_libraries(real_comprehensive_autonomy_cycle011_test
+    elizaos-autonomous_starter elizaos-cognitive_curriculum elizaos-endocrine
+    elizaos-embodiment elizaos-persistence)
+if(TARGET real_comprehensive_autonomy_cycle011_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_comprehensive_autonomy_cycle011_test)
+endif()
+
 # ============================================================================
 # KSM canonical target assembly (MUST be last)
 # ============================================================================
