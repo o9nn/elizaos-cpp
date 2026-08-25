@@ -93,6 +93,7 @@ struct PendingThought {
     std::string resident;
     std::string thought;
     int inference_id;
+    std::string correlation_id;
 };
 static std::mutex g_thoughtMutex;
 static std::vector<PendingThought> g_pendingThoughts;
@@ -103,12 +104,14 @@ struct VillageAction {
     std::string action_type;   // write_stone, adjust_gear, emit_event, observe_state
     std::string params_json;   // Raw JSON params
     int inference_id;
+    std::string correlation_id;
 };
 static std::mutex g_actionMutex;
 static std::vector<VillageAction> g_pendingActions;
 
 // Parse [ACTION:type]{json} blocks from a thought
-static std::vector<VillageAction> parse_actions(const std::string& resident, const std::string& thought, int inf_id) {
+static std::vector<VillageAction> parse_actions(const std::string& resident, const std::string& thought, int inf_id,
+                                                const std::string& correlation_id = "") {
     std::vector<VillageAction> actions;
     size_t pos = 0;
     while ((pos = thought.find("[ACTION:", pos)) != std::string::npos) {
@@ -127,7 +130,7 @@ static std::vector<VillageAction> parse_actions(const std::string& resident, con
             else if (thought[i] == '}') { depth--; if (depth == 0) { json_end = i; break; } }
         }
         std::string params = thought.substr(json_start, json_end - json_start + 1);
-        actions.push_back({resident, action_type, params, inf_id});
+        actions.push_back({resident, action_type, params, inf_id, correlation_id});
         pos = json_end + 1;
     }
     return actions;
@@ -276,6 +279,8 @@ public:
                 response = buildKsmResponse();
             else if (request.find("GET /v1/eliza/atomspace") != std::string::npos)
                 response = buildAtomSpaceResponse();
+            else if (request.find("GET /v1/eliza/resident/") != std::string::npos)
+                response = buildResidentResponse(request);
             else if (request.find("GET /v1/eliza/bridge") != std::string::npos)
                 response = buildBridgeResponse();
             else if (request.find("GET /health") != std::string::npos)
@@ -389,6 +394,22 @@ private:
         }
         body += "]}";
         return jsonResponse(body);
+    }
+
+    std::string buildResidentResponse(const std::string& request) {
+        if (!atomspace_) return jsonResponse("{\"error\": \"AtomSpace not initialized\"}");
+        const std::string prefix = "GET /v1/eliza/resident/";
+        size_t start = request.find(prefix);
+        if (start == std::string::npos) return jsonResponse("{\"error\": \"resident missing\"}");
+        start += prefix.size();
+        size_t end = request.find(' ', start);
+        std::string resident = request.substr(start, end == std::string::npos ? std::string::npos : end - start);
+        bool valid = !resident.empty();
+        for (unsigned char c : resident) {
+            if (!(std::isalnum(c) || c == '_' || c == '-')) { valid = false; break; }
+        }
+        if (!valid) return jsonResponse("{\"error\": \"invalid resident\"}");
+        return jsonResponse(atomspace_->get_resident_detail_json(resident));
     }
 
     std::string buildHealthResponse() {
@@ -646,7 +667,7 @@ int main(int argc, char* argv[]) {
 
     // Inference callback: when a resident thinks, publish to bus + ingest to AtomSpace
     auto onInferenceComplete = [&bus, &villageAtomSpace, &inferenceCount](
-        const std::string& resident, const std::string& thought) {
+        const std::string& resident, const std::string& thought, const std::string& correlation_id) {
         try {
         inferenceCount++;
         // Publish thought to the village bus
@@ -654,10 +675,10 @@ int main(int argc, char* argv[]) {
         // Queue for main loop to publish (thread-safe)
         {
             std::lock_guard<std::mutex> lock(g_thoughtMutex);
-            g_pendingThoughts.push_back({resident, thought, static_cast<int>(inferenceCount.load())});
+            g_pendingThoughts.push_back({resident, thought, static_cast<int>(inferenceCount.load()), correlation_id});
         }
         // Parse and queue any actions from the thought
-        auto actions = parse_actions(resident, thought, static_cast<int>(inferenceCount.load()));
+        auto actions = parse_actions(resident, thought, static_cast<int>(inferenceCount.load()), correlation_id);
         if (!actions.empty()) {
             std::lock_guard<std::mutex> lock(g_actionMutex);
             for (auto& a : actions) g_pendingActions.push_back(std::move(a));
@@ -685,10 +706,12 @@ int main(int argc, char* argv[]) {
         // 1. Direct stimulus: bypass STI threshold for named targets
         if (event.typeStr == "resident.stimulus") {
             std::string target = event.target;
+            std::string correlation_id;
             if (target.empty()) {
                 try {
                     auto j = json::parse(event.payload);
                     if (j.contains("target")) target = j["target"].get<std::string>();
+                    correlation_id = j.value("correlation_id", "");
                 } catch (...) {}
             }
             fprintf(stderr, "[STIMULUS] received: target=%s\n", target.c_str());
@@ -697,9 +720,10 @@ int main(int argc, char* argv[]) {
                 try {
                     auto j = json::parse(event.payload);
                     if (j.contains("message")) message = j["message"].get<std::string>();
+                    correlation_id = j.value("correlation_id", correlation_id);
                 } catch (...) {}
                 fprintf(stderr, "[STIMULUS] calling infer_async for %s: %s\n", target.c_str(), message.substr(0,50).c_str());
-                aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete);
+                aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete, 0.7, correlation_id);
                 // Cycle 007: Record stimulus in episodic memory
                 villageAtomSpace.add_episodic(target, "stimulus", message);
             }
@@ -805,6 +829,7 @@ int main(int argc, char* argv[]) {
                         {"kind", "inference"},
                         {"inference_id", pt.inference_id}
                     };
+                    if (!pt.correlation_id.empty()) thoughtPayload["correlation_id"] = pt.correlation_id;
                     bus.publish("resident.thought", thoughtPayload.dump());
                     fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
                     // Cycle 007: Record in episodic memory
@@ -817,6 +842,8 @@ int main(int argc, char* argv[]) {
                 std::lock_guard<std::mutex> lock(g_actionMutex);
                 for (auto& action : g_pendingActions) {
                     std::string result = execute_action(action, bus);
+                    villageAtomSpace.add_action(action.resident, action.action_type, result,
+                                                action.inference_id, action.correlation_id);
                     // Feedback loop: publish action result as stimulus back to the resident
                     json resultPayload = {
                         {"resident", action.resident},
@@ -824,6 +851,7 @@ int main(int argc, char* argv[]) {
                         {"result", result},
                         {"inference_id", action.inference_id}
                     };
+                    if (!action.correlation_id.empty()) resultPayload["correlation_id"] = action.correlation_id;
                     bus.publish("resident.action_result", resultPayload.dump());
                     fprintf(stderr, "[MAIN] Action executed: %s -> %s\n",
                             action.resident.c_str(), action.action_type.c_str());

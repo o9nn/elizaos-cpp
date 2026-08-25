@@ -679,6 +679,15 @@ private:
         uint64_t timestamp;
     };
     std::unordered_map<std::string, std::deque<ConversationEntry>> conversation_history_;
+
+    struct ActionEntry {
+        std::string action_type;
+        std::string result;
+        int inference_id;
+        std::string correlation_id;
+        uint64_t timestamp;
+    };
+    std::unordered_map<std::string, std::deque<ActionEntry>> action_history_;
     
     std::string persist_path_ = "/var/agi_neighborhood/atomspace/village.json";
     
@@ -697,6 +706,16 @@ public:
         auto& conv = conversation_history_[resident];
         conv.push_back({stim, resp, static_cast<uint64_t>(time(nullptr))});
         while (conv.size() > 5) conv.pop_front();
+    }
+
+    void add_action(const std::string& resident, const std::string& action_type,
+                    const std::string& result, int inference_id,
+                    const std::string& correlation_id = "") {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto& actions = action_history_[resident];
+        actions.push_back({action_type, result, inference_id, correlation_id,
+                           static_cast<uint64_t>(time(nullptr))});
+        while (actions.size() > 10) actions.pop_front();
     }
     
     std::string get_episodic_context(const std::string& resident) const {
@@ -720,6 +739,56 @@ public:
             ctx += "A: " + c.response.substr(0, 120) + "\n";
         }
         return ctx;
+    }
+
+    std::string get_resident_detail_json(const std::string& resident) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        nlohmann::json j;
+        j["resident"] = resident;
+        j["source"] = "elizad";
+
+        auto atom_it = residents_.find(resident);
+        if (atom_it != residents_.end()) {
+            j["atom"] = {
+                {"name", atom_it->second.name}, {"sti", atom_it->second.sti},
+                {"lti", atom_it->second.lti}, {"gear_train", atom_it->second.gear_train}
+            };
+        } else {
+            j["atom"] = nullptr;
+        }
+
+        j["episodic_memory"] = nlohmann::json::array();
+        auto episodic_it = episodic_memory_.find(resident);
+        if (episodic_it != episodic_memory_.end()) {
+            for (auto it = episodic_it->second.rbegin(); it != episodic_it->second.rend(); ++it) {
+                j["episodic_memory"].push_back({
+                    {"type", it->type}, {"content", it->content}, {"ts", it->timestamp * 1000ULL}
+                });
+            }
+        }
+
+        j["conversation_history"] = nlohmann::json::array();
+        auto conversation_it = conversation_history_.find(resident);
+        if (conversation_it != conversation_history_.end()) {
+            for (auto it = conversation_it->second.rbegin(); it != conversation_it->second.rend(); ++it) {
+                j["conversation_history"].push_back({
+                    {"stimulus", it->stimulus}, {"response", it->response}, {"ts", it->timestamp * 1000ULL}
+                });
+            }
+        }
+
+        j["actions"] = nlohmann::json::array();
+        auto action_it = action_history_.find(resident);
+        if (action_it != action_history_.end()) {
+            for (auto it = action_it->second.rbegin(); it != action_it->second.rend(); ++it) {
+                j["actions"].push_back({
+                    {"action_type", it->action_type}, {"result", it->result},
+                    {"inference_id", it->inference_id}, {"correlation_id", it->correlation_id},
+                    {"ts", it->timestamp * 1000ULL}
+                });
+            }
+        }
+        return j.dump(2);
     }
     
     bool persist() {
@@ -753,6 +822,17 @@ public:
                 conv_j[res] = arr;
             }
             j["conversation_history"] = conv_j;
+            nlohmann::json action_j;
+            for (auto& [res, entries] : action_history_) {
+                nlohmann::json arr = nlohmann::json::array();
+                for (auto& a : entries) {
+                    arr.push_back({{"action_type", a.action_type}, {"result", a.result},
+                                   {"inference_id", a.inference_id}, {"correlation_id", a.correlation_id},
+                                   {"ts", a.timestamp}});
+                }
+                action_j[res] = arr;
+            }
+            j["action_history"] = action_j;
             // Gear states are computed from residents, not persisted separately
             j["gear_states"] = nlohmann::json::array();
             std::string tmp = persist_path_ + ".tmp";
@@ -796,6 +876,17 @@ public:
                         conversation_history_[res].push_back({e.value("stimulus",""), e.value("response",""), e.value("ts",(uint64_t)0)});
                 }
             }
+            if (j.contains("action_history")) {
+                for (auto& [res, entries] : j["action_history"].items()) {
+                    for (auto& a : entries) {
+                        action_history_[res].push_back({
+                            a.value("action_type", ""), a.value("result", ""),
+                            a.value("inference_id", 0), a.value("correlation_id", ""),
+                            a.value("ts", (uint64_t)0)
+                        });
+                    }
+                }
+            }
             if (j.contains("gear_states")) {
                 // gear_states_ computed at runtime
                 for (auto& g : j["gear_states"]) {
@@ -818,6 +909,7 @@ public:
 
 struct AphroditeRequest {
     std::string resident;           // Who is speaking
+    std::string correlation_id;     // Directed stimulus correlation, empty for autonomous thought
     std::string system_prompt;      // Persona + context from AtomSpace
     std::string user_prompt;        // The actual query/stimulus
     double temperature;             // Derived from endocrine state
@@ -844,7 +936,7 @@ public:
                    max_concurrent_inferences(4) {}
     };
 
-    using InferenceCallback = std::function<void(const std::string&, const std::string&)>;
+    using InferenceCallback = std::function<void(const std::string&, const std::string&, const std::string&)>;
 
     explicit AphroditeBridge(const Config& config = Config())
         : config_(config), active_inferences_(0) {}
@@ -871,7 +963,8 @@ public:
 
     bool infer_async(const VillageAtomSpace& vas, const std::string& resident_name,
                      const std::string& stimulus, InferenceCallback callback,
-                     double endocrine_temperature = 0.7) {
+                     double endocrine_temperature = 0.7,
+                     const std::string& correlation_id = "") {
         if (active_inferences_.load() >= config_.max_concurrent_inferences) return false;
         auto now = std::chrono::steady_clock::now();
         {
@@ -884,6 +977,7 @@ public:
             last_inference_[resident_name] = now;
         }
         auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
+        req.correlation_id = correlation_id;
         // Cycle 007: Append episodic memory and conversation context
         req.system_prompt += vas.get_episodic_context(resident_name);
         req.system_prompt += vas.get_conversation_context(resident_name);
@@ -892,7 +986,7 @@ public:
         std::thread([this, req, callback]() {
             std::string thought = perform_inference(req);
             active_inferences_--;
-            if (!thought.empty() && callback) callback(req.resident, thought);
+            if (!thought.empty() && callback) callback(req.resident, thought, req.correlation_id);
             // Cycle 008: record the stimulus/response pair so future prompts carry
             // conversation history (previously add_conversation was never invoked).
             if (!thought.empty() && conversation_recorder_) {
