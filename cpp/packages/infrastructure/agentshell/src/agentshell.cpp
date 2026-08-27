@@ -15,7 +15,7 @@ namespace elizaos {
 // Global shell instance
 std::shared_ptr<AgentShell> globalShell = std::make_shared<AgentShell>();
 
-AgentShell::AgentShell() 
+AgentShell::AgentShell()
     : running_(false), prompt_("elizaos> "), historyEnabled_(true) {
     initializeBuiltinCommands();
 }
@@ -25,22 +25,28 @@ AgentShell::~AgentShell() {
 }
 
 void AgentShell::start(const std::string& prompt) {
-    if (running_) {
-        return; // Already running
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    if (running_) return;
+
+    // A finite-input shell loop may have exited without stop() being called. Join
+    // that completed thread before replacing its ownership so restart is safe.
+    if (shellThread_ && shellThread_->joinable()) {
+        if (shellThread_->get_id() == std::this_thread::get_id()) return;
+        shellThread_->join();
     }
-    
-    prompt_ = prompt;
+    shellThread_.reset();
+    {
+        std::lock_guard<std::mutex> configLock(configMutex_);
+        prompt_ = prompt;
+    }
     running_ = true;
-    
-    // Start shell in separate std::thread
     shellThread_ = std::make_unique<std::thread>(&AgentShell::shellLoop, this);
-    
     logInfo("Interactive shell started", "agentshell");
 }
 
 void AgentShell::stop() {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
     const bool wasRunning = running_.exchange(false);
-    
     if (shellThread_ && shellThread_->joinable()) {
         if (shellThread_->get_id() != std::this_thread::get_id()) {
             shellThread_->join();
@@ -49,10 +55,7 @@ void AgentShell::stop() {
         }
     }
     shellThread_.reset();
-    
-    if (wasRunning) {
-        logInfo("Interactive shell stopped", "agentshell");
-    }
+    if (wasRunning) logInfo("Interactive shell stopped", "agentshell");
 }
 
 void AgentShell::shellLoop() {
@@ -61,10 +64,17 @@ void AgentShell::shellLoop() {
     
     while (running_) {
         std::string command;
-        
+        std::string prompt;
+        [[maybe_unused]] bool historyEnabled = false;
+        {
+            std::lock_guard<std::mutex> configLock(configMutex_);
+            prompt = prompt_;
+            historyEnabled = historyEnabled_;
+        }
+
 #ifdef HAVE_READLINE
-        // Use readline for better input handling with history
-        char* input = readline(prompt_.c_str());
+        // Use readline for better input handling with history.
+        char* input = readline(prompt.c_str());
         
         if (!input) {
             // EOF (Ctrl+D)
@@ -75,12 +85,12 @@ void AgentShell::shellLoop() {
         free(input);
         
         // Add to readline history
-        if (!command.empty() && historyEnabled_) {
+        if (!command.empty() && historyEnabled) {
             add_history(command.c_str());
         }
 #else
         // Fallback to basic input
-        std::cout << prompt_;
+        std::cout << prompt;
         if (!std::getline(std::cin, command)) {
             // EOF
             break;
@@ -98,7 +108,7 @@ void AgentShell::shellLoop() {
         
         // Display result
         if (!result.output.empty()) {
-            std::cout << result.output << std::endl;
+            std::cout << result.output << '\n';
         }
         
         if (!result.success && !result.error.empty()) {
@@ -124,8 +134,13 @@ ShellCommandResult AgentShell::executeCommand(const std::string& command) {
     std::string commandName = tokens[0];
 
     // Record into history when enabled, regardless of dispatch outcome.
-    if (historyEnabled_) {
-        std::lock_guard<std::mutex> hlock(historyMutex_);
+    bool historyEnabled = false;
+    {
+        std::lock_guard<std::mutex> configLock(configMutex_);
+        historyEnabled = historyEnabled_;
+    }
+    if (historyEnabled) {
+        std::lock_guard<std::mutex> historyLock(historyMutex_);
         commandHistory_.push_back(command);
     }
 
@@ -134,7 +149,7 @@ ShellCommandResult AgentShell::executeCommand(const std::string& command) {
     {
         std::lock_guard<std::mutex> lock(commandsMutex_);
         auto it = commandHandlers_.find(commandName);
-        
+
         if (it != commandHandlers_.end()) {
             handler = it->second;
         }
@@ -166,7 +181,7 @@ std::vector<std::string> AgentShell::parseCommand(const std::string& command) {
 
 void AgentShell::registerCommand(const std::string& commandName, CommandHandler handler) {
     std::lock_guard<std::mutex> lock(commandsMutex_);
-    commandHandlers_[commandName] = handler;
+    commandHandlers_[commandName] = std::move(handler);
 }
 
 void AgentShell::unregisterCommand(const std::string& commandName) {
@@ -177,7 +192,8 @@ void AgentShell::unregisterCommand(const std::string& commandName) {
 std::vector<std::string> AgentShell::getAvailableCommands() const {
     std::lock_guard<std::mutex> lock(commandsMutex_);
     std::vector<std::string> commands;
-    
+    commands.reserve(commandHandlers_.size());
+
     for (const auto& [key, val] : commandHandlers_) {
         commands.push_back(key);
     }
@@ -187,14 +203,16 @@ std::vector<std::string> AgentShell::getAvailableCommands() const {
 }
 
 void AgentShell::setPrompt(const std::string& prompt) {
+    std::lock_guard<std::mutex> lock(configMutex_);
     prompt_ = prompt;
 }
 
 void AgentShell::setHistoryEnabled(bool enabled) {
+    std::lock_guard<std::mutex> lock(configMutex_);
     historyEnabled_ = enabled;
 }
 
-const std::vector<std::string>& AgentShell::getHistory() const {
+std::vector<std::string> AgentShell::getHistory() const {
     std::lock_guard<std::mutex> lock(historyMutex_);
     return commandHistory_;
 }
@@ -254,15 +272,14 @@ ShellCommandResult AgentShell::exitCommand(const std::vector<std::string>& args)
 ShellCommandResult AgentShell::historyCommand(const std::vector<std::string>& args) {
     (void)args; // Suppress unused parameter warning
     
-    std::lock_guard<std::mutex> lock(historyMutex_);
-    
-    if (commandHistory_.empty()) {
+    const auto history = getHistory();
+    if (history.empty()) {
         return ShellCommandResult(true, "No command history", "", 0);
     }
-    
+
     std::stringstream ss;
-    for (size_t i = 0; i < commandHistory_.size(); ++i) {
-        ss << "  " << (i + 1) << ": " << commandHistory_[i] << "\n";
+    for (size_t i = 0; i < history.size(); ++i) {
+        ss << "  " << (i + 1) << ": " << history[i] << "\n";
     }
     
     return ShellCommandResult(true, ss.str(), "", 0);
@@ -370,7 +387,7 @@ bool executeShellCommand(const std::string& command) {
 }
 
 void registerShellCommand(const std::string& name, CommandHandler handler) {
-    globalShell->registerCommand(name, handler);
+    globalShell->registerCommand(name, std::move(handler));
 }
 
 ShellCommandResult executeShellCommandWithResult(const std::string& command) {

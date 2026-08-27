@@ -50,7 +50,7 @@ const GearTrain* AntikytheraEngine::getGearTrain(const std::string& name) const 
 
 std::vector<SyncEvent> AntikytheraEngine::tick(int64_t villageTic) {
     std::lock_guard<std::mutex> lock(mutex_);
-    double dt = (villageTic - lastTic_) / 1000.0; // seconds since last tick
+    double dt = static_cast<double>(villageTic - lastTic_) / 1000.0;
     if (dt <= 0) dt = 1.0 / config_.ticksPerRevolution;
     lastTic_ = villageTic;
 
@@ -105,17 +105,24 @@ double AntikytheraEngine::getGearRatio(const std::string& a, const std::string& 
 
 double AntikytheraEngine::getEpicyclicModulation(const std::string& residentId, int64_t tic) const {
     std::lock_guard<std::mutex> lock(mutex_);
-    // Find epicyclic joints involving this resident
+    if (!config_.enableEpicyclicModulation) return 1.0;
     for (const auto& [_, joint] : joints_) {
-        if (joint.type != JointType::EpicyclicPin) continue;
-        if (joint.gearB != residentId) continue;
+        if (joint.type != JointType::EpicyclicPin || joint.gearB != residentId) continue;
         auto itA = gears_.find(joint.gearA);
         if (itA == gears_.end()) continue;
-        // Sinusoidal modulation based on driver phase
+
+        // Stored phase is authoritative at lastTic_. For a query between engine
+        // ticks, project the driver forward in the same millisecond time base used
+        // by tick(); past timestamps intentionally use the latest known phase.
         double phase = itA->second.phase;
+        if (tic > lastTic_) {
+            const double dt = static_cast<double>(tic - lastTic_) / 1000.0;
+            phase = std::fmod(phase + itA->second.angularVelocity() * dt,
+                              2.0 * M_PI);
+        }
         return 1.0 + joint.modulationAmplitude * std::sin(phase);
     }
-    return 1.0; // No modulation
+    return 1.0;
 }
 
 void AntikytheraEngine::initializeVillageMechanism() {
@@ -231,14 +238,21 @@ std::vector<SyncEvent> AntikytheraEngine::detectAlignments(int64_t tic) {
     return events;
 }
 
-void AntikytheraEngine::applyEpicyclicModulation(int64_t /*tic*/) {
+void AntikytheraEngine::applyEpicyclicModulation(int64_t tic) {
     for (const auto& [_, joint] : joints_) {
         if (joint.type != JointType::EpicyclicPin) continue;
         auto itA = gears_.find(joint.gearA);
         auto itB = gears_.find(joint.gearB);
         if (itA == gears_.end() || itB == gears_.end()) continue;
-        // Modulate driven gear's RPM by sinusoidal anomaly
-        double modulation = 1.0 + joint.modulationAmplitude * std::sin(itA->second.phase);
+
+        double phase = itA->second.phase;
+        if (tic > lastTic_) {
+            const double dt = static_cast<double>(tic - lastTic_) / 1000.0;
+            phase = std::fmod(phase + itA->second.angularVelocity() * dt,
+                              2.0 * M_PI);
+        }
+        const double modulation =
+            1.0 + joint.modulationAmplitude * std::sin(phase);
         itB->second.rpm *= modulation;
     }
 }

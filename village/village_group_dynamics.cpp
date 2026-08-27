@@ -5,6 +5,7 @@
 #include <numeric>
 #include <random>
 #include <sstream>
+#include <iterator>
 
 namespace elizaos {
 namespace village {
@@ -85,8 +86,9 @@ std::vector<ResidentId> SocialNetwork::getNeighbors(const ResidentId& id) const 
 
 double SocialNetwork::calculateCentrality(const ResidentId& id) const {
     auto neighbors = getNeighbors(id);
-    if (profiles_.empty()) return 0.0;
-    return static_cast<double>(neighbors.size()) / (profiles_.size() - 1);
+    if (profiles_.size() <= 1) return 0.0;
+    return static_cast<double>(neighbors.size()) /
+           static_cast<double>(profiles_.size() - 1);
 }
 
 std::vector<std::set<ResidentId>> SocialNetwork::detectCommunities() const {
@@ -150,6 +152,7 @@ const ResidentProfile* SocialNetwork::getProfile(const ResidentId& id) const {
 std::vector<ResidentId> SocialNetwork::getAllResidents() const {
     std::unique_lock<std::mutex> lock(mutex_);
     std::vector<ResidentId> ids;
+    ids.reserve(profiles_.size());
     for (const auto& [id, _] : profiles_) ids.push_back(id);
     return ids;
 }
@@ -408,10 +411,11 @@ ConsensusResult GroupManager::seekConsensus(const GroupId& id, const Proposal& p
         // Check convergence
         double mean = 0.0;
         for (const auto& [_, o] : opinions) mean += o;
-        mean /= opinions.size();
+        if (opinions.empty()) break;
+        mean /= static_cast<double>(opinions.size());
         double variance = 0.0;
         for (const auto& [_, o] : opinions) variance += (o - mean) * (o - mean);
-        variance /= opinions.size();
+        variance /= static_cast<double>(opinions.size());
 
         if (std::sqrt(variance) < config_.convergenceThreshold) {
             result.reached = true;
@@ -426,18 +430,72 @@ ConsensusResult GroupManager::seekConsensus(const GroupId& id, const Proposal& p
 }
 
 std::set<ResidentId> GroupManager::broadcastToGroup(const GroupId& id,
-                                                     const ResidentId& /*sender*/,
-                                                     const std::string& /*message*/) {
-    std::unique_lock<std::mutex> lock(mutex_);
-    auto it = groups_.find(id);
-    if (it == groups_.end()) return {};
-    return it->second.members;
+                                                     const ResidentId& sender,
+                                                     const std::string& message) {
+    if (message.empty()) return {};
+
+    std::set<ResidentId> delivered;
+    GroupEventCallback callback;
+    json payload;
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        auto it = groups_.find(id);
+        if (it == groups_.end() || !it->second.hasMember(sender)) return {};
+
+        delivered = it->second.members;
+        delivered.erase(sender);
+        if (delivered.empty()) return {};
+
+        ConversationTurn turn;
+        turn.speaker = sender;
+        turn.message = message;
+        turn.timestamp = std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::steady_clock::now().time_since_epoch()).count();
+        conversations_[id].push_back(std::move(turn));
+        it->second.interactionCount++;
+        it->second.cohesion = std::min(1.0, it->second.cohesion + 0.01);
+        callback = eventCallback_;
+        payload = {{"sender", sender}, {"message", message},
+                   {"recipients", std::vector<ResidentId>(delivered.begin(), delivered.end())}};
+    }
+
+    if (callback) callback("group.message.broadcast", id, payload.dump());
+    return delivered;
 }
 
-std::set<ResidentId> GroupManager::whisper(const GroupId& /*id*/, const ResidentId& /*sender*/,
+std::set<ResidentId> GroupManager::whisper(const GroupId& id, const ResidentId& sender,
                                             const std::set<ResidentId>& recipients,
-                                            const std::string& /*message*/) {
-    return recipients;
+                                            const std::string& message) {
+    if (message.empty() || recipients.empty()) return {};
+
+    std::set<ResidentId> delivered;
+    GroupEventCallback callback;
+    json payload;
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        auto it = groups_.find(id);
+        if (it == groups_.end() || !it->second.hasMember(sender)) return {};
+        for (const auto& recipient : recipients) {
+            if (recipient != sender && it->second.hasMember(recipient)) delivered.insert(recipient);
+        }
+        if (delivered.empty()) return {};
+
+        ConversationTurn turn;
+        turn.speaker = sender;
+        turn.message = message;
+        turn.addressedTo = delivered.size() == 1 ? *delivered.begin() : "multiple";
+        turn.timestamp = std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::steady_clock::now().time_since_epoch()).count();
+        conversations_[id].push_back(std::move(turn));
+        it->second.interactionCount++;
+        it->second.cohesion = std::min(1.0, it->second.cohesion + 0.005);
+        callback = eventCallback_;
+        payload = {{"sender", sender}, {"message", message},
+                   {"recipients", std::vector<ResidentId>(delivered.begin(), delivered.end())}};
+    }
+
+    if (callback) callback("group.message.whisper", id, payload.dump());
+    return delivered;
 }
 
 const Group* GroupManager::getGroup(const GroupId& id) const {
@@ -457,6 +515,7 @@ std::vector<GroupId> GroupManager::getGroupsForResident(const ResidentId& id) co
 std::vector<GroupId> GroupManager::getAllGroups() const {
     std::unique_lock<std::mutex> lock(mutex_);
     std::vector<GroupId> ids;
+    ids.reserve(groups_.size());
     for (const auto& [id, _] : groups_) ids.push_back(id);
     return ids;
 }
@@ -466,6 +525,7 @@ void GroupManager::tick(Timestamp currentTick, const SocialNetwork& network) {
     std::vector<GroupId> groupIds;
     {
         std::unique_lock<std::mutex> lock(mutex_);
+        groupIds.reserve(groups_.size());
         for (const auto& [id, _] : groups_) groupIds.push_back(id);
     }
     for (const auto& id : groupIds) updateCohesion(id, currentTick);

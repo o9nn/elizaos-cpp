@@ -174,6 +174,7 @@ private:
     std::shared_ptr<AgentMemoryManager> memory_;
     std::shared_ptr<AgentLogger> logger_;
     std::shared_ptr<KnowledgeInferenceEngine> inferenceEngine_;
+    std::unordered_map<std::string, KnowledgeEntry> knowledgeStore_;
     mutable std::mutex knowledgeMutex_;
     
     // Internal helper methods
@@ -287,19 +288,20 @@ public:
     size_t nodeCount() const;
     size_t edgeCount() const;
     double averageDegree() const;
+    double averageShortestPathLength() const;
+    std::vector<std::string> getNodeIds() const;
     std::vector<std::string> findHubs(int topN = 10) const;
 
 private:
-    // No-lock variant of getEdgesConnecting for use by methods (e.g.
-    // matchPattern) that already hold graphMutex_, avoiding non-recursive
-    // std::mutex self-deadlock.
-    std::vector<Hyperedge> getEdgesConnectingLocked(const std::string& nodeId) const;
-
     std::unordered_map<std::string, KnowledgeEntry> nodes_;
     std::unordered_map<std::string, Hyperedge> edges_;
     std::unordered_map<std::string, std::vector<std::string>> nodeToEdges_;
     mutable std::mutex graphMutex_;
     std::string generateEdgeId() const;
+    // No-lock variant of getEdgesConnecting for use by methods (e.g.
+    // matchPattern) that already hold graphMutex_, avoiding non-recursive
+    // std::mutex self-deadlock.
+    std::vector<Hyperedge> getEdgesConnectingLocked(const std::string& nodeId) const;
 };
 
 // ============================================================================
@@ -418,6 +420,7 @@ public:
 
     std::vector<KnowledgeConflict> detectConflicts(
         const std::vector<KnowledgeEntry>& entries);
+    size_t getUnresolvedConflictCount() const;
 
     KnowledgeEntry resolveConflict(
         const KnowledgeConflict& conflict,
@@ -440,21 +443,22 @@ public:
     double calculateSimilarity(const KnowledgeEntry& a, const KnowledgeEntry& b) const;
 
 private:
-    // No-lock variants for use by methods (e.g. getValidKnowledge) that already
-    // hold fusionMutex_, avoiding non-recursive std::mutex self-deadlock.
-    std::optional<KnowledgeEntry> getVersionAtLocked(
-        const std::string& entryId,
-        const Timestamp& at) const;
-    bool isValidAtLocked(const std::string& entryId, const Timestamp& at) const;
-
     std::unordered_map<std::string, std::vector<KnowledgeVersion>> versionHistory_;
     std::vector<KnowledgeConflict> unresolvedConflicts_;
-    // Explicit temporal-validity windows keyed by entry id. Absent entry => the
-    // knowledge is temporally unconstrained (always valid).
+    // Explicit temporal-validity windows per entry id. An entry is considered
+    // valid at time t iff (validFrom is unset or validFrom <= t) and
+    // (validUntil is unset or t < validUntil).
     std::unordered_map<std::string,
         std::pair<std::optional<Timestamp>, std::optional<Timestamp>>> validityWindows_;
     mutable std::mutex fusionMutex_;
     KnowledgeEntry mergeEntries(const std::vector<KnowledgeEntry>& entries) const;
+    std::vector<KnowledgeConflict> detectConflictsLocked(
+        const std::vector<KnowledgeEntry>& entries);
+    // No-lock version selector (fusionMutex_ must already be held by caller).
+    std::optional<KnowledgeEntry> getVersionAtLocked(
+        const std::string& entryId, const Timestamp& at) const;
+    // No-lock validity-window check (fusionMutex_ must already be held).
+    bool isValidAtLocked(const std::string& entryId, const Timestamp& at) const;
 };
 
 // ============================================================================
@@ -503,12 +507,12 @@ public:
     std::vector<std::vector<std::string>> clusterKnowledge(int numClusters = 5);
 
     struct EnhancedStats {
-        size_t totalEntries;
-        size_t totalRelationships;
-        size_t inferredEntries;
-        size_t conflictsPending;
-        double graphDensity;
-        int averagePathLength;
+        size_t totalEntries = 0;
+        size_t totalRelationships = 0;
+        size_t inferredEntries = 0;
+        size_t conflictsPending = 0;
+        double graphDensity = 0.0;
+        int averagePathLength = 0;
     };
     EnhancedStats getEnhancedStats() const;
 

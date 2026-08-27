@@ -357,7 +357,9 @@ TEST_F(VillageAtomSpaceE2ETest, ConcurrentEnqueueFromWorkerThreadsIsSafe) {
     std::vector<std::thread> workers;
     workers.reserve(kThreads);
     for (int t = 0; t < kThreads; ++t) {
-        workers.emplace_back([this, t]() {
+        // MSVC requires constexpr locals used inside a lambda to be captured
+        // explicitly (C3493) even though they are not odr-used.
+        workers.emplace_back([this, t, kEventsPerThread]() {
             for (int i = 0; i < kEventsPerThread; ++i) {
                 CognitiveEvent ev;
                 ev.type = "utterance";
@@ -528,6 +530,52 @@ TEST_F(VillageAtomSpaceE2ETest, PromptConstructionInjectsMemoryContext) {
     EXPECT_NE(req.system_prompt.find("remember the gear trains"), std::string::npos);
     EXPECT_NE(req.system_prompt.find("[Conversation history]"), std::string::npos);
     EXPECT_NE(req.system_prompt.find("spinning at 1.2 rpm"), std::string::npos);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ResidentDetailReportsBoundedNewestFirstActionHistory) {
+    addDefaultResidents();
+    vas_->add_episodic("ada", "stimulus", "inspect the stone");
+    vas_->add_conversation("ada", "inspect", "I will inspect it");
+    for (int i = 0; i < 12; ++i) {
+        vas_->add_action("ada", "observe_state", "result-" + std::to_string(i),
+                         100 + i, "corr-" + std::to_string(i));
+    }
+
+    const auto detail = nlohmann::json::parse(vas_->get_resident_detail_json("ada"));
+    EXPECT_EQ(detail.at("resident"), "ada");
+    ASSERT_TRUE(detail.at("atom").is_object());
+    EXPECT_EQ(detail.at("atom").at("name"), "ada");
+    EXPECT_FALSE(detail.at("episodic_memory").empty());
+    EXPECT_FALSE(detail.at("conversation_history").empty());
+    const auto& actions = detail.at("actions");
+    ASSERT_EQ(actions.size(), 10u);
+    EXPECT_EQ(actions.front().at("result"), "result-11");
+    EXPECT_EQ(actions.front().at("inference_id"), 111);
+    EXPECT_EQ(actions.front().at("correlation_id"), "corr-11");
+    EXPECT_EQ(actions.back().at("result"), "result-2");
+}
+
+TEST_F(VillageAtomSpaceE2ETest, PersistedActionHistoryRetainsCorrelationAcrossRestart) {
+    addDefaultResidents();
+    vas_->add_action("turing", "write_stone", "stone-written", 42, "request-42");
+    const std::string jsonPath = persistPath_ + ".actions.json";
+    vas_->set_persist_path(jsonPath);
+    ASSERT_TRUE(vas_->persist());
+
+    VillageAtomSpace successor(config_);
+    successor.set_persist_path(jsonPath);
+    ASSERT_TRUE(successor.load_persisted());
+    const auto detail = nlohmann::json::parse(
+        successor.get_resident_detail_json("turing"));
+    ASSERT_EQ(detail.at("actions").size(), 1u);
+    EXPECT_EQ(detail.at("actions").front().at("action_type"), "write_stone");
+    EXPECT_EQ(detail.at("actions").front().at("result"), "stone-written");
+    EXPECT_EQ(detail.at("actions").front().at("inference_id"), 42);
+    EXPECT_EQ(detail.at("actions").front().at("correlation_id"), "request-42");
+
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
+    std::filesystem::remove(jsonPath + ".tmp", ec);
 }
 
 } // namespace

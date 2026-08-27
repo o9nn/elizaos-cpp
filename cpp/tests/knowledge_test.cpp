@@ -3,6 +3,8 @@
 #include "elizaos/knowledge.hpp"
 #include "elizaos/knowledge_helpers.hpp"
 
+#include <any>
+
 using namespace elizaos;
 
 TEST(KnowledgeEntry, DefaultConstruction) {
@@ -63,6 +65,20 @@ TEST_F(KnowledgeBaseTest, AddAndGetKnowledge) {
     auto got = kb.getKnowledge(id);
     ASSERT_TRUE(got.has_value());
     EXPECT_EQ(got->content, "hello world");
+}
+
+TEST_F(KnowledgeBaseTest, ImportReportsMalformedSiblingWithoutDiscardingValidEntry) {
+    KnowledgeEntry valid("validated import", KnowledgeType::CONCEPT);
+    valid.id = "valid-import";
+    JsonValue payload;
+    payload["valid"] = std::any(valid.toJson());
+    payload["malformed"] = std::any(std::string("not a JsonValue"));
+
+    EXPECT_FALSE(kb.importFromJson(payload));
+    EXPECT_EQ(kb.getKnowledgeCount(), 1u);
+    const auto imported = kb.getKnowledge("valid-import");
+    ASSERT_TRUE(imported.has_value());
+    EXPECT_EQ(imported->content, "validated import");
 }
 
 TEST_F(KnowledgeBaseTest, UpdateKnowledge) {
@@ -186,4 +202,106 @@ TEST(KnowledgeInference, AddRule) {
     auto out = eng.inferFromFacts({KnowledgeEntry("seed")});
     SUCCEED() << "produced " << out.size();
     eng.removeInferenceRule("identity");
+}
+
+namespace {
+
+size_t clusterContaining(const std::vector<std::vector<std::string>>& clusters,
+                         const std::string& id) {
+    for (size_t index = 0; index < clusters.size(); ++index) {
+        if (std::find(clusters[index].begin(), clusters[index].end(), id) !=
+            clusters[index].end()) {
+            return index;
+        }
+    }
+    return clusters.size();
+}
+
+} // namespace
+
+TEST(EnhancedKnowledgeBase, ClustersEntriesBySemanticSimilarityDeterministically) {
+    EnhancedKnowledgeBase knowledge;
+
+    KnowledgeEntry catOne("cat feline whiskers animal", KnowledgeType::CONCEPT);
+    catOne.addTag("animals");
+    KnowledgeEntry catTwo("cat feline purr whiskers", KnowledgeType::CONCEPT);
+    catTwo.addTag("animals");
+    KnowledgeEntry rocketOne("rocket orbit space launch", KnowledgeType::CONCEPT);
+    rocketOne.addTag("space");
+    KnowledgeEntry rocketTwo("space rocket orbital launch", KnowledgeType::CONCEPT);
+    rocketTwo.addTag("space");
+
+    const auto catOneId = knowledge.addKnowledge(catOne);
+    const auto catTwoId = knowledge.addKnowledge(catTwo);
+    const auto rocketOneId = knowledge.addKnowledge(rocketOne);
+    const auto rocketTwoId = knowledge.addKnowledge(rocketTwo);
+
+    const auto clusters = knowledge.clusterKnowledge(2);
+    ASSERT_EQ(clusters.size(), 2u);
+    EXPECT_EQ(clusterContaining(clusters, catOneId), clusterContaining(clusters, catTwoId));
+    EXPECT_EQ(clusterContaining(clusters, rocketOneId), clusterContaining(clusters, rocketTwoId));
+    EXPECT_NE(clusterContaining(clusters, catOneId), clusterContaining(clusters, rocketOneId));
+    EXPECT_EQ(clusters, knowledge.clusterKnowledge(2));
+
+    EXPECT_TRUE(knowledge.clusterKnowledge(0).empty());
+    EXPECT_EQ(knowledge.clusterKnowledge(20).size(), 4u);
+}
+
+TEST(KnowledgeHypergraph, ReportsNodeIdsAndAverageShortestPathLength) {
+    KnowledgeHypergraph graph;
+    KnowledgeEntry a("node a");
+    KnowledgeEntry b("node b");
+    KnowledgeEntry c("node c");
+    a.id = "a";
+    b.id = "b";
+    c.id = "c";
+    graph.addNode(a);
+    graph.addNode(b);
+    graph.addNode(c);
+    graph.addEdge(Hyperedge("connects", {"a", "b"}));
+    graph.addEdge(Hyperedge("connects", {"b", "c"}));
+
+    EXPECT_EQ(graph.getNodeIds(), (std::vector<std::string>{"a", "b", "c"}));
+    EXPECT_NEAR(graph.averageShortestPathLength(), 4.0 / 3.0, 1e-9);
+}
+
+TEST(EnhancedKnowledgeBase, EnhancedStatsReflectGraphInferenceAndPendingConflicts) {
+    EnhancedKnowledgeBase knowledge;
+    KnowledgeEntry a("shared semantic value", KnowledgeType::FACT);
+    KnowledgeEntry b("shared semantic value", KnowledgeType::FACT);
+    KnowledgeEntry c("derived result", KnowledgeType::CONCEPT);
+    a.confidence = ConfidenceLevel::HIGH;
+    b.confidence = ConfidenceLevel::LOW;
+    c.source = KnowledgeSource::INFERRED;
+
+    const auto aId = knowledge.addKnowledge(a);
+    const auto bId = knowledge.addKnowledge(b);
+    const auto cId = knowledge.addKnowledge(c);
+    knowledge.enableHypergraph();
+    ASSERT_FALSE(knowledge.addRelationship("supports", {aId, bId}).empty());
+    ASSERT_FALSE(knowledge.addRelationship("supports", {bId, cId}).empty());
+
+    a.id = aId;
+    b.id = bId;
+    const auto conflicts = knowledge.getFusionEngine().detectConflicts({a, b});
+    ASSERT_EQ(conflicts.size(), 1u);
+
+    const auto stats = knowledge.getEnhancedStats();
+    EXPECT_EQ(stats.totalEntries, 3u);
+    EXPECT_EQ(stats.totalRelationships, 2u);
+    EXPECT_EQ(stats.inferredEntries, 1u);
+    EXPECT_EQ(stats.conflictsPending, 1u);
+    EXPECT_NEAR(stats.graphDensity, 2.0 / 3.0, 1e-9);
+    EXPECT_EQ(stats.averagePathLength, 1);
+}
+
+TEST(KnowledgeBase, InstancesOwnIndependentStores) {
+    KnowledgeBase first;
+    KnowledgeBase second;
+    const auto id = first.addKnowledge(KnowledgeEntry("private to first"));
+
+    EXPECT_EQ(first.getKnowledgeCount(), 1u);
+    EXPECT_EQ(second.getKnowledgeCount(), 0u);
+    EXPECT_TRUE(first.getKnowledge(id).has_value());
+    EXPECT_FALSE(second.getKnowledge(id).has_value());
 }

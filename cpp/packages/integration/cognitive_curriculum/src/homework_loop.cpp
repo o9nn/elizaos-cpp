@@ -26,38 +26,96 @@ std::map<CenterId, EvidenceMap> DefaultEvidenceProvider::gather(
     const AutonomousStarter& agent) const {
     std::map<CenterId, EvidenceMap> out;
 
-    // Dynamic, observable evidence derived from the live agent state.
     const auto& messages = agent.getState().getRecentMessages();
+    const auto health = agent.getAutonomyHealthReport();
+    const auto& endocrine = agent.getEndocrineSystem();
     const bool hasMemoryActivity = !messages.empty();
     const bool hasCycled = agent.getCognitiveCycleCount() > 0;
     const bool hasActed = agent.getActionCount() > 0;
+    const double memoryDepth = std::min(1.0, static_cast<double>(messages.size()) / 20.0);
+    const double reflectionCoverage = health.totalCycles == 0 ? 0.0 :
+        std::min(1.0, static_cast<double>(health.reflections) /
+                           static_cast<double>(health.totalCycles));
 
     for (CenterId c : allCenters()) {
-        // Start from any caller-supplied baseline of build-time facts.
         EvidenceMap em;
-        auto it = baseline_.find(c);
-        if (it != baseline_.end()) {
-            em = it->second;
-        }
+        const auto baseline = baseline_.find(c);
+        if (baseline != baseline_.end()) em = baseline->second;
+        auto earn = [&em](const std::string& key, double value) {
+            value = std::max(0.0, std::min(1.0, value));
+            const auto existing = em.find(key);
+            if (existing == em.end() || existing->second < value) em[key] = value;
+        };
 
-        // Overlay dynamic evidence (the agent earns these by actually running).
         const std::string name = centerName(c);
         bool mentioned = false;
-        for (const auto& m : messages) {
-            if (m && m->getContent().find(name) != std::string::npos) {
+        for (const auto& memory : messages) {
+            if (memory && memory->getContent().find(name) != std::string::npos) {
                 mentioned = true;
                 break;
             }
         }
+        earn("appears_in_memory_stream", mentioned ? 1.0 : (hasMemoryActivity ? 0.25 : 0.0));
 
-        // Echoes: the center's behaviour appears in the memory stream.
-        em["appears_in_memory_stream"] = mentioned ? 1.0 : (hasMemoryActivity ? 0.5 : 0.0);
-        // Alternating Repetition: the center participates each cycle.
-        em["participates_each_cycle"] = hasCycled ? 1.0 : 0.0;
-        // Not-Separateness: the center contributes to the main observe-reason-act loop.
-        em["contributes_to_main_loop"] = (hasCycled && hasActed) ? 1.0 : (hasCycled ? 0.5 : 0.0);
-
-        out[c] = em;
+        switch (c) {
+            case CenterId::Characters: {
+                const bool configured = !agent.getConfig().agentId.empty() &&
+                                        !agent.getConfig().agentName.empty();
+                earn("primary_class_implemented", configured ? 1.0 : 0.0);
+                earn("has_api_boundary", configured ? 1.0 : 0.0);
+                earn("distinct_from_neighbours", configured ? 1.0 : 0.0);
+                earn("has_focused_core", configured ? 1.0 : 0.0);
+                earn("contributes_to_main_loop", configured && hasCycled ? 0.75 : 0.0);
+                break;
+            }
+            case CenterId::Memory:
+                earn("has_coarse_and_fine_parts", messages.size() >= 4 ? 1.0 : memoryDepth);
+                earn("primary_class_implemented", hasMemoryActivity ? 1.0 : 0.0);
+                earn("participates_each_cycle", hasCycled && hasMemoryActivity ? 1.0 : 0.0);
+                earn("operations_consistent", hasMemoryActivity ? 1.0 : 0.0);
+                earn("exposes_graded_surface", memoryDepth);
+                earn("contributes_to_main_loop", hasMemoryActivity && hasCycled ? 1.0 : 0.0);
+                break;
+            case CenterId::CognitiveCycle:
+                earn("participates_each_cycle", hasCycled ? 1.0 : 0.0);
+                earn("operations_consistent", reflectionCoverage);
+                earn("exposes_graded_surface",
+                     std::min(1.0, static_cast<double>(health.totalCycles) / 10.0));
+                earn("no_conflicting_paths", health.stagnationCount < 2 ? reflectionCoverage : 0.0);
+                earn("contributes_to_main_loop", hasCycled && hasActed ? 1.0 : 0.0);
+                break;
+            case CenterId::Endocrine: {
+                const bool ticked = endocrine.tickCount() > 0;
+                bool levelsBounded = true;
+                for (const auto& [_, level] : endocrine.hormoneLevelsMap()) {
+                    levelsBounded = levelsBounded && level >= 0.0 && level <= 1.0;
+                }
+                earn("participates_each_cycle", ticked ? 1.0 : 0.0);
+                earn("operations_consistent", ticked && levelsBounded ? 1.0 : 0.0);
+                earn("exposes_graded_surface", ticked ?
+                     std::min(1.0, endocrine.valenceArousal().magnitude()) : 0.0);
+                earn("contributes_to_main_loop", ticked && hasActed ? 1.0 : 0.0);
+                break;
+            }
+            case CenterId::Protocol:
+                earn("participates_each_cycle", hasActed ? 1.0 : 0.0);
+                earn("operations_consistent", hasActed ? health.actionSuccessRate : 0.0);
+                earn("exposes_graded_surface", hasActed ?
+                     std::min(1.0, static_cast<double>(health.totalActions) / 10.0) : 0.0);
+                earn("handles_edge_cases", health.failedActions > 0 ? 1.0 : 0.0);
+                earn("contributes_to_main_loop", hasActed ? 1.0 : 0.0);
+                break;
+            case CenterId::Autonomy:
+                earn("has_coarse_and_fine_parts", hasCycled && health.reflections > 0 ? 1.0 : 0.0);
+                earn("participates_each_cycle", hasCycled ? 1.0 : 0.0);
+                earn("operations_consistent", health.actionSuccessRate);
+                earn("exposes_graded_surface", health.competence);
+                earn("handles_edge_cases", health.openGoals > 0 ? 1.0 : 0.0);
+                earn("no_conflicting_paths", health.stagnationCount < 2 ? 1.0 : 0.0);
+                earn("contributes_to_main_loop", hasCycled && hasActed ? 1.0 : 0.0);
+                break;
+        }
+        out[c] = std::move(em);
     }
     return out;
 }
@@ -176,7 +234,12 @@ HomeworkResult HomeworkLoop::runHomeworkCycleOnce() {
     // Longitudinal memory: append this cycle's post-practice coherence to the target
     // center's trend so future cycles (and the developmental phase) can read the
     // direction of travel instead of a single-cycle snapshot.
-    coherenceHistory_[before.center].push_back(result.coherenceAfter);
+    auto& history = coherenceHistory_[before.center];
+    history.push_back(result.coherenceAfter);
+    if (history.size() > maxTrendSamples_) {
+        history.erase(history.begin(), history.begin() +
+                      static_cast<std::ptrdiff_t>(history.size() - maxTrendSamples_));
+    }
 
     // Step 12 (bootstrap): emit the handoff signal seeding the next developmental phase,
     // and record it to memory so the handoff is visible.

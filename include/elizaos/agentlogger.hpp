@@ -100,7 +100,7 @@ struct LogEntry {
 // ============================================================================
 
 struct LogRotationConfig {
-    size_t maxFileSize = 10 * 1024 * 1024;  // 10 MB default
+    size_t maxFileSize = size_t{10} * 1024 * 1024;  // 10 MB default
     size_t maxFiles = 5;                      // Keep 5 rotated files
     bool compressRotated = false;             // Compress rotated files
     std::string rotationPattern = ".%Y%m%d-%H%M%S";  // Timestamp pattern

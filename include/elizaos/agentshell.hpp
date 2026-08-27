@@ -93,7 +93,7 @@ public:
     /**
      * Get command history
      */
-    const std::vector<std::string>& getHistory() const;
+    std::vector<std::string> getHistory() const;
     
     /**
      * Clear command history
@@ -144,6 +144,8 @@ private:
     std::unique_ptr<std::thread> shellThread_;
     mutable std::mutex commandsMutex_;
     mutable std::mutex historyMutex_;
+    mutable std::mutex configMutex_;
+    mutable std::mutex lifecycleMutex_;
 };
 
 /**

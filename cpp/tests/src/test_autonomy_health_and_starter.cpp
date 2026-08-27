@@ -142,6 +142,62 @@ TEST_F(AutonomyHealthReportTest, HealthSummaryIsNonEmpty) {
     agent->stop();
 }
 
+TEST_F(AutonomyHealthReportTest, PlanFeedbackIsRecordedOnceAndCompletesOnThirdSuccess) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+
+    agent->runCognitiveCycleOnce();
+    const std::string plan = agent->getLastPlan();
+    ASSERT_FALSE(plan.empty());
+    EXPECT_EQ(agent->getPlanAttemptCount(plan), 1u);
+    EXPECT_EQ(agent->getPlanSuccessCount(plan), 1u);
+    EXPECT_EQ(agent->getCompletedGoalCount(), 0u);
+
+    agent->runCognitiveCycleOnce();
+    EXPECT_EQ(agent->getLastPlan(), plan);
+    EXPECT_EQ(agent->getPlanAttemptCount(plan), 2u);
+    EXPECT_EQ(agent->getCompletedGoalCount(), 0u);
+
+    agent->runCognitiveCycleOnce();
+    EXPECT_EQ(agent->getLastPlan(), plan);
+    EXPECT_EQ(agent->getPlanAttemptCount(plan), 3u);
+    EXPECT_EQ(agent->getPlanSuccessCount(plan), 3u);
+    EXPECT_EQ(agent->getCompletedGoalCount(), 1u);
+    EXPECT_EQ(agent->getPlanAttemptCount("never executed"), 0u);
+
+    agent->stop();
+}
+
+TEST_F(AutonomyHealthReportTest, SustainedFailureRetainsOneRecoveryGoal) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(false);
+    agent->start();
+
+    for (int i = 0; i < 10; ++i) agent->runCognitiveCycleOnce();
+
+    const std::string recovery =
+        "Re-establish bounded situational awareness after repeated action failure";
+    std::size_t recoveryCount = 0;
+    std::size_t openRecoveryCount = 0;
+    for (const auto& goal : agent->getState().getGoals()) {
+        if (goal.description != recovery) continue;
+        ++recoveryCount;
+        std::string status = goal.status;
+        std::transform(status.begin(), status.end(), status.begin(),
+                       [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (status == "active" || status == "in_progress" || status == "pending") {
+            ++openRecoveryCount;
+        }
+    }
+    EXPECT_EQ(recoveryCount, 1u);
+    EXPECT_EQ(openRecoveryCount, 1u);
+    EXPECT_GE(agent->getConsecutiveActionFailures(), 10u);
+    EXPECT_GT(agent->getOpenGoalCount(), 0u);
+
+    agent->stop();
+}
+
 // ===========================================================================
 // Expanded Adaptive Goal Rotation Tests
 // ===========================================================================
@@ -427,6 +483,62 @@ TEST_F(HomeworkHealthIntegrationTest, HomeworkProposalsAppearAsGoals) {
     agent->stop();
 }
 
+TEST_F(HomeworkHealthIntegrationTest, DefaultEvidenceUsesCenterSpecificRuntimeSignals) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+
+    DefaultEvidenceProvider provider({
+        {CenterId::Endocrine, {{"focused_test_passes", 1.0}}}
+    });
+    const auto before = provider.gather(*agent);
+    EXPECT_DOUBLE_EQ(before.at(CenterId::Endocrine).at("focused_test_passes"), 1.0);
+    EXPECT_DOUBLE_EQ(before.at(CenterId::Endocrine).at("participates_each_cycle"), 0.0);
+
+    agent->runCognitiveCycleOnce();
+    const auto after = provider.gather(*agent);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::Memory).at("participates_each_cycle"), 1.0);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::CognitiveCycle).at("operations_consistent"), 1.0);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::Endocrine).at("participates_each_cycle"), 1.0);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::Protocol).at("participates_each_cycle"), 1.0);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::Autonomy).at("participates_each_cycle"), 1.0);
+    EXPECT_GT(after.at(CenterId::Autonomy).at("exposes_graded_surface"), 0.0);
+    EXPECT_DOUBLE_EQ(after.at(CenterId::Endocrine).at("focused_test_passes"), 1.0);
+
+    agent->stop();
+}
+
+namespace {
+class ConstantHomeworkEvidence final : public EvidenceProvider {
+public:
+    std::map<CenterId, EvidenceMap> gather(const AutonomousStarter&) const override {
+        std::map<CenterId, EvidenceMap> evidence;
+        for (CenterId center : allCenters()) evidence[center] = {};
+        return evidence;
+    }
+};
+}  // namespace
+
+TEST_F(HomeworkHealthIntegrationTest, CoherenceHistoryUsesBoundedRollingWindow) {
+    auto agent = std::make_shared<AutonomousStarter>(makeConfig());
+    agent->enableShellAccess(true);
+    agent->start();
+
+    HomeworkLoop loop(*agent, CognitiveCurriculum{},
+                      std::make_shared<ConstantHomeworkEvidence>());
+    loop.setMaxTrendSamples(3);
+    EXPECT_EQ(loop.maxTrendSamples(), 3u);
+    loop.runHomework(6);
+
+    const auto trend = loop.coherenceTrend(CenterId::Characters);
+    EXPECT_EQ(trend.samples.size(), 3u);
+    EXPECT_TRUE(trend.stagnant);
+
+    loop.setMaxTrendSamples(1);
+    EXPECT_EQ(loop.maxTrendSamples(), 3u);
+    agent->stop();
+}
+
 // ===========================================================================
 // Cross-Fork Parity Invariant Tests
 // ===========================================================================
@@ -603,6 +715,11 @@ TEST_F(CrossForkParityTest, GoalThemeDiversityBoundedAndConsistent) {
     }
     agent->stop();
 }
+
+// ===========================================================================
+// Cycle 010: Cognitive Momentum, Cycle Efficiency, Goal-Chain Coherence
+// ===========================================================================
+
 TEST_F(CrossForkParityTest, CognitiveMomentumFieldPresent) {
     // Both forks must expose cognitiveMomentum on the health report.
     auto agent = std::make_shared<AutonomousStarter>(makeConfig());

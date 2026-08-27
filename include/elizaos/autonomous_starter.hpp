@@ -97,6 +97,8 @@ public:
     // executed so far. Used by supervisors and tests to confirm that the agent
     // adapts plan selection based on accumulated outcome feedback.
     double getPlanSuccessRatio(const std::string& plan) const;
+    std::size_t getPlanAttemptCount(const std::string& plan) const;
+    std::size_t getPlanSuccessCount(const std::string& plan) const;
 
     // Bounded competence estimate in [0, 1]; rises after successful actions and
     // falls after failures. Drives plan fallback selection on the next cycle.
@@ -114,6 +116,7 @@ public:
     State& getState() { return state_; }
     const State& getState() const { return state_; }
     const AgentConfig& getConfig() const { return config_; }
+    const EndocrineSystem& getEndocrineSystem() const { return endocrine_; }
 
     // Task management
     UUID executeShellCommandAsTask(const std::string& command);
@@ -268,6 +271,25 @@ private:
     std::string previousPlan_;
     std::size_t stagnationCounter_{0};
     std::size_t adaptiveGoalCounter_{0};
+    // Theme of the most recently completed goal. seedAdaptiveGoal() uses this to
+    // keep a freshly-idle agent's next self-seeded goal coherent with the drive
+    // it was just pursuing (intent continuity) rather than topic-hopping.
+    std::string lastCompletedGoalDescription_;
+    // One-shot continuation latch for intent continuity in seedAdaptiveGoal():
+    // true once a self-audit theme has already earned its single continuation
+    // pass, reset when the agent broadens into exploratory rotation.
+    bool selfAuditContinued_{false};
+    std::size_t selfAuditPass_{0};
+    // Remaining passes in the current bounded self-audit verification sprint.
+    std::size_t selfAuditSprintRemaining_{0};
+    // Per-cycle guard: set true when evaluateGoalProgress() (actionStep) has
+    // already completed the active goal by id this cycle, so reflectionStep()
+    // does not redundantly complete a SECOND goal by description in the same
+    // cycle. Reset at the start of every cycle in perceptionStep(). This makes
+    // evaluateGoalProgress the single completion authority and keeps exactly one
+    // goal completed per successful cycle (reconciling the historically divergent
+    // by-id and by-description completion writers).
+    bool goalCompletedThisCycleById_{false};
     // Reflection / learning state.
     std::string lastReflection_;
     std::size_t reflectionCount_{0};
@@ -294,23 +316,6 @@ private:
     // goal-selection accessors can update transient attention bookkeeping.
     mutable AttentionAllocator goalAttention_;
     UUID focusedGoalId_;
-
-    // Theme of the most recently completed goal. seedAdaptiveGoal() uses this to
-    // keep a freshly-idle agent's next self-seeded goal coherent with the drive
-    // it was just pursuing (intent continuity) rather than topic-hopping.
-    std::string lastCompletedGoalDescription_;
-    // One-shot continuation latch for intent continuity in seedAdaptiveGoal():
-    // true once a self-audit theme has already earned its single continuation
-    // pass, reset when the agent broadens into exploratory rotation.
-    bool selfAuditContinued_{false};
-    std::size_t selfAuditPass_{0};
-    // Remaining passes in the current bounded self-audit verification sprint.
-    std::size_t selfAuditSprintRemaining_{0};
-    // Per-cycle guard: set true when evaluateGoalProgress() (actionStep) has
-    // already completed the active goal by id this cycle, so reflectionStep()
-    // does not redundantly complete a SECOND goal by description in the same
-    // cycle. Reset at the start of every cycle in perceptionStep().
-    bool goalCompletedThisCycleById_{false};
 
     // Cognitive momentum tracking: EWMA of recent action outcomes.
     double cognitiveMomentum_{0.5};

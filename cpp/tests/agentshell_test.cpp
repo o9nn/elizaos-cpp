@@ -82,6 +82,42 @@ TEST_F(AgentShellTest, HistoryToggles) {
     EXPECT_TRUE(shell.getHistory().empty());
 }
 
+TEST_F(AgentShellTest, HistorySnapshotRemainsStableAfterFurtherCommands) {
+    shell.clearHistory();
+    shell.executeCommand("help");
+    const auto snapshot = shell.getHistory();
+    ASSERT_EQ(snapshot.size(), 1u);
+
+    shell.executeCommand("version");
+    EXPECT_EQ(snapshot.size(), 1u);
+    EXPECT_EQ(snapshot.front(), "help");
+    EXPECT_EQ(shell.getHistory().size(), 2u);
+}
+
+TEST_F(AgentShellTest, ConcurrentExecutionProducesCompleteHistorySnapshots) {
+    shell.clearHistory();
+    constexpr std::size_t kThreads = 8;
+    constexpr std::size_t kCommandsPerThread = 40;
+    std::vector<std::thread> workers;
+    workers.reserve(kThreads);
+    for (std::size_t worker = 0; worker < kThreads; ++worker) {
+        workers.emplace_back([this, worker] {
+            for (std::size_t command = 0; command < kCommandsPerThread; ++command) {
+                const auto result = shell.executeCommand(
+                    "echo worker-" + std::to_string(worker) + "-" + std::to_string(command));
+                EXPECT_TRUE(result.success);
+            }
+        });
+    }
+    for (auto& worker : workers) worker.join();
+
+    const auto history = shell.getHistory();
+    EXPECT_EQ(history.size(), kThreads * kCommandsPerThread);
+    const auto commands = shell.getAvailableCommands();
+    EXPECT_TRUE(std::is_sorted(commands.begin(), commands.end()));
+    EXPECT_NE(std::find(commands.begin(), commands.end(), "echo"), commands.end());
+}
+
 TEST_F(AgentShellTest, SetPromptDoesNotThrow) {
     EXPECT_NO_THROW(shell.setPrompt("> "));
 }
@@ -91,6 +127,33 @@ TEST_F(AgentShellTest, IsRunningInitiallyFalse) {
 }
 
 #ifndef HAVE_READLINE
+TEST(AgentShellInteractive, RestartAfterNaturalExitJoinsPriorThreadSafely) {
+    AgentShell interactiveShell;
+    std::ostringstream capturedOutput;
+    auto* originalCout = std::cout.rdbuf(capturedOutput.rdbuf());
+
+    std::istringstream firstInput("exit\n");
+    auto* originalCin = std::cin.rdbuf(firstInput.rdbuf());
+    interactiveShell.start("first> ");
+    for (int attempt = 0; attempt < 100 && interactiveShell.isRunning(); ++attempt) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    ASSERT_FALSE(interactiveShell.isRunning());
+
+    std::istringstream secondInput("exit\n");
+    std::cin.rdbuf(secondInput.rdbuf());
+    interactiveShell.start("second> ");
+    for (int attempt = 0; attempt < 100 && interactiveShell.isRunning(); ++attempt) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    interactiveShell.stop();
+
+    std::cout.rdbuf(originalCout);
+    std::cin.rdbuf(originalCin);
+    const auto history = interactiveShell.getHistory();
+    EXPECT_EQ(2u, static_cast<unsigned>(std::count(history.begin(), history.end(), "exit")));
+}
+
 TEST(AgentShellInteractive, StartConsumesFiniteInputJoinsCleanlyAndRecordsHistoryOnce) {
     AgentShell interactiveShell;
     interactiveShell.setHistoryEnabled(true);

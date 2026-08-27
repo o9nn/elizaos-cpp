@@ -1,6 +1,6 @@
 #pragma once
 
-#include "elizaos/core.hpp"
+#include "core.hpp"
 #include <string>
 #include <vector>
 #include <memory>
@@ -105,8 +105,8 @@ public:
     struct PipelineStatus {
         std::string pluginName;
         std::string stage;          // "build", "test", "deploy"
-        bool inProgress;
-        bool success;
+        bool inProgress = false;
+        bool success = false;
         std::string output;
         std::string error;
     };
@@ -123,6 +123,8 @@ private:
     mutable std::mutex statusMutex_;
     
     bool executeCommand(const std::string& command, std::string& output, std::string& error);
+    bool runStage(const std::string& pluginName, const std::string& stage,
+                  const std::string& command);
 };
 
 // Automated testing framework for plugins

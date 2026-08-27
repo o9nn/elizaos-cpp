@@ -15,6 +15,7 @@
 #include <iostream>
 #include <sstream>
 #include <thread>
+#include <system_error>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -157,9 +158,13 @@ int decodeExitStatus(int rawStatus) {
 }
 
 std::filesystem::path defaultHomePath() {
+    // Agent startup treats the process environment as immutable. This fallback
+    // is only reached if getcwd() fails during construction.
 #ifdef _WIN32
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     const char* home = std::getenv("USERPROFILE");
 #else
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     const char* home = std::getenv("HOME");
 #endif
     if (home && *home) {
@@ -404,7 +409,7 @@ bool AutonomousStarter::planSatisfiesGoal(const StateGoal& goal,
 
 bool AutonomousStarter::planSatisfiesGoalTopic(const std::string& normalizedGoal,
                                                const std::string& plan) const {
-    const std::string goalText = normalizedGoal;  // caller passes lower-cased goal
+    const std::string& goalText = normalizedGoal;  // caller passes lower-cased goal
     const std::string planText = toLowerAscii(plan);
 
     auto mentions = [](const std::string& text, std::initializer_list<const char*> needles) {
@@ -616,7 +621,8 @@ std::string AutonomousStarter::scoreAndSelectGoal() const {
         // Importance: older goals (earlier in the list / earlier createdAt) carry
         // more long-term importance because they anchor the agent's mission.
         const double ageSeconds =
-            std::chrono::duration_cast<std::chrono::seconds>(now - goal.createdAt).count();
+            static_cast<double>(
+                std::chrono::duration_cast<std::chrono::seconds>(now - goal.createdAt).count());
         av.importance = std::min(1.0, 0.4 + (ageSeconds / 3600.0) * 0.1);
         // Novelty: goals not yet attempted (no matching memory) are novel.
         const std::string needle = goal.description.substr(0, std::min<std::size_t>(goal.description.size(), 24));
@@ -784,12 +790,14 @@ ShellCommandResult AutonomousStarter::executeExternalShellCommand(const std::str
 
     FILE* pipe = popen(fullCommand.c_str(), "r");
     if (!pipe) {
-        const std::string error = "Failed to execute command: " + std::string(std::strerror(errno));
+        const std::string error =
+            "Failed to execute command: " +
+            std::error_code(errno, std::generic_category()).message();
         appendMemory("Command failed to launch: " + command + "\nReason: " + error);
         return ShellCommandResult(false, "", error, -1);
     }
 
-    constexpr std::size_t kMaxCapturedOutputBytes = 64 * 1024;
+    constexpr std::size_t kMaxCapturedOutputBytes = std::size_t{64} * 1024;
     std::array<char, 512> buffer{};
     while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr) {
         if (output.size() < kMaxCapturedOutputBytes) {
@@ -823,7 +831,7 @@ ShellCommandResult AutonomousStarter::executeExternalShellCommand(const std::str
 }
 
 ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& command) {
-    const auto validation = validateShellCommand(command);
+    auto validation = validateShellCommand(command);
     if (!validation.success) {
         appendMemory("Command rejected: " + command + "\nReason: " + validation.error);
         return validation;
@@ -851,20 +859,23 @@ void AutonomousStarter::startAutonomousLoop() {
 
     std::vector<LoopStep> steps = {
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return perceptionStep(input);
+            return perceptionStep(std::move(input));
         }),
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return reasoningStep(input);
+            return reasoningStep(std::move(input));
         }),
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return actionStep(input);
+            return actionStep(std::move(input));
         }),
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return reflectionStep(input);
+            return reflectionStep(std::move(input));
         })
     };
 
-    autonomousLoop_ = std::make_unique<AgentLoop>(steps, false, loopInterval_.count() / 1000.0);
+    const double loopIntervalSeconds =
+        static_cast<double>(loopInterval_.count()) / 1000.0;
+    autonomousLoop_ =
+        std::make_unique<AgentLoop>(steps, false, loopIntervalSeconds);
     autonomousLoop_->start();
 
     logInfo("Autonomous loop started with interval: " + std::to_string(loopInterval_.count()) + "ms");
@@ -929,6 +940,16 @@ double AutonomousStarter::getPlanSuccessRatio(const std::string& plan) const {
     }
     return static_cast<double>(it->second.successes) /
            static_cast<double>(it->second.attempts);
+}
+
+std::size_t AutonomousStarter::getPlanAttemptCount(const std::string& plan) const {
+    const auto it = planStats_.find(plan);
+    return it == planStats_.end() ? 0u : it->second.attempts;
+}
+
+std::size_t AutonomousStarter::getPlanSuccessCount(const std::string& plan) const {
+    const auto it = planStats_.find(plan);
+    return it == planStats_.end() ? 0u : it->second.successes;
 }
 
 double AutonomousStarter::planBias(const std::string& plan) const {
@@ -1104,7 +1125,7 @@ const StateGoal* AutonomousStarter::selectFocusGoal() {
 }
 
 void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actionSucceeded) {
-    if (focusedGoalId_.empty() || !actionSucceeded) {
+    if (focusedGoalId_.empty() || !actionSucceeded || goalCompletedThisCycleById_) {
         return;
     }
     // Find the focused goal's current status.
@@ -1444,25 +1465,33 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
                  std::string(result.success ? "true" : "false") +
                  ", exitCode=" + std::to_string(result.exitCode) + ".");
 
-    // Endocrine stimulus: feed the action outcome into the virtual endocrine system
-    // so hormone levels modulate subsequent plan selection and memory consolidation.
-    if (result.success) {
-        endocrine_.submitStimulus(Stimulus("action_success", 0.7));
-        if (getOpenGoalCount() == 0) {
-            endocrine_.submitStimulus(Stimulus("goal_completed", 0.9));
-        }
-    } else {
-        endocrine_.submitStimulus(Stimulus("error_detected", 0.6));
-        if (consecutiveActionFailures_ >= 3) {
-            endocrine_.submitStimulus(Stimulus("sustained_failure", 0.8));
-        }
-    }
-    endocrine_.tick();
+    // Record the current outcome before evaluating convergence. This makes the
+    // current action part of the reliability gate instead of forcing goal
+    // completion to lag one cycle behind its third successful observation.
+    recordPlanOutcome(lastPlan_, result.success);
+    const std::size_t completedBefore = getCompletedGoalCount();
 
     // Close the loop: feed the action outcome back into goal state so successful,
     // aligned actions complete the active goal and promote the next one. This is
     // what turns the goal list from a static seed into a converging drive.
     evaluateGoalProgress(lastPlan_, command, result);
+    const bool completedGoalThisCycle = getCompletedGoalCount() > completedBefore;
+
+    // Endocrine stimulus follows convergence evaluation so goal-completion
+    // feedback is delivered in the same cycle. For failures, include the current
+    // outcome when deciding whether the sustained-failure threshold is reached.
+    if (result.success) {
+        endocrine_.submitStimulus(Stimulus("action_success", 0.7));
+        if (completedGoalThisCycle) {
+            endocrine_.submitStimulus(Stimulus("goal_completed", 0.9));
+        }
+    } else {
+        endocrine_.submitStimulus(Stimulus("error_detected", 0.6));
+        if (consecutiveActionFailures_ + 1 >= 3) {
+            endocrine_.submitStimulus(Stimulus("sustained_failure", 0.8));
+        }
+    }
+    endocrine_.tick();
     return input;
 }
 
@@ -1506,7 +1535,8 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
     //      the agent does not loop forever on a satisfied or failing probe.
     //   3. Record an adaptive reflective note that becomes part of the
     //      experience the next reasoning cycle summarizes.
-    recordPlanOutcome(lastPlan_, lastActionSucceeded_);
+    // actionStep already recorded this cycle's outcome before convergence
+    // evaluation. Reflection consumes that single sample; it must not double-count.
     advanceGoalLifecycle(lastPlan_, lastActionSucceeded_);
 
     // --- 1. Competence signal + rolling outcome window ---------------------
@@ -1573,20 +1603,40 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
         ++consecutiveActionFailures_;
         reflection << "consecutive_failures=" << consecutiveActionFailures_;
 
-        // Adaptive escalation: if the agent repeatedly fails, fall back to a
-        // minimal, guaranteed-safe situational-awareness goal so the next plan
-        // selects a low-risk probe rather than retrying a failing path.
+        // Adaptive escalation: if the agent repeatedly fails, fall back to one
+        // minimal, guaranteed-safe situational-awareness goal. The recovery goal
+        // remains in flight across further failures rather than being blocked and
+        // duplicated every cycle, keeping the goal store bounded during outages.
         if (consecutiveActionFailures_ >= 2 && !activeGoal.empty()) {
-            const Timestamp now = std::chrono::system_clock::now();
-            state_.updateGoalStatusByDescription(activeGoal, "blocked");
-            state_.addGoal(StateGoal{
-                generateUUID(),
-                "Re-establish bounded situational awareness after repeated action failure",
-                "active",
-                now,
-                now
-            });
-            reflection << "; escalated: blocked failing goal and re-seeded safe awareness goal";
+            static const std::string kRecoveryGoal =
+                "Re-establish bounded situational awareness after repeated action failure";
+            if (activeGoal == kRecoveryGoal) {
+                reflection << "; recovery goal retained without duplicate reseeding";
+            } else {
+                if (!activeGoalId_.empty()) {
+                    state_.updateGoalStatus(activeGoalId_, "blocked");
+                    activeGoalId_.clear();
+                } else {
+                    state_.updateGoalStatusByDescription(activeGoal, "blocked");
+                }
+
+                bool recoveryOpen = false;
+                for (const auto& goal : state_.getGoals()) {
+                    const std::string status = toLowerAscii(goal.status);
+                    if (goal.description == kRecoveryGoal &&
+                        (status == "active" || status == "in_progress" || status == "pending")) {
+                        recoveryOpen = true;
+                        break;
+                    }
+                }
+                if (!recoveryOpen) {
+                    const Timestamp now = std::chrono::system_clock::now();
+                    state_.addGoal(StateGoal{
+                        generateUUID(), kRecoveryGoal, "active", now, now
+                    });
+                }
+                reflection << "; escalated: blocked failing goal and retained one safe recovery goal";
+            }
         } else if (competenceSignal_ > 0.8) {
             reflection << "; lesson=high competence, free to pursue more novel goals";
         } else {

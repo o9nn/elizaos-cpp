@@ -25,11 +25,14 @@
 
 #include <nlohmann/json.hpp>
 #include <atomic>
+#include <cmath>
 #include <fstream>
 #include <chrono>
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
+#include <stdexcept>
 #include <string>
 #include <thread>
 
@@ -116,11 +119,11 @@ static std::vector<VillageAction> parse_actions(const std::string& resident, con
     size_t pos = 0;
     while ((pos = thought.find("[ACTION:", pos)) != std::string::npos) {
         size_t type_start = pos + 8;
-        size_t type_end = thought.find("]", type_start);
+        size_t type_end = thought.find(']', type_start);
         if (type_end == std::string::npos) break;
         std::string action_type = thought.substr(type_start, type_end - type_start);
         // Find the JSON block after ]
-        size_t json_start = thought.find("{", type_end);
+        size_t json_start = thought.find('{', type_end);
         if (json_start == std::string::npos) { pos = type_end; continue; }
         // Find matching closing brace (simple depth counter)
         int depth = 0;
@@ -196,27 +199,80 @@ static Clock::time_point g_startTime;
 
 static void signalHandler(int) { g_running = false; }
 
+static std::string startupEnvironment(const char* name) {
+    // The daemon reads its immutable environment before starting worker threads.
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    const char* value = std::getenv(name);
+    return value == nullptr ? std::string{} : std::string(value);
+}
+
+static int startupInteger(const char* name, int fallback, int minimum, int maximum) {
+    const std::string value = startupEnvironment(name);
+    if (value.empty()) return fallback;
+    try {
+        std::size_t consumed = 0;
+        const long parsed = std::stol(value, &consumed);
+        if (consumed != value.size() || parsed < minimum || parsed > maximum) {
+            throw std::out_of_range("configured integer outside accepted range");
+        }
+        return static_cast<int>(parsed);
+    } catch (const std::exception& e) {
+        std::cerr << "[elizad] Ignoring invalid " << name << "='" << value
+                  << "': " << e.what() << '\n';
+        return fallback;
+    }
+}
+
+static double startupDouble(const char* name, double fallback, double minimum) {
+    const std::string value = startupEnvironment(name);
+    if (value.empty()) return fallback;
+    try {
+        std::size_t consumed = 0;
+        const double parsed = std::stod(value, &consumed);
+        if (consumed != value.size() || !std::isfinite(parsed) || parsed < minimum) {
+            throw std::out_of_range("configured number outside accepted range");
+        }
+        return parsed;
+    } catch (const std::exception& e) {
+        std::cerr << "[elizad] Ignoring invalid " << name << "='" << value
+                  << "': " << e.what() << '\n';
+        return fallback;
+    }
+}
+
 struct ElizadConfig {
     std::string busUrl = "http://cogcity.coghood.com";
     std::string residentName = "eliza";
     int healthPort = 8450;
     int cogCycleMs = TimeCrystalHierarchy::COGNITIVE_CYCLE_MS;
     int heartbeatMs = TimeCrystalHierarchy::HEARTBEAT_MS;
+    std::string persistPath = "/var/agi_neighborhood/atomspace/village.json";
 
-    // Aphrodite inference config
     std::string aphroditeUrl = "http://127.0.0.1:2242/v1/chat/completions";
     std::string aphroditeApiKey = "cogcity-village-2026";
-    std::string aphroditeModel = "/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf";
+    std::string aphroditeModel =
+        "/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf";
     double inferenceSTIThreshold = 150.0;
     int inferenceCooldownCycles = 100;
+
     static ElizadConfig fromEnv() {
         ElizadConfig cfg;
-        if (auto* v = std::getenv("ELIZA_BUS_URL")) cfg.busUrl = v;
-        if (auto* v = std::getenv("ELIZA_RESIDENT_NAME")) cfg.residentName = v;
-        if (auto* v = std::getenv("ELIZA_HEALTH_PORT")) cfg.healthPort = std::atoi(v);
-        if (auto* v = std::getenv("ELIZA_COG_CYCLE_MS")) cfg.cogCycleMs = std::atoi(v);
-        if (auto* v = std::getenv("ELIZA_HEARTBEAT_MS")) cfg.heartbeatMs = std::atoi(v);
-        if (auto* v = std::getenv("ELIZAD_APHRODITE_URL")) cfg.aphroditeUrl = v;
+        if (auto value = startupEnvironment("ELIZA_BUS_URL"); !value.empty()) cfg.busUrl = value;
+        if (auto value = startupEnvironment("ELIZA_RESIDENT_NAME"); !value.empty()) cfg.residentName = value;
+        cfg.healthPort = startupInteger("ELIZA_HEALTH_PORT", cfg.healthPort, 0, 65535);
+        cfg.cogCycleMs = startupInteger("ELIZA_COG_CYCLE_MS", cfg.cogCycleMs, 1,
+                                        std::numeric_limits<int>::max());
+        cfg.heartbeatMs = startupInteger("ELIZA_HEARTBEAT_MS", cfg.heartbeatMs, 1,
+                                         std::numeric_limits<int>::max());
+        if (auto value = startupEnvironment("ELIZAD_PERSIST_PATH"); !value.empty()) cfg.persistPath = value;
+        if (auto value = startupEnvironment("ELIZAD_APHRODITE_URL"); !value.empty()) cfg.aphroditeUrl = value;
+        if (auto value = startupEnvironment("ELIZAD_APHRODITE_API_KEY"); !value.empty()) cfg.aphroditeApiKey = value;
+        if (auto value = startupEnvironment("ELIZAD_APHRODITE_MODEL"); !value.empty()) cfg.aphroditeModel = value;
+        cfg.inferenceSTIThreshold = startupDouble(
+            "ELIZAD_INFERENCE_STI_THRESHOLD", cfg.inferenceSTIThreshold, 0.0);
+        cfg.inferenceCooldownCycles = startupInteger(
+            "ELIZAD_INFERENCE_COOLDOWN_CYCLES", cfg.inferenceCooldownCycles, 0,
+            std::numeric_limits<int>::max());
         return cfg;
     }
 };
@@ -454,7 +510,7 @@ static void translateVillageEventToStimulus(const VillageEvent& event,
 // (persist() takes a mutex and does JSON + file I/O, which is not safe inside a
 // signal handler and previously skipped bus/health teardown via _exit).
 
-int main(int argc, char* argv[]) {
+static int runElizad(int argc, char* argv[]) {
     (void)argc; (void)argv;
     std::signal(SIGINT, signalHandler);
     std::signal(SIGTERM, signalHandler);
@@ -512,11 +568,7 @@ int main(int argc, char* argv[]) {
     // === Cycle 007/008: MEMORY initialization ===
     // Persist path is env-overridable so tests and non-CogCity deployments work
     // without the /var/agi_neighborhood tree.
-    {
-        std::string persistPath = "/var/agi_neighborhood/atomspace/village.json";
-        if (const char* v = std::getenv("ELIZAD_PERSIST_PATH")) persistPath = v;
-        villageAtomSpace.set_persist_path(persistPath);
-    }
+    villageAtomSpace.set_persist_path(config.persistPath);
     bool restored = villageAtomSpace.load_persisted();
     if (restored) {
         fprintf(stderr, "[MEMORY] Restored previous AtomSpace state\n");
@@ -618,7 +670,9 @@ int main(int argc, char* argv[]) {
                         for (auto& m : p["members"]) members.push_back(m);
                     }
                     agnaiBridge.onGroupFormed(groupId, members, "emergent_dynamics");
-                } catch (...) {}
+                } catch (const std::exception& e) {
+                    fprintf(stderr, "[GROUP] Invalid formation payload: %s\n", e.what());
+                }
             } else if (eventType == "dissolved") {
                 agnaiBridge.onGroupDissolved(groupId);
             }
@@ -712,7 +766,9 @@ int main(int argc, char* argv[]) {
                     auto j = json::parse(event.payload);
                     if (j.contains("target")) target = j["target"].get<std::string>();
                     correlation_id = j.value("correlation_id", "");
-                } catch (...) {}
+                } catch (const std::exception& e) {
+                    fprintf(stderr, "[STIMULUS] Invalid target payload: %s\n", e.what());
+                }
             }
             fprintf(stderr, "[STIMULUS] received: target=%s\n", target.c_str());
             if (!target.empty() && target != "eliza" && target != "dan") {
@@ -721,7 +777,9 @@ int main(int argc, char* argv[]) {
                     auto j = json::parse(event.payload);
                     if (j.contains("message")) message = j["message"].get<std::string>();
                     correlation_id = j.value("correlation_id", correlation_id);
-                } catch (...) {}
+                } catch (const std::exception& e) {
+                    fprintf(stderr, "[STIMULUS] Invalid message payload: %s\n", e.what());
+                }
                 fprintf(stderr, "[STIMULUS] calling infer_async for %s: %s\n", target.c_str(), message.substr(0,50).c_str());
                 aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete, 0.7, correlation_id);
                 // Cycle 007: Record stimulus in episodic memory
@@ -752,7 +810,9 @@ int main(int argc, char* argv[]) {
                         }
                     }
                 }
-            } catch (...) {}
+            } catch (const std::exception& e) {
+                fprintf(stderr, "[THOUGHT] Invalid resident payload: %s\n", e.what());
+            }
         }
     });
 
@@ -819,56 +879,58 @@ int main(int argc, char* argv[]) {
 
             // ---- Drain pending inference results into AtomSpace ----
             villageAtomSpace.drain_pending_events();
-            // Drain pending thoughts from inference threads (publish to bus from main thread)
+            // Drain pending thoughts from inference threads. Swap under the queue
+            // lock, then publish and persist outside it so producers never wait on I/O.
+            std::vector<PendingThought> pendingThoughts;
             {
                 std::lock_guard<std::mutex> lock(g_thoughtMutex);
-                for (auto& pt : g_pendingThoughts) {
-                    json thoughtPayload = {
-                        {"resident", pt.resident},
-                        {"thought", pt.thought},
-                        {"kind", "inference"},
-                        {"inference_id", pt.inference_id}
-                    };
-                    if (!pt.correlation_id.empty()) thoughtPayload["correlation_id"] = pt.correlation_id;
-                    bus.publish("resident.thought", thoughtPayload.dump());
-                    fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
-                    // Cycle 007: Record in episodic memory
-                    villageAtomSpace.add_episodic(pt.resident, "thought", pt.thought);
-                }
-                g_pendingThoughts.clear();
+                pendingThoughts.swap(g_pendingThoughts);
             }
-            // ---- Drain and execute pending actions (Cycle 006: ACTION) ----
+            for (auto& pt : pendingThoughts) {
+                json thoughtPayload = {
+                    {"resident", pt.resident}, {"thought", pt.thought},
+                    {"kind", "inference"}, {"inference_id", pt.inference_id}
+                };
+                if (!pt.correlation_id.empty()) thoughtPayload["correlation_id"] = pt.correlation_id;
+                bus.publish("resident.thought", thoughtPayload.dump());
+                fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
+                villageAtomSpace.add_episodic(pt.resident, "thought", pt.thought);
+            }
+
+            // Drain actions with the same swap discipline. Execution, AtomSpace
+            // persistence, and result publication may block and must not hold the
+            // producer queue mutex.
+            std::vector<VillageAction> pendingActions;
             {
                 std::lock_guard<std::mutex> lock(g_actionMutex);
-                for (auto& action : g_pendingActions) {
-                    std::string result = execute_action(action, bus);
-                    villageAtomSpace.add_action(action.resident, action.action_type, result,
-                                                action.inference_id, action.correlation_id);
-                    // Feedback loop: publish action result as stimulus back to the resident
-                    json resultPayload = {
-                        {"resident", action.resident},
-                        {"action_type", action.action_type},
-                        {"result", result},
-                        {"inference_id", action.inference_id}
-                    };
-                    if (!action.correlation_id.empty()) resultPayload["correlation_id"] = action.correlation_id;
-                    bus.publish("resident.action_result", resultPayload.dump());
-                    fprintf(stderr, "[MAIN] Action executed: %s -> %s\n",
-                            action.resident.c_str(), action.action_type.c_str());
-                }
-                g_pendingActions.clear();
+                pendingActions.swap(g_pendingActions);
+            }
+            for (auto& action : pendingActions) {
+                std::string result = execute_action(action, bus);
+                villageAtomSpace.add_action(action.resident, action.action_type, result,
+                                            action.inference_id, action.correlation_id);
+                json resultPayload = {
+                    {"resident", action.resident}, {"action_type", action.action_type},
+                    {"result", result}, {"inference_id", action.inference_id}
+                };
+                if (!action.correlation_id.empty()) resultPayload["correlation_id"] = action.correlation_id;
+                bus.publish("resident.action_result", resultPayload.dump());
+                fprintf(stderr, "[MAIN] Action executed: %s -> %s\n",
+                        action.resident.c_str(), action.action_type.c_str());
             }
 
             // ---- Inference Trigger (attention overflow → resident thinks) ----
             // Every 50 cycles, check if any resident in the AF should speak
             if (g_cogCycleCount.load() % 50 == 0) {
-                std::cout << "[DEBUG] Inference check at cycle " << g_cogCycleCount.load() << " active=" << aphroditeBridge.active_count() << std::endl;
+                std::cout << "[DEBUG] Inference check at cycle " << g_cogCycleCount.load()
+                          << " active=" << aphroditeBridge.active_count() << '\n';
                 auto afNames = villageAtomSpace.get_attentional_focus_names();
                 for (const auto& name : afNames) {
                     // Skip "eliza" and "dan" (they are the daemon and the human)
                     if (name == "eliza" || name == "dan") continue;
                     double sti = villageAtomSpace.get_resident_sti(name);
-                    std::cout << "[DEBUG] AF: " << name << " sti=" << sti << " should_infer=" << aphroditeBridge.should_infer(name, sti) << std::endl;
+                    std::cout << "[DEBUG] AF: " << name << " sti=" << sti
+                              << " should_infer=" << aphroditeBridge.should_infer(name, sti) << '\n';
                     if (aphroditeBridge.should_infer(name, sti)) {
                         std::string stimulus = "The village is alive. You feel the attention of the collective upon you (STI=" +
                             std::to_string(static_cast<int>(sti)) + "). What thought arises?";
@@ -958,4 +1020,15 @@ int main(int argc, char* argv[]) {
     health.stop();
     std::cout << "[elizad] Eliza is offline. The village remembers.\n";
     return 0;
+}
+
+int main(int argc, char* argv[]) noexcept {
+    try {
+        return runElizad(argc, argv);
+    } catch (const std::exception& e) {
+        std::cerr << "[elizad] Fatal startup/runtime error: " << e.what() << '\n';
+    } catch (...) {
+        std::cerr << "[elizad] Fatal unknown startup/runtime error\n";
+    }
+    return EXIT_FAILURE;
 }

@@ -133,6 +133,15 @@ TEST_F(SocialNetworkTest, CentralityComputation) {
     EXPECT_GT(manusCentrality, echoCentrality);
 }
 
+TEST(SocialNetworkEdgeCaseTest, SingleResidentCentralityIsFiniteAndZero) {
+    SocialNetwork network;
+    network.addResident({"solo", "Solo", "observer", {"safety"},
+                         0.5, 0.5, 0.5, 0.5, 0.5, true, 0});
+    const double centrality = network.calculateCentrality("solo");
+    EXPECT_TRUE(std::isfinite(centrality));
+    EXPECT_DOUBLE_EQ(centrality, 0.0);
+}
+
 TEST_F(SocialNetworkTest, NeighborDiscovery) {
     network_.updateRelationship("dan", "manus", "work", 0.5);
     network_.updateRelationship("dan", "echo", "research", 0.5);
@@ -250,8 +259,8 @@ TEST_F(GroupManagerTest, CohesionUpdate) {
     groups_.tick(100, network_);
     const Group* after = groups_.getGroup(groupId);
     ASSERT_NE(after, nullptr);
-    // Cohesion should change (direction depends on network state)
-    // With no interactions, it may increase or decay depending on implementation
+    // Cohesion should change (direction depends on network state).
+    EXPECT_NE(after->cohesion, initialCohesion);
     EXPECT_NE(after->cohesion, 0.0);
 }
 
@@ -288,14 +297,63 @@ TEST_F(GroupManagerTest, PotentialGroupDetection) {
     EXPECT_GE(potentials.size(), 1u);
 }
 
-TEST_F(GroupManagerTest, BroadcastToGroup) {
+TEST_F(GroupManagerTest, BroadcastToGroupRecordsAndEmitsDelivery) {
     GroupManager::ProtoGroup proto;
     proto.candidates = {"dan", "manus", "echo"};
     proto.affinityScore = 0.8;
     proto.trigger = "comm";
-    auto groupId = groups_.formGroup(proto, "discussion");
-    auto reached = groups_.broadcastToGroup(groupId, "dan", "Hello group");
-    EXPECT_GE(reached.size(), 2u); // Should reach manus and echo
+    const auto groupId = groups_.formGroup(proto, "discussion");
+
+    std::string eventType;
+    std::string eventPayload;
+    groups_.setEventCallback([&](const std::string& type, const GroupId& id,
+                                 const std::string& payload) {
+        EXPECT_EQ(id, groupId);
+        eventType = type;
+        eventPayload = payload;
+    });
+
+    const auto reached = groups_.broadcastToGroup(groupId, "dan", "Hello group");
+    EXPECT_EQ(reached, (std::set<ResidentId>{"echo", "manus"}));
+    const auto history = groups_.getConversationHistory(groupId);
+    ASSERT_EQ(history.size(), 1u);
+    EXPECT_EQ(history.front().speaker, "dan");
+    EXPECT_EQ(history.front().message, "Hello group");
+    EXPECT_TRUE(history.front().addressedTo.empty());
+    ASSERT_NE(groups_.getGroup(groupId), nullptr);
+    EXPECT_EQ(groups_.getGroup(groupId)->interactionCount, 1);
+    EXPECT_EQ(eventType, "group.message.broadcast");
+    EXPECT_NE(eventPayload.find("Hello group"), std::string::npos);
+
+    EXPECT_TRUE(groups_.broadcastToGroup(groupId, "outsider", "invalid").empty());
+    EXPECT_TRUE(groups_.broadcastToGroup(groupId, "dan", "").empty());
+    EXPECT_EQ(groups_.getConversationHistory(groupId).size(), 1u);
+}
+
+TEST_F(GroupManagerTest, WhisperFiltersRecipientsAndRecordsDirectedTurn) {
+    GroupManager::ProtoGroup proto;
+    proto.candidates = {"dan", "manus", "echo"};
+    proto.affinityScore = 0.8;
+    const auto groupId = groups_.formGroup(proto, "private_discussion");
+
+    std::string eventType;
+    groups_.setEventCallback([&](const std::string& type, const GroupId&,
+                                 const std::string&) { eventType = type; });
+
+    const auto reached = groups_.whisper(
+        groupId, "dan", {"manus", "outsider", "dan"}, "Private note");
+    EXPECT_EQ(reached, (std::set<ResidentId>{"manus"}));
+    const auto history = groups_.getConversationHistory(groupId);
+    ASSERT_EQ(history.size(), 1u);
+    EXPECT_EQ(history.front().speaker, "dan");
+    EXPECT_EQ(history.front().addressedTo, "manus");
+    EXPECT_EQ(history.front().message, "Private note");
+    EXPECT_EQ(eventType, "group.message.whisper");
+
+    EXPECT_TRUE(groups_.whisper("missing", "dan", {"manus"}, "note").empty());
+    EXPECT_TRUE(groups_.whisper(groupId, "outsider", {"manus"}, "note").empty());
+    EXPECT_TRUE(groups_.whisper(groupId, "dan", {"outsider"}, "note").empty());
+    EXPECT_TRUE(groups_.whisper(groupId, "dan", {"manus"}, "").empty());
 }
 
 // ============================================================================
@@ -381,9 +439,12 @@ TEST_F(AntikytheraTest, AlignmentDetection) {
 
 TEST_F(AntikytheraTest, EpicyclicModulation) {
     engine_.addJoint({"epic_1", "manus", "echo", JointType::EpicyclicPin, 1.0, 0.0, 0.11});
-    double mod = engine_.getEpicyclicModulation("echo", 1);
-    // Modulation should be near 1.0 (±0.11 amplitude)
-    EXPECT_NEAR(mod, 1.0, 0.12);
+    const double atOrigin = engine_.getEpicyclicModulation("echo", 0);
+    // Manus rotates at 2 RPM, so 7.5 seconds projects its phase by π/2.
+    const double atQuarterPeriod = engine_.getEpicyclicModulation("echo", 7500);
+    EXPECT_NEAR(atOrigin, 1.0, 1e-9);
+    EXPECT_NEAR(atQuarterPeriod, 1.11, 1e-6);
+    EXPECT_GT(atQuarterPeriod, atOrigin);
 }
 
 TEST_F(AntikytheraTest, GearTrainRegistration) {

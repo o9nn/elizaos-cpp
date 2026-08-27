@@ -140,6 +140,13 @@ public:
     void setMaxPracticeDepth(std::size_t depth) { maxPracticeDepth_ = depth == 0 ? 1 : depth; }
     std::size_t maxPracticeDepth() const { return maxPracticeDepth_; }
 
+    /// Rolling per-center trend window; at least three samples are retained for
+    /// stagnation detection while preventing unbounded long-running growth.
+    void setMaxTrendSamples(std::size_t samples) {
+        maxTrendSamples_ = samples < 3 ? 3 : samples;
+    }
+    std::size_t maxTrendSamples() const { return maxTrendSamples_; }
+
 private:
     // Build the read-only practice goal description for a center (drives the KSM pass).
     std::string buildPracticeGoal(const CenterScore& target) const;
@@ -161,6 +168,7 @@ private:
     // adaptivePracticeDepth().
     std::map<CenterId, std::vector<double>> coherenceHistory_;
     std::size_t maxPracticeDepth_ = 3;
+    std::size_t maxTrendSamples_ = 64;
 };
 
 }  // namespace elizaos
