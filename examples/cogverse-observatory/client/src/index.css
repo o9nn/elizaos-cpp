@@ -1,0 +1,165 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 4px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --font-pixel: "Press Start 2P", monospace;
+  --font-mono: "Space Mono", monospace;
+  --color-cyan: oklch(0.85 0.15 195);
+  --color-amber: oklch(0.82 0.15 75);
+  --color-deep: oklch(0.05 0.01 280);
+}
+
+:root {
+  --radius: 2px;
+  --background: oklch(0.05 0.01 280);
+  --foreground: oklch(0.9 0.005 0);
+  --card: oklch(0.1 0.015 280);
+  --card-foreground: oklch(0.9 0.005 0);
+  --popover: oklch(0.1 0.015 280);
+  --popover-foreground: oklch(0.9 0.005 0);
+  --primary: oklch(0.85 0.15 195);
+  --primary-foreground: oklch(0.1 0.01 195);
+  --secondary: oklch(0.15 0.01 280);
+  --secondary-foreground: oklch(0.7 0.005 0);
+  --muted: oklch(0.15 0.01 280);
+  --muted-foreground: oklch(0.5 0.005 0);
+  --accent: oklch(0.82 0.15 75);
+  --accent-foreground: oklch(0.1 0.01 75);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.95 0 0);
+  --border: oklch(0.85 0.15 195 / 20%);
+  --input: oklch(0.85 0.15 195 / 15%);
+  --ring: oklch(0.85 0.15 195);
+  --chart-1: oklch(0.85 0.15 195);
+  --chart-2: oklch(0.82 0.15 75);
+  --chart-3: oklch(0.7 0.15 150);
+  --chart-4: oklch(0.6 0.2 300);
+  --chart-5: oklch(0.75 0.1 30);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Space Mono", monospace;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1440px;
+    }
+  }
+}
+
+/* CogVerse custom utilities */
+.font-pixel {
+  font-family: "Press Start 2P", monospace;
+}
+
+.font-mono {
+  font-family: "Space Mono", monospace;
+}
+
+.glow-cyan {
+  text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff40;
+}
+
+.glow-amber {
+  text-shadow: 0 0 10px #ffb347, 0 0 20px #ffb34740;
+}
+
+.border-dashed-cyan {
+  border: 1px dashed rgba(0, 240, 255, 0.3);
+}
+
+.panel-bg {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.03) 0%, rgba(5, 5, 16, 0.95) 100%);
+  backdrop-filter: blur(8px);
+}
+
+@keyframes gear-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes drift-up {
+  0% { transform: translateY(0); opacity: 0.6; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
