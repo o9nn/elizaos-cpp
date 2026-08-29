@@ -219,7 +219,7 @@ void VillageEventBusClient::heartbeatLoop() {
 void VillageEventBusClient::wsSubscriptionLoop() {
     int64_t lastSeenTic = lastKnownTic_.load();
     while (running_.load()) {
-        std::string url = config_.busUrl + "/api/events/events?limit=20&since=" +
+        std::string url = config_.busUrl + "/api/events/events?limit=20&since_tic=" +
                           std::to_string(lastSeenTic);
         std::string response = httpGet(url);
         if (!response.empty()) {
