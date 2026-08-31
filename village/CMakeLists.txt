@@ -16,6 +16,10 @@ target_include_directories(village_event_bus PUBLIC
 )
 target_link_libraries(village_event_bus PUBLIC CURL::libcurl nlohmann_json::nlohmann_json)
 
+add_executable(village_event_bus_test village_event_bus_test.cpp)
+target_link_libraries(village_event_bus_test PRIVATE village_event_bus)
+add_test(NAME village_event_bus_test COMMAND village_event_bus_test)
+
 # Resident generation provenance, validation, and append-only evidence journal
 add_library(response_authenticity STATIC response_authenticity.cpp)
 target_include_directories(response_authenticity PUBLIC

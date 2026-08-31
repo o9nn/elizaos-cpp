@@ -280,20 +280,31 @@ std::string VillageEventBusClient::httpGet(const std::string& url) {
     return (res == CURLE_OK) ? response : "";
 }
 
-VillageEvent VillageEventBusClient::parseEvent(const std::string& jsonStr) {
+VillageEvent parseVillageEvent(const std::string& jsonStr) {
     VillageEvent event;
     try {
         auto j = json::parse(jsonStr);
         event.id = j.value("id", int64_t(0));
         event.timestamp = j.value("timestamp", 0.0);
         event.typeStr = j.value("event_type", "unknown");
-        event.type = parseEventType(event.typeStr);
-        event.source = j.value("source", "");
-        event.target = j.value("target", "");
+        event.source = j.contains("source") && j["source"].is_string()
+            ? j["source"].get<std::string>() : "";
+        event.target = j.contains("target") && j["target"].is_string()
+            ? j["target"].get<std::string>() : "";
         event.hash = j.value("hash", "");
         event.tic = j.value("tic", int64_t(0));
-        if (j.contains("payload")) event.payload = j["payload"].dump();
+        if (j.contains("payload")) {
+            event.payload = j["payload"].is_string()
+                ? j["payload"].get<std::string>()
+                : j["payload"].dump();
+        }
     } catch (...) {}
+    return event;
+}
+
+VillageEvent VillageEventBusClient::parseEvent(const std::string& jsonStr) {
+    auto event = parseVillageEvent(jsonStr);
+    event.type = parseEventType(event.typeStr);
     return event;
 }
 
