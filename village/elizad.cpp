@@ -615,7 +615,10 @@ static int runElizad(int argc, char* argv[]) {
             json regData = json::parse(regFile);
             for (auto& [name, data] : regData["residents"].items()) {
                 ::village::atomspace::ResidentAtom ra;
-                ra.name = data["handle"].get<std::string>();
+                // The registry key is the canonical machine identity used by
+                // directed stimuli, role prompts, memory ledgers, and evidence.
+                // `handle` is display-only and must not create a second identity.
+                ra.name = name;
                 ra.gear_train = data["gear_train"].get<std::string>();
                 ra.gear_rpm_multiplier = data["gear_teeth"].get<double>() / 30.0;
                 // Default OCEAN (will be refined per-resident via LoRA training)
