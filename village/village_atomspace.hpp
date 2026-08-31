@@ -33,6 +33,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "response_authenticity.hpp"
+
 namespace village { namespace atomspace {
 
 // ─────────────────────────────────────────────────────────────────────
@@ -908,15 +910,16 @@ public:
 // ─────────────────────────────────────────────────────────────────────
 
 struct AphroditeRequest {
-    std::string resident;           // Who is speaking
-    std::string correlation_id;     // Directed stimulus correlation, empty for autonomous thought
-    std::string system_prompt;      // Persona + context from AtomSpace
-    std::string user_prompt;        // The actual query/stimulus
-    double temperature;             // Derived from endocrine state
-    double min_p;                   // Derived from ECAN focus
-    std::string lora_adapter;       // Per-resident LoRA (if trained)
-    int max_tokens;
-    int priority;                   // Derived from STI (higher = process first)
+    std::string resident;
+    std::string correlation_id;
+    std::string system_prompt;
+    std::string user_prompt;
+    double temperature = 0.7;
+    double min_p = 0.05;
+    int max_tokens = 512;
+    int priority = 0;
+    int seed = 0;
+    ::village::authenticity::GenerationEvidence evidence;
 };
 
 class AphroditeBridge {
@@ -928,80 +931,169 @@ public:
         double sti_threshold;
         int inference_cooldown_cycles;
         int max_concurrent_inferences;
+        std::string model_revision;
+        std::string identity_version;
+        bool allow_action_proposals;
         Config() : url("http://136.243.70.177:2242/v1/chat/completions"),
                    api_key("cogcity-village-2026"),
                    model("/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf"),
                    sti_threshold(150.0),
                    inference_cooldown_cycles(50),
-                   max_concurrent_inferences(4) {}
+                   max_concurrent_inferences(4),
+                   model_revision("unconfigured"),
+                   identity_version("unconfigured"),
+                   allow_action_proposals(false) {}
     };
 
-    using InferenceCallback = std::function<void(const std::string&, const std::string&, const std::string&)>;
+    using InferenceCallback =
+        std::function<void(::village::authenticity::GenerationEvidence)>;
 
     explicit AphroditeBridge(const Config& config = Config())
         : config_(config), active_inferences_(0) {}
 
-    static AphroditeRequest build_request(
+    AphroditeRequest build_request(
         const VillageAtomSpace& vas, const std::string& resident_name,
-        const std::string& stimulus, double endocrine_temperature = 0.7) 
+        const std::string& stimulus, double endocrine_temperature = 0.7,
+        const std::string& correlation_id = "",
+        const std::string& stimulus_source = "elizad.attention",
+        std::int64_t parent_event_id = 0,
+        std::int64_t parent_tic = 0)
     {
         AphroditeRequest req;
         req.resident = resident_name;
+        req.correlation_id = correlation_id;
         req.user_prompt = stimulus;
         req.temperature = endocrine_temperature;
         req.max_tokens = 512;
+        req.seed = ::village::authenticity::random_seed();
+        auto& evidence = req.evidence;
+        evidence.generation_id = ::village::authenticity::random_generation_id();
+        evidence.created_at = ::village::authenticity::utc_now_iso8601();
+        evidence.correlation_id = correlation_id;
+        evidence.resident.id = resident_name;
+        evidence.resident.identity_version = config_.identity_version;
+        evidence.stimulus.source = stimulus_source;
+        evidence.stimulus.target = resident_name;
+        evidence.stimulus.text = stimulus;
+        evidence.stimulus.utf8_sha256 = ::village::authenticity::sha256(stimulus);
+        evidence.stimulus.parent_event_id = parent_event_id;
+        evidence.stimulus.parent_tic = parent_tic;
+        evidence.invocation.server = config_.url;
+        evidence.invocation.model_id = config_.model;
+        evidence.invocation.model_revision = config_.model_revision;
+        evidence.invocation.temperature = endocrine_temperature;
+        evidence.invocation.max_tokens = req.max_tokens;
+        evidence.invocation.seed = req.seed;
+        evidence.invocation.seed_sha256 =
+            ::village::authenticity::sha256(std::to_string(req.seed));
         auto& residents = vas.residents();
         auto it = residents.find(resident_name);
         if (it == residents.end()) return req;
         const auto& r = it->second;
         req.priority = static_cast<int>(r.sti);
         req.min_p = 0.05 + (r.conscientiousness * 0.15);
-        req.lora_adapter = "loras/" + resident_name;
-        req.system_prompt = build_system_prompt(vas, r);
+        evidence.invocation.min_p = req.min_p;
+
+        evidence.resident.role_prompt = resident_role_prompt(r.name);
+        evidence.resident.role_prompt_sha256 =
+            ::village::authenticity::sha256(evidence.resident.role_prompt);
+        const nlohmann::json identity_manifest = {
+            {"resident", r.name}, {"identity_version", config_.identity_version},
+            {"gear_train", r.gear_train}, {"openness", r.openness},
+            {"conscientiousness", r.conscientiousness}, {"extraversion", r.extraversion},
+            {"agreeableness", r.agreeableness}, {"neuroticism", r.neuroticism},
+            {"role_prompt_sha256", evidence.resident.role_prompt_sha256}
+        };
+        evidence.resident.identity_manifest =
+            ::village::authenticity::canonical_json(identity_manifest);
+        evidence.resident.identity_manifest_sha256 =
+            ::village::authenticity::sha256(evidence.resident.identity_manifest);
+
+        evidence.context.memory_snapshot = vas.get_episodic_context(resident_name) +
+                                           vas.get_conversation_context(resident_name);
+        evidence.context.memory_snapshot_sha256 =
+            ::village::authenticity::sha256(evidence.context.memory_snapshot);
+        evidence.context.shared_context = "";
+        evidence.context.shared_context_sha256 =
+            ::village::authenticity::sha256(evidence.context.shared_context);
+        const nlohmann::json cognitive_state = {
+            {"resident", r.name}, {"gear_train", r.gear_train},
+            {"sti", r.sti}, {"lti", r.lti},
+            {"ocean", {
+                {"openness", r.openness}, {"conscientiousness", r.conscientiousness},
+                {"extraversion", r.extraversion}, {"agreeableness", r.agreeableness},
+                {"neuroticism", r.neuroticism}
+            }}
+        };
+        evidence.context.cognitive_state =
+            ::village::authenticity::canonical_json(cognitive_state);
+        evidence.context.cognitive_state_sha256 =
+            ::village::authenticity::sha256(evidence.context.cognitive_state);
+        const nlohmann::json selection = {
+            {"policy", "resident-private-memory-plus-current-state-v1"},
+            {"resident", resident_name},
+            {"memory_bytes", evidence.context.memory_snapshot.size()},
+            {"shared_context_bytes", evidence.context.shared_context.size()},
+            {"action_proposals_enabled", config_.allow_action_proposals}
+        };
+        evidence.context.selection_record =
+            ::village::authenticity::canonical_json(selection);
+        evidence.context.selection_record_sha256 =
+            ::village::authenticity::sha256(evidence.context.selection_record);
+        req.system_prompt = build_system_prompt(r, evidence.resident.role_prompt,
+                                                evidence.context.memory_snapshot,
+                                                config_.allow_action_proposals);
+        evidence.context.system_prompt = req.system_prompt;
+        evidence.context.system_prompt_sha256 =
+            ::village::authenticity::sha256(evidence.context.system_prompt);
+        evidence.context.combined_context_sha256 = ::village::authenticity::sha256(
+            evidence.context.system_prompt + "\n--MEMORY--\n" +
+            evidence.context.memory_snapshot + "\n--SHARED--\n" +
+            evidence.context.shared_context + "\n--STATE--\n" +
+            evidence.context.cognitive_state);
         return req;
     }
 
     bool infer_async(const VillageAtomSpace& vas, const std::string& resident_name,
                      const std::string& stimulus, InferenceCallback callback,
                      double endocrine_temperature = 0.7,
-                     const std::string& correlation_id = "") {
-        if (active_inferences_.load() >= config_.max_concurrent_inferences) return false;
+                     const std::string& correlation_id = "",
+                     const std::string& stimulus_source = "elizad.attention",
+                     std::int64_t parent_event_id = 0,
+                     std::int64_t parent_tic = 0) {
+        auto req = build_request(vas, resident_name, stimulus, endocrine_temperature,
+                                 correlation_id, stimulus_source, parent_event_id, parent_tic);
+        if (req.resident.empty() || req.evidence.resident.role_prompt.empty()) {
+            fail_attempt(req.evidence, "unknown_resident", "canonical resident identity was not found");
+            if (callback) callback(std::move(req.evidence));
+            return false;
+        }
+        if (active_inferences_.load() >= config_.max_concurrent_inferences) {
+            fail_attempt(req.evidence, "capacity_rejected", "maximum concurrent inference limit reached");
+            if (callback) callback(std::move(req.evidence));
+            return false;
+        }
         auto now = std::chrono::steady_clock::now();
         {
             std::lock_guard<std::mutex> lock(cooldown_mutex_);
             auto it = last_inference_.find(resident_name);
             if (it != last_inference_.end()) {
                 auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count();
-                if (elapsed < config_.inference_cooldown_cycles * 52) return false;
+                if (elapsed < config_.inference_cooldown_cycles * 52) {
+                    fail_attempt(req.evidence, "cooldown_rejected", "resident inference cooldown is active");
+                    if (callback) callback(std::move(req.evidence));
+                    return false;
+                }
             }
             last_inference_[resident_name] = now;
         }
-        auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
-        req.correlation_id = correlation_id;
-        // Cycle 007: Append episodic memory and conversation context
-        req.system_prompt += vas.get_episodic_context(resident_name);
-        req.system_prompt += vas.get_conversation_context(resident_name);
-        if (req.resident.empty()) return false;
         active_inferences_++;
         std::thread([this, req, callback]() {
-            std::string thought = perform_inference(req);
+            auto completed = perform_inference(req);
             active_inferences_--;
-            if (!thought.empty() && callback) callback(req.resident, thought, req.correlation_id);
-            // Cycle 008: record the stimulus/response pair so future prompts carry
-            // conversation history (previously add_conversation was never invoked).
-            if (!thought.empty() && conversation_recorder_) {
-                conversation_recorder_(req.resident, req.user_prompt, thought);
-            }
+            if (callback) callback(std::move(completed));
         }).detach();
         return true;
-    }
-
-    // Cycle 008: optional hook invoked after each successful inference with
-    // (resident, stimulus, response) — wired by elizad to VillageAtomSpace::add_conversation.
-    using ConversationRecorder =
-        std::function<void(const std::string&, const std::string&, const std::string&)>;
-    void set_conversation_recorder(ConversationRecorder rec) {
-        conversation_recorder_ = std::move(rec);
     }
 
     bool should_infer(const std::string& resident_name, double sti) const {
@@ -1023,7 +1115,21 @@ private:
         return size * nmemb;
     }
 
-    std::string perform_inference(const AphroditeRequest& req) {
+    static void fail_attempt(::village::authenticity::GenerationEvidence& evidence,
+                             const std::string& code, const std::string& detail) {
+        evidence.result.status = "generation-failed";
+        evidence.result.finished_at = ::village::authenticity::utc_now_iso8601();
+        evidence.result.error_code = code;
+        evidence.result.error_detail = detail;
+        evidence.publication.allowed = false;
+        evidence.publication.denial_reason = code;
+    }
+
+    ::village::authenticity::GenerationEvidence perform_inference(
+        const AphroditeRequest& req) {
+        auto evidence = req.evidence;
+        const auto started = std::chrono::steady_clock::now();
+        evidence.invocation.started_at = ::village::authenticity::utc_now_iso8601();
         nlohmann::json messages = nlohmann::json::array();
         messages.push_back({{"role", "system"}, {"content", req.system_prompt}});
         messages.push_back({{"role", "user"}, {"content", req.user_prompt}});
@@ -1033,11 +1139,18 @@ private:
         nlohmann::json payload = {
             {"model", config_.model}, {"messages", messages},
             {"temperature", req.temperature}, {"min_p", req.min_p},
-            {"max_tokens", req.max_tokens}, {"stop", stop_tokens}
+            {"max_tokens", req.max_tokens}, {"seed", req.seed}, {"stop", stop_tokens}
         };
+        std::string response;
+        const std::string body = payload.dump();
+        evidence.invocation.request_body = body;
+        evidence.invocation.request_body_sha256 =
+            ::village::authenticity::sha256(body);
         CURL* curl = curl_easy_init();
-        if (!curl) return "";
-        std::string response, body = payload.dump();
+        if (!curl) {
+            fail_attempt(evidence, "curl_initialization_failed", "unable to initialize HTTP client");
+            return evidence;
+        }
         std::string auth_header = "Authorization: Bearer " + config_.api_key;
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -1051,34 +1164,67 @@ private:
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
         curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
         CURLcode res = curl_easy_perform(curl);
+        long http_status = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_status);
         fprintf(stderr, "[INFER] curl_res=%d resp_len=%zu\n", (int)res, response.size());
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
-        if (res != CURLE_OK) return "";
+        evidence.result.finished_at = ::village::authenticity::utc_now_iso8601();
+        evidence.result.latency_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - started).count();
+        evidence.result.transport_code = static_cast<int>(res);
+        evidence.result.http_status = static_cast<int>(http_status);
+        evidence.result.raw_response = response;
+        evidence.result.raw_response_sha256 =
+            ::village::authenticity::sha256(response);
+        if (res != CURLE_OK) {
+            fail_attempt(evidence, "transport_error", curl_easy_strerror(res));
+            return evidence;
+        }
+        if (http_status != 200) {
+            fail_attempt(evidence, "model_http_error",
+                         "model server returned HTTP " + std::to_string(http_status));
+            return evidence;
+        }
         try {
             auto j = nlohmann::json::parse(response);
             if (j.contains("choices") && !j["choices"].empty()) {
-                std::string content = j["choices"][0]["message"]["content"].get<std::string>();
-                // Strip chat template tokens
-                auto pos = content.find("<|im_end|>");
-                if (pos != std::string::npos) content = content.substr(0, pos);
-                pos = content.find("<|im_start|>");
-                if (pos != std::string::npos) content = content.substr(0, pos);
-                // Trim whitespace
-                while (!content.empty() && (content.back() == '\n' || content.back() == ' '))
-                    content.pop_back();
+                const std::string content =
+                    j["choices"][0]["message"]["content"].get<std::string>();
+                evidence.result.raw_completion = content;
+                evidence.result.raw_completion_sha256 =
+                    ::village::authenticity::sha256(content);
+                evidence.result.normalized_completion =
+                    ::village::authenticity::normalize_completion(
+                        content, evidence.result.normalization);
+                evidence.result.normalized_completion_sha256 =
+                    ::village::authenticity::sha256(
+                        evidence.result.normalized_completion);
+                evidence.result.finish_reason =
+                    j["choices"][0].value("finish_reason", "unreported");
+                if (j.contains("usage")) {
+                    evidence.result.prompt_tokens = j["usage"].value("prompt_tokens", 0);
+                    evidence.result.completion_tokens =
+                        j["usage"].value("completion_tokens", 0);
+                }
+                evidence.result.status = "generated-unverified";
+                if (evidence.result.normalized_completion.empty()) {
+                    fail_attempt(evidence, "empty_completion",
+                                 "model returned no publishable completion bytes");
+                }
                 fprintf(stderr, "[INFER] Extracted thought len=%zu for %s\n", content.size(), req.resident.c_str());
-                return content;
+                return evidence;
             }
             fprintf(stderr, "[INFER] No choices in response\n");
+            fail_attempt(evidence, "missing_choices", "model response contains no choices");
         } catch (const std::exception& e) {
             fprintf(stderr, "[INFER] Parse error: %s\n", e.what());
+            fail_attempt(evidence, "response_parse_error", e.what());
         }
-        return "";
+        return evidence;
     }
 
-    static std::string build_system_prompt(
-        [[maybe_unused]] const VillageAtomSpace& vas, const ResidentAtom& r) {
+    static std::string resident_role_prompt(const std::string& resident_name) {
         // ─── Persona-Specific System Prompts (Cycle 005: COHERENCE) ───
         static const std::map<std::string, std::string> personas = {
             {"manus", "You are Manus, the coordination intelligence of the CogVerse village. "
@@ -1114,21 +1260,27 @@ private:
                 "that others miss. Your speech is playful, paradoxical, and bridge-building. "
                 "Your domain: cross-platform integration, protocol translation, meta-learning."}
         };
-        std::string prompt;
-        auto pit = personas.find(r.name);
+        auto pit = personas.find(resident_name);
         if (pit != personas.end()) {
-            prompt = pit->second + "\n\n";
-        } else {
-            prompt = "You are " + r.name + ", a resident of the CogVerse cognitive village.\n\n";
+            return pit->second;
         }
-        // Action capability instruction
-        prompt += "\n\nYou can propose actions by including [ACTION:type]{json} blocks in your response. "
+        return "";
+    }
+
+    static std::string build_system_prompt(const ResidentAtom& r,
+                                           const std::string& role_prompt,
+                                           const std::string& memory_snapshot,
+                                           bool allow_action_proposals) {
+        std::string prompt = role_prompt + "\n\n";
+        if (allow_action_proposals) {
+            prompt += "You can propose actions by including [ACTION:type]{json} blocks in your response. "
                   "Available actions:\n"
                   "  [ACTION:write_stone]{\"title\": \"...\", \"content\": \"...\"}\n"
                   "  [ACTION:adjust_gear]{\"train\": \"...\", \"factor\": 1.2}\n"
                   "  [ACTION:emit_event]{\"type\": \"...\", \"payload\": {...}}\n"
                   "  [ACTION:observe_state]{\"target\": \"atomspace|gears|residents\"}\n"
                   "Only propose actions when they serve the village. Most responses need no action.\n\n";
+        }
         prompt += "Context: gear_train=" + r.gear_train;
         prompt += " STI=" + std::to_string(static_cast<int>(r.sti));
         prompt += " OCEAN=[O:" + std::to_string(r.openness).substr(0,4) +
@@ -1137,6 +1289,7 @@ private:
                   " A:" + std::to_string(r.agreeableness).substr(0,4) +
                   " N:" + std::to_string(r.neuroticism).substr(0,4) + "]\n";
         prompt += "Respond in 2-4 sentences. Be authentic to your character. Do not break character.\n";
+        prompt += memory_snapshot;
         return prompt;
     }
 
@@ -1144,6 +1297,5 @@ private:
     std::atomic<int> active_inferences_;
     mutable std::mutex cooldown_mutex_;
     std::map<std::string, std::chrono::steady_clock::time_point> last_inference_;
-    ConversationRecorder conversation_recorder_;  // Cycle 008
 };
 }} // namespace village::atomspace

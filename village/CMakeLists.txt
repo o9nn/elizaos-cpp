@@ -3,6 +3,7 @@
 
 find_package(CURL REQUIRED)
 find_package(SQLite3 REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 # Include paths
 set(ELIZAOS_VILLAGE_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/../include)
@@ -14,6 +15,33 @@ target_include_directories(village_event_bus PUBLIC
     ${ELIZAOS_VILLAGE_INCLUDE}
 )
 target_link_libraries(village_event_bus PUBLIC CURL::libcurl nlohmann_json::nlohmann_json)
+
+add_executable(village_event_bus_test village_event_bus_test.cpp)
+target_link_libraries(village_event_bus_test PRIVATE village_event_bus)
+add_test(NAME village_event_bus_test COMMAND village_event_bus_test)
+
+# Resident generation provenance, validation, and append-only evidence journal
+add_library(response_authenticity STATIC response_authenticity.cpp)
+target_include_directories(response_authenticity PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${ELIZAOS_VILLAGE_INCLUDE}
+)
+target_link_libraries(response_authenticity PUBLIC OpenSSL::Crypto nlohmann_json::nlohmann_json)
+
+add_executable(response_authenticity_test response_authenticity_test.cpp)
+target_link_libraries(response_authenticity_test PRIVATE response_authenticity)
+add_test(NAME response_authenticity_test COMMAND response_authenticity_test)
+
+add_library(response_development STATIC response_development.cpp)
+target_include_directories(response_development PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${ELIZAOS_VILLAGE_INCLUDE}
+)
+target_link_libraries(response_development PUBLIC response_authenticity nlohmann_json::nlohmann_json)
+
+add_executable(response_development_test response_development_test.cpp)
+target_link_libraries(response_development_test PRIVATE response_development)
+add_test(NAME response_development_test COMMAND response_development_test)
 
 # Village Group Dynamics library
 add_library(village_group_dynamics STATIC village_group_dynamics.cpp)
@@ -40,6 +68,7 @@ target_include_directories(elizad PRIVATE
 )
 target_link_libraries(elizad PRIVATE
     village_event_bus
+    response_authenticity
     village_group_dynamics
     antikythera_coupling
     elizaos-autonomous_starter
@@ -64,7 +93,9 @@ if(WIN32)
 endif()
 
 install(TARGETS elizad RUNTIME DESTINATION bin)
-install(TARGETS village_event_bus village_group_dynamics antikythera_coupling ARCHIVE DESTINATION lib)
+install(TARGETS village_event_bus response_authenticity response_development village_group_dynamics antikythera_coupling ARCHIVE DESTINATION lib)
 install(FILES village_event_bus.hpp village_group_dynamics.hpp antikythera_coupling.hpp
               village_ksm_transfer.hpp village_agnai_bridge.hpp village_atomspace.hpp
+              response_authenticity.hpp
+              response_development.hpp
         DESTINATION include/elizaos)

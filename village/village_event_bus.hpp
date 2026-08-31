@@ -75,6 +75,8 @@ struct VillageEvent {
     int64_t tic = 0;
 };
 
+VillageEvent parseVillageEvent(const std::string& json);
+
 using VillageEventCallback = std::function<void(const VillageEvent&)>;
 
 // ============================================================================
