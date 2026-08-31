@@ -90,6 +90,8 @@ using Clock = std::chrono::steady_clock;
 // (cogvillage::ksm and cogvillage::bridge defined in their headers)
 
 static std::atomic<bool> g_running{true};
+static std::atomic<bool> g_autonomousCoreEnabled{false};
+static std::atomic<bool> g_residentActionsEnabled{false};
 
 // Thread-safe queue for committed generation evidence from inference threads.
 // Only generated-authentic entries may become resident.thought events.
@@ -266,6 +268,7 @@ struct ElizadConfig {
     std::string generationEvidencePath =
         "/var/agi_neighborhood/evidence/resident-generation";
     bool residentActionsEnabled = false;
+    bool autonomousCoreEnabled = false;
     double inferenceSTIThreshold = 150.0;
     int inferenceCooldownCycles = 100;
 
@@ -287,6 +290,8 @@ struct ElizadConfig {
         if (auto value = startupEnvironment("ELIZAD_GENERATION_EVIDENCE_PATH"); !value.empty()) cfg.generationEvidencePath = value;
         cfg.residentActionsEnabled = startupBoolean(
             "ELIZAD_RESIDENT_ACTIONS_ENABLED", cfg.residentActionsEnabled);
+        cfg.autonomousCoreEnabled = startupBoolean(
+            "ELIZAD_AUTONOMOUS_CORE_ENABLED", cfg.autonomousCoreEnabled);
         cfg.inferenceSTIThreshold = startupDouble(
             "ELIZAD_INFERENCE_STI_THRESHOLD", cfg.inferenceSTIThreshold, 0.0);
         cfg.inferenceCooldownCycles = startupInteger(
@@ -400,6 +405,8 @@ private:
             {"open_goals", report.openGoals},
             {"completed_goals", report.completedGoals},
             {"total_actions", report.totalActions},
+            {"autonomous_core_enabled", g_autonomousCoreEnabled.load()},
+            {"resident_actions_enabled", g_residentActionsEnabled.load()},
             {"stagnation_count", report.stagnationCount},
             {"last_plan", report.lastPlan},
             {"cognitive_cycles", g_cogCycleCount.load()},
@@ -540,19 +547,27 @@ static int runElizad(int argc, char* argv[]) {
     std::cout << "  + Antikythera Temporal Coupling (10 gears, 4 trains)\n\n";
 
     ElizadConfig config = ElizadConfig::fromEnv();
+    g_autonomousCoreEnabled = config.autonomousCoreEnabled;
+    g_residentActionsEnabled = config.residentActionsEnabled;
     std::cout << "[elizad] Bus: " << config.busUrl << "\n";
     std::cout << "[elizad] Resident: " << config.residentName << "\n";
     std::cout << "[elizad] Health port: " << config.healthPort << "\n";
     std::cout << "[elizad] Cognitive cycle: " << config.cogCycleMs << "ms (L8)\n";
     std::cout << "[elizad] Heartbeat: " << config.heartbeatMs << "ms (L7)\n\n";
+    std::cout << "[elizad] Autonomous shell-bearing core: "
+              << (config.autonomousCoreEnabled ? "ENABLED" : "DISABLED") << "\n";
+    std::cout << "[elizad] Resident action proposals: "
+              << (config.residentActionsEnabled ? "ENABLED" : "DISABLED") << "\n\n";
 
     // Initialize agent with village config
     AgentConfig agentCfg;
     agentCfg.agentName = config.residentName;
-    agentCfg.bio = "Autonomous cognitive agent — CogHood village resident";
+    agentCfg.bio = config.autonomousCoreEnabled
+        ? "Autonomous cognitive agent — CogHood village resident"
+        : "Non-executing cognitive observer — CogHood village resident";
     agentCfg.lore = "ElizaOS C++ cognitive architecture with endocrine system, "
                     "group dynamics, and Antikythera temporal coupling";
-    agentCfg.adjective = "autonomous";
+    agentCfg.adjective = config.autonomousCoreEnabled ? "autonomous" : "non-executing";
     AutonomousStarter agent(agentCfg);
 
     EndocrineSystem endocrine;
@@ -838,7 +853,9 @@ static int runElizad(int argc, char* argv[]) {
 
         if (elapsed >= config.cogCycleMs) {
             // Core cognitive cycle
-            agent.runCognitiveCycleOnce();
+            if (config.autonomousCoreEnabled) {
+                agent.runCognitiveCycleOnce();
+            }
             endocrine.tick();
             g_cogCycleCount++;
             // Cycle 007: Persist every 100 cycles
