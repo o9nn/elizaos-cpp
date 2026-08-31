@@ -91,15 +91,14 @@ using Clock = std::chrono::steady_clock;
 
 static std::atomic<bool> g_running{true};
 
-// Thread-safe queue for thoughts from inference threads
-struct PendingThought {
-    std::string resident;
-    std::string thought;
-    int inference_id;
-    std::string correlation_id;
+// Thread-safe queue for committed generation evidence from inference threads.
+// Only generated-authentic entries may become resident.thought events.
+struct PendingGeneration {
+    ::village::authenticity::GenerationEvidence evidence;
+    int inference_id = 0;
 };
 static std::mutex g_thoughtMutex;
-static std::vector<PendingThought> g_pendingThoughts;
+static std::vector<PendingGeneration> g_pendingGenerations;
 
 // Action dispatch system (Cycle 006)
 struct VillageAction {
@@ -206,6 +205,16 @@ static std::string startupEnvironment(const char* name) {
     return value == nullptr ? std::string{} : std::string(value);
 }
 
+static bool startupBoolean(const char* name, bool fallback) {
+    const std::string value = startupEnvironment(name);
+    if (value.empty()) return fallback;
+    if (value == "1" || value == "true" || value == "TRUE" || value == "yes") return true;
+    if (value == "0" || value == "false" || value == "FALSE" || value == "no") return false;
+    std::cerr << "[elizad] Ignoring invalid " << name << "='" << value
+              << "': expected true or false\n";
+    return fallback;
+}
+
 static int startupInteger(const char* name, int fallback, int minimum, int maximum) {
     const std::string value = startupEnvironment(name);
     if (value.empty()) return fallback;
@@ -252,6 +261,11 @@ struct ElizadConfig {
     std::string aphroditeApiKey = "cogcity-village-2026";
     std::string aphroditeModel =
         "/var/agi_neighborhood/aphrodite/models/lucid-v1-nemo-gguf/lucid-v1-nemo-q8_0.gguf";
+    std::string aphroditeModelRevision = "unconfigured";
+    std::string identityVersion = "unconfigured";
+    std::string generationEvidencePath =
+        "/var/agi_neighborhood/evidence/resident-generation";
+    bool residentActionsEnabled = false;
     double inferenceSTIThreshold = 150.0;
     int inferenceCooldownCycles = 100;
 
@@ -268,6 +282,11 @@ struct ElizadConfig {
         if (auto value = startupEnvironment("ELIZAD_APHRODITE_URL"); !value.empty()) cfg.aphroditeUrl = value;
         if (auto value = startupEnvironment("ELIZAD_APHRODITE_API_KEY"); !value.empty()) cfg.aphroditeApiKey = value;
         if (auto value = startupEnvironment("ELIZAD_APHRODITE_MODEL"); !value.empty()) cfg.aphroditeModel = value;
+        if (auto value = startupEnvironment("ELIZAD_APHRODITE_MODEL_REVISION"); !value.empty()) cfg.aphroditeModelRevision = value;
+        if (auto value = startupEnvironment("ELIZAD_IDENTITY_VERSION"); !value.empty()) cfg.identityVersion = value;
+        if (auto value = startupEnvironment("ELIZAD_GENERATION_EVIDENCE_PATH"); !value.empty()) cfg.generationEvidencePath = value;
+        cfg.residentActionsEnabled = startupBoolean(
+            "ELIZAD_RESIDENT_ACTIONS_ENABLED", cfg.residentActionsEnabled);
         cfg.inferenceSTIThreshold = startupDouble(
             "ELIZAD_INFERENCE_STI_THRESHOLD", cfg.inferenceSTIThreshold, 0.0);
         cfg.inferenceCooldownCycles = startupInteger(
@@ -707,47 +726,37 @@ static int runElizad(int argc, char* argv[]) {
     aphroditeConfig.url = config.aphroditeUrl;
     aphroditeConfig.api_key = config.aphroditeApiKey;
     aphroditeConfig.model = config.aphroditeModel;
+    aphroditeConfig.model_revision = config.aphroditeModelRevision;
+    aphroditeConfig.identity_version = config.identityVersion;
+    aphroditeConfig.allow_action_proposals = config.residentActionsEnabled;
     aphroditeConfig.sti_threshold = config.inferenceSTIThreshold;
     aphroditeConfig.inference_cooldown_cycles = config.inferenceCooldownCycles;
     ::village::atomspace::AphroditeBridge aphroditeBridge(aphroditeConfig);
-    // Cycle 008: record each stimulus/response pair into rolling conversation
-    // history so subsequent prompts include [Conversation history] context.
-    aphroditeBridge.set_conversation_recorder(
-        [&villageAtomSpace](const std::string& resident, const std::string& stimulus,
-                            const std::string& response) {
-            villageAtomSpace.add_conversation(resident, stimulus, response);
-        });
+    ::village::authenticity::ProvenanceJournal generationJournal(
+        config.generationEvidencePath);
+    std::string journalError;
+    if (!generationJournal.verify(journalError)) {
+        std::cerr << "[elizad] FATAL: generation provenance journal is invalid: "
+                  << journalError << '\n';
+        return 5;
+    }
     std::atomic<int> inferenceCount{0};
 
-    // Inference callback: when a resident thinks, publish to bus + ingest to AtomSpace
-    auto onInferenceComplete = [&bus, &villageAtomSpace, &inferenceCount](
-        const std::string& resident, const std::string& thought, const std::string& correlation_id) {
+    // Commit the real model result or failure before the main loop may publish
+    // anything. Journal failure denies publication rather than inventing speech.
+    auto onInferenceComplete = [&generationJournal, &inferenceCount](
+        ::village::authenticity::GenerationEvidence evidence) {
         try {
-        inferenceCount++;
-        // Publish thought to the village bus
-        fprintf(stderr, "[CB] %s thought=%zu\n", resident.c_str(), thought.size());
-        // Queue for main loop to publish (thread-safe)
-        {
+            std::string error;
+            if (!generationJournal.commit(evidence, error)) {
+                fprintf(stderr,
+                        "[AUTHENTICITY] journal commit failed generation=%s error=%s\n",
+                        evidence.generation_id.c_str(), error.c_str());
+                return;
+            }
+            const int inferenceId = ++inferenceCount;
             std::lock_guard<std::mutex> lock(g_thoughtMutex);
-            g_pendingThoughts.push_back({resident, thought, static_cast<int>(inferenceCount.load()), correlation_id});
-        }
-        // Parse and queue any actions from the thought
-        auto actions = parse_actions(resident, thought, static_cast<int>(inferenceCount.load()), correlation_id);
-        if (!actions.empty()) {
-            std::lock_guard<std::mutex> lock(g_actionMutex);
-            for (auto& a : actions) g_pendingActions.push_back(std::move(a));
-            fprintf(stderr, "[CB] Queued %zu actions\n", actions.size());
-        }
-        fprintf(stderr, "[CB] Queued for publish OK\n");
-
-        // Ingest into AtomSpace as a cognitive event (thread-safe queue)
-        ::village::atomspace::CognitiveEvent ev;
-        ev.type = "resident_thought";
-        ev.participants = {resident};
-        ev.content = thought.substr(0, 200); // Truncate for AtomSpace storage
-        ev.emotional_valence = 0.6;
-        ev.information_gain = 0.9;
-        villageAtomSpace.enqueue_event(ev);
+            g_pendingGenerations.push_back({std::move(evidence), inferenceId});
         } catch (const std::exception& e) { fprintf(stderr, "[CB-ERR] %s\n", e.what()); } catch (...) { fprintf(stderr, "[CB-ERR] unknown\n"); }
     };
 
@@ -772,7 +781,7 @@ static int runElizad(int argc, char* argv[]) {
             }
             fprintf(stderr, "[STIMULUS] received: target=%s\n", target.c_str());
             if (!target.empty() && target != "eliza" && target != "dan") {
-                std::string message = "You have been addressed. Respond authentically.";
+                std::string message;
                 try {
                     auto j = json::parse(event.payload);
                     if (j.contains("message")) message = j["message"].get<std::string>();
@@ -781,7 +790,9 @@ static int runElizad(int argc, char* argv[]) {
                     fprintf(stderr, "[STIMULUS] Invalid message payload: %s\n", e.what());
                 }
                 fprintf(stderr, "[STIMULUS] calling infer_async for %s: %s\n", target.c_str(), message.substr(0,50).c_str());
-                aphroditeBridge.infer_async(villageAtomSpace, target, message, onInferenceComplete, 0.7, correlation_id);
+                aphroditeBridge.infer_async(
+                    villageAtomSpace, target, message, onInferenceComplete, 0.7,
+                    correlation_id, event.source, event.id, event.tic);
                 // Cycle 007: Record stimulus in episodic memory
                 villageAtomSpace.add_episodic(target, "stimulus", message);
             }
@@ -790,6 +801,9 @@ static int runElizad(int argc, char* argv[]) {
         if (event.typeStr == "resident.thought") {
             try {
                 auto j = json::parse(event.payload);
+                if (j.value("authenticity_status", "") != "generated-authentic") {
+                    return;
+                }
                 std::string thinker = j.value("resident", "");
                 std::string thought = j.value("thought", "");
                 if (!thinker.empty() && !thought.empty()) {
@@ -804,7 +818,8 @@ static int runElizad(int argc, char* argv[]) {
                                 std::string stimulus = thinker + " said: \"" +
                                     thought.substr(0, 300) + "\" — What is your response?";
                                 aphroditeBridge.infer_async(
-                                    villageAtomSpace, name, stimulus, onInferenceComplete);
+                                    villageAtomSpace, name, stimulus, onInferenceComplete,
+                                    0.7, "", "resident.thought", event.id, event.tic);
                                 break; // Only one respondent per thought
                             }
                         }
@@ -879,22 +894,75 @@ static int runElizad(int argc, char* argv[]) {
 
             // ---- Drain pending inference results into AtomSpace ----
             villageAtomSpace.drain_pending_events();
-            // Drain pending thoughts from inference threads. Swap under the queue
-            // lock, then publish and persist outside it so producers never wait on I/O.
-            std::vector<PendingThought> pendingThoughts;
+            // Drain committed generation evidence. A successful model call is not
+            // speech until the private journal has validated every binding.
+            std::vector<PendingGeneration> pendingGenerations;
             {
                 std::lock_guard<std::mutex> lock(g_thoughtMutex);
-                pendingThoughts.swap(g_pendingThoughts);
+                pendingGenerations.swap(g_pendingGenerations);
             }
-            for (auto& pt : pendingThoughts) {
-                json thoughtPayload = {
-                    {"resident", pt.resident}, {"thought", pt.thought},
-                    {"kind", "inference"}, {"inference_id", pt.inference_id}
-                };
-                if (!pt.correlation_id.empty()) thoughtPayload["correlation_id"] = pt.correlation_id;
-                bus.publish("resident.thought", thoughtPayload.dump());
-                fprintf(stderr, "[MAIN] Published thought for %s\n", pt.resident.c_str());
-                villageAtomSpace.add_episodic(pt.resident, "thought", pt.thought);
+            for (auto& pending : pendingGenerations) {
+                auto& evidence = pending.evidence;
+                auto payload = evidence.to_public_json();
+                payload["inference_id"] = pending.inference_id;
+                if (evidence.publication.allowed &&
+                    evidence.result.status == "generated-authentic") {
+                    payload["kind"] = "runtime-model-inference";
+                    payload["authenticity_status"] = "generated-authentic";
+                    payload["thought"] = evidence.result.normalized_completion;
+                    const auto publishedTic =
+                        bus.publish("resident.thought", payload.dump());
+                    if (publishedTic < 0) {
+                        fprintf(stderr,
+                                "[AUTHENTICITY] publication failed generation=%s resident=%s\n",
+                                evidence.generation_id.c_str(),
+                                evidence.resident.id.c_str());
+                        continue;
+                    }
+                    villageAtomSpace.add_episodic(
+                        evidence.resident.id, "thought",
+                        evidence.result.normalized_completion);
+                    villageAtomSpace.add_conversation(
+                        evidence.resident.id, evidence.stimulus.text,
+                        evidence.result.normalized_completion);
+                    if (config.residentActionsEnabled) {
+                        auto actions = parse_actions(
+                            evidence.resident.id,
+                            evidence.result.normalized_completion,
+                            pending.inference_id, evidence.correlation_id);
+                        if (!actions.empty()) {
+                            std::lock_guard<std::mutex> lock(g_actionMutex);
+                            for (auto& action : actions) {
+                                g_pendingActions.push_back(std::move(action));
+                            }
+                        }
+                    }
+                    ::village::atomspace::CognitiveEvent cognitiveEvent;
+                    cognitiveEvent.type = "resident_thought";
+                    cognitiveEvent.participants = {evidence.resident.id};
+                    cognitiveEvent.content =
+                        evidence.result.normalized_completion.substr(0, 200);
+                    cognitiveEvent.emotional_valence = 0.6;
+                    cognitiveEvent.information_gain = 0.9;
+                    villageAtomSpace.enqueue_event(cognitiveEvent);
+                    fprintf(stderr,
+                            "[AUTHENTICITY] published generation=%s resident=%s tic=%lld\n",
+                            evidence.generation_id.c_str(),
+                            evidence.resident.id.c_str(),
+                            static_cast<long long>(publishedTic));
+                } else {
+                    const std::string eventType =
+                        evidence.result.status == "provenance-rejected"
+                            ? "resident.generation.rejected"
+                            : "resident.generation.failed";
+                    payload["authenticity_status"] = evidence.result.status;
+                    bus.publish(eventType, payload.dump());
+                    fprintf(stderr,
+                            "[AUTHENTICITY] denied generation=%s resident=%s code=%s\n",
+                            evidence.generation_id.c_str(),
+                            evidence.resident.id.c_str(),
+                            evidence.result.error_code.c_str());
+                }
             }
 
             // Drain actions with the same swap discipline. Execution, AtomSpace
@@ -934,7 +1002,9 @@ static int runElizad(int argc, char* argv[]) {
                     if (aphroditeBridge.should_infer(name, sti)) {
                         std::string stimulus = "The village is alive. You feel the attention of the collective upon you (STI=" +
                             std::to_string(static_cast<int>(sti)) + "). What thought arises?";
-                        aphroditeBridge.infer_async(villageAtomSpace, name, stimulus, onInferenceComplete);
+                        aphroditeBridge.infer_async(
+                            villageAtomSpace, name, stimulus, onInferenceComplete, 0.7,
+                            "", "elizad.attention", 0, bus.getCurrentTic());
                         // Reduce STI to prevent immediate re-trigger
                         villageAtomSpace.set_resident_sti(name, 100.0);
                     }
