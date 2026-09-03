@@ -157,7 +157,8 @@ ShellCommandResult AgentShell::executeCommand(const std::string& command) {
     
     if (handler) {
         try {
-            return handler(tokens);
+            std::vector<std::string> args(tokens.begin() + 1, tokens.end());
+            return handler(args);
         } catch (const std::exception& e) {
             return ShellCommandResult(false, "", "Command error: " + std::string(e.what()), 1);
         }
@@ -296,8 +297,8 @@ ShellCommandResult AgentShell::clearCommand(const std::vector<std::string>& args
 ShellCommandResult AgentShell::echoCommand(const std::vector<std::string>& args) {
     std::stringstream ss;
     
-    for (size_t i = 1; i < args.size(); ++i) {
-        if (i > 1) ss << " ";
+    for (size_t i = 0; i < args.size(); ++i) {
+        if (i > 0) ss << " ";
         ss << args[i];
     }
     

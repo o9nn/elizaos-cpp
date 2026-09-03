@@ -62,7 +62,7 @@ struct DocumentMetadata : BaseMetadata {
 
 struct FragmentMetadata : BaseMetadata {
     UUID documentId;
-    size_t position;
+    size_t position = 0;
     FragmentMetadata() { type = MemoryType::FRAGMENT; }
 };
 
@@ -170,6 +170,8 @@ public:
     const UUID& getAgentId() const { return agentId_; }
     const UUID& getRoomId() const { return roomId_; }
     void setRoomId(const UUID& roomId) { roomId_ = roomId; }
+    const UUID& getWorldId() const { return worldId_; }
+    void setWorldId(const UUID& worldId) { worldId_ = worldId; }
     Timestamp getCreatedAt() const { return createdAt_; }
     
     // Enhanced features
@@ -197,6 +199,7 @@ private:
     UUID entityId_;
     UUID agentId_;
     UUID roomId_;
+    UUID worldId_;
     Timestamp createdAt_;
     
     // Enhanced features
@@ -629,6 +632,106 @@ public:
     virtual ~Provider() = default;
     virtual std::string getName() const = 0;
     virtual std::unordered_map<std::string, std::string> get(const State& state, std::shared_ptr<Memory> message) = 0;
+};
+
+/**
+ * Lambda-backed Action — promoted from orphan action/actions transpile intent.
+ * Holds validate/execute callables without requiring a bespoke subclass.
+ */
+class FunctionAction : public Action {
+public:
+    using Validator = std::function<bool(const State&, std::shared_ptr<Memory>)>;
+    using Executor = std::function<bool(State&, std::shared_ptr<Memory>)>;
+
+    FunctionAction(std::string name, Validator validator, Executor executor);
+
+    std::string getName() const override;
+    bool validate(const State& state, std::shared_ptr<Memory> message) const override;
+    bool execute(State& state, std::shared_ptr<Memory> message) override;
+
+private:
+    std::string name_;
+    Validator validator_;
+    Executor executor_;
+};
+
+/**
+ * Thread-safe registry of named Action instances.
+ * Canonical home for agent behavior dispatch (replaces empty orphan actions.cpp).
+ */
+class ActionRegistry {
+public:
+    ActionRegistry() = default;
+
+    bool registerAction(std::shared_ptr<Action> action);
+    bool unregisterAction(const std::string& name);
+    std::shared_ptr<Action> get(const std::string& name) const;
+    bool contains(const std::string& name) const;
+    std::vector<std::string> listNames() const;
+    size_t size() const;
+
+    /** Run validate on every registered action; return names that pass. */
+    std::vector<std::string> matchingActions(
+        const State& state, std::shared_ptr<Memory> message) const;
+
+    /**
+     * Execute every action whose validate() returns true.
+     * Returns count of successful execute() calls.
+     */
+    size_t executeMatching(State& state, std::shared_ptr<Memory> message);
+
+    /** Execute a single named action if present and valid. */
+    bool executeNamed(const std::string& name, State& state, std::shared_ptr<Memory> message);
+
+    void clear();
+
+private:
+    mutable std::mutex mutex_;
+    std::unordered_map<std::string, std::shared_ptr<Action>> actions_;
+};
+
+/**
+ * Lambda-backed Provider for composing state key/value bags.
+ */
+class FunctionProvider : public Provider {
+public:
+    using Getter = std::function<std::unordered_map<std::string, std::string>(
+        const State&, std::shared_ptr<Memory>)>;
+
+    FunctionProvider(std::string name, Getter getter);
+
+    std::string getName() const override;
+    std::unordered_map<std::string, std::string> get(
+        const State& state, std::shared_ptr<Memory> message) override;
+
+private:
+    std::string name_;
+    Getter getter_;
+};
+
+/**
+ * Thread-safe registry of named Provider instances for state composition.
+ */
+class ProviderRegistry {
+public:
+    ProviderRegistry() = default;
+
+    bool registerProvider(std::shared_ptr<Provider> provider);
+    bool unregisterProvider(const std::string& name);
+    std::shared_ptr<Provider> get(const std::string& name) const;
+    bool contains(const std::string& name) const;
+    std::vector<std::string> listNames() const;
+    size_t size() const;
+
+    /** Merge get() results from all providers (later keys overwrite earlier). */
+    std::unordered_map<std::string, std::string> compose(
+        const State& state, std::shared_ptr<Memory> message) const;
+
+    void clear();
+
+private:
+    mutable std::mutex mutex_;
+    std::unordered_map<std::string, std::shared_ptr<Provider>> providers_;
 };
 
 // Utility functions

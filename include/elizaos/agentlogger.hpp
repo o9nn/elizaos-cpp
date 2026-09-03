@@ -36,6 +36,10 @@ namespace elizaos {
 // ============================================================================
 // LogLevel / LogColor / LogFormat
 // ============================================================================
+// Windows headers may define ERROR as a macro; remove it before the scoped enum.
+#ifdef ERROR
+#undef ERROR
+#endif
 
 enum class LogLevel {
     UNKNOWN,

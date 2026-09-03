@@ -199,13 +199,13 @@ public:
     
     // Statistics
     struct Statistics {
-        size_t generation;
+        size_t generation = 0;
         FitnessResult bestFitness;
         FitnessResult averageFitness;
-        double diversity;
-        double convergenceRate;
-        int stagnationCount;
-        std::chrono::milliseconds generationTime;
+        double diversity = 0.0;
+        double convergenceRate = 0.0;
+        int stagnationCount = 0;
+        std::chrono::milliseconds generationTime{0};
     };
     
     Statistics getStatistics() const;

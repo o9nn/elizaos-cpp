@@ -40,9 +40,8 @@ std::string jsonArgumentToString(const std::any& value) {
 
 // Simple UUID generator
 std::string generateSimpleUUID() {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    static std::uniform_int_distribution<> dis(0, 15);
+    thread_local std::mt19937 gen(std::random_device{}());
+    thread_local std::uniform_int_distribution<> dis(0, 15);
     
     std::string uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
     for (auto& c : uuid) {
@@ -63,7 +62,10 @@ AgentAction::AgentAction() {
 AgentAction::~AgentAction() = default;
 
 void AgentAction::addAction(const std::string& name, const ManagedAction& action) {
-    actions_[name] = std::make_shared<ManagedAction>(action);
+    {
+        std::lock_guard<std::mutex> lock(actionsMutex_);
+        actions_[name] = std::make_shared<ManagedAction>(action);
+    }
     
     // Create memory entry for action using CustomMetadata
     UUID memoryId = generateSimpleUUID();
@@ -87,8 +89,8 @@ void AgentAction::addAction(const std::string& name, const ManagedAction& action
 JsonValue AgentAction::useAction(const std::string& function_name, const JsonValue& arguments) {
     JsonValue result;
     
-    auto it = actions_.find(function_name);
-    if (it == actions_.end()) {
+    auto action = getAction(function_name);
+    if (!action) {
         addToActionHistory(function_name, arguments, false);
         logger_->log("Warning: action was hallucinated: " + function_name, "warning");
         
@@ -100,7 +102,6 @@ JsonValue AgentAction::useAction(const std::string& function_name, const JsonVal
     addToActionHistory(function_name, arguments, true);
     
     try {
-        auto action = it->second;
         if (action->handler) {
             result = action->handler(arguments);
             result["success"] = true;
@@ -155,6 +156,7 @@ std::vector<JsonValue> AgentAction::getAvailableActions(const std::string& searc
 }
 
 std::shared_ptr<ManagedAction> AgentAction::getAction(const std::string& name) {
+    std::lock_guard<std::mutex> lock(actionsMutex_);
     auto it = actions_.find(name);
     if (it != actions_.end()) {
         return it->second;
@@ -163,6 +165,7 @@ std::shared_ptr<ManagedAction> AgentAction::getAction(const std::string& name) {
 }
 
 bool AgentAction::removeAction(const std::string& name) {
+    std::lock_guard<std::mutex> lock(actionsMutex_);
     auto it = actions_.find(name);
     if (it != actions_.end()) {
         actions_.erase(it);
@@ -232,7 +235,10 @@ JsonValue AgentAction::getLastAction() {
 }
 
 void AgentAction::clearActions() {
-    actions_.clear();
+    {
+        std::lock_guard<std::mutex> lock(actionsMutex_);
+        actions_.clear();
+    }
     memory_->clear();
 }
 

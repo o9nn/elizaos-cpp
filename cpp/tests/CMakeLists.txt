@@ -314,6 +314,7 @@ function(add_real_test name src_file)
 
     set(real_test_required_libraries
         gtest
+        gmock
         nlohmann_json::nlohmann_json
         Threads::Threads
     )
@@ -366,13 +367,72 @@ add_real_test(real_characters_test          src/test_characters.cpp)
 add_real_test(real_knowledge_test           src/test_knowledge.cpp)
 add_real_test(real_knowledge_hypergraph_test src/test_knowledge_hypergraph.cpp)
 add_real_test(real_embodiment_test          src/test_embodiment.cpp)
+add_real_test(real_livevideochat_comprehensive_test src/test_livevideochat.cpp)
+target_link_libraries(real_livevideochat_comprehensive_test elizaos-livevideochat)
 add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
 add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
+
+# Comprehensive suites that existed in source but were previously absent from
+# the build graph. Keep each standalone so failures identify the affected organ.
+add_real_test(real_elizas_list_unit_test elizas_list_unit_test.cpp)
+target_link_libraries(real_elizas_list_unit_test elizaos-elizas_list)
+add_real_test(real_agentshell_comprehensive_test src/test_agentshell.cpp)
+target_link_libraries(real_agentshell_comprehensive_test elizaos-agentshell)
+add_real_test(real_characterfile_comprehensive_test src/test_characterfile.cpp)
+target_link_libraries(real_characterfile_comprehensive_test elizaos-characterfile)
+add_real_test(real_easycompletion_comprehensive_test src/test_easycompletion.cpp)
+target_link_libraries(real_easycompletion_comprehensive_test elizaos-easycompletion)
+add_real_test(real_eliza_comprehensive_test src/test_eliza.cpp)
+target_link_libraries(real_eliza_comprehensive_test elizaos-eliza)
+add_real_test(real_elizas_list_comprehensive_test src/test_elizas_list.cpp)
+target_link_libraries(real_elizas_list_comprehensive_test elizaos-elizas_list)
+add_real_test(real_cross_module_integration_test src/test_integration.cpp)
+add_real_test(real_ljspeechtools_comprehensive_test src/test_ljspeechtools.cpp)
+target_link_libraries(real_ljspeechtools_comprehensive_test elizaos-ljspeechtools)
+add_real_test(real_mcp_gateway_comprehensive_test src/test_mcp_gateway.cpp)
+target_link_libraries(real_mcp_gateway_comprehensive_test elizaos-mcp_gateway)
+add_real_test(real_the_org_comprehensive_test src/test_the_org.cpp)
+target_link_libraries(real_the_org_comprehensive_test elizaos-the_org)
+add_real_test(real_trust_scoreboard_comprehensive_test src/test_trust_scoreboard.cpp)
+target_link_libraries(real_trust_scoreboard_comprehensive_test elizaos-trust_scoreboard)
+add_real_test(real_vercel_api_comprehensive_test src/test_vercel_api.cpp)
+target_link_libraries(real_vercel_api_comprehensive_test elizaos-vercel_api)
+
+# Additional dormant suites. Some own main(), so register them without shim_main.
+function(add_standalone_gtest name src_file)
+    add_executable(${name} ${src_file})
+    target_include_directories(${name} PRIVATE
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/cpp/include
+    )
+    target_link_libraries(${name} gtest gmock nlohmann_json::nlohmann_json Threads::Threads ${ARGN})
+    add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+add_real_test(real_elizas_list_roundtrip_test elizas_list_real_test.cpp)
+target_link_libraries(real_elizas_list_roundtrip_test elizaos-elizas_list)
+add_standalone_gtest(real_brandkit_comprehensive_test src/test_brandkit.cpp elizaos-brandkit)
+add_real_test(real_elizas_world_comprehensive_test src/test_elizas_world.cpp)
+target_link_libraries(real_elizas_world_comprehensive_test elizaos-elizas_world)
+add_standalone_gtest(real_hat_comprehensive_test src/test_hat.cpp elizaos-hat)
+add_standalone_gtest(real_registry_comprehensive_test src/test_registry.cpp elizaos-registry elizaos-agentlogger)
+add_real_test(real_spartan_comprehensive_test src/test_spartan.cpp)
+target_link_libraries(real_spartan_comprehensive_test elizaos-spartan)
+add_real_test(real_stage6_automation_comprehensive_test src/test_stage6_automation.cpp)
+target_link_libraries(real_stage6_automation_comprehensive_test
+    elizaos-plugins_automation elizaos-discord_summarizer elizaos-discrub_ext)
+add_real_test(real_sweagent_comprehensive_test src/test_sweagent.cpp)
+target_link_libraries(real_sweagent_comprehensive_test elizaos-sweagent)
+add_real_test(real_awesome_eliza_comprehensive_test test_awesome_eliza.cpp)
+target_link_libraries(real_awesome_eliza_comprehensive_test elizaos-awesome_eliza)
+
 # KSM structure-preserving repair regression lane (ported to parity with the
 # hurdcog canonical fork, plus o9nn-specific repairs: memory deadlock, clear()
 # full-state reset, and AgentLogger Task 1.4 feature parity).
 add_real_test(real_repair_regressions_test  src/test_repair_regressions.cpp)
+target_include_directories(real_repair_regressions_test PRIVATE ${CMAKE_SOURCE_DIR}/village)
+target_link_libraries(real_repair_regressions_test village_event_bus)
 
 # Virtual Endocrine System: 10-gland hormone bus, valence-arousal, cognitive mode.
 add_real_test(real_endocrine_test            src/test_endocrine.cpp)
@@ -543,6 +603,27 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_knowledge_test
     real_knowledge_hypergraph_test
     real_cognitive_primitives_test
+    real_elizas_list_unit_test
+    real_agentshell_comprehensive_test
+    real_characterfile_comprehensive_test
+    real_easycompletion_comprehensive_test
+    real_eliza_comprehensive_test
+    real_elizas_list_comprehensive_test
+    real_cross_module_integration_test
+    real_ljspeechtools_comprehensive_test
+    real_mcp_gateway_comprehensive_test
+    real_the_org_comprehensive_test
+    real_trust_scoreboard_comprehensive_test
+    real_vercel_api_comprehensive_test
+    real_elizas_list_roundtrip_test
+    real_brandkit_comprehensive_test
+    real_elizas_world_comprehensive_test
+    real_hat_comprehensive_test
+    real_registry_comprehensive_test
+    real_spartan_comprehensive_test
+    real_stage6_automation_comprehensive_test
+    real_sweagent_comprehensive_test
+    real_awesome_eliza_comprehensive_test
     real_repair_regressions_test
     plugin_specification_test
     public_header_forwarding_test
@@ -554,6 +635,9 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
 
 if(TARGET real_embodiment_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_embodiment_test)
+endif()
+if(TARGET real_livevideochat_comprehensive_test)
+    list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_livevideochat_comprehensive_test)
 endif()
 if(TARGET real_evolutionary_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_evolutionary_test)

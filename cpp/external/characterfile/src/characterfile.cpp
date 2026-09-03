@@ -1,6 +1,7 @@
 #include "elizaos/characterfile.hpp"
 #include <fstream>
 #include <sstream>
+#include <atomic>
 #include <algorithm>
 #include <filesystem>
 #include <regex>
@@ -1082,11 +1083,13 @@ bool CharacterFileTemplate::saveTemplate(const JsonValue& templateJson, const st
 namespace CharacterFileUtils {
 
 std::string generateCharacterId() {
-    auto now = std::chrono::system_clock::now();
-    auto time_t = std::chrono::system_clock::to_time_t(now);
-    
+    static std::atomic<std::uint64_t> sequence{0};
+    const auto now = std::chrono::system_clock::now().time_since_epoch();
+    const auto nanos = std::chrono::duration_cast<std::chrono::nanoseconds>(now).count();
+
     std::ostringstream oss;
-    oss << "char-" << time_t << "-" << std::hash<std::string>{}(getCurrentTimestamp());
+    oss << "char-" << nanos << "-"
+        << sequence.fetch_add(1, std::memory_order_relaxed);
     return oss.str();
 }
 
@@ -1146,22 +1149,32 @@ std::string formatDisplayName(const std::string& name) {
 }
 
 std::string getCurrentTimestamp() {
-    auto now = std::chrono::system_clock::now();
-    auto time_t = std::chrono::system_clock::to_time_t(now);
-    
+    const auto now = std::chrono::system_clock::now();
+    const std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::tm localTime{};
+#ifdef _WIN32
+    if (localtime_s(&localTime, &time) != 0) return {};
+#else
+    if (localtime_r(&time, &localTime) == nullptr) return {};
+#endif
+
     std::ostringstream oss;
-    oss << std::put_time(std::localtime(&time_t), "%Y-%m-%d %H:%M:%S");
+    oss << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S");
     return oss.str();
 }
 
 std::chrono::system_clock::time_point parseTimestamp(const std::string& timestamp) {
-    // Simple timestamp parsing - in a real implementation would use proper date parsing
-    try {
-        time_t time = std::stoll(timestamp);
-        return std::chrono::system_clock::from_time_t(time);
-    } catch (const std::exception&) {
+    std::tm parsed{};
+    parsed.tm_isdst = -1;
+    std::istringstream input(timestamp);
+    input >> std::get_time(&parsed, "%Y-%m-%d %H:%M:%S");
+    if (input.fail()) return std::chrono::system_clock::now();
+
+    const std::time_t time = std::mktime(&parsed);
+    if (time == static_cast<std::time_t>(-1)) {
         return std::chrono::system_clock::now();
     }
+    return std::chrono::system_clock::from_time_t(time);
 }
 
 } // namespace CharacterFileUtils

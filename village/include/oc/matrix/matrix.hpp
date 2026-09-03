@@ -7,6 +7,7 @@
 #define OC_MATRIX_HPP
 
 #include "../atomspace/atomspace.hpp"
+#include <algorithm>
 
 namespace oc {
 namespace matrix {

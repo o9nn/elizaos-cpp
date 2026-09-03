@@ -1,6 +1,7 @@
 #pragma once
 
 #include "elizaos/core.hpp"
+#include <algorithm>  // std::sort / std::remove_if / std::find
 #include <chrono>
 #include <functional>
 #include <memory>

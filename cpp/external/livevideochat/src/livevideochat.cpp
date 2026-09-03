@@ -16,7 +16,9 @@ static AgentLogger g_logger;
 // Mock Video Capture implementation
 class MockVideoCapture : public VideoCapture {
 public:
-    MockVideoCapture() : active_(false), width_(640), height_(480), fps_(30) {}
+    MockVideoCapture()
+        : active_(false), width_(640), height_(480), fps_(30), frame_count_(0),
+          start_time_(std::chrono::steady_clock::now()) {}
     
     bool start() override {
         active_ = true;
@@ -81,7 +83,9 @@ private:
 // Mock Audio Capture implementation
 class MockAudioCapture : public AudioCapture {
 public:
-    MockAudioCapture() : active_(false), sample_rate_(48000), channels_(2) {}
+    MockAudioCapture()
+        : active_(false), sample_rate_(48000), channels_(2), sample_count_(0),
+          start_time_(std::chrono::steady_clock::now()) {}
     
     bool start() override {
         active_ = true;

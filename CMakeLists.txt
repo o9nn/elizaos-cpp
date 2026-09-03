@@ -22,7 +22,9 @@ if(MSVC)
     # Prevent <windows.h> (pulled in via curl and other deps) from defining
     # min/max function-style macros that break std::min/std::max, and
     # silence CRT deprecation warnings (e.g. localtime).
-    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS)
+    # _USE_MATH_DEFINES is required because the MSVC <cmath> only exposes
+    # M_PI and friends when it is defined before the header is included.
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN _CRT_SECURE_NO_WARNINGS _USE_MATH_DEFINES)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -44,6 +46,9 @@ if(NOT CURL_FOUND)
 endif()
 
 # Enable testing
+# Bound individual tests so a deadlock fails promptly instead of occupying a
+# CI runner until its outer job timeout expires.
+set(DART_TESTING_TIMEOUT 180 CACHE STRING "Default per-test timeout (seconds)")
 enable_testing()
 
 # Add GoogleTest

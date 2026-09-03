@@ -407,6 +407,7 @@ private:
     void inputHandlingLoop();
     void updateStatistics(double stepDurationMs, bool success);
     void updateHealthStatus();
+    void notifyHealthChange(HealthStatus oldStatus, HealthStatus newStatus);
     double calculateDynamicInterval() const;
     void updateCognitiveLoad();
     void updateLatencyPercentiles();

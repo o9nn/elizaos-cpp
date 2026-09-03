@@ -166,8 +166,8 @@ struct Result {
     std::string error_message;
     
     Result(T val) : success(true), value(val), error(AutoFunError::VALUE_TOO_SMALL) {}
-    Result(AutoFunError err, const std::string& msg) 
-        : success(false), error(err), error_message(msg) {}
+    Result(AutoFunError err, const std::string& msg)
+        : success(false), value{}, error(err), error_message(msg) {}
 };
 
 /**

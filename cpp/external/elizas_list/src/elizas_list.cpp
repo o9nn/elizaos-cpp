@@ -1,6 +1,7 @@
 #include "elizaos/elizas_list.hpp"
 #include <fstream>
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 #include <chrono>
 #include <iomanip>

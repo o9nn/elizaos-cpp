@@ -28,6 +28,7 @@
 #include <functional>
 #include <algorithm>
 #include <nlohmann/json.hpp>
+#include <iterator>
 
 namespace cogvillage::ksm {
 

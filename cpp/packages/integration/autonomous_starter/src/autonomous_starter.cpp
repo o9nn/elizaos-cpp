@@ -1728,13 +1728,16 @@ bool AutonomousStarter::ShellCommandWorker::execute(Task& task, State& state,
         return false;
     }
 
-    auto result = starter_->executeShellCommand(it->second);
-    if (starter_) {
-        starter_->appendMemory("Task completed: " + task.getId() +
-                               " command='" + it->second + "', success=" +
-                               std::string(result.success ? "true" : "false") +
-                               ", exitCode=" + std::to_string(result.exitCode) + ".");
+    if (!starter_) {
+        logError("Shell command task has no starter context");
+        return false;
     }
+
+    auto result = starter_->executeShellCommand(it->second);
+    starter_->appendMemory("Task completed: " + task.getId() +
+                           " command='" + it->second + "', success=" +
+                           std::string(result.success ? "true" : "false") +
+                           ", exitCode=" + std::to_string(result.exitCode) + ".");
     return result.success;
 }
 

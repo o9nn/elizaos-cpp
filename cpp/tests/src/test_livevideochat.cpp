@@ -489,3 +489,36 @@ TEST_F(LiveVideoChatTest, SessionInfoTest) {
     
     session.endSession();
 }
+
+
+TEST_F(LiveVideoChatTest, VideoCaptureIsDeterministicBeforeStart) {
+    LiveVideoChat system;
+    system.initialize(config_);
+
+    const auto capture = system.getVideoCapture();
+    ASSERT_NE(capture, nullptr);
+    EXPECT_FALSE(capture->isActive());
+
+    const auto frame = capture->getNextFrame();
+    ASSERT_FALSE(frame.data.empty());
+    EXPECT_EQ(frame.data.front(), 0u);
+    EXPECT_GE(frame.timestamp_ms, 0);
+
+    system.shutdown();
+}
+
+TEST_F(LiveVideoChatTest, AudioCaptureIsDeterministicBeforeStart) {
+    LiveVideoChat system;
+    system.initialize(config_);
+
+    const auto capture = system.getAudioCapture();
+    ASSERT_NE(capture, nullptr);
+    EXPECT_FALSE(capture->isActive());
+
+    const auto frame = capture->getNextFrame();
+    ASSERT_FALSE(frame.samples.empty());
+    EXPECT_FLOAT_EQ(frame.samples.front(), 0.0f);
+    EXPECT_GE(frame.timestamp_ms, 0);
+
+    system.shutdown();
+}

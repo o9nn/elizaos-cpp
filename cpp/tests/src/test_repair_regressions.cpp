@@ -16,15 +16,28 @@
 #include <gtest/gtest.h>
 
 #include "elizaos/agentloop.hpp"
+#include "elizaos/agentmemory.hpp"
+#include "elizaos/attention.hpp"
+#include "elizaos/auto_fun.hpp"
+#include "elizaos/core.hpp"
+#include "elizaos/evolutionary.hpp"
 #include "elizaos/knowledge.hpp"
 #include "elizaos/agentlogger.hpp"
+#include "elizaos/ljspeechtools.hpp"
+#include "elizaos/otaku.hpp"
+#include "elizaos/otc_agent.hpp"
 #include "elizaos/persistence.hpp"  // compile-boundary regression for the forwarding header
+#include "elizaos/the_org.hpp"
+#include "village_event_bus.hpp"
 
 #include <atomic>
 #include <chrono>
+#include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <set>
 #include <string>
+#include <system_error>
 #include <thread>
 #include <vector>
 
@@ -288,25 +301,39 @@ TEST(RepairTemporalValidity, GetValidKnowledgeNoLongerDeadlocks) {
 // ============================================================================
 
 namespace {
+// Directory helpers use std::filesystem rather than shelling out through
+// popen()/system() with POSIX utilities (mkdir -p, ls, rm -rf, wc): popen and
+// pclose do not exist on MSVC (C3861) and those utilities are absent on Windows
+// runners. std::filesystem is portable and does not depend on a shell.
 std::string makeTempDir() {
-    const std::string dir = "/tmp/elizaos_logtest_" +
-        std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
-    std::string cmd = "mkdir -p \"" + dir + "\"";
-    (void)std::system(cmd.c_str());
-    return dir;
+    const auto dir = std::filesystem::temp_directory_path() /
+        ("elizaos_logtest_" +
+         std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+    std::error_code ec;
+    std::filesystem::create_directories(dir, ec);
+    return dir.string();
+}
+
+void removeTempDir(const std::string& dir) {
+    std::error_code ec;
+    std::filesystem::remove_all(dir, ec);
 }
 
 size_t countFilesWithPrefix(const std::string& dir, const std::string& prefix) {
     size_t n = 0;
-    std::string cmd = "ls -1 \"" + dir + "\" 2>/dev/null";
-    if (FILE* p = popen(cmd.c_str(), "r")) {
-        char buf[512];
-        while (fgets(buf, sizeof(buf), p)) {
-            std::string leaf(buf);
-            if (!leaf.empty() && leaf.back() == '\n') leaf.pop_back();
-            if (leaf.rfind(prefix, 0) == 0 && leaf != prefix) ++n;
-        }
-        pclose(p);
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+        const std::string leaf = entry.path().filename().string();
+        if (leaf.rfind(prefix, 0) == 0 && leaf != prefix) ++n;
+    }
+    return n;
+}
+
+size_t countFilesWithExtension(const std::string& dir, const std::string& extension) {
+    size_t n = 0;
+    std::error_code ec;
+    for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+        if (entry.path().extension() == extension) ++n;
     }
     return n;
 }
@@ -336,8 +363,7 @@ TEST(RepairLogRotation, RetentionCapsRotatedFiles) {
     // After repeated rotations, at most maxFiles rotated siblings should remain.
     const size_t remaining = countFilesWithPrefix(dir, "app.log");
     EXPECT_LE(remaining, cfg.maxFiles);
-
-    (void)std::system(("rm -rf \"" + dir + "\"").c_str());
+    removeTempDir(dir);
 }
 
 TEST(RepairLogRotation, CompressionProducesGzArtifact) {
@@ -356,16 +382,10 @@ TEST(RepairLogRotation, CompressionProducesGzArtifact) {
     logger.rotateLogFile(base);
 
     // At least one .gz artifact should now exist in the directory.
-    std::string cmd = "ls -1 \"" + dir + "\"/*.gz 2>/dev/null | wc -l";
-    int gzCount = 0;
-    if (FILE* p = popen(cmd.c_str(), "r")) {
-        char buf[64];
-        if (fgets(buf, sizeof(buf), p)) gzCount = std::atoi(buf);
-        pclose(p);
-    }
-    EXPECT_GE(gzCount, 1);
+    const size_t gzCount = countFilesWithExtension(dir, ".gz");
+    EXPECT_GE(gzCount, 1u);
 
-    (void)std::system(("rm -rf \"" + dir + "\"").c_str());
+    removeTempDir(dir);
 }
 
 // ============================================================================
@@ -374,8 +394,6 @@ TEST(RepairLogRotation, CompressionProducesGzArtifact) {
 // while already holding memoryMutex_ (non-recursive) with thread-safety
 // enabled. Now they resolve IDs lock-free via findMemoryByIdUnlocked().
 // ============================================================================
-
-#include "elizaos/agentmemory.hpp"
 
 TEST(RepairMemoryDeadlock, HierarchicalLookupUnderThreadSafetyDoesNotDeadlock) {
     auto& mgr = getGlobalMemoryManager();
@@ -440,9 +458,15 @@ TEST(RepairMemoryClear, ClearResetsFullStateNotJustTables) {
 // ============================================================================
 
 TEST(RepairLoggerFeatureParity, RotationApiIsReachableAndEnforcesRetention) {
-    const std::string dir = "/tmp/elizaos_hc_logtest_" +
-        std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
-    (void)std::system(("mkdir -p \"" + dir + "\"").c_str());
+    const std::string dir =
+        (std::filesystem::temp_directory_path() /
+         ("elizaos_hc_logtest_" +
+          std::to_string(std::chrono::steady_clock::now().time_since_epoch().count())))
+            .string();
+    {
+        std::error_code ec;
+        std::filesystem::create_directories(dir, ec);
+    }
     const std::string base = dir + "/hc.log";
 
     AgentLogger logger;
@@ -459,17 +483,300 @@ TEST(RepairLoggerFeatureParity, RotationApiIsReachableAndEnforcesRetention) {
         std::this_thread::sleep_for(5ms);
     }
 
-    size_t remaining = 0;
-    if (FILE* p = popen(("ls -1 \"" + dir + "\" 2>/dev/null").c_str(), "r")) {
-        char buf[512];
-        while (fgets(buf, sizeof(buf), p)) {
-            std::string leaf(buf);
-            if (!leaf.empty() && leaf.back() == '\n') leaf.pop_back();
-            if (leaf.rfind("hc.log", 0) == 0 && leaf != "hc.log") ++remaining;
-        }
-        pclose(p);
-    }
+    const size_t remaining = countFilesWithPrefix(dir, "hc.log");
     EXPECT_LE(remaining, cfg.maxFiles);
 
-    (void)std::system(("rm -rf \"" + dir + "\"").c_str());
+    removeTempDir(dir);
+}
+
+
+// ============================================================================
+// Repair #9: Public result and statistics types must be deterministic even on
+// early-return, empty-state, and first-cycle paths.
+// ============================================================================
+
+TEST(RepairDeterministicDefaults, CognitiveAndMemoryContractsStartFromZeroState) {
+    FragmentMetadata fragment;
+    EXPECT_EQ(fragment.position, 0u);
+    EXPECT_EQ(fragment.type, MemoryType::FRAGMENT);
+
+    AttentionCostBudget::AllocationResult allocation;
+    EXPECT_FALSE(allocation.success);
+    EXPECT_DOUBLE_EQ(allocation.allocatedAmount, 0.0);
+    EXPECT_DOUBLE_EQ(allocation.remainingBudget, 0.0);
+
+    EnhancedAttentionAllocator::EnhancedStatistics attentionStats;
+    EXPECT_DOUBLE_EQ(attentionStats.averageTemporalScore, 0.0);
+    EXPECT_DOUBLE_EQ(attentionStats.averageSaliencyScore, 0.0);
+    EXPECT_DOUBLE_EQ(attentionStats.budgetUtilization, 0.0);
+    EXPECT_EQ(attentionStats.patternsPredicted, 0);
+    EXPECT_EQ(attentionStats.activeTransfers, 0);
+
+    InferenceStep inference;
+    KnowledgeConflict conflict;
+    EXPECT_DOUBLE_EQ(inference.confidence, 0.0);
+    EXPECT_DOUBLE_EQ(conflict.severity, 0.0);
+
+    EvolutionaryOptimizer::Statistics evolution;
+    EXPECT_EQ(evolution.generation, 0u);
+    EXPECT_DOUBLE_EQ(evolution.diversity, 0.0);
+    EXPECT_DOUBLE_EQ(evolution.convergenceRate, 0.0);
+    EXPECT_EQ(evolution.stagnationCount, 0);
+    EXPECT_EQ(evolution.generationTime, std::chrono::milliseconds{0});
+
+    auto_fun::Result<std::uint64_t> errorResult(
+        auto_fun::AutoFunError::VALUE_TOO_SMALL, "expected failure");
+    EXPECT_FALSE(errorResult.success);
+    EXPECT_EQ(errorResult.value, 0u);
+    EXPECT_EQ(errorResult.error, auto_fun::AutoFunError::VALUE_TOO_SMALL);
+}
+
+TEST(RepairDeterministicDefaults, ExternalBoundaryContractsStartFromSafeState) {
+    AudioData audio;
+    EXPECT_EQ(audio.sample_rate, 0);
+    EXPECT_EQ(audio.channels, 0);
+    EXPECT_DOUBLE_EQ(audio.duration_seconds, 0.0);
+
+    TranscriptionResult transcription;
+    EXPECT_FALSE(transcription.success);
+    EXPECT_DOUBLE_EQ(transcription.confidence, 0.0);
+
+    CommunityMetrics community;
+    EXPECT_EQ(community.totalMembers, 0u);
+    EXPECT_EQ(community.activeMembers, 0u);
+    EXPECT_DOUBLE_EQ(community.engagementRate, 0.0);
+
+    SocialMediaManagerAgent::SocialMediaMetrics social;
+    EXPECT_EQ(social.platform, PlatformType::DISCORD);
+    EXPECT_EQ(social.followers, 0u);
+    EXPECT_EQ(social.impressions, 0u);
+    EXPECT_EQ(social.clicks, 0u);
+    EXPECT_EQ(social.shares, 0u);
+
+    TheOrgManager::SystemMetrics system;
+    EXPECT_EQ(system.totalAgents, 0u);
+    EXPECT_EQ(system.activeAgents, 0u);
+    EXPECT_DOUBLE_EQ(system.systemLoad, 0.0);
+    EXPECT_EQ(system.averageResponseTime, std::chrono::milliseconds{0});
+
+    TransactionReceipt receipt;
+    EXPECT_EQ(receipt.status, TxStatus::PENDING);
+    EXPECT_EQ(receipt.chainId, ChainId::ETHEREUM_MAINNET);
+    EXPECT_DOUBLE_EQ(receipt.gasUsed, 0.0);
+    EXPECT_DOUBLE_EQ(receipt.effectiveGasPrice, 0.0);
+    EXPECT_EQ(receipt.blockNumber, 0u);
+
+    YieldPosition position;
+    EXPECT_DOUBLE_EQ(position.depositedAmount, 0.0);
+    EXPECT_DOUBLE_EQ(position.currentValue, 0.0);
+    EXPECT_EQ(position.strategy, YieldStrategy::LIQUIDITY_PROVISION);
+    EXPECT_EQ(position.chainId, ChainId::ETHEREUM_MAINNET);
+
+    OTCToken token;
+    EXPECT_EQ(token.chain, OTCChain::ETHEREUM);
+    EXPECT_EQ(token.decimals, 0);
+
+    OTCOffer offer;
+    EXPECT_DOUBLE_EQ(offer.baseAmount, 0.0);
+    EXPECT_DOUBLE_EQ(offer.minAmount, 0.0);
+    EXPECT_DOUBLE_EQ(offer.maxAmount, 0.0);
+    EXPECT_EQ(offer.status, OfferStatus::PENDING);
+    EXPECT_FALSE(offer.partialFillAllowed);
+    EXPECT_DOUBLE_EQ(offer.filledAmount, 0.0);
+
+    CounterpartyProfile counterparty;
+    EXPECT_EQ(counterparty.totalTrades, 0);
+    EXPECT_DOUBLE_EQ(counterparty.totalVolume, 0.0);
+    EXPECT_DOUBLE_EQ(counterparty.averageTradeSize, 0.0);
+    EXPECT_FALSE(counterparty.isVerified);
+
+    OTCAnalytics::TradingStats trading;
+    EXPECT_EQ(trading.totalTrades, 0);
+    EXPECT_DOUBLE_EQ(trading.totalVolume, 0.0);
+    EXPECT_DOUBLE_EQ(trading.avgExecutionTime, 0.0);
+}
+
+// ============================================================================
+// Repair #10: AgentMemory search parameters are an executable contract. Every
+// declared filter, uniqueness mode, sort/pagination path, and text-gated
+// embedding query must affect results deterministically.
+// ============================================================================
+
+TEST(RepairMemorySearch, AppliesAllDeclaredFiltersAndDeterministicPagination) {
+    AgentMemoryManager manager;
+
+    auto first = std::make_shared<Memory>(
+        "search-a", "Alpha planning memory", "entity-a", "agent-a");
+    first->setRoomId("room-a");
+    first->setWorldId("world-a");
+    first->setEmbedding(EmbeddingVector{1.0f, 0.0f});
+
+    auto duplicate = std::make_shared<Memory>(
+        "search-b", "Alpha planning memory", "entity-a", "agent-a");
+    duplicate->setRoomId("room-a");
+    duplicate->setWorldId("world-a");
+    duplicate->setEmbedding(EmbeddingVector{1.0f, 0.0f});
+
+    auto decoy = std::make_shared<Memory>(
+        "search-c", "Beta unrelated memory", "entity-a", "agent-a");
+    decoy->setRoomId("room-a");
+    decoy->setWorldId("world-b");
+    decoy->setEmbedding(EmbeddingVector{0.0f, 1.0f});
+
+    auto otherTable = std::make_shared<Memory>(
+        "search-d", "Alpha planning memory", "entity-a", "agent-a");
+    otherTable->setRoomId("room-a");
+    otherTable->setWorldId("world-a");
+    otherTable->setEmbedding(EmbeddingVector{1.0f, 0.0f});
+
+    manager.createMemory(first);
+    manager.createMemory(duplicate);
+    manager.createMemory(decoy);
+    manager.createMemory(otherTable, "archive");
+    manager.indexMemory(first->getId(), HierarchicalMemoryType::SEMANTIC,
+                        {"planning", "alpha"});
+    manager.indexMemory(duplicate->getId(), HierarchicalMemoryType::SEMANTIC,
+                        {"planning", "alpha"});
+    manager.indexMemory(decoy->getId(), HierarchicalMemoryType::EPISODIC,
+                        {"beta"});
+
+    MemoryStrength strong;
+    strong.currentStrength = 0.95;
+    strong.baseImportance = 0.85;
+    manager.setMemoryStrength(first->getId(), strong);
+    manager.setMemoryStrength(duplicate->getId(), strong);
+
+    MemorySearchParams params;
+    params.tableName = "memories";
+    params.entityId = "entity-a";
+    params.agentId = "agent-a";
+    params.roomId = "room-a";
+    params.worldId = "world-a";
+    params.memoryType = HierarchicalMemoryType::SEMANTIC;
+    params.minStrength = 0.9;
+    params.minImportance = 0.8;
+    params.concepts = {"planning", "alpha"};
+    params.unique = true;
+    params.sortByStrength = true;
+    params.count = 10;
+
+    const auto filtered = manager.getMemories(params);
+    ASSERT_EQ(filtered.size(), 1u);
+    EXPECT_EQ(filtered.front()->getWorldId(), "world-a");
+    EXPECT_EQ(filtered.front()->getContent(), "Alpha planning memory");
+
+    params.unique = false;
+    params.start = 1;
+    params.end = 2;
+    params.count = 1;
+    const auto page = manager.getMemories(params);
+    ASSERT_EQ(page.size(), 1u);
+    EXPECT_TRUE(page.front()->getId() == "search-a" ||
+                page.front()->getId() == "search-b");
+
+    MemorySearchByEmbeddingParams embedding;
+    embedding.tableName = "memories";
+    embedding.embedding = EmbeddingVector{1.0f, 0.0f};
+    embedding.entityId = "entity-a";
+    embedding.roomId = "room-a";
+    embedding.worldId = "world-a";
+    embedding.query = "alpha planning";
+    embedding.matchThreshold = 0.99;
+    embedding.unique = true;
+    embedding.count = 10;
+
+    const auto semanticMatch = manager.searchMemories(embedding);
+    ASSERT_EQ(semanticMatch.size(), 1u);
+    EXPECT_NEAR(semanticMatch.front()->getSimilarity(), 1.0, 1e-9);
+}
+
+// ============================================================================
+// Repair #11: Consolidation must apply discovered merges to manager-owned
+// tables, strengths, hierarchical indexes, and associative links.
+// ============================================================================
+
+TEST(RepairMemoryConsolidation, AppliesMergeAndPreservesDerivedState) {
+    AgentMemoryManager manager;
+
+    auto first = std::make_shared<Memory>(
+        "merge-a", "shared consolidation memory", "entity", "agent");
+    auto second = std::make_shared<Memory>(
+        "merge-b", "shared consolidation memory", "entity", "agent");
+    auto related = std::make_shared<Memory>(
+        "merge-c", "distinct related memory", "entity", "agent");
+    for (const auto& memory : {first, second}) {
+        memory->setRoomId("room");
+        memory->setWorldId("world");
+        memory->setEmbedding(EmbeddingVector{1.0f, 0.0f});
+        manager.createMemory(memory, "archive");
+    }
+    related->setRoomId("room");
+    related->setWorldId("world");
+    related->setEmbedding(EmbeddingVector{0.0f, 1.0f});
+    manager.createMemory(related);
+
+    manager.indexMemory(first->getId(), HierarchicalMemoryType::SEMANTIC,
+                        {"shared", "first"});
+    manager.indexMemory(second->getId(), HierarchicalMemoryType::EPISODIC,
+                        {"shared", "second"});
+    manager.createAssociation(first->getId(), related->getId(), "semantic", 0.7);
+    manager.createAssociation(second->getId(), related->getId(), "semantic", 0.8);
+
+    MemoryConsolidationEngine::ConsolidationParams params;
+    params.similarityMergeThreshold = 0.99;
+    manager.setConsolidationParams(params);
+
+    const auto result = manager.runConsolidation();
+    ASSERT_EQ(result.memoriesMerged, 1);
+    ASSERT_EQ(result.appliedMerges.size(), 1u);
+    const auto& applied = result.appliedMerges.front();
+
+    EXPECT_EQ(manager.getMemoryById(applied.sourceId), nullptr);
+    EXPECT_EQ(manager.getMemoryById(applied.absorbedId), nullptr);
+    const auto merged = manager.getMemoryById(applied.mergedId);
+    ASSERT_NE(merged, nullptr);
+    EXPECT_EQ(merged->getContent(), "shared consolidation memory");
+    EXPECT_EQ(merged->getRoomId(), "room");
+    EXPECT_EQ(merged->getWorldId(), "world");
+
+    const auto archive = manager.getAllMemoriesFromTable("archive");
+    ASSERT_EQ(archive.size(), 1u);
+    EXPECT_EQ(archive.front()->getId(), applied.mergedId);
+    EXPECT_EQ(manager.getAllMemoriesFromTable("memories").size(), 1u);
+
+    const auto semantic = manager.getMemoriesByType(HierarchicalMemoryType::SEMANTIC);
+    const auto episodic = manager.getMemoriesByType(HierarchicalMemoryType::EPISODIC);
+    ASSERT_EQ(semantic.size(), 1u);
+    ASSERT_EQ(episodic.size(), 1u);
+    EXPECT_EQ(semantic.front()->getId(), applied.mergedId);
+    EXPECT_EQ(episodic.front()->getId(), applied.mergedId);
+    EXPECT_EQ(manager.getMemoriesByConcept("first").front()->getId(), applied.mergedId);
+    EXPECT_EQ(manager.getMemoriesByConcept("second").front()->getId(), applied.mergedId);
+
+    const auto links = manager.getAssociations(applied.mergedId);
+    ASSERT_EQ(links.size(), 1u);
+    EXPECT_EQ(links.front().targetMemoryId, related->getId());
+    EXPECT_EQ(links.front().sourceMemoryId, applied.mergedId);
+
+    const auto mergedStrength = manager.getMemoryStrength(applied.mergedId);
+    EXPECT_GE(mergedStrength.currentStrength, 0.0);
+    EXPECT_LE(mergedStrength.currentStrength, 1.0);
+}
+
+
+// ============================================================================
+// Repair #12: Village polling must use the API's `since_tic` cursor name in a
+// single shared URL builder, including bounded limits and normalized base URLs.
+// ============================================================================
+
+TEST(RepairVillageEventCursor, BuildsCanonicalSinceTicUrl) {
+    EXPECT_EQ(
+        VillageEventBusClient::buildEventsUrl("http://localhost:8080", 25, 42),
+        "http://localhost:8080/api/events/events?limit=25&since_tic=42");
+    EXPECT_EQ(
+        VillageEventBusClient::buildEventsUrl("http://localhost:8080/", 0, -7),
+        "http://localhost:8080/api/events/events?limit=0&since_tic=0");
+    EXPECT_EQ(
+        VillageEventBusClient::buildEventsUrl("http://localhost:8080///", 5000, 9),
+        "http://localhost:8080/api/events/events?limit=5000&since_tic=9");
 }

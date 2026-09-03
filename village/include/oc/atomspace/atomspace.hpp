@@ -6,6 +6,7 @@
 #define OC_ATOMSPACE_HPP
 
 #include "../util/util.hpp"
+#include <algorithm>
 
 namespace oc {
 

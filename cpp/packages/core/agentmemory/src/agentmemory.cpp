@@ -1,12 +1,36 @@
 #include "elizaos/agentmemory.hpp"
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <chrono>
+#include <iterator>
 #include <set>
 #include <queue>
 #include <numeric>
+#include <tuple>
+#include <unordered_set>
 
 namespace elizaos {
+namespace {
+
+std::string lowerAscii(std::string value) {
+    std::transform(value.begin(), value.end(), value.begin(),
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    return value;
+}
+
+bool containsCaseInsensitive(const std::string& value, const std::string& query) {
+    return query.empty() || lowerAscii(value).find(lowerAscii(query)) != std::string::npos;
+}
+
+std::string memoryUniquenessKey(const Memory& memory) {
+    constexpr char separator = '\x1f';
+    return memory.getContent() + separator + memory.getEntityId() + separator +
+           memory.getAgentId() + separator + memory.getRoomId() + separator +
+           memory.getWorldId();
+}
+
+} // namespace
 
 // AgentMemoryManager Implementation
 AgentMemoryManager::AgentMemoryManager() {
@@ -37,14 +61,17 @@ UUID AgentMemoryManager::createMemory(std::shared_ptr<Memory> memory, const std:
         strength.baseImportance = MemoryStrength::DEFAULT_BASE_IMPORTANCE;
         strength.lastAccessed = std::chrono::system_clock::now();
         strength.lastConsolidated = std::chrono::system_clock::now();
-        memoryStrengths_[memory->getId()] = strength;
-        
+        {
+            std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+            memoryStrengths_[memory->getId()] = strength;
+        }
+
         return memory->getId();
     });
 }
 
 std::shared_ptr<Memory> AgentMemoryManager::findMemoryByIdUnlocked(const UUID& id) const {
-    // Caller must already hold memoryMutex_ (or thread-safety disabled).
+    // Caller must already hold memoryMutex_ (or thread-safety must be disabled).
     for (const auto& [tableName, table] : memoryTables_) {
         auto it = table.find(id);
         if (it != table.end()) {
@@ -52,6 +79,35 @@ std::shared_ptr<Memory> AgentMemoryManager::findMemoryByIdUnlocked(const UUID& i
         }
     }
     return nullptr;
+}
+
+bool AgentMemoryManager::eraseMemoryStateUnlocked(const UUID& id) {
+    bool removed = false;
+    for (auto& [tableName, table] : memoryTables_) {
+        removed = table.erase(id) > 0 || removed;
+    }
+    if (!removed) {
+        return false;
+    }
+
+    hierarchicalIndex_.removeMemory(id);
+    {
+        std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+        memoryStrengths_.erase(id);
+    }
+    {
+        std::lock_guard<std::mutex> associationLock(associationMutex_);
+        associativeNetwork_.erase(id);
+        for (auto& [sourceId, links] : associativeNetwork_) {
+            links.erase(
+                std::remove_if(links.begin(), links.end(),
+                    [&id](const AssociativeLink& link) {
+                        return link.targetMemoryId == id;
+                    }),
+                links.end());
+        }
+    }
+    return true;
 }
 
 std::shared_ptr<Memory> AgentMemoryManager::getMemoryById(const UUID& id) {
@@ -96,47 +152,33 @@ bool AgentMemoryManager::updateMemory(std::shared_ptr<Memory> memory) {
 
 bool AgentMemoryManager::deleteMemory(const UUID& memoryId) {
     return withLock([&]() -> bool {
-        // Find and delete from all tables
-        for (auto& [tableName, table] : memoryTables_) {
-            auto it = table.find(memoryId);
-            if (it != table.end()) {
-                table.erase(it);
-                return true;
-            }
-        }
-        return false;
+        return eraseMemoryStateUnlocked(memoryId);
     });
 }
 
 void AgentMemoryManager::deleteManyMemories(const std::vector<UUID>& memoryIds) {
     withLock([&]() {
         for (const auto& id : memoryIds) {
-            // Find and delete from all tables (without acquiring lock again)
-            for (auto& [tableName, table] : memoryTables_) {
-                auto it = table.find(id);
-                if (it != table.end()) {
-                    table.erase(it);
-                    break; // Found and deleted, no need to search other tables
-                }
-            }
+            eraseMemoryStateUnlocked(id);
         }
     });
 }
 
 void AgentMemoryManager::deleteAllMemories(const UUID& roomId, const std::string& tableName) {
     withLock([&]() {
-        if (memoryTables_.find(tableName) == memoryTables_.end()) {
+        auto tableIt = memoryTables_.find(tableName);
+        if (tableIt == memoryTables_.end()) {
             return;
         }
-        
-        auto& table = memoryTables_[tableName];
-        auto it = table.begin();
-        while (it != table.end()) {
-            if (it->second->getRoomId() == roomId) {
-                it = table.erase(it);
-            } else {
-                ++it;
+
+        std::vector<UUID> ids;
+        for (const auto& [id, memory] : tableIt->second) {
+            if (memory->getRoomId() == roomId) {
+                ids.push_back(id);
             }
+        }
+        for (const auto& id : ids) {
+            eraseMemoryStateUnlocked(id);
         }
     });
 }
@@ -144,38 +186,82 @@ void AgentMemoryManager::deleteAllMemories(const UUID& roomId, const std::string
 std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getMemories(const MemorySearchParams& params) {
     return withLock([&]() -> std::vector<std::shared_ptr<Memory>> {
         std::vector<std::shared_ptr<Memory>> result;
-        
-        if (memoryTables_.find(params.tableName) == memoryTables_.end()) {
+        auto tableIt = memoryTables_.find(params.tableName);
+        if (tableIt == memoryTables_.end()) {
             return result;
         }
-        
-        const auto& table = memoryTables_[params.tableName];
-        
-        // Collect matching memories
-        for (const auto& [id, memory] : table) {
-            if (matchesSearchCriteria(*memory, params)) {
-                result.push_back(memory);
-            }
+
+        std::unordered_map<UUID, MemoryStrength> strengthSnapshot;
+        {
+            std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+            strengthSnapshot = memoryStrengths_;
         }
-        
-        // Sort by creation time (newest first)
-        std::sort(result.begin(), result.end(), 
-                  [](const std::shared_ptr<Memory>& a, const std::shared_ptr<Memory>& b) {
-                      return a->getCreatedAt() > b->getCreatedAt();
-                  });
-        
-        // Apply pagination
-        int startIdx = params.start;
-        int endIdx = params.end > 0 ? std::min(params.end, static_cast<int>(result.size())) : static_cast<int>(result.size());
-        int count = params.count > 0 ? params.count : endIdx - startIdx;
-        
-        if (startIdx >= static_cast<int>(result.size())) {
+
+        std::optional<std::set<UUID>> typeIds;
+        if (params.memoryType) {
+            typeIds = hierarchicalIndex_.getByType(*params.memoryType);
+        }
+        std::vector<std::set<UUID>> conceptIds;
+        conceptIds.reserve(params.concepts.size());
+        for (const auto& conceptName : params.concepts) {
+            conceptIds.push_back(hierarchicalIndex_.getByConcept(conceptName));
+        }
+
+        std::unordered_set<std::string> uniquenessKeys;
+        for (const auto& [id, memory] : tableIt->second) {
+            if (!matchesSearchCriteria(*memory, params)) {
+                continue;
+            }
+            if (typeIds && typeIds->count(id) == 0) {
+                continue;
+            }
+            if (std::any_of(conceptIds.begin(), conceptIds.end(),
+                            [&id](const auto& ids) { return ids.count(id) == 0; })) {
+                continue;
+            }
+
+            const auto strengthIt = strengthSnapshot.find(id);
+            const MemoryStrength strength = strengthIt == strengthSnapshot.end()
+                ? MemoryStrength{}
+                : strengthIt->second;
+            if (params.minStrength && strength.currentStrength < *params.minStrength) {
+                continue;
+            }
+            if (params.minImportance && strength.baseImportance < *params.minImportance) {
+                continue;
+            }
+            if (!params.includeDecayed && strength.currentStrength < decayParams_.minStrength) {
+                continue;
+            }
+            if (params.unique && !uniquenessKeys.insert(memoryUniquenessKey(*memory)).second) {
+                continue;
+            }
+            result.push_back(memory);
+        }
+
+        if (params.sortByStrength) {
+            std::sort(result.begin(), result.end(), [&strengthSnapshot](const auto& a, const auto& b) {
+                return strengthSnapshot[a->getId()].currentStrength >
+                       strengthSnapshot[b->getId()].currentStrength;
+            });
+        } else {
+            std::sort(result.begin(), result.end(),
+                      [](const auto& a, const auto& b) {
+                          return a->getCreatedAt() > b->getCreatedAt();
+                      });
+        }
+
+        const int startIdx = std::max(0, params.start);
+        const int requestedEnd = params.end >= 0
+            ? std::min(params.end, static_cast<int>(result.size()))
+            : static_cast<int>(result.size());
+        if (startIdx >= requestedEnd || startIdx >= static_cast<int>(result.size())) {
             return {};
         }
-        
-        endIdx = std::min(startIdx + count, endIdx);
-        
-        return std::vector<std::shared_ptr<Memory>>(result.begin() + startIdx, result.begin() + endIdx);
+        const int count = params.count > 0 ? params.count : requestedEnd - startIdx;
+        const int endIdx = std::min(startIdx + count, requestedEnd);
+        return std::vector<std::shared_ptr<Memory>>(
+            result.begin() + startIdx, result.begin() + endIdx);
     });
 }
 
@@ -212,41 +298,44 @@ std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getMemoriesByRoomIds(co
 std::vector<std::shared_ptr<Memory>> AgentMemoryManager::searchMemories(const MemorySearchByEmbeddingParams& params) {
     return withLock([&]() -> std::vector<std::shared_ptr<Memory>> {
         std::vector<std::pair<std::shared_ptr<Memory>, double>> candidates;
-        
-        if (memoryTables_.find(params.tableName) == memoryTables_.end()) {
+        auto tableIt = memoryTables_.find(params.tableName);
+        if (tableIt == memoryTables_.end()) {
             return {};
         }
-        
-        const auto& table = memoryTables_[params.tableName];
-        
-        for (const auto& [id, memory] : table) {
-            // Apply basic filters
+
+        for (const auto& [id, memory] : tableIt->second) {
             if (params.entityId && memory->getEntityId() != *params.entityId) continue;
             if (params.roomId && memory->getRoomId() != *params.roomId) continue;
-            
-            // Calculate embedding similarity if available
-            if (memory->getEmbedding()) {
-                double similarity = calculateEmbeddingSimilarity(params.embedding, *memory->getEmbedding());
-                
-                if (similarity >= params.matchThreshold) {
-                    memory->setSimilarity(similarity);
-                    candidates.emplace_back(memory, similarity);
-                }
+            if (params.worldId && memory->getWorldId() != *params.worldId) continue;
+            if (params.query && !containsCaseInsensitive(memory->getContent(), *params.query)) continue;
+            if (!memory->getEmbedding()) continue;
+
+            const double similarity =
+                calculateEmbeddingSimilarity(params.embedding, *memory->getEmbedding());
+            if (similarity >= params.matchThreshold) {
+                memory->setSimilarity(similarity);
+                candidates.emplace_back(memory, similarity);
             }
         }
-        
-        // Sort by similarity (highest first)
-        std::sort(candidates.begin(), candidates.end(), 
+
+        std::sort(candidates.begin(), candidates.end(),
                   [](const auto& a, const auto& b) { return a.second > b.second; });
-        
-        // Extract memories and apply limit
+
         std::vector<std::shared_ptr<Memory>> result;
-        int limit = params.count > 0 ? params.count : static_cast<int>(candidates.size());
-        
-        for (int i = 0; i < std::min(limit, static_cast<int>(candidates.size())); ++i) {
-            result.push_back(candidates[i].first);
+        std::unordered_set<std::string> uniquenessKeys;
+        const int limit = params.count > 0
+            ? params.count
+            : static_cast<int>(candidates.size());
+        for (const auto& [memory, similarity] : candidates) {
+            if (params.unique &&
+                !uniquenessKeys.insert(memoryUniquenessKey(*memory)).second) {
+                continue;
+            }
+            result.push_back(memory);
+            if (static_cast<int>(result.size()) >= limit) {
+                break;
+            }
         }
-        
         return result;
     });
 }
@@ -282,27 +371,24 @@ int AgentMemoryManager::countMemories(const UUID& roomId, bool unique, const std
 void AgentMemoryManager::clear() {
     withLock([&]() {
         memoryTables_.clear();
-        memoryTables_["memories"] = {}; // Re-initialize default table
-        // Reset the full memory state so that strengths, associations and the
-        // hierarchical index do not leak across logical sessions.
+        memoryTables_["memories"] = {};
         hierarchicalIndex_ = HierarchicalIndex{};
+        {
+            std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+            memoryStrengths_.clear();
+        }
+        {
+            std::lock_guard<std::mutex> associationLock(associationMutex_);
+            associativeNetwork_.clear();
+        }
     });
-    {
-        std::lock_guard<std::mutex> lock(strengthMutex_);
-        memoryStrengths_.clear();
-    }
-    {
-        std::lock_guard<std::mutex> lock(associationMutex_);
-        associativeNetwork_.clear();
-    }
 }
 
 bool AgentMemoryManager::matchesSearchCriteria(const Memory& memory, const MemorySearchParams& params) {
     if (params.entityId && memory.getEntityId() != *params.entityId) return false;
     if (params.agentId && memory.getAgentId() != *params.agentId) return false;
     if (params.roomId && memory.getRoomId() != *params.roomId) return false;
-    // Note: worldId not directly supported in current Memory class
-    
+    if (params.worldId && memory.getWorldId() != *params.worldId) return false;
     return true;
 }
 
@@ -330,18 +416,18 @@ double AgentMemoryManager::calculateEmbeddingSimilarity(const EmbeddingVector& e
 }
 
 std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getAllMemoriesFromTable(const std::string& tableName) {
-    std::vector<std::shared_ptr<Memory>> result;
-    
-    if (memoryTables_.find(tableName) == memoryTables_.end()) {
+    return withLock([&]() {
+        std::vector<std::shared_ptr<Memory>> result;
+        auto tableIt = memoryTables_.find(tableName);
+        if (tableIt == memoryTables_.end()) {
+            return result;
+        }
+        result.reserve(tableIt->second.size());
+        for (const auto& [id, memory] : tableIt->second) {
+            result.push_back(memory);
+        }
         return result;
-    }
-    
-    const auto& table = memoryTables_[tableName];
-    for (const auto& [id, memory] : table) {
-        result.push_back(memory);
-    }
-    
-    return result;
+    });
 }
 
 // Global memory manager instance
@@ -515,15 +601,117 @@ void AgentMemoryManager::setConsolidationParams(const MemoryConsolidationEngine:
 
 MemoryConsolidationEngine::ConsolidationResult AgentMemoryManager::runConsolidation() {
     return withLock([&]() -> MemoryConsolidationEngine::ConsolidationResult {
-        // Collect all memories from all tables
         std::vector<std::shared_ptr<Memory>> allMemories;
-        for (auto& [tableName, table] : memoryTables_) {
-            for (auto& [id, memory] : table) {
+        std::unordered_map<UUID, std::string> sourceTables;
+        for (const auto& [tableName, table] : memoryTables_) {
+            for (const auto& [id, memory] : table) {
                 allMemories.push_back(memory);
+                sourceTables[id] = tableName;
             }
         }
-        
-        return consolidationEngine_.runConsolidationCycle(allMemories, memoryStrengths_, decayParams_);
+
+        std::unordered_map<UUID, MemoryStrength> strengths;
+        {
+            std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+            strengths = memoryStrengths_;
+        }
+        auto result = consolidationEngine_.runConsolidationCycle(
+            allMemories, strengths, decayParams_);
+
+        std::unordered_map<UUID, std::shared_ptr<Memory>> mergedById;
+        for (const auto& memory : allMemories) {
+            mergedById[memory->getId()] = memory;
+        }
+
+        for (const auto& merge : result.appliedMerges) {
+            const auto sourceTableIt = sourceTables.find(merge.sourceId);
+            const auto absorbedTableIt = sourceTables.find(merge.absorbedId);
+            const std::string targetTable = sourceTableIt != sourceTables.end()
+                ? sourceTableIt->second
+                : (absorbedTableIt != sourceTables.end()
+                    ? absorbedTableIt->second
+                    : "memories");
+
+            for (auto& [type, ids] : hierarchicalIndex_.typeIndex) {
+                const bool sourceInherited = ids.erase(merge.sourceId) > 0;
+                const bool absorbedInherited = ids.erase(merge.absorbedId) > 0;
+                if (sourceInherited || absorbedInherited) ids.insert(merge.mergedId);
+            }
+            for (auto& [conceptName, ids] : hierarchicalIndex_.conceptIndex) {
+                const bool sourceInherited = ids.erase(merge.sourceId) > 0;
+                const bool absorbedInherited = ids.erase(merge.absorbedId) > 0;
+                if (sourceInherited || absorbedInherited) ids.insert(merge.mergedId);
+            }
+            for (auto& [entity, ids] : hierarchicalIndex_.entityIndex) {
+                const bool sourceInherited = ids.erase(merge.sourceId) > 0;
+                const bool absorbedInherited = ids.erase(merge.absorbedId) > 0;
+                if (sourceInherited || absorbedInherited) ids.insert(merge.mergedId);
+            }
+            for (auto& [timeBucket, ids] : hierarchicalIndex_.timeIndex) {
+                const bool sourceInherited = ids.erase(merge.sourceId) > 0;
+                const bool absorbedInherited = ids.erase(merge.absorbedId) > 0;
+                if (sourceInherited || absorbedInherited) ids.insert(merge.mergedId);
+            }
+
+            for (auto& [tableName, table] : memoryTables_) {
+                table.erase(merge.sourceId);
+                table.erase(merge.absorbedId);
+            }
+            auto mergedIt = mergedById.find(merge.mergedId);
+            if (mergedIt != mergedById.end()) {
+                memoryTables_[targetTable][merge.mergedId] = mergedIt->second;
+            }
+
+            std::lock_guard<std::mutex> associationLock(associationMutex_);
+            std::vector<AssociativeLink> inheritedLinks;
+            auto collectLinks = [&](const UUID& id) {
+                auto it = associativeNetwork_.find(id);
+                if (it == associativeNetwork_.end()) return;
+                for (auto link : it->second) {
+                    if (link.targetMemoryId == merge.sourceId ||
+                        link.targetMemoryId == merge.absorbedId) {
+                        continue;
+                    }
+                    link.sourceMemoryId = merge.mergedId;
+                    inheritedLinks.push_back(std::move(link));
+                }
+            };
+            collectLinks(merge.sourceId);
+            collectLinks(merge.absorbedId);
+            associativeNetwork_.erase(merge.sourceId);
+            associativeNetwork_.erase(merge.absorbedId);
+            for (auto& [sourceId, links] : associativeNetwork_) {
+                for (auto& link : links) {
+                    if (link.targetMemoryId == merge.sourceId ||
+                        link.targetMemoryId == merge.absorbedId) {
+                        link.targetMemoryId = merge.mergedId;
+                    }
+                }
+                std::sort(links.begin(), links.end(), [](const auto& a, const auto& b) {
+                    return std::tie(a.targetMemoryId, a.linkType) <
+                           std::tie(b.targetMemoryId, b.linkType);
+                });
+                links.erase(std::unique(links.begin(), links.end(), [](const auto& a, const auto& b) {
+                    return a.targetMemoryId == b.targetMemoryId && a.linkType == b.linkType;
+                }), links.end());
+            }
+            std::sort(inheritedLinks.begin(), inheritedLinks.end(), [](const auto& a, const auto& b) {
+                return std::tie(a.targetMemoryId, a.linkType) <
+                       std::tie(b.targetMemoryId, b.linkType);
+            });
+            inheritedLinks.erase(std::unique(inheritedLinks.begin(), inheritedLinks.end(), [](const auto& a, const auto& b) {
+                return a.targetMemoryId == b.targetMemoryId && a.linkType == b.linkType;
+            }), inheritedLinks.end());
+            if (!inheritedLinks.empty()) {
+                associativeNetwork_[merge.mergedId] = std::move(inheritedLinks);
+            }
+        }
+
+        {
+            std::lock_guard<std::mutex> strengthLock(strengthMutex_);
+            memoryStrengths_ = std::move(strengths);
+        }
+        return result;
     });
 }
 
@@ -576,16 +764,79 @@ MemoryConsolidationEngine::ConsolidationResult MemoryConsolidationEngine::runCon
         processed++;
     }
     
-    // Find and potentially merge similar memories
-    auto mergeCandidates = findMergeCandidates(memories, params_.similarityMergeThreshold);
-    result.memoriesMerged = static_cast<int>(mergeCandidates.size());
-    
-    // Calculate average strength after
+    const auto mergeCandidates =
+        findMergeCandidates(memories, params_.similarityMergeThreshold);
+    std::unordered_map<UUID, std::shared_ptr<Memory>> byId;
+    for (const auto& memory : memories) {
+        byId[memory->getId()] = memory;
+    }
+    std::unordered_set<UUID> consumed;
+    std::vector<std::shared_ptr<Memory>> mergedMemories;
+    for (const auto& [sourceId, absorbedId] : mergeCandidates) {
+        if (consumed.count(sourceId) || consumed.count(absorbedId)) {
+            continue;
+        }
+        auto sourceIt = byId.find(sourceId);
+        auto absorbedIt = byId.find(absorbedId);
+        auto sourceStrengthIt = strengthMap.find(sourceId);
+        auto absorbedStrengthIt = strengthMap.find(absorbedId);
+        if (sourceIt == byId.end() || absorbedIt == byId.end() ||
+            sourceStrengthIt == strengthMap.end() ||
+            absorbedStrengthIt == strengthMap.end()) {
+            continue;
+        }
+
+        auto merged = mergeMemories(sourceIt->second, absorbedIt->second,
+                                    sourceStrengthIt->second,
+                                    absorbedStrengthIt->second);
+        MemoryStrength mergedStrength;
+        mergedStrength.currentStrength = std::max(
+            sourceStrengthIt->second.currentStrength,
+            absorbedStrengthIt->second.currentStrength);
+        mergedStrength.baseImportance = std::max(
+            sourceStrengthIt->second.baseImportance,
+            absorbedStrengthIt->second.baseImportance);
+        mergedStrength.emotionalSalience = std::max(
+            sourceStrengthIt->second.emotionalSalience,
+            absorbedStrengthIt->second.emotionalSalience);
+        mergedStrength.accessCount = sourceStrengthIt->second.accessCount +
+                                     absorbedStrengthIt->second.accessCount;
+        mergedStrength.lastAccessed = std::max(
+            sourceStrengthIt->second.lastAccessed,
+            absorbedStrengthIt->second.lastAccessed);
+        mergedStrength.lastConsolidated = std::max(
+            sourceStrengthIt->second.lastConsolidated,
+            absorbedStrengthIt->second.lastConsolidated);
+        mergedStrength.isConsolidated = sourceStrengthIt->second.isConsolidated ||
+                                        absorbedStrengthIt->second.isConsolidated;
+
+        consumed.insert(sourceId);
+        consumed.insert(absorbedId);
+        strengthMap.erase(sourceId);
+        strengthMap.erase(absorbedId);
+        strengthMap[merged->getId()] = mergedStrength;
+        mergedMemories.push_back(merged);
+        result.appliedMerges.push_back({sourceId, absorbedId, merged->getId()});
+    }
+
+    if (!mergedMemories.empty()) {
+        memories.erase(
+            std::remove_if(memories.begin(), memories.end(),
+                           [&consumed](const auto& memory) {
+                               return consumed.count(memory->getId()) > 0;
+                           }),
+            memories.end());
+        memories.insert(memories.end(), mergedMemories.begin(), mergedMemories.end());
+    }
+    result.memoriesMerged = static_cast<int>(result.appliedMerges.size());
+
     double totalStrengthAfter = 0.0;
     for (const auto& [id, strength] : strengthMap) {
         totalStrengthAfter += strength.currentStrength;
     }
-    result.averageStrengthAfter = strengthMap.empty() ? 0.0 : totalStrengthAfter / strengthMap.size();
+    result.averageStrengthAfter = strengthMap.empty()
+        ? 0.0
+        : totalStrengthAfter / strengthMap.size();
     
     return result;
 }
@@ -613,29 +864,35 @@ std::shared_ptr<Memory> MemoryConsolidationEngine::mergeMemories(
     std::shared_ptr<Memory> m2,
     const MemoryStrength& s1,
     const MemoryStrength& s2) {
-    
-    // Create merged memory with combined content
-    auto merged = std::make_shared<Memory>();
-    
-    // Take the content from the stronger memory
-    if (s1.currentStrength >= s2.currentStrength) {
-        merged->setContent(m1->getContent());
-    } else {
-        merged->setContent(m2->getContent());
+    const bool firstIsPrimary = s1.currentStrength >= s2.currentStrength;
+    const auto& primary = firstIsPrimary ? m1 : m2;
+    const auto& secondary = firstIsPrimary ? m2 : m1;
+    std::string content = primary->getContent();
+    if (!secondary->getContent().empty() && secondary->getContent() != content) {
+        if (!content.empty()) content += "\n";
+        content += secondary->getContent();
     }
-    
-    // Combine embeddings (average)
+
+    auto merged = std::make_shared<Memory>(
+        generateUUID(), content, primary->getEntityId(), primary->getAgentId(),
+        primary->getMetadata());
+    merged->setRoomId(primary->getRoomId());
+    merged->setWorldId(primary->getWorldId());
+    merged->setUnique(primary->isUnique() || secondary->isUnique());
+
     if (m1->getEmbedding() && m2->getEmbedding()) {
         EmbeddingVector avgEmbedding;
         const auto& e1 = *m1->getEmbedding();
         const auto& e2 = *m2->getEmbedding();
-        
+        avgEmbedding.reserve(std::min(e1.size(), e2.size()));
         for (size_t i = 0; i < std::min(e1.size(), e2.size()); ++i) {
             avgEmbedding.push_back((e1[i] + e2[i]) / 2.0f);
         }
         merged->setEmbedding(avgEmbedding);
+    } else if (primary->getEmbedding()) {
+        merged->setEmbedding(*primary->getEmbedding());
     }
-    
+
     return merged;
 }
 
@@ -668,10 +925,35 @@ double MemoryConsolidationEngine::calculateMemorySimilarity(const Memory& m1, co
     if (c1.empty() || c2.empty()) return 0.0;
     if (c1 == c2) return 1.0;
     
-    // Simple Jaccard-like similarity on words
-    std::set<std::string> words1, words2;
-    // Split and compare (simplified)
-    return 0.0;
+    auto tokenize = [](const std::string& content) {
+        std::set<std::string> words;
+        std::string token;
+        for (unsigned char c : content) {
+            if (std::isalnum(c)) {
+                token.push_back(static_cast<char>(std::tolower(c)));
+            } else if (!token.empty()) {
+                words.insert(std::move(token));
+                token.clear();
+            }
+        }
+        if (!token.empty()) {
+            words.insert(std::move(token));
+        }
+        return words;
+    };
+
+    const auto words1 = tokenize(c1);
+    const auto words2 = tokenize(c2);
+    if (words1.empty() || words2.empty()) return 0.0;
+
+    std::vector<std::string> intersection;
+    std::set_intersection(words1.begin(), words1.end(),
+                          words2.begin(), words2.end(),
+                          std::back_inserter(intersection));
+    const std::size_t unionSize = words1.size() + words2.size() - intersection.size();
+    return unionSize == 0
+        ? 0.0
+        : static_cast<double>(intersection.size()) / static_cast<double>(unionSize);
 }
 
 // ============================================================================
@@ -789,35 +1071,10 @@ std::vector<UUID> AgentMemoryManager::spreadActivation(const UUID& startId, int 
 // ============================================================================
 
 void AgentMemoryManager::defragmentMemories() {
+    const auto decayed = getDecayedMemories(decayParams_.minStrength);
     withLock([&]() {
-        // Remove decayed memories below threshold
-        auto decayed = getDecayedMemories(decayParams_.minStrength);
-        
         for (const auto& id : decayed) {
-            // Remove from tables
-            for (auto& [tableName, table] : memoryTables_) {
-                table.erase(id);
-            }
-            
-            // Remove from index
-            hierarchicalIndex_.removeMemory(id);
-            
-            // Remove from strength map
-            memoryStrengths_.erase(id);
-            
-            // Remove from associative network
-            associativeNetwork_.erase(id);
-            
-            // Remove incoming links
-            for (auto& [sourceId, links] : associativeNetwork_) {
-                links.erase(
-                    std::remove_if(links.begin(), links.end(),
-                        [&id](const AssociativeLink& link) {
-                            return link.targetMemoryId == id;
-                        }),
-                    links.end()
-                );
-            }
+            eraseMemoryStateUnlocked(id);
         }
     });
 }

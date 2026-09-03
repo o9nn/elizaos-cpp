@@ -27,12 +27,7 @@ void AgentLoop::start() {
 
     // Update health status
     HealthStatus oldStatus = healthStatus_.exchange(HealthStatus::STARTING);
-    if (healthChangeCallback_) {
-        std::lock_guard<std::mutex> lock(callbackMutex_);
-        if (healthChangeCallback_) {
-            healthChangeCallback_(oldStatus, HealthStatus::STARTING);
-        }
-    }
+    notifyHealthChange(oldStatus, HealthStatus::STARTING);
 
     stopRequested_ = false;
     running_ = true;
@@ -65,12 +60,7 @@ void AgentLoop::start() {
 
     // Update health status to HEALTHY
     oldStatus = healthStatus_.exchange(HealthStatus::HEALTHY);
-    if (healthChangeCallback_) {
-        std::lock_guard<std::mutex> cbLock(callbackMutex_);
-        if (healthChangeCallback_) {
-            healthChangeCallback_(oldStatus, HealthStatus::HEALTHY);
-        }
-    }
+    notifyHealthChange(oldStatus, HealthStatus::HEALTHY);
 }
 
 void AgentLoop::stop() {
@@ -80,12 +70,7 @@ void AgentLoop::stop() {
 
     // Update health status
     HealthStatus oldStatus = healthStatus_.exchange(HealthStatus::STOPPING);
-    if (healthChangeCallback_) {
-        std::lock_guard<std::mutex> lock(callbackMutex_);
-        if (healthChangeCallback_) {
-            healthChangeCallback_(oldStatus, HealthStatus::STOPPING);
-        }
-    }
+    notifyHealthChange(oldStatus, HealthStatus::STOPPING);
 
     stopRequested_ = true;
 
@@ -112,12 +97,7 @@ void AgentLoop::stop() {
 
     // Update health status to STOPPED
     oldStatus = healthStatus_.exchange(HealthStatus::STOPPED);
-    if (healthChangeCallback_) {
-        std::lock_guard<std::mutex> lock(callbackMutex_);
-        if (healthChangeCallback_) {
-            healthChangeCallback_(oldStatus, HealthStatus::STOPPED);
-        }
-    }
+    notifyHealthChange(oldStatus, HealthStatus::STOPPED);
 }
 
 void AgentLoop::step() {
@@ -303,16 +283,20 @@ void AgentLoop::updateStatistics(double stepDurationMs, bool success) {
     }
 }
 
+void AgentLoop::notifyHealthChange(HealthStatus oldStatus, HealthStatus newStatus) {
+    HealthChangeCallback callback;
+    {
+        std::lock_guard<std::mutex> lock(callbackMutex_);
+        callback = healthChangeCallback_;
+    }
+    if (callback) callback(oldStatus, newStatus);
+}
+
 void AgentLoop::updateHealthStatus() {
     HealthStatus newStatus = checkHealth();
     HealthStatus oldStatus = healthStatus_.exchange(newStatus);
 
-    if (oldStatus != newStatus && healthChangeCallback_) {
-        std::lock_guard<std::mutex> lock(callbackMutex_);
-        if (healthChangeCallback_) {
-            healthChangeCallback_(oldStatus, newStatus);
-        }
-    }
+    if (oldStatus != newStatus) notifyHealthChange(oldStatus, newStatus);
     
     // Update cognitive load and degradation status
     updateCognitiveLoad();

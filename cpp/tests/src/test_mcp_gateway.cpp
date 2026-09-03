@@ -65,14 +65,14 @@ TEST_F(MCPGatewayTest, MCPToolWithHandler) {
     MCPTool tool;
     tool.name = "echo";
     tool.description = "Echoes input";
-    tool.handler = [](const JsonValue& input) -> JsonValue {
+    tool.handler = [](const MCPJsonValue& input) -> MCPJsonValue {
         return input;
     };
 
     EXPECT_TRUE(tool.handler != nullptr);
 
-    JsonValue testInput = {{"message", "hello"}};
-    JsonValue result = tool.handler(testInput);
+    MCPJsonValue testInput = {{"message", "hello"}};
+    MCPJsonValue result = tool.handler(testInput);
     EXPECT_EQ(result["message"], "hello");
 }
 
@@ -384,7 +384,7 @@ TEST_F(MCPGatewayTest, MCPServerRegisterTool) {
 
     server.registerTool("echo", "Echoes input",
                        {{"type", "object"}},
-                       [](const JsonValue& input) { return input; });
+                       [](const MCPJsonValue& input) { return input; });
 
     // Tool registered without error
     EXPECT_TRUE(true);

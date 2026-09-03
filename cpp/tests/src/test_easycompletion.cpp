@@ -1,8 +1,46 @@
 #include <gtest/gtest.h>
 #include "elizaos/easycompletion.hpp"
 
+#include <cstdlib>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
+
 namespace elizaos {
 namespace test {
+
+namespace {
+class ScopedUnsetEnvironmentVariables {
+public:
+    explicit ScopedUnsetEnvironmentVariables(std::vector<std::string> names) {
+        for (auto& name : names) {
+            const char* current = std::getenv(name.c_str());
+            values_.emplace_back(name,
+                current ? std::optional<std::string>(current) : std::nullopt);
+#ifdef _WIN32
+            _putenv_s(name.c_str(), "");
+#else
+            unsetenv(name.c_str());
+#endif
+        }
+    }
+
+    ~ScopedUnsetEnvironmentVariables() {
+        for (const auto& [name, value] : values_) {
+#ifdef _WIN32
+            _putenv_s(name.c_str(), value ? value->c_str() : "");
+#else
+            if (value) setenv(name.c_str(), value->c_str(), 1);
+            else unsetenv(name.c_str());
+#endif
+        }
+    }
+
+private:
+    std::vector<std::pair<std::string, std::optional<std::string>>> values_;
+};
+} // namespace
 
 class EasyCompletionTest : public ::testing::Test {
 protected:
@@ -106,6 +144,7 @@ TEST_F(EasyCompletionTest, ChunkPrompt) {
 }
 
 TEST_F(EasyCompletionTest, TextCompletionWithoutApiKey) {
+    ScopedUnsetEnvironmentVariables noApiKeys({"EASYCOMPLETION_API_KEY", "OPENAI_API_KEY"});
     CompletionConfig empty_config;
     empty_config.api_key = ""; // No API key
     
@@ -118,6 +157,7 @@ TEST_F(EasyCompletionTest, TextCompletionWithoutApiKey) {
 }
 
 TEST_F(EasyCompletionTest, ChatCompletionWithoutApiKey) {
+    ScopedUnsetEnvironmentVariables noApiKeys({"EASYCOMPLETION_API_KEY", "OPENAI_API_KEY"});
     CompletionConfig empty_config;
     empty_config.api_key = ""; // No API key
     
@@ -134,6 +174,7 @@ TEST_F(EasyCompletionTest, ChatCompletionWithoutApiKey) {
 }
 
 TEST_F(EasyCompletionTest, FunctionCompletionWithoutApiKey) {
+    ScopedUnsetEnvironmentVariables noApiKeys({"EASYCOMPLETION_API_KEY", "OPENAI_API_KEY"});
     CompletionConfig empty_config;
     empty_config.api_key = ""; // No API key
     

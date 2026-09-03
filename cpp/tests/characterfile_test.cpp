@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "elizaos/characterfile.hpp"
 #include <cstdio>
+#include <algorithm>
 
 using namespace elizaos;
 

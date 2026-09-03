@@ -69,8 +69,8 @@ enum class SettlementType {
 struct OTCToken {
     std::string symbol;
     std::string contractAddress;
-    OTCChain chain;
-    int decimals;
+    OTCChain chain = OTCChain::ETHEREUM;
+    int decimals = 0;
     std::string name;
 };
 
@@ -81,23 +81,23 @@ struct OTCOffer {
     std::string takerId;        // Counterparty (if matched)
     OTCToken baseToken;         // Token being traded
     OTCToken quoteToken;        // Token used for payment
-    double baseAmount;          // Amount of base token
-    double quoteAmount;         // Total quote amount (baseAmount * price)
-    double pricePerUnit;        // Price per unit
-    double minAmount;           // Minimum trade size
-    double maxAmount;           // Maximum trade size
-    OfferSide side;
-    OfferStatus status;
-    SettlementType settlementType;
-    OTCChain chain;
-    std::chrono::system_clock::time_point createdAt;
-    std::chrono::system_clock::time_point expiresAt;
+    double baseAmount = 0.0;    // Amount of base token
+    double quoteAmount = 0.0;   // Total quote amount (baseAmount * price)
+    double pricePerUnit = 0.0;  // Price per unit
+    double minAmount = 0.0;     // Minimum trade size
+    double maxAmount = 0.0;     // Maximum trade size
+    OfferSide side = OfferSide::BUY;
+    OfferStatus status = OfferStatus::PENDING;
+    SettlementType settlementType = SettlementType::INSTANT;
+    OTCChain chain = OTCChain::ETHEREUM;
+    std::chrono::system_clock::time_point createdAt{};
+    std::chrono::system_clock::time_point expiresAt{};
     std::optional<std::chrono::system_clock::time_point> matchedAt;
     std::optional<std::chrono::system_clock::time_point> settledAt;
     std::string escrowAddress;
     std::string notes;
-    bool partialFillAllowed;
-    double filledAmount;
+    bool partialFillAllowed = false;
+    double filledAmount = 0.0;
 };
 
 // Trade execution record
@@ -137,16 +137,16 @@ struct NegotiationMessage {
 // Counterparty profile
 struct CounterpartyProfile {
     std::string counterpartyId;
-    int totalTrades;
-    int successfulTrades;
-    double totalVolume;
-    double averageTradeSize;
-    double reputationScore;        // 0.0 to 5.0
+    int totalTrades = 0;
+    int successfulTrades = 0;
+    double totalVolume = 0.0;
+    double averageTradeSize = 0.0;
+    double reputationScore = 0.0;  // 0.0 to 5.0
     std::vector<std::string> verifications;
-    std::chrono::system_clock::time_point memberSince;
-    bool isVerified;
-    bool isWhitelisted;
-    bool isBlacklisted;
+    std::chrono::system_clock::time_point memberSince{};
+    bool isVerified = false;
+    bool isWhitelisted = false;
+    bool isBlacklisted = false;
 };
 
 // Market stats
@@ -343,11 +343,11 @@ public:
 
     // Analytics
     struct TradingStats {
-        int totalTrades;
-        double totalVolume;
-        double avgTradeSize;
-        double successRate;
-        double avgExecutionTime;
+        int totalTrades = 0;
+        double totalVolume = 0.0;
+        double avgTradeSize = 0.0;
+        double successRate = 0.0;
+        double avgExecutionTime = 0.0;
         std::unordered_map<std::string, double> volumeByToken;
         std::unordered_map<OTCChain, double> volumeByChain;
     };

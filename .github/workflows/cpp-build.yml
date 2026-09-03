@@ -114,10 +114,15 @@ jobs:
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }} -j 2
+      timeout-minutes: 180
 
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --config ${{ matrix.build_type }}
+      # --timeout bounds each individual test; timeout-minutes bounds the whole
+      # step. Without these a single deadlocked test held the Windows Debug
+      # runner for ~2.5h (the equivalent Release job runs all tests in ~5 min).
+      run: ctest --output-on-failure --config ${{ matrix.build_type }} --timeout 180
+      timeout-minutes: 30
       continue-on-error: true
 
     - name: Upload build artifacts

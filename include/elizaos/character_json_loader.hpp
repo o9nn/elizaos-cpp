@@ -14,6 +14,12 @@ namespace elizaos {
  * the standard ElizaOS character JSON format used in the /characters directory.
  */
 class CharacterJsonLoader {
+    // Grants the unit tests access to the private JSON parsing helpers without
+    // resorting to `#define private public`, which is undefined behaviour and
+    // breaks on MSVC because the access specifier is part of the decorated
+    // (mangled) symbol name, producing LNK2019 at link time.
+    friend struct CharacterJsonLoaderTestAccess;
+
 public:
     /**
      * @brief Load a character from a JSON file
@@ -86,6 +92,40 @@ private:
      * @brief Helper function to get float value from JSON
      */
     static float getFloatFromJson(const JsonValue& json, const std::string& key, float defaultValue = 0.5f);
+};
+
+/**
+ * @brief Test-only accessor exposing CharacterJsonLoader's private helpers.
+ *
+ * Declared as a friend of CharacterJsonLoader so unit tests can exercise the
+ * parsing helpers directly. Header-only forwarding keeps the library ABI and
+ * the helpers' access level unchanged.
+ */
+struct CharacterJsonLoaderTestAccess {
+    static PersonalityMatrix parsePersonality(const JsonValue& json) {
+        return CharacterJsonLoader::parsePersonalityFromJson(json);
+    }
+    static CommunicationStyle parseCommunicationStyle(const JsonValue& json) {
+        return CharacterJsonLoader::parseCommunicationStyleFromJson(json);
+    }
+    static CharacterBackground parseBackground(const JsonValue& json) {
+        return CharacterJsonLoader::parseBackgroundFromJson(json);
+    }
+    static std::vector<CharacterTrait> parseTraits(const JsonValue& json) {
+        return CharacterJsonLoader::parseTraitsFromJson(json);
+    }
+    static std::string getString(const JsonValue& json, const std::string& key,
+                                 const std::string& defaultValue = "") {
+        return CharacterJsonLoader::getStringFromJson(json, key, defaultValue);
+    }
+    static std::vector<std::string> getStringArray(const JsonValue& json,
+                                                   const std::string& key) {
+        return CharacterJsonLoader::getStringArrayFromJson(json, key);
+    }
+    static float getFloat(const JsonValue& json, const std::string& key,
+                          float defaultValue = 0.5f) {
+        return CharacterJsonLoader::getFloatFromJson(json, key, defaultValue);
+    }
 };
 
 } // namespace elizaos

@@ -17,6 +17,10 @@
 #define MSG_NOSIGNAL 0
 inline int test_close_socket(int fd) { return ::closesocket(fd); }
 using socklen_t = int;
+#ifndef _SSIZE_T_DEFINED
+using ssize_t = long long;
+#define _SSIZE_T_DEFINED
+#endif
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -218,7 +222,7 @@ namespace {
 class LoopbackTcpServer {
 public:
     LoopbackTcpServer() {
-        serverFd_ = ::socket(AF_INET, SOCK_STREAM, 0);
+        serverFd_ = static_cast<int>(::socket(AF_INET, SOCK_STREAM, 0));
         EXPECT_GE(serverFd_, 0);
         int opt = 1;
         EXPECT_EQ(::setsockopt(serverFd_, SOL_SOCKET, SO_REUSEADDR,
@@ -266,10 +270,11 @@ public:
 
 private:
     void serveOneClient() {
-        clientFd_ = ::accept(serverFd_, nullptr, nullptr);
+        clientFd_ = static_cast<int>(::accept(serverFd_, nullptr, nullptr));
         if (clientFd_ < 0) return;
         char buffer[1024];
-        const ssize_t n = ::recv(clientFd_, buffer, sizeof(buffer), 0);
+        const ssize_t n = static_cast<ssize_t>(
+            ::recv(clientFd_, buffer, static_cast<int>(sizeof(buffer)), 0));
         if (n > 0) {
             std::string payload(buffer, static_cast<std::size_t>(n));
             {
@@ -278,7 +283,8 @@ private:
             }
             cv_.notify_all();
             const std::string response = "ack:" + payload;
-            (void)::send(clientFd_, response.data(), response.size(), MSG_NOSIGNAL);
+            (void)::send(clientFd_, response.data(),
+                         static_cast<int>(response.size()), MSG_NOSIGNAL);
         }
     }
 

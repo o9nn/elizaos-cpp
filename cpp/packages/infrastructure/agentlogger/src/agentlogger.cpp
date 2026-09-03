@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <ctime>
 #include <algorithm>
+#include <atomic>
 #include <vector>
 #include <fstream>
 #include <random>
@@ -23,7 +24,7 @@ std::string LogEntry::toJson() const {
     
     // Get timestamp as ISO 8601 string
     auto time_t = std::chrono::system_clock::to_time_t(timestamp);
-    struct tm tm;
+    struct tm tm{};
     #ifdef _WIN32
         localtime_s(&tm, &time_t);
     #else
@@ -103,7 +104,7 @@ std::string LogEntry::toJson() const {
 
 std::string LogEntry::toText() const {
     auto time_t = std::chrono::system_clock::to_time_t(timestamp);
-    struct tm tm;
+    struct tm tm{};
     #ifdef _WIN32
         localtime_s(&tm, &time_t);
     #else
@@ -135,7 +136,7 @@ std::string CognitiveTrace::toJson() const {
     
     auto formatTime = [](std::chrono::system_clock::time_point tp) -> std::string {
         auto time_t = std::chrono::system_clock::to_time_t(tp);
-        struct tm tm;
+        struct tm tm{};
         #ifdef _WIN32
             localtime_s(&tm, &time_t);
         #else
@@ -189,8 +190,31 @@ std::string CognitiveTrace::toJson() const {
     return oss.str();
 }
 
-// Global logger instance
+namespace {
+std::atomic<bool>& globalLoggerReady() {
+    static auto* ready = new std::atomic<bool>(false);
+    return *ready;
+}
+
+AgentLogger& fallbackGlobalLogger() {
+    // Intentionally process-lifetime storage: other global objects may log from
+    // destructors after the configured global logger has already been destroyed.
+    static auto* fallback = new AgentLogger();
+    return *fallback;
+}
+
+struct GlobalLoggerLifetime {
+    GlobalLoggerLifetime() { globalLoggerReady().store(true, std::memory_order_release); }
+    ~GlobalLoggerLifetime() { globalLoggerReady().store(false, std::memory_order_release); }
+};
+} // namespace
+
+// Global logger instance. The adjacent lifetime sentinel is constructed after
+// the shared pointer and destroyed before it, preventing teardown-order UAFs.
 std::shared_ptr<AgentLogger> globalLogger = std::make_shared<AgentLogger>();
+namespace {
+GlobalLoggerLifetime globalLoggerLifetime;
+} // namespace
 
 AgentLogger::AgentLogger() : consoleEnabled_(true), fileEnabled_(true), logFormat_(LogFormat::TEXT) {
     // Initialize default type colors
@@ -307,7 +331,7 @@ void AgentLogger::writeToFile(
     
     // Get timestamp (cross-platform compatible)
     auto now = std::time(nullptr);
-    struct tm tm;
+    struct tm tm{};
     #ifdef _WIN32
         localtime_s(&tm, &now);  // Windows safe version
     #else
@@ -441,42 +465,53 @@ std::string AgentLogger::createPanel(
 }
 
 // Convenience functions
+namespace {
+AgentLogger& activeGlobalLogger() {
+    // The readiness guard short-circuits access before construction and after
+    // destruction; both phases route to process-lifetime fallback storage.
+    if (globalLoggerReady().load(std::memory_order_acquire) && globalLogger) {
+        return *globalLogger;
+    }
+    return fallbackGlobalLogger();
+}
+} // namespace
+
 void logInfo(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::INFO);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::INFO);
 }
 
 void logWarning(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::WARNING);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::WARNING);
 }
 
 void logError(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::ERROR);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::ERROR);
 }
 
 void logSuccess(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::SUCCESS);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::SUCCESS);
 }
 
 void logSystem(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::SYSTEM);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::SYSTEM);
 }
 
 void logDebug(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::DEBUG);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::DEBUG);
 }
 
 void logTrace(const std::string& content, const std::string& source) {
-    globalLogger->log(content, source, "agentlogger", LogLevel::TRACE);
+    activeGlobalLogger().log(content, source, "agentlogger", LogLevel::TRACE);
 }
 
 void logJsonInfo(const std::string& content, 
                  const std::unordered_map<std::string, std::string>& metadata) {
-    globalLogger->logJson(content, "", LogLevel::INFO, metadata);
+    activeGlobalLogger().logJson(content, "", LogLevel::INFO, metadata);
 }
 
 void logJsonError(const std::string& content,
                   const std::unordered_map<std::string, std::string>& metadata) {
-    globalLogger->logJson(content, "", LogLevel::ERROR, metadata);
+    activeGlobalLogger().logJson(content, "", LogLevel::ERROR, metadata);
 }
 
 // ============================================================================
@@ -555,7 +590,7 @@ void AgentLogger::checkAndRotate(const std::string& filename) {
 void AgentLogger::rotateLogFile(const std::string& filename) {
     // Get current timestamp for rotation suffix
     auto now = std::time(nullptr);
-    struct tm tm;
+    struct tm tm{};
     #ifdef _WIN32
         localtime_s(&tm, &now);
     #else
@@ -784,7 +819,7 @@ void AgentLogger::exportAuditTrail(const std::string& filename) {
 
 std::string AgentLogger::getTimestamp() const {
     auto now = std::time(nullptr);
-    struct tm tm;
+    struct tm tm{};
     #ifdef _WIN32
         localtime_s(&tm, &now);
     #else

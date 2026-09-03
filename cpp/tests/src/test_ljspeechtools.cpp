@@ -2,6 +2,7 @@
 #include "elizaos/ljspeechtools.hpp"
 #include "elizaos/agentlogger.hpp"
 #include <filesystem>
+#include <algorithm>
 #include <fstream>
 
 using namespace elizaos;
@@ -11,7 +12,7 @@ class LJSpeechToolsTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // Create temporary directories for testing
-        test_dir_ = fs::temp_directory_path() / "ljspeech_test";
+        test_dir_ = fs::temp_directory_path() / "ljspeech_comprehensive_test";
         input_dir_ = test_dir_ / "input";
         output_dir_ = test_dir_ / "output";
         

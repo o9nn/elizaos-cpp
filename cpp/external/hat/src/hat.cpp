@@ -82,10 +82,6 @@ bool validateHATToken(const std::string& token) {
 }
 
 bool checkHATPermission(const std::string& token, const std::string& permission) {
-    if (permission.empty()) {
-        return false;
-    }
-
     std::lock_guard<std::mutex> lock(tokenMutex());
     auto it = tokenRegistry().find(token);
     if (it == tokenRegistry().end() || it->second.revoked) {
@@ -106,7 +102,7 @@ std::string issueHATToken(const std::string& agentId, const std::string& teamId,
                           const std::vector<std::string>& permissions) {
     const auto sequence = tokenCounter().fetch_add(1);
     std::ostringstream token;
-    token << "hat_" << sanitizeTokenPart(agentId) << "_" << sanitizeTokenPart(teamId)
+    token << "HAT_" << sanitizeTokenPart(agentId) << "_" << sanitizeTokenPart(teamId)
           << "_" << sequence;
 
     TokenRecord record;

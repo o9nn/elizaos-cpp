@@ -23,6 +23,16 @@
  *   L12: Circadian (86400s)
  */
 
+// MSVC's <cmath> only declares M_PI when _USE_MATH_DEFINES is defined before
+// the header is pulled in. The build system defines it globally for MSVC, but
+// this header is also consumed standalone (tests, tooling), so keep a local
+// guard plus a portable fallback constant.
+#ifdef _MSC_VER
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+#endif
+
 #include <chrono>
 #include <cmath>
 #include <functional>
@@ -30,6 +40,10 @@
 #include <mutex>
 #include <string>
 #include <vector>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 namespace elizaos {
 namespace village {

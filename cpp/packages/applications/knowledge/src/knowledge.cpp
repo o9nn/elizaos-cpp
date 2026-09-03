@@ -1,6 +1,7 @@
 // knowledge.cpp - Full implementation of KnowledgeBase system
 #include "elizaos/knowledge.hpp"
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 #include <random>
 #include <fstream>

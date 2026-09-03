@@ -6,6 +6,7 @@
 #define OC_URE_HPP
 
 #include "../atomspace/atomspace.hpp"
+#include <algorithm>
 
 namespace oc {
 namespace ure {

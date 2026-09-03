@@ -122,6 +122,9 @@ public:
     void subscribeToType(VillageEventType type, VillageEventCallback callback);
 
     std::vector<VillageEvent> getRecentEvents(int limit = 50, int64_t sinceTic = 0);
+    static std::string buildEventsUrl(const std::string& busUrl,
+                                      int limit,
+                                      int64_t sinceTic);
     std::string getBusHealth();
     int64_t getCurrentTic() const { return lastKnownTic_.load(); }
     int64_t getPublishedCount() const { return publishedCount_.load(); }

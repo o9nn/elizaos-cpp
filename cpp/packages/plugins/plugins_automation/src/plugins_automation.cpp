@@ -232,7 +232,7 @@ bool PluginRegistry::checkDependencies(const PluginMetadata& metadata) const {
 }
 
 CIPipeline::CIPipeline()
-    : buildCommand_("cmake --build build"),
+    : buildCommand_("cmake -S . -B build && cmake --build build"),
       testCommand_("ctest --test-dir build --output-on-failure"),
       deployCommand_("cmake --install build --prefix") {}
 
@@ -493,14 +493,21 @@ bool WorkflowAutomation::createPluginTemplate(const std::string& pluginName,
         "::initialize() { return true; }\nstd::string " + identifier +
         "::name() const { return \"" + pluginName + "\"; }\n";
     const std::string test =
-        "#include <gtest/gtest.h>\n#include \"" + pluginName +
-        ".hpp\"\n\nTEST(" + identifier +
-        "Test, Initializes) { " + identifier + " plugin; EXPECT_TRUE(plugin.initialize()); }\n";
+        "#include \"" + pluginName +
+        ".hpp\"\n\nint main() { " + identifier +
+        " plugin; return plugin.initialize() && plugin.name() == \"" + pluginName +
+        "\" ? 0 : 1; }\n";
     const std::string cmake =
         "cmake_minimum_required(VERSION 3.16)\nproject(" + identifier +
-        " LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 17)\nadd_library(" + identifier +
+        " LANGUAGES CXX)\nset(CMAKE_CXX_STANDARD 17)\ninclude(CTest)\nadd_library(" + identifier +
         " src/" + pluginName + ".cpp)\ntarget_include_directories(" + identifier +
-        " PUBLIC include)\n";
+        " PUBLIC include)\nadd_executable(" + identifier + "_test tests/test_" + pluginName +
+        ".cpp)\ntarget_link_libraries(" + identifier + "_test PRIVATE " + identifier +
+        ")\nadd_test(NAME " + identifier + "_test COMMAND " + identifier +
+        "_test)\ninstall(TARGETS " + identifier +
+        " ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin)\n"
+        "install(DIRECTORY include/ DESTINATION include)\n"
+        "install(FILES plugin.json DESTINATION share/" + pluginName + ")\n";
     const std::string metadata =
         "{\n  \"name\": \"" + pluginName +
         "\",\n  \"version\": \"0.1.0\",\n  \"entry\": \"src/" + pluginName +

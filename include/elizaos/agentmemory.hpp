@@ -7,19 +7,15 @@
  * Provides AgentMemoryManager, MemorySearchParams, and convenience
  * functions in the `memory::` namespace.
  *
- * Hierarchical / Associative enhancements (structure-preserving port):
- * - Hierarchical memory indexing (episodic / semantic / procedural / working / sensory)
+ * Phase 1.2 Enhancements:
+ * - Hierarchical memory indexing (episodic → semantic → procedural)
  * - Memory consolidation algorithms (sleep-like processing)
- * - Forgetting curves with importance-weighted decay (Ebbinghaus)
+ * - Forgetting curves with importance-weighted decay
  * - Memory defragmentation and optimization
- * - Associative memory networks with spreading activation (Hebbian)
- *
- * This header preserves the original o9nn public API surface (the `unique`,
- * `query`, and `end = -1` search fields, the `memory::` convenience namespace,
- * and thread-safety-on-by-default behaviour) while adding the richer
- * hierarchical / associative subsystem.
+ * - Associative memory networks with spreading activation
  */
 
+#include "elizaos/elizaos.hpp"
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -60,37 +56,48 @@ struct MemoryDecayParams {
 };
 
 struct MemoryStrength {
+    // Default values as named constants for configurability
     static constexpr double DEFAULT_INITIAL_STRENGTH = 1.0;
     static constexpr double DEFAULT_BASE_IMPORTANCE = 0.5;
     static constexpr double DEFAULT_EMOTIONAL_FACTOR = 0.5;
 
-    double currentStrength = DEFAULT_INITIAL_STRENGTH;
-    double baseImportance = DEFAULT_BASE_IMPORTANCE;
-    double emotionalSalience = 0.0;
-    int accessCount = 0;
+    double currentStrength = DEFAULT_INITIAL_STRENGTH;       // Current memory strength [0, 1]
+    double baseImportance = DEFAULT_BASE_IMPORTANCE;        // Intrinsic importance [0, 1]
+    double emotionalSalience = 0.0;     // Emotional weight [0, 1]
+    int accessCount = 0;                // Number of times accessed
     Timestamp lastAccessed;
     Timestamp lastConsolidated;
     bool isConsolidated = false;
 
+    // Calculate effective decay rate considering importance
     double getEffectiveDecayRate(const MemoryDecayParams& params) const {
         double importanceFactor = 1.0 - (baseImportance * params.importanceMultiplier);
         double emotionalFactor = 1.0 - (emotionalSalience * DEFAULT_EMOTIONAL_FACTOR);
         return params.baseDecayRate * importanceFactor * emotionalFactor;
     }
 
+    // Apply time-based decay using Ebbinghaus forgetting curve
     void applyDecay(const MemoryDecayParams& params, double daysSinceLastAccess) {
+        // S = e^(-t/S) where S is stability and t is time
         double stability = 1.0 / getEffectiveDecayRate(params);
         double retention = std::exp(-daysSinceLastAccess / stability);
         currentStrength *= retention;
+
+        // Apply consolidation bonus if consolidated
         if (isConsolidated) {
             currentStrength = std::min(1.0, currentStrength * (1.0 + params.consolidationBonus));
         }
+
+        // Clamp to minimum
         currentStrength = std::max(params.minStrength, currentStrength);
     }
 
+    // Boost strength on access (spacing effect)
     void boostOnAccess(const MemoryDecayParams& params) {
         accessCount++;
         lastAccessed = std::chrono::system_clock::now();
+
+        // Diminishing returns on repeated access
         double boost = params.accessBoost / std::sqrt(static_cast<double>(accessCount));
         currentStrength = std::min(1.0, currentStrength + boost);
     }
@@ -103,16 +110,18 @@ struct MemoryStrength {
 struct AssociativeLink {
     UUID sourceMemoryId;
     UUID targetMemoryId;
-    double associationStrength = 0.5;
-    std::string linkType;
+    double associationStrength = 0.5;  // [0, 1] strength of association
+    std::string linkType;               // "semantic", "temporal", "causal", "spatial"
     Timestamp createdAt;
-    int coActivationCount = 0;
+    int coActivationCount = 0;          // Number of times activated together
 
+    // Strengthen association through co-activation (Hebbian learning)
     void strengthen(double amount = 0.1) {
         coActivationCount++;
         associationStrength = std::min(1.0, associationStrength + amount);
     }
 
+    // Weaken association over time
     void weaken(double amount = 0.05) {
         associationStrength = std::max(0.0, associationStrength - amount);
     }
@@ -124,9 +133,9 @@ struct AssociativeLink {
 
 struct HierarchicalIndex {
     std::unordered_map<HierarchicalMemoryType, std::set<UUID>> typeIndex;
-    std::unordered_map<std::string, std::set<UUID>> conceptIndex;
-    std::unordered_map<std::string, std::set<UUID>> entityIndex;
-    std::unordered_map<std::string, std::set<UUID>> timeIndex;
+    std::unordered_map<std::string, std::set<UUID>> conceptIndex;   // concept -> memories
+    std::unordered_map<std::string, std::set<UUID>> entityIndex;    // entity -> memories
+    std::unordered_map<std::string, std::set<UUID>> timeIndex;      // time_bucket -> memories
 
     void addMemory(const UUID& memoryId, HierarchicalMemoryType type,
                    const std::vector<std::string>& concepts = {},
@@ -145,10 +154,18 @@ struct HierarchicalIndex {
     }
 
     void removeMemory(const UUID& memoryId) {
-        for (auto& [type, ids] : typeIndex) { ids.erase(memoryId); }
-        for (auto& [cpt_key, ids] : conceptIndex) { ids.erase(memoryId); }
-        for (auto& [entity, ids] : entityIndex) { ids.erase(memoryId); }
-        for (auto& [time, ids] : timeIndex) { ids.erase(memoryId); }
+        for (auto& [type, ids] : typeIndex) {
+            ids.erase(memoryId);
+        }
+        for (auto& [cpt_key, ids] : conceptIndex) {
+            ids.erase(memoryId);
+        }
+        for (auto& [entity, ids] : entityIndex) {
+            ids.erase(memoryId);
+        }
+        for (auto& [time, ids] : timeIndex) {
+            ids.erase(memoryId);
+        }
     }
 
     std::set<UUID> getByType(HierarchicalMemoryType type) const {
@@ -170,34 +187,46 @@ class MemoryConsolidationEngine {
 public:
     MemoryConsolidationEngine() = default;
 
+    // Consolidation parameters
     struct ConsolidationParams {
-        double consolidationThreshold = 0.7;
-        int minAccessCount = 3;
-        double similarityMergeThreshold = 0.9;
-        int maxConsolidationsPerCycle = 100;
+        double consolidationThreshold = 0.7;   // Min importance to consolidate
+        int minAccessCount = 3;                // Min accesses before consolidation
+        double similarityMergeThreshold = 0.9; // Similarity threshold for merging
+        int maxConsolidationsPerCycle = 100;   // Max memories to process per cycle
     };
 
+    // Results of consolidation cycle
     struct ConsolidationResult {
+        struct AppliedMerge {
+            UUID sourceId;
+            UUID absorbedId;
+            UUID mergedId;
+        };
+
         int memoriesProcessed = 0;
         int memoriesConsolidated = 0;
         int memoriesMerged = 0;
         int memoriesForgotten = 0;
         double averageStrengthBefore = 0.0;
         double averageStrengthAfter = 0.0;
+        std::vector<AppliedMerge> appliedMerges;
     };
 
     void setParams(const ConsolidationParams& params) { params_ = params; }
     ConsolidationParams getParams() const { return params_; }
 
+    // Run a consolidation cycle (should be called periodically, like during "sleep")
     ConsolidationResult runConsolidationCycle(
         std::vector<std::shared_ptr<Memory>>& memories,
         std::unordered_map<UUID, MemoryStrength>& strengthMap,
         const MemoryDecayParams& decayParams);
 
+    // Find similar memories that could be merged
     std::vector<std::pair<UUID, UUID>> findMergeCandidates(
         const std::vector<std::shared_ptr<Memory>>& memories,
         double similarityThreshold = 0.9);
 
+    // Merge two similar memories into one stronger memory
     std::shared_ptr<Memory> mergeMemories(
         std::shared_ptr<Memory> m1,
         std::shared_ptr<Memory> m2,
@@ -206,14 +235,14 @@ public:
 
 private:
     ConsolidationParams params_;
-    double calculateMemorySimilarity(const Memory& m1, const Memory& m2);
+
+    double calculateMemorySimilarity(
+        const Memory& m1,
+        const Memory& m2);
 };
 
 // ============================================================================
 // Search parameter structures
-//
-// Preserves the original o9nn fields (`unique`, `query`, `end = -1`) while
-// adding the hierarchical / associative search options.
 // ============================================================================
 
 struct MemorySearchParams {
@@ -227,12 +256,13 @@ struct MemorySearchParams {
     int                   count  = 10;
     bool                  unique = false;
 
+    // Phase 1.2: Enhanced search options
     std::optional<HierarchicalMemoryType> memoryType;
     std::optional<double> minStrength;
     std::optional<double> minImportance;
     std::vector<std::string> concepts;
-    bool includeDecayed = false;
-    bool sortByStrength = false;
+    bool includeDecayed = false;        // Include memories below threshold
+    bool sortByStrength = false;        // Sort by strength instead of time
 };
 
 struct MemorySearchByEmbeddingParams {
@@ -246,9 +276,10 @@ struct MemorySearchByEmbeddingParams {
     int                   count          = 10;
     bool                  unique         = false;
 
-    bool useAssociativeSpreading = false;
-    int associativeDepth = 2;
-    double spreadingDecay = 0.5;
+    // Phase 1.2: Enhanced embedding search
+    bool useAssociativeSpreading = false;  // Use spreading activation
+    int associativeDepth = 2;               // How far to spread
+    double spreadingDecay = 0.5;            // Decay factor per hop
 };
 
 // ============================================================================
@@ -289,25 +320,29 @@ public:
     std::vector<std::shared_ptr<Memory>> getAllMemoriesFromTable(const std::string& tableName);
 
     // =========================================================================
-    // Hierarchical Memory Operations
+    // Phase 1.2: Hierarchical Memory Operations
     // =========================================================================
 
+    // Hierarchical indexing
     void indexMemory(const UUID& memoryId, HierarchicalMemoryType type,
                      const std::vector<std::string>& concepts = {});
     std::vector<std::shared_ptr<Memory>> getMemoriesByType(HierarchicalMemoryType type);
     std::vector<std::shared_ptr<Memory>> getMemoriesByConcept(const std::string& cpt_name);
     void reindexAllMemories();
 
+    // Memory strength and decay
     void setMemoryStrength(const UUID& memoryId, const MemoryStrength& strength);
     MemoryStrength getMemoryStrength(const UUID& memoryId) const;
     void boostMemoryOnAccess(const UUID& memoryId);
     void applyDecayToAllMemories(double daysSinceLastCycle);
     std::vector<UUID> getDecayedMemories(double threshold = 0.1);
 
+    // Memory consolidation
     void setConsolidationParams(const MemoryConsolidationEngine::ConsolidationParams& params);
     MemoryConsolidationEngine::ConsolidationResult runConsolidation();
     void setDecayParams(const MemoryDecayParams& params);
 
+    // Associative memory network
     void createAssociation(const UUID& sourceId, const UUID& targetId,
                            const std::string& linkType = "semantic", double strength = 0.5);
     void strengthenAssociation(const UUID& sourceId, const UUID& targetId, double amount = 0.1);
@@ -315,10 +350,12 @@ public:
     std::vector<AssociativeLink> getAssociations(const UUID& memoryId) const;
     std::vector<UUID> spreadActivation(const UUID& startId, int depth = 2, double decayFactor = 0.5);
 
+    // Memory defragmentation
     void defragmentMemories();
     size_t getMemoryCount() const;
     size_t getFragmentedCount() const;
 
+    // Memory statistics
     struct MemoryStatistics {
         size_t totalMemories = 0;
         size_t episodicMemories = 0;
@@ -336,9 +373,9 @@ public:
 private:
     bool matchesSearchCriteria(const Memory& memory, const MemorySearchParams& params);
     double calculateEmbeddingSimilarity(const EmbeddingVector& e1, const EmbeddingVector& e2);
-    // Lock-free memory lookup used by methods that already hold memoryMutex_,
-    // to avoid self-deadlock on the non-recursive mutex.
+    // Lock-free helpers used only while memoryMutex_ is held.
     std::shared_ptr<Memory> findMemoryByIdUnlocked(const UUID& id) const;
+    bool eraseMemoryStateUnlocked(const UUID& id);
 
     template<typename Fn>
     auto withLock(Fn&& fn) -> decltype(fn()) {
@@ -363,6 +400,7 @@ private:
     mutable std::mutex memoryMutex_;
     bool threadSafetyEnabled_ = true;
 
+    // Phase 1.2: Enhanced data structures
     HierarchicalIndex hierarchicalIndex_;
     std::unordered_map<UUID, MemoryStrength> memoryStrengths_;
     std::unordered_map<UUID, std::vector<AssociativeLink>> associativeNetwork_;
@@ -387,6 +425,7 @@ namespace memory {
     bool                                 remove(const UUID& id);
     void                                 clearAll();
 
+    // Phase 1.2: Enhanced memory operations
     void consolidate();
     void applyDecay(double days = 1.0);
     std::vector<UUID> getAssociated(const UUID& memoryId, int depth = 2);

@@ -315,7 +315,7 @@ struct InferenceStep {
     std::string ruleApplied;
     std::vector<std::string> inputEntryIds;
     std::string outputEntryId;
-    double confidence;
+    double confidence = 0.0;
     std::string explanation;
 };
 
@@ -395,7 +395,7 @@ struct KnowledgeVersion {
 struct KnowledgeConflict {
     std::vector<KnowledgeEntry> conflictingEntries;
     std::string conflictType;
-    double severity;
+    double severity = 0.0;
     std::vector<KnowledgeEntry> resolution;
 };
 

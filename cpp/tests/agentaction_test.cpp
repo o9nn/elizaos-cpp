@@ -3,6 +3,9 @@
 #include "elizaos/agentaction.hpp"
 
 #include <any>
+#include <atomic>
+#include <thread>
+#include <vector>
 
 using namespace elizaos;
 
@@ -130,4 +133,28 @@ TEST_F(AgentActionTest, FormattedActionsReturnsJson) {
     system.addAction("echo", makeEcho());
     auto fmt = system.getFormattedActions("");
     SUCCEED() << "formatted action count: " << fmt.size();
+}
+
+TEST_F(AgentActionTest, ConcurrentRegistrationAndLookupAreSafe) {
+    constexpr int kThreads = 8;
+    constexpr int kActionsPerThread = 25;
+    std::atomic<int> successfulLookups{0};
+    std::vector<std::thread> workers;
+    workers.reserve(kThreads);
+
+    for (int threadIndex = 0; threadIndex < kThreads; ++threadIndex) {
+        workers.emplace_back([&, threadIndex] {
+            for (int actionIndex = 0; actionIndex < kActionsPerThread; ++actionIndex) {
+                const auto name = "action_" + std::to_string(threadIndex) + "_" +
+                                  std::to_string(actionIndex);
+                system.addAction(name, makeEcho(name));
+                if (system.getAction(name)) ++successfulLookups;
+            }
+        });
+    }
+    for (auto& worker : workers) worker.join();
+
+    EXPECT_EQ(successfulLookups.load(), kThreads * kActionsPerThread);
+    EXPECT_EQ(system.getActions().size(),
+              static_cast<std::size_t>(kThreads * kActionsPerThread));
 }

@@ -3,15 +3,29 @@
 #include <gtest/gtest.h>
 #include "elizaos/elizas_list.hpp"
 #include <nlohmann/json.hpp>
+#include <filesystem>
 #include <fstream>
 #include <cstdio>
+
+#ifdef _WIN32
+#include <process.h>
+#define elizaos_getpid _getpid
+#else
+#include <unistd.h>
+#define elizaos_getpid getpid
+#endif
+
+#include <algorithm>  // std::remove
 
 using namespace elizaos;
 
 namespace {
 std::string makeTempFile(const std::string& contents) {
-    auto path = std::string("/tmp/elizas_list_real_") +
-                std::to_string(::getpid()) + ".json";
+    // Platform temp directory rather than a hardcoded /tmp path, and a portable
+    // getpid() spelling: MSVC provides only _getpid() from <process.h>.
+    const auto path = (std::filesystem::temp_directory_path() /
+                       ("elizas_list_real_" + std::to_string(elizaos_getpid()) + ".json"))
+                          .string();
     std::ofstream f(path);
     f << contents;
     return path;
@@ -70,7 +84,7 @@ TEST(ElizasListReal, SaveAndReloadRoundtrip) {
     p.author.github = "bob";
     list.addProject(p);
 
-    auto path = std::string("/tmp/elizas_list_rt.json");
+    auto path = makeTempFile("{}");
     bool saved = list.saveToJson(path);
     if (saved) {
         ElizasList other;

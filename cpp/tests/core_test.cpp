@@ -37,7 +37,9 @@ TEST(CoreUuid, ConcurrentGenerationProducesUniqueIds) {
     std::vector<std::thread> workers;
 
     for (int i = 0; i < kThreadCount; ++i) {
-        workers.emplace_back([i, &batches]() {
+        // MSVC requires constexpr locals used inside a lambda to be captured
+        // explicitly (C3493) even though they are not odr-used.
+        workers.emplace_back([i, &batches, kIdsPerThread]() {
             batches[i].reserve(kIdsPerThread);
             for (int j = 0; j < kIdsPerThread; ++j) {
                 batches[i].push_back(generateUUID());
@@ -300,4 +302,115 @@ TEST_F(CoreTaskManagerTest, RunningLifecycle) {
     std::this_thread::sleep_for(std::chrono::milliseconds(30));
     mgr.stop();
     EXPECT_FALSE(mgr.isRunning());
+}
+
+// ---------------------------------------------------------------------------
+// Action / Provider registries (promoted from orphan action intent)
+// ---------------------------------------------------------------------------
+TEST(CoreActionRegistry, RegisterValidateAndExecute) {
+    ActionRegistry registry;
+    int executed = 0;
+
+    auto greet = std::make_shared<FunctionAction>(
+        "GREET",
+        [](const State&, std::shared_ptr<Memory> message) {
+            return message && message->getContent().find("hello") != std::string::npos;
+        },
+        [&executed](State& state, std::shared_ptr<Memory> message) {
+            (void)message;
+            StateGoal goal;
+            goal.id = generateUUID();
+            goal.description = "greeted";
+            goal.status = "done";
+            state.addGoal(goal);
+            ++executed;
+            return true;
+        });
+
+    auto ignore = std::make_shared<FunctionAction>(
+        "IGNORE",
+        [](const State&, std::shared_ptr<Memory>) { return false; },
+        [&executed](State&, std::shared_ptr<Memory>) {
+            ++executed;
+            return true;
+        });
+
+    EXPECT_TRUE(registry.registerAction(greet));
+    EXPECT_TRUE(registry.registerAction(ignore));
+    EXPECT_TRUE(registry.contains("GREET"));
+    EXPECT_EQ(registry.size(), 2u);
+
+    AgentConfig cfg;
+    cfg.agentId = generateUUID();
+    cfg.agentName = "tester";
+    State state(cfg);
+    auto mem = std::make_shared<Memory>(generateUUID(), "hello world", generateUUID(), cfg.agentId);
+
+    auto matched = registry.matchingActions(state, mem);
+    ASSERT_EQ(matched.size(), 1u);
+    EXPECT_EQ(matched[0], "GREET");
+
+    EXPECT_EQ(registry.executeMatching(state, mem), 1u);
+    EXPECT_EQ(executed, 1);
+    EXPECT_TRUE(registry.executeNamed("GREET", state, mem));
+    EXPECT_EQ(executed, 2);
+    EXPECT_FALSE(registry.executeNamed("IGNORE", state, mem));
+    EXPECT_FALSE(registry.executeNamed("missing", state, mem));
+
+    EXPECT_TRUE(registry.unregisterAction("IGNORE"));
+    EXPECT_FALSE(registry.contains("IGNORE"));
+    registry.clear();
+    EXPECT_EQ(registry.size(), 0u);
+}
+
+TEST(CoreActionRegistry, RejectsNullOrEmptyName) {
+    ActionRegistry registry;
+    EXPECT_FALSE(registry.registerAction(nullptr));
+
+    auto emptyName = std::make_shared<FunctionAction>(
+        "",
+        [](const State&, std::shared_ptr<Memory>) { return true; },
+        [](State&, std::shared_ptr<Memory>) { return true; });
+    EXPECT_FALSE(registry.registerAction(emptyName));
+}
+
+TEST(CoreProviderRegistry, ComposeMergesProviderBags) {
+    ProviderRegistry registry;
+
+    auto identity = std::make_shared<FunctionProvider>(
+        "identity",
+        [](const State& state, std::shared_ptr<Memory>) {
+            return std::unordered_map<std::string, std::string>{
+                {"agent", state.getAgentName()},
+                {"source", "identity"},
+            };
+        });
+    auto memory = std::make_shared<FunctionProvider>(
+        "memory",
+        [](const State&, std::shared_ptr<Memory> message) {
+            return std::unordered_map<std::string, std::string>{
+                {"last", message ? message->getContent() : ""},
+                {"source", "memory"},
+            };
+        });
+
+    EXPECT_TRUE(registry.registerProvider(identity));
+    EXPECT_TRUE(registry.registerProvider(memory));
+    EXPECT_EQ(registry.size(), 2u);
+
+    AgentConfig cfg;
+    cfg.agentId = generateUUID();
+    cfg.agentName = "composer";
+    State state(cfg);
+    auto mem = std::make_shared<Memory>(generateUUID(), "ping", generateUUID(), cfg.agentId);
+
+    auto bag = registry.compose(state, mem);
+    EXPECT_EQ(bag["agent"], "composer");
+    EXPECT_EQ(bag["last"], "ping");
+    // Later provider overwrites shared keys — order is map-iteration dependent
+    // so only assert the key exists after merge.
+    EXPECT_TRUE(bag.count("source") == 1u);
+    EXPECT_TRUE(registry.unregisterProvider("identity"));
+    registry.clear();
+    EXPECT_EQ(registry.size(), 0u);
 }

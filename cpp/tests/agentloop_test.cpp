@@ -745,9 +745,9 @@ TEST_F(AgentLoopTest, ErrorThresholdTriggersDegraded) {
     AgentLoop loop(steps, false, 0.02);
     loop.setErrorThreshold(3);
 
-    HealthStatus lastHealth = HealthStatus::STOPPED;
+    std::atomic<HealthStatus> lastHealth{HealthStatus::STOPPED};
     loop.setHealthChangeCallback([&lastHealth](HealthStatus, HealthStatus n) {
-        lastHealth = n;
+        lastHealth.store(n, std::memory_order_relaxed);
     });
 
     loop.start();

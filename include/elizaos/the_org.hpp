@@ -235,14 +235,14 @@ struct ModerationEvent {
 };
 
 struct CommunityMetrics {
-    size_t totalMembers;
-    size_t activeMembers;
-    size_t newMembersToday;
-    size_t messagesPerDay;
-    double engagementRate;
+    size_t totalMembers = 0;
+    size_t activeMembers = 0;
+    size_t newMembersToday = 0;
+    size_t messagesPerDay = 0;
+    double engagementRate = 0.0;
     std::vector<std::string> topTopics;
     std::vector<std::string> mostActiveChannels;
-    Timestamp lastUpdated;
+    Timestamp lastUpdated{};
 };
 
 /**
@@ -706,14 +706,14 @@ public:
     
     // Analytics and insights
     struct SocialMediaMetrics {
-        PlatformType platform;
-        size_t followers;
-        size_t totalPosts;
-        double engagementRate;
-        size_t impressions;
-        size_t clicks;
-        size_t shares;
-        Timestamp lastUpdated;
+        PlatformType platform = PlatformType::DISCORD;
+        size_t followers = 0;
+        size_t totalPosts = 0;
+        double engagementRate = 0.0;
+        size_t impressions = 0;
+        size_t clicks = 0;
+        size_t shares = 0;
+        Timestamp lastUpdated{};
     };
     
     SocialMediaMetrics getPlatformMetrics(PlatformType platform) const;
@@ -817,13 +817,13 @@ public:
     
     // System health and monitoring
     struct SystemMetrics {
-        size_t totalAgents;
-        size_t activeAgents;
-        size_t totalTasks;
-        size_t pendingTasks;
-        double systemLoad;
-        std::chrono::milliseconds averageResponseTime;
-        Timestamp lastUpdated;
+        size_t totalAgents = 0;
+        size_t activeAgents = 0;
+        size_t totalTasks = 0;
+        size_t pendingTasks = 0;
+        double systemLoad = 0.0;
+        std::chrono::milliseconds averageResponseTime{0};
+        Timestamp lastUpdated{};
     };
     
     SystemMetrics getSystemMetrics() const;

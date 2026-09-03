@@ -383,9 +383,9 @@ public:
     };
     
     struct AllocationResult {
-        bool success;
-        double allocatedAmount;
-        double remainingBudget;
+        bool success = false;
+        double allocatedAmount = 0.0;
+        double remainingBudget = 0.0;
         std::string reason;
     };
     
@@ -704,11 +704,11 @@ public:
     // Statistics
     struct EnhancedStatistics {
         AttentionStatistics base;
-        double averageTemporalScore;
-        double averageSaliencyScore;
-        double budgetUtilization;
-        int patternsPredicted;
-        int activeTransfers;
+        double averageTemporalScore = 0.0;
+        double averageSaliencyScore = 0.0;
+        double budgetUtilization = 0.0;
+        int patternsPredicted = 0;
+        int activeTransfers = 0;
     };
     EnhancedStatistics getEnhancedStatistics() const;
 

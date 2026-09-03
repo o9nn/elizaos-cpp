@@ -13,9 +13,9 @@ namespace elizaos {
  */
 struct AudioData {
     std::vector<float> samples;
-    int sample_rate;
-    int channels;
-    double duration_seconds;
+    int sample_rate = 0;
+    int channels = 0;
+    double duration_seconds = 0.0;
 };
 
 /**
@@ -23,8 +23,8 @@ struct AudioData {
  */
 struct TranscriptionResult {
     std::string text;
-    double confidence;
-    bool success;
+    double confidence = 0.0;
+    bool success = false;
     std::string error_message;
 };
 

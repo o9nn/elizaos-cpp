@@ -1,4 +1,8 @@
 #include <gtest/gtest.h>
+#include <algorithm>
+#include <chrono>
+#include <filesystem>
+#include <fstream>
 #include "elizaos/plugins_automation.hpp"
 #include "elizaos/discord_summarizer.hpp"
 #include "elizaos/discrub_ext.hpp"
@@ -9,14 +13,21 @@ using namespace elizaos;
 class PluginsAutomationTest : public ::testing::Test {
 protected:
     void SetUp() override {
+        tempRoot = std::filesystem::temp_directory_path() /
+            ("elizaos_stage6_" + std::to_string(
+                std::chrono::steady_clock::now().time_since_epoch().count()));
+        std::filesystem::create_directories(tempRoot);
         automation = std::make_shared<PluginsAutomation>();
     }
-    
+
     void TearDown() override {
         automation.reset();
+        std::error_code ec;
+        std::filesystem::remove_all(tempRoot, ec);
     }
-    
+
     std::shared_ptr<PluginsAutomation> automation;
+    std::filesystem::path tempRoot;
 };
 
 TEST_F(PluginsAutomationTest, PluginRegistryBasicOperations) {
@@ -29,23 +40,32 @@ TEST_F(PluginsAutomationTest, PluginRegistryBasicOperations) {
 }
 
 TEST_F(PluginsAutomationTest, AutomatedOperations) {
-    // Test automated plugin setup
+    const auto configPath = tempRoot / "automation.conf";
+    {
+        std::ofstream config(configPath);
+        config << "plugin_output_root=" << tempRoot.string() << "\n";
+    }
+    automation->loadConfiguration(configPath.string());
+
+    const auto pluginPath = tempRoot / "test_plugin";
     bool result = automation->automatedPluginSetup("test_plugin", "basic_template");
+    ASSERT_TRUE(result);
+    EXPECT_TRUE(std::filesystem::is_regular_file(pluginPath / "plugin.json"));
+
+    result = automation->automatedBuildAndTest(pluginPath.string());
     EXPECT_TRUE(result);
-    
-    // Test automated build and test
-    result = automation->automatedBuildAndTest("/tmp/test_plugin");
+
+    const auto deployPath = tempRoot / "deploy";
+    result = automation->automatedDeployment(pluginPath.string(), deployPath.string());
     EXPECT_TRUE(result);
-    
-    // Test automated deployment
-    result = automation->automatedDeployment("test_plugin", "/tmp/deploy");
-    EXPECT_TRUE(result);
+    EXPECT_TRUE(std::filesystem::is_regular_file(deployPath / "include" / "test_plugin.hpp"));
 }
 
 TEST_F(PluginsAutomationTest, ConfigurationManagement) {
-    // Test configuration loading and saving
-    EXPECT_NO_THROW(automation->loadConfiguration("/tmp/test_config.conf"));
-    EXPECT_NO_THROW(automation->saveConfiguration("/tmp/test_config.conf"));
+    const auto configPath = tempRoot / "test_config.conf";
+    EXPECT_NO_THROW(automation->loadConfiguration(configPath.string()));
+    EXPECT_NO_THROW(automation->saveConfiguration(configPath.string()));
+    EXPECT_TRUE(std::filesystem::is_regular_file(configPath));
 }
 
 // Test for Discord Summarizer Module
@@ -80,7 +100,7 @@ TEST_F(DiscordSummarizerTest, ChannelSummaryGeneration) {
     auto yesterday = now - std::chrono::hours(24);
     
     // Generate channel summary
-    auto std::future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
+    auto future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
     auto summary = future.get();
     
     EXPECT_EQ(summary.channelId, "test_channel_123");
@@ -239,21 +259,34 @@ TEST_F(DiscrubExtensionTest, ConfigurationManagement) {
 class Stage6IntegrationTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Initialize all modules
+        tempRoot = std::filesystem::temp_directory_path() /
+            ("elizaos_stage6_integration_" + std::to_string(
+                std::chrono::steady_clock::now().time_since_epoch().count()));
+        std::filesystem::create_directories(tempRoot);
+        const auto configPath = tempRoot / "automation.conf";
+        {
+            std::ofstream config(configPath);
+            config << "plugin_output_root=" << tempRoot.string() << "\n";
+        }
+
         automation = std::make_shared<PluginsAutomation>();
+        automation->loadConfiguration(configPath.string());
         summarizer = std::make_shared<DiscordSummarizer>();
         extension = std::make_shared<DiscrubExtension>();
     }
-    
+
     void TearDown() override {
         automation.reset();
         summarizer.reset();
         extension.reset();
+        std::error_code ec;
+        std::filesystem::remove_all(tempRoot, ec);
     }
-    
+
     std::shared_ptr<PluginsAutomation> automation;
     std::shared_ptr<DiscordSummarizer> summarizer;
     std::shared_ptr<DiscrubExtension> extension;
+    std::filesystem::path tempRoot;
 };
 
 TEST_F(Stage6IntegrationTest, GlobalInstancesAccessible) {

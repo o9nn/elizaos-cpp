@@ -49,9 +49,9 @@ TEST_F(AgentShellTest, ExecuteUnknownCommandFails) {
 
 TEST_F(AgentShellTest, RegisterCustomCommand) {
     shell.registerCommand("greet", [](const std::vector<std::string>& args) {
-        // args[0] == command name, subsequent entries are positional args.
+        // Custom handlers receive positional arguments without the command name.
         std::string out = "hi";
-        if (args.size() > 1) out += ", " + args[1];
+        if (!args.empty()) out += ", " + args[0];
         return ShellCommandResult{true, out, "", 0};
     });
     auto r = shell.executeCommand("greet Dan");
@@ -101,7 +101,9 @@ TEST_F(AgentShellTest, ConcurrentExecutionProducesCompleteHistorySnapshots) {
     std::vector<std::thread> workers;
     workers.reserve(kThreads);
     for (std::size_t worker = 0; worker < kThreads; ++worker) {
-        workers.emplace_back([this, worker] {
+        // MSVC C3493: constexpr locals used in a lambda body must be
+        // explicitly captured when no default capture mode is specified.
+        workers.emplace_back([this, worker, kCommandsPerThread] {
             for (std::size_t command = 0; command < kCommandsPerThread; ++command) {
                 const auto result = shell.executeCommand(
                     "echo worker-" + std::to_string(worker) + "-" + std::to_string(command));

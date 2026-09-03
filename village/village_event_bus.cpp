@@ -1,6 +1,7 @@
 #include "village_event_bus.hpp"
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <sstream>
@@ -186,9 +187,19 @@ void VillageEventBusClient::dispatchEvent(const VillageEvent& event) {
     }
 }
 
+std::string VillageEventBusClient::buildEventsUrl(const std::string& busUrl,
+                                                   int limit,
+                                                   int64_t sinceTic) {
+    std::string base = busUrl;
+    while (!base.empty() && base.back() == '/') {
+        base.pop_back();
+    }
+    return base + "/api/events/events?limit=" + std::to_string(std::max(0, limit)) +
+           "&since_tic=" + std::to_string(std::max<int64_t>(0, sinceTic));
+}
+
 std::vector<VillageEvent> VillageEventBusClient::getRecentEvents(int limit, int64_t sinceTic) {
-    std::string url = config_.busUrl + "/api/events/events?limit=" +
-                      std::to_string(limit) + "&since_tic=" + std::to_string(sinceTic);
+    const std::string url = buildEventsUrl(config_.busUrl, limit, sinceTic);
     std::string response = httpGet(url);
     std::vector<VillageEvent> events;
     if (response.empty()) return events;
@@ -219,8 +230,7 @@ void VillageEventBusClient::heartbeatLoop() {
 void VillageEventBusClient::wsSubscriptionLoop() {
     int64_t lastSeenTic = lastKnownTic_.load();
     while (running_.load()) {
-        std::string url = config_.busUrl + "/api/events/events?limit=20&since_tic=" +
-                          std::to_string(lastSeenTic);
+        const std::string url = buildEventsUrl(config_.busUrl, 20, lastSeenTic);
         std::string response = httpGet(url);
         if (!response.empty()) {
             connected_ = true;

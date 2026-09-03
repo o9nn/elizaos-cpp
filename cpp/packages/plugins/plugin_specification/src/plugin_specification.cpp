@@ -269,8 +269,10 @@ JsonValue PluginInterface::getStatus() const {
 }
 
 bool PluginInterface::validateConfiguration(const std::unordered_map<std::string, std::any>& config) const {
-    // Default implementation - accept std::any configuration
-    return !config.empty() || config.empty(); // Always true, but uses config to avoid warning
+    // The base interface intentionally accepts any configuration. Specialized
+    // plugins override this method when they require schema validation.
+    (void)config;
+    return true;
 }
 
 std::vector<PluginCapability> PluginInterface::getCapabilities() const {

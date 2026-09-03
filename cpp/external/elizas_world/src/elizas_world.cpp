@@ -1,6 +1,7 @@
 #include "elizaos/elizas_world.hpp"
 #include <cmath>
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 #include <iomanip>
 #include <random>

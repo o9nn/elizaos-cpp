@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdio>
 #include <variant>
+#include <algorithm>
 
 using namespace elizaos;
 

@@ -10,13 +10,22 @@ namespace elizaos {
 // Utility functions
 namespace the_org_utils {
     
-    UUID generateAgentId(AgentRole /* role */) {
+    UUID generateAgentId(AgentRole role) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, 15);
-        
+
+        const char* prefix = "agent_";
+        switch (role) {
+            case AgentRole::COMMUNITY_MANAGER: prefix = "cm_"; break;
+            case AgentRole::DEVELOPER_RELATIONS: prefix = "dr_"; break;
+            case AgentRole::COMMUNITY_LIAISON: prefix = "cl_"; break;
+            case AgentRole::PROJECT_MANAGER: prefix = "pm_"; break;
+            case AgentRole::SOCIAL_MEDIA_MANAGER: prefix = "sm_"; break;
+        }
+
         std::stringstream ss;
-        ss << std::hex;
+        ss << prefix << std::hex;
         for (int i = 0; i < 32; ++i) {
             ss << dis(gen);
             if (i == 7 || i == 11 || i == 15 || i == 19) {
@@ -125,9 +134,9 @@ std::queue<std::string> TheOrgAgent::getIncomingMessages() {
     return incomingMessages_;
 }
 
-void TheOrgAgent::processMessage(const std::string& message, const std::string& /* senderId */) {
+void TheOrgAgent::processMessage(const std::string& message, const std::string& senderId) {
     std::lock_guard<std::mutex> lock(messageMutex_);
-    incomingMessages_.push(message);
+    incomingMessages_.push(senderId.empty() ? message : "From " + senderId + ": " + message);
 }
 
 UUID TheOrgAgent::createTask(const std::string& /* name */, const std::string& /* description */, int /* priority */) {
@@ -256,10 +265,15 @@ bool CommunityManagerAgent::shouldGreetNewUser(const std::string& /* userId */) 
 std::string CommunityManagerAgent::generateGreeting(const std::string& userName, const std::string& serverName) const {
     if (!customGreetingMessage_.empty()) {
         std::string greeting = customGreetingMessage_;
-        size_t pos = greeting.find("{user}");
-        if (pos != std::string::npos) {
-            greeting.replace(pos, 6, userName);
-        }
+        auto replaceAll = [&greeting](const std::string& token, const std::string& value) {
+            size_t pos = 0;
+            while ((pos = greeting.find(token, pos)) != std::string::npos) {
+                greeting.replace(pos, token.size(), value);
+                pos += value.size();
+            }
+        };
+        replaceAll("{user}", userName);
+        replaceAll("{server}", serverName);
         return greeting;
     }
     
@@ -449,19 +463,59 @@ void DeveloperRelationsAgent::processLoop() {
 }
 
 void DeveloperRelationsAgent::indexDocumentation(const std::string& docPath, const std::string& version) {
+    DocumentationEntry entry;
+    entry.path = docPath;
+    entry.version = version;
+    entry.lastUpdated = std::chrono::system_clock::now();
+    {
+        std::lock_guard<std::mutex> lock(docMutex_);
+        auto it = std::find_if(documentationIndex_.begin(), documentationIndex_.end(),
+            [&docPath](const DocumentationEntry& existing) {
+                return existing.path == docPath;
+            });
+        if (it == documentationIndex_.end()) documentationIndex_.push_back(std::move(entry));
+        else *it = std::move(entry);
+    }
     AgentLogger logger;
     logger.log("Indexed documentation: " + docPath + " (version: " + version + ")");
 }
 
-void DeveloperRelationsAgent::addTechnicalKnowledge(const std::string& topic, const std::string& /* content */, 
-                                                     const std::vector<std::string>& /* tags */) {
+void DeveloperRelationsAgent::addTechnicalKnowledge(const std::string& topic, const std::string& content,
+                                                     const std::vector<std::string>& tags) {
+    KnowledgeEntry entry;
+    entry.topic = topic;
+    entry.content = content;
+    entry.tags = tags;
+    entry.lastUpdated = std::chrono::system_clock::now();
+    entry.relevanceScore = 1.0;
+    {
+        std::lock_guard<std::mutex> lock(knowledgeMutex_);
+        knowledgeBase_[topic] = std::move(entry);
+    }
     AgentLogger logger;
     logger.log("Added knowledge: " + topic);
 }
 
-std::vector<std::string> DeveloperRelationsAgent::searchDocumentation(const std::string& /* query */) const {
-    // Mock implementation
-    return {"/docs/getting-started.md", "/docs/agent-development.md"};
+std::vector<std::string> DeveloperRelationsAgent::searchDocumentation(const std::string& query) const {
+    auto lower = [](std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return value;
+    };
+    const std::string needle = lower(query);
+    std::lock_guard<std::mutex> lock(docMutex_);
+    std::vector<std::string> results;
+    for (const auto& entry : documentationIndex_) {
+        if (needle.empty() || lower(entry.path).find(needle) != std::string::npos ||
+            lower(entry.content).find(needle) != std::string::npos ||
+            lower(entry.version).find(needle) != std::string::npos ||
+            std::any_of(entry.tags.begin(), entry.tags.end(), [&](const std::string& tag) {
+                return lower(tag).find(needle) != std::string::npos;
+            })) {
+            results.push_back(entry.path);
+        }
+    }
+    return results;
 }
 
 // ============================================================================
@@ -504,25 +558,84 @@ void ProjectManagerAgent::processLoop() {
     // Mock implementation
 }
 
-UUID ProjectManagerAgent::createProject(const std::string& /* name */, const std::string& /* description */, const std::vector<UUID>& /* teamMemberIds */) {
-    return config_.agentId + "-project-" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+UUID ProjectManagerAgent::createProject(const std::string& name, const std::string& description,
+                                        const std::vector<UUID>& teamMemberIds) {
+    const auto now = std::chrono::system_clock::now();
+    Project project;
+    project.id = config_.agentId + "-project-" +
+                 std::to_string(now.time_since_epoch().count());
+    project.name = name;
+    project.description = description;
+    project.status = ProjectStatus::PLANNING;
+    project.teamMemberIds = teamMemberIds;
+    project.createdAt = now;
+    project.updatedAt = now;
+    {
+        std::lock_guard<std::mutex> lock(projectMutex_);
+        projects_[project.id] = project;
+    }
+    return project.id;
 }
 
-UUID ProjectManagerAgent::addTeamMember(const TeamMember& /* member */) {
-    // Mock implementation
-    return config_.agentId + "-member-" + std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+UUID ProjectManagerAgent::addTeamMember(const TeamMember& member) {
+    TeamMember stored = member;
+    if (stored.id.empty()) {
+        stored.id = config_.agentId + "-member-" +
+                    std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+    }
+    {
+        std::lock_guard<std::mutex> lock(teamMutex_);
+        teamMembers_[stored.id] = stored;
+    }
+    return stored.id;
 }
 
-void ProjectManagerAgent::recordDailyUpdate(const DailyUpdate& /* update */) {
-    // Mock implementation
+void ProjectManagerAgent::recordDailyUpdate(const DailyUpdate& update) {
+    DailyUpdate stored = update;
+    const auto now = std::chrono::system_clock::now();
+    if (stored.id.empty()) {
+        stored.id = config_.agentId + "-update-" +
+                    std::to_string(now.time_since_epoch().count());
+    }
+    if (stored.submittedAt == Timestamp{}) stored.submittedAt = now;
+    std::lock_guard<std::mutex> lock(updateMutex_);
+    dailyUpdates_.push_back(std::move(stored));
 }
 
-std::string ProjectManagerAgent::generateProjectStatusReport(const UUID& /* projectId */) const {
-    return "Project Status Report: Mock implementation";
+std::string ProjectManagerAgent::generateProjectStatusReport(const UUID& projectId) const {
+    const auto project = getProject(projectId);
+    if (!project) return "Project not found: " + projectId;
+
+    const auto statusName = [](ProjectStatus status) {
+        switch (status) {
+            case ProjectStatus::PLANNING: return "Planning";
+            case ProjectStatus::ACTIVE: return "Active";
+            case ProjectStatus::ON_HOLD: return "On Hold";
+            case ProjectStatus::COMPLETED: return "Completed";
+            case ProjectStatus::CANCELLED: return "Cancelled";
+        }
+        return "Unknown";
+    };
+    const auto updates = getDailyUpdates(projectId);
+    std::ostringstream report;
+    report << "Project Status Report: " << project->name << "\n"
+           << "Status: " << statusName(project->status) << "\n"
+           << "Description: " << project->description << "\n"
+           << "Team members: " << project->teamMemberIds.size() << "\n"
+           << "Tasks: " << project->taskIds.size() << "\n"
+           << "Daily updates: " << updates.size();
+    return report.str();
 }
 
-std::string ProjectManagerAgent::generateWeeklyReport(const std::vector<UUID>& /* projectIds */) const {
-    return "Weekly Report: Mock implementation";
+std::string ProjectManagerAgent::generateWeeklyReport(const std::vector<UUID>& projectIds) const {
+    std::vector<UUID> selected = projectIds;
+    if (selected.empty()) {
+        for (const auto& project : getActiveProjects()) selected.push_back(project.id);
+    }
+    std::ostringstream report;
+    report << "Weekly Project Report";
+    for (const auto& id : selected) report << "\n\n" << generateProjectStatusReport(id);
+    return report.str();
 }
 
 void ProjectManagerAgent::sendCheckinReminder(const UUID& /* teamMemberId */, const UUID& /* projectId */) {
@@ -580,12 +693,22 @@ std::shared_ptr<TheOrgAgent> TheOrgManager::getAgentByRole(AgentRole role) const
 
 // Additional TheOrgManager methods
 void TheOrgManager::initializeAllAgents(const std::vector<AgentConfig>& /* configs */) {
-    // Mock implementation
+    for (auto& [id, agent] : agents_) {
+        (void)id;
+        agent->initialize();
+    }
 }
 
-void TheOrgManager::broadcastMessage(const std::string& /* message */, const std::string& /* senderId */, 
-                                     const std::vector<AgentRole>& /* targetRoles */) {
-    // Mock implementation
+void TheOrgManager::broadcastMessage(const std::string& message, const std::string& senderId,
+                                     const std::vector<AgentRole>& targetRoles) {
+    for (const auto& [id, agent] : agents_) {
+        (void)id;
+        if (!targetRoles.empty() &&
+            std::find(targetRoles.begin(), targetRoles.end(), agent->getRole()) == targetRoles.end()) {
+            continue;
+        }
+        agent->processMessage(message, senderId);
+    }
 }
 
 TheOrgManager::SystemMetrics TheOrgManager::getSystemMetrics() const {
@@ -615,11 +738,37 @@ std::vector<std::shared_ptr<TheOrgAgent>> TheOrgManager::getAllAgents() const {
 
 // Additional DeveloperRelationsAgent methods
 std::string DeveloperRelationsAgent::retrieveKnowledge(const std::string& topic) const {
-    return "Knowledge about " + topic + ": Mock implementation";
+    auto lower = [](std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        return value;
+    };
+    const std::string needle = lower(topic);
+    std::lock_guard<std::mutex> lock(knowledgeMutex_);
+    auto exact = knowledgeBase_.find(topic);
+    if (exact != knowledgeBase_.end()) return exact->second.content;
+    for (const auto& [key, entry] : knowledgeBase_) {
+        if (lower(key).find(needle) != std::string::npos ||
+            lower(entry.content).find(needle) != std::string::npos ||
+            std::any_of(entry.tags.begin(), entry.tags.end(), [&](const std::string& tag) {
+                return lower(tag).find(needle) != std::string::npos;
+            })) {
+            return entry.content;
+        }
+    }
+    return "Knowledge not found for topic: " + topic;
 }
 
-std::string DeveloperRelationsAgent::generateCodeExample(const std::string& topic, const std::string& language) const {
-    return "// Code example for " + topic + " in " + language + "\n// Mock implementation\n";
+std::string DeveloperRelationsAgent::generateCodeExample(const std::string& topic,
+                                                          const std::string& language) const {
+    if (language == "cpp" && topic == "agent-creation") {
+        return "AgentConfig config;\nconfig.agentName = \"MyAgent\";\n";
+    }
+    if (language == "cpp" && topic == "memory-management") {
+        return "auto memory = agent.createMemory(\"content\", MemoryType::MESSAGE);\n"
+               "agent.addMemory(memory);\n";
+    }
+    return "// Code example for " + topic + " in " + language + "\n";
 }
 
 // Additional utility functions
@@ -898,12 +1047,29 @@ void ProjectManagerAgent::scheduleDailyCheckins(const UUID& /* projectId */) {
     // Mock implementation
 }
 
-std::vector<DailyUpdate> ProjectManagerAgent::getDailyUpdates(const UUID& /* projectId */, const std::string& /* date */) const {
-    return dailyUpdates_;
+std::vector<DailyUpdate> ProjectManagerAgent::getDailyUpdates(const UUID& projectId,
+                                                               const std::string& date) const {
+    std::lock_guard<std::mutex> lock(updateMutex_);
+    std::vector<DailyUpdate> result;
+    for (const auto& update : dailyUpdates_) {
+        if (update.projectId == projectId && (date.empty() || update.date == date)) {
+            result.push_back(update);
+        }
+    }
+    return result;
 }
 
-std::vector<DailyUpdate> ProjectManagerAgent::getMemberUpdates(const UUID& /* teamMemberId */, std::chrono::hours /* timeWindow */) const {
-    return {};
+std::vector<DailyUpdate> ProjectManagerAgent::getMemberUpdates(const UUID& teamMemberId,
+                                                               std::chrono::hours timeWindow) const {
+    const auto cutoff = std::chrono::system_clock::now() - timeWindow;
+    std::lock_guard<std::mutex> lock(updateMutex_);
+    std::vector<DailyUpdate> result;
+    for (const auto& update : dailyUpdates_) {
+        if (update.teamMemberId == teamMemberId && update.submittedAt >= cutoff) {
+            result.push_back(update);
+        }
+    }
+    return result;
 }
 
 std::string ProjectManagerAgent::generateTeamProductivityReport(const std::vector<UUID>& /* teamMemberIds */,
@@ -1112,16 +1278,16 @@ std::vector<std::string> parseHashtags(const std::string& content) {
     for (size_t i = 0; i < content.length(); ++i) {
         char c = content[i];
         if (c == '#') {
-            if (!current.empty() && inHashtag) {
+            if (current.size() > 1 && inHashtag) {
                 hashtags.push_back(current);
             }
-            current.clear();
+            current = "#";
             inHashtag = true;
         } else if (inHashtag) {
             if (std::isalnum(c) || c == '_') {
                 current += c;
             } else {
-                if (!current.empty()) {
+                if (current.size() > 1) {
                     hashtags.push_back(current);
                 }
                 current.clear();
@@ -1130,7 +1296,7 @@ std::vector<std::string> parseHashtags(const std::string& content) {
         }
     }
 
-    if (!current.empty() && inHashtag) {
+    if (current.size() > 1 && inHashtag) {
         hashtags.push_back(current);
     }
 
@@ -1199,6 +1365,7 @@ bool validateUrl(const std::string& url) {
 }
 
 std::string extractDomain(const std::string& url) {
+    if (!validateUrl(url)) return {};
     std::string domain;
 
     size_t protocolEnd = url.find("://");

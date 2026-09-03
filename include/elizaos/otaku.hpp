@@ -102,14 +102,14 @@ struct TokenInfo {
 // Transaction receipt
 struct TransactionReceipt {
     std::string txHash;
-    TxStatus status;
-    ChainId chainId;
+    TxStatus status = TxStatus::PENDING;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
     std::string from;
     std::string to;
-    double gasUsed;
-    double effectiveGasPrice;
-    uint64_t blockNumber;
-    std::chrono::system_clock::time_point timestamp;
+    double gasUsed = 0.0;
+    double effectiveGasPrice = 0.0;
+    uint64_t blockNumber = 0;
+    std::chrono::system_clock::time_point timestamp{};
     std::vector<std::string> logs;
 };
 
@@ -161,13 +161,13 @@ struct YieldPosition {
     std::string positionId;
     std::string protocol;
     std::string asset;
-    double depositedAmount;
-    double currentValue;
-    double earnedRewards;
-    double apy;
-    YieldStrategy strategy;
-    ChainId chainId;
-    std::chrono::system_clock::time_point depositedAt;
+    double depositedAmount = 0.0;
+    double currentValue = 0.0;
+    double earnedRewards = 0.0;
+    double apy = 0.0;
+    YieldStrategy strategy = YieldStrategy::LIQUIDITY_PROVISION;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    std::chrono::system_clock::time_point depositedAt{};
 };
 
 // NFT information

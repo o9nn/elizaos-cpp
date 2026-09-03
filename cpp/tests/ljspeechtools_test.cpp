@@ -350,3 +350,40 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+
+
+// Regression: early-return paths must never expose indeterminate result fields.
+TEST_F(LJSpeechToolsTest, EmptyAudioReturnsDeterministicFailure) {
+    SpeechTranscriber transcriber;
+    AudioData emptyAudio;
+
+    const auto result = transcriber.transcribe(emptyAudio);
+
+    EXPECT_FALSE(result.success);
+    EXPECT_TRUE(result.text.empty());
+    EXPECT_DOUBLE_EQ(result.confidence, 0.0);
+    EXPECT_FALSE(result.error_message.empty());
+}
+
+TEST_F(LJSpeechToolsTest, MissingAudioFileReturnsDeterministicFailure) {
+    SpeechTranscriber transcriber;
+    const auto missing = (input_dir_ / "definitely_missing_audio.wav").string();
+
+    const auto result = transcriber.transcribeFile(missing);
+
+    EXPECT_FALSE(result.success);
+    EXPECT_TRUE(result.text.empty());
+    EXPECT_DOUBLE_EQ(result.confidence, 0.0);
+    EXPECT_FALSE(result.error_message.empty());
+}
+
+TEST_F(LJSpeechToolsTest, EmptySynthesisReturnsZeroInitializedAudio) {
+    SpeechSynthesizer synthesizer;
+
+    const auto audio = synthesizer.synthesize("");
+
+    EXPECT_TRUE(audio.samples.empty());
+    EXPECT_EQ(audio.sample_rate, 0);
+    EXPECT_EQ(audio.channels, 0);
+    EXPECT_DOUBLE_EQ(audio.duration_seconds, 0.0);
+}

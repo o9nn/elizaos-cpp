@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <fstream>
 #include <thread>
+#include <algorithm>
 
 using namespace elizaos::llama;
 
