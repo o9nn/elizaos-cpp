@@ -14,6 +14,9 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#ifdef ERROR
+#undef ERROR
+#endif
 #pragma comment(lib, "ws2_32.lib")
 #ifndef MSG_NOSIGNAL
 #define MSG_NOSIGNAL 0
