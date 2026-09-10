@@ -3,6 +3,7 @@
 
 #include "elizaos/spartan.hpp"
 
+#include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <limits>

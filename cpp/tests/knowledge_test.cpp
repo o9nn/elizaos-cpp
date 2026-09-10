@@ -3,6 +3,7 @@
 #include "elizaos/knowledge.hpp"
 #include "elizaos/knowledge_helpers.hpp"
 
+#include <algorithm>
 #include <any>
 
 using namespace elizaos;

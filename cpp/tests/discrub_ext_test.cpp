@@ -2,6 +2,7 @@
 
 #include "elizaos/discrub_ext.hpp"
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <filesystem>
