@@ -591,7 +591,32 @@ jobs:
         run: |
           brew install cmake curl gumbo-parser sqlite pkg-config
 
-      - name: Build and Package
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not $env:VCPKG_INSTALLATION_ROOT) {
+            $vcpkgCmd = (Get-Command vcpkg -ErrorAction Stop).Source
+            $env:VCPKG_INSTALLATION_ROOT = Split-Path -Path $vcpkgCmd -Parent
+          }
+          $overlayPorts = Join-Path $env:GITHUB_WORKSPACE ".github/vcpkg-overlay-ports"
+          vcpkg install --overlay-ports="$overlayPorts" curl:x64-windows sqlite3:x64-windows gumbo:x64-windows
+          "VCPKG_INSTALLATION_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Build and Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cmake -B build `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows
+          cmake --build build --config Release -j 4
+          Set-Location build
+          cpack -G ${{ matrix.package_type }}
+
+      - name: Build and Package (Linux/macOS)
+        if: runner.os != 'Windows'
         run: |
           cmake -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release -j 4
