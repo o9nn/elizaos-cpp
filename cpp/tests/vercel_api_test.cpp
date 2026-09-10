@@ -7,6 +7,8 @@
 #include <deque>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
+#include <vector>
 
 using namespace elizaos;
 using json = nlohmann::json;
