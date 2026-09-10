@@ -21,7 +21,8 @@ namespace {
 using Clock = std::chrono::system_clock;
 
 Clock::time_point atNanoseconds(std::int64_t value) {
-    return Clock::time_point(std::chrono::nanoseconds(value));
+    return Clock::time_point(
+        std::chrono::duration_cast<Clock::duration>(std::chrono::nanoseconds(value)));
 }
 
 std::int64_t nanoseconds(Clock::time_point value) {

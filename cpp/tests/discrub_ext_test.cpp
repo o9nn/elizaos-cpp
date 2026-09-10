@@ -20,7 +20,6 @@ constexpr const char* kGuild = "111111111111111111";
 constexpr const char* kChannel = "222222222222222222";
 constexpr const char* kChannelTwo = "333333333333333333";
 constexpr const char* kUser = "444444444444444444";
-constexpr const char* kModerator = "555555555555555555";
 
 DiscordMessage message(const std::string& id, const std::string& content,
                        std::chrono::system_clock::time_point timestamp,

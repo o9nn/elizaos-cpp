@@ -24,6 +24,9 @@
 #endif
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#ifdef ERROR
+#undef ERROR
+#endif
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>

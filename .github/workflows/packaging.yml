@@ -37,7 +37,7 @@ jobs:
     - name: Install git and dependencies
       run: |
         apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config rpm dpkg-dev ca-certificates
+        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential python3 libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config rpm dpkg-dev ca-certificates
     
     - uses: actions/checkout@v4
     

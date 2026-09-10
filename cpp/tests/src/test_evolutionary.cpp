@@ -159,9 +159,12 @@ TEST(EvolutionaryAudit, RejectsMalformedConfigFitnessAndRates) {
     config.crossoverRate = 2.0;
     EXPECT_THROW(static_cast<void>(EvolutionaryOptimizer{config}),
                  std::invalid_argument);
-    EXPECT_THROW(FitnessResult(std::numeric_limits<double>::infinity()), std::invalid_argument);
-    EXPECT_THROW(Individual(constant(1.0)).mutate(-0.1), std::invalid_argument);
-    EXPECT_THROW(Population(0), std::invalid_argument);
+    EXPECT_THROW(static_cast<void>(FitnessResult{
+                     std::numeric_limits<double>::infinity()}),
+                 std::invalid_argument);
+    EXPECT_THROW(static_cast<void>(Individual{constant(1.0)}.mutate(-0.1)),
+                 std::invalid_argument);
+    EXPECT_THROW(static_cast<void>(Population{0}), std::invalid_argument);
 
     config.crossoverRate = 0.0;
     EvolutionaryOptimizer optimizer(config);

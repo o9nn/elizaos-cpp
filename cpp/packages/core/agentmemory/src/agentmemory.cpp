@@ -215,8 +215,11 @@ std::vector<std::shared_ptr<Memory>> AgentMemoryManager::getMemories(const Memor
             if (typeIds && typeIds->count(id) == 0) {
                 continue;
             }
+            const UUID memoryId = id;
             if (std::any_of(conceptIds.begin(), conceptIds.end(),
-                            [&id](const auto& ids) { return ids.count(id) == 0; })) {
+                            [&memoryId](const auto& ids) {
+                                return ids.count(memoryId) == 0;
+                            })) {
                 continue;
             }
 
