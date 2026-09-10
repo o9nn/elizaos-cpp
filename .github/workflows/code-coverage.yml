@@ -258,7 +258,8 @@ jobs:
           if [ -f pr-coverage/coverage-summary.txt ]; then
             echo "### Current PR Coverage" >> coverage-diff.md
             echo "\`\`\`" >> coverage-diff.md
-            cat pr-coverage/coverage-summary.txt >> coverage-diff.md
+            grep -E '^Total (Line|Function) Coverage:' pr-coverage/coverage-summary.txt >> coverage-diff.md || \
+              tail -n 10 pr-coverage/coverage-summary.txt >> coverage-diff.md
             echo "\`\`\`" >> coverage-diff.md
           fi
 
@@ -276,7 +277,7 @@ jobs:
             const fs = require('fs');
             const report = fs.readFileSync('coverage-diff.md', 'utf8');
 
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,

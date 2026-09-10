@@ -471,18 +471,19 @@ bool GoalManager::deserialize(const std::string& data) {
         }
         for (const auto& parent : parentOf) parsed.at(parent.first)->parentGoal_ = parsed.at(parent.second);
 
-        auto graphHasCycle = [&](bool hierarchy) {
-            enum class Mark { VISITING, DONE };
-            std::unordered_map<UUID, Mark> marks;
-            std::function<bool(const UUID&)> visit = [&](const UUID& id) {
+        enum class VisitMark { VISITING, DONE };
+        auto graphHasCycle = [&](bool hierarchy) -> bool {
+            std::unordered_map<UUID, VisitMark> marks;
+            std::function<bool(const UUID&)> visit;
+            visit = [&](const UUID& id) -> bool {
                 auto mark = marks.find(id);
-                if (mark != marks.end()) return mark->second == Mark::VISITING;
-                marks[id] = Mark::VISITING;
+                if (mark != marks.end()) return mark->second == VisitMark::VISITING;
+                marks[id] = VisitMark::VISITING;
                 const auto& state = *std::find_if(states.begin(), states.end(),
                     [&](const GoalSnapshot& candidate) { return candidate.id == id; });
                 const auto& edges = hierarchy ? state.subGoalIds : state.dependencies;
                 for (const auto& edge : edges) if (visit(edge)) return true;
-                marks[id] = Mark::DONE;
+                marks[id] = VisitMark::DONE;
                 return false;
             };
             for (const auto& state : states) if (visit(state.id)) return true;

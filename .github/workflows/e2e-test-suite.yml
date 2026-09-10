@@ -131,13 +131,36 @@ jobs:
         run: |
           brew install cmake curl gumbo-parser sqlite pkg-config lcov
 
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not $env:VCPKG_INSTALLATION_ROOT) {
+            $vcpkgCmd = (Get-Command vcpkg -ErrorAction Stop).Source
+            $env:VCPKG_INSTALLATION_ROOT = Split-Path -Path $vcpkgCmd -Parent
+          }
+          $overlayPorts = Join-Path $env:GITHUB_WORKSPACE ".github/vcpkg-overlay-ports"
+          vcpkg install --overlay-ports="$overlayPorts" curl:x64-windows sqlite3:x64-windows gumbo:x64-windows
+          "VCPKG_INSTALLATION_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Configure environment
         shell: bash
         run: |
           echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
           echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
 
-      - name: Configure CMake
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cmake -B build `
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+            -DVCPKG_TARGET_TRIPLET=x64-windows
+
+      - name: Configure CMake (Linux/macOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           cmake -B build \
