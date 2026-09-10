@@ -22,9 +22,13 @@
 #include <functional>
 #include <chrono>
 #include <mutex>
+#include <condition_variable>
 #include <thread>
 #include <queue>
+#include <deque>
 #include <atomic>
+#include <optional>
+#include <unordered_map>
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
 #include <cmath>
@@ -32,6 +36,8 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <cstdint>
+#include <ctime>
 
 namespace village { namespace atomspace {
 
@@ -45,7 +51,12 @@ struct AtomSpaceConfig {
     double forgetting_threshold = 5;  // STI below which atoms are forgotten
     size_t max_atoms = 100000;        // Maximum atoms before garbage collection
     double hebbian_learning_rate = 0.1;
-    std::string persist_path = "/var/agi_neighborhood/atomspace/village.scm";
+    // The daemon's authoritative, versioned runtime state is JSON. Scheme is
+    // an intentional interoperability export and is never auto-loaded as the
+    // daemon state format.
+    std::string persist_path = "/var/agi_neighborhood/atomspace/village.json";
+    std::string scheme_export_path = "/var/agi_neighborhood/atomspace/village.scm";
+    size_t max_persist_bytes = 8 * 1024 * 1024;
     
     // PLN parameters
     double deduction_confidence_threshold = 0.5;
@@ -121,8 +132,15 @@ struct CognitiveEvent {
 class VillageAtomSpace {
 public:
     explicit VillageAtomSpace(const AtomSpaceConfig& config = {})
-        : config_(config), as_(), ecan_(as_), pln_(as_), cycle_count_(0)
+        : config_(config), as_(), ecan_(as_), pln_(as_), cycle_count_(0),
+          persist_path_(config.persist_path)
     {
+        // Preserve the historical convention that callers supplying a .scm
+        // persist_path are configuring the Scheme interoperability export.
+        // JSON daemon state remains independently selected through
+        // set_persist_path() or a non-.scm AtomSpaceConfig::persist_path.
+        if (std::filesystem::path(config.persist_path).extension() == ".scm")
+            config_.scheme_export_path = config.persist_path;
         // Configure ECAN
         ecan_.bank().set_af_threshold(static_cast<oc::AttentionValue::sti_t>(config.af_size));
         
@@ -326,6 +344,7 @@ public:
     };
     
     std::vector<GearState> get_gear_states() const {
+        std::lock_guard<std::mutex> lock(mutex_);
         std::map<std::string, std::vector<const ResidentAtom*>> trains;
         for (auto& kv : residents_) {
             trains[kv.second.gear_train].push_back(&kv.second);
@@ -367,12 +386,14 @@ public:
     // ─── Query Interface (for 9P server / HTTP endpoints) ──────────
     
     std::string get_resident_sti_str(const std::string& name) const {
+        std::lock_guard<std::mutex> lock(mutex_);
         auto it = residents_.find(name);
         if (it == residents_.end()) return "unknown";
         return std::to_string(it->second.sti);
     }
     
     std::string get_attentional_focus_json() {
+        std::lock_guard<std::mutex> lock(mutex_);
         std::string json = "[";
         auto af = ecan_.bank().get_attentional_focus();
         bool first = true;
@@ -389,6 +410,7 @@ public:
     }
     
     std::string get_stats_json() {
+        std::lock_guard<std::mutex> lock(mutex_);
         std::string json = "{";
         json += "\"atom_count\":" + std::to_string(as_.size()) + ",";
         json += "\"cycle_count\":" + std::to_string(cycle_count_) + ",";
@@ -426,16 +448,15 @@ public:
         return results;
     }
     
-    // ─── Persistence ───────────────────────────────────────────────
-    // Serialize the full AtomSpace to Scheme s-expressions at
-    // config_.persist_path so the Guile shell (and future sessions) can
-    // reload the village's cognitive state.
-    // Returns true when the snapshot was written successfully.
+    // ─── Scheme interoperability export ───────────────────────────
+    // save()/load() intentionally retain the historical Scheme API for the
+    // Guile shell. The daemon itself uses persist()/load_persisted() below,
+    // whose versioned JSON path is configured independently.
     bool save() {
         std::lock_guard<std::mutex> lock(mutex_);
         namespace fs = std::filesystem;
         try {
-            fs::path path(config_.persist_path);
+            fs::path path(config_.scheme_export_path);
             if (path.has_parent_path()) {
                 std::error_code ec;
                 fs::create_directories(path.parent_path(), ec);
@@ -468,12 +489,12 @@ public:
         }
     }
 
-    // Load a previously saved snapshot from config_.persist_path, merging
-    // the persisted atoms into the current AtomSpace and re-binding resident
-    // ConceptNode handles. Returns the number of top-level atoms restored.
+    // Load an intentional Scheme export and re-bind resident handles. This
+    // is separate from the daemon JSON state and remains merge-oriented for
+    // compatibility with existing Guile workflows.
     size_t load() {
         std::lock_guard<std::mutex> lock(mutex_);
-        std::ifstream in(config_.persist_path);
+        std::ifstream in(config_.scheme_export_path);
         if (!in) return 0;
         oc::persist::Serializer ser(as_);
         size_t restored = 0;
@@ -503,12 +524,36 @@ public:
     
     // ─── Accessors ─────────────────────────────────────────────────
     
+    // Legacy mutable-reference accessors are preserved for source
+    // compatibility. They cannot make a caller's arbitrary multi-call sequence
+    // atomic; concurrent production paths must use the snapshots below.
     oc::AtomSpace& raw_atomspace() { return as_; }
     const oc::AtomSpace& raw_atomspace() const { return as_; }
     oc::attention::ECANRunner& ecan() { return ecan_; }
     oc::pln::PLNReasoner& pln() { return pln_; }
-    size_t cycle_count() const { return cycle_count_; }
+    size_t cycle_count() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return cycle_count_;
+    }
     const std::map<std::string, ResidentAtom>& residents() const { return residents_; }
+    std::map<std::string, ResidentAtom> residents_snapshot() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return residents_;
+    }
+    std::optional<ResidentAtom> resident_snapshot(const std::string& name) const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = residents_.find(name);
+        if (it == residents_.end()) return std::nullopt;
+        return it->second;
+    }
+    size_t resident_count() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return residents_.size();
+    }
+    size_t atom_count() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return as_.size();
+    }
 
     // Thread-safe event ingestion (for callbacks from inference threads)
     void enqueue_event(const CognitiveEvent& event) {
@@ -665,6 +710,15 @@ private:
     std::queue<CognitiveEvent> pending_events_;
 
     // === CYCLE 007: MEMORY SYSTEM ===
+    static constexpr const char* kPersistFormat = "elizaos.village.state";
+    static constexpr int kPersistVersion = 1;
+    static constexpr size_t kMaxResidentName = 128;
+    static constexpr size_t kMaxShortString = 512;
+    static constexpr size_t kMaxContentString = 16 * 1024;
+    static constexpr size_t kMaxDomainLevels = 1024;
+    static constexpr size_t kMaxEpisodicEntries = 10;
+    static constexpr size_t kMaxConversationEntries = 5;
+    static constexpr size_t kMaxActionEntries = 10;
     
     struct EpisodicEntry {
         std::string type;
@@ -685,37 +739,45 @@ private:
         std::string result;
         int inference_id;
         std::string correlation_id;
+        bool success;
+        std::string effect_evidence;
         uint64_t timestamp;
     };
     std::unordered_map<std::string, std::deque<ActionEntry>> action_history_;
     
-    std::string persist_path_ = "/var/agi_neighborhood/atomspace/village.json";
+    std::string persist_path_;
+    mutable std::mutex persist_io_mutex_;
     
 public:
-    void set_persist_path(const std::string& p) { persist_path_ = p; }
+    void set_persist_path(const std::string& p) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        persist_path_ = p;
+    }
     
     void add_episodic(const std::string& resident, const std::string& type, const std::string& content) {
         std::lock_guard<std::mutex> lock(mutex_);
         auto& mem = episodic_memory_[resident];
         mem.push_back({type, content, static_cast<uint64_t>(time(nullptr))});
-        while (mem.size() > 10) mem.pop_front();
+        while (mem.size() > kMaxEpisodicEntries) mem.pop_front();
     }
     
     void add_conversation(const std::string& resident, const std::string& stim, const std::string& resp) {
         std::lock_guard<std::mutex> lock(mutex_);
         auto& conv = conversation_history_[resident];
         conv.push_back({stim, resp, static_cast<uint64_t>(time(nullptr))});
-        while (conv.size() > 5) conv.pop_front();
+        while (conv.size() > kMaxConversationEntries) conv.pop_front();
     }
 
     void add_action(const std::string& resident, const std::string& action_type,
                     const std::string& result, int inference_id,
-                    const std::string& correlation_id = "") {
+                    const std::string& correlation_id = "", bool success = true,
+                    const std::string& effect_evidence = "") {
         std::lock_guard<std::mutex> lock(mutex_);
         auto& actions = action_history_[resident];
         actions.push_back({action_type, result, inference_id, correlation_id,
+                           success, effect_evidence,
                            static_cast<uint64_t>(time(nullptr))});
-        while (actions.size() > 10) actions.pop_front();
+        while (actions.size() > kMaxActionEntries) actions.pop_front();
     }
     
     std::string get_episodic_context(const std::string& resident) const {
@@ -784,6 +846,7 @@ public:
                 j["actions"].push_back({
                     {"action_type", it->action_type}, {"result", it->result},
                     {"inference_id", it->inference_id}, {"correlation_id", it->correlation_id},
+                    {"success", it->success}, {"effect_evidence", it->effect_evidence},
                     {"ts", it->timestamp * 1000ULL}
                 });
             }
@@ -791,114 +854,260 @@ public:
         return j.dump(2);
     }
     
+    // Versioned daemon-state persistence. The complete payload is built from a
+    // locked snapshot, bounded before I/O, written to a sibling temporary file,
+    // and atomically renamed only after all stream checks succeed.
     bool persist() {
-        std::lock_guard<std::mutex> lock(mutex_);
+        namespace fs = std::filesystem;
+        std::lock_guard<std::mutex> io_lock(persist_io_mutex_);
         try {
             nlohmann::json j;
-            j["timestamp"] = time(nullptr);
-            j["total_atoms"] = residents_.size();
-            nlohmann::json atoms_j = nlohmann::json::array();
-            for (auto& [name, atom] : residents_) {
-                nlohmann::json aj;
-                aj["name"] = atom.name;
-                aj["type"] = "ConceptNode";
-                aj["sti"] = atom.sti;
-                aj["lti"] = atom.lti;
-                aj["gear_train"] = atom.gear_train;
-                atoms_j.push_back(aj);
-            }
-            j["atoms"] = atoms_j;
-            nlohmann::json ep_j;
-            for (auto& [res, entries] : episodic_memory_) {
-                nlohmann::json arr = nlohmann::json::array();
-                for (auto& e : entries) { nlohmann::json ej; ej["type"] = e.type; ej["content"] = e.content; ej["ts"] = e.timestamp; arr.push_back(ej); }
-                ep_j[res] = arr;
-            }
-            j["episodic_memory"] = ep_j;
-            nlohmann::json conv_j;
-            for (auto& [res, entries] : conversation_history_) {
-                nlohmann::json arr = nlohmann::json::array();
-                for (auto& c : entries) { nlohmann::json cj; cj["stimulus"] = c.stimulus; cj["response"] = c.response; cj["ts"] = c.timestamp; arr.push_back(cj); }
-                conv_j[res] = arr;
-            }
-            j["conversation_history"] = conv_j;
-            nlohmann::json action_j;
-            for (auto& [res, entries] : action_history_) {
-                nlohmann::json arr = nlohmann::json::array();
-                for (auto& a : entries) {
-                    arr.push_back({{"action_type", a.action_type}, {"result", a.result},
-                                   {"inference_id", a.inference_id}, {"correlation_id", a.correlation_id},
-                                   {"ts", a.timestamp}});
+            std::string path_string;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                path_string = persist_path_;
+                j["format"] = kPersistFormat;
+                j["version"] = kPersistVersion;
+                j["timestamp"] = static_cast<uint64_t>(std::time(nullptr));
+                j["cycle_count"] = cycle_count_;
+                j["residents"] = nlohmann::json::array();
+                for (const auto& [name, atom] : residents_) {
+                    nlohmann::json levels = nlohmann::json::object();
+                    for (const auto& [domain, level] : atom.domain_levels)
+                        levels[domain] = static_cast<int>(level);
+                    j["residents"].push_back({
+                        {"name", name}, {"sti", atom.sti}, {"lti", atom.lti},
+                        {"gear_train", atom.gear_train},
+                        {"gear_rpm_multiplier", atom.gear_rpm_multiplier},
+                        {"openness", atom.openness},
+                        {"conscientiousness", atom.conscientiousness},
+                        {"extraversion", atom.extraversion},
+                        {"agreeableness", atom.agreeableness},
+                        {"neuroticism", atom.neuroticism},
+                        {"domain_levels", std::move(levels)}
+                    });
                 }
-                action_j[res] = arr;
-            }
-            j["action_history"] = action_j;
-            // Gear states are computed from residents, not persisted separately
-            j["gear_states"] = nlohmann::json::array();
-            std::string tmp = persist_path_ + ".tmp";
-            std::ofstream out(tmp);
-            if (!out.is_open()) return false;
-            out << j.dump(2);
-            out.close();
-            rename(tmp.c_str(), persist_path_.c_str());
-            fprintf(stderr, "[PERSIST] Saved %zu residents, %zu episodic to %s\n",
-                    residents_.size(), episodic_memory_.size(), persist_path_.c_str());
-            return true;
-        } catch (...) { return false; }
-    }
-    
-    bool load_persisted() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        try {
-            std::ifstream in(persist_path_);
-            if (!in.is_open()) { fprintf(stderr, "[PERSIST] No file at %s\n", persist_path_.c_str()); return false; }
-            nlohmann::json j; in >> j; in.close();
-            if (j.contains("atoms")) {
-                for (auto& a : j["atoms"]) {
-                    std::string name = a.value("name", "");
-                    if (name.empty()) continue;
-                    residents_[name].name = name;
-                    // type not stored in ResidentAtom
-                    residents_[name].sti = a.value("sti", 100.0);
-                    residents_[name].lti = a.value("lti", 0.0);
-                    residents_[name].gear_train = a.value("gear_train", "");
+                j["episodic_memory"] = nlohmann::json::object();
+                for (const auto& [resident, entries] : episodic_memory_) {
+                    auto& arr = j["episodic_memory"][resident] = nlohmann::json::array();
+                    for (const auto& entry : entries)
+                        arr.push_back({{"type", entry.type}, {"content", entry.content},
+                                       {"ts", entry.timestamp}});
                 }
-            }
-            if (j.contains("episodic_memory")) {
-                for (auto& [res, entries] : j["episodic_memory"].items()) {
-                    for (auto& e : entries)
-                        episodic_memory_[res].push_back({e.value("type",""), e.value("content",""), e.value("ts",(uint64_t)0)});
+                j["conversation_history"] = nlohmann::json::object();
+                for (const auto& [resident, entries] : conversation_history_) {
+                    auto& arr = j["conversation_history"][resident] = nlohmann::json::array();
+                    for (const auto& entry : entries)
+                        arr.push_back({{"stimulus", entry.stimulus}, {"response", entry.response},
+                                       {"ts", entry.timestamp}});
                 }
-            }
-            if (j.contains("conversation_history")) {
-                for (auto& [res, entries] : j["conversation_history"].items()) {
-                    for (auto& e : entries)
-                        conversation_history_[res].push_back({e.value("stimulus",""), e.value("response",""), e.value("ts",(uint64_t)0)});
-                }
-            }
-            if (j.contains("action_history")) {
-                for (auto& [res, entries] : j["action_history"].items()) {
-                    for (auto& a : entries) {
-                        action_history_[res].push_back({
-                            a.value("action_type", ""), a.value("result", ""),
-                            a.value("inference_id", 0), a.value("correlation_id", ""),
-                            a.value("ts", (uint64_t)0)
-                        });
+                j["action_history"] = nlohmann::json::object();
+                for (const auto& [resident, entries] : action_history_) {
+                    auto& arr = j["action_history"][resident] = nlohmann::json::array();
+                    for (const auto& entry : entries) {
+                        arr.push_back({{"action_type", entry.action_type},
+                                       {"result", entry.result},
+                                       {"inference_id", entry.inference_id},
+                                       {"correlation_id", entry.correlation_id},
+                                       {"success", entry.success},
+                                       {"effect_evidence", entry.effect_evidence},
+                                       {"ts", entry.timestamp}});
                     }
                 }
             }
-            if (j.contains("gear_states")) {
-                // gear_states_ computed at runtime
-                for (auto& g : j["gear_states"]) {
-                    GearState gs; gs.train_name = g.value("train",""); gs.rpm = g.value("rpm",1.0);
-                    gs.members = g.value("members", std::vector<std::string>{});
-                    // gear_states_ computed at runtime
+
+            if (path_string.empty()) return false;
+            const std::string payload = j.dump(2);
+            if (payload.size() > config_.max_persist_bytes) return false;
+            fs::path path(path_string);
+            if (path.has_parent_path()) {
+                std::error_code ec;
+                fs::create_directories(path.parent_path(), ec);
+                if (ec) return false;
+            }
+            fs::path tmp = path;
+            tmp += ".tmp";
+            {
+                std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
+                if (!out) return false;
+                out.write(payload.data(), static_cast<std::streamsize>(payload.size()));
+                out.flush();
+                if (!out.good()) {
+                    out.close();
+                    std::error_code ignored;
+                    fs::remove(tmp, ignored);
+                    return false;
                 }
             }
-            fprintf(stderr, "[PERSIST] Loaded %zu residents, %zu episodic from %s\n",
-                    residents_.size(), episodic_memory_.size(), persist_path_.c_str());
+#ifdef _WIN32
+            // C++17 filesystem rename does not replace an existing Windows file.
+            // The daemon serializes persistence through persist_io_mutex_; remove
+            // is the narrow portable fallback on that platform.
+            {
+                std::error_code ignored;
+                fs::remove(path, ignored);
+            }
+#endif
+            std::error_code ec;
+            fs::rename(tmp, path, ec);
+            if (ec) {
+                std::error_code ignored;
+                fs::remove(tmp, ignored);
+                return false;
+            }
+            if (!fs::is_regular_file(path, ec) || ec ||
+                fs::file_size(path, ec) != payload.size() || ec) return false;
             return true;
-        } catch (const std::exception& e) { fprintf(stderr, "[PERSIST] Error: %s\n", e.what()); return false; }
+        } catch (const std::exception& e) {
+            fprintf(stderr, "[PERSIST] Save error: %s\n", e.what());
+            return false;
+        }
+    }
+
+    // Parse and validate into independent staging containers. No live state is
+    // touched until the entire payload has passed format, type, size, and value
+    // checks; commit replaces histories so repeated loads are idempotent.
+    bool load_persisted() {
+        namespace fs = std::filesystem;
+        std::lock_guard<std::mutex> io_lock(persist_io_mutex_);
+        try {
+            std::string path_string;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                path_string = persist_path_;
+            }
+            std::error_code ec;
+            const auto bytes = fs::file_size(path_string, ec);
+            if (ec || bytes == 0 || bytes > config_.max_persist_bytes) return false;
+            std::ifstream in(path_string, std::ios::binary);
+            if (!in) return false;
+            std::string payload(static_cast<size_t>(bytes), '\0');
+            in.read(payload.data(), static_cast<std::streamsize>(payload.size()));
+            if (!in || in.peek() != std::ifstream::traits_type::eof()) return false;
+            const nlohmann::json j = nlohmann::json::parse(payload);
+            if (!j.is_object() || j.value("format", std::string{}) != kPersistFormat ||
+                j.value("version", 0) != kPersistVersion) return false;
+            if (!j.contains("residents") || !j["residents"].is_array() ||
+                j["residents"].size() > config_.max_atoms) return false;
+
+            std::map<std::string, ResidentAtom> staged_residents;
+            std::unordered_map<std::string, std::deque<EpisodicEntry>> staged_episodic;
+            std::unordered_map<std::string, std::deque<ConversationEntry>> staged_conversations;
+            std::unordered_map<std::string, std::deque<ActionEntry>> staged_actions;
+            const auto bounded_string = [](const nlohmann::json& object,
+                                           const char* key, size_t max_size,
+                                           bool allow_empty = true) {
+                if (!object.contains(key) || !object[key].is_string())
+                    throw std::runtime_error(std::string("invalid string field: ") + key);
+                std::string value = object[key].get<std::string>();
+                if (value.size() > max_size || (!allow_empty && value.empty()))
+                    throw std::runtime_error(std::string("out-of-range string field: ") + key);
+                return value;
+            };
+            const auto finite_number = [](const nlohmann::json& object,
+                                          const char* key, double fallback) {
+                if (!object.contains(key)) return fallback;
+                if (!object[key].is_number())
+                    throw std::runtime_error(std::string("invalid number field: ") + key);
+                const double value = object[key].get<double>();
+                if (!std::isfinite(value))
+                    throw std::runtime_error(std::string("non-finite number field: ") + key);
+                return value;
+            };
+
+            for (const auto& item : j["residents"]) {
+                if (!item.is_object()) return false;
+                ResidentAtom resident{};
+                resident.name = bounded_string(item, "name", kMaxResidentName, false);
+                resident.sti = finite_number(item, "sti", 100.0);
+                resident.lti = finite_number(item, "lti", 50.0);
+                resident.gear_train = bounded_string(item, "gear_train", kMaxShortString);
+                resident.gear_rpm_multiplier = finite_number(item, "gear_rpm_multiplier", 1.0);
+                resident.openness = finite_number(item, "openness", 0.5);
+                resident.conscientiousness = finite_number(item, "conscientiousness", 0.5);
+                resident.extraversion = finite_number(item, "extraversion", 0.5);
+                resident.agreeableness = finite_number(item, "agreeableness", 0.5);
+                resident.neuroticism = finite_number(item, "neuroticism", 0.5);
+                resident.concept_handle = oc::UNDEFINED_HANDLE;
+                if (item.contains("domain_levels")) {
+                    if (!item["domain_levels"].is_object() ||
+                        item["domain_levels"].size() > kMaxDomainLevels) return false;
+                    for (const auto& [domain, raw_level] : item["domain_levels"].items()) {
+                        if (domain.empty() || domain.size() > kMaxShortString ||
+                            !raw_level.is_number_integer()) return false;
+                        const int level = raw_level.get<int>();
+                        if (level < 0 || level > 3) return false;
+                        resident.domain_levels[domain] =
+                            static_cast<ResidentAtom::KSMLevel>(level);
+                    }
+                }
+                if (!staged_residents.emplace(resident.name, std::move(resident)).second)
+                    return false;
+            }
+
+            const auto validate_history_object = [&](const char* key) -> const nlohmann::json& {
+                static const nlohmann::json empty = nlohmann::json::object();
+                if (!j.contains(key)) return empty;
+                if (!j[key].is_object() || j[key].size() > config_.max_atoms)
+                    throw std::runtime_error(std::string("invalid history object: ") + key);
+                return j[key];
+            };
+            for (const auto& [resident, entries] : validate_history_object("episodic_memory").items()) {
+                if (resident.empty() || resident.size() > kMaxResidentName || !entries.is_array()) return false;
+                auto& out = staged_episodic[resident];
+                for (const auto& entry : entries) {
+                    if (!entry.is_object()) return false;
+                    out.push_back({bounded_string(entry, "type", kMaxShortString),
+                                   bounded_string(entry, "content", kMaxContentString),
+                                   entry.value("ts", uint64_t{0})});
+                    while (out.size() > kMaxEpisodicEntries) out.pop_front();
+                }
+            }
+            for (const auto& [resident, entries] : validate_history_object("conversation_history").items()) {
+                if (resident.empty() || resident.size() > kMaxResidentName || !entries.is_array()) return false;
+                auto& out = staged_conversations[resident];
+                for (const auto& entry : entries) {
+                    if (!entry.is_object()) return false;
+                    out.push_back({bounded_string(entry, "stimulus", kMaxContentString),
+                                   bounded_string(entry, "response", kMaxContentString),
+                                   entry.value("ts", uint64_t{0})});
+                    while (out.size() > kMaxConversationEntries) out.pop_front();
+                }
+            }
+            for (const auto& [resident, entries] : validate_history_object("action_history").items()) {
+                if (resident.empty() || resident.size() > kMaxResidentName || !entries.is_array()) return false;
+                auto& out = staged_actions[resident];
+                for (const auto& entry : entries) {
+                    if (!entry.is_object()) return false;
+                    out.push_back({bounded_string(entry, "action_type", kMaxShortString),
+                                   bounded_string(entry, "result", kMaxContentString),
+                                   entry.value("inference_id", 0),
+                                   bounded_string(entry, "correlation_id", kMaxShortString),
+                                   entry.value("success", true),
+                                   bounded_string(entry, "effect_evidence", kMaxContentString),
+                                   entry.value("ts", uint64_t{0})});
+                    while (out.size() > kMaxActionEntries) out.pop_front();
+                }
+            }
+
+            const size_t staged_cycle = j.value("cycle_count", size_t{0});
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                for (auto& [name, resident] : staged_residents) {
+                    resident.concept_handle =
+                        as_.add_node(oc::types::CONCEPT_NODE, name);
+                }
+                residents_.swap(staged_residents);
+                episodic_memory_.swap(staged_episodic);
+                conversation_history_.swap(staged_conversations);
+                action_history_.swap(staged_actions);
+                cycle_count_ = staged_cycle;
+            }
+            return true;
+        } catch (const std::exception& e) {
+            fprintf(stderr, "[PERSIST] Load rejected: %s\n", e.what());
+            return false;
+        }
     }
 
 };
@@ -939,7 +1148,16 @@ public:
     using InferenceCallback = std::function<void(const std::string&, const std::string&, const std::string&)>;
 
     explicit AphroditeBridge(const Config& config = Config())
-        : config_(config), active_inferences_(0) {}
+        : config_(config), active_inferences_(0), accepting_(true), stopping_(false) {
+        const int worker_count = std::max(1, config_.max_concurrent_inferences);
+        workers_.reserve(static_cast<size_t>(worker_count));
+        for (int i = 0; i < worker_count; ++i)
+            workers_.emplace_back([this]() { worker_loop(); });
+    }
+
+    ~AphroditeBridge() { shutdown(); }
+    AphroditeBridge(const AphroditeBridge&) = delete;
+    AphroditeBridge& operator=(const AphroditeBridge&) = delete;
 
     static AphroditeRequest build_request(
         const VillageAtomSpace& vas, const std::string& resident_name,
@@ -950,10 +1168,9 @@ public:
         req.user_prompt = stimulus;
         req.temperature = endocrine_temperature;
         req.max_tokens = 512;
-        auto& residents = vas.residents();
-        auto it = residents.find(resident_name);
-        if (it == residents.end()) return req;
-        const auto& r = it->second;
+        auto resident = vas.resident_snapshot(resident_name);
+        if (!resident) return req;
+        const auto& r = *resident;
         req.priority = static_cast<int>(r.sti);
         req.min_p = 0.05 + (r.conscientiousness * 0.15);
         req.lora_adapter = "loras/" + resident_name;
@@ -965,43 +1182,92 @@ public:
                      const std::string& stimulus, InferenceCallback callback,
                      double endocrine_temperature = 0.7,
                      const std::string& correlation_id = "") {
-        if (active_inferences_.load() >= config_.max_concurrent_inferences) return false;
-        auto now = std::chrono::steady_clock::now();
-        {
-            std::lock_guard<std::mutex> lock(cooldown_mutex_);
-            auto it = last_inference_.find(resident_name);
-            if (it != last_inference_.end()) {
-                auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count();
-                if (elapsed < config_.inference_cooldown_cycles * 52) return false;
+        if (!accepting_.load(std::memory_order_acquire)) return false;
+        const int limit = std::max(1, config_.max_concurrent_inferences);
+        int observed = active_inferences_.load(std::memory_order_relaxed);
+        do {
+            if (observed >= limit) return false;
+        } while (!active_inferences_.compare_exchange_weak(
+            observed, observed + 1, std::memory_order_acq_rel,
+            std::memory_order_relaxed));
+
+        try {
+            const auto now = std::chrono::steady_clock::now();
+            {
+                std::lock_guard<std::mutex> lock(cooldown_mutex_);
+                auto it = last_inference_.find(resident_name);
+                if (it != last_inference_.end()) {
+                    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        now - it->second).count();
+                    if (elapsed < config_.inference_cooldown_cycles * 52) {
+                        finish_task();
+                        return false;
+                    }
+                }
+                last_inference_[resident_name] = now;
             }
-            last_inference_[resident_name] = now;
+            auto req = build_request(vas, resident_name, stimulus,
+                                     endocrine_temperature);
+            req.correlation_id = correlation_id;
+            req.system_prompt += vas.get_episodic_context(resident_name);
+            req.system_prompt += vas.get_conversation_context(resident_name);
+            if (req.resident.empty()) {
+                finish_task();
+                return false;
+            }
+            {
+                std::lock_guard<std::mutex> lock(work_mutex_);
+                if (stopping_) {
+                    finish_task();
+                    return false;
+                }
+                tasks_.push({std::move(req), std::move(callback)});
+            }
+            work_cv_.notify_one();
+            return true;
+        } catch (...) {
+            finish_task();
+            return false;
         }
-        auto req = build_request(vas, resident_name, stimulus, endocrine_temperature);
-        req.correlation_id = correlation_id;
-        // Cycle 007: Append episodic memory and conversation context
-        req.system_prompt += vas.get_episodic_context(resident_name);
-        req.system_prompt += vas.get_conversation_context(resident_name);
-        if (req.resident.empty()) return false;
-        active_inferences_++;
-        std::thread([this, req, callback]() {
-            std::string thought = perform_inference(req);
-            active_inferences_--;
-            if (!thought.empty() && callback) callback(req.resident, thought, req.correlation_id);
-            // Cycle 008: record the stimulus/response pair so future prompts carry
-            // conversation history (previously add_conversation was never invoked).
-            if (!thought.empty() && conversation_recorder_) {
-                conversation_recorder_(req.resident, req.user_prompt, thought);
-            }
-        }).detach();
-        return true;
     }
 
     // Cycle 008: optional hook invoked after each successful inference with
     // (resident, stimulus, response) — wired by elizad to VillageAtomSpace::add_conversation.
     using ConversationRecorder =
         std::function<void(const std::string&, const std::string&, const std::string&)>;
+    using InferenceFunction = std::function<std::string(const AphroditeRequest&)>;
+
     void set_conversation_recorder(ConversationRecorder rec) {
+        std::lock_guard<std::mutex> lock(recorder_mutex_);
         conversation_recorder_ = std::move(rec);
+    }
+
+    // Deterministic transport injection for tests and offline deployments.
+    void set_inference_function(InferenceFunction fn) {
+        std::lock_guard<std::mutex> lock(inference_function_mutex_);
+        inference_function_ = std::move(fn);
+    }
+
+    bool wait_for_idle(std::chrono::milliseconds timeout) {
+        std::unique_lock<std::mutex> lock(idle_mutex_);
+        return idle_cv_.wait_for(lock, timeout, [this]() {
+            return active_inferences_.load(std::memory_order_acquire) == 0;
+        });
+    }
+
+    void shutdown() {
+        bool expected = true;
+        if (!accepting_.compare_exchange_strong(expected, false,
+                                                std::memory_order_acq_rel)) return;
+        {
+            std::lock_guard<std::mutex> lock(work_mutex_);
+            stopping_ = true;
+        }
+        work_cv_.notify_all();
+        for (auto& worker : workers_) {
+            if (worker.joinable()) worker.join();
+        }
+        workers_.clear();
     }
 
     bool should_infer(const std::string& resident_name, double sti) const {
@@ -1023,7 +1289,8 @@ private:
         return size * nmemb;
     }
 
-    std::string perform_inference(const AphroditeRequest& req) {
+    static std::string perform_http_inference(const AphroditeRequest& req,
+                                                const Config& config) {
         nlohmann::json messages = nlohmann::json::array();
         messages.push_back({{"role", "system"}, {"content", req.system_prompt}});
         messages.push_back({{"role", "user"}, {"content", req.user_prompt}});
@@ -1031,18 +1298,18 @@ private:
         stop_tokens.push_back("<|im_end|>");
         stop_tokens.push_back("<|im_start|>");
         nlohmann::json payload = {
-            {"model", config_.model}, {"messages", messages},
+            {"model", config.model}, {"messages", messages},
             {"temperature", req.temperature}, {"min_p", req.min_p},
             {"max_tokens", req.max_tokens}, {"stop", stop_tokens}
         };
         CURL* curl = curl_easy_init();
         if (!curl) return "";
         std::string response, body = payload.dump();
-        std::string auth_header = "Authorization: Bearer " + config_.api_key;
+        std::string auth_header = "Authorization: Bearer " + config.api_key;
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: application/json");
         headers = curl_slist_append(headers, auth_header.c_str());
-        curl_easy_setopt(curl, CURLOPT_URL, config_.url.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, config.url.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(body.size()));
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -1140,10 +1407,79 @@ private:
         return prompt;
     }
 
+    struct InferenceTask {
+        AphroditeRequest request;
+        InferenceCallback callback;
+    };
+
+    void finish_task() {
+        active_inferences_.fetch_sub(1, std::memory_order_acq_rel);
+        idle_cv_.notify_all();
+    }
+
+    void worker_loop() {
+        for (;;) {
+            InferenceTask task;
+            {
+                std::unique_lock<std::mutex> lock(work_mutex_);
+                work_cv_.wait(lock, [this]() { return stopping_ || !tasks_.empty(); });
+                if (stopping_ && tasks_.empty()) return;
+                task = std::move(tasks_.front());
+                tasks_.pop();
+            }
+
+            try {
+                InferenceFunction injected;
+                {
+                    std::lock_guard<std::mutex> lock(inference_function_mutex_);
+                    injected = inference_function_;
+                }
+                std::string thought = injected
+                    ? injected(task.request)
+                    : perform_http_inference(task.request, config_);
+                if (!thought.empty()) {
+                    if (task.callback) {
+                        task.callback(task.request.resident, thought,
+                                      task.request.correlation_id);
+                    }
+                    ConversationRecorder recorder;
+                    {
+                        std::lock_guard<std::mutex> lock(recorder_mutex_);
+                        recorder = conversation_recorder_;
+                    }
+                    // External code is invoked only after all bridge locks have
+                    // been released, allowing recorder reentrancy/replacement.
+                    if (recorder) {
+                        recorder(task.request.resident, task.request.user_prompt,
+                                 thought);
+                    }
+                }
+            } catch (const std::exception& e) {
+                fprintf(stderr, "[INFER] Worker callback error: %s\n", e.what());
+            } catch (...) {
+                fprintf(stderr, "[INFER] Worker callback error: unknown\n");
+            }
+            finish_task();
+        }
+    }
+
     Config config_;
     std::atomic<int> active_inferences_;
+    std::atomic<bool> accepting_;
     mutable std::mutex cooldown_mutex_;
     std::map<std::string, std::chrono::steady_clock::time_point> last_inference_;
-    ConversationRecorder conversation_recorder_;  // Cycle 008
+
+    std::mutex work_mutex_;
+    std::condition_variable work_cv_;
+    std::queue<InferenceTask> tasks_;
+    bool stopping_;
+    std::vector<std::thread> workers_;
+
+    mutable std::mutex recorder_mutex_;
+    ConversationRecorder conversation_recorder_;
+    mutable std::mutex inference_function_mutex_;
+    InferenceFunction inference_function_;
+    std::mutex idle_mutex_;
+    std::condition_variable idle_cv_;
 };
 }} // namespace village::atomspace

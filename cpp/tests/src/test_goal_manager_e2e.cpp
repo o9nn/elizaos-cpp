@@ -188,9 +188,10 @@ TEST_F(GoalManagerTest, GetActiveGoals) {
 
 TEST_F(GoalManagerTest, GetOverdueGoals) {
     auto goal = manager_->createGoal("Overdue", "Test");
-    // Set deadline in the past
-    goal->setDeadline(std::chrono::system_clock::now() - std::chrono::hours(1));
+    // A valid deadline must follow creation; let it elapse before querying.
+    goal->setDeadline(std::chrono::system_clock::now() + std::chrono::milliseconds(20));
     manager_->activateGoal(goal->getId());
+    std::this_thread::sleep_for(std::chrono::milliseconds(40));
     auto overdue = manager_->getOverdueGoals();
     EXPECT_GE(overdue.size(), 1u);
 }

@@ -1,11 +1,13 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include <unordered_map>
-#include <vector>
+#include <chrono>
+#include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace elizaos {
 
@@ -178,6 +180,8 @@ private:
  */
 class Website {
 public:
+    using DevelopmentServerErrorCallback = std::function<void(const std::string&)>;
+
     Website(const WebsiteConfig& config = WebsiteConfig{});
     ~Website();
     
@@ -187,7 +191,23 @@ public:
     
     // Site generation
     bool generateSite();
+    /**
+     * Starts an asynchronous, loopback-only HTTP server rooted at output_dir.
+     * Port 0 requests an operating-system-selected port. The selected port is
+     * available through getDevelopmentServerPort() after a successful start.
+     */
+    bool startDevelopmentServer(int port = 0);
+    // Legacy spelling retained for source compatibility.
     bool serveDevelopmentSite(int port = 8080);
+    void stopDevelopmentServer() noexcept;
+    bool isDevelopmentServerRunning() const noexcept;
+    std::uint16_t getDevelopmentServerPort() const noexcept;
+    std::filesystem::path getDevelopmentServerDocumentRoot() const;
+    std::string getLastDevelopmentServerError() const;
+    void setDevelopmentServerErrorCallback(DevelopmentServerErrorCallback callback);
+
+    // Filesystem watching has no production adapter in this module. Enabling
+    // it fails truthfully; disabling it remains an idempotent success.
     bool watchForChanges(bool enable = true);
     
     // Content management
@@ -209,6 +229,9 @@ private:
     std::shared_ptr<StaticSiteGenerator> generator_;
     bool initialized_ = false;
     bool watching_ = false;
+
+    struct DevelopmentServerState;
+    std::shared_ptr<DevelopmentServerState> development_server_;
     
     bool setupDirectories();
     bool loadDefaultTemplates();

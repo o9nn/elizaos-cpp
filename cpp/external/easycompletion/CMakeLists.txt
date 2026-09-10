@@ -12,23 +12,13 @@ target_link_libraries(elizaos-easycompletion
     elizaos-core
 )
 
-# Try to link libcurl if available (for HTTP requests)
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(CURL QUIET libcurl)
-endif()
-
-if(NOT CURL_FOUND)
+# Link libcurl through its configuration-aware imported target when available.
+if(NOT TARGET CURL::libcurl)
     find_package(CURL QUIET)
 endif()
 
-if(CURL_FOUND)
-    if(TARGET CURL::libcurl)
-        target_link_libraries(elizaos-easycompletion CURL::libcurl)
-    else()
-        target_link_libraries(elizaos-easycompletion ${CURL_LIBRARIES})
-        target_include_directories(elizaos-easycompletion PRIVATE ${CURL_INCLUDE_DIRS})
-    endif()
+if(TARGET CURL::libcurl)
+    target_link_libraries(elizaos-easycompletion CURL::libcurl)
     target_compile_definitions(elizaos-easycompletion PRIVATE HAVE_CURL)
 endif()
 

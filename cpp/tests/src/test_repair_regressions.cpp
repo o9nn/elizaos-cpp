@@ -39,10 +39,14 @@
 #include <string>
 #include <system_error>
 #include <thread>
+#include <type_traits>
 #include <vector>
 
 using namespace elizaos;
 using namespace std::chrono_literals;
+
+static_assert(!std::is_same_v<MarketDataAdapter, OTCMarketDataAdapter>,
+              "Otaku and OTC market adapters must remain distinct public contracts");
 
 // ============================================================================
 // Repair #1: CircuitBreaker must not self-deadlock when recording results
@@ -560,7 +564,7 @@ TEST(RepairDeterministicDefaults, ExternalBoundaryContractsStartFromSafeState) {
     EXPECT_EQ(system.averageResponseTime, std::chrono::milliseconds{0});
 
     TransactionReceipt receipt;
-    EXPECT_EQ(receipt.status, TxStatus::PENDING);
+    EXPECT_EQ(receipt.status, TxStatus::FAILED);
     EXPECT_EQ(receipt.chainId, ChainId::ETHEREUM_MAINNET);
     EXPECT_DOUBLE_EQ(receipt.gasUsed, 0.0);
     EXPECT_DOUBLE_EQ(receipt.effectiveGasPrice, 0.0);

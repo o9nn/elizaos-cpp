@@ -554,7 +554,7 @@ TEST_F(AgentBrowserTest, SubmitPostFormSendsScopedEncodedBodyAndUpdatesPage) {
 }
 
 TEST_F(AgentBrowserTest, FormControlValidationRejectsWrongControlsAndMissingOptions) {
-    LocalHttpServer server({
+    LocalHttpServer server(std::unordered_map<std::string, std::string>{
         {"/controls.html", R"HTML(
             <html>
               <head><title>Control Validation</title></head>

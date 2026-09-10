@@ -7,6 +7,11 @@
 #include <regex>
 #include <iomanip>
 #include <cctype>
+#include <condition_variable>
+#include <limits>
+#include <system_error>
+#include <thread>
+#include <utility>
 
 namespace elizaos {
 
@@ -39,12 +44,13 @@ std::string jsonUnescape(const std::string& input) {
     std::string out;
     out.reserve(input.size());
     for (size_t i = 0; i < input.size(); ++i) {
-        if (input[i] != '\\' || i + 1 >= input.size()) {
+        if (input[i] != '\\') {
             out.push_back(input[i]);
             continue;
         }
-        const char esc = input[++i];
-        switch (esc) {
+        if (++i >= input.size()) throw std::runtime_error("Incomplete JSON escape");
+        const char escaped = input[i];
+        switch (escaped) {
             case '"': out.push_back('"'); break;
             case '\\': out.push_back('\\'); break;
             case '/': out.push_back('/'); break;
@@ -54,118 +60,178 @@ std::string jsonUnescape(const std::string& input) {
             case 'r': out.push_back('\r'); break;
             case 't': out.push_back('\t'); break;
             case 'u':
-                // Keep unicode escapes byte-stable in this lightweight parser; callers
-                // still receive deterministic content instead of a synthetic character.
+                if (i + 4 >= input.size()) throw std::runtime_error("Incomplete unicode escape");
                 out.append("\\u");
-                for (int n = 0; n < 4 && i + 1 < input.size(); ++n) out.push_back(input[++i]);
+                for (int digit = 0; digit < 4; ++digit) {
+                    const char hexadecimal = input[++i];
+                    if (!std::isxdigit(static_cast<unsigned char>(hexadecimal))) {
+                        throw std::runtime_error("Invalid unicode escape");
+                    }
+                    out.push_back(hexadecimal);
+                }
                 break;
-            default: out.push_back(esc); break;
+            default:
+                throw std::runtime_error("Invalid JSON escape");
         }
     }
     return out;
 }
 
-void skipWhitespace(const std::string& s, size_t& pos) {
-    while (pos < s.size() && std::isspace(static_cast<unsigned char>(s[pos]))) ++pos;
+void skipWhitespace(const std::string& input, size_t& position) {
+    while (position < input.size() &&
+           std::isspace(static_cast<unsigned char>(input[position]))) {
+        ++position;
+    }
 }
 
-std::string parseJsonStringLiteral(const std::string& s, size_t& pos) {
-    if (pos >= s.size() || s[pos] != '"') {
+std::string parseJsonStringLiteral(const std::string& input, size_t& position) {
+    if (position >= input.size() || input[position] != '"') {
         throw std::runtime_error("Expected JSON string literal");
     }
-    ++pos;
+    ++position;
     std::string raw;
-    while (pos < s.size()) {
-        char c = s[pos++];
-        if (c == '"') return jsonUnescape(raw);
-        if (c == '\\' && pos < s.size()) {
+    while (position < input.size()) {
+        const unsigned char character = static_cast<unsigned char>(input[position++]);
+        if (character == '"') return jsonUnescape(raw);
+        if (character < 0x20) throw std::runtime_error("Unescaped control character in JSON string");
+        if (character == '\\') {
+            if (position >= input.size()) throw std::runtime_error("Incomplete JSON escape");
             raw.push_back('\\');
-            raw.push_back(s[pos++]);
+            raw.push_back(input[position++]);
         } else {
-            raw.push_back(c);
+            raw.push_back(static_cast<char>(character));
         }
     }
     throw std::runtime_error("Unterminated JSON string literal");
 }
 
-std::string parseJsonScalarAsString(const std::string& s, size_t& pos) {
-    skipWhitespace(s, pos);
-    if (pos < s.size() && s[pos] == '"') return parseJsonStringLiteral(s, pos);
-    const size_t start = pos;
-    while (pos < s.size() && s[pos] != ',' && s[pos] != '}') ++pos;
-    size_t end = pos;
-    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1]))) --end;
-    return s.substr(start, end - start);
+bool isJsonNumber(const std::string& value) {
+    static const std::regex numberPattern(
+        R"(^-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?$)");
+    return std::regex_match(value, numberPattern);
+}
+
+void consumeJsonValue(const std::string& input, size_t& position);
+
+void consumeJsonArray(const std::string& input, size_t& position) {
+    if (position >= input.size() || input[position] != '[') {
+        throw std::runtime_error("Expected JSON array");
+    }
+    ++position;
+    skipWhitespace(input, position);
+    if (position < input.size() && input[position] == ']') {
+        ++position;
+        return;
+    }
+    while (true) {
+        consumeJsonValue(input, position);
+        skipWhitespace(input, position);
+        if (position >= input.size()) throw std::runtime_error("Unterminated JSON array");
+        if (input[position] == ']') {
+            ++position;
+            return;
+        }
+        if (input[position] != ',') throw std::runtime_error("Expected ',' or ']' in JSON array");
+        ++position;
+        skipWhitespace(input, position);
+        if (position >= input.size() || input[position] == ']') {
+            throw std::runtime_error("Trailing comma in JSON array");
+        }
+    }
+}
+
+JsonValue parseJsonObject(const std::string& input, size_t& position) {
+    if (position >= input.size() || input[position] != '{') {
+        throw std::runtime_error("Expected JSON object");
+    }
+    ++position;
+    JsonValue json;
+    skipWhitespace(input, position);
+    if (position < input.size() && input[position] == '}') {
+        ++position;
+        return json;
+    }
+
+    while (true) {
+        skipWhitespace(input, position);
+        const std::string key = parseJsonStringLiteral(input, position);
+        if (json.find(key) != json.end()) throw std::runtime_error("Duplicate JSON object key");
+        skipWhitespace(input, position);
+        if (position >= input.size() || input[position] != ':') {
+            throw std::runtime_error("Expected ':' after JSON object key");
+        }
+        ++position;
+        skipWhitespace(input, position);
+        if (position >= input.size()) throw std::runtime_error("Missing JSON value");
+
+        if (input[position] == '{') {
+            json[key] = parseJsonObject(input, position);
+        } else if (input[position] == '[') {
+            const size_t arrayStart = position;
+            consumeJsonArray(input, position);
+            json[key] = input.substr(arrayStart, position - arrayStart);
+        } else if (input[position] == '"') {
+            json[key] = parseJsonStringLiteral(input, position);
+        } else {
+            const size_t scalarStart = position;
+            while (position < input.size() && input[position] != ',' &&
+                   input[position] != '}' &&
+                   !std::isspace(static_cast<unsigned char>(input[position]))) {
+                ++position;
+            }
+            const std::string scalar = input.substr(scalarStart, position - scalarStart);
+            if (scalar != "true" && scalar != "false" && scalar != "null" &&
+                !isJsonNumber(scalar)) {
+                throw std::runtime_error("Invalid JSON scalar");
+            }
+            json[key] = scalar;
+        }
+
+        skipWhitespace(input, position);
+        if (position >= input.size()) throw std::runtime_error("Unterminated JSON object");
+        if (input[position] == '}') {
+            ++position;
+            return json;
+        }
+        if (input[position] != ',') throw std::runtime_error("Expected ',' or '}' in JSON object");
+        ++position;
+        skipWhitespace(input, position);
+        if (position >= input.size() || input[position] == '}') {
+            throw std::runtime_error("Trailing comma in JSON object");
+        }
+    }
+}
+
+void consumeJsonValue(const std::string& input, size_t& position) {
+    skipWhitespace(input, position);
+    if (position >= input.size()) throw std::runtime_error("Missing JSON value");
+    if (input[position] == '{') {
+        static_cast<void>(parseJsonObject(input, position));
+    } else if (input[position] == '[') {
+        consumeJsonArray(input, position);
+    } else if (input[position] == '"') {
+        static_cast<void>(parseJsonStringLiteral(input, position));
+    } else {
+        const size_t scalarStart = position;
+        while (position < input.size() && input[position] != ',' &&
+               input[position] != ']' && input[position] != '}' &&
+               !std::isspace(static_cast<unsigned char>(input[position]))) {
+            ++position;
+        }
+        const std::string scalar = input.substr(scalarStart, position - scalarStart);
+        if (scalar != "true" && scalar != "false" && scalar != "null" &&
+            !isJsonNumber(scalar)) {
+            throw std::runtime_error("Invalid JSON scalar");
+        }
+    }
 }
 
 JsonValue parseJsonObjectFlat(const std::string& jsonString) {
-    size_t pos = 0;
-    skipWhitespace(jsonString, pos);
-    if (pos >= jsonString.size() || jsonString[pos] != '{') {
-        throw std::runtime_error("Expected JSON object");
-    }
-    ++pos;
-    JsonValue json;
-    while (true) {
-        skipWhitespace(jsonString, pos);
-        if (pos < jsonString.size() && jsonString[pos] == '}') {
-            ++pos;
-            break;
-        }
-        std::string key = parseJsonStringLiteral(jsonString, pos);
-        skipWhitespace(jsonString, pos);
-        if (pos >= jsonString.size() || jsonString[pos] != ':') {
-            throw std::runtime_error("Expected ':' after JSON object key");
-        }
-        ++pos;
-        skipWhitespace(jsonString, pos);
-        if (pos < jsonString.size() && jsonString[pos] == '{') {
-            const size_t objectStart = pos;
-            int depth = 0;
-            bool inString = false;
-            bool escaped = false;
-            do {
-                char c = jsonString[pos++];
-                if (escaped) { escaped = false; continue; }
-                if (c == '\\') { escaped = true; continue; }
-                if (c == '"') { inString = !inString; continue; }
-                if (!inString && c == '{') ++depth;
-                if (!inString && c == '}') --depth;
-            } while (pos < jsonString.size() && depth > 0);
-            json[key] = parseJsonObjectFlat(jsonString.substr(objectStart, pos - objectStart));
-        } else if (pos < jsonString.size() && jsonString[pos] == '[') {
-            // Preserve array values as their complete JSON slice. This lightweight
-            // loader only needs scalar/object fields today, but it must still
-            // consume arrays correctly so valid character files with tags,
-            // goals, traits, or catchphrases do not corrupt subsequent parsing.
-            const size_t arrayStart = pos;
-            int depth = 0;
-            bool inString = false;
-            bool escaped = false;
-            do {
-                char c = jsonString[pos++];
-                if (escaped) { escaped = false; continue; }
-                if (c == '\\') { escaped = true; continue; }
-                if (c == '"') { inString = !inString; continue; }
-                if (!inString && c == '[') ++depth;
-                if (!inString && c == ']') --depth;
-            } while (pos < jsonString.size() && depth > 0);
-            json[key] = jsonString.substr(arrayStart, pos - arrayStart);
-        } else {
-            json[key] = parseJsonScalarAsString(jsonString, pos);
-        }
-        skipWhitespace(jsonString, pos);
-        if (pos < jsonString.size() && jsonString[pos] == ',') {
-            ++pos;
-            continue;
-        }
-        if (pos < jsonString.size() && jsonString[pos] == '}') {
-            ++pos;
-            break;
-        }
-        if (pos >= jsonString.size()) break;
-        throw std::runtime_error("Expected ',' or '}' in JSON object");
-    }
+    size_t position = 0;
+    skipWhitespace(jsonString, position);
+    JsonValue json = parseJsonObject(jsonString, position);
+    skipWhitespace(jsonString, position);
+    if (position != jsonString.size()) throw std::runtime_error("Trailing content after JSON object");
     return json;
 }
 
@@ -248,22 +314,33 @@ std::optional<CharacterProfile> CharacterFileLoader::loadFromFile(const std::str
         std::string content = readFileContents(filename);
         if (content.empty()) {
             logger_->log("Failed to read file: " + filename, "characterfile", "loader", LogLevel::ERROR);
-            filesError_++;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                ++filesError_;
+            }
             return std::nullopt;
         }
         
         auto result = loadFromJson(content);
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (result) {
+                ++filesLoaded_;
+            } else {
+                ++filesError_;
+            }
+        }
         if (result) {
-            filesLoaded_++;
             logger_->log("Successfully loaded character: " + result->name, "characterfile", "loader", LogLevel::SUCCESS);
-        } else {
-            filesError_++;
         }
         
         return result;
     } catch (const std::exception& e) {
         logger_->log("Exception loading character file: " + std::string(e.what()), "characterfile", "loader", LogLevel::ERROR);
-        filesError_++;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            ++filesError_;
+        }
         return std::nullopt;
     }
 }
@@ -282,7 +359,12 @@ std::optional<CharacterProfile> CharacterFileLoader::loadFromJsonValue(const Jso
     try {
         // Validate the JSON structure
         ValidationResult validation = validateJsonValue(json);
-        if (!validation.isValid && strictValidation_) {
+        bool strictValidation = true;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            strictValidation = strictValidation_;
+        }
+        if (!validation.isValid && strictValidation) {
             logger_->log("Character validation failed: " + validation.getSummary(), "characterfile", "loader", LogLevel::ERROR);
             return std::nullopt;
         }
@@ -304,7 +386,10 @@ bool CharacterFileLoader::saveToFile(const CharacterProfile& character, const st
         
         std::string jsonString = exportToJson(character);
         if (writeFileContents(filename, jsonString)) {
-            filesSaved_++;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                ++filesSaved_;
+            }
             logger_->log("Successfully saved character: " + character.name, "characterfile", "loader", LogLevel::SUCCESS);
             return true;
         } else {
@@ -381,22 +466,22 @@ ValidationResult CharacterFileLoader::validateJson(const std::string& jsonString
 
 ValidationResult CharacterFileLoader::validateJsonValue(const JsonValue& json) {
     ValidationResult result;
-    
-    // Check required fields
     if (!validateRequiredFields(json)) {
-        result.addError("Required fields missing");
+        result.addError("Required fields missing or empty");
     }
-    
-    // Check field types
     if (!validateFieldTypes(json)) {
         result.addError("Invalid field types");
     }
-    
-    // If no errors, mark as valid
-    if (result.errors.empty()) {
-        result.isValid = true;
+
+    JsonValue schema;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        schema = validationSchema_;
     }
-    
+    if (!schema.empty() && !validateSchema(json, schema)) {
+        result.addError("Custom schema validation failed");
+    }
+    result.isValid = result.errors.empty();
     return result;
 }
 
@@ -409,7 +494,6 @@ bool CharacterFileLoader::isCharacterFile(const std::string& filename) {
     std::string ext = std::filesystem::path(filename).extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     return std::find(extensions.begin(), extensions.end(), ext) != extensions.end();
 }
@@ -455,24 +539,29 @@ std::vector<CharacterProfile> CharacterFileLoader::loadFromDirectory(const std::
 
 JsonValue CharacterFileLoader::getStatistics() const {
     JsonValue stats;
+    std::lock_guard<std::mutex> lock(mutex_);
     stats["filesLoaded"] = std::string(std::to_string(filesLoaded_));
     stats["filesError"] = std::string(std::to_string(filesError_));
     stats["filesSaved"] = std::string(std::to_string(filesSaved_));
     stats["successRate"] = std::string(std::to_string(
-        filesLoaded_ + filesError_ > 0 ? 
-        static_cast<double>(filesLoaded_) / (filesLoaded_ + filesError_) : 0.0
-    ));
-    
+        filesLoaded_ + filesError_ > 0 ?
+        static_cast<double>(filesLoaded_) / (filesLoaded_ + filesError_) : 0.0));
     return stats;
 }
 
 void CharacterFileLoader::setStrictValidation(bool enabled) {
-    strictValidation_ = enabled;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        strictValidation_ = enabled;
+    }
     logger_->log("Strict validation " + std::string(enabled ? "enabled" : "disabled"), "characterfile", "loader", LogLevel::INFO);
 }
 
 void CharacterFileLoader::setValidationSchema(const JsonValue& schema) {
-    validationSchema_ = schema;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        validationSchema_ = schema;
+    }
     logger_->log("Custom validation schema set", "characterfile", "loader", LogLevel::INFO);
 }
 
@@ -511,20 +600,19 @@ bool CharacterFileLoader::writeFileContents(const std::string& filename, const s
 }
 
 bool CharacterFileLoader::validateSchema(const JsonValue& json, const JsonValue& schema) {
-    // Simple schema validation
-    // Use the parameters to avoid warnings
-    return !json.empty() && !schema.empty();
-}
-
-bool CharacterFileLoader::validateRequiredFields(const JsonValue& json) {
-    std::vector<std::string> requiredFields = {"name", "description"};
-    
-    for (const std::string& field : requiredFields) {
-        if (json.find(field) == json.end()) {
+    for (const auto& expected : schema) {
+        const auto actual = json.find(expected.first);
+        if (actual == json.end() || actual->second.type() != expected.second.type()) {
             return false;
         }
     }
-    
+    return true;
+}
+
+bool CharacterFileLoader::validateRequiredFields(const JsonValue& json) {
+    for (const std::string& field : {std::string("name"), std::string("description")}) {
+        if (json.find(field) == json.end()) return false;
+    }
     return true;
 }
 
@@ -777,200 +865,673 @@ std::vector<std::string> CharacterFileLoader::getStringArray(const JsonValue& js
 // CharacterFileManager Implementation
 // =====================================================
 
-CharacterFileManager::CharacterFileManager() {
-    loader_ = std::make_shared<CharacterFileLoader>();
-    logger_ = std::make_shared<AgentLogger>();
-    
-    logger_->log("Character file manager initialized", "characterfile", "manager", LogLevel::INFO);
+namespace detail {
+
+struct CharacterFileManagerState {
+    struct Fingerprint {
+        std::uintmax_t size = 0;
+        std::uint64_t contentHash = 0;
+        std::filesystem::file_time_type lastWrite{};
+
+        bool operator==(const Fingerprint& other) const {
+            return size == other.size && contentHash == other.contentHash &&
+                   lastWrite == other.lastWrite;
+        }
+
+        bool operator!=(const Fingerprint& other) const {
+            return !(*this == other);
+        }
+    };
+
+    struct PendingChange {
+        CharacterFileChangeType type = CharacterFileChangeType::Modified;
+        std::optional<Fingerprint> fingerprint;
+        std::chrono::steady_clock::time_point lastObserved;
+    };
+
+    std::shared_ptr<CharacterFileLoader> loader = std::make_shared<CharacterFileLoader>();
+    std::shared_ptr<CharacterManager> characterManager;
+    std::shared_ptr<AgentLogger> logger = std::make_shared<AgentLogger>();
+    mutable std::mutex mutex;
+    std::condition_variable condition;
+    std::thread worker;
+    bool watching = false;
+    bool stopRequested = false;
+    bool autoImport = true;
+    std::string watchedDirectory;
+    std::chrono::milliseconds interval{100};
+    CharacterFileManager::ChangeCallback callback;
+    std::unordered_map<std::string, Fingerprint> fingerprints;
+    std::unordered_map<std::string, PendingChange> pendingChanges;
+    std::unordered_map<std::string, std::string> importedIds;
+    size_t importedCount = 0;
+    size_t exportedCount = 0;
+    size_t errorCount = 0;
+};
+
+} // namespace detail
+
+namespace {
+
+using CharacterFileFingerprint = detail::CharacterFileManagerState::Fingerprint;
+using CharacterFileSnapshot = std::unordered_map<std::string, CharacterFileFingerprint>;
+
+std::uint64_t hashFileContents(const std::filesystem::path& path, std::error_code& error) {
+    std::ifstream input(path, std::ios::binary);
+    if (!input) {
+        error = std::make_error_code(std::errc::io_error);
+        return 0;
+    }
+
+    std::uint64_t hash = 1469598103934665603ULL;
+    char buffer[4096];
+    while (input) {
+        input.read(buffer, static_cast<std::streamsize>(sizeof(buffer)));
+        const std::streamsize count = input.gcount();
+        for (std::streamsize i = 0; i < count; ++i) {
+            hash ^= static_cast<unsigned char>(buffer[i]);
+            hash *= 1099511628211ULL;
+        }
+    }
+    if (!input.eof()) {
+        error = std::make_error_code(std::errc::io_error);
+        return 0;
+    }
+    error.clear();
+    return hash;
+}
+
+bool hasCharacterExtension(const std::filesystem::path& path) {
+    std::string extension = path.extension().string();
+    std::transform(extension.begin(), extension.end(), extension.begin(),
+        [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
+    return extension == ".json" || extension == ".character" || extension == ".eliza";
+}
+
+CharacterFileSnapshot takeCharacterFileSnapshot(const std::filesystem::path& directory,
+                                                size_t& scanErrors) {
+    CharacterFileSnapshot snapshot;
+    scanErrors = 0;
+    std::error_code iteratorError;
+    std::filesystem::directory_iterator iterator(
+        directory, std::filesystem::directory_options::skip_permission_denied, iteratorError);
+    if (iteratorError) {
+        ++scanErrors;
+        return snapshot;
+    }
+
+    const std::filesystem::directory_iterator end;
+    while (iterator != end) {
+        const auto entry = *iterator;
+        std::error_code statusError;
+        const bool regular = entry.is_regular_file(statusError);
+        if (statusError) {
+            ++scanErrors;
+        } else if (regular && hasCharacterExtension(entry.path())) {
+            std::error_code metadataError;
+            CharacterFileFingerprint fingerprint;
+            fingerprint.size = entry.file_size(metadataError);
+            if (!metadataError) {
+                fingerprint.lastWrite = entry.last_write_time(metadataError);
+            }
+            if (!metadataError) {
+                fingerprint.contentHash = hashFileContents(entry.path(), metadataError);
+            }
+            if (metadataError) {
+                ++scanErrors;
+            } else {
+                snapshot[entry.path().lexically_normal().string()] = fingerprint;
+            }
+        }
+
+        iterator.increment(iteratorError);
+        if (iteratorError) {
+            ++scanErrors;
+            iteratorError.clear();
+        }
+    }
+    return snapshot;
+}
+
+void logCharacterFileMessage(const std::shared_ptr<AgentLogger>& logger,
+                             const std::string& message,
+                             LogLevel level) noexcept {
+    if (!logger) return;
+    try {
+        logger->log(message, "characterfile", "manager", level);
+    } catch (...) {
+        // Logging must never terminate the watcher.
+    }
+}
+
+void autoImportCharacterFile(const std::shared_ptr<detail::CharacterFileManagerState>& state,
+                             const CharacterFileChangeEvent& event) {
+    std::shared_ptr<CharacterManager> manager;
+    bool autoImport = false;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        autoImport = state->autoImport;
+        manager = state->characterManager;
+    }
+    if (!autoImport || !manager) return;
+
+    if (event.type == CharacterFileChangeType::Deleted) {
+        std::string characterId;
+        {
+            std::lock_guard<std::mutex> lock(state->mutex);
+            const auto found = state->importedIds.find(event.path);
+            if (found != state->importedIds.end()) {
+                characterId = found->second;
+                state->importedIds.erase(found);
+            }
+        }
+        if (!characterId.empty()) {
+            try {
+                if (!manager->unregisterCharacter(characterId)) {
+                    std::lock_guard<std::mutex> lock(state->mutex);
+                    ++state->errorCount;
+                }
+            } catch (...) {
+                std::lock_guard<std::mutex> lock(state->mutex);
+                ++state->errorCount;
+            }
+        }
+        return;
+    }
+
+    const auto character = state->loader->loadFromFile(event.path);
+    if (!character) {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        ++state->errorCount;
+        return;
+    }
+
+    std::string previousId;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        const auto previous = state->importedIds.find(event.path);
+        if (previous != state->importedIds.end()) previousId = previous->second;
+    }
+
+    try {
+        const std::string id = manager->registerCharacter(*character);
+        if (id.empty()) {
+            std::lock_guard<std::mutex> lock(state->mutex);
+            ++state->errorCount;
+            return;
+        }
+        bool removalFailed = false;
+        if (!previousId.empty() && previousId != id) {
+            removalFailed = !manager->unregisterCharacter(previousId);
+        }
+        std::lock_guard<std::mutex> lock(state->mutex);
+        ++state->importedCount;
+        if (removalFailed) ++state->errorCount;
+        state->importedIds[event.path] = id;
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        ++state->errorCount;
+    }
+}
+
+void dispatchCharacterFileEvent(const std::shared_ptr<detail::CharacterFileManagerState>& state,
+                                const CharacterFileChangeEvent& event) {
+    autoImportCharacterFile(state, event);
+
+    CharacterFileManager::ChangeCallback callback;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        if (state->stopRequested) return;
+        callback = state->callback;
+    }
+    if (!callback) return;
+
+    try {
+        callback(event);
+    } catch (const std::exception& exception) {
+        logCharacterFileMessage(state->logger,
+            "Character file change callback threw: " + std::string(exception.what()),
+            LogLevel::ERROR);
+    } catch (...) {
+        logCharacterFileMessage(state->logger,
+            "Character file change callback threw an unknown exception",
+            LogLevel::ERROR);
+    }
+}
+
+void runCharacterFileWatcher(const std::shared_ptr<detail::CharacterFileManagerState>& state) {
+    while (true) {
+        std::chrono::milliseconds interval{100};
+        {
+            std::unique_lock<std::mutex> lock(state->mutex);
+            interval = state->interval;
+            if (state->condition.wait_for(lock, interval,
+                    [&state] { return state->stopRequested; })) {
+                break;
+            }
+        }
+
+        size_t scanErrors = 0;
+        CharacterFileSnapshot current = takeCharacterFileSnapshot(state->watchedDirectory, scanErrors);
+        std::vector<CharacterFileChangeEvent> events;
+        {
+            std::lock_guard<std::mutex> lock(state->mutex);
+            if (state->stopRequested) break;
+            state->errorCount += scanErrors;
+
+            const auto now = std::chrono::steady_clock::now();
+            for (const auto& entry : current) {
+                const auto previous = state->fingerprints.find(entry.first);
+                if (previous == state->fingerprints.end() || previous->second != entry.second) {
+                    const auto pending = state->pendingChanges.find(entry.first);
+                    const CharacterFileChangeType detectedType =
+                        previous == state->fingerprints.end()
+                            ? CharacterFileChangeType::Created
+                            : CharacterFileChangeType::Modified;
+                    CharacterFileChangeType pendingType = detectedType;
+                    if (pending != state->pendingChanges.end() &&
+                        pending->second.type == CharacterFileChangeType::Created) {
+                        pendingType = CharacterFileChangeType::Created;
+                    }
+                    state->pendingChanges[entry.first] =
+                        {pendingType, entry.second, now};
+                }
+            }
+            for (const auto& previous : state->fingerprints) {
+                if (current.find(previous.first) == current.end()) {
+                    const auto pending = state->pendingChanges.find(previous.first);
+                    if (pending != state->pendingChanges.end() &&
+                        pending->second.type == CharacterFileChangeType::Created) {
+                        state->pendingChanges.erase(pending);
+                    } else {
+                        state->pendingChanges[previous.first] =
+                            {CharacterFileChangeType::Deleted, std::nullopt, now};
+                    }
+                }
+            }
+            state->fingerprints = current;
+
+            for (auto pending = state->pendingChanges.begin();
+                 pending != state->pendingChanges.end();) {
+                bool stable = false;
+                if (pending->second.type == CharacterFileChangeType::Deleted) {
+                    stable = current.find(pending->first) == current.end();
+                } else {
+                    const auto latest = current.find(pending->first);
+                    stable = latest != current.end() && pending->second.fingerprint &&
+                             latest->second == *pending->second.fingerprint;
+                }
+                if (stable && now - pending->second.lastObserved >= interval) {
+                    events.push_back({pending->second.type, pending->first});
+                    pending = state->pendingChanges.erase(pending);
+                } else {
+                    ++pending;
+                }
+            }
+        }
+
+        std::sort(events.begin(), events.end(), [](const CharacterFileChangeEvent& lhs,
+                                                   const CharacterFileChangeEvent& rhs) {
+            if (lhs.path != rhs.path) return lhs.path < rhs.path;
+            return static_cast<int>(lhs.type) < static_cast<int>(rhs.type);
+        });
+        for (const auto& event : events) {
+            {
+                std::lock_guard<std::mutex> lock(state->mutex);
+                if (state->stopRequested) break;
+            }
+            dispatchCharacterFileEvent(state, event);
+        }
+    }
+
+    std::lock_guard<std::mutex> lock(state->mutex);
+    state->watching = false;
+}
+
+} // namespace
+
+CharacterFileManager::CharacterFileManager()
+    : state_(std::make_shared<detail::CharacterFileManagerState>()) {
+    logCharacterFileMessage(state_->logger, "Character file manager initialized", LogLevel::INFO);
 }
 
 CharacterFileManager::~CharacterFileManager() {
-    if (isWatching_) {
-        stopWatching();
-    }
+    stopWatching();
 }
 
 void CharacterFileManager::setCharacterManager(std::shared_ptr<CharacterManager> manager) {
-    characterManager_ = manager;
-    logger_->log("Character manager std::set for file operations", "characterfile", "manager", LogLevel::INFO);
+    auto state = state_;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->characterManager = std::move(manager);
+    }
+    logCharacterFileMessage(state->logger, "Character manager set for file operations", LogLevel::INFO);
 }
 
 int CharacterFileManager::importFromDirectory(const std::string& directory, bool recursive) {
-    if (!characterManager_) {
-        logger_->log("No character manager std::set for import", "characterfile", "manager", LogLevel::ERROR);
+    auto state = state_;
+    std::shared_ptr<CharacterManager> manager;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        manager = state->characterManager;
+    }
+    if (!manager) {
+        logCharacterFileMessage(state->logger, "No character manager set for import", LogLevel::ERROR);
         return 0;
     }
-    
-    logger_->log("Importing characters from directory: " + directory, "characterfile", "manager", LogLevel::INFO);
-    
-    auto characters = loader_->loadFromDirectory(directory, recursive);
+
+    logCharacterFileMessage(state->logger, "Importing characters from directory: " + directory, LogLevel::INFO);
+    const auto characters = state->loader->loadFromDirectory(directory, recursive);
     int imported = 0;
-    
+    size_t errors = 0;
     for (const auto& character : characters) {
-        std::string id = characterManager_->registerCharacter(character);
-        if (!id.empty()) {
-            imported++;
-            importedCount_++;
-        } else {
-            errorCount_++;
+        try {
+            const std::string id = manager->registerCharacter(character);
+            if (!id.empty()) {
+                ++imported;
+            } else {
+                ++errors;
+            }
+        } catch (...) {
+            ++errors;
         }
     }
-    
-    logger_->log("Imported " + std::to_string(imported) + " characters from " + directory, "characterfile", "manager", LogLevel::SUCCESS);
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->importedCount += static_cast<size_t>(imported);
+        state->errorCount += errors;
+    }
+    logCharacterFileMessage(state->logger,
+        "Imported " + std::to_string(imported) + " characters from " + directory,
+        LogLevel::SUCCESS);
     return imported;
 }
 
 int CharacterFileManager::exportToDirectory(const std::string& directory) {
-    if (!characterManager_) {
-        logger_->log("No character manager std::set for export", "characterfile", "manager", LogLevel::ERROR);
+    auto state = state_;
+    std::shared_ptr<CharacterManager> manager;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        manager = state->characterManager;
+    }
+    if (!manager) {
+        logCharacterFileMessage(state->logger, "No character manager set for export", LogLevel::ERROR);
         return 0;
     }
-    
-    logger_->log("Exporting characters to directory: " + directory, "characterfile", "manager", LogLevel::INFO);
-    
-    // Create directory if it doesn't exist
-    std::filesystem::create_directories(directory);
-    
-    auto characters = characterManager_->getAllCharacters();
+
+    logCharacterFileMessage(state->logger, "Exporting characters to directory: " + directory, LogLevel::INFO);
+    std::error_code directoryError;
+    std::filesystem::create_directories(directory, directoryError);
+    if (directoryError) {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        ++state->errorCount;
+        return 0;
+    }
+
+    const auto characters = manager->getAllCharacters();
     int exported = 0;
-    
+    size_t errors = 0;
     for (const auto& character : characters) {
-        std::string filename = directory + "/" + CharacterFileUtils::createFilename(character.name);
-        if (loader_->saveToFile(character, filename)) {
-            exported++;
-            exportedCount_++;
+        const std::filesystem::path filename =
+            std::filesystem::path(directory) / CharacterFileUtils::createFilename(character.name);
+        if (state->loader->saveToFile(character, filename.string())) {
+            ++exported;
         } else {
-            errorCount_++;
+            ++errors;
         }
     }
-    
-    logger_->log("Exported " + std::to_string(exported) + " characters to " + directory, "characterfile", "manager", LogLevel::SUCCESS);
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->exportedCount += static_cast<size_t>(exported);
+        state->errorCount += errors;
+    }
+    logCharacterFileMessage(state->logger,
+        "Exported " + std::to_string(exported) + " characters to " + directory,
+        LogLevel::SUCCESS);
     return exported;
 }
 
 bool CharacterFileManager::syncWithManager(const std::string& directory) {
-    logger_->log("Syncing character files with manager from: " + directory, "characterfile", "manager", LogLevel::INFO);
-    
-    // Import new/updated characters
-    int imported = importFromDirectory(directory, false);
-    
-    // Export std::any characters that don't have files
-    int exported = exportToDirectory(directory);
-    
-    logger_->log("Sync complete: " + std::to_string(imported) + " imported, " + 
-                std::to_string(exported) + " exported", "characterfile", "manager", LogLevel::SUCCESS);
-    
+    std::shared_ptr<CharacterManager> manager;
+    {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        manager = state_->characterManager;
+    }
+    if (!manager) return false;
+
+    logCharacterFileMessage(state_->logger,
+        "Syncing character files with manager from: " + directory, LogLevel::INFO);
+    const int imported = importFromDirectory(directory, false);
+    const int exported = exportToDirectory(directory);
+    logCharacterFileMessage(state_->logger,
+        "Sync complete: " + std::to_string(imported) + " imported, " +
+            std::to_string(exported) + " exported",
+        LogLevel::SUCCESS);
     return true;
 }
 
 bool CharacterFileManager::watchDirectory(const std::string& directory, bool autoImport) {
-    if (isWatching_) {
-        stopWatching();
+    if (directory.empty()) return false;
+
+    std::error_code pathError;
+    std::filesystem::path path(directory);
+    if (!std::filesystem::exists(path, pathError) || pathError ||
+        !std::filesystem::is_directory(path, pathError) || pathError) {
+        return false;
     }
-    
-    watchedDirectory_ = directory;
-    isWatching_ = true;
-    
-    logger_->log("Started watching directory: " + directory + 
-                " (auto-import: " + (autoImport ? "enabled" : "disabled") + ")", 
-                "characterfile", "manager", LogLevel::INFO);
-    
-    // In a real implementation, would std::set up filesystem watching
-    // For now, just log that we're "watching"
-    
+    const std::filesystem::path canonical = std::filesystem::weakly_canonical(path, pathError);
+    if (pathError) return false;
+
+    stopWatching();
+
+    auto state = state_;
+    size_t scanErrors = 0;
+    CharacterFileSnapshot baseline = takeCharacterFileSnapshot(canonical, scanErrors);
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        if (state->interval.count() <= 0) return false;
+        state->watchedDirectory = canonical.string();
+        state->autoImport = autoImport;
+        state->fingerprints = std::move(baseline);
+        state->pendingChanges.clear();
+        state->errorCount += scanErrors;
+        state->stopRequested = false;
+        state->watching = true;
+    }
+
+    try {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->worker = std::thread([state] {
+            try {
+                runCharacterFileWatcher(state);
+            } catch (const std::exception& exception) {
+                logCharacterFileMessage(state->logger,
+                    "Character file watcher failed: " + std::string(exception.what()),
+                    LogLevel::ERROR);
+                std::lock_guard<std::mutex> stateLock(state->mutex);
+                state->watching = false;
+                ++state->errorCount;
+            } catch (...) {
+                logCharacterFileMessage(state->logger,
+                    "Character file watcher failed with an unknown exception",
+                    LogLevel::ERROR);
+                std::lock_guard<std::mutex> stateLock(state->mutex);
+                state->watching = false;
+                ++state->errorCount;
+            }
+        });
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->watching = false;
+        state->stopRequested = true;
+        state->watchedDirectory.clear();
+        state->fingerprints.clear();
+        state->pendingChanges.clear();
+        ++state->errorCount;
+        return false;
+    }
+
+    logCharacterFileMessage(state->logger,
+        "Started watching directory: " + canonical.string() +
+            " (auto-import: " + (autoImport ? "enabled" : "disabled") + ")",
+        LogLevel::INFO);
     return true;
 }
 
+bool CharacterFileManager::setWatchInterval(std::chrono::milliseconds interval) {
+    if (interval.count() <= 0) return false;
+    auto state = state_;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->interval = interval;
+    }
+    state->condition.notify_all();
+    return true;
+}
+
+void CharacterFileManager::setChangeCallback(ChangeCallback callback) {
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    state_->callback = std::move(callback);
+}
+
 void CharacterFileManager::stopWatching() {
-    if (isWatching_) {
-        isWatching_ = false;
-        logger_->log("Stopped watching directory: " + watchedDirectory_, "characterfile", "manager", LogLevel::INFO);
-        watchedDirectory_.clear();
+    auto state = state_;
+    std::thread worker;
+    std::string directory;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->stopRequested = true;
+        state->watching = false;
+        directory = state->watchedDirectory;
+        if (state->worker.joinable()) {
+            if (state->worker.get_id() == std::this_thread::get_id()) {
+                state->condition.notify_all();
+                return;
+            }
+            worker = std::move(state->worker);
+        } else {
+            state->watchedDirectory.clear();
+            state->fingerprints.clear();
+            state->pendingChanges.clear();
+        }
+    }
+    state->condition.notify_all();
+    if (worker.joinable()) worker.join();
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->watchedDirectory.clear();
+        state->fingerprints.clear();
+        state->pendingChanges.clear();
+    }
+    if (!directory.empty()) {
+        logCharacterFileMessage(state->logger,
+            "Stopped watching directory: " + directory, LogLevel::INFO);
     }
 }
 
 JsonValue CharacterFileManager::getOperationStatistics() const {
     JsonValue stats;
-    stats["importedCount"] = std::string(std::to_string(importedCount_));
-    stats["exportedCount"] = std::string(std::to_string(exportedCount_));
-    stats["errorCount"] = std::string(std::to_string(errorCount_));
-    stats["isWatching"] = std::string(isWatching_ ? "true" : "false");
-    stats["watchedDirectory"] = std::string(watchedDirectory_);
-    
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    stats["importedCount"] = std::string(std::to_string(state_->importedCount));
+    stats["exportedCount"] = std::string(std::to_string(state_->exportedCount));
+    stats["errorCount"] = std::string(std::to_string(state_->errorCount));
+    stats["isWatching"] = std::string(state_->watching ? "true" : "false");
+    stats["watchedDirectory"] = state_->watchedDirectory;
     return stats;
 }
 
 std::vector<ValidationResult> CharacterFileManager::validateDirectory(const std::string& directory) {
     std::vector<ValidationResult> results;
-    
-    logger_->log("Validating character files in directory: " + directory, "characterfile", "manager", LogLevel::INFO);
-    
-    auto files = findCharacterFiles(directory, false);
+    logCharacterFileMessage(state_->logger,
+        "Validating character files in directory: " + directory, LogLevel::INFO);
+    const auto files = findCharacterFiles(directory, false);
     for (const auto& file : files) {
-        ValidationResult result = loader_->validateFile(file);
+        ValidationResult result = state_->loader->validateFile(file);
         result.addWarning("File: " + file);
-        results.push_back(result);
+        results.push_back(std::move(result));
     }
-    
-    logger_->log("Validated " + std::to_string(results.size()) + " character files", "characterfile", "manager", LogLevel::INFO);
+    logCharacterFileMessage(state_->logger,
+        "Validated " + std::to_string(results.size()) + " character files", LogLevel::INFO);
     return results;
 }
 
-bool CharacterFileManager::convertFormat(const std::string& inputFile, const std::string& outputFile, const std::string& targetFormat) {
-    logger_->log("Converting file format: " + inputFile + " -> " + outputFile + 
-                " (format: " + targetFormat + ")", "characterfile", "manager", LogLevel::INFO);
-    
-    // Load character from input file
-    auto character = loader_->loadFromFile(inputFile);
-    if (!character) {
+bool CharacterFileManager::convertFormat(const std::string& inputFile,
+                                         const std::string& outputFile,
+                                         const std::string& targetFormat) {
+    if (targetFormat != "json" && targetFormat != ".json" &&
+        targetFormat != "character" && targetFormat != ".character" &&
+        targetFormat != "eliza" && targetFormat != ".eliza") {
         return false;
     }
-    
-    // Save to output file (format determined by extension)
-    return loader_->saveToFile(*character, outputFile);
+    logCharacterFileMessage(state_->logger,
+        "Converting file format: " + inputFile + " -> " + outputFile +
+            " (format: " + targetFormat + ")",
+        LogLevel::INFO);
+    const auto character = state_->loader->loadFromFile(inputFile);
+    return character && state_->loader->saveToFile(*character, outputFile);
 }
 
-bool CharacterFileManager::backupDirectory(const std::string& sourceDir, const std::string& backupDir) {
-    logger_->log("Backing up character files: " + sourceDir + " -> " + backupDir, "characterfile", "manager", LogLevel::INFO);
-    
-    try {
-        std::filesystem::create_directories(backupDir);
-        std::filesystem::copy(sourceDir, backupDir, std::filesystem::copy_options::recursive);
-        
-        logger_->log("Backup completed successfully", "characterfile", "manager", LogLevel::SUCCESS);
-        return true;
-    } catch (const std::filesystem::filesystem_error& e) {
-        logger_->log("Backup failed: " + std::string(e.what()), "characterfile", "manager", LogLevel::ERROR);
+bool CharacterFileManager::backupDirectory(const std::string& sourceDir,
+                                           const std::string& backupDir) {
+    if (sourceDir.empty() || backupDir.empty()) return false;
+    std::error_code error;
+    if (!std::filesystem::is_directory(sourceDir, error) || error) return false;
+    std::filesystem::create_directories(backupDir, error);
+    if (error) return false;
+    std::filesystem::copy(sourceDir, backupDir,
+        std::filesystem::copy_options::recursive |
+            std::filesystem::copy_options::overwrite_existing,
+        error);
+    if (error) {
+        logCharacterFileMessage(state_->logger,
+            "Backup failed: " + error.message(), LogLevel::ERROR);
         return false;
     }
+    logCharacterFileMessage(state_->logger, "Backup completed successfully", LogLevel::SUCCESS);
+    return true;
 }
 
-std::vector<std::string> CharacterFileManager::findCharacterFiles(const std::string& directory, bool recursive) {
+std::vector<std::string> CharacterFileManager::findCharacterFiles(const std::string& directory,
+                                                                  bool recursive) {
     std::vector<std::string> files;
-    
-    try {
-        for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-            if (entry.is_regular_file() && loader_->isCharacterFile(entry.path().string())) {
-                files.push_back(entry.path().string());
-            } else if (entry.is_directory() && recursive) {
-                auto subFiles = findCharacterFiles(entry.path().string(), recursive);
-                files.insert(files.end(), subFiles.begin(), subFiles.end());
-            }
+    std::error_code error;
+    if (!std::filesystem::is_directory(directory, error) || error) return files;
+
+    const auto visit = [&files](const auto& entry) {
+        std::error_code statusError;
+        if (entry.is_regular_file(statusError) && !statusError &&
+            hasCharacterExtension(entry.path())) {
+            files.push_back(entry.path().lexically_normal().string());
         }
-    } catch (const std::filesystem::filesystem_error&) {
-        // Directory doesn't exist or is not accessible
+    };
+    if (recursive) {
+        std::filesystem::recursive_directory_iterator iterator(
+            directory, std::filesystem::directory_options::skip_permission_denied, error);
+        const std::filesystem::recursive_directory_iterator endIterator;
+        while (!error && iterator != endIterator) {
+            visit(*iterator);
+            iterator.increment(error);
+        }
+    } else {
+        std::filesystem::directory_iterator iterator(
+            directory, std::filesystem::directory_options::skip_permission_denied, error);
+        const std::filesystem::directory_iterator endIterator;
+        while (!error && iterator != endIterator) {
+            visit(*iterator);
+            iterator.increment(error);
+        }
     }
-    
+    std::sort(files.begin(), files.end());
     return files;
 }
 
 bool CharacterFileManager::isValidCharacterFile(const std::string& filename) {
-    return loader_->isCharacterFile(filename);
+    return state_->loader->isCharacterFile(filename);
 }
 
 std::string CharacterFileManager::getCharacterIdFromFile(const std::string& filename) {
-    auto metadata = loader_->getCharacterMetadata(filename);
-    return metadata ? metadata->name : "";
+    const auto character = state_->loader->loadFromFile(filename);
+    return character ? character->id : std::string{};
 }
 
 // =====================================================

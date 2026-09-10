@@ -2,7 +2,9 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <mutex>
+#include <stdexcept>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -50,22 +52,104 @@ std::string sanitizeTokenPart(const std::string& input) {
     return out.empty() ? "unknown" : out;
 }
 
+constexpr double kWorkloadEpsilon = 1e-9;
+
+bool isValidWorkload(double value) {
+    return std::isfinite(value) && value >= 0.0;
+}
+
 bool hasTeamMember(const std::vector<TeamMember>& members, const std::string& memberId) {
     return std::any_of(members.begin(), members.end(), [&](const TeamMember& member) {
         return member.id == memberId;
     });
 }
 
-bool memberCanHandleTask(const TeamMember& member, const TeamTask& task) {
-    if (!member.isAvailable || member.availableCapacity() <= 0.0) {
+TeamMember* findMember(std::vector<TeamMember>& members, const std::string& memberId) {
+    const auto it = std::find_if(members.begin(), members.end(), [&](const TeamMember& member) {
+        return member.id == memberId;
+    });
+    return it == members.end() ? nullptr : &*it;
+}
+
+bool isWorkloadBearing(TaskStatus status) {
+    return status == TaskStatus::ASSIGNED || status == TaskStatus::IN_PROGRESS ||
+           status == TaskStatus::BLOCKED;
+}
+
+bool isTerminal(TaskStatus status) {
+    return status == TaskStatus::COMPLETED || status == TaskStatus::CANCELLED;
+}
+
+bool isValidTransition(TaskStatus from, TaskStatus to) {
+    if (from == to || isTerminal(from) || to == TaskStatus::PENDING ||
+        to == TaskStatus::ASSIGNED) {
         return false;
     }
-    for (const auto& required : task.requiredCapabilities) {
-        if (!member.canHandle(required)) {
+    switch (from) {
+        case TaskStatus::PENDING:
+            return to == TaskStatus::CANCELLED;
+        case TaskStatus::ASSIGNED:
+            return to == TaskStatus::IN_PROGRESS || to == TaskStatus::BLOCKED ||
+                   to == TaskStatus::COMPLETED || to == TaskStatus::CANCELLED;
+        case TaskStatus::IN_PROGRESS:
+        case TaskStatus::BLOCKED:
+            return to == TaskStatus::IN_PROGRESS || to == TaskStatus::BLOCKED ||
+                   to == TaskStatus::COMPLETED || to == TaskStatus::CANCELLED;
+        case TaskStatus::COMPLETED:
+        case TaskStatus::CANCELLED:
             return false;
+    }
+    return false;
+}
+
+bool hasCapabilities(const TeamMember& member, const TeamTask& task) {
+    return std::all_of(task.requiredCapabilities.begin(), task.requiredCapabilities.end(),
+        [&](const std::string& required) { return member.canHandle(required); });
+}
+
+bool memberCanHandleTask(const TeamMember& member, const TeamTask& task) {
+    if (!member.isAvailable || member.role == TeamRole::OBSERVER ||
+        !isValidWorkload(member.workloadCapacity) || member.workloadCapacity <= 0.0 ||
+        !isValidWorkload(member.currentWorkload) || !isValidWorkload(task.estimatedEffort) ||
+        !hasCapabilities(member, task)) {
+        return false;
+    }
+    return member.currentWorkload + task.estimatedEffort <=
+           member.workloadCapacity + kWorkloadEpsilon;
+}
+
+std::size_t findBestMemberIndex(const std::vector<TeamMember>& members, const TeamTask& task) {
+    std::size_t best = members.size();
+    double bestUtilization = 0.0;
+    double bestRemaining = 0.0;
+    for (std::size_t i = 0; i < members.size(); ++i) {
+        const auto& member = members[i];
+        if (!memberCanHandleTask(member, task)) {
+            continue;
+        }
+        const double utilization =
+            (member.currentWorkload + task.estimatedEffort) / member.workloadCapacity;
+        const double remaining =
+            member.workloadCapacity - member.currentWorkload - task.estimatedEffort;
+        if (best == members.size() || utilization < bestUtilization - kWorkloadEpsilon ||
+            (std::abs(utilization - bestUtilization) <= kWorkloadEpsilon &&
+             (remaining > bestRemaining + kWorkloadEpsilon ||
+              (std::abs(remaining - bestRemaining) <= kWorkloadEpsilon &&
+               member.id < members[best].id)))) {
+            best = i;
+            bestUtilization = utilization;
+            bestRemaining = remaining;
         }
     }
-    return true;
+    return best;
+}
+
+void addWorkload(TeamMember& member, const TeamTask& task) {
+    member.currentWorkload += task.estimatedEffort;
+}
+
+void releaseWorkload(TeamMember& member, const TeamTask& task) {
+    member.currentWorkload = std::max(0.0, member.currentWorkload - task.estimatedEffort);
 }
 
 } // namespace
@@ -118,8 +202,14 @@ std::string issueHATToken(const std::string& agentId, const std::string& teamId,
 }
 
 void hat_placeholder() {
-    // Backward-compatible module-link probe. Real functionality is covered by
-    // the stateful token registry, TeamCoordinator, and HATProtocolHandler.
+    // Preserve the historical link probe, but make it an actual invariant check
+    // rather than a silent no-op. Behavioral coverage still targets the stateful
+    // coordinator and protocol handler directly.
+    if (stringToRole(roleToString(TeamRole::AGENT_MEMBER)) != TeamRole::AGENT_MEMBER ||
+        stringToPriority(priorityToString(TaskPriority::HIGH)) != TaskPriority::HIGH ||
+        stringToStatus(statusToString(TaskStatus::IN_PROGRESS)) != TaskStatus::IN_PROGRESS) {
+        throw std::logic_error("HAT enum/string conversion self-check failed");
+    }
 }
 
 // ==============================================================================
@@ -134,7 +224,6 @@ struct TeamCoordinator::Impl {
     std::unordered_map<std::string, TeamMeta> team_meta;
     std::unordered_map<std::string, std::vector<TeamMember>> teams;
     std::unordered_map<std::string, std::vector<TeamTask>> team_tasks;
-    std::unordered_map<std::string, std::vector<TeamTask>> member_tasks;
     std::unordered_map<std::string, std::vector<TeamMessage>> member_messages;
     std::mutex mutex;
     int next_team_id = 1;
@@ -160,7 +249,10 @@ std::string TeamCoordinator::createTeam(const std::string& name, const std::stri
 bool TeamCoordinator::addMember(const std::string& teamId, const TeamMember& member) {
     std::lock_guard<std::mutex> lock(impl_->mutex);
     auto it = impl_->teams.find(teamId);
-    if (it == impl_->teams.end() || member.id.empty()) {
+    if (it == impl_->teams.end() || member.id.empty() ||
+        !isValidWorkload(member.workloadCapacity) ||
+        !isValidWorkload(member.currentWorkload) ||
+        member.currentWorkload > member.workloadCapacity + kWorkloadEpsilon) {
         return false;
     }
     if (hasTeamMember(it->second, member.id)) {
@@ -172,18 +264,33 @@ bool TeamCoordinator::addMember(const std::string& teamId, const TeamMember& mem
 
 bool TeamCoordinator::removeMember(const std::string& teamId, const std::string& memberId) {
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    auto it = impl_->teams.find(teamId);
-    if (it == impl_->teams.end()) {
+    auto teamIt = impl_->teams.find(teamId);
+    if (teamIt == impl_->teams.end() || memberId.empty()) {
         return false;
     }
-    auto& members = it->second;
-    const auto before = members.size();
-    members.erase(
-        std::remove_if(members.begin(), members.end(),
-            [&](const TeamMember& member) { return member.id == memberId; }),
-        members.end());
-    impl_->member_tasks.erase(memberId);
-    return members.size() != before;
+    auto memberIt = std::find_if(teamIt->second.begin(), teamIt->second.end(),
+        [&](const TeamMember& member) { return member.id == memberId; });
+    if (memberIt == teamIt->second.end()) {
+        return false;
+    }
+
+    const auto now = std::chrono::system_clock::now();
+    auto taskIt = impl_->team_tasks.find(teamId);
+    if (taskIt != impl_->team_tasks.end()) {
+        for (auto& task : taskIt->second) {
+            if (task.assignedTo != memberId) {
+                continue;
+            }
+            if (isWorkloadBearing(task.status)) {
+                releaseWorkload(*memberIt, task);
+                task.status = TaskStatus::PENDING;
+                task.assignedTo.clear();
+                task.updatedAt = now;
+            }
+        }
+    }
+    teamIt->second.erase(memberIt);
+    return true;
 }
 
 std::vector<TeamMember> TeamCoordinator::getTeamMembers(const std::string& teamId) const {
@@ -194,68 +301,100 @@ std::vector<TeamMember> TeamCoordinator::getTeamMembers(const std::string& teamI
 
 std::string TeamCoordinator::createTask(const std::string& teamId, const TeamTask& task) {
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    if (impl_->teams.find(teamId) == impl_->teams.end()) {
+    if (impl_->teams.find(teamId) == impl_->teams.end() ||
+        task.status != TaskStatus::PENDING || !task.assignedTo.empty() ||
+        !isValidWorkload(task.estimatedEffort) || !isValidWorkload(task.actualEffort)) {
         return "";
     }
     std::string id = "task_" + std::to_string(impl_->next_task_id++);
-    TeamTask t = task;
-    t.id = id;
-    t.status = task.status;
-    if (t.createdAt.time_since_epoch().count() == 0) {
-        t.createdAt = std::chrono::system_clock::now();
+    TeamTask stored = task;
+    stored.id = id;
+    const auto now = std::chrono::system_clock::now();
+    if (stored.createdAt.time_since_epoch().count() == 0) {
+        stored.createdAt = now;
     }
-    t.updatedAt = std::chrono::system_clock::now();
-    impl_->team_tasks[teamId].push_back(t);
+    stored.updatedAt = now;
+    impl_->team_tasks[teamId].push_back(std::move(stored));
     return id;
 }
 
 bool TeamCoordinator::assignTask(const std::string& taskId, const std::string& memberId) {
+    if (taskId.empty() || memberId.empty()) {
+        return false;
+    }
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    for (auto& [teamId, tasks] : impl_->team_tasks) {
-        auto teamIt = impl_->teams.find(teamId);
-        if (teamIt == impl_->teams.end() || !hasTeamMember(teamIt->second, memberId)) {
+    for (auto& teamEntry : impl_->team_tasks) {
+        auto& teamId = teamEntry.first;
+        auto& tasks = teamEntry.second;
+        auto taskIt = std::find_if(tasks.begin(), tasks.end(),
+            [&](const TeamTask& task) { return task.id == taskId; });
+        if (taskIt == tasks.end()) {
             continue;
         }
-        for (auto& task : tasks) {
-            if (task.id == taskId) {
-                task.assignedTo = memberId;
-                task.status = TaskStatus::IN_PROGRESS;
-                task.updatedAt = std::chrono::system_clock::now();
-                auto& memberQueue = impl_->member_tasks[memberId];
-                auto existing = std::find_if(memberQueue.begin(), memberQueue.end(), [&](const TeamTask& queued) {
-                    return queued.id == taskId;
-                });
-                if (existing == memberQueue.end()) {
-                    memberQueue.push_back(task);
-                } else {
-                    *existing = task;
-                }
-                return true;
-            }
+        if (taskIt->status != TaskStatus::PENDING && taskIt->status != TaskStatus::ASSIGNED) {
+            return false;
         }
+        auto membersIt = impl_->teams.find(teamId);
+        if (membersIt == impl_->teams.end()) {
+            return false;
+        }
+        TeamMember* assignee = findMember(membersIt->second, memberId);
+        if (!assignee) {
+            return false;
+        }
+        if (taskIt->status == TaskStatus::ASSIGNED && taskIt->assignedTo == memberId) {
+            return assignee->isAvailable && assignee->role != TeamRole::OBSERVER &&
+                   hasCapabilities(*assignee, *taskIt) &&
+                   assignee->currentWorkload <= assignee->workloadCapacity + kWorkloadEpsilon;
+        }
+        if (!memberCanHandleTask(*assignee, *taskIt)) {
+            return false;
+        }
+        if (taskIt->status == TaskStatus::ASSIGNED && !taskIt->assignedTo.empty()) {
+            TeamMember* previous = findMember(membersIt->second, taskIt->assignedTo);
+            if (!previous) {
+                return false;
+            }
+            releaseWorkload(*previous, *taskIt);
+        }
+        taskIt->assignedTo = memberId;
+        taskIt->status = TaskStatus::ASSIGNED;
+        taskIt->updatedAt = std::chrono::system_clock::now();
+        addWorkload(*assignee, *taskIt);
+        return true;
     }
     return false;
 }
 
 bool TeamCoordinator::updateTaskStatus(const std::string& taskId, TaskStatus status) {
+    if (taskId.empty()) {
+        return false;
+    }
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    for (auto& [teamId, tasks] : impl_->team_tasks) {
-        (void)teamId;
+    for (auto& teamEntry : impl_->team_tasks) {
+        auto& teamId = teamEntry.first;
+        auto& tasks = teamEntry.second;
         for (auto& task : tasks) {
-            if (task.id == taskId) {
-                task.status = status;
-                task.updatedAt = std::chrono::system_clock::now();
-                if (!task.assignedTo.empty()) {
-                    auto& memberQueue = impl_->member_tasks[task.assignedTo];
-                    auto existing = std::find_if(memberQueue.begin(), memberQueue.end(), [&](const TeamTask& queued) {
-                        return queued.id == taskId;
-                    });
-                    if (existing != memberQueue.end()) {
-                        *existing = task;
-                    }
-                }
-                return true;
+            if (task.id != taskId) {
+                continue;
             }
+            if (!isValidTransition(task.status, status)) {
+                return false;
+            }
+            if (isWorkloadBearing(task.status) && isTerminal(status)) {
+                auto membersIt = impl_->teams.find(teamId);
+                if (membersIt == impl_->teams.end()) {
+                    return false;
+                }
+                TeamMember* assignee = findMember(membersIt->second, task.assignedTo);
+                if (!assignee) {
+                    return false;
+                }
+                releaseWorkload(*assignee, task);
+            }
+            task.status = status;
+            task.updatedAt = std::chrono::system_clock::now();
+            return true;
         }
     }
     return false;
@@ -263,8 +402,20 @@ bool TeamCoordinator::updateTaskStatus(const std::string& taskId, TaskStatus sta
 
 std::vector<TeamTask> TeamCoordinator::getTasksForMember(const std::string& memberId) const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    auto it = impl_->member_tasks.find(memberId);
-    return (it != impl_->member_tasks.end()) ? it->second : std::vector<TeamTask>{};
+    std::vector<TeamTask> result;
+    if (memberId.empty()) {
+        return result;
+    }
+    for (const auto& teamEntry : impl_->team_tasks) {
+        for (const auto& task : teamEntry.second) {
+            if (task.assignedTo == memberId) {
+                result.push_back(task);
+            }
+        }
+    }
+    std::sort(result.begin(), result.end(),
+        [](const TeamTask& lhs, const TeamTask& rhs) { return lhs.id < rhs.id; });
+    return result;
 }
 
 std::vector<TeamTask> TeamCoordinator::getPendingTasks(const std::string& teamId) const {
@@ -282,24 +433,32 @@ std::vector<TeamTask> TeamCoordinator::getPendingTasks(const std::string& teamId
 }
 
 std::string TeamCoordinator::sendMessage(const TeamMessage& message) {
+    if (message.receiverId.empty()) {
+        return "";
+    }
     std::lock_guard<std::mutex> lock(impl_->mutex);
     std::string id = "msg_" + std::to_string(impl_->next_msg_id++);
-    TeamMessage msg = message;
-    msg.id = id;
-    if (msg.timestamp.time_since_epoch().count() == 0) {
-        msg.timestamp = std::chrono::system_clock::now();
+    TeamMessage stored = message;
+    stored.id = id;
+    if (stored.timestamp.time_since_epoch().count() == 0) {
+        stored.timestamp = std::chrono::system_clock::now();
     }
-    msg.acknowledged = message.acknowledged;
-    impl_->member_messages[message.receiverId].push_back(msg);
+    stored.acknowledged = false;
+    impl_->member_messages[message.receiverId].push_back(std::move(stored));
     return id;
 }
 
 bool TeamCoordinator::acknowledgeMessage(const std::string& messageId) {
+    if (messageId.empty()) {
+        return false;
+    }
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    for (auto& [memberId, messages] : impl_->member_messages) {
-        (void)memberId;
-        for (auto& message : messages) {
+    for (auto& memberEntry : impl_->member_messages) {
+        for (auto& message : memberEntry.second) {
             if (message.id == messageId) {
+                if (message.acknowledged) {
+                    return false;
+                }
                 message.acknowledged = true;
                 return true;
             }
@@ -316,35 +475,38 @@ std::vector<TeamMessage> TeamCoordinator::getMessagesForMember(const std::string
 
 TeamContext TeamCoordinator::getTeamContext(const std::string& teamId) const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    TeamContext ctx;
-    ctx.teamId = teamId;
-    auto it = impl_->teams.find(teamId);
-    if (it != impl_->teams.end()) {
-        ctx.members = it->second;
-        for (const auto& member : it->second) {
-            auto msgIt = impl_->member_messages.find(member.id);
-            if (msgIt != impl_->member_messages.end()) {
-                ctx.recentMessages.insert(ctx.recentMessages.end(), msgIt->second.begin(), msgIt->second.end());
+    TeamContext context;
+    context.teamId = teamId;
+    auto memberIt = impl_->teams.find(teamId);
+    if (memberIt != impl_->teams.end()) {
+        context.members = memberIt->second;
+        for (const auto& member : memberIt->second) {
+            auto messageIt = impl_->member_messages.find(member.id);
+            if (messageIt != impl_->member_messages.end()) {
+                context.recentMessages.insert(context.recentMessages.end(),
+                    messageIt->second.begin(), messageIt->second.end());
             }
         }
     }
-    auto mit = impl_->team_meta.find(teamId);
-    if (mit != impl_->team_meta.end()) {
-        ctx.teamName = mit->second.name;
-        ctx.currentObjective = mit->second.objective;
-        ctx.sessionStart = mit->second.sessionStart;
+    auto metaIt = impl_->team_meta.find(teamId);
+    if (metaIt != impl_->team_meta.end()) {
+        context.teamName = metaIt->second.name;
+        context.currentObjective = metaIt->second.objective;
+        context.sessionStart = metaIt->second.sessionStart;
     }
-    auto tit = impl_->team_tasks.find(teamId);
-    if (tit != impl_->team_tasks.end()) {
-        ctx.activeTasks = tit->second;
+    auto taskIt = impl_->team_tasks.find(teamId);
+    if (taskIt != impl_->team_tasks.end()) {
+        context.activeTasks = taskIt->second;
     }
-    return ctx;
+    return context;
 }
 
 std::string TeamCoordinator::getTeamStatus(const std::string& teamId) const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
     auto it = impl_->teams.find(teamId);
-    if (it == impl_->teams.end()) return "unknown";
+    if (it == impl_->teams.end()) {
+        return "unknown";
+    }
     const auto taskIt = impl_->team_tasks.find(teamId);
     if (taskIt != impl_->team_tasks.end()) {
         for (const auto& task : taskIt->second) {
@@ -356,28 +518,91 @@ std::string TeamCoordinator::getTeamStatus(const std::string& teamId) const {
     return it->second.empty() ? "idle" : "active";
 }
 
-std::string TeamCoordinator::findBestAssignee(const std::string& teamId, const TeamTask& task) const {
+std::string TeamCoordinator::findBestAssignee(const std::string& teamId,
+                                               const TeamTask& task) const {
     std::lock_guard<std::mutex> lock(impl_->mutex);
     auto it = impl_->teams.find(teamId);
-    if (it == impl_->teams.end()) {
+    if (it == impl_->teams.end() ||
+        (task.status != TaskStatus::PENDING && task.status != TaskStatus::ASSIGNED) ||
+        !isValidWorkload(task.estimatedEffort)) {
         return "";
     }
-
-    const TeamMember* best = nullptr;
-    for (const auto& member : it->second) {
-        if (!memberCanHandleTask(member, task)) {
-            continue;
+    auto candidates = it->second;
+    if (task.status == TaskStatus::ASSIGNED) {
+        TeamMember* current = findMember(candidates, task.assignedTo);
+        if (!current) {
+            return "";
         }
-        if (!best || member.availableCapacity() > best->availableCapacity()) {
-            best = &member;
-        }
+        releaseWorkload(*current, task);
     }
-    return best ? best->id : "";
+    const std::size_t best = findBestMemberIndex(candidates, task);
+    return best == candidates.size() ? "" : candidates[best].id;
 }
 
 bool TeamCoordinator::rebalanceWorkload(const std::string& teamId) {
     std::lock_guard<std::mutex> lock(impl_->mutex);
-    return impl_->teams.find(teamId) != impl_->teams.end();
+    auto membersIt = impl_->teams.find(teamId);
+    if (membersIt == impl_->teams.end()) {
+        return false;
+    }
+    auto tasksIt = impl_->team_tasks.find(teamId);
+    if (tasksIt == impl_->team_tasks.end()) {
+        return true;
+    }
+
+    auto& members = membersIt->second;
+    auto& tasks = tasksIt->second;
+    const auto now = std::chrono::system_clock::now();
+    std::vector<TeamTask*> assignable;
+    assignable.reserve(tasks.size());
+
+    for (auto& task : tasks) {
+        if (task.status == TaskStatus::ASSIGNED) {
+            if (TeamMember* previous = findMember(members, task.assignedTo)) {
+                releaseWorkload(*previous, task);
+            }
+            task.status = TaskStatus::PENDING;
+            task.assignedTo.clear();
+            assignable.push_back(&task);
+        } else if (task.status == TaskStatus::PENDING) {
+            task.assignedTo.clear();
+            assignable.push_back(&task);
+        }
+    }
+
+    std::sort(assignable.begin(), assignable.end(), [](const TeamTask* lhs, const TeamTask* rhs) {
+        if (lhs->priority != rhs->priority) {
+            return static_cast<int>(lhs->priority) < static_cast<int>(rhs->priority);
+        }
+        const bool lhsHasDeadline = lhs->deadline.time_since_epoch().count() != 0;
+        const bool rhsHasDeadline = rhs->deadline.time_since_epoch().count() != 0;
+        if (lhsHasDeadline != rhsHasDeadline) {
+            return lhsHasDeadline;
+        }
+        if (lhsHasDeadline && lhs->deadline != rhs->deadline) {
+            return lhs->deadline < rhs->deadline;
+        }
+        if (lhs->createdAt != rhs->createdAt) {
+            return lhs->createdAt < rhs->createdAt;
+        }
+        return lhs->id < rhs->id;
+    });
+
+    for (TeamTask* task : assignable) {
+        if (!isValidWorkload(task->estimatedEffort)) {
+            continue;
+        }
+        const std::size_t best = findBestMemberIndex(members, *task);
+        if (best == members.size()) {
+            task->updatedAt = now;
+            continue;
+        }
+        task->assignedTo = members[best].id;
+        task->status = TaskStatus::ASSIGNED;
+        task->updatedAt = now;
+        addWorkload(members[best], *task);
+    }
+    return true;
 }
 
 // ==============================================================================
@@ -389,11 +614,15 @@ struct HATProtocolHandler::Impl {
     std::vector<std::string> capabilities;
     std::string lastStatus;
     std::vector<std::pair<std::string, std::string>> assistanceRequests;
+    std::unordered_map<std::string, TeamTask> tasks;
+    std::unordered_map<std::string, std::string> taskTeams;
     bool available = true;
     double capacity = 1.0;
+    double currentWorkload = 0.0;
     MessageCallback messageCallback;
     TaskCallback taskAssignedCallback;
     TaskCallback taskCompletedCallback;
+    std::mutex mutex;
 };
 
 HATProtocolHandler::HATProtocolHandler() : impl_(std::make_unique<Impl>()) {}
@@ -403,42 +632,75 @@ bool HATProtocolHandler::initialize(const std::string& agentId) {
     if (agentId.empty()) {
         return false;
     }
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    if (!impl_->agentId.empty()) {
+        return false;
+    }
     impl_->agentId = agentId;
+    impl_->joinedTeams.clear();
+    impl_->tasks.clear();
+    impl_->taskTeams.clear();
+    impl_->assistanceRequests.clear();
+    impl_->lastStatus.clear();
+    impl_->available = true;
+    impl_->capacity = 1.0;
+    impl_->currentWorkload = 0.0;
     return true;
 }
 
 void HATProtocolHandler::shutdown() {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    impl_->agentId.clear();
     impl_->joinedTeams.clear();
     impl_->capabilities.clear();
+    impl_->tasks.clear();
+    impl_->taskTeams.clear();
     impl_->assistanceRequests.clear();
     impl_->lastStatus.clear();
     impl_->available = false;
     impl_->capacity = 0.0;
+    impl_->currentWorkload = 0.0;
 }
 
 void HATProtocolHandler::onMessage(MessageCallback callback) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
     impl_->messageCallback = std::move(callback);
 }
 
 void HATProtocolHandler::onTaskAssigned(TaskCallback callback) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
     impl_->taskAssignedCallback = std::move(callback);
 }
 
 void HATProtocolHandler::onTaskCompleted(TaskCallback callback) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
     impl_->taskCompletedCallback = std::move(callback);
 }
 
 bool HATProtocolHandler::joinTeam(const std::string& teamId) {
-    if (impl_->agentId.empty() || teamId.empty()) {
+    if (teamId.empty()) {
         return false;
     }
-    if (std::find(impl_->joinedTeams.begin(), impl_->joinedTeams.end(), teamId) == impl_->joinedTeams.end()) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    if (impl_->agentId.empty()) {
+        return false;
+    }
+    if (std::find(impl_->joinedTeams.begin(), impl_->joinedTeams.end(), teamId) ==
+        impl_->joinedTeams.end()) {
         impl_->joinedTeams.push_back(teamId);
     }
     return true;
 }
 
 bool HATProtocolHandler::leaveTeam(const std::string& teamId) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    for (const auto& entry : impl_->taskTeams) {
+        const auto taskIt = impl_->tasks.find(entry.first);
+        if (entry.second == teamId && taskIt != impl_->tasks.end() &&
+            !isTerminal(taskIt->second.status)) {
+            return false;
+        }
+    }
     auto& teams = impl_->joinedTeams;
     const auto before = teams.size();
     teams.erase(std::remove(teams.begin(), teams.end(), teamId), teams.end());
@@ -446,39 +708,123 @@ bool HATProtocolHandler::leaveTeam(const std::string& teamId) {
 }
 
 bool HATProtocolHandler::reportStatus(const std::string& status) {
-    if (impl_->agentId.empty() || status.empty()) {
+    if (status.empty()) {
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(impl_->mutex);
+    if (impl_->agentId.empty()) {
         return false;
     }
     impl_->lastStatus = status;
     return true;
 }
 
-bool HATProtocolHandler::requestAssistance(const std::string& taskId, const std::string& reason) {
-    if (impl_->agentId.empty() || taskId.empty() || reason.empty()) {
+bool HATProtocolHandler::requestAssistance(const std::string& taskId,
+                                           const std::string& reason) {
+    if (taskId.empty() || reason.empty()) {
         return false;
     }
-    impl_->assistanceRequests.emplace_back(taskId, reason);
-    if (impl_->messageCallback) {
-        TeamMessage msg;
-        msg.senderId = impl_->agentId;
-        msg.receiverId = "team";
-        msg.type = CommunicationType::QUERY;
-        msg.content = reason;
-        msg.relatedTaskId = taskId;
-        msg.timestamp = std::chrono::system_clock::now();
-        msg.acknowledged = false;
-        impl_->messageCallback(msg);
+    MessageCallback callback;
+    TeamMessage message;
+    {
+        std::lock_guard<std::mutex> lock(impl_->mutex);
+        if (impl_->agentId.empty()) {
+            return false;
+        }
+        impl_->assistanceRequests.emplace_back(taskId, reason);
+        callback = impl_->messageCallback;
+        message.senderId = impl_->agentId;
+        message.receiverId = "team";
+        message.type = CommunicationType::QUERY;
+        message.content = reason;
+        message.relatedTaskId = taskId;
+        message.timestamp = std::chrono::system_clock::now();
+        message.acknowledged = false;
+    }
+    if (callback) {
+        callback(message);
     }
     return true;
 }
 
-void HATProtocolHandler::advertiseCapabilities(const std::vector<std::string>& capabilities) {
+bool HATProtocolHandler::receiveTaskAssignment(const std::string& teamId,
+                                               const TeamTask& task) {
+    if (teamId.empty() || task.id.empty() || task.status != TaskStatus::ASSIGNED ||
+        !isValidWorkload(task.estimatedEffort) || !isValidWorkload(task.actualEffort)) {
+        return false;
+    }
+    TaskCallback callback;
+    TeamTask accepted;
+    {
+        std::lock_guard<std::mutex> lock(impl_->mutex);
+        if (impl_->agentId.empty() || task.assignedTo != impl_->agentId ||
+            !impl_->available || impl_->capacity <= 0.0 ||
+            std::find(impl_->joinedTeams.begin(), impl_->joinedTeams.end(), teamId) ==
+                impl_->joinedTeams.end() ||
+            impl_->tasks.find(task.id) != impl_->tasks.end() ||
+            impl_->currentWorkload + task.estimatedEffort >
+                impl_->capacity + kWorkloadEpsilon) {
+            return false;
+        }
+        if (!std::all_of(task.requiredCapabilities.begin(), task.requiredCapabilities.end(),
+                [&](const std::string& required) {
+                    return std::find(impl_->capabilities.begin(), impl_->capabilities.end(), required) !=
+                           impl_->capabilities.end();
+                })) {
+            return false;
+        }
+        accepted = task;
+        accepted.updatedAt = std::chrono::system_clock::now();
+        impl_->tasks.emplace(accepted.id, accepted);
+        impl_->taskTeams.emplace(accepted.id, teamId);
+        impl_->currentWorkload += accepted.estimatedEffort;
+        callback = impl_->taskAssignedCallback;
+    }
+    if (callback) {
+        callback(accepted);
+    }
+    return true;
+}
+
+bool HATProtocolHandler::completeTask(const std::string& taskId, double actualEffort) {
+    if (taskId.empty() || !isValidWorkload(actualEffort)) {
+        return false;
+    }
+    TaskCallback callback;
+    TeamTask completed;
+    {
+        std::lock_guard<std::mutex> lock(impl_->mutex);
+        if (impl_->agentId.empty()) {
+            return false;
+        }
+        auto taskIt = impl_->tasks.find(taskId);
+        if (taskIt == impl_->tasks.end() || isTerminal(taskIt->second.status)) {
+            return false;
+        }
+        taskIt->second.status = TaskStatus::COMPLETED;
+        taskIt->second.actualEffort = actualEffort;
+        taskIt->second.updatedAt = std::chrono::system_clock::now();
+        impl_->currentWorkload =
+            std::max(0.0, impl_->currentWorkload - taskIt->second.estimatedEffort);
+        completed = taskIt->second;
+        callback = impl_->taskCompletedCallback;
+    }
+    if (callback) {
+        callback(completed);
+    }
+    return true;
+}
+
+void HATProtocolHandler::advertiseCapabilities(
+    const std::vector<std::string>& capabilities) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
     impl_->capabilities = capabilities;
 }
 
 void HATProtocolHandler::updateAvailability(bool available, double capacity) {
+    std::lock_guard<std::mutex> lock(impl_->mutex);
     impl_->available = available;
-    if (capacity < 0.0) {
+    if (!std::isfinite(capacity) || capacity < 0.0) {
         impl_->capacity = 0.0;
     } else if (capacity > 1.0) {
         impl_->capacity = 1.0;

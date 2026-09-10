@@ -12,10 +12,14 @@
 
 #include "village_atomspace.hpp"
 
+#include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
+#include <future>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -576,6 +580,239 @@ TEST_F(VillageAtomSpaceE2ETest, PersistedActionHistoryRetainsCorrelationAcrossRe
     std::error_code ec;
     std::filesystem::remove(jsonPath, ec);
     std::filesystem::remove(jsonPath + ".tmp", ec);
+}
+
+
+TEST_F(VillageAtomSpaceE2ETest, InFlightInferenceIsJoinedDuringBridgeTeardown) {
+    addDefaultResidents();
+    AphroditeBridge::Config cfg;
+    cfg.max_concurrent_inferences = 1;
+    cfg.inference_cooldown_cycles = 0;
+
+    std::mutex gateMutex;
+    std::condition_variable gateCv;
+    bool entered = false;
+    bool release = false;
+    auto bridge = std::make_unique<AphroditeBridge>(cfg);
+    bridge->set_inference_function([&](const AphroditeRequest&) {
+        std::unique_lock<std::mutex> lock(gateMutex);
+        entered = true;
+        gateCv.notify_all();
+        gateCv.wait(lock, [&] { return release; });
+        return std::string("joined response");
+    });
+    ASSERT_TRUE(bridge->infer_async(*vas_, "ada", "wait", {}));
+    {
+        std::unique_lock<std::mutex> lock(gateMutex);
+        ASSERT_TRUE(gateCv.wait_for(lock, std::chrono::seconds(1),
+                                    [&] { return entered; }));
+    }
+
+    auto teardown = std::async(std::launch::async, [&bridge] { bridge.reset(); });
+    EXPECT_EQ(teardown.wait_for(std::chrono::milliseconds(40)),
+              std::future_status::timeout)
+        << "destruction must join, not detach, in-flight work";
+    {
+        std::lock_guard<std::mutex> lock(gateMutex);
+        release = true;
+    }
+    gateCv.notify_all();
+    EXPECT_EQ(teardown.wait_for(std::chrono::seconds(1)),
+              std::future_status::ready);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ConcurrentAdmissionNeverExceedsConfiguredCap) {
+    addDefaultResidents();
+    AphroditeBridge::Config cfg;
+    cfg.max_concurrent_inferences = 2;
+    cfg.inference_cooldown_cycles = 0;
+    AphroditeBridge bridge(cfg);
+
+    std::mutex gateMutex;
+    std::condition_variable gateCv;
+    bool release = false;
+    std::atomic<bool> start{false};
+    std::atomic<int> accepted{0};
+    bridge.set_inference_function([&](const AphroditeRequest&) {
+        std::unique_lock<std::mutex> lock(gateMutex);
+        gateCv.wait(lock, [&] { return release; });
+        return std::string("bounded");
+    });
+
+    std::vector<std::thread> callers;
+    for (int i = 0; i < 24; ++i) {
+        callers.emplace_back([&, i] {
+            while (!start.load(std::memory_order_acquire)) std::this_thread::yield();
+            if (bridge.infer_async(*vas_, "resident-" + std::to_string(i),
+                                   "stimulus", {})) {
+                accepted.fetch_add(1, std::memory_order_relaxed);
+            }
+        });
+    }
+    start.store(true, std::memory_order_release);
+    for (auto& caller : callers) caller.join();
+    EXPECT_EQ(accepted.load(), 2);
+    EXPECT_EQ(bridge.active_count(), 2);
+    {
+        std::lock_guard<std::mutex> lock(gateMutex);
+        release = true;
+    }
+    gateCv.notify_all();
+    EXPECT_TRUE(bridge.wait_for_idle(std::chrono::seconds(1)));
+    EXPECT_EQ(bridge.active_count(), 0);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, RecorderCanReplaceItselfWithoutInternalLockReentry) {
+    addDefaultResidents();
+    AphroditeBridge::Config cfg;
+    cfg.max_concurrent_inferences = 1;
+    cfg.inference_cooldown_cycles = 0;
+    AphroditeBridge bridge(cfg);
+    bridge.set_inference_function(
+        [](const AphroditeRequest&) { return std::string("recorded"); });
+
+    std::atomic<int> firstRecorderCalls{0};
+    std::atomic<int> replacementCalls{0};
+    bridge.set_conversation_recorder(
+        [&](const std::string&, const std::string&, const std::string&) {
+            firstRecorderCalls.fetch_add(1);
+            bridge.set_conversation_recorder(
+                [&](const std::string&, const std::string&, const std::string&) {
+                    replacementCalls.fetch_add(1);
+                });
+        });
+
+    ASSERT_TRUE(bridge.infer_async(*vas_, "ada", "one", {}));
+    ASSERT_TRUE(bridge.wait_for_idle(std::chrono::seconds(1)));
+    ASSERT_TRUE(bridge.infer_async(*vas_, "turing", "two", {}));
+    ASSERT_TRUE(bridge.wait_for_idle(std::chrono::seconds(1)));
+    EXPECT_EQ(firstRecorderCalls.load(), 1);
+    EXPECT_EQ(replacementCalls.load(), 1);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, ConcurrentReadsAndWritesUseStableSnapshots) {
+    addDefaultResidents();
+    std::atomic<bool> start{false};
+    std::atomic<int> observations{0};
+    std::vector<std::thread> workers;
+    workers.emplace_back([&] {
+        while (!start.load(std::memory_order_acquire)) std::this_thread::yield();
+        for (int i = 0; i < 400; ++i) {
+            vas_->set_resident_sti("ada", static_cast<double>(i % 101));
+            vas_->add_conversation("ada", "q" + std::to_string(i),
+                                   "a" + std::to_string(i));
+        }
+    });
+    for (int reader = 0; reader < 4; ++reader) {
+        workers.emplace_back([&] {
+            while (!start.load(std::memory_order_acquire)) std::this_thread::yield();
+            for (int i = 0; i < 400; ++i) {
+                const auto residents = vas_->residents_snapshot();
+                if (residents.size() == 3 && residents.count("ada") == 1 &&
+                    !vas_->get_stats_json().empty() &&
+                    !vas_->get_gear_states().empty()) {
+                    observations.fetch_add(1, std::memory_order_relaxed);
+                }
+            }
+        });
+    }
+    start.store(true, std::memory_order_release);
+    for (auto& worker : workers) worker.join();
+    EXPECT_EQ(observations.load(), 1600);
+    EXPECT_EQ(vas_->resident_count(), 3u);
+    const auto detail = nlohmann::json::parse(vas_->get_resident_detail_json("ada"));
+    EXPECT_EQ(detail.at("conversation_history").size(), 5u);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, MalformedLoadIsTransactionalAndPreservesLiveState) {
+    addDefaultResidents();
+    vas_->add_conversation("ada", "live question", "live answer");
+    const auto beforeResidents = vas_->residents_snapshot();
+    const std::string beforeConversation = vas_->get_conversation_context("ada");
+    const std::string jsonPath = persistPath_ + ".transaction.json";
+    vas_->set_persist_path(jsonPath);
+    {
+        std::ofstream out(jsonPath, std::ios::trunc);
+        out << R"({"format":"elizaos.village.state","version":1,"residents":[{"name":7}]})";
+    }
+    EXPECT_FALSE(vas_->load_persisted());
+    EXPECT_EQ(vas_->residents_snapshot().size(), beforeResidents.size());
+    EXPECT_EQ(vas_->get_conversation_context("ada"), beforeConversation);
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, RepeatedLoadIsIdempotentAndDoesNotDuplicateHistory) {
+    addDefaultResidents();
+    vas_->add_episodic("ada", "thought", "single memory");
+    vas_->add_conversation("ada", "single question", "single answer");
+    vas_->add_action("ada", "observe_state", "observed", 9, "corr-9",
+                     true, "event_count:1");
+    const std::string jsonPath = persistPath_ + ".idempotent.json";
+    vas_->set_persist_path(jsonPath);
+    ASSERT_TRUE(vas_->persist());
+
+    VillageAtomSpace successor(config_);
+    successor.set_persist_path(jsonPath);
+    ASSERT_TRUE(successor.load_persisted());
+    ASSERT_TRUE(successor.load_persisted());
+    const auto detail = nlohmann::json::parse(
+        successor.get_resident_detail_json("ada"));
+    EXPECT_EQ(detail.at("episodic_memory").size(), 1u);
+    EXPECT_EQ(detail.at("conversation_history").size(), 1u);
+    ASSERT_EQ(detail.at("actions").size(), 1u);
+    EXPECT_TRUE(detail.at("actions").front().at("success"));
+    EXPECT_EQ(detail.at("actions").front().at("effect_evidence"),
+              "event_count:1");
+
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, PersistenceRejectsOversizeAndResidentCapWithoutMutation) {
+    const std::string jsonPath = persistPath_ + ".bounded.json";
+    AtomSpaceConfig tiny = config_;
+    tiny.persist_path = jsonPath;
+    tiny.max_persist_bytes = 64;
+    VillageAtomSpace tooSmall(tiny);
+    tooSmall.add_resident(makeResident("ada", "symbolic", 1.0));
+    EXPECT_FALSE(tooSmall.persist());
+    EXPECT_FALSE(std::filesystem::exists(jsonPath));
+
+    AtomSpaceConfig sourceConfig = config_;
+    sourceConfig.persist_path = jsonPath;
+    VillageAtomSpace source(sourceConfig);
+    source.add_resident(makeResident("ada", "symbolic", 1.0));
+    source.add_resident(makeResident("turing", "core", 1.0));
+    ASSERT_TRUE(source.persist());
+
+    AtomSpaceConfig capped = sourceConfig;
+    capped.max_atoms = 1;
+    VillageAtomSpace target(capped);
+    target.add_resident(makeResident("sentinel", "core", 1.0));
+    EXPECT_FALSE(target.load_persisted());
+    const auto residents = target.residents_snapshot();
+    EXPECT_EQ(residents.size(), 1u);
+    EXPECT_TRUE(residents.count("sentinel"));
+
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
+    std::filesystem::remove(jsonPath + ".tmp", ec);
+}
+
+TEST_F(VillageAtomSpaceE2ETest, DaemonPersistenceDeclaresVersionedJsonFormat) {
+    addDefaultResidents();
+    const std::string jsonPath = persistPath_ + ".versioned.json";
+    vas_->set_persist_path(jsonPath);
+    ASSERT_TRUE(vas_->persist());
+    std::ifstream in(jsonPath);
+    const auto state = nlohmann::json::parse(in);
+    EXPECT_EQ(state.at("format"), "elizaos.village.state");
+    EXPECT_EQ(state.at("version"), 1);
+    EXPECT_TRUE(state.at("residents").is_array());
+
+    std::error_code ec;
+    std::filesystem::remove(jsonPath, ec);
 }
 
 } // namespace

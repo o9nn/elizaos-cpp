@@ -4,8 +4,13 @@
 #include "elizaos/core.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cctype>
+#include <cmath>
+#include <mutex>
+#include <set>
 #include <thread>
+#include <vector>
 
 using namespace elizaos;
 
@@ -20,12 +25,35 @@ AgentConfig mkConfig() {
 }
 
 bool memoryContains(const AutonomousStarter& agent, const std::string& needle) {
-    for (const auto& memory : agent.getState().getRecentMessages()) {
+    const State snapshot = agent.getStateSnapshot();
+    for (const auto& memory : snapshot.getRecentMessages()) {
         if (memory && memory->getContent().find(needle) != std::string::npos) {
             return true;
         }
     }
     return false;
+}
+
+bool healthSnapshotIsCoherent(const AutonomousStarter::AutonomyHealthReport& report) {
+    if (report.totalCycles != report.totalActions ||
+        report.totalCycles != report.reflections ||
+        report.successfulActions + report.failedActions != report.totalActions ||
+        report.competence < 0.0 || report.competence > 1.0 ||
+        report.actionSuccessRate < 0.0 || report.actionSuccessRate > 1.0 ||
+        report.goalCompletionRate < 0.0 || report.goalCompletionRate > 1.0 ||
+        report.cognitiveMomentum < 0.0 || report.cognitiveMomentum > 1.0 ||
+        report.cycleEfficiency < 0.0 || report.cycleEfficiency > 1.0) {
+        return false;
+    }
+    if (report.totalCycles > 0 &&
+        (report.lastPlan.empty() || report.lastReflection.empty() || report.openGoals == 0)) {
+        return false;
+    }
+    const double expectedSuccessRate = report.totalActions == 0
+        ? 0.0
+        : static_cast<double>(report.successfulActions) /
+              static_cast<double>(report.totalActions);
+    return std::fabs(report.actionSuccessRate - expectedSuccessRate) < 1e-12;
 }
 }
 
@@ -363,6 +391,146 @@ TEST(AutonomousStarter, MultiCycleAutonomyMaintainsGoalPlanAndMemoryTimeline) {
     EXPECT_TRUE(memoryContains(agent, "find tests"));
     EXPECT_TRUE(memoryContains(agent, "Cycle 3 action:"));
     EXPECT_GE(agent.getState().getRecentMessages().size(), 9u);
+}
+
+TEST(AutonomousStarter, ConcurrentLifecycleManualAndBackgroundCyclesStaySerialized) {
+    AutonomousStarter agent(mkConfig());
+    agent.start();
+    agent.setLoopInterval(std::chrono::milliseconds(4));
+    agent.startAutonomousLoop();
+
+    std::atomic<bool> begin{false};
+    std::atomic<bool> readHealth{true};
+    std::atomic<std::size_t> incoherentReports{0};
+    std::mutex returnsMutex;
+    std::vector<std::size_t> manualCycleReturns;
+
+    std::thread healthReader([&] {
+        while (readHealth.load()) {
+            if (!healthSnapshotIsCoherent(agent.getAutonomyHealthReport())) {
+                ++incoherentReports;
+            }
+            std::this_thread::yield();
+        }
+    });
+
+    std::vector<std::thread> manualWorkers;
+    for (int worker = 0; worker < 3; ++worker) {
+        manualWorkers.emplace_back([&] {
+            while (!begin.load()) std::this_thread::yield();
+            for (int cycle = 0; cycle < 2; ++cycle) {
+                const std::size_t completed = agent.runCognitiveCycleOnce();
+                std::lock_guard<std::mutex> lock(returnsMutex);
+                manualCycleReturns.push_back(completed);
+            }
+        });
+    }
+
+    std::thread lifecycleWorker([&] {
+        while (!begin.load()) std::this_thread::yield();
+        agent.setLoopInterval(std::chrono::milliseconds(2));
+        agent.stop();
+        agent.start();
+        agent.startAutonomousLoop();
+        agent.setLoopInterval(std::chrono::milliseconds(3));
+    });
+
+    begin = true;
+    for (auto& worker : manualWorkers) worker.join();
+    lifecycleWorker.join();
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    agent.stopAutonomousLoop();
+    readHealth = false;
+    healthReader.join();
+
+    const auto report = agent.getAutonomyHealthReport();
+    EXPECT_TRUE(healthSnapshotIsCoherent(report));
+    EXPECT_EQ(incoherentReports.load(), 0u);
+    EXPECT_GE(report.totalCycles, manualCycleReturns.size());
+    EXPECT_FALSE(agent.isAutonomousLoopRunning());
+    EXPECT_TRUE(agent.isRunning());
+
+    std::set<std::size_t> uniqueReturns(manualCycleReturns.begin(), manualCycleReturns.end());
+    EXPECT_EQ(manualCycleReturns.size(), 6u);
+    EXPECT_EQ(uniqueReturns.size(), manualCycleReturns.size())
+        << "Every manual call must own one distinct complete cycle";
+    for (const auto cycle : manualCycleReturns) {
+        EXPECT_GE(cycle, 1u);
+        EXPECT_LE(cycle, report.totalCycles);
+    }
+
+    const State state = agent.getStateSnapshot();
+    EXPECT_FALSE(state.getRecentMessages().empty());
+    EXPECT_GE(report.openGoals, 1u);
+    agent.stop();
+}
+
+TEST(AutonomousStarter, TaskWorkerWritesAndHealthReadsShareTheSingleWriterGate) {
+    AutonomousStarter agent(mkConfig());
+    std::vector<UUID> taskIds;
+    for (int i = 0; i < 6; ++i) {
+        const UUID taskId =
+            agent.executeShellCommandAsTask("printf task-writer-" + std::to_string(i));
+        ASSERT_FALSE(taskId.empty());
+        taskIds.push_back(taskId);
+    }
+
+    agent.start();
+    agent.setLoopInterval(std::chrono::milliseconds(3));
+    agent.startAutonomousLoop();
+
+    std::atomic<bool> keepReading{true};
+    std::atomic<std::size_t> incoherentReports{0};
+    std::thread healthReader([&] {
+        while (keepReading.load()) {
+            if (!healthSnapshotIsCoherent(agent.getAutonomyHealthReport())) {
+                ++incoherentReports;
+            }
+            const State snapshot = agent.getStateSnapshot();
+            for (const auto& memory : snapshot.getRecentMessages()) {
+                if (memory) {
+                    (void)memory->getContent().size();
+                }
+            }
+            std::this_thread::yield();
+        }
+    });
+
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+    bool allCompleted = false;
+    while (std::chrono::steady_clock::now() < deadline) {
+        allCompleted = std::all_of(taskIds.begin(), taskIds.end(), [&](const UUID& id) {
+            return memoryContains(agent, "Task completed: " + id);
+        });
+        if (allCompleted) break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    agent.stopAutonomousLoop();
+    keepReading = false;
+    healthReader.join();
+
+    EXPECT_TRUE(allCompleted);
+    EXPECT_EQ(incoherentReports.load(), 0u);
+    EXPECT_TRUE(healthSnapshotIsCoherent(agent.getAutonomyHealthReport()));
+    const State finalState = agent.getStateSnapshot();
+    for (std::size_t i = 0; i < taskIds.size(); ++i) {
+        std::size_t completionRecords = 0;
+        bool foundOutput = false;
+        for (const auto& memory : finalState.getRecentMessages()) {
+            if (!memory) continue;
+            const std::string& content = memory->getContent();
+            if (content.rfind("Task completed: " + taskIds[i], 0) == 0) {
+                ++completionRecords;
+            }
+            if (content.find("task-writer-" + std::to_string(i)) != std::string::npos) {
+                foundOutput = true;
+            }
+        }
+        EXPECT_EQ(completionRecords, 1u);
+        EXPECT_TRUE(foundOutput);
+    }
+    agent.stop();
 }
 
 TEST(AutonomousStarter, PlaceholderLink) {

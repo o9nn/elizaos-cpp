@@ -1,1108 +1,1672 @@
 #include "elizaos/discrub_ext.hpp"
-#include "elizaos/agentlogger.hpp"
+
+#include <nlohmann/json.hpp>
+
 #include <algorithm>
-#include <sstream>
+#include <cctype>
 #include <fstream>
-#include <random>
-#include <chrono>
-#include <cmath>
+#include <iterator>
+#include <map>
+#include <set>
+#include <sstream>
 #include <thread>
-#include <iomanip>
-#include <future>
-#include <unordered_set>
 
 namespace elizaos {
+namespace {
 
-// ============================================================
-// Internal helpers
-// ============================================================
+using Json = nlohmann::json;
+constexpr std::size_t kMaximumArchiveBytes = 8U * 1024U * 1024U;
+constexpr std::size_t kMaximumCachedMessagesPerChannel = 1000;
+constexpr std::size_t kMaximumPaginationPages = 100;
 
-static std::string generateActionId() {
-    static std::random_device rd;
-    static std::mt19937_64 gen(rd());
-    static std::uniform_int_distribution<uint64_t> dis;
-    auto now = std::chrono::system_clock::now().time_since_epoch().count();
-    std::ostringstream oss;
-    oss << std::hex << now << "_" << dis(gen);
-    return oss.str();
+bool validDiscordId(const std::string& value) {
+    return value.size() >= 17 && value.size() <= 20 &&
+           value != std::string(value.size(), '0') &&
+           std::all_of(value.begin(), value.end(), [](unsigned char character) {
+               return std::isdigit(character) != 0;
+           });
 }
 
-static std::string filterActionToString(FilterAction action) {
-    switch (action) {
-        case FilterAction::NONE:    return "NONE";
-        case FilterAction::WARN:    return "WARN";
-        case FilterAction::DELETE:  return "DELETE";
-        case FilterAction::TIMEOUT: return "TIMEOUT";
-        case FilterAction::KICK:    return "KICK";
-        case FilterAction::BAN:     return "BAN";
-        default:                    return "UNKNOWN";
-    }
+bool validOptionalDiscordId(const std::string& value) {
+    return value.empty() || validDiscordId(value);
 }
 
-// ============================================================
-// AutoModerator implementation
-// ============================================================
+bool validReason(const std::string& value, bool allowEmpty = false) {
+    return (allowEmpty || !value.empty()) && value.size() <= DISCRUB_MAX_REASON_LENGTH &&
+           value.find('\0') == std::string::npos;
+}
 
-bool AutoModerator::processMessage(const DiscordMessage& message) {
-    // Scan outside of lock (ContentScanner has its own mutex)
-    auto scanResult = scanner_.scanMessage(message);
-    if (!scanResult.violation) {
-        return true;
+bool validTimestamp(const std::chrono::system_clock::time_point& timestamp) {
+    const auto now = std::chrono::system_clock::now();
+    return timestamp.time_since_epoch().count() > 0 &&
+           timestamp <= now + std::chrono::minutes(5);
+}
+
+std::int64_t toMilliseconds(const std::chrono::system_clock::time_point& value) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               value.time_since_epoch()).count();
+}
+
+std::chrono::system_clock::time_point fromMilliseconds(std::int64_t value) {
+    return std::chrono::system_clock::time_point(std::chrono::milliseconds(value));
+}
+
+DiscordAcknowledgement makeAcknowledgement(DiscordOperationStatus status,
+                                            const std::string& operation,
+                                            const std::string& resource,
+                                            const std::string& detail) {
+    DiscordAcknowledgement result;
+    result.status = status;
+    result.operation = operation;
+    result.resourceId = resource;
+    result.detail = detail;
+    return result;
+}
+
+bool messageLess(const DiscordMessage& left, const DiscordMessage& right) {
+    if (left.timestamp != right.timestamp) {
+        return left.timestamp < right.timestamp;
     }
+    return left.id < right.id;
+}
 
-    UserReputation rep;
-    bool isTrusted = false;
-    bool onCooldown = false;
-    FilterAction action;
-
-    {
-        std::lock_guard<std::mutex> lock(moderatorMutex_);
-        auto& repRef = userReputations_[message.authorId];
-        repRef.userId = message.authorId;
-        rep = repRef;
-        isTrusted = rep.isTrusted;
-        onCooldown = isOnCooldown(message.authorId);
-        action = determineAction(scanResult, rep);
-    }
-
-    if (isTrusted) {
-        logInfo("Trusted user " + message.authorId + " exempted from moderation", "auto_moderator");
-        return true;
-    }
-
-    if (onCooldown) {
-        logInfo("User " + message.authorId + " is on moderation cooldown", "auto_moderator");
+bool pathWithin(const std::filesystem::path& root,
+                const std::filesystem::path& requested,
+                std::filesystem::path& resolved) {
+    if (root.empty() || requested.empty()) {
         return false;
     }
-
-    ModerationAction modAction;
-    modAction.id = generateActionId();
-    modAction.userId = message.authorId;
-    modAction.channelId = message.channelId;
-    modAction.messageId = message.id;
-    modAction.action = action;
-    modAction.reason = scanResult.reason;
-
-    {
-        std::lock_guard<std::mutex> lock(moderatorMutex_);
-        logAction(modAction);
-    }
-
-    return executeAction(modAction);
-}
-
-bool AutoModerator::processEdit(const DiscordMessage& /* oldMessage */, const DiscordMessage& newMessage) {
-    return processMessage(newMessage);
-}
-
-bool AutoModerator::reviewUser(const std::string& userId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto it = userReputations_.find(userId);
-    if (it == userReputations_.end()) {
-        logInfo("No reputation data for user: " + userId, "auto_moderator");
-        return true;
-    }
-
-    const auto& rep = it->second;
-    if (autoEscalation_ && shouldEscalate(rep)) {
-        logWarning("User " + userId + " flagged for review escalation (score: " +
-                   std::to_string(rep.reputationScore) + ")", "auto_moderator");
+    std::error_code error;
+    const auto canonicalRoot = std::filesystem::weakly_canonical(root, error);
+    if (error) {
         return false;
     }
-
-    return true;
-}
-
-bool AutoModerator::executeAction(const ModerationAction& action) {
-    switch (action.action) {
-        case FilterAction::NONE:
-            return true;
-        case FilterAction::WARN:
-            return warnUser(action.userId, action.reason, action.channelId);
-        case FilterAction::DELETE:
-            return deleteMessage(action.channelId, action.messageId, action.reason);
-        case FilterAction::TIMEOUT:
-            return timeoutUser(action.userId, 10, action.reason);
-        case FilterAction::KICK:
-            return kickUser(action.userId, action.reason);
-        case FilterAction::BAN:
-            return banUser(action.userId, action.reason);
-        default:
+    const auto candidate = requested.is_absolute() ? requested : canonicalRoot / requested;
+    resolved = std::filesystem::weakly_canonical(candidate, error);
+    if (error) {
+        return false;
+    }
+    auto rootIterator = canonicalRoot.begin();
+    auto candidateIterator = resolved.begin();
+    while (rootIterator != canonicalRoot.end() && candidateIterator != resolved.end()) {
+        if (*rootIterator != *candidateIterator) {
             return false;
-    }
-}
-
-bool AutoModerator::warnUser(const std::string& userId, const std::string& reason,
-                              const std::string& channelId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.warningCount++;
-    rep.reputationScore = std::max(-1000, rep.reputationScore - 5);
-    rep.lastIncident = std::chrono::system_clock::now();
-    rep.violations.push_back("Warning: " + reason);
-
-    ModerationAction action;
-    action.id = generateActionId();
-    action.userId = userId;
-    action.channelId = channelId;
-    action.action = FilterAction::WARN;
-    action.reason = reason;
-    actionHistory_[action.id] = action;
-
-    logWarning("Warning issued to user " + userId + ": " + reason, "auto_moderator");
-    return true;
-}
-
-bool AutoModerator::timeoutUser(const std::string& userId, int minutes, const std::string& reason) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.timeoutCount++;
-    rep.reputationScore = std::max(-1000, rep.reputationScore - 15);
-    rep.lastIncident = std::chrono::system_clock::now();
-    rep.violations.push_back("Timeout (" + std::to_string(minutes) + "m): " + reason);
-
-    ModerationAction action;
-    action.id = generateActionId();
-    action.userId = userId;
-    action.action = FilterAction::TIMEOUT;
-    action.reason = reason + " (duration: " + std::to_string(minutes) + " min)";
-    actionHistory_[action.id] = action;
-
-    logWarning("Timeout issued to user " + userId + " for " + std::to_string(minutes) +
-               " minutes: " + reason, "auto_moderator");
-    return true;
-}
-
-bool AutoModerator::kickUser(const std::string& userId, const std::string& reason) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.kickCount++;
-    rep.reputationScore = std::max(-1000, rep.reputationScore - 25);
-    rep.lastIncident = std::chrono::system_clock::now();
-    rep.violations.push_back("Kick: " + reason);
-
-    ModerationAction action;
-    action.id = generateActionId();
-    action.userId = userId;
-    action.action = FilterAction::KICK;
-    action.reason = reason;
-    actionHistory_[action.id] = action;
-
-    logWarning("Kick issued to user " + userId + ": " + reason, "auto_moderator");
-    return true;
-}
-
-bool AutoModerator::banUser(const std::string& userId, const std::string& reason,
-                             int deleteMessageDays) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.banCount++;
-    rep.reputationScore = std::max(-1000, rep.reputationScore - 100);
-    rep.lastIncident = std::chrono::system_clock::now();
-    rep.violations.push_back("Ban: " + reason);
-
-    ModerationAction action;
-    action.id = generateActionId();
-    action.userId = userId;
-    action.action = FilterAction::BAN;
-    action.reason = reason + " (delete_days: " + std::to_string(deleteMessageDays) + ")";
-    actionHistory_[action.id] = action;
-
-    logWarning("Ban issued to user " + userId + ": " + reason, "auto_moderator");
-    return true;
-}
-
-bool AutoModerator::deleteMessage(const std::string& channelId, const std::string& messageId,
-                                   const std::string& reason) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    ModerationAction action;
-    action.id = generateActionId();
-    action.channelId = channelId;
-    action.messageId = messageId;
-    action.action = FilterAction::DELETE;
-    action.reason = reason;
-    actionHistory_[action.id] = action;
-
-    logInfo("Message " + messageId + " in channel " + channelId +
-            " marked for deletion: " + reason, "auto_moderator");
-    return true;
-}
-
-void AutoModerator::updateUserReputation(const std::string& userId, int change,
-                                          const std::string& reason) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.reputationScore = std::max(-1000, std::min(1000, rep.reputationScore + change));
-    rep.lastIncident = std::chrono::system_clock::now();
-    if (!reason.empty()) {
-        rep.violations.push_back(reason);
-    }
-
-    logInfo("Updated reputation for " + userId + " by " + std::to_string(change) +
-            " (new score: " + std::to_string(rep.reputationScore) + ")", "auto_moderator");
-}
-
-UserReputation AutoModerator::getUserReputation(const std::string& userId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto it = userReputations_.find(userId);
-    if (it != userReputations_.end()) {
-        return it->second;
-    }
-    return UserReputation(userId);
-}
-
-void AutoModerator::setTrustedUser(const std::string& userId, bool trusted) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto& rep = userReputations_[userId];
-    rep.userId = userId;
-    rep.isTrusted = trusted;
-
-    logInfo("User " + userId + " trust set to: " + (trusted ? "trusted" : "untrusted"),
-            "auto_moderator");
-}
-
-void AutoModerator::setStrictMode(bool strict) {
-    strictMode_ = strict;
-    logInfo(std::string("Strict mode ") + (strict ? "enabled" : "disabled"), "auto_moderator");
-}
-
-void AutoModerator::setAutoEscalation(bool enable) {
-    autoEscalation_ = enable;
-    logInfo(std::string("Auto-escalation ") + (enable ? "enabled" : "disabled"), "auto_moderator");
-}
-
-void AutoModerator::setReputationThreshold(int threshold) {
-    reputationThreshold_ = threshold;
-    logInfo("Reputation threshold set to: " + std::to_string(threshold), "auto_moderator");
-}
-
-void AutoModerator::setActionCooldown(int seconds) {
-    actionCooldownSeconds_ = seconds;
-    logInfo("Action cooldown set to: " + std::to_string(seconds) + " seconds", "auto_moderator");
-}
-
-std::vector<ModerationAction> AutoModerator::getUserActions(const std::string& userId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    std::vector<ModerationAction> result;
-    for (const auto& [id, action] : actionHistory_) {
-        if (action.userId == userId) {
-            result.push_back(action);
         }
+        ++rootIterator;
+        ++candidateIterator;
     }
-
-    std::sort(result.begin(), result.end(),
-              [](const ModerationAction& a, const ModerationAction& b) {
-                  return a.timestamp < b.timestamp;
-              });
-
-    return result;
+    return rootIterator == canonicalRoot.end();
 }
 
-std::vector<ModerationAction> AutoModerator::getChannelActions(const std::string& channelId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    std::vector<ModerationAction> result;
-    for (const auto& [id, action] : actionHistory_) {
-        if (action.channelId == channelId) {
-            result.push_back(action);
-        }
-    }
-
-    std::sort(result.begin(), result.end(),
-              [](const ModerationAction& a, const ModerationAction& b) {
-                  return a.timestamp < b.timestamp;
-              });
-
-    return result;
+Json messageToJson(const DiscordMessage& message) {
+    return Json{{"id", message.id},
+                {"channelId", message.channelId},
+                {"guildId", message.guildId},
+                {"authorId", message.authorId},
+                {"authorName", message.authorName},
+                {"content", message.content},
+                {"timestampMs", toMilliseconds(message.timestamp)},
+                {"attachments", message.attachments},
+                {"embeds", message.embeds},
+                {"reactions", message.reactions},
+                {"isBot", message.isBot}};
 }
 
-std::vector<ModerationAction> AutoModerator::getRecentActions(int hours) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto cutoff = std::chrono::system_clock::now() - std::chrono::hours(hours);
-
-    std::vector<ModerationAction> result;
-    for (const auto& [id, action] : actionHistory_) {
-        if (action.timestamp >= cutoff) {
-            result.push_back(action);
-        }
-    }
-
-    std::sort(result.begin(), result.end(),
-              [](const ModerationAction& a, const ModerationAction& b) {
-                  return a.timestamp < b.timestamp;
-              });
-
-    return result;
-}
-
-bool AutoModerator::submitAppeal(const std::string& actionId, const std::string& reason) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto it = actionHistory_.find(actionId);
-    if (it == actionHistory_.end()) {
-        logError("Appeal for unknown action: " + actionId, "auto_moderator");
+bool jsonToMessage(const Json& json, DiscordMessage& message) {
+    try {
+        message.id = json.at("id").get<std::string>();
+        message.channelId = json.at("channelId").get<std::string>();
+        message.guildId = json.value("guildId", std::string{});
+        message.authorId = json.at("authorId").get<std::string>();
+        message.authorName = json.value("authorName", std::string{});
+        message.content = json.at("content").get<std::string>();
+        message.timestamp = fromMilliseconds(json.at("timestampMs").get<std::int64_t>());
+        message.attachments = json.value("attachments", std::vector<std::string>{});
+        message.embeds = json.value("embeds", std::vector<std::string>{});
+        message.reactions = json.value("reactions", std::vector<std::string>{});
+        message.isBot = json.value("isBot", false);
+    } catch (...) {
         return false;
     }
-
-    it->second.appealed = true;
-    it->second.appealReason = reason;
-
-    logInfo("Appeal submitted for action " + actionId + ": " + reason, "auto_moderator");
-    return true;
+    return validDiscordId(message.id) && validDiscordId(message.channelId) &&
+           validOptionalDiscordId(message.guildId) && validDiscordId(message.authorId) &&
+           validTimestamp(message.timestamp) &&
+           message.content.size() <= DISCRUB_MAX_CONTENT_LENGTH;
 }
 
-bool AutoModerator::reviewAppeal(const std::string& actionId, bool approved,
-                                  const std::string& moderatorId) {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    auto it = actionHistory_.find(actionId);
-    if (it == actionHistory_.end()) {
-        logError("Review for unknown action: " + actionId, "auto_moderator");
-        return false;
-    }
-
-    if (!it->second.appealed) {
-        logError("No pending appeal for action: " + actionId, "auto_moderator");
-        return false;
-    }
-
-    it->second.moderatorId = moderatorId;
-
-    if (approved) {
-        auto& rep = userReputations_[it->second.userId];
-        int restoration = 0;
-        switch (it->second.action) {
-            case FilterAction::WARN:
-                rep.warningCount = std::max(0, rep.warningCount - 1);
-                restoration = 5;
-                break;
-            case FilterAction::TIMEOUT:
-                rep.timeoutCount = std::max(0, rep.timeoutCount - 1);
-                restoration = 15;
-                break;
-            case FilterAction::KICK:
-                rep.kickCount = std::max(0, rep.kickCount - 1);
-                restoration = 25;
-                break;
-            case FilterAction::BAN:
-                rep.banCount = std::max(0, rep.banCount - 1);
-                restoration = 100;
-                break;
-            default:
-                break;
-        }
-        rep.reputationScore = std::min(1000, rep.reputationScore + restoration);
-        logInfo("Appeal APPROVED for action " + actionId + " by " + moderatorId, "auto_moderator");
-    } else {
-        logInfo("Appeal DENIED for action " + actionId + " by " + moderatorId, "auto_moderator");
-    }
-
-    // Mark appeal as reviewed
-    it->second.appealed = false;
-
-    return true;
-}
-
-std::vector<ModerationAction> AutoModerator::getPendingAppeals() {
-    std::lock_guard<std::mutex> lock(moderatorMutex_);
-
-    std::vector<ModerationAction> result;
-    for (const auto& [id, action] : actionHistory_) {
-        if (action.appealed) {
-            result.push_back(action);
+std::string escapeHtml(const std::string& value) {
+    std::string result;
+    result.reserve(value.size());
+    for (char character : value) {
+        switch (character) {
+            case '&': result += "&amp;"; break;
+            case '<': result += "&lt;"; break;
+            case '>': result += "&gt;"; break;
+            case '"': result += "&quot;"; break;
+            case '\'': result += "&#39;"; break;
+            default: result.push_back(character); break;
         }
     }
-
     return result;
 }
 
-FilterAction AutoModerator::determineAction(const ContentScanner::ScanResult& scanResult,
-                                             const UserReputation& reputation) {
-    FilterAction base = scanResult.recommendedAction;
+} // namespace
 
-    auto escalate = [](FilterAction a) {
-        int next = static_cast<int>(a) + 1;
-        return (next <= static_cast<int>(FilterAction::BAN))
-                   ? static_cast<FilterAction>(next)
-                   : FilterAction::BAN;
-    };
+ContentCleaner::ContentCleaner() = default;
 
-    if (autoEscalation_ && shouldEscalate(reputation)) {
-        base = escalate(base);
+ContentCleaner::ContentCleaner(
+    std::shared_ptr<DiscordDataAdapter> dataAdapter,
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter)
+    : dataAdapter_(std::move(dataAdapter)),
+      mutationAdapter_(std::move(mutationAdapter)) {}
+
+ContentCleaner::~ContentCleaner() {
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        cleanupRunning_.store(false);
     }
-
-    if (strictMode_) {
-        base = escalate(base);
+    cleanupCv_.notify_all();
+    if (cleanupThread_.joinable()) {
+        cleanupThread_.join();
     }
-
-    return base;
 }
 
-bool AutoModerator::shouldEscalate(const UserReputation& reputation) {
-    return reputation.reputationScore < reputationThreshold_ ||
-           reputation.warningCount >= 3 ||
-           reputation.timeoutCount >= 2;
+void ContentCleaner::setAdapters(
+    std::shared_ptr<DiscordDataAdapter> dataAdapter,
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter) {
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    dataAdapter_ = std::move(dataAdapter);
+    mutationAdapter_ = std::move(mutationAdapter);
 }
 
-bool AutoModerator::isOnCooldown(const std::string& userId) {
-    auto cutoff = std::chrono::system_clock::now() -
-                  std::chrono::seconds(actionCooldownSeconds_);
+void ContentCleaner::setRetryPolicy(int maxAttempts,
+                                    std::chrono::milliseconds maximumDelay) {
+    if (maxAttempts < 1 || maxAttempts > 5 || maximumDelay.count() < 0 ||
+        maximumDelay > std::chrono::seconds(5)) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    maxAttempts_ = maxAttempts;
+    maximumRetryDelay_ = maximumDelay;
+}
 
-    for (const auto& [id, action] : actionHistory_) {
-        if (action.userId == userId && action.timestamp >= cutoff) {
-            return true;
+bool ContentCleaner::setStorageRoot(const std::string& rootPath) {
+    if (rootPath.empty() || rootPath.size() > 4096) {
+        return false;
+    }
+    std::error_code error;
+    std::filesystem::create_directories(rootPath, error);
+    if (error) {
+        return false;
+    }
+    const auto root = std::filesystem::weakly_canonical(rootPath, error);
+    if (error || !std::filesystem::is_directory(root, error)) {
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    storageRoot_ = root;
+    return true;
+}
+
+std::string ContentCleaner::getStorageRoot() const {
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    return storageRoot_.string();
+}
+
+MessagePage ContentCleaner::fetchMessages(const MessageQuery& query) {
+    if (!validDiscordId(query.channelId) || !validOptionalDiscordId(query.guildId) ||
+        query.limit == 0 || query.limit > DISCRUB_MAX_PAGE_SIZE ||
+        query.searchText.size() > 256 || query.cursor.size() > 256 ||
+        (query.after && query.before && *query.after > *query.before)) {
+        MessagePage page;
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::INVALID_INPUT, "fetch_messages", query.channelId,
+            "invalid query ids, bounds, cursor, or time range");
+        return page;
+    }
+    std::shared_ptr<DiscordDataAdapter> adapter;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        adapter = dataAdapter_;
+    }
+    if (!adapter) {
+        MessagePage page;
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::NO_ADAPTER, "fetch_messages", query.channelId,
+            "remote fetch requires a DiscordDataAdapter");
+        return page;
+    }
+    MessagePage page;
+    try {
+        page = adapter->fetchMessages(query);
+    } catch (...) {
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::ADAPTER_ERROR, "fetch_messages", query.channelId,
+            "data adapter threw an exception");
+        return page;
+    }
+    page.acknowledgement.operation = "fetch_messages";
+    page.acknowledgement.resourceId = query.channelId;
+    page.acknowledgement.attempts = 1;
+    if (page.acknowledgement.acknowledged() && page.acknowledgement.receiptId.empty()) {
+        page.acknowledgement.status = DiscordOperationStatus::ADAPTER_ERROR;
+        page.acknowledgement.detail = "fetch acknowledgement omitted receipt";
+        page.messages.clear();
+        page.nextCursor.clear();
+        page.hasMore = false;
+        return page;
+    }
+    if (!page.acknowledgement.acknowledged()) {
+        page.messages.clear();
+        page.nextCursor.clear();
+        page.hasMore = false;
+        return page;
+    }
+    if (page.messages.size() > query.limit || page.nextCursor.size() > 256 ||
+        (page.hasMore && (page.nextCursor.empty() || page.nextCursor == query.cursor))) {
+        page.acknowledgement.status = DiscordOperationStatus::ADAPTER_ERROR;
+        page.acknowledgement.detail = "adapter returned invalid pagination metadata";
+        page.messages.clear();
+        page.nextCursor.clear();
+        page.hasMore = false;
+        return page;
+    }
+    std::set<std::string> ids;
+    for (const auto& message : page.messages) {
+        const bool matchesQuery = message.channelId == query.channelId &&
+            (query.guildId.empty() || message.guildId == query.guildId) &&
+            (query.includeBots || !message.isBot) &&
+            (!query.after || message.timestamp >= *query.after) &&
+            (!query.before || message.timestamp <= *query.before);
+        if (!matchesQuery || !validDiscordId(message.id) ||
+            !validDiscordId(message.authorId) || !validTimestamp(message.timestamp) ||
+            message.content.size() > DISCRUB_MAX_CONTENT_LENGTH ||
+            !ids.insert(message.id).second) {
+            page.acknowledgement.status = DiscordOperationStatus::ADAPTER_ERROR;
+            page.acknowledgement.detail = "adapter returned malformed or duplicate message";
+            page.messages.clear();
+            page.nextCursor.clear();
+            page.hasMore = false;
+            return page;
         }
     }
-    return false;
+    std::sort(page.messages.begin(), page.messages.end(), messageLess);
+    return page;
 }
 
-void AutoModerator::logAction(const ModerationAction& action) {
-    actionHistory_[action.id] = action;
-    logInfo("Moderation action [" + filterActionToString(action.action) +
-            "] for user " + action.userId + ": " + action.reason, "auto_moderator");
-}
-
-// ============================================================
-// ContentCleaner implementation
-// ============================================================
-
-ContentCleaner::CleanupResult ContentCleaner::cleanChannel(const std::string& channelId,
-                                                            const CleanupConfig& config) {
-    CleanupResult result;
-
-    logInfo("Starting cleanup for channel: " + channelId, "content_cleaner");
-
-    // In a production system this fetches messages via Discord API.
-    // findMessagesToDelete returns an empty vector when no client is available.
-    auto toDelete = findMessagesToDelete(channelId, config);
-
-    std::vector<std::string> ids;
-    for (const auto& msg : toDelete) {
-        ids.push_back(msg.id);
-        result.messagesDeleted++;
-
-        if (config.deleteSpam   && isSpamMessage(msg))               result.spamRemoved++;
-        if (config.deleteEmpty  && isEmptyMessage(msg))              result.emptyRemoved++;
-        if (config.deleteOldMessages && isOldMessage(msg, config.maxAge)) result.oldRemoved++;
+MessagePage ContentCleaner::searchMessages(const MessageQuery& query) {
+    if (query.searchText.empty() || query.searchText.size() > 256 ||
+        !validDiscordId(query.channelId) || !validOptionalDiscordId(query.guildId) ||
+        query.limit == 0 || query.limit > DISCRUB_MAX_PAGE_SIZE ||
+        query.cursor.size() > 256 ||
+        (query.after && query.before && *query.after > *query.before)) {
+        MessagePage page;
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::INVALID_INPUT, "search_messages", query.channelId,
+            "invalid search query");
+        return page;
     }
+    std::shared_ptr<DiscordDataAdapter> adapter;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        adapter = dataAdapter_;
+    }
+    if (!adapter) {
+        MessagePage page;
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::NO_ADAPTER, "search_messages", query.channelId,
+            "remote search requires a DiscordDataAdapter");
+        return page;
+    }
+    MessagePage page;
+    try {
+        page = adapter->searchMessages(query);
+    } catch (...) {
+        page.acknowledgement = makeAcknowledgement(
+            DiscordOperationStatus::ADAPTER_ERROR, "search_messages", query.channelId,
+            "data adapter threw an exception");
+        return page;
+    }
+    page.acknowledgement.operation = "search_messages";
+    page.acknowledgement.resourceId = query.channelId;
+    page.acknowledgement.attempts = 1;
+    if (!page.acknowledgement.acknowledged() ||
+        page.acknowledgement.receiptId.empty() || page.messages.size() > query.limit ||
+        page.nextCursor.size() > 256 ||
+        (page.hasMore && (page.nextCursor.empty() || page.nextCursor == query.cursor))) {
+        if (page.acknowledgement.acknowledged()) {
+            page.acknowledgement.status = DiscordOperationStatus::ADAPTER_ERROR;
+            page.acknowledgement.detail = "invalid search acknowledgement or pagination";
+        }
+        page.messages.clear();
+        page.nextCursor.clear();
+        page.hasMore = false;
+        return page;
+    }
+    const std::string needle = query.searchText;
+    std::set<std::string> ids;
+    for (const auto& message : page.messages) {
+        const bool matches = message.channelId == query.channelId &&
+            (query.guildId.empty() || message.guildId == query.guildId) &&
+            message.content.find(needle) != std::string::npos &&
+            (query.includeBots || !message.isBot) &&
+            (!query.after || message.timestamp >= *query.after) &&
+            (!query.before || message.timestamp <= *query.before);
+        if (!matches || !validDiscordId(message.id) ||
+            !validDiscordId(message.authorId) || !validTimestamp(message.timestamp) ||
+            message.content.size() > DISCRUB_MAX_CONTENT_LENGTH ||
+            !ids.insert(message.id).second) {
+            page.acknowledgement.status = DiscordOperationStatus::ADAPTER_ERROR;
+            page.acknowledgement.detail = "adapter returned invalid search evidence";
+            page.messages.clear();
+            page.nextCursor.clear();
+            page.hasMore = false;
+            return page;
+        }
+    }
+    std::sort(page.messages.begin(), page.messages.end(), messageLess);
+    return page;
+}
 
-    if (config.deleteDuplicates) {
-        auto groups = findDuplicateMessages(channelId);
-        for (auto& group : groups) {
-            for (size_t i = 1; i < group.size(); ++i) {
-                ids.push_back(group[i].id);
-                result.duplicatesRemoved++;
-                result.messagesDeleted++;
+std::vector<DiscordMessage> ContentCleaner::fetchAllMessages(
+    const MessageQuery& query, DiscordAcknowledgement& result) {
+    std::vector<DiscordMessage> messages;
+    std::set<std::string> seenIds;
+    std::set<std::string> seenCursors;
+    MessageQuery pageQuery = query;
+    pageQuery.limit = DISCRUB_MAX_PAGE_SIZE;
+    for (std::size_t pageIndex = 0; pageIndex < kMaximumPaginationPages; ++pageIndex) {
+        if (!seenCursors.insert(pageQuery.cursor).second) {
+            result = makeAcknowledgement(DiscordOperationStatus::ADAPTER_ERROR,
+                                         "fetch_messages", query.channelId,
+                                         "pagination cursor cycle detected");
+            return {};
+        }
+        auto page = fetchMessages(pageQuery);
+        result = page.acknowledgement;
+        if (!result.acknowledged()) {
+            return {};
+        }
+        for (const auto& message : page.messages) {
+            if (seenIds.insert(message.id).second) {
+                messages.push_back(message);
             }
         }
-    }
-
-    if (!ids.empty()) {
-        if (!bulkDeleteMessages(channelId, ids)) {
-            result.errors.push_back("Bulk delete failed for channel " + channelId);
+        if (!page.hasMore) {
+            std::sort(messages.begin(), messages.end(), messageLess);
+            return messages;
         }
+        pageQuery.cursor = page.nextCursor;
     }
+    result = makeAcknowledgement(DiscordOperationStatus::ADAPTER_ERROR,
+                                 "fetch_messages", query.channelId,
+                                 "pagination exceeded safety bound");
+    return {};
+}
 
-    logInfo("Cleanup complete for channel " + channelId + ": deleted " +
-            std::to_string(result.messagesDeleted) + " messages", "content_cleaner");
-
+DiscordAcknowledgement ContentCleaner::invokeMutation(
+    const std::string& operation, const std::string& resourceId,
+    const std::function<DiscordAcknowledgement(DiscordMutationAdapter&)>& call) {
+    std::shared_ptr<DiscordMutationAdapter> adapter;
+    int attempts = 1;
+    std::chrono::milliseconds maximumDelay{0};
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        adapter = mutationAdapter_;
+        attempts = maxAttempts_;
+        maximumDelay = maximumRetryDelay_;
+    }
+    if (!adapter) {
+        return makeAcknowledgement(DiscordOperationStatus::NO_ADAPTER, operation,
+                                   resourceId,
+                                   "remote mutation requires a DiscordMutationAdapter");
+    }
+    DiscordAcknowledgement result;
+    for (int attempt = 1; attempt <= attempts; ++attempt) {
+        try {
+            result = call(*adapter);
+        } catch (...) {
+            result = makeAcknowledgement(DiscordOperationStatus::ADAPTER_ERROR,
+                                         operation, resourceId,
+                                         "mutation adapter threw an exception");
+        }
+        result.operation = operation;
+        result.resourceId = resourceId;
+        result.attempts = attempt;
+        if (result.acknowledged() && result.receiptId.empty()) {
+            result.status = DiscordOperationStatus::ADAPTER_ERROR;
+            result.detail = "acknowledgement omitted receipt";
+        }
+        if (!result.retryable() || attempt == attempts) {
+            return result;
+        }
+        const auto requested = std::max(result.retryAfter, std::chrono::milliseconds(0));
+        std::this_thread::sleep_for(std::min(requested, maximumDelay));
+    }
     return result;
 }
 
-ContentCleaner::CleanupResult ContentCleaner::cleanGuild(const std::string& guildId,
-                                                          const CleanupConfig& config) {
-    CleanupResult total;
-
-    logInfo("Starting guild-wide cleanup for: " + guildId, "content_cleaner");
-
-    // Aggregate results across all scheduled channels for this guild.
-    // A full implementation would enumerate guild channels via the Discord API.
-    auto channelResults = cleanAllChannels(config);
-    for (const auto& r : channelResults) {
-        total.messagesDeleted   += r.messagesDeleted;
-        total.duplicatesRemoved += r.duplicatesRemoved;
-        total.spamRemoved       += r.spamRemoved;
-        total.emptyRemoved      += r.emptyRemoved;
-        total.oldRemoved        += r.oldRemoved;
-        total.errors.insert(total.errors.end(), r.errors.begin(), r.errors.end());
+ContentCleaner::CleanupResult ContentCleaner::cleanChannel(
+    const std::string& channelId, const CleanupConfig& config) {
+    CleanupResult result;
+    if (!validDiscordId(channelId) || config.maxAge.count() < 0 ||
+        config.maxDuplicateCount < 1 || config.maxDuplicateCount > 100) {
+        result.status = DiscordOperationStatus::INVALID_INPUT;
+        result.errors.push_back("invalid channel or cleanup configuration");
+        return result;
     }
+    if (std::find(config.preserveChannels.begin(), config.preserveChannels.end(),
+                  channelId) != config.preserveChannels.end()) {
+        result.status = DiscordOperationStatus::LOCAL_ONLY;
+        return result;
+    }
+    MessageQuery query;
+    query.channelId = channelId;
+    DiscordAcknowledgement fetchResult;
+    auto messages = fetchAllMessages(query, fetchResult);
+    if (!fetchResult.acknowledged()) {
+        result.status = fetchResult.status;
+        result.errors.push_back(fetchResult.detail);
+        return result;
+    }
+    result.messagesScanned = static_cast<int>(messages.size());
+    std::set<std::string> selectedIds;
+    std::map<std::string, int> normalizedCounts;
+    for (const auto& message : messages) {
+        const bool spam = config.deleteSpam && isSpamMessage(message);
+        const bool empty = config.deleteEmpty && isEmptyMessage(message);
+        const bool old = config.deleteOldMessages && isOldMessage(message, config.maxAge);
+        const std::string normalized = [&message] {
+            std::string value;
+            for (char rawCharacter : message.content) {
+                const auto character = static_cast<unsigned char>(rawCharacter);
+                if (std::isspace(character) == 0) {
+                    value.push_back(static_cast<char>(std::tolower(character)));
+                }
+            }
+            return value;
+        }();
+        int duplicateOrdinal = 0;
+        if (config.deleteDuplicates && !normalized.empty()) {
+            duplicateOrdinal = ++normalizedCounts[normalized];
+        }
+        const bool duplicate = duplicateOrdinal > config.maxDuplicateCount;
+        if (spam || empty || old || duplicate || (config.deleteBot && message.isBot)) {
+            selectedIds.insert(message.id);
+            if (spam) { ++result.spamRemoved; }
+            if (empty) { ++result.emptyRemoved; }
+            if (old) { ++result.oldRemoved; }
+            if (duplicate) { ++result.duplicatesRemoved; }
+        }
+    }
+    if (selectedIds.empty()) {
+        result.status = DiscordOperationStatus::ACKNOWLEDGED;
+        result.acknowledgements.push_back(fetchResult);
+        return result;
+    }
+    std::vector<std::string> ids(selectedIds.begin(), selectedIds.end());
+    const auto mutation = bulkDeleteMessagesAcknowledged(channelId, ids,
+                                                          "bounded content cleanup");
+    result.acknowledgements.push_back(mutation);
+    result.status = mutation.status;
+    if (mutation.acknowledged()) {
+        result.messagesDeleted = static_cast<int>(ids.size());
+        for (const auto& id : ids) {
+            observeMessageDelete(channelId, id);
+        }
+    } else {
+        result.errors.push_back(mutation.detail);
+        result.duplicatesRemoved = 0;
+        result.spamRemoved = 0;
+        result.emptyRemoved = 0;
+        result.oldRemoved = 0;
+    }
+    return result;
+}
 
-    logInfo("Guild cleanup complete for: " + guildId, "content_cleaner");
+ContentCleaner::CleanupResult ContentCleaner::cleanGuild(
+    const std::string& guildId, const CleanupConfig& config) {
+    CleanupResult total;
+    if (!validDiscordId(guildId)) {
+        total.status = DiscordOperationStatus::INVALID_INPUT;
+        total.errors.push_back("invalid guild id");
+        return total;
+    }
+    std::shared_ptr<DiscordDataAdapter> adapter;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        adapter = dataAdapter_;
+    }
+    if (!adapter) {
+        total.status = DiscordOperationStatus::NO_ADAPTER;
+        total.errors.push_back("guild cleanup requires a DiscordDataAdapter");
+        return total;
+    }
+    std::vector<DiscordChannel> channels;
+    std::set<std::string> cursors;
+    std::string cursor;
+    for (std::size_t index = 0; index < kMaximumPaginationPages; ++index) {
+        if (!cursors.insert(cursor).second) {
+            total.status = DiscordOperationStatus::ADAPTER_ERROR;
+            total.errors.push_back("channel pagination cursor cycle detected");
+            return total;
+        }
+        ChannelPage page;
+        try {
+            page = adapter->fetchGuildChannels(guildId, cursor,
+                                               DISCRUB_MAX_PAGE_SIZE);
+        } catch (...) {
+            total.status = DiscordOperationStatus::ADAPTER_ERROR;
+            total.errors.push_back("channel adapter threw an exception");
+            return total;
+        }
+        if (!page.acknowledgement.acknowledged() ||
+            page.acknowledgement.receiptId.empty() ||
+            page.channels.size() > DISCRUB_MAX_PAGE_SIZE ||
+            (page.hasMore && (page.nextCursor.empty() || page.nextCursor == cursor))) {
+            total.status = page.acknowledgement.acknowledged()
+                ? DiscordOperationStatus::ADAPTER_ERROR
+                : page.acknowledgement.status;
+            total.errors.push_back("guild channel enumeration not acknowledged");
+            return total;
+        }
+        for (const auto& channel : page.channels) {
+            if (!validDiscordId(channel.id) || channel.guildId != guildId) {
+                total.status = DiscordOperationStatus::ADAPTER_ERROR;
+                total.errors.push_back("malformed guild channel evidence");
+                return total;
+            }
+            channels.push_back(channel);
+        }
+        if (!page.hasMore) {
+            break;
+        }
+        cursor = page.nextCursor;
+    }
+    std::sort(channels.begin(), channels.end(),
+              [](const DiscordChannel& left, const DiscordChannel& right) {
+                  return left.id < right.id;
+              });
+    total.status = DiscordOperationStatus::ACKNOWLEDGED;
+    for (const auto& channel : channels) {
+        if (std::find(config.preserveChannels.begin(), config.preserveChannels.end(),
+                      channel.id) != config.preserveChannels.end()) {
+            continue;
+        }
+        const auto result = cleanChannel(channel.id, config);
+        total.messagesScanned += result.messagesScanned;
+        total.messagesDeleted += result.messagesDeleted;
+        total.duplicatesRemoved += result.duplicatesRemoved;
+        total.spamRemoved += result.spamRemoved;
+        total.emptyRemoved += result.emptyRemoved;
+        total.oldRemoved += result.oldRemoved;
+        total.acknowledgements.insert(total.acknowledgements.end(),
+                                      result.acknowledgements.begin(),
+                                      result.acknowledgements.end());
+        total.errors.insert(total.errors.end(), result.errors.begin(), result.errors.end());
+        if (!result.acknowledged()) {
+            total.status = result.status;
+        }
+    }
     return total;
 }
 
 std::vector<ContentCleaner::CleanupResult> ContentCleaner::cleanAllChannels(
     const CleanupConfig& config) {
     std::vector<std::string> channels;
-
     {
         std::lock_guard<std::mutex> lock(cleanerMutex_);
-        for (const auto& [channelId, _] : scheduledCleanups_) {
-            bool preserved = std::any_of(config.preserveChannels.begin(),
-                                         config.preserveChannels.end(),
-                                         [&channelId](const std::string& c) {
-                                             return c == channelId;
-                                         });
-            if (!preserved) {
-                channels.push_back(channelId);
-            }
+        for (const auto& entry : scheduledCleanups_) {
+            channels.push_back(entry.first);
         }
     }
-
+    std::sort(channels.begin(), channels.end());
     std::vector<CleanupResult> results;
     results.reserve(channels.size());
-    for (const auto& ch : channels) {
-        results.push_back(cleanChannel(ch, config));
+    for (const auto& channel : channels) {
+        if (std::find(config.preserveChannels.begin(), config.preserveChannels.end(),
+                      channel) == config.preserveChannels.end()) {
+            results.push_back(cleanChannel(channel, config));
+        }
     }
-
     return results;
 }
 
 void ContentCleaner::scheduleCleanup(const std::string& channelId,
-                                      const CleanupConfig& config,
-                                      const std::chrono::hours& interval) {
-    std::lock_guard<std::mutex> lock(cleanerMutex_);
-
-    scheduledCleanups_[channelId] = config;
-    nextCleanupTimes_[channelId] = std::chrono::system_clock::now() + interval;
-
-    logInfo("Scheduled cleanup for channel " + channelId + " every " +
-            std::to_string(interval.count()) + " hours", "content_cleaner");
+                                     const CleanupConfig& config,
+                                     const std::chrono::hours& interval) {
+    if (!validDiscordId(channelId) || interval.count() <= 0 ||
+        interval > std::chrono::hours(24 * 365) || config.maxAge.count() < 0 ||
+        config.maxDuplicateCount < 1 || config.maxDuplicateCount > 100) {
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        scheduledCleanups_[channelId] = config;
+        cleanupIntervals_[channelId] = interval;
+        nextCleanupTimes_[channelId] = std::chrono::system_clock::now() + interval;
+        if (!cleanupRunning_.exchange(true)) {
+            cleanupThread_ = std::thread(&ContentCleaner::cleanupLoop, this);
+        }
+    }
+    cleanupCv_.notify_all();
 }
 
 void ContentCleaner::cancelScheduledCleanup(const std::string& channelId) {
-    std::lock_guard<std::mutex> lock(cleanerMutex_);
-
-    scheduledCleanups_.erase(channelId);
-    nextCleanupTimes_.erase(channelId);
-
-    logInfo("Cancelled scheduled cleanup for channel: " + channelId, "content_cleaner");
+    if (!validDiscordId(channelId)) {
+        return;
+    }
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        scheduledCleanups_.erase(channelId);
+        cleanupIntervals_.erase(channelId);
+        nextCleanupTimes_.erase(channelId);
+    }
+    cleanupCv_.notify_all();
 }
 
 std::vector<std::string> ContentCleaner::getScheduledCleanups() const {
     std::lock_guard<std::mutex> lock(cleanerMutex_);
-
     std::vector<std::string> result;
-    result.reserve(scheduledCleanups_.size());
-    for (const auto& [channelId, _] : scheduledCleanups_) {
-        result.push_back(channelId);
+    for (const auto& entry : scheduledCleanups_) {
+        result.push_back(entry.first);
     }
+    std::sort(result.begin(), result.end());
     return result;
+}
+
+void ContentCleaner::observeMessage(const DiscordMessage& message) {
+    if (!validDiscordId(message.id) || !validDiscordId(message.channelId) ||
+        !validDiscordId(message.authorId) || !validOptionalDiscordId(message.guildId) ||
+        !validTimestamp(message.timestamp) ||
+        message.content.size() > DISCRUB_MAX_CONTENT_LENGTH) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    auto& cache = messageCache_[message.channelId];
+    const auto iterator = std::find_if(cache.begin(), cache.end(),
+                                       [&message](const DiscordMessage& existing) {
+                                           return existing.id == message.id;
+                                       });
+    if (iterator == cache.end()) {
+        cache.push_back(message);
+    } else {
+        *iterator = message;
+    }
+    std::sort(cache.begin(), cache.end(), messageLess);
+    if (cache.size() > kMaximumCachedMessagesPerChannel) {
+        cache.erase(cache.begin(),
+                    cache.begin() + static_cast<std::ptrdiff_t>(
+                        cache.size() - kMaximumCachedMessagesPerChannel));
+    }
+}
+
+void ContentCleaner::observeMessageDelete(const std::string& channelId,
+                                          const std::string& messageId) {
+    if (!validDiscordId(channelId) || !validDiscordId(messageId)) {
+        return;
+    }
+    std::lock_guard<std::mutex> lock(cleanerMutex_);
+    const auto cache = messageCache_.find(channelId);
+    if (cache == messageCache_.end()) {
+        return;
+    }
+    cache->second.erase(std::remove_if(cache->second.begin(), cache->second.end(),
+                                       [&messageId](const DiscordMessage& message) {
+                                           return message.id == messageId;
+                                       }),
+                        cache->second.end());
 }
 
 std::vector<std::vector<DiscordMessage>> ContentCleaner::findDuplicateMessages(
     const std::string& channelId) {
-    // In production, fetch messages from Discord API and group by similarity.
-    (void)channelId;
-    return {};
+    if (!validDiscordId(channelId)) {
+        return {};
+    }
+    std::vector<DiscordMessage> messages;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        const auto iterator = messageCache_.find(channelId);
+        if (iterator != messageCache_.end()) {
+            messages = iterator->second;
+        }
+    }
+    std::vector<std::vector<DiscordMessage>> groups;
+    std::vector<bool> used(messages.size(), false);
+    for (std::size_t first = 0; first < messages.size(); ++first) {
+        if (used[first]) {
+            continue;
+        }
+        std::vector<DiscordMessage> group{messages[first]};
+        for (std::size_t second = first + 1; second < messages.size(); ++second) {
+            if (!used[second] && areDuplicates(messages[first], messages[second])) {
+                group.push_back(messages[second]);
+                used[second] = true;
+            }
+        }
+        if (group.size() > 1) {
+            std::sort(group.begin(), group.end(), messageLess);
+            groups.push_back(std::move(group));
+        }
+    }
+    std::sort(groups.begin(), groups.end(),
+              [](const auto& left, const auto& right) {
+                  return left.front().id < right.front().id;
+              });
+    return groups;
 }
 
-bool ContentCleaner::areDuplicates(const DiscordMessage& msg1, const DiscordMessage& msg2,
-                                    double threshold) {
-    return calculateMessageSimilarity(msg1, msg2) >= threshold;
+bool ContentCleaner::areDuplicates(const DiscordMessage& first,
+                                   const DiscordMessage& second,
+                                   double threshold) {
+    if (threshold < 0.0 || threshold > 1.0) {
+        return false;
+    }
+    return calculateMessageSimilarity(first, second) >= threshold;
 }
 
-bool ContentCleaner::bulkDeleteMessages(const std::string& channelId,
-                                         const std::vector<std::string>& messageIds) {
-    if (messageIds.empty()) return true;
+DiscordAcknowledgement ContentCleaner::bulkDeleteMessagesAcknowledged(
+    const std::string& channelId, const std::vector<std::string>& messageIds,
+    const std::string& reason) {
+    if (!validDiscordId(channelId) || messageIds.empty() || messageIds.size() > 100 ||
+        !validReason(reason, true)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "bulk_delete_messages", channelId,
+                                   "invalid channel, id count, or reason");
+    }
+    std::set<std::string> uniqueIds;
+    for (const auto& id : messageIds) {
+        if (!validDiscordId(id) || !uniqueIds.insert(id).second) {
+            return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                       "bulk_delete_messages", channelId,
+                                       "message ids must be valid and unique");
+        }
+    }
+    const std::vector<std::string> orderedIds(uniqueIds.begin(), uniqueIds.end());
+    return invokeMutation(
+        "bulk_delete_messages", channelId,
+        [&](DiscordMutationAdapter& adapter) {
+            return adapter.bulkDeleteMessages(channelId, orderedIds, reason);
+        });
+}
 
-    logInfo("Bulk deleting " + std::to_string(messageIds.size()) +
-            " messages from channel: " + channelId, "content_cleaner");
+DiscordAcknowledgement ContentCleaner::archiveChannelAcknowledged(
+    const std::string& channelId, const std::string& archivePath) {
+    if (!validDiscordId(channelId) || archivePath.empty() || archivePath.size() > 4096) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "archive_channel", channelId,
+                                   "invalid channel or path");
+    }
+    std::filesystem::path root;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        root = storageRoot_;
+    }
+    std::filesystem::path resolved;
+    if (!pathWithin(root, archivePath, resolved)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "archive_channel", channelId,
+                                   "archive path escapes configured storage root");
+    }
+    MessageQuery query;
+    query.channelId = channelId;
+    DiscordAcknowledgement fetchResult;
+    const auto messages = fetchAllMessages(query, fetchResult);
+    if (!fetchResult.acknowledged()) {
+        fetchResult.operation = "archive_channel";
+        return fetchResult;
+    }
+    Json document{{"schema", "elizaos.discrub.archive.v1"},
+                  {"channelId", channelId},
+                  {"sourceReceipt", fetchResult.receiptId},
+                  {"messages", Json::array()}};
+    for (const auto& message : messages) {
+        document["messages"].push_back(messageToJson(message));
+    }
+    const std::string serialized = document.dump(2);
+    if (serialized.size() > kMaximumArchiveBytes) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "archive_channel", channelId,
+                                   "archive exceeds size bound");
+    }
+    std::error_code error;
+    std::filesystem::create_directories(resolved.parent_path(), error);
+    if (error) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "archive_channel", channelId,
+                                   "could not create archive directory");
+    }
+    std::ofstream output(resolved, std::ios::binary | std::ios::trunc);
+    if (!output || !(output << serialized)) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "archive_channel", channelId,
+                                   "could not write archive");
+    }
+    auto result = makeAcknowledgement(DiscordOperationStatus::ACKNOWLEDGED,
+                                      "archive_channel", channelId,
+                                      "remote evidence archived locally");
+    result.receiptId = fetchResult.receiptId;
+    result.attempts = 1;
+    return result;
+}
 
-    // Discord API bulk-delete supports up to 100 messages at a time,
-    // only for messages younger than 14 days.  A production implementation
-    // would batch calls here via the Discord REST client.
+DiscordAcknowledgement ContentCleaner::restoreFromArchiveAcknowledged(
+    const std::string& channelId, const std::string& archivePath) {
+    if (!validDiscordId(channelId) || archivePath.empty() || archivePath.size() > 4096) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "restore_archive", channelId,
+                                   "invalid channel or path");
+    }
+    std::filesystem::path root;
+    {
+        std::lock_guard<std::mutex> lock(cleanerMutex_);
+        root = storageRoot_;
+    }
+    std::filesystem::path resolved;
+    if (!pathWithin(root, archivePath, resolved)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "restore_archive", channelId,
+                                   "archive path escapes configured storage root");
+    }
+    std::error_code error;
+    const auto size = std::filesystem::file_size(resolved, error);
+    if (error || size > kMaximumArchiveBytes) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "restore_archive", channelId,
+                                   "archive is missing or exceeds size bound");
+    }
+    std::ifstream input(resolved, std::ios::binary);
+    const std::string serialized((std::istreambuf_iterator<char>(input)),
+                                 std::istreambuf_iterator<char>());
+    Json document;
+    try {
+        document = Json::parse(serialized);
+    } catch (...) {
+        return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                   "restore_archive", channelId,
+                                   "archive is not valid JSON");
+    }
+    if (document.value("schema", std::string{}) != "elizaos.discrub.archive.v1" ||
+        document.value("channelId", std::string{}) != channelId ||
+        !document.contains("messages") || !document["messages"].is_array() ||
+        document["messages"].size() > kMaximumCachedMessagesPerChannel) {
+        return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                   "restore_archive", channelId,
+                                   "archive schema or channel does not match");
+    }
+    std::vector<DiscordMessage> messages;
+    std::set<std::string> ids;
+    for (const auto& item : document["messages"]) {
+        DiscordMessage message;
+        if (!jsonToMessage(item, message) || message.channelId != channelId ||
+            !ids.insert(message.id).second) {
+            return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                       "restore_archive", channelId,
+                                       "archive contains malformed messages");
+        }
+        messages.push_back(std::move(message));
+    }
+    return invokeMutation(
+        "restore_archive", channelId,
+        [&](DiscordMutationAdapter& adapter) {
+            return adapter.restoreMessages(channelId, messages);
+        });
+}
 
-    return true;
+bool ContentCleaner::bulkDeleteMessages(
+    const std::string& channelId, const std::vector<std::string>& messageIds) {
+    return bulkDeleteMessagesAcknowledged(channelId, messageIds).acknowledged();
 }
 
 bool ContentCleaner::archiveChannel(const std::string& channelId,
-                                     const std::string& archivePath) {
-    logInfo("Archiving channel " + channelId + " to: " + archivePath, "content_cleaner");
-
-    std::ofstream archive(archivePath);
-    if (!archive.is_open()) {
-        logError("Failed to open archive file: " + archivePath, "content_cleaner");
-        return false;
-    }
-
-    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    archive << "{\n"
-            << "  \"channelId\": \"" << channelId << "\",\n"
-            << "  \"archivedAt\": " << now << ",\n"
-            << "  \"messages\": []\n"
-            << "}\n";
-
-    archive.close();
-    logInfo("Channel " + channelId + " archived to " + archivePath, "content_cleaner");
-    return true;
+                                    const std::string& archivePath) {
+    return archiveChannelAcknowledged(channelId, archivePath).acknowledged();
 }
 
 bool ContentCleaner::restoreFromArchive(const std::string& channelId,
-                                         const std::string& archivePath) {
-    logInfo("Restoring channel " + channelId + " from: " + archivePath, "content_cleaner");
-
-    std::ifstream archive(archivePath);
-    if (!archive.is_open()) {
-        logError("Failed to open archive file: " + archivePath, "content_cleaner");
-        return false;
-    }
-
-    std::string content((std::istreambuf_iterator<char>(archive)),
-                        std::istreambuf_iterator<char>());
-    archive.close();
-
-    logInfo("Archive loaded for channel " + channelId + " (" +
-            std::to_string(content.length()) + " bytes)", "content_cleaner");
-    return true;
+                                        const std::string& archivePath) {
+    return restoreFromArchiveAcknowledged(channelId, archivePath).acknowledged();
 }
 
-std::vector<DiscordMessage> ContentCleaner::findMessagesToDelete(
-    const std::string& channelId, const CleanupConfig& config) {
-    // Production: fetch messages from Discord API and filter by config rules.
-    (void)channelId;
-    (void)config;
-    return {};
-}
-
-bool ContentCleaner::isSpamMessage(const DiscordMessage& message) {
-    const std::string& content = message.content;
-
-    // Excessive character repetition
-    size_t maxRepeat = 0;
-    for (size_t i = 0; i < content.size(); ++i) {
-        size_t run = 1;
-        while (i + run < content.size() && content[i] == content[i + run]) ++run;
-        maxRepeat = std::max(maxRepeat, run);
+bool ContentCleaner::isSpamMessage(const DiscordMessage& message) const {
+    std::size_t run = 1;
+    for (std::size_t index = 1; index < message.content.size(); ++index) {
+        run = message.content[index] == message.content[index - 1] ? run + 1 : 1;
+        if (run > 5 && std::isspace(static_cast<unsigned char>(message.content[index])) == 0) {
+            return true;
+        }
     }
-    if (maxRepeat > 5) return true;
-    if (content.length() > 2000) return true;
-
-    // Common spam phrases
-    std::string lower = content;
+    std::string lower = message.content;
     std::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-
-    const std::vector<std::string> spamPhrases = {
-        "free nitro", "discord gift", "steam gift", "click here to claim",
-        "win a prize", "limited time offer"
-    };
-    for (const auto& phrase : spamPhrases) {
-        if (lower.find(phrase) != std::string::npos) return true;
-    }
-
-    return false;
+                   [](unsigned char character) {
+                       return static_cast<char>(std::tolower(character));
+                   });
+    static const std::vector<std::string> phrases{
+        "free nitro", "click here to claim", "limited time offer", "win a prize"};
+    return std::any_of(phrases.begin(), phrases.end(),
+                       [&lower](const std::string& phrase) {
+                           return lower.find(phrase) != std::string::npos;
+                       });
 }
 
 bool ContentCleaner::isEmptyMessage(const DiscordMessage& message) {
-    std::string trimmed = message.content;
-    trimmed.erase(std::remove_if(trimmed.begin(), trimmed.end(),
-                                 [](unsigned char c) { return std::isspace(c) != 0; }),
-                  trimmed.end());
-    return trimmed.empty();
+    return std::all_of(message.content.begin(), message.content.end(),
+                       [](unsigned char character) {
+                           return std::isspace(character) != 0;
+                       }) && message.attachments.empty() && message.embeds.empty();
 }
 
 bool ContentCleaner::isOldMessage(const DiscordMessage& message,
-                                   const std::chrono::hours& maxAge) {
-    return (std::chrono::system_clock::now() - message.timestamp) > maxAge;
+                                  const std::chrono::hours& maxAge) {
+    return validTimestamp(message.timestamp) &&
+           std::chrono::system_clock::now() - message.timestamp > maxAge;
 }
 
-double ContentCleaner::calculateMessageSimilarity(const DiscordMessage& msg1,
-                                                   const DiscordMessage& msg2) {
-    const std::string& s1 = msg1.content;
-    const std::string& s2 = msg2.content;
-
-    if (s1.empty() && s2.empty()) return 1.0;
-    if (s1.empty() || s2.empty()) return 0.0;
-    if (s1 == s2) return 1.0;
-
-    // Jaccard similarity over character trigrams
-    auto trigrams = [](const std::string& s) {
-        std::unordered_set<std::string> tg;
-        for (size_t i = 0; i + 3 <= s.size(); ++i) {
-            tg.insert(s.substr(i, 3));
-        }
-        return tg;
-    };
-
-    auto t1 = trigrams(s1);
-    auto t2 = trigrams(s2);
-
-    if (t1.empty() && t2.empty()) return 1.0;
-    if (t1.empty() || t2.empty()) return 0.0;
-
-    size_t intersect = 0;
-    for (const auto& t : t1) {
-        if (t2.count(t)) ++intersect;
+double ContentCleaner::calculateMessageSimilarity(
+    const DiscordMessage& first, const DiscordMessage& second) {
+    if (first.content == second.content) {
+        return 1.0;
     }
-    size_t unionSz = t1.size() + t2.size() - intersect;
-    return static_cast<double>(intersect) / static_cast<double>(unionSz);
+    if (first.content.empty() || second.content.empty()) {
+        return 0.0;
+    }
+    const auto trigrams = [](const std::string& content) {
+        std::set<std::string> values;
+        if (content.size() < 3) {
+            values.insert(content);
+        } else {
+            for (std::size_t index = 0; index + 3 <= content.size(); ++index) {
+                values.insert(content.substr(index, 3));
+            }
+        }
+        return values;
+    };
+    const auto left = trigrams(first.content);
+    const auto right = trigrams(second.content);
+    std::vector<std::string> intersection;
+    std::set_intersection(left.begin(), left.end(), right.begin(), right.end(),
+                          std::back_inserter(intersection));
+    const std::size_t unionSize = left.size() + right.size() - intersection.size();
+    return unionSize == 0 ? 1.0
+                          : static_cast<double>(intersection.size()) /
+                                static_cast<double>(unionSize);
 }
 
 void ContentCleaner::cleanupLoop() {
-    logInfo("Cleanup loop started", "content_cleaner");
-
-    while (cleanupRunning_) {
-        std::this_thread::sleep_for(std::chrono::minutes(5));
-
-        auto now = std::chrono::system_clock::now();
-
+    std::unique_lock<std::mutex> lock(cleanerMutex_);
+    while (cleanupRunning_.load()) {
+        if (nextCleanupTimes_.empty()) {
+            cleanupCv_.wait(lock, [this] {
+                return !cleanupRunning_.load() || !nextCleanupTimes_.empty();
+            });
+            continue;
+        }
+        const auto next = std::min_element(
+            nextCleanupTimes_.begin(), nextCleanupTimes_.end(),
+            [](const auto& left, const auto& right) {
+                return left.second < right.second;
+            });
+        const auto wake = next->second;
+        cleanupCv_.wait_until(lock, wake);
+        if (!cleanupRunning_.load()) {
+            break;
+        }
+        const auto now = std::chrono::system_clock::now();
         std::vector<std::pair<std::string, CleanupConfig>> due;
-        {
-            std::lock_guard<std::mutex> lock(cleanerMutex_);
-            for (auto& [channelId, nextTime] : nextCleanupTimes_) {
-                if (now >= nextTime) {
-                    auto it = scheduledCleanups_.find(channelId);
-                    if (it != scheduledCleanups_.end()) {
-                        due.emplace_back(channelId, it->second);
-                        nextTime = now + std::chrono::hours(24);
-                    }
+        for (auto& entry : nextCleanupTimes_) {
+            if (entry.second <= now) {
+                const auto config = scheduledCleanups_.find(entry.first);
+                const auto interval = cleanupIntervals_.find(entry.first);
+                if (config != scheduledCleanups_.end() &&
+                    interval != cleanupIntervals_.end()) {
+                    due.emplace_back(entry.first, config->second);
+                    entry.second = now + interval->second;
                 }
             }
         }
-
-        for (const auto& [channelId, config] : due) {
-            cleanChannel(channelId, config);
+        lock.unlock();
+        for (const auto& item : due) {
+            try {
+                cleanChannel(item.first, item.second);
+            } catch (...) {
+                // A scheduled run is isolated; the owned worker remains live.
+            }
         }
+        lock.lock();
     }
-
-    logInfo("Cleanup loop ended", "content_cleaner");
 }
 
-// ============================================================
-// ModerationAnalytics implementation
-// ============================================================
+ModerationAnalytics::ModerationAnalytics() = default;
+ModerationAnalytics::~ModerationAnalytics() = default;
 
-ModerationAnalytics::ModerationReport ModerationAnalytics::generateReport(
-    const std::chrono::system_clock::time_point& startTime,
-    const std::chrono::system_clock::time_point& endTime) {
+void ModerationAnalytics::recordAction(const ModerationAction& action) {
+    if (!action.acknowledgement.acknowledged() || action.id.empty() ||
+        action.id.size() > 64 || !validTimestamp(action.timestamp) ||
+        !validOptionalDiscordId(action.guildId) ||
+        !validOptionalDiscordId(action.userId) ||
+        !validOptionalDiscordId(action.channelId) ||
+        !validOptionalDiscordId(action.messageId) || !validReason(action.reason, true)) {
+        return;
+    }
     std::lock_guard<std::mutex> lock(analyticsMutex_);
-
-    ModerationReport report;
-    report.periodStart = startTime;
-    report.periodEnd   = endTime;
-
-    auto actions = getActionsInPeriod(startTime, endTime);
-
-    for (const auto& action : actions) {
-        report.totalActions++;
-        switch (action.action) {
-            case FilterAction::WARN:    report.warningsIssued++; break;
-            case FilterAction::TIMEOUT: report.timeoutsIssued++; break;
-            case FilterAction::KICK:    report.kicksIssued++;    break;
-            case FilterAction::BAN:     report.bansIssued++;     break;
-            case FilterAction::DELETE:  report.messagesDeleted++; break;
-            default: break;
-        }
-        if (!action.channelId.empty()) {
-            report.violationsByChannel[action.channelId]++;
-        }
+    const auto existing = std::find_if(actions_.begin(), actions_.end(),
+                                       [&action](const ModerationAction& value) {
+                                           return value.id == action.id;
+                                       });
+    if (existing == actions_.end()) {
+        actions_.push_back(action);
+        std::sort(actions_.begin(), actions_.end(),
+                  [](const ModerationAction& left, const ModerationAction& right) {
+                      return left.timestamp == right.timestamp ? left.id < right.id
+                                                              : left.timestamp < right.timestamp;
+                  });
     }
-
-    report.topViolators     = findTopViolators(actions, 5);
-    report.commonViolations = findCommonViolations(actions, 5);
-
-    return report;
 }
 
-ModerationAnalytics::ModerationReport ModerationAnalytics::generateDailyReport() {
-    auto now   = std::chrono::system_clock::now();
-    return generateReport(now - std::chrono::hours(24), now);
-}
-
-ModerationAnalytics::ModerationReport ModerationAnalytics::generateWeeklyReport() {
-    auto now = std::chrono::system_clock::now();
-    return generateReport(now - std::chrono::hours(24 * 7), now);
-}
-
-ModerationAnalytics::ModerationReport ModerationAnalytics::generateMonthlyReport() {
-    auto now = std::chrono::system_clock::now();
-    return generateReport(now - std::chrono::hours(24 * 30), now);
-}
-
-std::vector<double> ModerationAnalytics::getViolationTrends(int days) {
-    std::vector<double> trends(static_cast<size_t>(days), 0.0);
-    auto now = std::chrono::system_clock::now();
-
-    for (int d = 0; d < days; ++d) {
-        auto dayStart = now - std::chrono::hours(24 * (days - d));
-        auto dayEnd   = now - std::chrono::hours(24 * (days - d - 1));
-        std::lock_guard<std::mutex> lock(analyticsMutex_);
-        auto acts = getActionsInPeriod(dayStart, dayEnd);
-        trends[static_cast<size_t>(d)] = static_cast<double>(acts.size());
-    }
-
-    return trends;
-}
-
-std::vector<std::string> ModerationAnalytics::getTopViolationTypes(int limit) {
-    auto now = std::chrono::system_clock::now();
-    std::lock_guard<std::mutex> lock(analyticsMutex_);
-    auto actions = getActionsInPeriod(now - std::chrono::hours(24 * 30), now);
-    return findCommonViolations(actions, limit);
-}
-
-std::unordered_map<std::string, double> ModerationAnalytics::getChannelRiskScores() {
-    auto now = std::chrono::system_clock::now();
-    std::lock_guard<std::mutex> lock(analyticsMutex_);
-    auto actions = getActionsInPeriod(now - std::chrono::hours(24 * 7), now);
-
-    std::unordered_map<std::string, int> channelCounts;
-    int total = static_cast<int>(actions.size());
-
-    for (const auto& action : actions) {
-        if (!action.channelId.empty()) {
-            channelCounts[action.channelId]++;
-        }
-    }
-
-    std::unordered_map<std::string, double> scores;
-    for (const auto& [channelId, count] : channelCounts) {
-        scores[channelId] = (total > 0)
-            ? static_cast<double>(count) / static_cast<double>(total) * 100.0
-            : 0.0;
-    }
-
-    return scores;
-}
-
-std::string ModerationAnalytics::exportReportAsJson(const ModerationReport& report) {
-    auto toEpoch = [](const std::chrono::system_clock::time_point& tp) {
-        return std::chrono::duration_cast<std::chrono::seconds>(
-                   tp.time_since_epoch()).count();
-    };
-
-    std::ostringstream j;
-    j << "{\n"
-      << "  \"periodStart\": "        << toEpoch(report.periodStart)      << ",\n"
-      << "  \"periodEnd\": "          << toEpoch(report.periodEnd)        << ",\n"
-      << "  \"totalActions\": "       << report.totalActions              << ",\n"
-      << "  \"warningsIssued\": "     << report.warningsIssued            << ",\n"
-      << "  \"timeoutsIssued\": "     << report.timeoutsIssued            << ",\n"
-      << "  \"kicksIssued\": "        << report.kicksIssued               << ",\n"
-      << "  \"bansIssued\": "         << report.bansIssued                << ",\n"
-      << "  \"messagesDeleted\": "    << report.messagesDeleted           << ",\n"
-      << "  \"averageResponseTime\": "<< report.averageResponseTime       << ",\n";
-
-    j << "  \"topViolators\": [";
-    for (size_t i = 0; i < report.topViolators.size(); ++i) {
-        if (i > 0) j << ", ";
-        j << "\"" << report.topViolators[i] << "\"";
-    }
-    j << "],\n";
-
-    j << "  \"commonViolations\": [";
-    for (size_t i = 0; i < report.commonViolations.size(); ++i) {
-        if (i > 0) j << ", ";
-        j << "\"" << report.commonViolations[i] << "\"";
-    }
-    j << "],\n";
-
-    j << "  \"violationsByChannel\": {";
-    bool first = true;
-    for (const auto& [ch, cnt] : report.violationsByChannel) {
-        if (!first) j << ", ";
-        j << "\"" << ch << "\": " << cnt;
-        first = false;
-    }
-    j << "}\n}\n";
-
-    return j.str();
-}
-
-std::string ModerationAnalytics::exportReportAsHtml(const ModerationReport& report) {
-    auto formatTime = [](const std::chrono::system_clock::time_point& tp) {
-        auto t = std::chrono::system_clock::to_time_t(tp);
-        std::tm* tm_ptr = std::gmtime(&t);
-        char buf[64] = {};
-        std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S UTC", tm_ptr);
-        return std::string(buf);
-    };
-
-    std::ostringstream h;
-    h << "<!DOCTYPE html>\n<html>\n<head>\n"
-      << "<title>Moderation Report</title>\n"
-      << "<style>"
-      << "body{font-family:sans-serif;max-width:900px;margin:0 auto;padding:20px;}"
-      << "table{border-collapse:collapse;width:100%;}"
-      << "th,td{border:1px solid #ddd;padding:8px;text-align:left;}"
-      << "th{background:#f2f2f2;}"
-      << "</style>\n"
-      << "</head>\n<body>\n"
-      << "<h1>Moderation Report</h1>\n"
-      << "<p><strong>Period:</strong> "
-      << formatTime(report.periodStart) << " to " << formatTime(report.periodEnd)
-      << "</p>\n"
-      << "<h2>Summary</h2>\n"
-      << "<table>\n<tr><th>Metric</th><th>Count</th></tr>\n"
-      << "<tr><td>Total Actions</td><td>"    << report.totalActions    << "</td></tr>\n"
-      << "<tr><td>Warnings</td><td>"         << report.warningsIssued  << "</td></tr>\n"
-      << "<tr><td>Timeouts</td><td>"         << report.timeoutsIssued  << "</td></tr>\n"
-      << "<tr><td>Kicks</td><td>"            << report.kicksIssued     << "</td></tr>\n"
-      << "<tr><td>Bans</td><td>"             << report.bansIssued      << "</td></tr>\n"
-      << "<tr><td>Messages Deleted</td><td>" << report.messagesDeleted << "</td></tr>\n"
-      << "</table>\n";
-
-    if (!report.topViolators.empty()) {
-        h << "<h2>Top Violators</h2>\n<ul>\n";
-        for (const auto& v : report.topViolators) {
-            h << "<li>" << v << "</li>\n";
-        }
-        h << "</ul>\n";
-    }
-
-    if (!report.violationsByChannel.empty()) {
-        h << "<h2>Violations by Channel</h2>\n"
-          << "<table>\n<tr><th>Channel ID</th><th>Violations</th></tr>\n";
-        for (const auto& [ch, cnt] : report.violationsByChannel) {
-            h << "<tr><td>" << ch << "</td><td>" << cnt << "</td></tr>\n";
-        }
-        h << "</table>\n";
-    }
-
-    h << "</body>\n</html>\n";
-    return h.str();
-}
-
-bool ModerationAnalytics::exportReportToFile(const ModerationReport& report,
-                                              const std::string& filePath) {
-    bool useHtml = filePath.size() >= 5 &&
-                   filePath.substr(filePath.size() - 5) == ".html";
-    std::string content = useHtml ? exportReportAsHtml(report) : exportReportAsJson(report);
-
-    std::ofstream file(filePath);
-    if (!file.is_open()) {
-        logError("Failed to open report file: " + filePath, "analytics");
+bool ModerationAnalytics::setStorageRoot(const std::string& rootPath) {
+    if (rootPath.empty() || rootPath.size() > 4096) {
         return false;
     }
-    file << content;
-    file.close();
-
-    logInfo("Report exported to: " + filePath, "analytics");
+    std::error_code error;
+    std::filesystem::create_directories(rootPath, error);
+    const auto root = std::filesystem::weakly_canonical(rootPath, error);
+    if (error || !std::filesystem::is_directory(root, error)) {
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(analyticsMutex_);
+    storageRoot_ = root;
     return true;
 }
 
 std::vector<ModerationAction> ModerationAnalytics::getActionsInPeriod(
     const std::chrono::system_clock::time_point& start,
-    const std::chrono::system_clock::time_point& end) {
-    // Analytics maintains its own history; populate via AutoModerator integration
-    // or a shared data store.  Without external data, returns empty.
-    (void)start;
-    (void)end;
-    return {};
+    const std::chrono::system_clock::time_point& end) const {
+    std::vector<ModerationAction> result;
+    for (const auto& action : actions_) {
+        if (action.timestamp >= start && action.timestamp <= end) {
+            result.push_back(action);
+        }
+    }
+    return result;
+}
+
+ModerationAnalytics::ModerationReport ModerationAnalytics::generateReport(
+    const std::chrono::system_clock::time_point& startTime,
+    const std::chrono::system_clock::time_point& endTime) {
+    ModerationReport report;
+    report.periodStart = startTime;
+    report.periodEnd = endTime;
+    if (startTime > endTime || endTime > std::chrono::system_clock::now() +
+                                             std::chrono::minutes(5)) {
+        return report;
+    }
+    std::lock_guard<std::mutex> lock(analyticsMutex_);
+    const auto actions = getActionsInPeriod(startTime, endTime);
+    for (const auto& action : actions) {
+        ++report.totalActions;
+        switch (action.action) {
+            case FilterAction::WARN: ++report.warningsIssued; break;
+            case FilterAction::DELETE: ++report.messagesDeleted; break;
+            case FilterAction::TIMEOUT: ++report.timeoutsIssued; break;
+            case FilterAction::KICK: ++report.kicksIssued; break;
+            case FilterAction::BAN: ++report.bansIssued; break;
+            case FilterAction::NONE: break;
+        }
+        if (!action.channelId.empty()) {
+            ++report.violationsByChannel[action.channelId];
+        }
+    }
+    report.topViolators = findTopViolators(actions, 5);
+    report.commonViolations = findCommonViolations(actions, 5);
+    return report;
+}
+
+ModerationAnalytics::ModerationReport ModerationAnalytics::generateDailyReport() {
+    const auto now = std::chrono::system_clock::now();
+    return generateReport(now - std::chrono::hours(24), now);
+}
+
+ModerationAnalytics::ModerationReport ModerationAnalytics::generateWeeklyReport() {
+    const auto now = std::chrono::system_clock::now();
+    return generateReport(now - std::chrono::hours(24 * 7), now);
+}
+
+ModerationAnalytics::ModerationReport ModerationAnalytics::generateMonthlyReport() {
+    const auto now = std::chrono::system_clock::now();
+    return generateReport(now - std::chrono::hours(24 * 30), now);
+}
+
+std::vector<double> ModerationAnalytics::getViolationTrends(int days) {
+    if (days < 1 || days > 366) {
+        return {};
+    }
+    const auto now = std::chrono::system_clock::now();
+    std::vector<double> trends;
+    trends.reserve(static_cast<std::size_t>(days));
+    for (int offset = days; offset > 0; --offset) {
+        const auto report = generateReport(now - std::chrono::hours(24 * offset),
+                                           now - std::chrono::hours(24 * (offset - 1)));
+        trends.push_back(static_cast<double>(report.totalActions));
+    }
+    return trends;
+}
+
+std::vector<std::string> ModerationAnalytics::getTopViolationTypes(int limit) {
+    if (limit < 1 || limit > 100) {
+        return {};
+    }
+    const auto now = std::chrono::system_clock::now();
+    std::lock_guard<std::mutex> lock(analyticsMutex_);
+    return findCommonViolations(
+        getActionsInPeriod(now - std::chrono::hours(24 * 30), now), limit);
+}
+
+std::unordered_map<std::string, double>
+ModerationAnalytics::getChannelRiskScores() {
+    const auto now = std::chrono::system_clock::now();
+    std::lock_guard<std::mutex> lock(analyticsMutex_);
+    const auto actions = getActionsInPeriod(now - std::chrono::hours(24 * 7), now);
+    std::unordered_map<std::string, double> scores;
+    for (const auto& action : actions) {
+        if (!action.channelId.empty()) {
+            scores[action.channelId] += 1.0;
+        }
+    }
+    if (!actions.empty()) {
+        for (auto& score : scores) {
+            score.second /= static_cast<double>(actions.size());
+        }
+    }
+    return scores;
 }
 
 std::vector<std::string> ModerationAnalytics::findTopViolators(
     const std::vector<ModerationAction>& actions, int limit) {
-    std::unordered_map<std::string, int> counts;
-    for (const auto& a : actions) {
-        if (!a.userId.empty()) counts[a.userId]++;
+    std::map<std::string, int> counts;
+    for (const auto& action : actions) {
+        if (!action.userId.empty()) {
+            ++counts[action.userId];
+        }
     }
-
-    std::vector<std::pair<std::string, int>> sorted(counts.begin(), counts.end());
-    std::sort(sorted.begin(), sorted.end(),
-              [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
-                  return a.second > b.second;
-              });
-
+    std::vector<std::pair<std::string, int>> ordered(counts.begin(), counts.end());
+    std::sort(ordered.begin(), ordered.end(), [](const auto& left, const auto& right) {
+        return left.second == right.second ? left.first < right.first
+                                          : left.second > right.second;
+    });
     std::vector<std::string> result;
-    for (int i = 0; i < limit && i < static_cast<int>(sorted.size()); ++i) {
-        result.push_back(sorted[static_cast<size_t>(i)].first);
+    for (std::size_t index = 0;
+         index < ordered.size() && index < static_cast<std::size_t>(std::max(0, limit));
+         ++index) {
+        result.push_back(ordered[index].first);
     }
     return result;
 }
 
 std::vector<std::string> ModerationAnalytics::findCommonViolations(
     const std::vector<ModerationAction>& actions, int limit) {
-    std::unordered_map<std::string, int> counts;
-    for (const auto& a : actions) {
-        if (!a.reason.empty()) counts[a.reason]++;
+    std::map<std::string, int> counts;
+    for (const auto& action : actions) {
+        if (!action.reason.empty()) {
+            ++counts[action.reason];
+        }
     }
-
-    std::vector<std::pair<std::string, int>> sorted(counts.begin(), counts.end());
-    std::sort(sorted.begin(), sorted.end(),
-              [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
-                  return a.second > b.second;
-              });
-
+    std::vector<std::pair<std::string, int>> ordered(counts.begin(), counts.end());
+    std::sort(ordered.begin(), ordered.end(), [](const auto& left, const auto& right) {
+        return left.second == right.second ? left.first < right.first
+                                          : left.second > right.second;
+    });
     std::vector<std::string> result;
-    for (int i = 0; i < limit && i < static_cast<int>(sorted.size()); ++i) {
-        result.push_back(sorted[static_cast<size_t>(i)].first);
+    for (std::size_t index = 0;
+         index < ordered.size() && index < static_cast<std::size_t>(std::max(0, limit));
+         ++index) {
+        result.push_back(ordered[index].first);
     }
     return result;
 }
 
-// ============================================================
-// DiscrubExtension – remaining methods
-// ============================================================
+std::string ModerationAnalytics::exportReportAsJson(
+    const ModerationReport& report) {
+    std::map<std::string, int> orderedChannels(report.violationsByChannel.begin(),
+                                               report.violationsByChannel.end());
+    Json document{{"schema", "elizaos.discrub.report.v1"},
+                  {"periodStartMs", toMilliseconds(report.periodStart)},
+                  {"periodEndMs", toMilliseconds(report.periodEnd)},
+                  {"totalActions", report.totalActions},
+                  {"warningsIssued", report.warningsIssued},
+                  {"timeoutsIssued", report.timeoutsIssued},
+                  {"kicksIssued", report.kicksIssued},
+                  {"bansIssued", report.bansIssued},
+                  {"messagesDeleted", report.messagesDeleted},
+                  {"topViolators", report.topViolators},
+                  {"commonViolations", report.commonViolations},
+                  {"violationsByChannel", orderedChannels},
+                  {"averageResponseTime", report.averageResponseTime}};
+    return document.dump(2);
+}
 
-std::future<ContentCleaner::CleanupResult> DiscrubExtension::scheduleBatchCleanup(
-    const std::string& channelId, const CleanupConfig& config) {
-    return std::async(std::launch::async, [this, channelId, config]() {
-        auto result = cleaner_.cleanChannel(channelId, config);
-        if (cleanupHandler_) {
-            cleanupHandler_(result);
+std::string ModerationAnalytics::exportReportAsHtml(
+    const ModerationReport& report) {
+    std::map<std::string, int> orderedChannels(report.violationsByChannel.begin(),
+                                               report.violationsByChannel.end());
+    std::ostringstream output;
+    output << "<!doctype html><html><head><meta charset=\"utf-8\"><title>Moderation "
+              "Report</title></head><body><h1>Moderation Report</h1><dl>"
+           << "<dt>Total actions</dt><dd>" << report.totalActions << "</dd>"
+           << "<dt>Warnings</dt><dd>" << report.warningsIssued << "</dd>"
+           << "<dt>Timeouts</dt><dd>" << report.timeoutsIssued << "</dd>"
+           << "<dt>Kicks</dt><dd>" << report.kicksIssued << "</dd>"
+           << "<dt>Bans</dt><dd>" << report.bansIssued << "</dd>"
+           << "<dt>Messages deleted</dt><dd>" << report.messagesDeleted
+           << "</dd></dl><ul>";
+    for (const auto& entry : orderedChannels) {
+        output << "<li>" << escapeHtml(entry.first) << ": " << entry.second << "</li>";
+    }
+    output << "</ul><h2>Common violations</h2><ul>";
+    for (const auto& reason : report.commonViolations) {
+        output << "<li>" << escapeHtml(reason) << "</li>";
+    }
+    output << "</ul></body></html>";
+    return output.str();
+}
+
+DiscordAcknowledgement ModerationAnalytics::exportReportToFileAcknowledged(
+    const ModerationReport& report, const std::string& filePath) {
+    if (filePath.empty() || filePath.size() > 4096 ||
+        report.periodStart > report.periodEnd) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "export_report", filePath,
+                                   "invalid report period or path");
+    }
+    std::filesystem::path root;
+    {
+        std::lock_guard<std::mutex> lock(analyticsMutex_);
+        root = storageRoot_;
+    }
+    std::filesystem::path resolved;
+    if (!pathWithin(root, filePath, resolved)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "export_report", filePath,
+                                   "report path escapes configured storage root");
+    }
+    const bool html = resolved.extension() == ".html";
+    const bool json = resolved.extension() == ".json";
+    if (!html && !json) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "export_report", filePath,
+                                   "report extension must be .json or .html");
+    }
+    const std::string content = html ? exportReportAsHtml(report)
+                                     : exportReportAsJson(report);
+    std::error_code error;
+    std::filesystem::create_directories(resolved.parent_path(), error);
+    if (error) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "export_report", filePath,
+                                   "could not create report directory");
+    }
+    std::ofstream output(resolved, std::ios::binary | std::ios::trunc);
+    if (!output || !(output << content)) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "export_report", filePath,
+                                   "could not write report");
+    }
+    auto result = makeAcknowledgement(DiscordOperationStatus::ACKNOWLEDGED,
+                                      "export_report", filePath,
+                                      "local report export completed");
+    result.receiptId = "local-file:" + resolved.filename().string();
+    result.attempts = 1;
+    return result;
+}
+
+bool ModerationAnalytics::exportReportToFile(
+    const ModerationReport& report, const std::string& filePath) {
+    return exportReportToFileAcknowledged(report, filePath).acknowledged();
+}
+
+DiscrubExtension::DiscrubExtension() {
+    moderator_.setActionObserver([this](const ModerationAction& action) {
+        analytics_.recordAction(action);
+        std::function<void(const ModerationAction&)> handler;
+        {
+            std::lock_guard<std::mutex> lock(configMutex_);
+            handler = actionHandler_;
+        }
+        if (handler) {
+            try {
+                handler(action);
+            } catch (...) {
+                // Handler exceptions are isolated from acknowledged moderation.
+            }
+        }
+    });
+}
+
+DiscrubExtension::~DiscrubExtension() {
+    stopMonitoring();
+    moderator_.setActionObserver({});
+}
+
+bool DiscrubExtension::initializeWithDiscord(std::shared_ptr<DiscordClient> client) {
+    std::lock_guard<std::mutex> lock(configMutex_);
+    discordClient_ = std::move(client);
+    // A legacy DiscordClient has untyped bool mutations and therefore cannot be
+    // treated as an evidence-bearing adapter.
+    return discordClient_ != nullptr;
+}
+
+bool DiscrubExtension::initializeWithAdapters(
+    std::shared_ptr<DiscordDataAdapter> dataAdapter,
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter) {
+    {
+        std::lock_guard<std::mutex> lock(configMutex_);
+        dataAdapter_ = dataAdapter;
+        mutationAdapter_ = mutationAdapter;
+    }
+    cleaner_.setAdapters(std::move(dataAdapter), mutationAdapter);
+    moderator_.setMutationAdapter(std::move(mutationAdapter));
+    return dataAdapter_ != nullptr || mutationAdapter_ != nullptr;
+}
+
+void DiscrubExtension::startMonitoring(const std::vector<std::string>& channelIds) {
+    if (channelIds.empty() || channelIds.size() > 1000 ||
+        std::any_of(channelIds.begin(), channelIds.end(),
+                    [](const std::string& id) { return !validDiscordId(id); })) {
+        return;
+    }
+    std::vector<std::string> ordered = channelIds;
+    std::sort(ordered.begin(), ordered.end());
+    ordered.erase(std::unique(ordered.begin(), ordered.end()), ordered.end());
+    std::lock_guard<std::mutex> lock(configMutex_);
+    monitoredChannels_ = std::move(ordered);
+    monitoring_.store(true);
+}
+
+void DiscrubExtension::stopMonitoring() {
+    monitoring_.store(false);
+    std::lock_guard<std::mutex> lock(configMutex_);
+    monitoredChannels_.clear();
+}
+
+bool DiscrubExtension::isMonitoring() const {
+    return monitoring_.load();
+}
+
+AutoModerator::ModerationResult
+DiscrubExtension::processIncomingMessageAcknowledged(
+    const DiscordMessage& message) {
+    cleaner_.observeMessage(message);
+    auto result = moderator_.processMessageAcknowledged(message);
+    if (result.classification.validInput && result.classification.violation) {
+        std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler;
+        {
+            std::lock_guard<std::mutex> lock(configMutex_);
+            handler = violationHandler_;
+        }
+        if (handler) {
+            try {
+                handler(message, result.classification);
+            } catch (...) {
+                // Classification evidence remains valid if a user callback fails.
+            }
+        }
+    }
+    return result;
+}
+
+void DiscrubExtension::processIncomingMessage(const DiscordMessage& message) {
+    (void)processIncomingMessageAcknowledged(message);
+}
+
+void DiscrubExtension::processMessageEdit(const DiscordMessage& oldMessage,
+                                          const DiscordMessage& newMessage) {
+    if (oldMessage.id != newMessage.id || oldMessage.channelId != newMessage.channelId ||
+        oldMessage.authorId != newMessage.authorId ||
+        newMessage.timestamp < oldMessage.timestamp) {
+        return;
+    }
+    cleaner_.observeMessage(newMessage);
+    const auto result = moderator_.processEditAcknowledged(oldMessage, newMessage);
+    if (result.classification.validInput && result.classification.violation) {
+        std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler;
+        {
+            std::lock_guard<std::mutex> lock(configMutex_);
+            handler = violationHandler_;
+        }
+        if (handler) {
+            try {
+                handler(newMessage, result.classification);
+            } catch (...) {
+            }
+        }
+    }
+}
+
+void DiscrubExtension::processMessageDelete(const std::string& channelId,
+                                            const std::string& messageId) {
+    cleaner_.observeMessageDelete(channelId, messageId);
+}
+
+std::future<ContentCleaner::CleanupResult>
+DiscrubExtension::scheduleBatchCleanup(const std::string& channelId,
+                                       const CleanupConfig& config) {
+    return std::async(std::launch::deferred, [this, channelId, config] {
+        const auto result = cleaner_.cleanChannel(channelId, config);
+        std::function<void(const ContentCleaner::CleanupResult&)> handler;
+        {
+            std::lock_guard<std::mutex> lock(configMutex_);
+            handler = cleanupHandler_;
+        }
+        if (handler) {
+            try {
+                handler(result);
+            } catch (...) {
+            }
         }
         return result;
     });
 }
 
-std::future<ModerationAnalytics::ModerationReport> DiscrubExtension::generateReport(
+std::future<ModerationAnalytics::ModerationReport>
+DiscrubExtension::generateReport(
     const std::chrono::system_clock::time_point& startTime,
     const std::chrono::system_clock::time_point& endTime) {
-    return std::async(std::launch::async, [this, startTime, endTime]() {
+    return std::async(std::launch::deferred, [this, startTime, endTime] {
         return analytics_.generateReport(startTime, endTime);
     });
+}
+
+bool DiscrubExtension::setStorageRoot(const std::string& rootPath) {
+    if (!cleaner_.setStorageRoot(rootPath) || !analytics_.setStorageRoot(rootPath)) {
+        return false;
+    }
+    std::lock_guard<std::mutex> lock(configMutex_);
+    storageRoot_ = std::filesystem::weakly_canonical(rootPath);
+    return true;
+}
+
+DiscordAcknowledgement DiscrubExtension::loadConfigurationAcknowledged(
+    const std::string& configPath) {
+    std::filesystem::path root;
+    {
+        std::lock_guard<std::mutex> lock(configMutex_);
+        root = storageRoot_;
+    }
+    std::filesystem::path resolved;
+    if (!pathWithin(root, configPath, resolved)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "load_configuration", configPath,
+                                   "configuration path escapes storage root");
+    }
+    std::error_code error;
+    if (std::filesystem::file_size(resolved, error) > 64U * 1024U || error) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "load_configuration", configPath,
+                                   "configuration is missing or too large");
+    }
+    std::ifstream input(resolved, std::ios::binary);
+    const std::string serialized((std::istreambuf_iterator<char>(input)),
+                                 std::istreambuf_iterator<char>());
+    Json document;
+    try {
+        document = Json::parse(serialized);
+    } catch (...) {
+        return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                   "load_configuration", configPath,
+                                   "configuration is not valid JSON");
+    }
+    if (document.value("schema", std::string{}) != "elizaos.discrub.config.v1" ||
+        !document.contains("strictMode") || !document["strictMode"].is_boolean() ||
+        !document.contains("autoEscalation") ||
+        !document["autoEscalation"].is_boolean() ||
+        !document.contains("reputationThreshold") ||
+        !document["reputationThreshold"].is_number_integer() ||
+        !document.contains("actionCooldownSeconds") ||
+        !document["actionCooldownSeconds"].is_number_integer()) {
+        return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                   "load_configuration", configPath,
+                                   "configuration schema is invalid");
+    }
+    const int threshold = document["reputationThreshold"].get<int>();
+    const int cooldown = document["actionCooldownSeconds"].get<int>();
+    if (threshold < -1000 || threshold > 1000 || cooldown < 0 || cooldown > 86400) {
+        return makeAcknowledgement(DiscordOperationStatus::PARSE_ERROR,
+                                   "load_configuration", configPath,
+                                   "configuration values are outside bounds");
+    }
+    moderator_.setStrictMode(document["strictMode"].get<bool>());
+    moderator_.setAutoEscalation(document["autoEscalation"].get<bool>());
+    moderator_.setReputationThreshold(threshold);
+    moderator_.setActionCooldown(cooldown);
+    {
+        std::lock_guard<std::mutex> lock(configMutex_);
+        config_["strictMode"] = document["strictMode"].get<bool>() ? "true" : "false";
+        config_["autoEscalation"] =
+            document["autoEscalation"].get<bool>() ? "true" : "false";
+        config_["reputationThreshold"] = std::to_string(threshold);
+        config_["actionCooldownSeconds"] = std::to_string(cooldown);
+    }
+    auto result = makeAcknowledgement(DiscordOperationStatus::ACKNOWLEDGED,
+                                      "load_configuration", configPath,
+                                      "local configuration loaded");
+    result.receiptId = "local-file:" + resolved.filename().string();
+    result.attempts = 1;
+    return result;
+}
+
+DiscordAcknowledgement DiscrubExtension::saveConfigurationAcknowledged(
+    const std::string& configPath) {
+    std::filesystem::path root;
+    std::unordered_map<std::string, std::string> config;
+    {
+        std::lock_guard<std::mutex> lock(configMutex_);
+        root = storageRoot_;
+        config = config_;
+    }
+    std::filesystem::path resolved;
+    if (!pathWithin(root, configPath, resolved)) {
+        return makeAcknowledgement(DiscordOperationStatus::INVALID_INPUT,
+                                   "save_configuration", configPath,
+                                   "configuration path escapes storage root");
+    }
+    const auto booleanValue = [&config](const std::string& key, bool fallback) {
+        const auto iterator = config.find(key);
+        return iterator == config.end() ? fallback : iterator->second == "true";
+    };
+    const auto integerValue = [&config](const std::string& key, int fallback) {
+        const auto iterator = config.find(key);
+        if (iterator == config.end()) {
+            return fallback;
+        }
+        try {
+            return std::stoi(iterator->second);
+        } catch (...) {
+            return fallback;
+        }
+    };
+    Json document{{"schema", "elizaos.discrub.config.v1"},
+                  {"strictMode", booleanValue("strictMode", false)},
+                  {"autoEscalation", booleanValue("autoEscalation", true)},
+                  {"reputationThreshold", integerValue("reputationThreshold", 50)},
+                  {"actionCooldownSeconds", integerValue("actionCooldownSeconds", 300)}};
+    std::error_code error;
+    std::filesystem::create_directories(resolved.parent_path(), error);
+    std::ofstream output(resolved, std::ios::binary | std::ios::trunc);
+    if (error || !output || !(output << document.dump(2))) {
+        return makeAcknowledgement(DiscordOperationStatus::IO_ERROR,
+                                   "save_configuration", configPath,
+                                   "could not save configuration");
+    }
+    auto result = makeAcknowledgement(DiscordOperationStatus::ACKNOWLEDGED,
+                                      "save_configuration", configPath,
+                                      "local configuration saved");
+    result.receiptId = "local-file:" + resolved.filename().string();
+    result.attempts = 1;
+    return result;
+}
+
+void DiscrubExtension::loadConfiguration(const std::string& configPath) {
+    (void)loadConfigurationAcknowledged(configPath);
+}
+
+void DiscrubExtension::saveConfiguration(const std::string& configPath) {
+    (void)saveConfigurationAcknowledged(configPath);
+}
+
+void DiscrubExtension::setDefaultModerationSettings() {
+    moderator_.getScanner().enableProfanityFilter(true);
+    moderator_.getScanner().enableSpamFilter(true);
+    moderator_.getScanner().enablePhishingFilter(true);
+    moderator_.getScanner().enableInviteFilter(true);
+    moderator_.getScanner().enableMentionSpamFilter(true, 5);
+    moderator_.setStrictMode
+(false);
+    moderator_.setAutoEscalation(true);
+    moderator_.setReputationThreshold(50);
+    moderator_.setActionCooldown(300);
+    std::lock_guard<std::mutex> lock(configMutex_);
+    config_["strictMode"] = "false";
+    config_["autoEscalation"] = "true";
+    config_["reputationThreshold"] = "50";
+    config_["actionCooldownSeconds"] = "300";
 }
 
 void DiscrubExtension::setViolationHandler(
     std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler) {
     std::lock_guard<std::mutex> lock(configMutex_);
     violationHandler_ = std::move(handler);
-    logInfo("Violation handler registered", "discrub_ext");
 }
 
 void DiscrubExtension::setActionHandler(
     std::function<void(const ModerationAction&)> handler) {
     std::lock_guard<std::mutex> lock(configMutex_);
     actionHandler_ = std::move(handler);
-    logInfo("Action handler registered", "discrub_ext");
 }
 
 void DiscrubExtension::setCleanupHandler(
     std::function<void(const ContentCleaner::CleanupResult&)> handler) {
     std::lock_guard<std::mutex> lock(configMutex_);
     cleanupHandler_ = std::move(handler);
-    logInfo("Cleanup handler registered", "discrub_ext");
 }
 
-void DiscrubExtension::handleViolation(const DiscordMessage& message,
-                                        const ContentScanner::ScanResult& result) {
-    if (violationHandler_) {
-        violationHandler_(message, result);
+void DiscrubExtension::handleViolation(
+    const DiscordMessage& message, const ContentScanner::ScanResult& result) {
+    if (!result.validInput || !result.violation) {
+        return;
     }
-
-    // Delegate action to the moderator
-    moderator_.processMessage(message);
-
-    logWarning("Violation handled for message " + message.id + ": " + result.reason,
-               "discrub_ext");
+    std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler;
+    {
+        std::lock_guard<std::mutex> lock(configMutex_);
+        handler = violationHandler_;
+    }
+    if (handler) {
+        try {
+            handler(message, result);
+        } catch (...) {
+        }
+    }
 }
+
+std::shared_ptr<DiscrubExtension> globalDiscrubExtension =
+    std::make_shared<DiscrubExtension>();
 
 } // namespace elizaos

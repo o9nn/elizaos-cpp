@@ -1,6 +1,7 @@
 // agentlogger_test.cpp - E2E tests for elizaos::AgentLogger.
 #include <gtest/gtest.h>
 #include "elizaos/agentlogger.hpp"
+#include "elizaos/logger.hpp"
 
 #include <chrono>
 #include <cstdio>
@@ -37,6 +38,13 @@ protected:
         logger.setFileEnabled(true);
     }
 };
+
+TEST(LegacyLoggerCompatibility, CreatesFunctionalPrefixedLogger) {
+    auto legacy = createLogger("legacy-test");
+    ASSERT_TRUE(legacy);
+    EXPECT_EQ(legacy->prefix, "legacy-test");
+    EXPECT_NO_THROW(legacy->info("compatibility path"));
+}
 
 TEST_F(AgentLoggerTest, BasicLogDoesNotThrow) {
     EXPECT_NO_THROW(logger.log("hello"));

@@ -2,8 +2,15 @@
 
 #include <gtest/gtest.h>
 #include "elizaos/goal_manager.hpp"
-#include <thread>
+#include <algorithm>
+#include <atomic>
 #include <chrono>
+#include <cmath>
+#include <future>
+#include <limits>
+#include <set>
+#include <thread>
+#include <vector>
 
 using namespace elizaos;
 
@@ -100,14 +107,16 @@ TEST_F(GoalManagerTest, GoalDeadline) {
     EXPECT_FALSE(goal->hasDeadline());
     EXPECT_FALSE(goal->isOverdue());
 
-    // Set deadline in the past
-    auto pastDeadline = std::chrono::system_clock::now() - std::chrono::hours(1);
-    goal->setDeadline(pastDeadline);
+    EXPECT_THROW(goal->setDeadline(goal->getCreatedAt() - std::chrono::seconds(1)),
+                 std::invalid_argument);
 
+    // A deadline may pass after it was validly established.
+    goal->setDeadline(std::chrono::system_clock::now() + std::chrono::milliseconds(5));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     EXPECT_TRUE(goal->hasDeadline());
     EXPECT_TRUE(goal->isOverdue());
 
-    // Set deadline in the std::future
+    // Set deadline in the future
     auto futureDeadline = std::chrono::system_clock::now() + std::chrono::hours(24);
     goal->setDeadline(futureDeadline);
 
@@ -352,7 +361,7 @@ TEST_F(GoalManagerTest, SerializeDeserializeRoundTripRestoresGoalState) {
     auto restoredActive = restored.getGoal(active->getId());
     ASSERT_NE(restoredActive, nullptr);
     EXPECT_EQ(restoredActive->getName(), "Investigate sensor drift");
-    EXPECT_EQ(restoredActive->getStatus(), GoalStatus::ACTIVE);
+    EXPECT_EQ(restoredActive->getStatus(), GoalStatus::IN_PROGRESS);
     EXPECT_EQ(restoredActive->getPriority(), GoalPriority::HIGH);
     EXPECT_NEAR(restoredActive->getProgress(), 0.42, 1e-9);
 
@@ -374,6 +383,221 @@ TEST_F(GoalManagerTest, DeserializeRejectsMalformedInputWithoutChangingExistingG
 
     EXPECT_EQ(manager.getTotalGoalCount(), 1);
     EXPECT_NE(manager.getGoal(existingId), nullptr);
+}
+
+
+TEST_F(GoalManagerTest, RejectsInvalidFieldsAndNonFiniteNumbers) {
+    EXPECT_THROW(manager.createGoal("", "description"), std::invalid_argument);
+    EXPECT_THROW(manager.createGoal(std::string(Goal::MAX_NAME_LENGTH + 1, 'n'), "description"),
+                 std::invalid_argument);
+    auto goal = manager.createGoal("Validated", "bounded fields");
+    EXPECT_THROW(goal->setProgress(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
+    EXPECT_THROW(goal->setPriority(static_cast<GoalPriority>(99)), std::invalid_argument);
+    EXPECT_THROW(goal->setReward(std::numeric_limits<double>::infinity()), std::invalid_argument);
+    EXPECT_THROW(goal->setEstimatedEffort(0.0), std::invalid_argument);
+    EXPECT_THROW(goal->addActualEffort(-1.0), std::invalid_argument);
+    EXPECT_THROW(goal->addTag(""), std::invalid_argument);
+    EXPECT_THROW(goal->setMetadata("", "value"), std::invalid_argument);
+    EXPECT_FALSE(manager.updateProgress(goal->getId(), std::numeric_limits<double>::infinity()));
+}
+
+TEST_F(GoalManagerTest, DeterministicMonotonicIdsAndSortedSnapshots) {
+    auto first = manager.createGoal("First", "id order");
+    auto second = manager.createGoal("Second", "id order");
+    auto third = manager.createGoal("Third", "id order");
+    EXPECT_LT(first->getId(), second->getId());
+    EXPECT_LT(second->getId(), third->getId());
+    const auto snapshots = manager.getAllGoalSnapshots();
+    ASSERT_EQ(snapshots.size(), 3u);
+    EXPECT_TRUE(std::is_sorted(snapshots.begin(), snapshots.end(),
+        [](const GoalSnapshot& a, const GoalSnapshot& b) { return a.id < b.id; }));
+    const auto retained = manager.getGoalSnapshot(second->getId());
+    ASSERT_TRUE(retained.has_value());
+    EXPECT_TRUE(manager.removeGoal(second->getId()));
+    EXPECT_EQ(retained->name, "Second");
+}
+
+TEST_F(GoalManagerTest, DependenciesDriveSchedulingAndCompletionEvidence) {
+    auto prerequisite = manager.createGoal("Evidence", "must complete first", GoalPriority::LOW,
+                                           GoalType::ACHIEVEMENT);
+    auto dependent = manager.createGoal("Dependent", "high but blocked", GoalPriority::CRITICAL,
+                                        GoalType::ACHIEVEMENT);
+    ASSERT_TRUE(manager.addDependency(dependent->getId(), prerequisite->getId()));
+    EXPECT_EQ(manager.selectNextGoal()->getId(), prerequisite->getId());
+    EXPECT_FALSE(manager.completeGoal(dependent->getId()));
+    EXPECT_FALSE(manager.updateProgress(dependent->getId(), 0.5));
+    ASSERT_TRUE(manager.completeGoal(prerequisite->getId()));
+    EXPECT_EQ(manager.selectNextGoal()->getId(), dependent->getId());
+    EXPECT_TRUE(manager.updateProgress(dependent->getId(), 0.5));
+    EXPECT_EQ(dependent->getStatus(), GoalStatus::PENDING);
+    EXPECT_TRUE(manager.activateGoal(dependent->getId()));
+    EXPECT_TRUE(manager.updateProgress(dependent->getId(), 0.75));
+    EXPECT_EQ(dependent->getStatus(), GoalStatus::IN_PROGRESS);
+}
+
+TEST_F(GoalManagerTest, MissingDuplicateSelfAndCyclicDependenciesAreRejected) {
+    auto a = manager.createGoal("A", "dependency");
+    auto b = manager.createGoal("B", "dependency");
+    auto c = manager.createGoal("C", "dependency");
+    EXPECT_FALSE(manager.addDependency(a->getId(), "missing"));
+    EXPECT_FALSE(manager.addDependency(a->getId(), a->getId()));
+    ASSERT_TRUE(manager.addDependency(b->getId(), a->getId()));
+    EXPECT_FALSE(manager.addDependency(b->getId(), a->getId()));
+    ASSERT_TRUE(manager.addDependency(c->getId(), b->getId()));
+    EXPECT_FALSE(manager.addDependency(a->getId(), c->getId()));
+    EXPECT_FALSE(manager.removeDependency(c->getId(), a->getId()));
+}
+
+TEST_F(GoalManagerTest, InvalidTerminalTransitionsAndMutationsAreRejected) {
+    auto goal = manager.createGoal("Terminal", "immutable when done");
+    ASSERT_TRUE(manager.completeGoal(goal->getId()));
+    EXPECT_FALSE(manager.completeGoal(goal->getId()));
+    EXPECT_FALSE(manager.activateGoal(goal->getId()));
+    EXPECT_FALSE(manager.failGoal(goal->getId()));
+    EXPECT_FALSE(manager.cancelGoal(goal->getId()));
+    EXPECT_FALSE(manager.blockGoal(goal->getId()));
+    EXPECT_FALSE(manager.updateProgress(goal->getId(), 0.5));
+    EXPECT_THROW(goal->setStatus(GoalStatus::ACTIVE), std::logic_error);
+    EXPECT_THROW(goal->setProgress(0.5), std::logic_error);
+}
+
+TEST_F(GoalManagerTest, HierarchyRejectsCyclesAndRecursivelyCancelsAndRemoves) {
+    auto root = manager.createGoal("Root", "hierarchy");
+    auto child = manager.createGoal("Child", "hierarchy");
+    auto leaf = manager.createGoal("Leaf", "hierarchy");
+    ASSERT_TRUE(manager.addSubGoal(root->getId(), child->getId()));
+    ASSERT_TRUE(manager.addSubGoal(child->getId(), leaf->getId()));
+    EXPECT_FALSE(manager.addSubGoal(leaf->getId(), root->getId()));
+    EXPECT_FALSE(manager.completeGoal(root->getId()));
+    EXPECT_TRUE(manager.cancelGoal(root->getId()));
+    EXPECT_EQ(child->getStatus(), GoalStatus::CANCELLED);
+    EXPECT_EQ(leaf->getStatus(), GoalStatus::CANCELLED);
+
+    GoalManager removal;
+    auto removalRoot = removal.createGoal("Removal root", "recursive");
+    auto removalChild = removal.createGoal("Removal child", "recursive");
+    auto dependent = removal.createGoal("Dependent", "cannot survive prerequisite removal");
+    ASSERT_TRUE(removal.addSubGoal(removalRoot->getId(), removalChild->getId()));
+    ASSERT_TRUE(removal.addDependency(dependent->getId(), removalChild->getId()));
+    EXPECT_TRUE(removal.removeGoal(removalRoot->getId()));
+    EXPECT_EQ(removal.getTotalGoalCount(), 1u);
+    EXPECT_EQ(dependent->getStatus(), GoalStatus::CANCELLED);
+}
+
+TEST_F(GoalManagerTest, CallbackExceptionsAreIsolatedAndCallbacksMayReenter) {
+    std::atomic<int> calls{0};
+    manager.onGoalCreated([](const std::shared_ptr<Goal>&) { throw std::runtime_error("observer"); });
+    manager.onGoalCreated([this, &calls](const std::shared_ptr<Goal>& goal) {
+        EXPECT_TRUE(manager.hasGoal(goal->getId()));
+        manager.onGoalProgress([&calls](const std::shared_ptr<Goal>&) { ++calls; });
+        ++calls;
+    });
+    auto goal = manager.createGoal("Reentrant", "callbacks outside lock");
+    EXPECT_EQ(calls.load(), 1);
+    EXPECT_TRUE(manager.updateProgress(goal->getId(), 0.25));
+    EXPECT_EQ(calls.load(), 2);
+}
+
+TEST_F(GoalManagerTest, FullStatePersistenceRoundTripsDeterministically) {
+    auto parent = manager.createGoal("Parent with | delimiter", "quoted\ndescription",
+                                     GoalPriority::HIGH, GoalType::IMPROVEMENT);
+    auto child = manager.createGoal("Child", "state", GoalPriority::LOW, GoalType::EXPLORATION);
+    auto prerequisite = manager.createGoal("Prerequisite", "state");
+    parent->addTag("zeta");
+    parent->addTag("alpha");
+    parent->setMetadata("owner", "agent | one");
+    parent->setMetadata("empty", "");
+    parent->setReward(3.5);
+    parent->setEstimatedEffort(2.0);
+    parent->addActualEffort(0.75);
+    parent->setDeadline(std::chrono::system_clock::now() + std::chrono::hours(2));
+    ASSERT_TRUE(manager.addSubGoal(parent->getId(), child->getId()));
+    ASSERT_TRUE(manager.addDependency(child->getId(), prerequisite->getId()));
+    ASSERT_TRUE(manager.completeGoal(prerequisite->getId()));
+    ASSERT_TRUE(manager.activateGoal(child->getId()));
+    ASSERT_TRUE(manager.updateProgress(child->getId(), 0.4));
+
+    const std::string serialized = manager.serialize();
+    GoalManager restored;
+    ASSERT_TRUE(restored.deserialize(serialized));
+    EXPECT_EQ(restored.serialize(), serialized);
+    const auto restoredParent = restored.getGoalSnapshot(parent->getId());
+    ASSERT_TRUE(restoredParent.has_value());
+    EXPECT_EQ(restoredParent->description, "quoted\ndescription");
+    EXPECT_EQ(restoredParent->tags, (std::vector<std::string>{"alpha", "zeta"}));
+    EXPECT_EQ(restoredParent->metadata,
+              (std::vector<std::pair<std::string, std::string>>{{"empty", ""}, {"owner", "agent | one"}}));
+    EXPECT_EQ(restoredParent->subGoalIds, (std::vector<UUID>{child->getId()}));
+    EXPECT_DOUBLE_EQ(restoredParent->reward, 3.5);
+    auto later = restored.createGoal("Later", "id must not collide");
+    EXPECT_GT(later->getId(), prerequisite->getId());
+}
+
+TEST_F(GoalManagerTest, MalformedGraphPersistenceRollsBack) {
+    auto existing = manager.createGoal("Keep", "rollback");
+    std::string snapshot = manager.serialize();
+    const auto position = snapshot.find("DEPS 0");
+    ASSERT_NE(position, std::string::npos);
+    snapshot.replace(position, 6, "DEPS 1\nDEP \"missing\"");
+    EXPECT_FALSE(manager.deserialize(snapshot));
+    EXPECT_TRUE(manager.hasGoal(existing->getId()));
+    EXPECT_EQ(manager.getTotalGoalCount(), 1u);
+}
+
+TEST_F(GoalManagerTest, ConcurrentCreateUpdateQueryAndRemoveIsRaceSafe) {
+    static constexpr int threadCount = 8;
+    static constexpr int goalsPerThread = 40;
+    std::vector<std::thread> creators;
+    for (int thread = 0; thread < threadCount; ++thread) {
+        creators.emplace_back([this, thread] {
+            for (int index = 0; index < goalsPerThread; ++index) {
+                manager.createGoal("goal-" + std::to_string(thread) + "-" + std::to_string(index),
+                                   "concurrent");
+            }
+        });
+    }
+    for (auto& creator : creators) creator.join();
+    ASSERT_EQ(manager.getTotalGoalCount(), static_cast<std::size_t>(threadCount * goalsPerThread));
+
+    const auto goals = manager.getAllGoals();
+    std::atomic<bool> stopQueries{false};
+    std::thread query([this, &stopQueries] {
+        while (!stopQueries.load()) {
+            const auto snapshots = manager.getAllGoalSnapshots();
+            EXPECT_TRUE(std::is_sorted(snapshots.begin(), snapshots.end(),
+                [](const GoalSnapshot& a, const GoalSnapshot& b) { return a.id < b.id; }));
+            (void)manager.getOverallProgress();
+            (void)manager.selectNextGoal();
+        }
+    });
+    std::vector<std::thread> workers;
+    for (int thread = 0; thread < threadCount; ++thread) {
+        workers.emplace_back([this, &goals, thread] {
+            for (std::size_t index = static_cast<std::size_t>(thread); index < goals.size();
+                 index += threadCount) {
+                EXPECT_TRUE(manager.updateProgress(goals[index]->getId(), 0.5));
+                EXPECT_TRUE(manager.removeGoal(goals[index]->getId()));
+            }
+        });
+    }
+    for (auto& worker : workers) worker.join();
+    stopQueries = true;
+    query.join();
+    EXPECT_EQ(manager.getTotalGoalCount(), 0u);
+}
+
+TEST(GoalManagerTeardownTest, RepeatedConstructionCallbacksAndDestructionComplete) {
+    auto work = std::async(std::launch::async, [] {
+        for (int iteration = 0; iteration < 500; ++iteration) {
+            GoalManager local;
+            local.onGoalCreated([&local](const std::shared_ptr<Goal>& goal) {
+                EXPECT_TRUE(local.hasGoal(goal->getId()));
+            });
+            local.createGoal("teardown", "no detached work");
+        }
+    });
+    EXPECT_EQ(work.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    work.get();
 }
 
 int main(int argc, char** argv) {

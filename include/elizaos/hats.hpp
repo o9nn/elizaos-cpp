@@ -9,6 +9,8 @@
 #include <variant>
 #include <any>
 #include <chrono>
+#include <mutex>
+#include <shared_mutex>
 
 namespace elizaos {
 
@@ -22,6 +24,16 @@ using DataValue = std::variant<int, double, std::string, bool>;
 using DataRecord = std::unordered_map<std::string, DataValue>;
 using DataSet = std::vector<DataRecord>;
 using Timestamp = std::chrono::system_clock::time_point;
+
+// Exact std::any payload types accepted by TRANSFORM.  A transform applies
+// parameters in this order: rename, drop/select, add_constant, convert,
+// callback.  Unknown parameters, wrong std::any types, missing fields,
+// conflicting destinations, and failed callbacks reject the whole operation.
+using FieldRenameMap = std::unordered_map<std::string, std::string>;
+using FieldList = std::vector<std::string>;
+using ConstantFieldMap = std::unordered_map<std::string, DataValue>;
+using FieldConversionMap = std::unordered_map<std::string, std::string>;
+using TransformCallback = std::function<bool(DataRecord&)>;
 
 /**
  * Supported data source types
@@ -77,6 +89,25 @@ struct DataSourceConfig {
  */
 struct ProcessingStep {
     ProcessingOperation operation;
+    /**
+     * Operation parameter schemas:
+     *
+     * TRANSFORM:
+     *   "rename"       -> FieldRenameMap
+     *   "drop"         -> FieldList (mutually exclusive with "select")
+     *   "select"       -> FieldList (mutually exclusive with "drop")
+     *   "add_constant" -> ConstantFieldMap
+     *   "convert"      -> FieldConversionMap; targets: int/double/string/bool
+     *   "callback"     -> TransformCallback
+     * At least one parameter is required.
+     *
+     * SORT:
+     *   "key"       -> std::string (required)
+     *   "direction" -> std::string (optional: "asc" or "desc")
+     *
+     * AGGREGATE, GROUP, and JOIN are deliberately unsupported and return
+     * ERROR_PROCESSING_FAILED rather than silently passing records through.
+     */
     std::unordered_map<std::string, std::any> parameters;
     std::function<bool(const DataRecord&)> condition;
 };
@@ -107,6 +138,15 @@ protected:
  */
 class JsonDataSource : public DataSource {
 public:
+    /**
+     * config.parameters["format"] selects strict parsing mode:
+     *   "object" - one top-level JSON object
+     *   "array"  - one top-level array containing only objects
+     *   "jsonl"  - one object per non-blank physical line
+     *   "auto"   - object/array first, then JSON Lines (default)
+     * JSON null, arrays/objects as field values, and numbers outside DataValue's
+     * representable range are rejected transactionally.
+     */
     JsonDataSource(const DataSourceConfig& config);
     
     HatsStatus connect() override;
@@ -115,6 +155,7 @@ public:
     bool isConnected() const override;
 
 private:
+    mutable std::mutex mutex_;
     bool connected_ = false;
 };
 
@@ -123,6 +164,12 @@ private:
  */
 class CsvDataSource : public DataSource {
 public:
+    /**
+     * CSV uses RFC 4180-style quoted fields, doubled quote escaping, and
+     * embedded newlines.  "delimiter" must contain exactly one character and
+     * "hasHeader" accepts true/false/1/0.  Headers must be non-empty and unique;
+     * all records must have the same number of columns.
+     */
     CsvDataSource(const DataSourceConfig& config);
     
     HatsStatus connect() override;
@@ -131,9 +178,11 @@ public:
     bool isConnected() const override;
 
 private:
+    mutable std::mutex mutex_;
     bool connected_ = false;
     char delimiter_ = ',';
     bool hasHeader_ = true;
+    bool configValid_ = true;
 };
 
 /**
@@ -156,6 +205,7 @@ public:
     size_t getStepCount() const;
 
 private:
+    mutable std::mutex mutex_;
     std::vector<ProcessingStep> steps_;
     
     HatsStatus applyFilter(const DataSet& input, DataSet& output, 
@@ -175,7 +225,10 @@ public:
     // Data source management
     HatsStatus registerDataSource(std::unique_ptr<DataSource> source);
     HatsStatus unregisterDataSource(const std::string& sourceId);
-    DataSource* getDataSource(const std::string& sourceId);
+    // Shared ownership keeps a looked-up source alive across concurrent
+    // unregistration. Source virtual methods remain responsible for their own
+    // internal synchronization when called directly by clients.
+    std::shared_ptr<DataSource> getDataSource(const std::string& sourceId) const;
     std::vector<std::string> getDataSourceIds() const;
     
     // Data operations
@@ -193,8 +246,8 @@ public:
     bool isSourceRegistered(const std::string& sourceId) const;
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<DataSource>> dataSources_;
-    DataProcessor processor_;
+    mutable std::shared_mutex mutex_;
+    std::unordered_map<std::string, std::shared_ptr<DataSource>> dataSources_;
 };
 
 /**

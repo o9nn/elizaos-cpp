@@ -1,481 +1,282 @@
-/**
- * MCP Transport E2E Tests - Comprehensive validation of the completed
- * transport layer implementations (StdioTransport, WebSocketTransport).
- *
- * Tests cover:
- * - StdioTransport: fork/exec/pipe lifecycle, JSON-RPC over stdin/stdout
- * - WebSocket: endpoint parsing, frame encoding/decoding, close semantics
- * - TransportFactory: correct type dispatch
- * - Cross-fork parity invariants
- */
 #include <gtest/gtest.h>
 #include "elizaos/mcp_gateway.hpp"
-#include <memory>
-#include <string>
+
+#include <atomic>
+#include <condition_variable>
+#include <deque>
+#include <future>
+#include <mutex>
 #include <thread>
-#include <chrono>
-#ifndef _WIN32
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#endif
+#include <vector>
 
 using namespace elizaos;
+using namespace std::chrono_literals;
 
-// ============================================================================
-// TransportFactory Tests
-// ============================================================================
+namespace {
+class ScriptedAdapter final : public WebSocketTransport::Adapter {
+public:
+    bool accept = true;
+    bool acknowledge = true;
+    bool autoReply = true;
+    bool blockReceive = false;
+    std::atomic<int> connects{0};
+    std::atomic<int> closes{0};
 
-class MCPTransportFactoryTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("transport-test-gateway");
+    bool connect(const std::string&, const std::string&, std::chrono::milliseconds,
+                 std::string& ack, std::string& error) override {
+        ++connects;
+        std::lock_guard<std::mutex> lock(mutex_);
+        closed_ = false;
+        if (!accept) { error = "rejected by test adapter"; return false; }
+        if (acknowledge) ack = "test-adapter-accepted";
+        return true;
     }
-    std::shared_ptr<MCPGateway> gateway_;
+
+    bool sendText(const std::string& payload, bool expectsResponse,
+                  std::string& error) override {
+        MCPJsonValue message;
+        try { message = MCPJsonValue::parse(payload); }
+        catch (...) { error = "bad outgoing JSON"; return false; }
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (closed_) { error = "adapter closed"; return false; }
+            sent_.push_back(message);
+            if (expectsResponse && autoReply) {
+                incoming_.push_back(MCPJsonValue{{"jsonrpc", "2.0"},
+                                                 {"id", message["id"]},
+                                                 {"result", {{"method", message["method"]},
+                                                              {"params", message["params"]}}}}.dump());
+            }
+        }
+        cv_.notify_all();
+        return true;
+    }
+
+    WebSocketTransport::ReceiveResult receive(std::chrono::milliseconds timeout) override {
+        std::unique_lock<std::mutex> lock(mutex_);
+        if (blockReceive) {
+            cv_.wait(lock, [this] { return closed_; });
+        } else if (!cv_.wait_for(lock, timeout, [this] { return closed_ || !incoming_.empty(); })) {
+            return {};
+        }
+        if (closed_) return {WebSocketTransport::ReceiveResult::Status::CLOSED, {}, {}};
+        std::string payload = std::move(incoming_.front());
+        incoming_.pop_front();
+        return {WebSocketTransport::ReceiveResult::Status::MESSAGE, std::move(payload), {}};
+    }
+
+    void cancel() noexcept override {
+        { std::lock_guard<std::mutex> lock(mutex_); closed_ = true; }
+        cv_.notify_all();
+    }
+    void close() noexcept override { ++closes; cancel(); }
+
+    void inject(const std::string& payload) {
+        { std::lock_guard<std::mutex> lock(mutex_); incoming_.push_back(payload); }
+        cv_.notify_all();
+    }
+    void failReceive(const std::string& error) {
+        inject(MCPJsonValue{{"__transport_error", error}}.dump());
+        transportError_.store(true);
+    }
+    std::vector<MCPJsonValue> sent() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return sent_;
+    }
+    bool waitForSent(size_t count) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        return cv_.wait_for(lock, 1s, [this, count] { return sent_.size() >= count; });
+    }
+
+private:
+    mutable std::mutex mutex_;
+    std::condition_variable cv_;
+    std::deque<std::string> incoming_;
+    std::vector<MCPJsonValue> sent_;
+    bool closed_ = true;
+    std::atomic<bool> transportError_{false};
 };
 
-TEST_F(MCPTransportFactoryTest, StdioTransportCreation) {
-    MCPServerConfig config;
-    config.name = "stdio-server";
-    config.transport = "stdio";
-    config.endpoint = "echo hello";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(MCPTransportFactoryTest, WebSocketTransportCreation) {
-    MCPServerConfig config;
-    config.name = "ws-server";
-    config.transport = "websocket";
-    config.endpoint = "ws://localhost:9999/mcp";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(MCPTransportFactoryTest, HttpTransportCreation) {
-    MCPServerConfig config;
-    config.name = "http-server";
-    config.transport = "http";
-    config.endpoint = "http://localhost:8080/api";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(MCPTransportFactoryTest, SSETransportCreation) {
-    MCPServerConfig config;
-    config.name = "sse-server";
-    config.transport = "sse";
-    config.endpoint = "http://localhost:8080/events";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(MCPTransportFactoryTest, UnknownTransportDefaultsToHttp) {
-    MCPServerConfig config;
-    config.name = "unknown-server";
-    config.transport = "quantum-entanglement";
-    config.endpoint = "qe://node1";
-    // Should not throw, defaults to HTTP
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-// ============================================================================
-// StdioTransport E2E Tests
-// ============================================================================
-
-class StdioTransportE2ETest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("stdio-e2e-gateway");
+class ReconnectingAdapter final : public WebSocketTransport::Adapter {
+public:
+    bool connect(const std::string&, const std::string&, std::chrono::milliseconds,
+                 std::string& ack, std::string&) override {
+        ++connects;
+        { std::lock_guard<std::mutex> lock(mutex_); closed_ = false; }
+        ack = "reconnect-accepted";
+        return true;
     }
-    std::shared_ptr<MCPGateway> gateway_;
+    bool sendText(const std::string&, bool, std::string&) override { return true; }
+    WebSocketTransport::ReceiveResult receive(std::chrono::milliseconds timeout) override {
+        std::unique_lock<std::mutex> lock(mutex_);
+        if (disconnectNext_) { disconnectNext_ = false; return {WebSocketTransport::ReceiveResult::Status::CLOSED, {}, {}}; }
+        cv_.wait_for(lock, timeout, [this] { return closed_ || disconnectNext_; });
+        if (disconnectNext_) { disconnectNext_ = false; return {WebSocketTransport::ReceiveResult::Status::CLOSED, {}, {}}; }
+        return closed_ ? WebSocketTransport::ReceiveResult{WebSocketTransport::ReceiveResult::Status::CLOSED, {}, {}} : WebSocketTransport::ReceiveResult{};
+    }
+    void cancel() noexcept override { { std::lock_guard<std::mutex> lock(mutex_); closed_ = true; } cv_.notify_all(); }
+    void close() noexcept override { cancel(); }
+    void breakConnection() { { std::lock_guard<std::mutex> lock(mutex_); disconnectNext_ = true; } cv_.notify_all(); }
+    std::atomic<int> connects{0};
+private:
+    std::mutex mutex_;
+    std::condition_variable cv_;
+    bool closed_ = true;
+    bool disconnectNext_ = false;
 };
 
-TEST_F(StdioTransportE2ETest, ConnectToEchoProcess) {
-    MCPServerConfig config;
-    config.name = "echo-mcp";
-    config.transport = "stdio";
-    config.endpoint = "cat";
-    EXPECT_NO_THROW(gateway_->addServer(config));
+WebSocketTransport::Config configFor(const std::shared_ptr<WebSocketTransport::Adapter>& adapter) {
+    WebSocketTransport::Config config;
+    config.url = "adapter://test";
+    config.adapter = adapter;
+    config.autoReconnect = false;
+    config.connectionTimeout = 100;
+    config.maxPendingRequests = 4;
+    return config;
+}
 }
 
-TEST_F(StdioTransportE2ETest, DisconnectTerminatesChild) {
-    MCPServerConfig config;
-    config.name = "sleep-server";
-    config.transport = "stdio";
-    config.endpoint = "sleep 60";
-    
-    gateway_->addServer(config);
-    EXPECT_NO_THROW(gateway_->removeServer("sleep-server"));
+TEST(MCPTransportTruth, HandshakeRequiresPositiveAcknowledgement) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    adapter->acknowledge = false;
+    WebSocketTransport transport(configFor(adapter));
+    EXPECT_FALSE(transport.connect());
+    EXPECT_EQ(transport.getState(), WebSocketTransport::State::FAILED);
+
+    adapter->acknowledge = true;
+    ASSERT_TRUE(transport.connect());
+    EXPECT_EQ(transport.getState(), WebSocketTransport::State::CONNECTED);
 }
 
-TEST_F(StdioTransportE2ETest, MultipleStdioServers) {
-    for (int i = 0; i < 3; ++i) {
-        MCPServerConfig config;
-        config.name = "stdio-" + std::to_string(i);
-        config.transport = "stdio";
-        config.endpoint = "cat";
-        EXPECT_NO_THROW(gateway_->addServer(config));
+TEST(MCPTransportTruth, DefaultSseAndTlsUnavailableFailTruthfully) {
+    SSETransport::Config sseConfig;
+    sseConfig.url = "http://127.0.0.1:9/events";
+    SSETransport sse(sseConfig);
+    EXPECT_FALSE(sse.connect());
+    EXPECT_FALSE(sse.isConnected());
+
+    WebSocketTransport::Config wsConfig;
+    wsConfig.url = "wss://example.invalid/mcp";
+    wsConfig.autoReconnect = false;
+    WebSocketTransport ws(wsConfig);
+    EXPECT_FALSE(ws.connect());
+    EXPECT_EQ(ws.getState(), WebSocketTransport::State::FAILED);
+}
+
+TEST(MCPTransportJsonRpc, RejectsMalformedOutgoingAndIncomingFrames) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    WebSocketTransport transport(configFor(adapter));
+    std::atomic<int> errors{0};
+    transport.onError([&](const std::string&) { ++errors; });
+    ASSERT_TRUE(transport.connect());
+
+    transport.send(MCPJsonValue{{"method", "missing-version"}});
+    adapter->inject("not json");
+    adapter->inject(R"({"jsonrpc":"1.0","id":1,"result":{}})");
+    adapter->inject(R"({"jsonrpc":"2.0","id":1,"result":{},"error":{"code":1,"message":"both"}})");
+    for (int i = 0; i < 100 && transport.getStats().malformedMessages < 3; ++i) std::this_thread::sleep_for(2ms);
+    EXPECT_EQ(adapter->sent().size(), 0u);
+    EXPECT_GE(errors.load(), 4);
+    EXPECT_EQ(transport.getStats().malformedMessages, 3u);
+}
+
+TEST(MCPTransportJsonRpc, CorrelatesConcurrentRequestsOutOfOrder) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    adapter->autoReply = false;
+    WebSocketTransport transport(configFor(adapter));
+    ASSERT_TRUE(transport.connect());
+    std::vector<std::future<MCPJsonValue>> futures;
+    for (uint64_t id = 1; id <= 4; ++id) {
+        futures.emplace_back(std::async(std::launch::async, [&transport, id] {
+            return transport.requestWithId(id, "work", MCPJsonValue{{"value", id}}, 1s);
+        }));
     }
-    for (int i = 0; i < 3; ++i) {
-        EXPECT_NO_THROW(gateway_->removeServer("stdio-" + std::to_string(i)));
+    ASSERT_TRUE(adapter->waitForSent(4));
+    for (uint64_t id = 4; id >= 1; --id) {
+        adapter->inject(MCPJsonValue{{"jsonrpc", "2.0"}, {"id", id},
+                                     {"result", {{"value", id}}}}.dump());
     }
-}
-
-TEST_F(StdioTransportE2ETest, RapidConnectDisconnectCycles) {
-    for (int cycle = 0; cycle < 5; ++cycle) {
-        MCPServerConfig config;
-        config.name = "rapid-cycle";
-        config.transport = "stdio";
-        config.endpoint = "cat";
-        gateway_->addServer(config);
-        gateway_->removeServer("rapid-cycle");
+    for (uint64_t id = 1; id <= 4; ++id) {
+        const auto response = futures[id - 1].get();
+        EXPECT_EQ(response["id"], id);
+        EXPECT_EQ(response["result"]["value"], id);
     }
-    SUCCEED();
+    EXPECT_EQ(transport.getPendingRequestCount(), 0u);
 }
 
-// ============================================================================
-// WebSocket Transport E2E Tests
-// ============================================================================
+TEST(MCPTransportJsonRpc, TimeoutCancellationBoundAndDuplicateSuppression) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    adapter->autoReply = false;
+    auto config = configFor(adapter);
+    config.maxPendingRequests = 1;
+    WebSocketTransport transport(config);
+    ASSERT_TRUE(transport.connect());
 
-class WebSocketTransportE2ETest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("ws-e2e-gateway");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
+    auto first = std::async(std::launch::async, [&] { return transport.requestWithId(10, "slow", MCPJsonValue::object(), 1s); });
+    ASSERT_TRUE(adapter->waitForSent(1));
+    EXPECT_EQ(transport.requestWithId(11, "overflow", MCPJsonValue::object(), 20ms)["error"]["code"], -32005);
+    EXPECT_TRUE(transport.cancelRequest(10));
+    EXPECT_EQ(first.get()["error"]["code"], -32800);
 
-TEST_F(WebSocketTransportE2ETest, EndpointParsing_WsScheme) {
-    MCPServerConfig config;
-    config.name = "ws-parse-test";
-    config.transport = "websocket";
-    config.endpoint = "ws://example.com:8080/mcp/v1";
-    EXPECT_NO_THROW(gateway_->addServer(config));
+    auto timed = transport.requestWithId(12, "timeout", MCPJsonValue::object(), 20ms);
+    EXPECT_EQ(timed["error"]["code"], -32003);
+    adapter->inject(R"({"jsonrpc":"2.0","id":12,"result":{"late":true}})");
+    adapter->inject(R"({"jsonrpc":"2.0","id":12,"result":{"duplicate":true}})");
+    for (int i = 0; i < 100 && transport.getStats().duplicateOrLateResponses < 2; ++i) std::this_thread::sleep_for(2ms);
+    EXPECT_EQ(transport.getStats().duplicateOrLateResponses, 2u);
+    EXPECT_EQ(transport.requestWithId(12, "reuse", MCPJsonValue::object(), 20ms)["error"]["code"], -32600);
 }
 
-TEST_F(WebSocketTransportE2ETest, EndpointParsing_WssScheme) {
-    MCPServerConfig config;
-    config.name = "wss-parse-test";
-    config.transport = "websocket";
-    config.endpoint = "wss://secure.example.com/mcp";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(WebSocketTransportE2ETest, EndpointParsing_DefaultPort) {
-    MCPServerConfig config;
-    config.name = "ws-default-port";
-    config.transport = "websocket";
-    config.endpoint = "ws://localhost/path";
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(WebSocketTransportE2ETest, DisconnectSendsCloseFrame) {
-    MCPServerConfig config;
-    config.name = "ws-close-test";
-    config.transport = "websocket";
-    config.endpoint = "ws://127.0.0.1:19999/mcp";
-    
-    gateway_->addServer(config);
-    EXPECT_NO_THROW(gateway_->removeServer("ws-close-test"));
-}
-
-TEST_F(WebSocketTransportE2ETest, AutoReconnectConfig) {
-    MCPServerConfig config;
-    config.name = "ws-reconnect";
-    config.transport = "websocket";
-    config.endpoint = "ws://localhost:9999/mcp";
+TEST(MCPTransportLifecycle, ReconnectRequiresFreshAcknowledgement) {
+    auto adapter = std::make_shared<ReconnectingAdapter>();
+    auto config = configFor(adapter);
     config.autoReconnect = true;
-    config.healthCheckInterval = 30;
-    EXPECT_NO_THROW(gateway_->addServer(config));
+    config.maxReconnectAttempts = 2;
+    config.reconnectDelay = 1;
+    WebSocketTransport transport(config);
+    ASSERT_TRUE(transport.connect());
+    adapter->breakConnection();
+    for (int i = 0; i < 200 && adapter->connects.load() < 2; ++i) std::this_thread::sleep_for(2ms);
+    EXPECT_GE(adapter->connects.load(), 2);
+    EXPECT_EQ(transport.getState(), WebSocketTransport::State::CONNECTED);
+    EXPECT_GE(transport.getStats().reconnectAttempts, 1u);
 }
 
-// ============================================================================
-// Cross-Fork Parity Invariants
-// ============================================================================
-
-class CrossForkParityTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("parity-gateway");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
-
-TEST_F(CrossForkParityTest, AllTransportTypesSupported) {
-    std::vector<std::string> transports = {"stdio", "http", "websocket", "sse"};
-    for (const auto& t : transports) {
-        MCPServerConfig config;
-        config.name = "parity-" + t;
-        config.transport = t;
-        config.endpoint = "test://endpoint";
-        EXPECT_NO_THROW(gateway_->addServer(config));
-    }
+TEST(MCPTransportLifecycle, ShutdownUnblocksBlockedReceiveAndCallbacksCanReenter) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    adapter->blockReceive = true;
+    WebSocketTransport transport(configFor(adapter));
+    transport.onConnect([&] { EXPECT_EQ(transport.getState(), WebSocketTransport::State::CONNECTED); });
+    transport.onDisconnect([&](int, const std::string&) { EXPECT_EQ(transport.getState(), WebSocketTransport::State::DISCONNECTED); });
+    ASSERT_TRUE(transport.connect());
+    const auto start = std::chrono::steady_clock::now();
+    transport.disconnect();
+    EXPECT_LT(std::chrono::steady_clock::now() - start, 500ms);
 }
 
-TEST_F(CrossForkParityTest, GatewayStatisticsAfterTransportOps) {
-    MCPServerConfig config;
-    config.name = "stats-server";
-    config.transport = "stdio";
-    config.endpoint = "cat";
-    
-    gateway_->addServer(config);
-    auto stats = gateway_->getStatistics();
-    EXPECT_GE(stats.totalRequests, 0);
+TEST(MCPTransportLoopback, ExplicitLoopbackHasObservableAckAndCorrelation) {
+    WebSocketTransport::Config config;
+    config.url = "loopback://deterministic";
+    WebSocketTransport transport(config);
+    ASSERT_TRUE(transport.connect());
+    auto response = transport.request("tools/list", MCPJsonValue::object(), 500ms);
+    ASSERT_TRUE(response.contains("result"));
+    EXPECT_EQ(response["result"]["method"], "tools/list");
+
+    SSETransport::Config sseConfig;
+    sseConfig.url = "loopback://events";
+    SSETransport sse(sseConfig);
+    ASSERT_TRUE(sse.connect());
+    EXPECT_TRUE(sse.sendCommand(MCPJsonValue{{"jsonrpc", "2.0"}, {"method", "ping"}}));
 }
 
-TEST_F(CrossForkParityTest, ToolRegistrationWithTransport) {
-    MCPServerConfig config;
-    config.name = "tool-transport";
-    config.transport = "http";
-    config.endpoint = "http://localhost:8080";
-    gateway_->addServer(config);
-    
-    MCPTool tool;
-    tool.name = "test_tool";
-    tool.description = "A test tool";
-    gateway_->registerTool(tool);
-    
-    auto tools = gateway_->listTools();
-    EXPECT_GE(tools.size(), 1u);
-}
-
-TEST_F(CrossForkParityTest, ResourceRegistrationWithTransport) {
-    MCPServerConfig config;
-    config.name = "resource-transport";
-    config.transport = "websocket";
-    config.endpoint = "ws://localhost:9999";
-    gateway_->addServer(config);
-    
-    MCPResource resource;
-    resource.uri = "file:///test.txt";
-    resource.description = "test-resource";
-    resource.mimeType = "text/plain";
-    gateway_->registerResource(resource);
-    
-    auto resources = gateway_->listResources();
-    EXPECT_GE(resources.size(), 1u);
-}
-
-// ============================================================================
-// Transport Lifecycle Tests
-// ============================================================================
-
-class TransportLifecycleTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("lifecycle-gateway");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
-
-TEST_F(TransportLifecycleTest, AddRemoveReaddServer) {
-    MCPServerConfig config;
-    config.name = "lifecycle-server";
-    config.transport = "stdio";
-    config.endpoint = "cat";
-    
-    gateway_->addServer(config);
-    gateway_->removeServer("lifecycle-server");
-    EXPECT_NO_THROW(gateway_->addServer(config));
-}
-
-TEST_F(TransportLifecycleTest, RemoveNonexistentServer) {
-    EXPECT_NO_THROW(gateway_->removeServer("nonexistent"));
-}
-
-TEST_F(TransportLifecycleTest, MultipleGatewaysIndependent) {
-    auto gw1 = std::make_shared<MCPGateway>("gw1");
-    auto gw2 = std::make_shared<MCPGateway>("gw2");
-    
-    MCPServerConfig config1;
-    config1.name = "server1";
-    config1.transport = "stdio";
-    config1.endpoint = "cat";
-    gw1->addServer(config1);
-    
-    MCPServerConfig config2;
-    config2.name = "server2";
-    config2.transport = "http";
-    config2.endpoint = "http://localhost:8080";
-    gw2->addServer(config2);
-    
-    EXPECT_NO_THROW(gw1->removeServer("server1"));
-    EXPECT_NO_THROW(gw2->removeServer("server2"));
-}
-
-TEST_F(TransportLifecycleTest, GatewayDestructorCleansUp) {
-    {
-        auto gw = std::make_shared<MCPGateway>("temp-gateway");
-        MCPServerConfig config;
-        config.name = "temp-server";
-        config.transport = "stdio";
-        config.endpoint = "sleep 60";
-        gw->addServer(config);
-    }
-    // Gateway destroyed, child processes should be cleaned up
-    SUCCEED();
-}
-
-// ============================================================================
-// MCPClient Transport Integration
-// ============================================================================
-
-class MCPClientTransportTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("client-transport-gw");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
-
-TEST_F(MCPClientTransportTest, ClientConnectsViaGatewayUrl) {
-    MCPServerConfig config;
-    config.name = "client-server";
-    config.transport = "http";
-    config.endpoint = "http://localhost:8080";
-    gateway_->addServer(config);
-    
-    // MCPClient connects via URL (in-process registry)
-    MCPClient client("client-transport-gw");
-    auto tools = client.discoverTools();
-    EXPECT_GE(tools.size(), 0u);
-}
-
-TEST_F(MCPClientTransportTest, ClientDiscoverResourcesViaTransport) {
-    MCPServerConfig config;
-    config.name = "resource-server";
-    config.transport = "stdio";
-    config.endpoint = "cat";
-    gateway_->addServer(config);
-    
-    MCPClient client("client-transport-gw");
-    auto resources = client.discoverResources();
-    EXPECT_GE(resources.size(), 0u);
-}
-
-TEST_F(MCPClientTransportTest, ClientCallToolViaGateway) {
-    MCPTool tool;
-    tool.name = "echo_tool";
-    tool.description = "Echo input back";
-    tool.handler = [](const MCPJsonValue& input) -> MCPJsonValue {
-        MCPJsonValue result;
-        result["echo"] = input;
-        return result;
-    };
-    gateway_->registerTool(tool);
-    
-    MCPClient client("client-transport-gw");
-    MCPJsonValue args;
-    args["message"] = "hello";
-    auto result = client.callTool("echo_tool", args);
-    EXPECT_TRUE(result.contains("echo"));
-}
-
-// ============================================================================
-// MCPServer Transport Integration
-// ============================================================================
-
-class MCPServerTransportTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("server-transport-gw");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
-
-TEST_F(MCPServerTransportTest, ServerRegistersToolsViaGateway) {
-    MCPServer server("test-mcp-server");
-    server.connectToGateway("server-transport-gw");
-    
-    MCPJsonValue schema;
-    schema["type"] = "object";
-    server.registerTool("compute", "Compute something", schema,
-                       [](const MCPJsonValue& /*input*/) -> MCPJsonValue {
-                           MCPJsonValue r;
-                           r["computed"] = true;
-                           return r;
-                       });
-    
-    // MCPServer registers tools internally and announces to gateway.
-    // The gateway's in-process registry may not reflect server tools directly,
-    // but the server itself should track them. Verify no crash and clean lifecycle.
-    EXPECT_NO_THROW(server.disconnectFromGateway());
-}
-
-TEST_F(MCPServerTransportTest, ServerRegistersResources) {
-    MCPServer server("resource-mcp-server");
-    server.connectToGateway("server-transport-gw");
-    
-    server.registerResource("file:///data.json", "application/json", "Test data");
-    
-    // MCPServer manages its own resource list and announces to gateway.
-    // Verify clean lifecycle without crashes.
-    EXPECT_NO_THROW(server.disconnectFromGateway());
-}
-
-TEST_F(MCPServerTransportTest, ServerDisconnectsCleanly) {
-    MCPServer server("disconnect-server");
-    server.connectToGateway("server-transport-gw");
-    EXPECT_NO_THROW(server.disconnectFromGateway());
-}
-
-// ============================================================================
-// Autonomy-Transport Integration (cross-cutting concern)
-// ============================================================================
-
-class AutonomyTransportTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        gateway_ = std::make_shared<MCPGateway>("autonomy-transport-gw");
-    }
-    std::shared_ptr<MCPGateway> gateway_;
-};
-
-TEST_F(AutonomyTransportTest, ToolInvocationReturnsStructuredResult) {
-    MCPTool tool;
-    tool.name = "autonomy_status";
-    tool.description = "Get autonomy status";
-    tool.handler = [](const MCPJsonValue& /*input*/) -> MCPJsonValue {
-        MCPJsonValue result;
-        result["competence"] = 0.85;
-        result["cycle"] = 42;
-        result["mode"] = "exploration";
-        result["health"]["stagnation_count"] = 0;
-        result["health"]["goal_completion_rate"] = 0.9;
-        return result;
-    };
-    gateway_->registerTool(tool);
-    
-    MCPClient client("autonomy-transport-gw");
-    MCPJsonValue args;
-    auto result = client.callTool("autonomy_status", args);
-    EXPECT_TRUE(result.contains("competence"));
-    EXPECT_TRUE(result.contains("cycle"));
-    EXPECT_TRUE(result.contains("mode"));
-}
-
-TEST_F(AutonomyTransportTest, MultipleToolsCoexist) {
-    for (int i = 0; i < 5; ++i) {
-        MCPTool tool;
-        tool.name = "tool_" + std::to_string(i);
-        tool.description = "Tool " + std::to_string(i);
-        tool.handler = [i](const MCPJsonValue& /*input*/) -> MCPJsonValue {
-            MCPJsonValue r;
-            r["id"] = i;
-            return r;
-        };
-        gateway_->registerTool(tool);
-    }
-    
-    auto tools = gateway_->listTools();
-    EXPECT_GE(tools.size(), 5u);
-}
-
-TEST_F(AutonomyTransportTest, PaymentConfigIntegration) {
-    PaymentConfig payConfig;
-    payConfig.enabled = true;
-    payConfig.usdcContractAddress = "0x1234";
-    payConfig.recipientAddress = "0x5678";
-    payConfig.pricePerCall = 0.01f;
-    gateway_->enablePayments(payConfig);
-    
-    auto stats = gateway_->getStatistics();
-    EXPECT_GE(stats.totalRequests, 0);
+TEST(MCPTransportMultiplexer, FailedTransportIsNotConnectedOrPrimary) {
+    auto adapter = std::make_shared<ScriptedAdapter>();
+    adapter->accept = false;
+    TransportMultiplexer mux;
+    mux.addWebSocket("failed", configFor(adapter));
+    const auto states = mux.getTransportStates();
+    ASSERT_EQ(states.count("failed"), 1u);
+    EXPECT_EQ(states.at("failed"), "failed");
+    EXPECT_TRUE(mux.getPrimaryTransport().empty());
 }

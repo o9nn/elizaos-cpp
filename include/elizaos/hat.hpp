@@ -60,11 +60,11 @@ enum class CommunicationType {
 struct TeamMember {
     std::string id;
     std::string name;
-    TeamRole role;
+    TeamRole role = TeamRole::OBSERVER;
     std::vector<std::string> capabilities;
-    bool isAvailable;
-    double workloadCapacity;
-    double currentWorkload;
+    bool isAvailable = false;
+    double workloadCapacity = 0.0;
+    double currentWorkload = 0.0;
 
     bool canHandle(const std::string& capability) const {
         for (const auto& cap : capabilities) {
@@ -82,16 +82,16 @@ struct TeamTask {
     std::string id;
     std::string name;
     std::string description;
-    TaskPriority priority;
-    TaskStatus status;
+    TaskPriority priority = TaskPriority::NORMAL;
+    TaskStatus status = TaskStatus::PENDING;
     std::string assignedTo;
     std::vector<std::string> requiredCapabilities;
     std::chrono::system_clock::time_point deadline;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
     std::vector<std::string> dependencies;
-    double estimatedEffort;
-    double actualEffort;
+    double estimatedEffort = 0.0;
+    double actualEffort = 0.0;
     std::unordered_map<std::string, std::string> metadata;
 };
 
@@ -99,10 +99,10 @@ struct TeamMessage {
     std::string id;
     std::string senderId;
     std::string receiverId;
-    CommunicationType type;
+    CommunicationType type = CommunicationType::STATUS_UPDATE;
     std::string content;
     std::chrono::system_clock::time_point timestamp;
-    bool acknowledged;
+    bool acknowledged = false;
     std::string relatedTaskId;
 };
 
@@ -149,6 +149,9 @@ public:
 
     // Workload balancing
     std::string findBestAssignee(const std::string& teamId, const TeamTask& task) const;
+    // Reassigns pending/assigned work across available, capable team members.
+    // In-progress and blocked tasks retain their current owners; terminal tasks
+    // never consume workload capacity.
     bool rebalanceWorkload(const std::string& teamId);
 
 private:
@@ -183,6 +186,14 @@ public:
     bool reportStatus(const std::string& status);
     bool requestAssistance(const std::string& taskId, const std::string& reason);
 
+    // Task-event ingress for the local HAT protocol. Assignments are accepted
+    // only for this initialized agent on a joined team. Completion updates the
+    // accepted task before invoking the corresponding callback. Callbacks are
+    // always invoked without holding the handler's internal lock, so they may
+    // safely call back into the handler.
+    bool receiveTaskAssignment(const std::string& teamId, const TeamTask& task);
+    bool completeTask(const std::string& taskId, double actualEffort = 0.0);
+
     // Capability advertisement
     void advertiseCapabilities(const std::vector<std::string>& capabilities);
     void updateAvailability(bool available, double capacity);
@@ -196,7 +207,9 @@ private:
 // FREE FUNCTIONS
 // ==============================================================================
 
-// Backward-compatible module-link probe.
+// Backward-compatible module-link probe. It performs a lightweight invariant
+// self-check and throws std::logic_error only if the compiled HAT enum/string
+// conversion contract is internally inconsistent.
 void hat_placeholder();
 
 // Token lifecycle helpers. Tokens are in-process capabilities used by the

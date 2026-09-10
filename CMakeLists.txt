@@ -35,15 +35,9 @@ endif()
 # Find packages
 find_package(Threads REQUIRED)
 
-# Find libcurl for HTTP operations
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(CURL QUIET libcurl)
-endif()
-
-if(NOT CURL_FOUND)
-    find_package(CURL QUIET)
-endif()
+# Find libcurl for HTTP operations. Use CMake's package module so the
+# imported target carries configuration-specific Windows library paths.
+find_package(CURL REQUIRED)
 
 # Enable testing
 # Bound individual tests so a deadlock fails promptly instead of occupying a
@@ -672,14 +666,15 @@ install(TARGETS
     elizaos-core elizaos-agentloop elizaos-agentmemory
     elizaos-agentaction elizaos-agentagenda
     elizaos-agentcomms elizaos-agentlogger elizaos-agentshell
-    elizaos-agentbrowser
+    elizaos-agentbrowser elizaos-endocrine elizaos-persistence
 
     # Application modules
     elizaos-eliza elizaos-characters elizaos-knowledge
     elizaos-goal_manager
 
     # Integration modules
-    elizaos-auto_fun elizaos-autonomous_starter
+    elizaos-auto_fun elizaos-autonomous_starter elizaos-cognitive_curriculum
+    elizaos-llama_cpp elizaos-cognitive_bridge
     elizaos-sweagent elizaos-mcp_gateway elizaos-otaku elizaos-otc_agent
 
     # Plugin modules
@@ -747,10 +742,20 @@ install(TARGETS
 
 # Generate package config
 include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ElizaOSConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/ElizaOSConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/ElizaOS
+)
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/ElizaOSConfigVersion.cmake"
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/ElizaOSConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/ElizaOSConfigVersion.cmake"
+    DESTINATION lib/cmake/ElizaOS
 )
 
 # Print configuration summary

@@ -1,728 +1,270 @@
-// eliza_3d_hyperfy_starter.cpp - Complete implementation with WebSocket support
-// This file implements the Hyperfy 3D world integration with real WebSocket communication
+// eliza_3d_hyperfy_starter.cpp - deterministic Hyperfy integration
 
 #include "elizaos/eliza_3d_hyperfy_starter.hpp"
-#include "elizaos/agentlogger.hpp"
-#include <sstream>
-#include <chrono>
-#include <iostream>
-#include <thread>
-#include <algorithm>
 
-// Check if WebSocket library is available
-#ifdef HYPERFY_WEBSOCKET_IMPLEMENTATION
-    // Real WebSocket implementation using libwebsockets or similar
-    #include <libwebsockets.h>
-    #define HAS_WEBSOCKET 1
-#else
-    // Simulated WebSocket for systems without libwebsockets
-    #define HAS_WEBSOCKET 0
-#endif
+#include <nlohmann/json.hpp>
+
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <iomanip>
+#include <limits>
+#include <sstream>
+#include <stdexcept>
+#include <utility>
 
 namespace elizaos {
 namespace hyperfy {
-
-// ==============================================================================
-// HELPER FUNCTIONS
-// ==============================================================================
-
 namespace {
-    void logInfo(const std::string& message, const std::string& component) {
-        AgentLogger logger;
-        logger.log(message, component, "Hyperfy", LogLevel::INFO);
-    }
-    
-    void logSuccess(const std::string& message, const std::string& component) {
-        AgentLogger logger;
-        logger.log(message, component, "Hyperfy", LogLevel::SUCCESS);
-    }
-    
-    void logWarning(const std::string& message, const std::string& component) {
-        AgentLogger logger;
-        logger.log(message, component, "Hyperfy", LogLevel::WARNING);
-    }
-    
-    void logError(const std::string& message, const std::string& component) {
-        AgentLogger logger;
-        logger.log(message, component, "Hyperfy", LogLevel::ERROR);
-    }
+
+using json = nlohmann::json;
+
+int64_t nowMilliseconds() {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+               std::chrono::system_clock::now().time_since_epoch())
+        .count();
 }
 
-// ==============================================================================
-// WEBSOCKET CLIENT IMPLEMENTATION
-// ==============================================================================
+const std::array<std::pair<MessageType, const char*>, 8> kMessageTypes{{
+    {MessageType::CONNECT, "connect"},
+    {MessageType::DISCONNECT, "disconnect"},
+    {MessageType::POSITION_UPDATE, "position_update"},
+    {MessageType::CHAT_MESSAGE, "chat_message"},
+    {MessageType::ACTION, "action"},
+    {MessageType::WORLD_STATE, "world_state"},
+    {MessageType::HEARTBEAT, "heartbeat"},
+    {MessageType::ERROR, "error"},
+}};
 
-#if HAS_WEBSOCKET
+const char* messageTypeName(MessageType type) {
+    const auto it = std::find_if(kMessageTypes.begin(), kMessageTypes.end(),
+                                 [type](const auto& entry) { return entry.first == type; });
+    if (it == kMessageTypes.end()) {
+        throw std::invalid_argument("unknown WebSocket message type");
+    }
+    return it->second;
+}
 
-namespace websocket_impl {
+MessageType parseMessageType(const std::string& name) {
+    const auto it = std::find_if(kMessageTypes.begin(), kMessageTypes.end(),
+                                 [&name](const auto& entry) { return name == entry.second; });
+    if (it == kMessageTypes.end()) {
+        throw std::invalid_argument("unknown WebSocket message type: " + name);
+    }
+    return it->first;
+}
 
-class WebSocketClient {
-private:
-    struct lws_context* context_;
-    struct lws* wsi_;
-    std::string url_;
-    std::string authToken_;
-    std::atomic<bool> connected_;
-    std::mutex sendMutex_;
-    std::queue<std::string> sendQueue_;
-    std::function<void(const std::string&)> messageCallback_;
-    
-    static int callback(struct lws* wsi, enum lws_callback_reasons reason,
-                       void* user, void* in, size_t len) {
-        WebSocketClient* client = static_cast<WebSocketClient*>(user);
-        
-        switch (reason) {
-            case LWS_CALLBACK_CLIENT_ESTABLISHED:
-                client->connected_.store(true);
-                logSuccess("WebSocket connection established", "WebSocketClient");
-                break;
-                
-            case LWS_CALLBACK_CLIENT_RECEIVE:
-                if (client->messageCallback_ && in && len > 0) {
-                    std::string message(static_cast<char*>(in), len);
-                    client->messageCallback_(message);
-                }
-                break;
-                
-            case LWS_CALLBACK_CLIENT_WRITEABLE:
-                {
-                    std::lock_guard<std::mutex> lock(client->sendMutex_);
-                    if (!client->sendQueue_.empty()) {
-                        std::string msg = client->sendQueue_.front();
-                        client->sendQueue_.pop();
-                        
-                        unsigned char buf[LWS_PRE + msg.size()];
-                        memcpy(&buf[LWS_PRE], msg.c_str(), msg.size());
-                        lws_write(wsi, &buf[LWS_PRE], msg.size(), LWS_WRITE_TEXT);
-                        
-                        if (!client->sendQueue_.empty()) {
-                            lws_callback_on_writable(wsi);
-                        }
-                    }
-                }
-                break;
-                
-            case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
-                logError("WebSocket connection error", "WebSocketClient");
-                client->connected_.store(false);
-                break;
-                
-            case LWS_CALLBACK_CLOSED:
-                logInfo("WebSocket connection closed", "WebSocketClient");
-                client->connected_.store(false);
-                break;
-                
-            default:
-                break;
+std::string scalarToString(const json& value) {
+    if (value.is_string()) {
+        return value.get<std::string>();
+    }
+    return value.dump();
+}
+
+Position3D positionFromJson(const json& value) {
+    const json* position = &value;
+    if (value.is_object() && value.contains("position")) {
+        position = &value.at("position");
+    }
+    if (!position->is_object() || !position->contains("x") ||
+        !position->contains("y") || !position->contains("z")) {
+        throw std::invalid_argument("position payload must contain numeric x, y, and z");
+    }
+
+    Position3D result{
+        position->at("x").get<double>(),
+        position->at("y").get<double>(),
+        position->at("z").get<double>(),
+    };
+    if (!std::isfinite(result.x) || !std::isfinite(result.y) || !std::isfinite(result.z)) {
+        throw std::invalid_argument("position coordinates must be finite");
+    }
+    return result;
+}
+
+std::string formatDouble(double value) {
+    if (!std::isfinite(value)) {
+        throw std::invalid_argument("position coordinates must be finite");
+    }
+    std::ostringstream stream;
+    stream << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
+    return stream.str();
+}
+
+}  // namespace
+
+std::string WebSocketMessage::toJson() const {
+    return json{{"type", messageTypeName(type)},
+                {"payload", payload},
+                {"sender", sender},
+                {"timestamp", timestamp}}
+        .dump();
+}
+
+WebSocketMessage WebSocketMessage::fromJson(const std::string& encoded) {
+    try {
+        const json value = json::parse(encoded);
+        if (!value.is_object() || !value.contains("type") ||
+            !value.contains("payload") || !value.contains("sender") ||
+            !value.contains("timestamp")) {
+            throw std::invalid_argument("WebSocket message is missing a required field");
         }
-        
-        return 0;
-    }
-    
-public:
-    WebSocketClient() : context_(nullptr), wsi_(nullptr), connected_(false) {}
-    
-    ~WebSocketClient() {
-        disconnect();
-    }
-    
-    bool connect(const std::string& url, const std::string& authToken) {
-        url_ = url;
-        authToken_ = authToken;
-        
-        struct lws_context_creation_info info;
-        memset(&info, 0, sizeof(info));
-        info.port = CONTEXT_PORT_NO_LISTEN;
-        info.protocols = protocols_;
-        info.gid = -1;
-        info.uid = -1;
-        
-        context_ = lws_create_context(&info);
-        if (!context_) {
-            logError("Failed to create WebSocket context", "WebSocketClient");
-            return false;
+        if (!value.at("type").is_string() || !value.at("sender").is_string() ||
+            !value.at("timestamp").is_number_integer()) {
+            throw std::invalid_argument("WebSocket message contains an invalid field type");
         }
-        
-        struct lws_client_connect_info ccinfo;
-        memset(&ccinfo, 0, sizeof(ccinfo));
-        ccinfo.context = context_;
-        ccinfo.address = url_.c_str();
-        ccinfo.port = 443;  // HTTPS port
-        ccinfo.path = "/";
-        ccinfo.host = ccinfo.address;
-        ccinfo.origin = ccinfo.address;
-        ccinfo.protocol = "hyperfy-protocol";
-        ccinfo.ssl_connection = LCCSCF_USE_SSL;
-        ccinfo.userdata = this;
-        
-        wsi_ = lws_client_connect_via_info(&ccinfo);
-        if (!wsi_) {
-            logError("Failed to connect WebSocket", "WebSocketClient");
-            lws_context_destroy(context_);
-            context_ = nullptr;
-            return false;
-        }
-        
-        // Service the connection in a loop until connected or timeout
-        int timeout = 50;  // 5 seconds
-        while (!connected_.load() && timeout-- > 0) {
-            lws_service(context_, 100);
-        }
-        
-        return connected_.load();
-    }
-    
-    void disconnect() {
-        if (wsi_) {
-            lws_close_reason(wsi_, LWS_CLOSE_STATUS_NORMAL, nullptr, 0);
-            wsi_ = nullptr;
-        }
-        
-        if (context_) {
-            lws_context_destroy(context_);
-            context_ = nullptr;
-        }
-        
-        connected_.store(false);
-    }
-    
-    bool isConnected() const {
-        return connected_.load();
-    }
-    
-    bool send(const std::string& message) {
-        if (!connected_.load()) {
-            return false;
-        }
-        
-        {
-            std::lock_guard<std::mutex> lock(sendMutex_);
-            sendQueue_.push(message);
-        }
-        
-        lws_callback_on_writable(wsi_);
-        return true;
-    }
-    
-    void setMessageCallback(std::function<void(const std::string&)> callback) {
-        messageCallback_ = callback;
-    }
-    
-    void service(int timeout_ms = 50) {
-        if (context_) {
-            lws_service(context_, timeout_ms);
-        }
-    }
-    
-private:
-    static struct lws_protocols protocols_[];
-};
 
-struct lws_protocols WebSocketClient::protocols_[] = {
-    {
-        "hyperfy-protocol",
-        WebSocketClient::callback,
-        0,
-        4096,
-    },
-    { NULL, NULL, 0, 0 }
-};
-
-} // namespace websocket_impl
-
-#else // !HAS_WEBSOCKET
-
-// ==============================================================================
-// SIMULATED WEBSOCKET (Fallback when libwebsockets not available)
-// ==============================================================================
-
-namespace websocket_impl {
-
-class WebSocketClient {
-private:
-    std::atomic<bool> connected_;
-    std::function<void(const std::string&)> messageCallback_;
-    std::queue<std::string> messageQueue_;
-    std::mutex queueMutex_;
-    
-public:
-    WebSocketClient() : connected_(false) {}
-    
-    bool connect(const std::string& url, const std::string& authToken) {
-        logWarning("Using simulated WebSocket (libwebsockets not available)", "WebSocketClient");
-        logInfo("Simulating connection to: " + url +
-                (authToken.empty() ? " (no auth token)" : " (with auth token)"),
-                "WebSocketClient");
-        
-        // Simulate connection delay
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        
-        connected_.store(true);
-        logSuccess("Simulated WebSocket connection established", "WebSocketClient");
-        return true;
-    }
-    
-    void disconnect() {
-        connected_.store(false);
-        logInfo("Simulated WebSocket disconnected", "WebSocketClient");
-    }
-    
-    bool isConnected() const {
-        return connected_.load();
-    }
-    
-    bool send(const std::string& message) {
-        if (!connected_.load()) {
-            return false;
-        }
-        
-        logInfo("Simulated send: " + message.substr(0, 100), "WebSocketClient");
-        
-        // Simulate echo response
-        if (messageCallback_) {
-            std::string response = "{\"type\":\"ack\",\"message\":\"received\"}";
-            messageCallback_(response);
-        }
-        
-        return true;
-    }
-    
-    void setMessageCallback(std::function<void(const std::string&)> callback) {
-        messageCallback_ = callback;
-    }
-    
-    void service(int /* timeout_ms */ = 50) {
-        // No-op for simulated WebSocket
-    }
-};
-
-} // namespace websocket_impl
-
-#endif // HAS_WEBSOCKET
-
-// ==============================================================================
-// HYPERFYWORLD IMPLEMENTATION
-// ==============================================================================
-
-HyperfyWorld::HyperfyWorld(const std::string& worldId, const std::string& wsUrl) 
-    : worldId_(worldId), wsUrl_(wsUrl), connected_(false) {
-    wsClient_.reset(reinterpret_cast<WebSocketClient*>(new websocket_impl::WebSocketClient()));
-}
-
-HyperfyWorld::~HyperfyWorld() {
-    disconnect();
-    if (wsClient_) { delete reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.release()); }
-}
-
-bool HyperfyWorld::connect(const std::string& authToken) {
-    std::lock_guard<std::mutex> lock(worldMutex_);
-    
-    if (connected_.load()) {
-        logWarning("Already connected to world: " + worldId_, "HyperfyWorld");
-        return true;
-    }
-    
-    logInfo("Connecting to Hyperfy world: " + worldId_ + " at " + wsUrl_, "HyperfyWorld");
-    
-    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
-    
-    // Set up message callback
-    client->setMessageCallback([this](const std::string& message) {
-        handleWebSocketMessage(message);
-    });
-    
-    // Connect WebSocket
-    if (!client->connect(wsUrl_, authToken)) {
-        logError("Failed to connect WebSocket to world: " + worldId_, "HyperfyWorld");
-        return false;
-    }
-    
-    // Send authentication message
-    std::ostringstream authMsg;
-    authMsg << "{\"type\":\"auth\",\"worldId\":\"" << worldId_ 
-            << "\",\"token\":\"" << authToken << "\"}";
-    
-    if (!client->send(authMsg.str())) {
-        logError("Failed to send auth message", "HyperfyWorld");
-        client->disconnect();
-        return false;
-    }
-    
-    connected_.store(true);
-    logSuccess("Successfully connected to Hyperfy world: " + worldId_, "HyperfyWorld");
-    
-    return true;
-}
-
-void HyperfyWorld::disconnect() {
-    std::lock_guard<std::mutex> lock(worldMutex_);
-    
-    if (!connected_.load()) {
-        return;
-    }
-    
-    logInfo("Disconnecting from Hyperfy world: " + worldId_, "HyperfyWorld");
-    
-    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
-    client->disconnect();
-    
-    connected_.store(false);
-    worldState_.clear();
-    
-    logInfo("Disconnected from Hyperfy world: " + worldId_, "HyperfyWorld");
-}
-
-bool HyperfyWorld::isConnected() const {
-    return connected_.load();
-}
-
-void HyperfyWorld::updateState(const std::string& key, const std::string& value) {
-    std::lock_guard<std::mutex> lock(worldMutex_);
-    worldState_[key] = value;
-}
-
-std::string HyperfyWorld::getState(const std::string& key) const {
-    std::lock_guard<std::mutex> lock(worldMutex_);
-    auto it = worldState_.find(key);
-    return (it != worldState_.end()) ? it->second : "";
-}
-
-bool HyperfyWorld::sendMessage(const std::string& message) {
-    if (!connected_.load()) {
-        logWarning("Cannot send message: not connected to world", "HyperfyWorld");
-        return false;
-    }
-    
-    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
-    
-    // Create JSON message
-    std::ostringstream jsonMsg;
-    jsonMsg << "{\"type\":\"message\",\"worldId\":\"" << worldId_ 
-            << "\",\"content\":\"" << escapeJson(message) << "\"}";
-    
-    if (!client->send(jsonMsg.str())) {
-        logError("Failed to send message to world", "HyperfyWorld");
-        return false;
-    }
-    
-    logInfo("Sent message to world " + worldId_ + ": " + message, "HyperfyWorld");
-    return true;
-}
-
-bool HyperfyWorld::moveToPosition(double x, double y, double z) {
-    if (!connected_.load()) {
-        logWarning("Cannot move: not connected to world", "HyperfyWorld");
-        return false;
-    }
-    
-    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
-    
-    // Create position update message
-    std::ostringstream posMsg;
-    posMsg << "{\"type\":\"move\",\"worldId\":\"" << worldId_ 
-           << "\",\"position\":{\"x\":" << x << ",\"y\":" << y << ",\"z\":" << z << "}}";
-    
-    if (!client->send(posMsg.str())) {
-        logError("Failed to send position update", "HyperfyWorld");
-        return false;
-    }
-    
-    // Update local state
-    updateState("position_x", std::to_string(x));
-    updateState("position_y", std::to_string(y));
-    updateState("position_z", std::to_string(z));
-    
-    std::ostringstream oss;
-    oss << "Moved to position (" << x << ", " << y << ", " << z << ") in world " << worldId_;
-    logInfo(oss.str(), "HyperfyWorld");
-    
-    return true;
-}
-
-bool HyperfyWorld::performAction(const std::string& action, const std::string& parameters) {
-    if (!connected_.load()) {
-        logWarning("Cannot perform action: not connected to world", "HyperfyWorld");
-        return false;
-    }
-    
-    auto* client = reinterpret_cast<websocket_impl::WebSocketClient*>(wsClient_.get());
-    
-    // Create action message
-    std::ostringstream actionMsg;
-    actionMsg << "{\"type\":\"action\",\"worldId\":\"" << worldId_ 
-              << "\",\"action\":\"" << escapeJson(action) 
-              << "\",\"parameters\":\"" << escapeJson(parameters) << "\"}";
-    
-    if (!client->send(actionMsg.str())) {
-        logError("Failed to send action", "HyperfyWorld");
-        return false;
-    }
-    
-    logInfo("Performed action '" + action + "' with parameters: " + parameters, "HyperfyWorld");
-    return true;
-}
-
-void HyperfyWorld::handleWebSocketMessage(const std::string& message) {
-    logInfo("Received WebSocket message: " + message.substr(0, 100), "HyperfyWorld");
-    
-    // Parse message and update world state
-    // This is a simplified parser - in production, use a JSON library
-    if (message.find("\"type\":\"state\"") != std::string::npos) {
-        // State update message
-        // Extract and update world state
-    } else if (message.find("\"type\":\"event\"") != std::string::npos) {
-        // Event notification
-        // Handle world events
+        WebSocketMessage result;
+        result.type = parseMessageType(value.at("type").get<std::string>());
+        result.payload = value.at("payload").is_string()
+                             ? value.at("payload").get<std::string>()
+                             : value.at("payload").dump();
+        result.sender = value.at("sender").get<std::string>();
+        result.timestamp = value.at("timestamp").get<int64_t>();
+        return result;
+    } catch (const std::invalid_argument&) {
+        throw;
+    } catch (const std::exception& error) {
+        throw std::invalid_argument(std::string("invalid WebSocket message JSON: ") + error.what());
     }
 }
 
-std::string HyperfyWorld::escapeJson(const std::string& str) {
-    std::ostringstream oss;
-    for (char c : str) {
-        switch (c) {
-            case '"':  oss << "\\\""; break;
-            case '\\': oss << "\\\\"; break;
-            case '\b': oss << "\\b"; break;
-            case '\f': oss << "\\f"; break;
-            case '\n': oss << "\\n"; break;
-            case '\r': oss << "\\r"; break;
-            case '\t': oss << "\\t"; break;
-            default:   oss << c; break;
-        }
+std::string Position3D::toString() const {
+    return formatDouble(x) + "," + formatDouble(y) + "," + formatDouble(z);
+}
+
+Position3D Position3D::fromString(const std::string& text) {
+    std::istringstream stream(text);
+    Position3D result;
+    char firstComma = 0;
+    char secondComma = 0;
+    if (!(stream >> result.x >> firstComma >> result.y >> secondComma >> result.z) ||
+        firstComma != ',' || secondComma != ',') {
+        throw std::invalid_argument("position must use the form x,y,z");
     }
-    return oss.str();
-}
-
-// ==============================================================================
-// HYPERFYSERVICE IMPLEMENTATION
-// ==============================================================================
-
-HyperfyService::HyperfyService() : running_(false) {
-}
-
-HyperfyService::~HyperfyService() {
-    stop();
-}
-
-bool HyperfyService::start(const HyperfyConfig& config) {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    
-    if (running_.load()) {
-        logWarning("HyperfyService is already running", "HyperfyService");
-        return true;
+    stream >> std::ws;
+    if (!stream.eof() || !std::isfinite(result.x) || !std::isfinite(result.y) ||
+        !std::isfinite(result.z)) {
+        throw std::invalid_argument("position contains trailing data or non-finite coordinates");
     }
-    
-    config_ = config;
-    logInfo("Starting HyperfyService with URL: " + config_.wsUrl, "HyperfyService");
-    
-    running_.store(true);
-    serviceThread_ = std::thread(&HyperfyService::serviceLoop, this);
-    
-    logSuccess("HyperfyService started successfully", "HyperfyService");
-    return true;
+    return result;
 }
 
-void HyperfyService::stop() {
-    {
-        std::lock_guard<std::mutex> lock(serviceMutex_);
-        if (!running_.load()) {
-            return;
-        }
-        
-        logInfo("Stopping HyperfyService", "HyperfyService");
-        running_.store(false);
-    }
-    
-    // Wait for service std::thread to complete
-    if (serviceThread_.joinable()) {
-        serviceThread_.join();
-    }
-    
-    // Disconnect all worlds
-    {
-        std::lock_guard<std::mutex> lock(serviceMutex_);
-        if (world_) {
-            world_->disconnect();
-            world_.reset();
-        }
-    }
-    
-    logInfo("HyperfyService stopped", "HyperfyService");
-}
-
-bool HyperfyService::connectToWorld(const std::string& worldId, 
-                                    const std::string& wsUrl,
-                                    const std::string& authToken) {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    
-    if (!running_.load()) {
-        logError("Cannot connect to world: service not running", "HyperfyService");
-        return false;
-    }
-    
-    // Check if already connected
-    if (world_ && world_->isConnected()) {
-        logInfo("Already connected to a world", "HyperfyService");
-        return true;
-    }
-    
-    // Create new world connection
-    world_ = std::make_shared<HyperfyWorld>(worldId, wsUrl.empty() ? config_.wsUrl : wsUrl);
-    
-    if (!world_->connect(authToken)) {
-        logError("Failed to connect to world: " + worldId, "HyperfyService");
-        world_.reset();
-        return false;
-    }
-    
-    logSuccess("Connected to world: " + worldId, "HyperfyService");
-    return true;
-}
-
-void HyperfyService::disconnectFromWorld() {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    
-    if (world_) {
-        world_->disconnect();
-        world_.reset();
-        logInfo("Disconnected from world", "HyperfyService");
-    }
-}
-
-// getWorld() is inline in the header
-
-
-
-void HyperfyService::serviceLoop() {
-    logInfo("HyperfyService loop started", "HyperfyService");
-    
-    while (running_.load()) {
-        // Service all connected worlds
-        {
-            std::lock_guard<std::mutex> lock(serviceMutex_);
-            if (world_ && world_->isConnected()) {
-                    world_->sendHeartbeat();
-                }
-        }
-        
-        // Sleep to avoid busy-waiting
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-    
-    logInfo("HyperfyService loop stopped", "HyperfyService");
-}
-
-
-// HyperfyServiceFactory implementations
-std::shared_ptr<HyperfyService> HyperfyServiceFactory::createService() {
-    return std::make_shared<HyperfyService>();
-}
-
-std::shared_ptr<HyperfyService> HyperfyServiceFactory::createServiceWithConfig(const HyperfyConfig& config) {
-    auto service = std::make_shared<HyperfyService>();
-    // Pre-seed the service with the caller-supplied configuration so that a
-    // subsequent start()/connect() uses the intended world URL and options.
-    service->applyConfig(config);
-    return service;
-}
-
-// HyperfyService action registry
-void HyperfyService::registerAction(const std::string& name, std::shared_ptr<HyperfyAction> action) {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    actions_[name] = std::move(action);
-}
-
-std::shared_ptr<HyperfyAction> HyperfyService::getAction(const std::string& name) const {
-    std::lock_guard<std::mutex> lock(serviceMutex_);
-    auto it = actions_.find(name);
-    return it != actions_.end() ? it->second : nullptr;
-}
-
-// HyperfyService::executeAction implementation - resolve the named action and
-// dispatch it with the supplied parameter string. Returns false when the
-// service is stopped or no action is registered under `name`.
-bool HyperfyService::executeAction(const std::string& name, const std::string& parameters) {
-    if (!isRunning()) return false;
-    auto action = getAction(name);
-    if (!action) {
-        logWarning("executeAction: no action registered named '" + name + "'", "HyperfyService");
-        return false;
-    }
-    return action->execute(parameters);
-}
-
-
-// WebSocketClient implementations (header-declared version)
 WebSocketClient::WebSocketClient() : connected_(false), running_(false) {}
 
 WebSocketClient::~WebSocketClient() {
     disconnect();
+    if (processingThread_.joinable() &&
+        processingThread_.get_id() != std::this_thread::get_id()) {
+        processingThread_.join();
+    }
 }
 
 bool WebSocketClient::connect(const std::string& url, const std::string& authToken) {
-    // In-process simulation layer: record the target endpoint, mark the
-    // connection live and fire the onConnect callback. authToken is retained
-    // alongside the url so a future libwebsockets/Boost.Beast backend can
-    // present credentials during the real handshake.
+    (void)authToken;
+    if (url.empty()) {
+        OnErrorCallback callback;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            callback = onError_;
+        }
+        if (callback) {
+            callback("connect failed: URL is empty");
+        }
+        return false;
+    }
+    if (connected_.load()) {
+        return true;
+    }
+
+    disconnect();
+    if (processingThread_.joinable()) {
+        processingThread_.join();
+    }
+
+    OnConnectCallback callback;
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        url_ = authToken.empty() ? url : (url + "?token=" + authToken);
-        connected_ = true;
-        running_ = true;
+        url_ = url;
+        connected_.store(true);
+        running_.store(true);
+        callback = onConnect_;
+        processingThread_ = std::thread(&WebSocketClient::messageProcessingLoop, this);
     }
-    if (onConnect_) {
-        onConnect_();
+    if (callback) {
+        callback();
     }
     return true;
 }
 
 void WebSocketClient::disconnect() {
-    bool wasConnected = connected_.exchange(false);
-    running_ = false;
+    bool wasConnected = false;
+    {
+        // Publish the stop predicate while holding the same mutex used by
+        // messageProcessingLoop's condition-variable wait. Updating it without
+        // this lock permits a notify to land between the worker's predicate
+        // check and its wait, leaving disconnect() blocked forever in join().
+        std::lock_guard<std::mutex> lock(mutex_);
+        wasConnected = connected_.exchange(false);
+        running_.store(false);
+    }
     cv_.notify_all();
-    if (wasConnected && onDisconnect_) {
-        onDisconnect_("client disconnect");
+
+    if (processingThread_.joinable() &&
+        processingThread_.get_id() != std::this_thread::get_id()) {
+        processingThread_.join();
+    }
+
+    OnDisconnectCallback callback;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        callback = onDisconnect_;
+    }
+    if (wasConnected && callback) {
+        callback("client disconnect");
     }
 }
 
 bool WebSocketClient::isConnected() const {
-    return connected_;
+    return connected_.load();
 }
 
 bool WebSocketClient::send(const WebSocketMessage& message) {
-    if (!connected_) {
-        if (onError_) {
-            onError_("send failed: not connected");
+    OnErrorCallback errorCallback;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (connected_.load()) {
+            outgoingMessages_.push(message);
+            return true;
         }
-        return false;
+        errorCallback = onError_;
     }
-    std::lock_guard<std::mutex> lock(mutex_);
-    outgoingMessages_.push(message);
-    return true;
+    if (errorCallback) {
+        errorCallback("send failed: not connected");
+    }
+    return false;
 }
 
 bool WebSocketClient::sendText(const std::string& text) {
-    WebSocketMessage msg;
-    msg.type = MessageType::CHAT_MESSAGE;
-    msg.payload = text;
-    msg.sender = "local";
-    msg.timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
-        std::chrono::system_clock::now().time_since_epoch()).count();
-    return send(msg);
+    return send(WebSocketMessage{MessageType::CHAT_MESSAGE, text, "local", nowMilliseconds()});
 }
 
 void WebSocketClient::setOnMessage(OnMessageCallback callback) {
     std::lock_guard<std::mutex> lock(mutex_);
     onMessage_ = std::move(callback);
 }
+
 void WebSocketClient::setOnConnect(OnConnectCallback callback) {
     std::lock_guard<std::mutex> lock(mutex_);
     onConnect_ = std::move(callback);
 }
+
 void WebSocketClient::setOnDisconnect(OnDisconnectCallback callback) {
     std::lock_guard<std::mutex> lock(mutex_);
     onDisconnect_ = std::move(callback);
 }
+
 void WebSocketClient::setOnError(OnErrorCallback callback) {
     std::lock_guard<std::mutex> lock(mutex_);
     onError_ = std::move(callback);
@@ -736,54 +278,646 @@ bool WebSocketClient::hasPendingMessages() const {
 WebSocketMessage WebSocketClient::popMessage() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (incomingMessages_.empty()) {
-        return WebSocketMessage{};
+        return {};
     }
-    WebSocketMessage msg = incomingMessages_.front();
+    WebSocketMessage message = incomingMessages_.front();
     incomingMessages_.pop();
-    return msg;
+    return message;
+}
+
+bool WebSocketClient::injectIncomingMessage(const WebSocketMessage& message) {
+    OnErrorCallback errorCallback;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (!connected_.load()) {
+            errorCallback = onError_;
+        } else {
+            incomingMessages_.push(message);
+            dispatchMessages_.push(message);
+        }
+    }
+    if (errorCallback) {
+        errorCallback("inbound dispatch failed: not connected");
+        return false;
+    }
+    cv_.notify_one();
+    return true;
+}
+
+bool WebSocketClient::hasPendingOutgoingMessages() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return !outgoingMessages_.empty();
+}
+
+WebSocketMessage WebSocketClient::popOutgoingMessage() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (outgoingMessages_.empty()) {
+        return {};
+    }
+    WebSocketMessage message = outgoingMessages_.front();
+    outgoingMessages_.pop();
+    return message;
 }
 
 void WebSocketClient::messageProcessingLoop() {
-    // Drain queued inbound messages and dispatch them to the registered
-    // handler while the client is running. Used by a background processing
-    // thread when a real transport is wired in.
-    while (running_) {
-        std::unique_lock<std::mutex> lock(mutex_);
-        cv_.wait(lock, [this] { return !incomingMessages_.empty() || !running_; });
-        while (!incomingMessages_.empty()) {
-            WebSocketMessage msg = incomingMessages_.front();
-            incomingMessages_.pop();
-            OnMessageCallback cb = onMessage_;
-            lock.unlock();
-            if (cb) {
-                cb(msg);
+    while (true) {
+        WebSocketMessage message;
+        OnMessageCallback callback;
+        OnErrorCallback errorCallback;
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            cv_.wait(lock, [this] {
+                return !running_.load() || !dispatchMessages_.empty();
+            });
+            if (!running_.load()) {
+                break;
             }
-            lock.lock();
+            message = dispatchMessages_.front();
+            dispatchMessages_.pop();
+            callback = onMessage_;
+            errorCallback = onError_;
+        }
+        try {
+            if (callback) {
+                callback(message);
+            }
+        } catch (const std::exception& error) {
+            if (errorCallback) {
+                errorCallback(std::string("message callback failed: ") + error.what());
+            }
+        } catch (...) {
+            if (errorCallback) {
+                errorCallback("message callback failed: unknown error");
+            }
         }
     }
 }
 
-void WebSocketClient::simulateIncomingMessage(const WebSocketMessage& msg) {
-    // Inject a message as if it arrived from the world server. The message is
-    // both queued (for hasPendingMessages/popMessage polling consumers) and
-    // delivered synchronously to any registered onMessage callback.
-    OnMessageCallback cb;
+HyperfyWorld::HyperfyWorld(const std::string& worldId, const std::string& wsUrl)
+    : worldId_(worldId),
+      wsUrl_(wsUrl),
+      connected_(false),
+      wsClient_(std::make_unique<WebSocketClient>()) {
+    wsClient_->setOnMessage([this](const WebSocketMessage& message) {
+        handleIncomingMessage(message);
+    });
+    wsClient_->setOnDisconnect([this](const std::string&) {
+        connected_.store(false);
+    });
+    wsClient_->setOnError([this](const std::string& error) {
+        updateState("last_error", error);
+    });
+}
+
+HyperfyWorld::~HyperfyWorld() {
+    disconnect();
+}
+
+bool HyperfyWorld::connect(const std::string& authToken) {
+    if (connected_.load()) {
+        return true;
+    }
+    if (!wsClient_->connect(wsUrl_, authToken)) {
+        return false;
+    }
+
+    const WebSocketMessage authentication{
+        MessageType::CONNECT,
+        json{{"worldId", worldId_}, {"token", authToken}}.dump(),
+        "client",
+        nowMilliseconds(),
+    };
+    if (!wsClient_->send(authentication)) {
+        wsClient_->disconnect();
+        return false;
+    }
+    connected_.store(true);
+    return true;
+}
+
+void HyperfyWorld::disconnect() {
+    connected_.store(false);
+    if (wsClient_) {
+        wsClient_->disconnect();
+    }
+    std::lock_guard<std::mutex> lock(worldMutex_);
+    worldState_.clear();
+}
+
+bool HyperfyWorld::isConnected() const {
+    return connected_.load() && wsClient_ && wsClient_->isConnected();
+}
+
+void HyperfyWorld::updateState(const std::string& key, const std::string& value) {
+    std::lock_guard<std::mutex> lock(worldMutex_);
+    worldState_[key] = value;
+}
+
+std::string HyperfyWorld::getState(const std::string& key) const {
+    std::lock_guard<std::mutex> lock(worldMutex_);
+    const auto found = worldState_.find(key);
+    return found == worldState_.end() ? std::string{} : found->second;
+}
+
+Position3D HyperfyWorld::getCurrentPosition() const {
+    std::lock_guard<std::mutex> lock(worldMutex_);
+    return currentPosition_;
+}
+
+void HyperfyWorld::setCurrentPosition(const Position3D& position) {
+    if (!std::isfinite(position.x) || !std::isfinite(position.y) ||
+        !std::isfinite(position.z)) {
+        throw std::invalid_argument("position coordinates must be finite");
+    }
+    std::lock_guard<std::mutex> lock(worldMutex_);
+    currentPosition_ = position;
+    worldState_["position_x"] = formatDouble(position.x);
+    worldState_["position_y"] = formatDouble(position.y);
+    worldState_["position_z"] = formatDouble(position.z);
+}
+
+bool HyperfyWorld::sendMessage(const std::string& message) {
+    if (!isConnected()) {
+        return false;
+    }
+    const bool sent = wsClient_->send(WebSocketMessage{
+        MessageType::CHAT_MESSAGE,
+        message,
+        worldId_,
+        nowMilliseconds(),
+    });
+    if (sent) {
+        updateState("last_sent_message", message);
+    }
+    return sent;
+}
+
+bool HyperfyWorld::moveToPosition(double x, double y, double z) {
+    if (!isConnected()) {
+        return false;
+    }
+    const Position3D position{x, y, z};
+    if (!std::isfinite(x) || !std::isfinite(y) || !std::isfinite(z)) {
+        return false;
+    }
+    const WebSocketMessage message{
+        MessageType::POSITION_UPDATE,
+        json{{"x", x}, {"y", y}, {"z", z}}.dump(),
+        worldId_,
+        nowMilliseconds(),
+    };
+    if (!wsClient_->send(message)) {
+        return false;
+    }
+    setCurrentPosition(position);
+    return true;
+}
+
+bool HyperfyWorld::performAction(const std::string& action,
+                                 const std::string& parameters) {
+    if (!isConnected() || action.empty()) {
+        return false;
+    }
+    const bool sent = wsClient_->send(WebSocketMessage{
+        MessageType::ACTION,
+        json{{"action", action}, {"parameters", parameters}}.dump(),
+        worldId_,
+        nowMilliseconds(),
+    });
+    if (sent) {
+        updateState("last_performed_action", action);
+        updateState("last_action_parameters", parameters);
+    }
+    return sent;
+}
+
+void HyperfyWorld::handleIncomingMessage(const WebSocketMessage& message) {
+    try {
+        switch (message.type) {
+            case MessageType::CONNECT:
+                connected_.store(true);
+                break;
+            case MessageType::DISCONNECT:
+                connected_.store(false);
+                break;
+            case MessageType::POSITION_UPDATE:
+                handlePositionUpdate(message.payload);
+                break;
+            case MessageType::CHAT_MESSAGE:
+                updateState("last_chat_message", message.payload);
+                updateState("last_chat_sender", message.sender);
+                break;
+            case MessageType::ACTION:
+                updateState("last_action", message.payload);
+                break;
+            case MessageType::WORLD_STATE:
+                handleWorldStateUpdate(message.payload);
+                break;
+            case MessageType::HEARTBEAT:
+                updateState("last_heartbeat", std::to_string(message.timestamp));
+                break;
+            case MessageType::ERROR:
+                updateState("last_error", message.payload);
+                break;
+        }
+    } catch (const std::exception& error) {
+        updateState("last_error", error.what());
+    }
+}
+
+void HyperfyWorld::handleWorldStateUpdate(const std::string& payload) {
+    const json state = json::parse(payload);
+    if (!state.is_object()) {
+        throw std::invalid_argument("world-state payload must be a JSON object");
+    }
+
+    bool hasPosition = false;
+    Position3D position;
+    if (state.contains("position")) {
+        position = positionFromJson(state);
+        hasPosition = true;
+    }
+
     {
-        std::lock_guard<std::mutex> lock(mutex_);
-        incomingMessages_.push(msg);
-        cb = onMessage_;
+        std::lock_guard<std::mutex> lock(worldMutex_);
+        for (const auto& item : state.items()) {
+            worldState_[item.key()] = scalarToString(item.value());
+        }
     }
-    cv_.notify_all();
-    if (cb) {
-        cb(msg);
+    if (hasPosition) {
+        setCurrentPosition(position);
     }
 }
 
-// HyperfyWorld::sendHeartbeat implementation
+void HyperfyWorld::handlePositionUpdate(const std::string& payload) {
+    setCurrentPosition(positionFromJson(json::parse(payload)));
+}
+
+void HyperfyWorld::handleWebSocketMessage(const std::string& message) {
+    try {
+        handleIncomingMessage(WebSocketMessage::fromJson(message));
+    } catch (const std::exception& error) {
+        updateState("last_error", error.what());
+    }
+}
+
+std::string HyperfyWorld::escapeJson(const std::string& input) {
+    const std::string encoded = json(input).dump();
+    return encoded.substr(1, encoded.size() - 2);
+}
+
+ScenePerception HyperfyWorld::perceiveScene() {
+    std::map<std::string, std::string> state;
+    ScenePerception perception;
+    {
+        std::lock_guard<std::mutex> lock(worldMutex_);
+        state = worldState_;
+        perception.viewerPosition = currentPosition_;
+    }
+
+    const auto entities = state.find("entities");
+    if (entities != state.end()) {
+        try {
+            const json list = json::parse(entities->second);
+            if (!list.is_array()) {
+                throw std::invalid_argument("entities must be an array");
+            }
+            for (const auto& value : list) {
+                if (!value.is_object()) {
+                    continue;
+                }
+                WorldEntity entity;
+                entity.id = value.value("id", "");
+                entity.type = value.value("type", "");
+                entity.name = value.value("name", "");
+                if (value.contains("position")) {
+                    entity.position = positionFromJson(value);
+                }
+                if (value.contains("properties") && value.at("properties").is_object()) {
+                    for (const auto& property : value.at("properties").items()) {
+                        entity.properties[property.key()] = scalarToString(property.value());
+                    }
+                }
+                if (entity.type == "player" || entity.type == "avatar") {
+                    perception.nearbyPlayers.push_back(
+                        entity.name.empty() ? entity.id : entity.name);
+                }
+                perception.visibleEntities.push_back(std::move(entity));
+            }
+        } catch (const std::exception& error) {
+            state["last_error"] = error.what();
+        }
+    }
+
+    const auto description = state.find("environmentDescription");
+    const auto environment = state.find("environment");
+    if (description != state.end()) {
+        perception.environmentDescription = description->second;
+    } else if (environment != state.end()) {
+        perception.environmentDescription = environment->second;
+    } else {
+        perception.environmentDescription =
+            "World " + worldId_ + " contains " +
+            std::to_string(perception.visibleEntities.size()) + " visible entities";
+    }
+    perception.timestamp = nowMilliseconds();
+
+    {
+        std::lock_guard<std::mutex> lock(worldMutex_);
+        const auto error = state.find("last_error");
+        if (error != state.end()) {
+            worldState_["last_error"] = error->second;
+        }
+        lastPerception_ = perception;
+    }
+    return perception;
+}
+
+bool HyperfyWorld::dispatchIncomingMessage(const WebSocketMessage& message) {
+    return wsClient_ && wsClient_->injectIncomingMessage(message);
+}
+
 bool HyperfyWorld::sendHeartbeat() {
-    if (!wsClient_ || !wsClient_->isConnected()) return false;
-    return wsClient_->sendText("heartbeat");
+    if (!isConnected()) {
+        return false;
+    }
+    const int64_t timestamp = nowMilliseconds();
+    const bool sent = wsClient_->send(WebSocketMessage{
+        MessageType::HEARTBEAT,
+        {},
+        worldId_,
+        timestamp,
+    });
+    if (sent) {
+        updateState("last_heartbeat_sent", std::to_string(timestamp));
+    }
+    return sent;
 }
 
-} // namespace hyperfy
-} // namespace elizaos
+HyperfyService::HyperfyService() : running_(false) {}
+
+HyperfyService::~HyperfyService() {
+    stop();
+}
+
+bool HyperfyService::start(const HyperfyConfig& config) {
+    std::vector<std::pair<std::string, std::shared_ptr<HyperfyManager>>> managers;
+    std::shared_ptr<HyperfyService> self;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        if (running_.load()) {
+            return true;
+        }
+        config_ = config;
+        running_.store(true);
+        for (const auto& entry : managers_) {
+            managers.push_back(entry);
+            managerInitialized_[entry.first] = false;
+        }
+        try {
+            self = shared_from_this();
+        } catch (const std::bad_weak_ptr&) {
+        }
+        serviceThread_ = std::thread(&HyperfyService::serviceLoop, this);
+    }
+
+    if (self) {
+        for (const auto& entry : managers) {
+            const bool initialized = entry.second && entry.second->initialize(self);
+            std::lock_guard<std::mutex> lock(serviceMutex_);
+            if (managers_.count(entry.first) && managers_.at(entry.first) == entry.second) {
+                managerInitialized_[entry.first] = initialized;
+            }
+        }
+    }
+    return true;
+}
+
+void HyperfyService::stop() {
+    running_.store(false);
+    serviceCv_.notify_all();
+    if (serviceThread_.joinable() && serviceThread_.get_id() != std::this_thread::get_id()) {
+        serviceThread_.join();
+    }
+
+    std::shared_ptr<HyperfyWorld> world;
+    std::vector<std::shared_ptr<HyperfyManager>> managers;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        world = std::move(world_);
+        for (const auto& entry : managers_) {
+            if (managerInitialized_[entry.first] && entry.second) {
+                managers.push_back(entry.second);
+            }
+            managerInitialized_[entry.first] = false;
+        }
+    }
+    if (world) {
+        world->disconnect();
+    }
+    for (const auto& manager : managers) {
+        manager->cleanup();
+    }
+}
+
+std::shared_ptr<HyperfyWorld> HyperfyService::getWorld() const {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    return world_;
+}
+
+bool HyperfyService::connectToWorld(const std::string& worldId,
+                                    const std::string& wsUrl,
+                                    const std::string& authToken) {
+    std::string resolvedUrl;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        if (!running_.load()) {
+            return false;
+        }
+        if (world_ && world_->isConnected() && world_->getWorldId() == worldId) {
+            return true;
+        }
+        resolvedUrl = wsUrl.empty() ? config_.wsUrl : wsUrl;
+    }
+
+    auto world = std::make_shared<HyperfyWorld>(worldId, resolvedUrl);
+    if (!world->connect(authToken)) {
+        return false;
+    }
+
+    std::shared_ptr<HyperfyWorld> previous;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        if (!running_.load()) {
+            world->disconnect();
+            return false;
+        }
+        previous = std::move(world_);
+        world_ = std::move(world);
+    }
+    if (previous) {
+        previous->disconnect();
+    }
+    return true;
+}
+
+void HyperfyService::disconnectFromWorld() {
+    std::shared_ptr<HyperfyWorld> world;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        world = std::move(world_);
+    }
+    if (world) {
+        world->disconnect();
+    }
+}
+
+void HyperfyService::registerAction(const std::string& name,
+                                    std::shared_ptr<HyperfyAction> action) {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    if (action) {
+        actions_[name] = std::move(action);
+    } else {
+        actions_.erase(name);
+    }
+}
+
+std::shared_ptr<HyperfyAction> HyperfyService::getAction(const std::string& name) const {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    const auto found = actions_.find(name);
+    return found == actions_.end() ? nullptr : found->second;
+}
+
+bool HyperfyService::executeAction(const std::string& name,
+                                   const std::string& parameters) {
+    if (!running_.load()) {
+        return false;
+    }
+    const auto action = getAction(name);
+    return action && action->execute(parameters);
+}
+
+void HyperfyService::registerManager(const std::string& name,
+                                     std::shared_ptr<HyperfyManager> manager) {
+    std::shared_ptr<HyperfyManager> previous;
+    bool previousInitialized = false;
+    bool initializeNow = false;
+    std::shared_ptr<HyperfyService> self;
+    {
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        const auto found = managers_.find(name);
+        if (found != managers_.end()) {
+            previous = found->second;
+            previousInitialized = managerInitialized_[name];
+        }
+        if (manager) {
+            managers_[name] = manager;
+            managerInitialized_[name] = false;
+        } else {
+            managers_.erase(name);
+            managerInitialized_.erase(name);
+        }
+        initializeNow = running_.load() && static_cast<bool>(manager);
+        if (initializeNow) {
+            try {
+                self = shared_from_this();
+            } catch (const std::bad_weak_ptr&) {
+                initializeNow = false;
+            }
+        }
+    }
+
+    if (previous && previous != manager && previousInitialized) {
+        previous->cleanup();
+    }
+    if (initializeNow) {
+        const bool initialized = manager->initialize(self);
+        std::lock_guard<std::mutex> lock(serviceMutex_);
+        const auto found = managers_.find(name);
+        if (found != managers_.end() && found->second == manager) {
+            managerInitialized_[name] = initialized;
+        } else if (initialized) {
+            manager->cleanup();
+        }
+    }
+}
+
+std::shared_ptr<HyperfyManager> HyperfyService::getManager(const std::string& name) const {
+    std::lock_guard<std::mutex> lock(serviceMutex_);
+    const auto found = managers_.find(name);
+    return found == managers_.end() ? nullptr : found->second;
+}
+
+void HyperfyService::serviceLoop() {
+    while (running_.load()) {
+        std::shared_ptr<HyperfyWorld> world;
+        int heartbeatInterval = 1;
+        {
+            std::lock_guard<std::mutex> lock(serviceMutex_);
+            world = world_;
+            heartbeatInterval = std::max(1, config_.heartbeatIntervalMs);
+        }
+        if (world && world->isConnected()) {
+            world->sendHeartbeat();
+        }
+
+        std::unique_lock<std::mutex> lock(serviceMutex_);
+        serviceCv_.wait_for(lock, std::chrono::milliseconds(heartbeatInterval),
+                            [this] { return !running_.load(); });
+    }
+}
+
+GotoAction::GotoAction(std::shared_ptr<HyperfyService> service)
+    : service_(std::move(service)) {}
+
+bool GotoAction::execute(const std::string& parameters) {
+    try {
+        const Position3D position = Position3D::fromString(parameters);
+        const auto service = service_.lock();
+        const auto world = service ? service->getWorld() : nullptr;
+        return world && world->moveToPosition(position.x, position.y, position.z);
+    } catch (const std::exception&) {
+        return false;
+    }
+}
+
+ReplyAction::ReplyAction(std::shared_ptr<HyperfyService> service)
+    : service_(std::move(service)) {}
+
+bool ReplyAction::execute(const std::string& parameters) {
+    const auto service = service_.lock();
+    const auto world = service ? service->getWorld() : nullptr;
+    return world && world->sendMessage(parameters);
+}
+
+PerceptionAction::PerceptionAction(std::shared_ptr<HyperfyService> service)
+    : service_(std::move(service)) {}
+
+bool PerceptionAction::execute(const std::string& parameters) {
+    (void)parameters;
+    const auto service = service_.lock();
+    const auto world = service ? service->getWorld() : nullptr;
+    if (!world || !world->isConnected()) {
+        return false;
+    }
+    world->perceiveScene();
+    return true;
+}
+
+std::shared_ptr<HyperfyService> HyperfyServiceFactory::createService() {
+    auto service = std::make_shared<HyperfyService>();
+    service->registerAction("goto", std::make_shared<GotoAction>(service));
+    service->registerAction("reply", std::make_shared<ReplyAction>(service));
+    service->registerAction("perception", std::make_shared<PerceptionAction>(service));
+    return service;
+}
+
+std::shared_ptr<HyperfyService> HyperfyServiceFactory::createServiceWithConfig(
+    const HyperfyConfig& config) {
+    auto service = createService();
+    service->applyConfig(config);
+    return service;
+}
+
+}  // namespace hyperfy
+}  // namespace elizaos

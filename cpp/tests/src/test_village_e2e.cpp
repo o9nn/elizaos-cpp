@@ -21,10 +21,21 @@
 #include "antikythera_coupling.hpp"
 #include "village_ksm_transfer.hpp"
 #include "village_agnai_bridge.hpp"
+#include "village_atomspace.hpp"
 
 using namespace elizaos::village;
 using namespace cogvillage::ksm;
 using namespace cogvillage::bridge;
+
+namespace elizad_detail {
+nlohmann::json execute_state_action_for_test(
+    const std::string& action_type, const nlohmann::json& params,
+    const std::string& resident, AntikytheraEngine& antikythera,
+    ::village::atomspace::VillageAtomSpace& atomspace);
+bool record_ksm_learning_event_for_test(
+    const std::string& type, const nlohmann::json& data,
+    ::village::atomspace::VillageAtomSpace& atomspace);
+} // namespace elizad_detail
 
 // ============================================================================
 // Group Dynamics — SocialNetwork Tests
@@ -739,6 +750,124 @@ TEST_F(AgnAIBridgeTest, StateSnapshot) {
     EXPECT_TRUE(state.contains("active_sessions"));
     EXPECT_TRUE(state.contains("total_sessions"));
     EXPECT_TRUE(state.contains("pending_messages"));
+}
+
+
+
+// ============================================================================
+// elizad observable state-action boundary
+// ============================================================================
+
+namespace {
+
+::village::atomspace::ResidentAtom daemonResident(
+    const std::string& name, const std::string& train) {
+    ::village::atomspace::ResidentAtom resident{};
+    resident.name = name;
+    resident.openness = 0.7;
+    resident.conscientiousness = 0.7;
+    resident.extraversion = 0.5;
+    resident.agreeableness = 0.6;
+    resident.neuroticism = 0.3;
+    resident.sti = 100.0;
+    resident.lti = 50.0;
+    resident.gear_train = train;
+    resident.gear_rpm_multiplier = 1.0;
+    return resident;
+}
+
+} // namespace
+
+TEST(ElizadActionBoundaryTest, AdjustGearMutatesEveryTrainMemberAndReturnsEvidence) {
+    AntikytheraEngine antikythera;
+    antikythera.initializeVillageMechanism();
+    ::village::atomspace::VillageAtomSpace atomspace;
+    const double beforeEcho = antikythera.getRpm("echo");
+    const double beforeEmber = antikythera.getRpm("ember");
+
+    const auto result = elizad_detail::execute_state_action_for_test(
+        "adjust_gear", {{"train", "creative"}, {"factor", 1.5}},
+        "ada", antikythera, atomspace);
+    ASSERT_TRUE(result.at("success").get<bool>()) << result.dump();
+    EXPECT_NEAR(antikythera.getRpm("echo"), beforeEcho * 1.5, 1e-9);
+    EXPECT_NEAR(antikythera.getRpm("ember"), beforeEmber * 1.5, 1e-9);
+    const auto evidence = nlohmann::json::parse(
+        result.at("effect_evidence").get<std::string>());
+    EXPECT_EQ(evidence.at("train"), "creative");
+    EXPECT_EQ(evidence.at("before_rpm").at("echo"), beforeEcho);
+    EXPECT_EQ(evidence.at("after_rpm").at("echo"), beforeEcho * 1.5);
+}
+
+TEST(ElizadActionBoundaryTest, InvalidOrNoOpGearAdjustmentIsRejected) {
+    AntikytheraEngine antikythera;
+    antikythera.initializeVillageMechanism();
+    ::village::atomspace::VillageAtomSpace atomspace;
+    const double before = antikythera.getRpm("echo");
+
+    auto missing = elizad_detail::execute_state_action_for_test(
+        "adjust_gear", {{"train", "missing"}, {"factor", 1.5}},
+        "ada", antikythera, atomspace);
+    EXPECT_FALSE(missing.at("success").get<bool>());
+    auto noop = elizad_detail::execute_state_action_for_test(
+        "adjust_gear", {{"train", "creative"}, {"factor", 1.0}},
+        "ada", antikythera, atomspace);
+    EXPECT_FALSE(noop.at("success").get<bool>());
+    EXPECT_DOUBLE_EQ(antikythera.getRpm("echo"), before);
+}
+
+TEST(ElizadActionBoundaryTest, ObserveStateInjectsVerifiableObservationEvent) {
+    AntikytheraEngine antikythera;
+    antikythera.initializeVillageMechanism();
+    ::village::atomspace::VillageAtomSpace atomspace;
+    atomspace.add_resident(daemonResident("ada", "creative"));
+    const auto before = nlohmann::json::parse(atomspace.get_stats_json())
+                            .at("event_count").get<size_t>();
+
+    const auto result = elizad_detail::execute_state_action_for_test(
+        "observe_state", {{"target", "residents"}}, "ada",
+        antikythera, atomspace);
+    ASSERT_TRUE(result.at("success").get<bool>()) << result.dump();
+    const auto evidence = nlohmann::json::parse(
+        result.at("effect_evidence").get<std::string>());
+    EXPECT_EQ(evidence.at("target"), "residents");
+    EXPECT_EQ(evidence.at("event_count_before"), before);
+    EXPECT_EQ(evidence.at("event_count_after"), before + 1);
+    EXPECT_EQ(nlohmann::json::parse(atomspace.get_stats_json())
+                  .at("event_count"), before + 1);
+}
+
+TEST(ElizadActionBoundaryTest, UnsupportedObservationIsRejectedWithoutMutation) {
+    AntikytheraEngine antikythera;
+    ::village::atomspace::VillageAtomSpace atomspace;
+    const auto before = nlohmann::json::parse(atomspace.get_stats_json())
+                            .at("event_count").get<size_t>();
+    const auto result = elizad_detail::execute_state_action_for_test(
+        "observe_state", {{"target", "secrets"}}, "ada",
+        antikythera, atomspace);
+    EXPECT_FALSE(result.at("success").get<bool>());
+    EXPECT_EQ(nlohmann::json::parse(atomspace.get_stats_json())
+                  .at("event_count"), before);
+}
+
+TEST(ElizadKsmBoundaryTest, LiveLearningEventRecordsIntoVillageAtomSpace) {
+    ::village::atomspace::VillageAtomSpace atomspace;
+    atomspace.add_resident(daemonResident("dan", "core"));
+    atomspace.add_resident(daemonResident("manus", "core"));
+    const nlohmann::json event = {
+        {"teacher", "dan"}, {"student", "manus"},
+        {"artifact_id", "structure-preserving-repair"},
+        {"comprehension", 0.9}
+    };
+    ASSERT_TRUE(elizad_detail::record_ksm_learning_event_for_test(
+        "ksm.learning", event, atomspace));
+    const auto dan = atomspace.resident_snapshot("dan");
+    ASSERT_TRUE(dan.has_value());
+    EXPECT_EQ(dan->domain_levels.at("structure-preserving-repair"),
+              ::village::atomspace::ResidentAtom::KSMLevel::INSTRUCTION);
+    const auto inference = atomspace.query_inheritance_chain(
+        "manus:structure-preserving-repair", "dan:structure-preserving-repair");
+    ASSERT_FALSE(inference.empty());
+    EXPECT_GT(inference.front().strength, 0.0);
 }
 
 // ============================================================================

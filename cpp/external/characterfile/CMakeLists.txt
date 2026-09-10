@@ -12,4 +12,5 @@ target_link_libraries(elizaos-characterfile
     elizaos-core
     elizaos-characters
     elizaos-agentlogger
+    Threads::Threads
 )

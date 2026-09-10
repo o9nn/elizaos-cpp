@@ -11,6 +11,9 @@
 #include <functional>
 #include <atomic>
 #include <thread>
+#include <chrono>
+#include <condition_variable>
+#include <cstdint>
 
 namespace elizaos {
 
@@ -262,7 +265,35 @@ public:
         RECONNECTING,
         FAILED
     };
-    
+
+    struct ReceiveResult {
+        enum class Status { MESSAGE, TIMEOUT, CLOSED, ERROR };
+        Status status = Status::TIMEOUT;
+        std::string payload;
+        std::string error;
+    };
+
+    /**
+     * Injectable transport boundary. Connected state requires connect() to
+     * return true with a non-empty peer/adapter acknowledgement. cancel() must
+     * unblock receive() so the owned worker can always be joined.
+     */
+    class Adapter {
+    public:
+        virtual ~Adapter() = default;
+        virtual bool connect(const std::string& url,
+                             const std::string& subprotocol,
+                             std::chrono::milliseconds timeout,
+                             std::string& acknowledgement,
+                             std::string& error) = 0;
+        virtual bool sendText(const std::string& payload,
+                              bool expectsResponse,
+                              std::string& error) = 0;
+        virtual ReceiveResult receive(std::chrono::milliseconds timeout) = 0;
+        virtual void cancel() noexcept = 0;
+        virtual void close() noexcept = 0;
+    };
+
     struct Config {
         std::string url;
         int connectionTimeout = 5000;      // ms
@@ -271,133 +302,140 @@ public:
         int reconnectDelay = 1000;         // ms, doubles each attempt
         bool autoReconnect = true;
         std::string subprotocol = "mcp-v1";
+        size_t maxPendingRequests = 64;
+        size_t maxFrameBytes = 1024 * 1024;
+        std::shared_ptr<Adapter> adapter;
     };
-    
-    WebSocketTransport(const Config& config);
+
+    explicit WebSocketTransport(const Config& config);
     ~WebSocketTransport();
-    
-    // Connection management
+    WebSocketTransport(const WebSocketTransport&) = delete;
+    WebSocketTransport& operator=(const WebSocketTransport&) = delete;
+
     bool connect();
     void disconnect();
     State getState() const;
-    
-    // Message handling
+
+    // Fire-and-forget sends still require a valid JSON-RPC 2.0 envelope.
     void send(const MCPJsonValue& message);
+    MCPJsonValue request(const std::string& method,
+                         const MCPJsonValue& params = MCPJsonValue::object(),
+                         std::chrono::milliseconds timeout = std::chrono::milliseconds::zero());
+    MCPJsonValue requestWithId(uint64_t id,
+                               const std::string& method,
+                               const MCPJsonValue& params = MCPJsonValue::object(),
+                               std::chrono::milliseconds timeout = std::chrono::milliseconds::zero());
+    bool cancelRequest(uint64_t id);
+    size_t getPendingRequestCount() const;
+
     using MessageHandler = std::function<void(const MCPJsonValue&)>;
     void setMessageHandler(MessageHandler handler);
-    
-    // Connection events
+
     using ConnectHandler = std::function<void()>;
     using DisconnectHandler = std::function<void(int code, const std::string& reason)>;
     using ErrorHandler = std::function<void(const std::string& error)>;
     void onConnect(ConnectHandler handler);
     void onDisconnect(DisconnectHandler handler);
     void onError(ErrorHandler handler);
-    
-    // Statistics
+
     struct Stats {
         uint64_t messagesSent = 0;
         uint64_t messagesReceived = 0;
         uint64_t bytesTransferred = 0;
         uint64_t reconnectAttempts = 0;
+        uint64_t malformedMessages = 0;
+        uint64_t duplicateOrLateResponses = 0;
+        uint64_t timedOutRequests = 0;
+        uint64_t cancelledRequests = 0;
+        uint64_t rejectedRequests = 0;
         std::chrono::steady_clock::time_point lastActivity;
     };
     Stats getStats() const;
-    
+
+public:
+    struct SharedState; // opaque implementation state
+
 private:
-    Config config_;
-    std::atomic<State> state_{State::DISCONNECTED};
-    MessageHandler messageHandler_;
-    ConnectHandler connectHandler_;
-    DisconnectHandler disconnectHandler_;
-    ErrorHandler errorHandler_;
-    Stats stats_;
-    mutable std::mutex statsMutex_;
+    std::shared_ptr<SharedState> state_;
     std::thread receiveThread_;
-    std::atomic<bool> running_{false};
-    
-    void reconnectLoop();
+    static void receiveLoop(const std::shared_ptr<SharedState>& state);
 };
 
-/**
- * Server-Sent Events transport for server-push scenarios
- */
+/** Server-Sent Events transport with an acknowledged command adapter. */
 class SSETransport {
 public:
+    class Adapter {
+    public:
+        virtual ~Adapter() = default;
+        virtual bool connect(const std::string& url,
+                             std::chrono::milliseconds timeout,
+                             std::string& acknowledgement,
+                             std::string& error) = 0;
+        virtual bool sendCommand(const std::string& payload,
+                                 std::string& acknowledgement,
+                                 std::string& error) = 0;
+        virtual void cancel() noexcept = 0;
+        virtual void close() noexcept = 0;
+    };
+
     struct Config {
         std::string url;
         int connectionTimeout = 5000;
         bool autoReconnect = true;
         int reconnectDelay = 3000;
+        std::shared_ptr<Adapter> adapter;
     };
-    
-    SSETransport(const Config& config);
+
+    explicit SSETransport(const Config& config);
     ~SSETransport();
-    
+    SSETransport(const SSETransport&) = delete;
+    SSETransport& operator=(const SSETransport&) = delete;
+
     bool connect();
     void disconnect();
     bool isConnected() const;
-    
-    // SSE only receives - use HTTP POST for sending
+
     using EventHandler = std::function<void(const std::string& event, const MCPJsonValue& data)>;
     void onEvent(EventHandler handler);
-    
-    // For sending commands back
-    void sendCommand(const MCPJsonValue& command);
-    
+    bool sendCommand(const MCPJsonValue& command);
+
+public:
+    struct SharedState; // opaque implementation state
+
 private:
-    Config config_;
-    std::atomic<bool> connected_{false};
-    EventHandler eventHandler_;
-    std::thread eventThread_;
-    std::atomic<bool> running_{false};
+    std::shared_ptr<SharedState> state_;
 };
 
-/**
- * Connection multiplexer for managing multiple transports
- */
+/** Connection multiplexer for acknowledged transports. */
 class TransportMultiplexer {
 public:
     TransportMultiplexer();
     ~TransportMultiplexer();
-    
-    // Add transports
+    TransportMultiplexer(const TransportMultiplexer&) = delete;
+    TransportMultiplexer& operator=(const TransportMultiplexer&) = delete;
+
     void addWebSocket(const std::string& id, const WebSocketTransport::Config& config);
     void addSSE(const std::string& id, const SSETransport::Config& config);
     void addStdio(const std::string& id);
-    
-    // Remove transport
     void removeTransport(const std::string& id);
-    
-    // Get transport states
     std::unordered_map<std::string, std::string> getTransportStates() const;
-    
-    // Route messages
     void send(const std::string& transportId, const MCPJsonValue& message);
-    void broadcast(const MCPJsonValue& message);  // Send to all
-    
-    // Unified message handling
-    using MessageHandler = std::function<void(const std::string& transportId, const MCPJsonValue& message)>;
+    void broadcast(const MCPJsonValue& message);
+
+    using MessageHandler = std::function<void(const std::string& transportId,
+                                               const MCPJsonValue& message)>;
     void setMessageHandler(MessageHandler handler);
-    
-    // Failover configuration
     void setPrimaryTransport(const std::string& id);
     void setFailoverOrder(const std::vector<std::string>& order);
     std::string getPrimaryTransport() const;
     std::vector<std::string> getFailoverOrder() const;
-
-    /// Per-transport message counts (sends routed through this multiplexer).
     std::unordered_map<std::string, uint64_t> getMessageCounts() const;
-    
+
+public:
+    struct SharedState; // opaque implementation state
+
 private:
-    std::unordered_map<std::string, std::unique_ptr<WebSocketTransport>> webSockets_;
-    std::unordered_map<std::string, std::unique_ptr<SSETransport>> sseConnections_;
-    std::vector<std::string> stdioTransports_;
-    std::unordered_map<std::string, uint64_t> messageCounts_;
-    std::vector<std::string> failoverOrder_;
-    std::string primaryTransport_;
-    MessageHandler messageHandler_;
-    mutable std::mutex transportMutex_;
+    std::shared_ptr<SharedState> state_;
 };
 
 /**

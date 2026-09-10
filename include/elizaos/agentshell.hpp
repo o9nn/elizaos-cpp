@@ -1,131 +1,100 @@
 #pragma once
 
-#include <string>
-#include <vector>
+/**
+ * ElizaOS C++ - AgentShell Module
+ *
+ * Interactive command-line shell for agent operations with builtin
+ * command registration and command history.
+ */
+
+#include <atomic>
+#include <condition_variable>
+#include <cstddef>
 #include <functional>
 #include <memory>
-#include <unordered_map>
-#include <iostream>
-#include <thread>
-#include <atomic>
 #include <mutex>
+#include <string>
+#include <thread>
+#include <unordered_map>
+#include <vector>
 
 namespace elizaos {
 
-/**
- * Command result structure
- */
+// ============================================================================
+// ShellCommandResult
+// ============================================================================
+
 struct ShellCommandResult {
-    bool success;
+    bool success = true;
     std::string output;
     std::string error;
-    int exitCode;
-    
-    ShellCommandResult(bool success = true, const std::string& output = "", 
-                      const std::string& error = "", int exitCode = 0)
+    int exitCode = 0;
+
+    ShellCommandResult() = default;
+    ShellCommandResult(bool success, const std::string& output,
+                       const std::string& error = "", int exitCode = 0)
         : success(success), output(output), error(error), exitCode(exitCode) {}
 };
 
-/**
- * Command handler function type
- */
-using CommandHandler = std::function<ShellCommandResult(const std::vector<std::string>&)>;
+// ============================================================================
+// AgentShell
+// ============================================================================
 
-/**
- * AgentShell - Interactive shell interface for agent control
- * 
- * Provides command-line interaction capabilities for controlling
- * and interacting with ElizaOS agents
- */
+// Handlers receive only arguments; the registered command name is removed.
+using CommandHandler = std::function<ShellCommandResult(const std::vector<std::string>& args)>;
+
 class AgentShell {
 public:
+    using InputReader = std::function<bool(const std::string& prompt, std::string& command)>;
+    using InputCanceller = std::function<void()>;
+
+    static constexpr std::size_t MaxCommandLength = 4096;
+    static constexpr std::size_t MaxCommandTokens = 128;
+    static constexpr std::size_t MaxTokenLength = 1024;
+    static constexpr std::size_t MaxCommandNameLength = 64;
+    static constexpr std::size_t MaxPromptLength = 256;
+    static constexpr std::size_t MaxHistoryEntries = 1000;
+
     AgentShell();
-    ~AgentShell();
-    
-    /**
-     * Start the interactive shell
-     * @param prompt Custom prompt string (optional)
-     */
-    void start(const std::string& prompt = "elizaos> ");
-    
-    /**
-     * Stop the interactive shell
-     */
+    ~AgentShell() noexcept;
+
+    AgentShell(const AgentShell&) = delete;
+    AgentShell& operator=(const AgentShell&) = delete;
+    AgentShell(AgentShell&&) = delete;
+    AgentShell& operator=(AgentShell&&) = delete;
+
+    // Lifecycle
+    void start(const std::string& prompt = "eliza> ");
     void stop();
-    
-    /**
-     * Execute a single command
-     * @param command Command string to execute
-     * @return Command result
-     */
+    bool isRunning() const noexcept { return running_.load(std::memory_order_acquire); }
+
+    // Command execution
     ShellCommandResult executeCommand(const std::string& command);
-    
-    /**
-     * Register a custom command handler
-     * @param commandName Name of the command
-     * @param handler Function to handle the command
-     */
+
+    // Command registration
     void registerCommand(const std::string& commandName, CommandHandler handler);
-    
-    /**
-     * Unregister a command handler
-     * @param commandName Name of the command to remove
-     */
     void unregisterCommand(const std::string& commandName);
-    
-    /**
-     * Get list of available commands
-     */
     std::vector<std::string> getAvailableCommands() const;
-    
-    /**
-     * Set shell prompt
-     * @param prompt New prompt string
-     */
+
+    // Configuration
     void setPrompt(const std::string& prompt);
-    
-    /**
-     * Enable/disable command history
-     * @param enabled Whether to keep command history
-     */
     void setHistoryEnabled(bool enabled);
-    
-    /**
-     * Get command history
-     */
+    // The optional canceller must unblock a pending reader. Input handlers may
+    // only be replaced while the shell is stopped.
+    void setInputHandler(InputReader reader, InputCanceller canceller = {});
+    void resetInputHandler();
+
+    // History
     std::vector<std::string> getHistory() const;
-    
-    /**
-     * Clear command history
-     */
     void clearHistory();
-    
-    /**
-     * Check if shell is running
-     */
-    bool isRunning() const { return running_; }
-    
+
 private:
-    /**
-     * Main shell loop
-     */
     void shellLoop();
-    
-    /**
-     * Parse command line into tokens
-     * @param command Command string
-     * @return Vector of command tokens
-     */
-    std::vector<std::string> parseCommand(const std::string& command);
-    
-    /**
-     * Initialize built-in commands
-     */
     void initializeBuiltinCommands();
-    
-    /**
-     * Built-in command handlers
-     */
+    std::vector<std::string> parseCommand(const std::string& command,
+                                          std::string& error) const;
+
+    // Builtin commands
     ShellCommandResult helpCommand(const std::vector<std::string>& args);
     ShellCommandResult exitCommand(const std::vector<std::string>& args);
     ShellCommandResult historyCommand(const std::vector<std::string>& args);
@@ -134,50 +103,41 @@ private:
     ShellCommandResult statusCommand(const std::vector<std::string>& args);
     ShellCommandResult versionCommand(const std::vector<std::string>& args);
     ShellCommandResult infoCommand(const std::vector<std::string>& args);
-    
-    // Member variables
-    std::atomic<bool> running_;
-    std::string prompt_;
-    bool historyEnabled_;
+
+    std::string prompt_ = "eliza> ";
+    bool historyEnabled_ = true;
+    std::shared_ptr<const InputReader> inputReader_;
+    std::shared_ptr<const InputCanceller> inputCanceller_;
+    std::atomic<bool> running_{false};
+
     std::vector<std::string> commandHistory_;
-    std::unordered_map<std::string, CommandHandler> commandHandlers_;
-    std::unique_ptr<std::thread> shellThread_;
+    std::unordered_map<std::string, std::shared_ptr<const CommandHandler>> commandHandlers_;
+
+    std::thread shellThread_;
+    std::thread::id workerThreadId_{};
+    bool workerFinished_ = true;
+    bool selfStopPending_ = false;
+    bool joinInProgress_ = false;
+
     mutable std::mutex commandsMutex_;
     mutable std::mutex historyMutex_;
     mutable std::mutex configMutex_;
     mutable std::mutex lifecycleMutex_;
+    std::condition_variable lifecycleCv_;
 };
 
-/**
- * Global shell instance for convenience
- */
+// ============================================================================
+// Global shell instance and convenience functions
+// ============================================================================
+
 extern std::shared_ptr<AgentShell> globalShell;
 
-/**
- * Convenience functions for shell operations
- */
 void startInteractiveShell();
 void stopInteractiveShell();
 bool executeShellCommand(const std::string& command);
 void registerShellCommand(const std::string& name, CommandHandler handler);
-
-/**
- * Execute a command and get the result
- * @param command Command string to execute
- * @return Command result structure
- */
 ShellCommandResult executeShellCommandWithResult(const std::string& command);
-
-/**
- * Check if interactive shell is currently running
- * @return true if shell is running, false otherwise
- */
 bool isShellRunning();
-
-/**
- * Get list of all available commands
- * @return Vector of command names
- */
 std::vector<std::string> getAvailableShellCommands();
 
 } // namespace elizaos

@@ -8,16 +8,10 @@
  *
  * Features:
  * - Console logging with ANSI color support
- * - File logging with rotation (size-based, retention, optional gzip)
+ * - File logging with rotation
  * - Structured JSON logging for aggregation systems
  * - Cognitive introspection trace export
  * - Audit trail support
- *
- * NOTE: This is the feature-complete logger. The basic console/file logger
- * that previously lived here is a strict subset of this API, so existing
- * call sites (log/printHeader/writeToFile/setConsoleEnabled/setFileEnabled
- * and the logInfo/logWarning/... convenience functions) remain source
- * compatible.
  */
 
 #include "elizaos/core.hpp"
@@ -36,7 +30,9 @@ namespace elizaos {
 // ============================================================================
 // LogLevel / LogColor / LogFormat
 // ============================================================================
-// Windows headers may define ERROR as a macro; remove it before the scoped enum.
+
+// Windows headers (pulled in by e.g. winsock2.h, curl/curl.h) define ERROR as
+// a macro.  Undefine it so the scoped enum value compiles cleanly.
 #ifdef ERROR
 #undef ERROR
 #endif
@@ -138,15 +134,14 @@ public:
     AgentLogger();
     ~AgentLogger();
 
-    // Primary log method (default expand/panel preserved from the original
-    // o9nn logger for console-output backward compatibility).
+    // Primary log method
     void log(const std::string& content,
              const std::string& source    = "",
              const std::string& title     = "agentlogger",
              LogLevel           level     = LogLevel::INFO,
              LogColor           color     = LogColor::BLUE,
-             bool               expand    = true,
-             bool               panel     = true,
+             bool               expand    = false,
+             bool               panel     = false,
              bool               shouldLog = true);
 
     // Task 1.4.1: Structured logging with metadata
@@ -156,13 +151,13 @@ public:
                  LogLevel level = LogLevel::INFO,
                  const std::unordered_map<std::string, std::string>& metadata = {});
 
-    void printHeader(const std::string& text = "agentlogger", LogColor color = LogColor::YELLOW);
+    void printHeader(const std::string& text, LogColor color = LogColor::WHITE);
 
     // File logging
     void writeToFile(const std::string& content,
-                     const std::string& source  = "",
+                     const std::string& source,
                      LogLevel           level    = LogLevel::INFO,
-                     const std::string& filename = "events.log");
+                     const std::string& filename = "elizaos.log");
 
     // Task 1.4.1: Write JSON to file
     void writeJsonToFile(const LogEntry& entry, const std::string& filename = "elizaos.json.log");

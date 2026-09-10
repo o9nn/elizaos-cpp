@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "elizaos/characters.hpp"
+#include <algorithm>
 #include <thread>
 #include <chrono>
 

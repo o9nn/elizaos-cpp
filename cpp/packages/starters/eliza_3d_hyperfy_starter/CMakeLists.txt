@@ -11,5 +11,6 @@ target_include_directories(elizaos-eliza_3d_hyperfy_starter PUBLIC
 target_link_libraries(elizaos-eliza_3d_hyperfy_starter 
     elizaos-core
     elizaos-agentlogger
+    nlohmann_json::nlohmann_json
     Threads::Threads
 )

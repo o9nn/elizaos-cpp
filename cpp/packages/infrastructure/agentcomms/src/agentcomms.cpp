@@ -232,7 +232,7 @@ void CommChannel::processMessages() {
             break;
         }
 
-        // Process all available messages. A stop request terminates the loop
+        // Process all available messages.  A stop request terminates the loop
         // after any message already removed from the queue has been handled;
         // no new messages are accepted once active_ becomes false.
         while (!messageQueue_.empty()) {
@@ -663,9 +663,8 @@ bool TCPConnector::connect(const std::string& connectionString) {
         socket_fd_ = candidateSocket;
         connected_ = true;
     }
-    
-    receiverThread_ = std::thread(&TCPConnector::receiveLoop, this);
 
+    receiverThread_ = std::thread(&TCPConnector::receiveLoop, this);
     return true;
 }
 

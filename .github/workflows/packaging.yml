@@ -37,7 +37,7 @@ jobs:
     - name: Install git and dependencies
       run: |
         apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev pkg-config rpm dpkg-dev ca-certificates
+        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential python3 libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config rpm dpkg-dev ca-certificates
     
     - uses: actions/checkout@v4
     
@@ -164,9 +164,23 @@ jobs:
       uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '3.20'
+
+    - name: Install dependencies (Windows)
+      shell: pwsh
+      run: |
+        $vcpkgCmd = (Get-Command vcpkg -ErrorAction Stop).Source
+        $env:VCPKG_INSTALLATION_ROOT = Split-Path -Path $vcpkgCmd -Parent
+        $overlayPorts = Join-Path $PWD ".github\vcpkg-overlay-ports"
+        & $vcpkgCmd install --overlay-ports="$overlayPorts" curl:x64-windows gumbo:x64-windows sqlite3:x64-windows
+        "VCPKG_INSTALLATION_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      shell: pwsh
+      run: |
+        cmake -B build `
+          -DCMAKE_BUILD_TYPE=Release `
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" `
+          -DVCPKG_TARGET_TRIPLET=x64-windows
     
     - name: Build
       run: cmake --build build --config Release -j 2
@@ -239,7 +253,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        brew install cmake curl pkg-config
+        brew install cmake curl gumbo-parser sqlite pkg-config
     
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local

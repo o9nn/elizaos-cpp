@@ -200,7 +200,7 @@ void EndocrineSystem::reset() {
     tickCount_ = 0;
     // Derive the initial cognitive mode from the actual baseline hormone levels
     // rather than hardcoding, so the mode is consistent with the gland configuration.
-    // With balanced baselines the agent starts in Exploration (positive valence,
+    // With balanced baselines the agent should start in Exploration (positive valence,
     // non-negative arousal) -- the natural starting disposition for a curious agent.
     computeValenceArousal();
     computeCognitiveMode();

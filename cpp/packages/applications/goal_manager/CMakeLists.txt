@@ -1,24 +1,17 @@
-cmake_minimum_required(VERSION 3.16)
-project(elizaos-goal_manager)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Source files
-set(SOURCES
+add_library(elizaos-goal_manager STATIC
     src/goal_manager.cpp
 )
-
-# Create library
-add_library(elizaos-goal_manager STATIC ${SOURCES})
-
-# Include directories
+target_compile_features(elizaos-goal_manager PUBLIC cxx_std_17)
 target_include_directories(elizaos-goal_manager PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
-
-# Link dependencies
 target_link_libraries(elizaos-goal_manager PUBLIC
     Threads::Threads
 )
+if(MSVC)
+    target_compile_options(elizaos-goal_manager PRIVATE /W4 /WX)
+else()
+    target_compile_options(elizaos-goal_manager PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror)
+endif()

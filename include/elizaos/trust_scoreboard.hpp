@@ -1,268 +1,245 @@
 #pragma once
 
-#include "elizaos/agentmemory.hpp"
-#include "elizaos/agentcomms.hpp"
 #include "elizaos/core.hpp"
-#include <string>
-#include <memory>
-#include <vector>
-#include <unordered_map>
-#include <mutex>
+#include "elizaos/agentcomms.hpp"
+
 #include <chrono>
-#include <functional>
+#include <cstddef>
+#include <filesystem>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 namespace elizaos {
 
-/**
- * @brief Trust Scoreboard - Reputation and Trust Management System
- * 
- * Tracks agent behavior, calculates trust scores, and provides reputation-based
- * decision support for multi-agent systems.
- */
-
-// Forward declarations
 class AgentMemoryManager;
 
-/**
- * Trust event types
- */
 enum class TrustEventType {
-    TASK_COMPLETED,      // Successfully completed a task
-    TASK_FAILED,         // Failed to complete a task
-    TASK_TIMEOUT,        // Task timed out
-    RESPONSE_FAST,       // Responded quickly
-    RESPONSE_SLOW,       // Responded slowly
-    COLLABORATION_GOOD,  // Good collaboration behavior
-    COLLABORATION_POOR,  // Poor collaboration behavior
-    COMMUNICATION_CLEAR, // Clear communication
-    COMMUNICATION_UNCLEAR, // Unclear communication
-    RULE_VIOLATION,      // Violated group rules
-    HELPFUL_ACTION,      // Performed helpful action
-    HARMFUL_ACTION       // Performed harmful action
+    TASK_COMPLETED,
+    TASK_FAILED,
+    TASK_TIMEOUT,
+    RESPONSE_FAST,
+    RESPONSE_SLOW,
+    COLLABORATION_GOOD,
+    COLLABORATION_POOR,
+    COMMUNICATION_CLEAR,
+    COMMUNICATION_UNCLEAR,
+    RULE_VIOLATION,
+    HELPFUL_ACTION,
+    HARMFUL_ACTION
 };
 
-/**
- * Trust event outcome
- */
-enum class TrustOutcome {
-    POSITIVE,  // Increases trust
-    NEGATIVE,  // Decreases trust
-    NEUTRAL    // No effect on trust
-};
+enum class TrustOutcome { POSITIVE, NEGATIVE, NEUTRAL };
 
-/**
- * Individual trust event record
- */
+/** A caller-observed evidence record. Explicit records must carry a unique ID. */
 struct TrustEvent {
     std::string eventId;
     AgentId agentId;
     TrustEventType type;
     TrustOutcome outcome;
-    double impactScore;  // -1.0 to 1.0
+    double impactScore;
     std::string context;
     std::chrono::system_clock::time_point timestamp;
     std::unordered_map<std::string, std::string> metadata;
-    
-    TrustEvent(const AgentId& agent, TrustEventType t, TrustOutcome o, double impact)
-        : agentId(agent), type(t), outcome(o), impactScore(impact),
-          timestamp(std::chrono::system_clock::now()) {}
+
+    TrustEvent(const AgentId& agent, TrustEventType eventType,
+               TrustOutcome eventOutcome, double impact)
+        : agentId(agent), type(eventType), outcome(eventOutcome),
+          impactScore(impact), timestamp(std::chrono::system_clock::now()) {}
 };
 
-/**
- * Comprehensive trust score for an agent
- */
 struct TrustScore {
     AgentId agentId;
-    
-    // Overall score (0.0 - 1.0)
     double overallScore;
-    
-    // Component scores (0.0 - 1.0)
-    double reliabilityScore;    // Task completion consistency
-    double responsivenessScore; // Response time and availability
-    double qualityScore;        // Output quality
-    double collaborationScore;  // Teamwork effectiveness
-    double communicationScore;  // Communication clarity
-    double complianceScore;     // Rule adherence
-    
-    // Statistics
+    double reliabilityScore;
+    double responsivenessScore;
+    double qualityScore;
+    double collaborationScore;
+    double communicationScore;
+    double complianceScore;
     int totalEvents;
     int positiveEvents;
     int negativeEvents;
     int neutralEvents;
-    
-    // Timestamps
     std::chrono::system_clock::time_point firstSeen;
     std::chrono::system_clock::time_point lastUpdated;
-    
-    // Confidence level (0.0 - 1.0) based on number of events
     double confidence;
-    
+
     TrustScore() : TrustScore("") {}
-    
-    TrustScore(const AgentId& agent)
+    explicit TrustScore(const AgentId& agent)
         : agentId(agent), overallScore(0.5), reliabilityScore(0.5),
-          responsivenessScore(0.5), qualityScore(0.5), collaborationScore(0.5),
-          communicationScore(0.5), complianceScore(0.5),
-          totalEvents(0), positiveEvents(0), negativeEvents(0), neutralEvents(0),
+          responsivenessScore(0.5), qualityScore(0.5),
+          collaborationScore(0.5), communicationScore(0.5),
+          complianceScore(0.5), totalEvents(0), positiveEvents(0),
+          negativeEvents(0), neutralEvents(0),
           firstSeen(std::chrono::system_clock::now()),
-          lastUpdated(std::chrono::system_clock::now()),
-          confidence(0.0) {}
+          lastUpdated(std::chrono::system_clock::now()), confidence(0.0) {}
 };
 
-/**
- * Trust comparison result
- */
 struct TrustComparison {
     AgentId agent1;
     AgentId agent2;
-    double scoreDifference;  // agent1 - agent2
+    double scoreDifference = 0.0;
     std::string recommendation;
     std::vector<std::string> reasons;
 };
 
-/**
- * Anomaly detection result
- */
 struct TrustAnomaly {
     AgentId agentId;
     std::string anomalyType;
-    double severity;  // 0.0 - 1.0
+    double severity = 0.0;
     std::string description;
     std::chrono::system_clock::time_point detectedAt;
+    /** Event IDs of the actual records supporting the finding. */
     std::vector<std::string> evidence;
 };
 
-/**
- * Trust decay configuration
- */
 struct TrustDecayConfig {
     bool enabled = true;
-    std::chrono::hours decayInterval = std::chrono::hours(24 * 7); // Weekly
-    double decayRate = 0.05;  // 5% decay per interval
-    double minimumScore = 0.1; // Don't decay below this
+    std::chrono::hours decayInterval = std::chrono::hours(24 * 7);
+    double decayRate = 0.05;
+    double minimumScore = 0.1;
 };
 
-/**
- * Trust calculation configuration
- */
 struct TrustConfig {
-    // Component weights (must sum to 1.0)
     double reliabilityWeight = 0.25;
     double responsivenessWeight = 0.15;
     double qualityWeight = 0.20;
     double collaborationWeight = 0.20;
     double communicationWeight = 0.10;
     double complianceWeight = 0.10;
-    
-    // Decay settings
     TrustDecayConfig decay;
-    
-    // Anomaly detection thresholds
-    double anomalyThreshold = 0.3;  // Score drop threshold
-    int anomalyWindowEvents = 10;   // Look at recent N events
-    
-    // Confidence calculation
+    /** Inclusive recent-negative ratio that triggers an anomaly. */
+    double anomalyThreshold = 0.3;
+    int anomalyWindowEvents = 10;
     int minEventsForConfidence = 10;
     int maxEventsForConfidence = 100;
+    /** Oldest records are evicted after this per-agent bound is reached. */
+    std::size_t maxEventHistoryPerAgent = 1000U;
 };
 
 /**
- * Main Trust Scoreboard class
+ * Thread-safe reputation scoreboard. All snapshots are returned by value.
+ * Persistence is disabled until an explicit safe local path is configured.
  */
 class TrustScoreboard {
 public:
     TrustScoreboard(std::shared_ptr<AgentMemoryManager> memoryMgr,
-                   const TrustConfig& config = TrustConfig());
-    
+                    const TrustConfig& config = TrustConfig(),
+                    const std::filesystem::path& persistencePath = {});
     ~TrustScoreboard() = default;
-    
-    // Event recording
-    void recordEvent(const AgentId& agentId, 
-                    TrustEventType type, 
-                    TrustOutcome outcome,
-                    double impactScore = 0.0,
-                    const std::string& context = "");
-    
-    void recordTaskCompletion(const AgentId& agentId, bool success, 
-                             std::chrono::milliseconds responseTime);
-    
-    void recordCollaboration(const AgentId& agentId, bool positive);
-    
-    void recordCommunication(const AgentId& agentId, bool clear);
-    
-    void recordRuleViolation(const AgentId& agentId, const std::string& violation);
-    
-    // Score retrieval
-    TrustScore getTrustScore(const AgentId& agentId);
-    double getOverallScore(const AgentId& agentId);
-    std::vector<TrustEvent> getEventHistory(const AgentId& agentId, int limit = 100);
-    
-    // Leaderboard
-    std::vector<TrustScore> getLeaderboard(int limit = 10);
-    std::vector<TrustScore> getTopAgents(int limit = 10);
-    std::vector<TrustScore> getBottomAgents(int limit = 10);
-    
-    // Comparison
-    TrustComparison compareAgents(const AgentId& agent1, const AgentId& agent2);
-    AgentId selectMostTrusted(const std::vector<AgentId>& candidates);
-    std::vector<AgentId> rankByTrust(const std::vector<AgentId>& agents);
-    
-    // Anomaly detection
-    std::vector<TrustAnomaly> detectAnomalies();
-    std::vector<TrustAnomaly> detectAnomaliesForAgent(const AgentId& agentId);
-    bool isAnomalous(const AgentId& agentId);
-    
-    // Decay management
+
+    /** Records caller-supplied evidence. Returns false for invalid/replayed data. */
+    bool recordEvent(const TrustEvent& evidence);
+    /** Assigns a process-unique ID and current timestamp to convenience data. */
+    bool recordEvent(const AgentId& agentId, TrustEventType type,
+                     TrustOutcome outcome, double impactScore = 0.0,
+                     const std::string& context = "");
+
+    bool recordTaskCompletion(const AgentId& agentId, bool success,
+                              std::chrono::milliseconds responseTime);
+    bool recordCollaboration(const AgentId& agentId, bool positive);
+    bool recordCommunication(const AgentId& agentId, bool clear);
+    bool recordRuleViolation(const AgentId& agentId,
+                             const std::string& violation);
+
+    TrustScore getTrustScore(const AgentId& agentId) const;
+    double getOverallScore(const AgentId& agentId) const;
+    /** Chronological snapshot of the most recent limit rows. */
+    std::vector<TrustEvent> getEventHistory(const AgentId& agentId,
+                                            int limit = 100) const;
+
+    /** Descending score, then ascending ID. Non-positive limits are empty. */
+    std::vector<TrustScore> getLeaderboard(int limit = 10) const;
+    std::vector<TrustScore> getTopAgents(int limit = 10) const;
+    /** Ascending score, then ascending ID. */
+    std::vector<TrustScore> getBottomAgents(int limit = 10) const;
+
+    TrustComparison compareAgents(const AgentId& agent1,
+                                  const AgentId& agent2) const;
+    /** Ties resolve to the lexicographically smaller valid ID. */
+    AgentId selectMostTrusted(const std::vector<AgentId>& candidates) const;
+    /** Invalid and duplicate IDs are omitted; ties sort by ID. */
+    std::vector<AgentId> rankByTrust(const std::vector<AgentId>& agents) const;
+
+    std::vector<TrustAnomaly> detectAnomalies() const;
+    std::vector<TrustAnomaly> detectAnomaliesForAgent(
+        const AgentId& agentId) const;
+    bool isAnomalous(const AgentId& agentId) const;
+
     void applyDecay();
     void applyDecayForAgent(const AgentId& agentId);
-    
-    // Statistics
+
     int getTotalAgents() const;
     int getTotalEvents() const;
     double getAverageTrustScore() const;
-    
-    // Configuration
-    void updateConfig(const TrustConfig& newConfig);
-    TrustConfig getConfig() const { return config_; }
-    
-    // Persistence
-    bool saveTrustData();
+
+    /** Valid weights are normalized atomically; invalid configurations fail. */
+    bool updateConfig(const TrustConfig& newConfig);
+    TrustConfig getConfig() const;
+
+    /** Configures an existing, non-symlink parent and a regular-file target. */
+    bool setPersistencePath(const std::filesystem::path& path);
+    std::filesystem::path getPersistencePath() const;
+
+    /** Atomic versioned JSON persistence. No configured path returns false. */
+    bool saveTrustData() const;
+    /** Strict transactional load; malformed input leaves all state unchanged. */
     bool loadTrustData();
-    
+
 private:
     std::shared_ptr<AgentMemoryManager> memoryMgr_;
     TrustConfig config_;
-    
     std::unordered_map<AgentId, TrustScore> scores_;
     std::unordered_map<AgentId, std::vector<TrustEvent>> eventHistory_;
-    
-    mutable std::mutex scoresMutex_;
-    mutable std::mutex eventsMutex_;
-    
+    std::unordered_set<std::string> seenEventIds_;
+    std::unordered_map<AgentId, std::chrono::system_clock::time_point>
+        scoreAsOf_;
     std::chrono::system_clock::time_point lastDecayTime_;
-    
-    // Helper methods
-    void calculateScore(TrustScore& score, const std::vector<TrustEvent>& events);
-    void updateComponentScores(TrustScore& score, const TrustEvent& event);
-    double calculateConfidence(int eventCount) const;
-    double applyTimeDecay(double score, std::chrono::system_clock::time_point lastUpdate) const;
-    TrustOutcome determineOutcome(TrustEventType type, bool success) const;
-    double calculateImpactScore(TrustEventType type, TrustOutcome outcome) const;
-    bool detectAnomalyPattern(const std::vector<TrustEvent>& recentEvents) const;
-    std::string generateEventId();
+    std::filesystem::path persistencePath_;
+
+    mutable std::mutex stateMutex_;
+    mutable std::mutex persistenceMutex_;
+
+    static bool normalizeAndValidateConfig(TrustConfig& config) noexcept;
+    static bool validateAgentId(const AgentId& agentId) noexcept;
+    static bool validateEventId(const std::string& eventId) noexcept;
+    static bool validateEvent(const TrustEvent& event,
+                              std::chrono::system_clock::time_point now) noexcept;
+    static bool eventLess(const TrustEvent& lhs, const TrustEvent& rhs) noexcept;
+    static void calculateScore(TrustScore& score,
+                               const std::vector<TrustEvent>& events,
+                               const TrustConfig& config);
+    static void updateComponentScores(TrustScore& score,
+                                      const TrustEvent& event) noexcept;
+    static double calculateConfidence(int eventCount,
+                                      const TrustConfig& config) noexcept;
+    static double applyTimeDecay(
+        double score, std::chrono::system_clock::time_point lastUpdate,
+        const TrustConfig& config,
+        std::chrono::system_clock::time_point now) noexcept;
+    static double calculateImpactScore(TrustEventType type,
+                                       TrustOutcome outcome) noexcept;
+    static bool isSafePersistencePath(const std::filesystem::path& path) noexcept;
+
+    std::string generateEventIdLocked();
+    void rebuildAgentLocked(const AgentId& agentId,
+                            std::chrono::system_clock::time_point now);
+    TrustScore scoreSnapshotLocked(
+        const AgentId& agentId,
+        std::chrono::system_clock::time_point now) const;
 };
 
-/**
- * Utility functions
- */
 namespace trust_utils {
-    std::string trustEventTypeToString(TrustEventType type);
-    TrustEventType stringToTrustEventType(const std::string& typeStr);
-    std::string trustOutcomeToString(TrustOutcome outcome);
-    TrustOutcome stringToTrustOutcome(const std::string& outcomeStr);
-    std::string formatTrustScore(double score);
-    std::string getTrustLevel(double score);  // "Excellent", "Good", "Fair", "Poor"
-}
+std::string trustEventTypeToString(TrustEventType type);
+TrustEventType stringToTrustEventType(const std::string& typeStr);
+std::string trustOutcomeToString(TrustOutcome outcome);
+TrustOutcome stringToTrustOutcome(const std::string& outcomeStr);
+std::string formatTrustScore(double score);
+std::string getTrustLevel(double score);
+} // namespace trust_utils
 
 } // namespace elizaos

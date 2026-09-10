@@ -41,10 +41,10 @@ namespace elizaos {
          * @brief WebSocket message structure
          */
         struct WebSocketMessage {
-            MessageType type;
+            MessageType type = MessageType::ERROR;
             std::string payload;
             std::string sender;
-            int64_t timestamp;
+            int64_t timestamp = 0;
 
             std::string toJson() const;
             static WebSocketMessage fromJson(const std::string& json);
@@ -87,9 +87,14 @@ namespace elizaos {
             bool hasPendingMessages() const;
             WebSocketMessage popMessage();
 
+            // Deterministic transport seams. Inbound messages are dispatched by
+            // the owned worker thread and remain available through popMessage().
+            bool injectIncomingMessage(const WebSocketMessage& message);
+            bool hasPendingOutgoingMessages() const;
+            WebSocketMessage popOutgoingMessage();
+
         private:
             void messageProcessingLoop();
-            void simulateIncomingMessage(const WebSocketMessage& msg);
 
             std::string url_;
             std::atomic<bool> connected_;
@@ -99,6 +104,7 @@ namespace elizaos {
             std::condition_variable cv_;
 
             std::queue<WebSocketMessage> incomingMessages_;
+            std::queue<WebSocketMessage> dispatchMessages_;
             std::queue<WebSocketMessage> outgoingMessages_;
 
             OnMessageCallback onMessage_;
@@ -138,7 +144,7 @@ namespace elizaos {
             std::vector<WorldEntity> visibleEntities;
             std::vector<std::string> nearbyPlayers;
             std::string environmentDescription;
-            int64_t timestamp;
+            int64_t timestamp = 0;
         };
         
         /**
@@ -228,6 +234,9 @@ namespace elizaos {
             ScenePerception perceiveScene();
             const ScenePerception& getLastPerception() const { return lastPerception_; }
 
+            // Deterministic inbound seam for tests and custom transport adapters.
+            bool dispatchIncomingMessage(const WebSocketMessage& message);
+
             // Send heartbeat to maintain connection
             bool sendHeartbeat();
         };
@@ -244,7 +253,9 @@ namespace elizaos {
             std::atomic<bool> running_;
             std::thread serviceThread_;
             mutable std::mutex serviceMutex_;
+            std::condition_variable serviceCv_;
             HyperfyConfig config_;
+            std::map<std::string, bool> managerInitialized_;
             
             // Service loop for handling background tasks
             void serviceLoop();
@@ -259,7 +270,7 @@ namespace elizaos {
             bool isRunning() const { return running_.load(); }
             
             // World management
-            std::shared_ptr<HyperfyWorld> getWorld() const { return world_; }
+            std::shared_ptr<HyperfyWorld> getWorld() const;
             bool connectToWorld(const std::string& worldId, const std::string& wsUrl, const std::string& authToken = "");
             void disconnectFromWorld();
             
@@ -289,7 +300,7 @@ namespace elizaos {
          */
         class GotoAction : public HyperfyAction {
         private:
-            std::shared_ptr<HyperfyService> service_;
+            std::weak_ptr<HyperfyService> service_;
             
         public:
             GotoAction(std::shared_ptr<HyperfyService> service);
@@ -303,7 +314,7 @@ namespace elizaos {
          */
         class ReplyAction : public HyperfyAction {
         private:
-            std::shared_ptr<HyperfyService> service_;
+            std::weak_ptr<HyperfyService> service_;
             
         public:
             ReplyAction(std::shared_ptr<HyperfyService> service);
@@ -317,7 +328,7 @@ namespace elizaos {
          */
         class PerceptionAction : public HyperfyAction {
         private:
-            std::shared_ptr<HyperfyService> service_;
+            std::weak_ptr<HyperfyService> service_;
             
         public:
             PerceptionAction(std::shared_ptr<HyperfyService> service);

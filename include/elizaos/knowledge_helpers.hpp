@@ -55,12 +55,13 @@ std::vector<KnowledgeEntry> findChunksByDocument(KnowledgeBase& kb,
 std::string reconstructDocument(KnowledgeBase& kb,
                                 const std::string& documentName);
 
-// Lightweight deterministic helper-layer self-check for smoke tests and
-// startup diagnostics. Verifies the core chunking path without mutating caller
-// state.
+// Runs a dependency-light end-to-end helper self-check covering chunking,
+// ingestion, metadata lookup, and reconstruction. Intended for diagnostics and
+// E2E smoke tests; returns false rather than throwing on failure.
 bool knowledge_helpers_self_check();
 
-// Internal symbol kept stable for backwards-compatible linkage. Do not call.
+// Backwards-compatible linkage token retained for older targets. It now routes
+// through the real helper self-check so the symbol remains behaviorally useful.
 void knowledge_helpers_placeholder();
 
 }  // namespace knowledge

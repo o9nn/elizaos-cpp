@@ -53,7 +53,9 @@ TEST(CommunityManagerAgent, TaskCreateAndComplete) {
     CommunityManagerAgent a(mkAC("X"));
     auto id = a.createTask("task1", "do something", 1);
     EXPECT_FALSE(id.empty());
-    EXPECT_NO_THROW(a.completeTask(id));
+    EXPECT_TRUE(a.completeTask(id));
+    EXPECT_FALSE(a.completeTask(id));
+    EXPECT_TRUE(a.getPendingTasks().empty());
 }
 
 TEST(CommunityManagerAgent, AddPlatform) {

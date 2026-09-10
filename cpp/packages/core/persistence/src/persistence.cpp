@@ -13,15 +13,274 @@
 #include <algorithm>
 #include <cstring>
 #include <fstream>
+#include <atomic>
+#include <chrono>
+#include <limits>
 
 namespace elizaos {
+
+struct SQLiteDatabaseState {
+    mutable std::mutex mutex;
+    std::condition_variable cv;
+    sqlite3* db = nullptr;
+    std::atomic<bool> connected{false};
+    bool disconnecting = false;
+    bool acceptingAsync = false;
+    size_t outstandingAsync = 0;
+    std::atomic<bool> disconnectRequested{false};
+    std::atomic<size_t> activeTransactions{0};
+
+    ~SQLiteDatabaseState() {
+        if (db) {
+            // The state is destroyed only after the backend, all accepted
+            // asynchronous jobs, and every transaction have released it.
+            sqlite3_close_v2(db);
+        }
+    }
+};
+
+namespace {
+
+std::string sqliteError(sqlite3* db, int rc, const std::string& context) {
+    const char* detail = db ? sqlite3_errmsg(db) : sqlite3_errstr(rc);
+    return context + ": " + (detail ? detail : "unknown SQLite error");
+}
+
+int bindOne(sqlite3_stmt* stmt, int index, const QueryParam& param) {
+    return std::visit([&](const auto& arg) -> int {
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, std::nullptr_t>) {
+            return sqlite3_bind_null(stmt, index);
+        } else if constexpr (std::is_same_v<T, int64_t>) {
+            return sqlite3_bind_int64(stmt, index, arg);
+        } else if constexpr (std::is_same_v<T, double>) {
+            return sqlite3_bind_double(stmt, index, arg);
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            return sqlite3_bind_text(stmt, index, arg.data(),
+                                     static_cast<int>(arg.size()), SQLITE_TRANSIENT);
+        } else {
+            if (arg.empty()) {
+                // sqlite3_bind_blob(..., nullptr, 0, ...) binds SQL NULL. A
+                // zeroblob preserves the distinction between NULL and BLOB(0).
+                return sqlite3_bind_zeroblob(stmt, index, 0);
+            }
+            if (arg.size() > static_cast<size_t>(std::numeric_limits<int>::max())) {
+                return SQLITE_TOOBIG;
+            }
+            return sqlite3_bind_blob(stmt, index, arg.data(),
+                                     static_cast<int>(arg.size()), SQLITE_TRANSIENT);
+        }
+    }, param);
+}
+
+bool bindAll(sqlite3* db, sqlite3_stmt* stmt, const QueryParams& params,
+             std::string& error) {
+    const int expected = sqlite3_bind_parameter_count(stmt);
+    if (params.size() != static_cast<size_t>(expected)) {
+        error = "Expected " + std::to_string(expected) + " parameters, received " +
+                std::to_string(params.size());
+        return false;
+    }
+    for (size_t i = 0; i < params.size(); ++i) {
+        const int rc = bindOne(stmt, static_cast<int>(i + 1), params[i]);
+        if (rc != SQLITE_OK) {
+            error = sqliteError(db, rc,
+                "Failed to bind parameter " + std::to_string(i + 1));
+            return false;
+        }
+    }
+    return true;
+}
+
+ColumnValue readColumn(sqlite3_stmt* stmt, int column) {
+    ColumnValue value;
+    const char* name = sqlite3_column_name(stmt, column);
+    value.name = name ? name : "";
+    switch (sqlite3_column_type(stmt, column)) {
+        case SQLITE_NULL:
+            value.value = nullptr;
+            break;
+        case SQLITE_INTEGER:
+            value.value = static_cast<int64_t>(sqlite3_column_int64(stmt, column));
+            break;
+        case SQLITE_FLOAT:
+            value.value = sqlite3_column_double(stmt, column);
+            break;
+        case SQLITE_TEXT: {
+            const auto* data = sqlite3_column_text(stmt, column);
+            const int size = sqlite3_column_bytes(stmt, column);
+            value.value = data && size > 0
+                ? std::string(reinterpret_cast<const char*>(data), static_cast<size_t>(size))
+                : std::string{};
+            break;
+        }
+        case SQLITE_BLOB: {
+            const auto* data = static_cast<const uint8_t*>(sqlite3_column_blob(stmt, column));
+            const int size = sqlite3_column_bytes(stmt, column);
+            value.value = data && size > 0
+                ? std::vector<uint8_t>(data, data + size)
+                : std::vector<uint8_t>{};
+            break;
+        }
+        default:
+            value.value = nullptr;
+            break;
+    }
+    return value;
+}
+
+StorageResult<ResultSet> queryLocked(const std::shared_ptr<SQLiteDatabaseState>& state,
+                                     const std::string& sql,
+                                     const QueryParams& params,
+                                     bool acceptedAsync = false) {
+    std::lock_guard<std::mutex> lock(state->mutex);
+    if (!state->connected || !state->db ||
+        (!acceptedAsync && (state->disconnecting ||
+                            state->disconnectRequested.load(std::memory_order_acquire)))) {
+        return StorageResult<ResultSet>::fail("Not connected");
+    }
+
+    sqlite3* db = state->db;
+    sqlite3_stmt* stmt = nullptr;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        const std::string error = sqliteError(db, rc, "Failed to prepare query");
+        if (stmt) sqlite3_finalize(stmt);
+        return StorageResult<ResultSet>::fail(error);
+    }
+
+    std::string error;
+    if (!bindAll(db, stmt, params, error)) {
+        sqlite3_finalize(stmt);
+        return StorageResult<ResultSet>::fail(error);
+    }
+
+    ResultSet results;
+    const int columnCount = sqlite3_column_count(stmt);
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
+        Row row;
+        row.reserve(static_cast<size_t>(columnCount));
+        for (int column = 0; column < columnCount; ++column) {
+            row.push_back(readColumn(stmt, column));
+        }
+        results.push_back(std::move(row));
+    }
+
+    if (rc != SQLITE_DONE) {
+        error = sqliteError(db, rc, "Failed to execute query");
+    }
+    const int finalizeRc = sqlite3_finalize(stmt);
+    if (rc != SQLITE_DONE) {
+        return StorageResult<ResultSet>::fail(error);
+    }
+    if (finalizeRc != SQLITE_OK) {
+        return StorageResult<ResultSet>::fail(
+            sqliteError(db, finalizeRc, "Failed to finalize query"));
+    }
+    return StorageResult<ResultSet>::ok(std::move(results));
+}
+
+StorageResult<void> executeLocked(const std::shared_ptr<SQLiteDatabaseState>& state,
+                                  const std::string& sql,
+                                  const QueryParams& params,
+                                  bool acceptedAsync = false) {
+    std::lock_guard<std::mutex> lock(state->mutex);
+    if (!state->connected || !state->db ||
+        (!acceptedAsync && (state->disconnecting ||
+                            state->disconnectRequested.load(std::memory_order_acquire)))) {
+        return StorageResult<void>::fail("Not connected");
+    }
+
+    sqlite3* db = state->db;
+    sqlite3_stmt* stmt = nullptr;
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK) {
+        const std::string error = sqliteError(db, rc, "Failed to prepare statement");
+        if (stmt) sqlite3_finalize(stmt);
+        return StorageResult<void>::fail(error);
+    }
+
+    std::string error;
+    if (!bindAll(db, stmt, params, error)) {
+        sqlite3_finalize(stmt);
+        return StorageResult<void>::fail(error);
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        error = sqliteError(db, rc, "Failed to execute statement");
+    }
+    const int64_t affected = (rc == SQLITE_DONE || rc == SQLITE_ROW)
+        ? static_cast<int64_t>(sqlite3_changes(db)) : 0;
+    const int finalizeRc = sqlite3_finalize(stmt);
+    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+        return StorageResult<void>::fail(error);
+    }
+    if (finalizeRc != SQLITE_OK) {
+        return StorageResult<void>::fail(
+            sqliteError(db, finalizeRc, "Failed to finalize statement"));
+    }
+    return StorageResult<void>::ok(affected);
+}
+
+bool execSql(sqlite3* db, const std::string& sql, std::string& error) {
+    char* rawError = nullptr;
+    const int rc = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &rawError);
+    if (rc == SQLITE_OK) {
+        if (rawError) sqlite3_free(rawError);
+        return true;
+    }
+    error = rawError ? rawError : sqliteError(db, rc, "SQLite execution failed");
+    if (rawError) sqlite3_free(rawError);
+    return false;
+}
+
+bool applyPragmasLocked(sqlite3* db, const StorageConfig& config) {
+    std::vector<std::string> pragmas;
+    if (config.enableWAL) {
+        pragmas.push_back("PRAGMA journal_mode=" + config.journalMode);
+    }
+    pragmas.push_back(std::string("PRAGMA foreign_keys=") +
+                      (config.enableForeignKeys ? "ON" : "OFF"));
+    pragmas.push_back("PRAGMA busy_timeout=" + std::to_string(config.busyTimeout));
+    pragmas.push_back("PRAGMA cache_size=" + std::to_string(config.cacheSize));
+    pragmas.push_back(std::string("PRAGMA synchronous=") +
+                      (config.syncMode ? "FULL" : "OFF"));
+    for (const auto& pragma : pragmas) {
+        std::string error;
+        if (!execSql(db, pragma, error)) return false;
+    }
+    return true;
+}
+
+template<typename Result>
+std::future<Result> readyFuture(Result result) {
+    std::promise<Result> promise;
+    promise.set_value(std::move(result));
+    return promise.get_future();
+}
+
+class AsyncCompletion {
+public:
+    explicit AsyncCompletion(std::shared_ptr<SQLiteDatabaseState> state)
+        : state_(std::move(state)) {}
+    ~AsyncCompletion() {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        if (state_->outstandingAsync > 0) --state_->outstandingAsync;
+        state_->cv.notify_all();
+    }
+private:
+    std::shared_ptr<SQLiteDatabaseState> state_;
+};
+
+} // namespace
 
 // ============================================================================
 // TransactionScope Implementation
 // ============================================================================
 
 TransactionScope::TransactionScope(std::shared_ptr<Transaction> txn)
-    : txn_(std::move(txn)), active_(true), committed_(false) {}
+    : txn_(std::move(txn)), active_(txn_ && txn_->isActive()), committed_(false) {}
 
 TransactionScope::~TransactionScope() {
     if (active_ && !committed_ && txn_ && txn_->isActive()) {
@@ -32,28 +291,32 @@ TransactionScope::~TransactionScope() {
 TransactionScope::TransactionScope(TransactionScope&& other) noexcept
     : txn_(std::move(other.txn_)), active_(other.active_), committed_(other.committed_) {
     other.active_ = false;
+    other.committed_ = false;
 }
 
 TransactionScope& TransactionScope::operator=(TransactionScope&& other) noexcept {
     if (this != &other) {
+        if (active_ && !committed_ && txn_ && txn_->isActive()) {
+            txn_->rollback();
+        }
         txn_ = std::move(other.txn_);
         active_ = other.active_;
         committed_ = other.committed_;
         other.active_ = false;
+        other.committed_ = false;
     }
     return *this;
 }
 
 void TransactionScope::commit() {
-    if (active_ && txn_ && txn_->isActive()) {
-        txn_->commit();
+    if (active_ && txn_ && txn_->isActive() && txn_->commit()) {
         committed_ = true;
+        active_ = false;
     }
 }
 
 void TransactionScope::rollback() {
-    if (active_ && txn_ && txn_->isActive()) {
-        txn_->rollback();
+    if (active_ && txn_ && txn_->isActive() && txn_->rollback()) {
         active_ = false;
     }
 }
@@ -72,112 +335,116 @@ StorageResult<ResultSet> TransactionScope::execute(
 
 class SQLiteTransaction : public Transaction {
 public:
-    SQLiteTransaction(sqlite3* db, IsolationLevel level)
-        : db_(db), active_(true) {
+    SQLiteTransaction(std::shared_ptr<SQLiteDatabaseState> state,
+                      std::unique_lock<std::mutex>&& databaseLock,
+                      IsolationLevel level)
+        : state_(std::move(state)), databaseLock_(std::move(databaseLock)) {
         std::string beginSql = "BEGIN";
         switch (level) {
             case IsolationLevel::IMMEDIATE: beginSql = "BEGIN IMMEDIATE"; break;
             case IsolationLevel::EXCLUSIVE: beginSql = "BEGIN EXCLUSIVE"; break;
             default: break;
         }
-        char* errMsg = nullptr;
-        int rc = sqlite3_exec(db_, beginSql.c_str(), nullptr, nullptr, &errMsg);
-        if (rc != SQLITE_OK) {
-            std::string err = errMsg ? errMsg : "Unknown error";
-            if (errMsg) sqlite3_free(errMsg);
-            active_ = false;
-            throw std::runtime_error("Failed to begin transaction: " + err);
+        std::string error;
+        if (!state_->connected || !state_->db || state_->disconnecting ||
+            !execSql(state_->db, beginSql, error)) {
+            databaseLock_.unlock();
+            throw std::runtime_error("Failed to begin transaction: " +
+                                     (error.empty() ? "Not connected" : error));
         }
+        active_ = true;
+        state_->activeTransactions.fetch_add(1, std::memory_order_release);
+    }
+
+    ~SQLiteTransaction() override {
+        rollback();
     }
 
     bool commit() override {
+        std::lock_guard<std::mutex> lock(transactionMutex_);
         if (!active_) return false;
-        char* errMsg = nullptr;
-        int rc = sqlite3_exec(db_, "COMMIT", nullptr, nullptr, &errMsg);
-        if (errMsg) sqlite3_free(errMsg);
+        std::string error;
+        if (!execSql(state_->db, "COMMIT", error)) {
+            // Preserve ownership and activity so the caller or RAII scope can
+            // still roll the failed commit back safely.
+            return false;
+        }
         active_ = false;
-        return rc == SQLITE_OK;
+        state_->activeTransactions.fetch_sub(1, std::memory_order_release);
+        databaseLock_.unlock();
+        state_->cv.notify_all();
+        return true;
     }
 
     bool rollback() override {
+        std::lock_guard<std::mutex> lock(transactionMutex_);
         if (!active_) return false;
-        char* errMsg = nullptr;
-        int rc = sqlite3_exec(db_, "ROLLBACK", nullptr, nullptr, &errMsg);
-        if (errMsg) sqlite3_free(errMsg);
+        std::string error;
+        const bool ok = execSql(state_->db, "ROLLBACK", error);
+        // Even on a rollback error, relinquish the transaction. SQLite may
+        // already have aborted it, and retaining the database lock would
+        // permanently deadlock disconnect/destruction.
         active_ = false;
-        return rc == SQLITE_OK;
+        state_->activeTransactions.fetch_sub(1, std::memory_order_release);
+        if (databaseLock_.owns_lock()) databaseLock_.unlock();
+        state_->cv.notify_all();
+        return ok;
     }
 
-    bool isActive() const override { return active_; }
+    bool isActive() const override {
+        std::lock_guard<std::mutex> lock(transactionMutex_);
+        return active_;
+    }
 
     StorageResult<ResultSet> execute(
         const std::string& sql, const QueryParams& params) override {
-        if (!active_) return StorageResult<ResultSet>::fail("Transaction not active");
-
-        sqlite3_stmt* stmt = nullptr;
-        int rc = sqlite3_prepare_v2(db_, sql.c_str(), -1, &stmt, nullptr);
-        if (rc != SQLITE_OK) {
-            return StorageResult<ResultSet>::fail(sqlite3_errmsg(db_));
+        std::lock_guard<std::mutex> lock(transactionMutex_);
+        if (!active_ || !state_->connected || !state_->db) {
+            return StorageResult<ResultSet>::fail("Transaction not active");
         }
 
-        // Bind parameters
-        for (size_t i = 0; i < params.size(); ++i) {
-            int idx = static_cast<int>(i) + 1;
-            std::visit([&](auto&& arg) {
-                using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                    sqlite3_bind_null(stmt, idx);
-                } else if constexpr (std::is_same_v<T, int64_t>) {
-                    sqlite3_bind_int64(stmt, idx, arg);
-                } else if constexpr (std::is_same_v<T, double>) {
-                    sqlite3_bind_double(stmt, idx, arg);
-                } else if constexpr (std::is_same_v<T, std::string>) {
-                    sqlite3_bind_text(stmt, idx, arg.c_str(), -1, SQLITE_TRANSIENT);
-                } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                    sqlite3_bind_blob(stmt, idx, arg.data(), static_cast<int>(arg.size()), SQLITE_TRANSIENT);
-                }
-            }, params[i]);
+        sqlite3* db = state_->db;
+        sqlite3_stmt* stmt = nullptr;
+        int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+        if (rc != SQLITE_OK) {
+            const std::string error = sqliteError(db, rc, "Failed to prepare transaction statement");
+            if (stmt) sqlite3_finalize(stmt);
+            return StorageResult<ResultSet>::fail(error);
+        }
+
+        std::string error;
+        if (!bindAll(db, stmt, params, error)) {
+            sqlite3_finalize(stmt);
+            return StorageResult<ResultSet>::fail(error);
         }
 
         ResultSet results;
-        int colCount = sqlite3_column_count(stmt);
+        const int columnCount = sqlite3_column_count(stmt);
         while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
             Row row;
-            for (int c = 0; c < colCount; ++c) {
-                ColumnValue cv;
-                cv.name = sqlite3_column_name(stmt, c);
-                int type = sqlite3_column_type(stmt, c);
-                switch (type) {
-                    case SQLITE_NULL: cv.value = nullptr; break;
-                    case SQLITE_INTEGER: cv.value = static_cast<int64_t>(sqlite3_column_int64(stmt, c)); break;
-                    case SQLITE_FLOAT: cv.value = sqlite3_column_double(stmt, c); break;
-                    case SQLITE_TEXT: {
-                        const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, c));
-                        cv.value = std::string(text ? text : "");
-                        break;
-                    }
-                    case SQLITE_BLOB: {
-                        const uint8_t* data = static_cast<const uint8_t*>(sqlite3_column_blob(stmt, c));
-                        int size = sqlite3_column_bytes(stmt, c);
-                        cv.value = std::vector<uint8_t>(data, data + size);
-                        break;
-                    }
-                }
-                row.push_back(std::move(cv));
+            row.reserve(static_cast<size_t>(columnCount));
+            for (int column = 0; column < columnCount; ++column) {
+                row.push_back(readColumn(stmt, column));
             }
             results.push_back(std::move(row));
         }
-
-        sqlite3_finalize(stmt);
-        if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
-            return StorageResult<ResultSet>::fail(sqlite3_errmsg(db_));
+        if (rc != SQLITE_DONE) {
+            error = sqliteError(db, rc, "Failed to execute transaction statement");
+        }
+        const int finalizeRc = sqlite3_finalize(stmt);
+        if (rc != SQLITE_DONE) return StorageResult<ResultSet>::fail(error);
+        if (finalizeRc != SQLITE_OK) {
+            return StorageResult<ResultSet>::fail(
+                sqliteError(db, finalizeRc, "Failed to finalize transaction statement"));
         }
         return StorageResult<ResultSet>::ok(std::move(results));
     }
 
 private:
-    sqlite3* db_;
-    bool active_;
+    std::shared_ptr<SQLiteDatabaseState> state_;
+    std::unique_lock<std::mutex> databaseLock_;
+    mutable std::mutex transactionMutex_;
+    bool active_ = false;
 };
 
 // ============================================================================
@@ -185,201 +452,174 @@ private:
 // ============================================================================
 
 SQLiteBackend::SQLiteBackend(const StorageConfig& config)
-    : config_(config) {}
+    : config_(config), state_(std::make_shared<SQLiteDatabaseState>()) {}
 
 SQLiteBackend::~SQLiteBackend() {
-    disconnect();
+    // Do not call blocking disconnect() here: a transaction can legitimately
+    // outlive its backend object and may own the database mutex on this same
+    // thread. The shared state closes itself after the last accepted user.
+    state_.reset();
 }
 
 bool SQLiteBackend::connect() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (connected_) return true;
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    if (state_->connected) {
+        return !state_->disconnectRequested.load(std::memory_order_acquire);
+    }
+    if (state_->disconnecting) return false;
 
     sqlite3* db = nullptr;
-    int rc = sqlite3_open(config_.path.c_str(), &db);
+    const int rc = sqlite3_open_v2(config_.path.c_str(), &db,
+        SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nullptr);
     if (rc != SQLITE_OK) {
-        if (db) sqlite3_close(db);
+        if (db) sqlite3_close_v2(db);
         return false;
     }
-    db_ = db;
-    connected_ = true;
-    applyPragmas();
+    sqlite3_extended_result_codes(db, 1);
+    if (!applyPragmasLocked(db, config_)) {
+        sqlite3_close_v2(db);
+        return false;
+    }
+
+    state_->db = db;
+    state_->connected = true;
+    state_->acceptingAsync = true;
+    state_->disconnectRequested.store(false, std::memory_order_release);
     return true;
 }
 
 bool SQLiteBackend::disconnect() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return true;
-    if (db_) {
-        sqlite3_close(static_cast<sqlite3*>(db_));
-        db_ = nullptr;
+    state_->disconnectRequested.store(true, std::memory_order_release);
+    // A transaction may hold the database mutex on this same thread. Waiting
+    // here would self-deadlock, so reject disconnect and leave the handle open.
+    if (state_->activeTransactions.load(std::memory_order_acquire) != 0) {
+        state_->disconnectRequested.store(false, std::memory_order_release);
+        return false;
     }
-    connected_ = false;
+    std::unique_lock<std::mutex> lock(state_->mutex);
+    if (state_->activeTransactions.load(std::memory_order_acquire) != 0) {
+        state_->disconnectRequested.store(false, std::memory_order_release);
+        return false;
+    }
+    if (!state_->connected) {
+        state_->acceptingAsync = false;
+        return true;
+    }
+
+    state_->disconnecting = true;
+    state_->acceptingAsync = false;
+    auto state = state_;
+    state_->cv.wait(lock, [&state]() { return state->outstandingAsync == 0; });
+
+    const int rc = sqlite3_close(state_->db);
+    if (rc != SQLITE_OK) {
+        state_->disconnecting = false;
+        state_->acceptingAsync = true;
+        state_->disconnectRequested.store(false, std::memory_order_release);
+        return false;
+    }
+    state_->db = nullptr;
+    state_->connected = false;
+    state_->disconnecting = false;
+    state_->cv.notify_all();
     return true;
 }
 
 bool SQLiteBackend::isConnected() const {
-    return connected_;
+    return state_->connected.load(std::memory_order_acquire) &&
+           !state_->disconnectRequested.load(std::memory_order_acquire);
 }
 
 StorageResult<ResultSet> SQLiteBackend::query(
     const std::string& sql, const QueryParams& params) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return StorageResult<ResultSet>::fail("Not connected");
-
-    sqlite3* db = static_cast<sqlite3*>(db_);
-    sqlite3_stmt* stmt = nullptr;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        return StorageResult<ResultSet>::fail(sqlite3_errmsg(db));
-    }
-
-    // Bind parameters
-    for (size_t i = 0; i < params.size(); ++i) {
-        int idx = static_cast<int>(i) + 1;
-        std::visit([&](auto&& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                sqlite3_bind_null(stmt, idx);
-            } else if constexpr (std::is_same_v<T, int64_t>) {
-                sqlite3_bind_int64(stmt, idx, arg);
-            } else if constexpr (std::is_same_v<T, double>) {
-                sqlite3_bind_double(stmt, idx, arg);
-            } else if constexpr (std::is_same_v<T, std::string>) {
-                sqlite3_bind_text(stmt, idx, arg.c_str(), -1, SQLITE_TRANSIENT);
-            } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                sqlite3_bind_blob(stmt, idx, arg.data(), static_cast<int>(arg.size()), SQLITE_TRANSIENT);
-            }
-        }, params[i]);
-    }
-
-    ResultSet results;
-    int colCount = sqlite3_column_count(stmt);
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        Row row;
-        for (int c = 0; c < colCount; ++c) {
-            ColumnValue cv;
-            cv.name = sqlite3_column_name(stmt, c);
-            int type = sqlite3_column_type(stmt, c);
-            switch (type) {
-                case SQLITE_NULL: cv.value = nullptr; break;
-                case SQLITE_INTEGER: cv.value = static_cast<int64_t>(sqlite3_column_int64(stmt, c)); break;
-                case SQLITE_FLOAT: cv.value = sqlite3_column_double(stmt, c); break;
-                case SQLITE_TEXT: {
-                    const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, c));
-                    cv.value = std::string(text ? text : "");
-                    break;
-                }
-                case SQLITE_BLOB: {
-                    const uint8_t* data = static_cast<const uint8_t*>(sqlite3_column_blob(stmt, c));
-                    int size = sqlite3_column_bytes(stmt, c);
-                    cv.value = std::vector<uint8_t>(data, data + size);
-                    break;
-                }
-            }
-            row.push_back(std::move(cv));
-        }
-        results.push_back(std::move(row));
-    }
-
-    sqlite3_finalize(stmt);
-    if (rc != SQLITE_DONE) {
-        return StorageResult<ResultSet>::fail(sqlite3_errmsg(db));
-    }
-    return StorageResult<ResultSet>::ok(std::move(results));
+    return queryLocked(state_, sql, params);
 }
 
 StorageResult<void> SQLiteBackend::execute(
     const std::string& sql, const QueryParams& params) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return StorageResult<void>::fail("Not connected");
-
-    sqlite3* db = static_cast<sqlite3*>(db_);
-    sqlite3_stmt* stmt = nullptr;
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
-    if (rc != SQLITE_OK) {
-        return StorageResult<void>::fail(sqlite3_errmsg(db));
-    }
-
-    for (size_t i = 0; i < params.size(); ++i) {
-        int idx = static_cast<int>(i) + 1;
-        std::visit([&](auto&& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                sqlite3_bind_null(stmt, idx);
-            } else if constexpr (std::is_same_v<T, int64_t>) {
-                sqlite3_bind_int64(stmt, idx, arg);
-            } else if constexpr (std::is_same_v<T, double>) {
-                sqlite3_bind_double(stmt, idx, arg);
-            } else if constexpr (std::is_same_v<T, std::string>) {
-                sqlite3_bind_text(stmt, idx, arg.c_str(), -1, SQLITE_TRANSIENT);
-            } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                sqlite3_bind_blob(stmt, idx, arg.data(), static_cast<int>(arg.size()), SQLITE_TRANSIENT);
-            }
-        }, params[i]);
-    }
-
-    rc = sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
-
-    if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
-        return StorageResult<void>::fail(sqlite3_errmsg(db));
-    }
-    return StorageResult<void>::ok(static_cast<int64_t>(sqlite3_changes(db)));
+    return executeLocked(state_, sql, params);
 }
 
 StorageResult<void> SQLiteBackend::executeBatch(
     const std::string& sql, const std::vector<QueryParams>& paramBatches) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return StorageResult<void>::fail("Not connected");
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    if (!state_->connected || !state_->db || state_->disconnecting ||
+        state_->disconnectRequested.load(std::memory_order_acquire)) {
+        return StorageResult<void>::fail("Not connected");
+    }
+    if (paramBatches.empty()) return StorageResult<void>::ok(0);
 
-    sqlite3* db = static_cast<sqlite3*>(db_);
+    sqlite3* db = state_->db;
+    std::string error;
+    if (!execSql(db, "SAVEPOINT elizaos_execute_batch", error)) {
+        return StorageResult<void>::fail("Failed to start atomic batch: " + error);
+    }
+
+    auto rollbackBatch = [&]() {
+        std::string ignored;
+        execSql(db, "ROLLBACK TO elizaos_execute_batch", ignored);
+        execSql(db, "RELEASE elizaos_execute_batch", ignored);
+    };
+
     sqlite3_stmt* stmt = nullptr;
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
     if (rc != SQLITE_OK) {
-        return StorageResult<void>::fail(sqlite3_errmsg(db));
+        error = sqliteError(db, rc, "Failed to prepare batch statement");
+        if (stmt) sqlite3_finalize(stmt);
+        rollbackBatch();
+        return StorageResult<void>::fail(error);
     }
 
     int64_t totalChanges = 0;
     for (const auto& params : paramBatches) {
-        sqlite3_reset(stmt);
-        sqlite3_clear_bindings(stmt);
-
-        for (size_t i = 0; i < params.size(); ++i) {
-            int idx = static_cast<int>(i) + 1;
-            std::visit([&](auto&& arg) {
-                using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                    sqlite3_bind_null(stmt, idx);
-                } else if constexpr (std::is_same_v<T, int64_t>) {
-                    sqlite3_bind_int64(stmt, idx, arg);
-                } else if constexpr (std::is_same_v<T, double>) {
-                    sqlite3_bind_double(stmt, idx, arg);
-                } else if constexpr (std::is_same_v<T, std::string>) {
-                    sqlite3_bind_text(stmt, idx, arg.c_str(), -1, SQLITE_TRANSIENT);
-                } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                    sqlite3_bind_blob(stmt, idx, arg.data(), static_cast<int>(arg.size()), SQLITE_TRANSIENT);
-                }
-            }, params[i]);
+        rc = sqlite3_reset(stmt);
+        if (rc != SQLITE_OK) {
+            error = sqliteError(db, rc, "Failed to reset batch statement");
+            sqlite3_finalize(stmt);
+            rollbackBatch();
+            return StorageResult<void>::fail(error);
         }
-
+        rc = sqlite3_clear_bindings(stmt);
+        if (rc != SQLITE_OK) {
+            error = sqliteError(db, rc, "Failed to clear batch bindings");
+            sqlite3_finalize(stmt);
+            rollbackBatch();
+            return StorageResult<void>::fail(error);
+        }
+        if (!bindAll(db, stmt, params, error)) {
+            sqlite3_finalize(stmt);
+            rollbackBatch();
+            return StorageResult<void>::fail(error);
+        }
         rc = sqlite3_step(stmt);
         if (rc != SQLITE_DONE && rc != SQLITE_ROW) {
+            error = sqliteError(db, rc, "Failed to execute batch item");
             sqlite3_finalize(stmt);
-            return StorageResult<void>::fail(sqlite3_errmsg(db));
+            rollbackBatch();
+            return StorageResult<void>::fail(error);
         }
-        totalChanges += sqlite3_changes(db);
+        totalChanges += static_cast<int64_t>(sqlite3_changes(db));
     }
 
-    sqlite3_finalize(stmt);
+    const int finalizeRc = sqlite3_finalize(stmt);
+    if (finalizeRc != SQLITE_OK) {
+        error = sqliteError(db, finalizeRc, "Failed to finalize batch statement");
+        rollbackBatch();
+        return StorageResult<void>::fail(error);
+    }
+    if (!execSql(db, "RELEASE elizaos_execute_batch", error)) {
+        rollbackBatch();
+        return StorageResult<void>::fail("Failed to commit atomic batch: " + error);
+    }
     return StorageResult<void>::ok(totalChanges);
 }
 
 std::shared_ptr<Transaction> SQLiteBackend::beginTransaction(IsolationLevel level) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return nullptr;
+    std::unique_lock<std::mutex> lock(state_->mutex);
+    if (!state_->connected || !state_->db || state_->disconnecting ||
+        state_->disconnectRequested.load(std::memory_order_acquire)) return nullptr;
     try {
-        return std::make_shared<SQLiteTransaction>(static_cast<sqlite3*>(db_), level);
+        return std::make_shared<SQLiteTransaction>(state_, std::move(lock), level);
     } catch (...) {
         return nullptr;
     }
@@ -403,64 +643,105 @@ StorageResult<void> SQLiteBackend::dropTable(const std::string& name) {
 
 bool SQLiteBackend::tableExists(const std::string& name) {
     auto result = query(
-        "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?",
-        {name});
-    if (result.success && result.value.has_value() && !result.value->empty()) {
-        auto& row = result.value->front();
-        if (!row.empty()) {
-            return row[0].asInt() > 0;
-        }
-    }
-    return false;
+        "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?", {name});
+    return result.success && result.value && !result.value->empty() &&
+           !result.value->front().empty() && result.value->front()[0].asInt() > 0;
 }
 
 std::vector<std::string> SQLiteBackend::listTables() {
     std::vector<std::string> tables;
     auto result = query("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
-    if (result.success && result.value.has_value()) {
+    if (result.success && result.value) {
         for (const auto& row : *result.value) {
-            if (!row.empty()) {
-                tables.push_back(row[0].asString());
-            }
+            if (!row.empty()) tables.push_back(row[0].asString());
         }
     }
     return tables;
 }
 
 int64_t SQLiteBackend::lastInsertRowId() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return 0;
-    return sqlite3_last_insert_rowid(static_cast<sqlite3*>(db_));
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    return state_->connected && state_->db && !state_->disconnecting &&
+           !state_->disconnectRequested.load(std::memory_order_acquire)
+        ? sqlite3_last_insert_rowid(state_->db) : 0;
 }
 
 int64_t SQLiteBackend::changes() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!connected_) return 0;
-    return sqlite3_changes(static_cast<sqlite3*>(db_));
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    return state_->connected && state_->db && !state_->disconnecting &&
+           !state_->disconnectRequested.load(std::memory_order_acquire)
+        ? sqlite3_changes(state_->db) : 0;
 }
 
 std::string SQLiteBackend::escapeString(const std::string& str) {
     std::string result;
     result.reserve(str.size() + 2);
-    for (char c : str) {
-        if (c == '\'') result += "''";
-        else result += c;
-    }
+    for (char c : str) result += (c == '\'') ? "''" : std::string(1, c);
     return result;
 }
 
 std::future<StorageResult<ResultSet>> SQLiteBackend::queryAsync(
     const std::string& sql, const QueryParams& params) {
-    return std::async(std::launch::async, [this, sql, params]() {
-        return this->query(sql, params);
-    });
+    {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        if (!state_->connected || !state_->db || state_->disconnecting ||
+            state_->disconnectRequested.load(std::memory_order_acquire) ||
+            !state_->acceptingAsync) {
+            return readyFuture(StorageResult<ResultSet>::fail("Not connected"));
+        }
+        ++state_->outstandingAsync;
+    }
+    try {
+        auto state = state_;
+        return std::async(std::launch::async, [state, sql, params]() {
+            AsyncCompletion completion(state);
+            return queryLocked(state, sql, params, true);
+        });
+    } catch (const std::exception& ex) {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        --state_->outstandingAsync;
+        state_->cv.notify_all();
+        return readyFuture(StorageResult<ResultSet>::fail(
+            std::string("Failed to launch asynchronous query: ") + ex.what()));
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        --state_->outstandingAsync;
+        state_->cv.notify_all();
+        return readyFuture(StorageResult<ResultSet>::fail(
+            "Failed to launch asynchronous query"));
+    }
 }
 
 std::future<StorageResult<void>> SQLiteBackend::executeAsync(
     const std::string& sql, const QueryParams& params) {
-    return std::async(std::launch::async, [this, sql, params]() {
-        return this->execute(sql, params);
-    });
+    {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        if (!state_->connected || !state_->db || state_->disconnecting ||
+            state_->disconnectRequested.load(std::memory_order_acquire) ||
+            !state_->acceptingAsync) {
+            return readyFuture(StorageResult<void>::fail("Not connected"));
+        }
+        ++state_->outstandingAsync;
+    }
+    try {
+        auto state = state_;
+        return std::async(std::launch::async, [state, sql, params]() {
+            AsyncCompletion completion(state);
+            return executeLocked(state, sql, params, true);
+        });
+    } catch (const std::exception& ex) {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        --state_->outstandingAsync;
+        state_->cv.notify_all();
+        return readyFuture(StorageResult<void>::fail(
+            std::string("Failed to launch asynchronous execute: ") + ex.what()));
+    } catch (...) {
+        std::lock_guard<std::mutex> lock(state_->mutex);
+        --state_->outstandingAsync;
+        state_->cv.notify_all();
+        return readyFuture(StorageResult<void>::fail(
+            "Failed to launch asynchronous execute"));
+    }
 }
 
 std::string SQLiteBackend::getVersion() const {
@@ -472,9 +753,11 @@ void SQLiteBackend::vacuum() {
 }
 
 void SQLiteBackend::checkpoint() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (connected_) {
-        sqlite3_wal_checkpoint_v2(static_cast<sqlite3*>(db_), nullptr, SQLITE_CHECKPOINT_PASSIVE, nullptr, nullptr);
+    std::lock_guard<std::mutex> lock(state_->mutex);
+    if (state_->connected && state_->db && !state_->disconnecting &&
+        !state_->disconnectRequested.load(std::memory_order_acquire)) {
+        sqlite3_wal_checkpoint_v2(state_->db, nullptr, SQLITE_CHECKPOINT_PASSIVE,
+                                  nullptr, nullptr);
     }
 }
 
@@ -484,97 +767,15 @@ int64_t SQLiteBackend::getFileSize() const {
     return file.is_open() ? static_cast<int64_t>(file.tellg()) : 0;
 }
 
-void SQLiteBackend::applyPragmas() {
-    sqlite3* db = static_cast<sqlite3*>(db_);
-    if (config_.enableWAL) {
-        sqlite3_exec(db, "PRAGMA journal_mode=WAL", nullptr, nullptr, nullptr);
-    }
-    if (config_.enableForeignKeys) {
-        sqlite3_exec(db, "PRAGMA foreign_keys=ON", nullptr, nullptr, nullptr);
-    }
-    std::string busyTimeout = "PRAGMA busy_timeout=" + std::to_string(config_.busyTimeout);
-    sqlite3_exec(db, busyTimeout.c_str(), nullptr, nullptr, nullptr);
-    std::string cacheSize = "PRAGMA cache_size=" + std::to_string(config_.cacheSize);
-    sqlite3_exec(db, cacheSize.c_str(), nullptr, nullptr, nullptr);
-}
-
-bool SQLiteBackend::prepareStatement(const std::string& sql, void** stmt) {
-    sqlite3* db = static_cast<sqlite3*>(db_);
-    return sqlite3_prepare_v2(db, sql.c_str(), -1,
-        reinterpret_cast<sqlite3_stmt**>(stmt), nullptr) == SQLITE_OK;
-}
-
-bool SQLiteBackend::bindParameters(void* stmt, const QueryParams& params) {
-    sqlite3_stmt* s = static_cast<sqlite3_stmt*>(stmt);
-    for (size_t i = 0; i < params.size(); ++i) {
-        int idx = static_cast<int>(i) + 1;
-        bool ok = true;
-        std::visit([&](auto&& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                ok = sqlite3_bind_null(s, idx) == SQLITE_OK;
-            } else if constexpr (std::is_same_v<T, int64_t>) {
-                ok = sqlite3_bind_int64(s, idx, arg) == SQLITE_OK;
-            } else if constexpr (std::is_same_v<T, double>) {
-                ok = sqlite3_bind_double(s, idx, arg) == SQLITE_OK;
-            } else if constexpr (std::is_same_v<T, std::string>) {
-                ok = sqlite3_bind_text(s, idx, arg.c_str(), -1, SQLITE_TRANSIENT) == SQLITE_OK;
-            } else if constexpr (std::is_same_v<T, std::vector<uint8_t>>) {
-                ok = sqlite3_bind_blob(s, idx, arg.data(), static_cast<int>(arg.size()), SQLITE_TRANSIENT) == SQLITE_OK;
-            }
-        }, params[i]);
-        if (!ok) return false;
-    }
-    return true;
-}
-
-ResultSet SQLiteBackend::extractResults(void* stmt_raw) {
-    sqlite3_stmt* stmt = static_cast<sqlite3_stmt*>(stmt_raw);
-    ResultSet results;
-    int colCount = sqlite3_column_count(stmt);
-    int rc;
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) {
-        Row row;
-        for (int c = 0; c < colCount; ++c) {
-            ColumnValue cv;
-            cv.name = sqlite3_column_name(stmt, c);
-            int type = sqlite3_column_type(stmt, c);
-            switch (type) {
-                case SQLITE_NULL: cv.value = nullptr; break;
-                case SQLITE_INTEGER: cv.value = static_cast<int64_t>(sqlite3_column_int64(stmt, c)); break;
-                case SQLITE_FLOAT: cv.value = sqlite3_column_double(stmt, c); break;
-                case SQLITE_TEXT: {
-                    const char* text = reinterpret_cast<const char*>(sqlite3_column_text(stmt, c));
-                    cv.value = std::string(text ? text : "");
-                    break;
-                }
-                case SQLITE_BLOB: {
-                    const uint8_t* data = static_cast<const uint8_t*>(sqlite3_column_blob(stmt, c));
-                    int size = sqlite3_column_bytes(stmt, c);
-                    cv.value = std::vector<uint8_t>(data, data + size);
-                    break;
-                }
-            }
-            row.push_back(std::move(cv));
-        }
-        results.push_back(std::move(row));
-    }
-    return results;
-}
-
-std::string SQLiteBackend::getErrorMessage() const {
-    if (!db_) return "No database connection";
-    return sqlite3_errmsg(static_cast<sqlite3*>(db_));
-}
-
 // ============================================================================
 // ConnectionPool Implementation
 // ============================================================================
 
 ConnectionPool::ConnectionPool(const StorageConfig& config)
-    : config_(config) {
-    size_t poolSize = static_cast<size_t>(config.maxConnections > 0 ? config.maxConnections : 4);
-    for (size_t i = 0; i < poolSize; ++i) {
+    : config_(config),
+      targetSize_(static_cast<size_t>(config.maxConnections > 0
+                                     ? config.maxConnections : 4)) {
+    for (size_t i = 0; i < targetSize_; ++i) {
         auto conn = createConnection();
         if (conn) {
             all_.push_back(conn);
@@ -590,22 +791,37 @@ ConnectionPool::~ConnectionPool() {
 std::shared_ptr<StorageBackend> ConnectionPool::acquire() {
     std::unique_lock<std::mutex> lock(mutex_);
     if (shutdown_) return nullptr;
-    
-    cv_.wait(lock, [this]() { return !available_.empty() || shutdown_; });
+
+    const auto timeout = std::chrono::milliseconds(
+        std::max(0, config_.connectionTimeout));
+    if (!cv_.wait_for(lock, timeout,
+                      [this]() { return !available_.empty() || shutdown_; })) {
+        return nullptr;
+    }
     if (shutdown_ || available_.empty()) return nullptr;
-    
+
     auto conn = available_.front();
     available_.pop();
+    leased_.insert(conn.get());
     return conn;
 }
 
 void ConnectionPool::release(std::shared_ptr<StorageBackend> conn) {
     if (!conn) return;
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (!shutdown_) {
-        available_.push(conn);
-        cv_.notify_one();
+    bool disconnect = false;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (leased_.erase(conn.get()) == 0) return;
+        const auto it = std::find(all_.begin(), all_.end(), conn);
+        if (shutdown_ || it == all_.end() || all_.size() > targetSize_) {
+            if (it != all_.end()) all_.erase(it);
+            disconnect = true;
+        } else {
+            available_.push(conn);
+            cv_.notify_one();
+        }
     }
+    if (disconnect) conn->disconnect();
 }
 
 size_t ConnectionPool::availableConnections() const {
@@ -615,7 +831,7 @@ size_t ConnectionPool::availableConnections() const {
 
 size_t ConnectionPool::activeConnections() const {
     std::lock_guard<std::mutex> lock(mutex_);
-    return all_.size() - available_.size();
+    return leased_.size();
 }
 
 size_t ConnectionPool::totalConnections() const {
@@ -624,33 +840,62 @@ size_t ConnectionPool::totalConnections() const {
 }
 
 void ConnectionPool::resize(size_t newSize) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    while (all_.size() < newSize) {
+    std::vector<std::shared_ptr<StorageBackend>> toDisconnect;
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (shutdown_) return;
+    targetSize_ = newSize;
+
+    while (all_.size() > targetSize_ && !available_.empty()) {
+        auto conn = available_.front();
+        available_.pop();
+        const auto it = std::find(all_.begin(), all_.end(), conn);
+        if (it != all_.end()) all_.erase(it);
+        toDisconnect.push_back(std::move(conn));
+    }
+    while (all_.size() < targetSize_) {
+        lock.unlock();
         auto conn = createConnection();
-        if (conn) {
+        lock.lock();
+        if (shutdown_) {
+            if (conn) toDisconnect.push_back(std::move(conn));
+            break;
+        }
+        if (!conn) break;
+        if (all_.size() < targetSize_) {
             all_.push_back(conn);
             available_.push(conn);
+        } else {
+            toDisconnect.push_back(std::move(conn));
         }
     }
+    cv_.notify_all();
+    lock.unlock();
+    for (auto& conn : toDisconnect) conn->disconnect();
 }
 
 void ConnectionPool::clear() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    shutdown_ = true;
-    while (!available_.empty()) available_.pop();
-    for (auto& conn : all_) {
-        if (conn) conn->disconnect();
+    std::vector<std::shared_ptr<StorageBackend>> idle;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        shutdown_ = true;
+        targetSize_ = 0;
+        while (!available_.empty()) {
+            auto conn = available_.front();
+            available_.pop();
+            const auto it = std::find(all_.begin(), all_.end(), conn);
+            if (it != all_.end()) all_.erase(it);
+            idle.push_back(std::move(conn));
+        }
+        cv_.notify_all();
     }
-    all_.clear();
-    cv_.notify_all();
+    // Never close a checked-out connection. It stays usable until release(),
+    // which removes and disconnects it because the pool is shut down.
+    for (auto& conn : idle) conn->disconnect();
 }
 
 std::shared_ptr<StorageBackend> ConnectionPool::createConnection() {
     auto backend = std::make_shared<SQLiteBackend>(config_);
-    if (backend->connect()) {
-        return backend;
-    }
-    return nullptr;
+    return backend->connect() ? backend : nullptr;
 }
 
 // ============================================================================
@@ -1030,7 +1275,10 @@ bool StorageManager::initialize(const StorageConfig& config) {
     config_ = config;
     pool_ = std::make_shared<ConnectionPool>(config);
     
-    if (pool_->availableConnections() == 0) return false;
+    if (pool_->availableConnections() == 0) {
+        pool_.reset();
+        return false;
+    }
     
     auto conn = pool_->acquire();
     if (!conn) return false;
@@ -1038,12 +1286,19 @@ bool StorageManager::initialize(const StorageConfig& config) {
     memoryPersistence_ = std::make_shared<MemoryPersistence>(conn);
     if (!memoryPersistence_->initialize()) {
         pool_->release(conn);
+        memoryPersistence_.reset();
+        pool_->clear();
+        pool_.reset();
         return false;
     }
     
     kvStore_ = std::make_shared<KeyValueStore>(conn);
     if (!kvStore_->initialize()) {
         pool_->release(conn);
+        kvStore_.reset();
+        memoryPersistence_.reset();
+        pool_->clear();
+        pool_.reset();
         return false;
     }
     
@@ -1053,32 +1308,50 @@ bool StorageManager::initialize(const StorageConfig& config) {
 }
 
 bool StorageManager::shutdown() {
-    std::lock_guard<std::mutex> lock(mutex_);
-    memoryPersistence_.reset();
-    kvStore_.reset();
-    if (pool_) {
-        pool_->clear();
-        pool_.reset();
+    std::shared_ptr<ConnectionPool> pool;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        memoryPersistence_.reset();
+        kvStore_.reset();
+        pool = std::move(pool_);
+        initialized_ = false;
     }
-    initialized_ = false;
+    if (pool) pool->clear();
     return true;
 }
 
 std::shared_ptr<StorageBackend> StorageManager::getBackend() {
-    if (!pool_) return nullptr;
-    return pool_->acquire();
+    std::shared_ptr<ConnectionPool> pool;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        pool = pool_;
+    }
+    return pool ? pool->acquire() : nullptr;
 }
 
 std::shared_ptr<ConnectionPool> StorageManager::getPool() {
+    std::lock_guard<std::mutex> lock(mutex_);
     return pool_;
 }
 
 std::shared_ptr<MemoryPersistence> StorageManager::getMemoryPersistence() {
+    std::lock_guard<std::mutex> lock(mutex_);
     return memoryPersistence_;
 }
 
 std::shared_ptr<KeyValueStore> StorageManager::getKeyValueStore() {
+    std::lock_guard<std::mutex> lock(mutex_);
     return kvStore_;
+}
+
+bool StorageManager::isInitialized() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return initialized_;
+}
+
+StorageConfig StorageManager::getConfig() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return config_;
 }
 
 // ============================================================================

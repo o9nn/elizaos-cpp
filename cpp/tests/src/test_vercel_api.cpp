@@ -1,433 +1,260 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "elizaos/vercel_api.hpp"
-#include <memory>
-#include <string>
+
+#include <atomic>
+#include <filesystem>
+#include <fstream>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 using namespace elizaos;
-using namespace ::testing;
+namespace fs = std::filesystem;
 
-class VercelApiTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        config_.api_token = "test-token";
-        config_.team_id = "team-123";
+namespace {
+VercelStatus failed(VercelStatusCode code, const std::string& message) { VercelStatus value; value.code = code; value.message = message; return value; }
+
+template <typename T> VercelResult<T> okResult(T value) { VercelResult<T> result; result.value = std::move(value); return result; }
+template <typename T> VercelResult<T> badResult(VercelStatusCode code, const std::string& message) { VercelResult<T> result; result.status = failed(code, message); return result; }
+
+class FakeDeployment final : public DeploymentAdapter {
+public:
+    VercelStatus validateCredentials() override { ++validate_calls; return validation; }
+    VercelResult<VercelDeployment> createDeployment(const DeploymentRequest& request) override {
+        std::lock_guard<std::mutex> lock(mutex);
+        captured.push_back(request);
+        return create_result;
     }
-
-    VercelConfig config_;
+    VercelResult<VercelDeployment> getDeployment(const std::string& id) override {
+        std::lock_guard<std::mutex> lock(mutex);
+        queried_ids.push_back(id);
+        if (states.empty()) return badResult<VercelDeployment>(VercelStatusCode::transport_error, "no state");
+        VercelDeployment value = states.front(); states.erase(states.begin());
+        return okResult(value);
+    }
+    VercelResult<std::vector<VercelDeployment>> listDeployments(const std::string& project, int limit) override {
+        std::lock_guard<std::mutex> lock(mutex);
+        listed_project = project; listed_limit = limit;
+        return list_result;
+    }
+    VercelStatus configureContinuousDeployment(const std::string& project, const std::string& branch, bool enabled) override {
+        std::lock_guard<std::mutex> lock(mutex);
+        continuous_calls.push_back({project, branch, enabled});
+        return continuous_result;
+    }
+    struct ContinuousCall { std::string project; std::string branch; bool enabled; };
+    VercelStatus validation;
+    VercelResult<VercelDeployment> create_result;
+    VercelResult<std::vector<VercelDeployment>> list_result;
+    VercelStatus continuous_result;
+    std::vector<VercelDeployment> states;
+    std::atomic<int> validate_calls{0};
+    std::mutex mutex;
+    std::vector<DeploymentRequest> captured;
+    std::vector<std::string> queried_ids;
+    std::string listed_project;
+    int listed_limit = 0;
+    std::vector<ContinuousCall> continuous_calls;
 };
 
-// ============================================================================
-// VercelConfig Tests
-// ============================================================================
+class FakeGit final : public GitAdapter {
+public:
+    VercelResult<DeploymentRequest> prepareDeployment(const std::string& url, const std::string& project,
+                                                       const std::string& branch) override {
+        ++calls; captured_url = url; captured_project = project; captured_branch = branch;
+        return result;
+    }
+    int calls = 0;
+    std::string captured_url, captured_project, captured_branch;
+    VercelResult<DeploymentRequest> result;
+};
 
-TEST_F(VercelApiTest, DefaultVercelConfigValues) {
-    VercelConfig defaultConfig;
+class TempDirectory {
+public:
+    TempDirectory() {
+        path = fs::temp_directory_path() / ("eliza-vercel-" + std::to_string(counter.fetch_add(1)));
+        fs::create_directories(path);
+    }
+    ~TempDirectory() { std::error_code error; fs::remove_all(path, error); }
+    fs::path path;
+private:
+    static std::atomic<unsigned> counter;
+};
+std::atomic<unsigned> TempDirectory::counter{1};
 
-    EXPECT_EQ(defaultConfig.api_base_url, "https://api.vercel.com");
-    EXPECT_EQ(defaultConfig.api_version, "v2");
-    EXPECT_EQ(defaultConfig.timeout_seconds, 30);
-    EXPECT_EQ(defaultConfig.max_retries, 3);
-    EXPECT_TRUE(defaultConfig.enable_logging);
-    EXPECT_TRUE(defaultConfig.api_token.empty());
+VercelConfig config() {
+    VercelConfig value("integration-token");
+    value.api_base_url = "https://unit.invalid";
+    value.timeout_seconds = 1;
+    value.poll_interval_ms = 1;
+    return value;
+}
+VercelDeployment deployment(std::string state, int created = 0) {
+    VercelDeployment value("dpl-1", "app.vercel.app");
+    value.state = std::move(state);
+    value.created_at = std::chrono::system_clock::time_point(std::chrono::seconds(created));
+    return value;
+}
 }
 
-TEST_F(VercelApiTest, TokenConstructor) {
-    VercelConfig config("my-token");
+TEST(VercelIntegration, DeploymentAdapterAuthenticatesAndDirectoryPackagingIsDeterministic) {
+    TempDirectory root;
+    fs::create_directories(root.path / "nested");
+    std::ofstream(root.path / "z.txt", std::ios::binary) << "z";
+    std::ofstream(root.path / "nested" / "a.txt", std::ios::binary) << "a\0b";
 
-    EXPECT_EQ(config.api_token, "my-token");
-    EXPECT_TRUE(config.team_id.empty());
+    auto backend = std::make_shared<FakeDeployment>();
+    backend->create_result = okResult(deployment("BUILDING"));
+    VercelIntegration integration(config(), nullptr, backend);
+    ASSERT_TRUE(integration.initialize());
+    EXPECT_TRUE(integration.isInitialized());
+    auto packaged = integration.packageDirectory(root.path.string());
+    ASSERT_TRUE(packaged);
+    ASSERT_EQ(packaged.value.size(), 2U);
+    EXPECT_EQ(packaged.value[0].path, "nested/a.txt");
+    EXPECT_EQ(packaged.value[1].path, "z.txt");
+    EXPECT_FALSE(packaged.value[0].sha.empty());
+
+    auto deployed = integration.deployDirectoryResult(root.path.string(), "valid-app", false);
+    ASSERT_TRUE(deployed);
+    std::lock_guard<std::mutex> lock(backend->mutex);
+    ASSERT_EQ(backend->captured.size(), 1U);
+    EXPECT_EQ(backend->captured[0].name, "valid-app");
+    EXPECT_EQ(backend->captured[0].target, "PREVIEW");
+    EXPECT_EQ(backend->captured[0].files[0].path, "nested/a.txt");
 }
 
-TEST_F(VercelApiTest, TokenAndTeamConstructor) {
-    VercelConfig config("my-token", "my-team");
+TEST(VercelIntegration, PackagingRejectsMissingEmptyOversizeAndSymlinkBoundaries) {
+    TempDirectory root;
+    VercelIntegration integration(config());
+    EXPECT_EQ(integration.packageDirectory((root.path / "missing").string()).status.code, VercelStatusCode::io_error);
+    EXPECT_EQ(integration.packageDirectory(root.path.string()).status.code, VercelStatusCode::invalid_argument);
 
-    EXPECT_EQ(config.api_token, "my-token");
-    EXPECT_EQ(config.team_id, "my-team");
+    std::ofstream(root.path / "big") << "12345";
+    auto constrained = config(); constrained.max_file_size = 4;
+    VercelIntegration small(constrained);
+    EXPECT_EQ(small.packageDirectory(root.path.string()).status.code, VercelStatusCode::invalid_argument);
+
+    fs::remove(root.path / "big");
+    std::ofstream(root.path / "real") << "ok";
+    std::error_code error;
+    fs::create_symlink(root.path / "real", root.path / "link", error);
+    if (!error) {
+        EXPECT_EQ(integration.packageDirectory(root.path.string()).status.code,
+                  VercelStatusCode::io_error);
+    }
 }
 
-TEST_F(VercelApiTest, CustomVercelConfigValues) {
-    config_.timeout_seconds = 60;
-    config_.max_retries = 5;
-    config_.enable_logging = false;
+TEST(VercelIntegration, GitDeploymentRequiresGitAdapterAndForwardsExactPreparedRequest) {
+    auto backend = std::make_shared<FakeDeployment>();
+    backend->create_result = okResult(deployment("BUILDING"));
+    VercelIntegration without_git(config(), nullptr, backend);
+    ASSERT_TRUE(without_git.initialize());
+    auto rejected = without_git.deployGitRepositoryResult("https://git.invalid/repo.git", "valid-app", "main");
+    EXPECT_EQ(rejected.status.code, VercelStatusCode::not_configured);
+    EXPECT_TRUE(backend->captured.empty());
 
-    EXPECT_EQ(config_.api_token, "test-token");
-    EXPECT_EQ(config_.team_id, "team-123");
-    EXPECT_EQ(config_.timeout_seconds, 60);
-    EXPECT_EQ(config_.max_retries, 5);
-    EXPECT_FALSE(config_.enable_logging);
+    auto git = std::make_shared<FakeGit>();
+    DeploymentRequest prepared("valid-app");
+    prepared.files.emplace_back("index.js", "ok");
+    prepared.git_source = "receipt:commit-abc";
+    git->result = okResult(prepared);
+    VercelIntegration integration(config(), nullptr, backend, git);
+    ASSERT_TRUE(integration.initialize());
+    auto deployed = integration.deployGitRepositoryResult("https://git.invalid/repo.git", "valid-app", "feature-1");
+    ASSERT_TRUE(deployed);
+    EXPECT_EQ(git->captured_url, "https://git.invalid/repo.git");
+    EXPECT_EQ(git->captured_project, "valid-app");
+    EXPECT_EQ(git->captured_branch, "feature-1");
+    std::lock_guard<std::mutex> lock(backend->mutex);
+    EXPECT_EQ(backend->captured.back().git_source, "receipt:commit-abc");
 }
 
-// ============================================================================
-// HttpResponse Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, HttpResponseDefaultConstruction) {
-    HttpResponse response;
-
-    EXPECT_EQ(response.status_code, 0);
-    EXPECT_TRUE(response.body.empty());
-    EXPECT_FALSE(response.success);
-}
-
-TEST_F(VercelApiTest, HttpResponseWithCodeAndBody) {
-    HttpResponse response(200, R"({"id": "test"})");
-
-    EXPECT_EQ(response.status_code, 200);
-    EXPECT_EQ(response.body, R"({"id": "test"})");
-    EXPECT_TRUE(response.success);
-}
-
-TEST_F(VercelApiTest, HttpResponseSuccess) {
-    HttpResponse success(201, "Created");
-    EXPECT_TRUE(success.success);
-
-    HttpResponse failure(404, "Not Found");
-    EXPECT_FALSE(failure.success);
-
-    HttpResponse serverError(500, "Server Error");
-    EXPECT_FALSE(serverError.success);
-}
-
-// ============================================================================
-// HttpClient Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, HttpClientCreation) {
-    HttpClient client;
-
-    // Should be able to create without errors
-    EXPECT_TRUE(true);
-}
-
-TEST_F(VercelApiTest, HttpClientSetTimeout) {
-    HttpClient client;
-    client.setTimeout(60);
-
-    // Should not crash
-    EXPECT_TRUE(true);
-}
-
-TEST_F(VercelApiTest, HttpClientSetUserAgent) {
-    HttpClient client;
-    client.setUserAgent("ElizaOS/1.0");
-
-    // Should not crash
-    EXPECT_TRUE(true);
-}
-
-TEST_F(VercelApiTest, HttpClientSetBearerToken) {
-    HttpClient client;
-    client.setBearerToken("test-token");
-
-    // Should not crash
-    EXPECT_TRUE(true);
-}
-
-TEST_F(VercelApiTest, HttpClientAddDefaultHeader) {
-    HttpClient client;
-    client.addDefaultHeader("X-Custom-Header", "value");
-
-    // Should not crash
-    EXPECT_TRUE(true);
-}
-
-TEST_F(VercelApiTest, HttpClientUrlEncode) {
-    HttpClient client;
-
-    std::string encoded = client.urlEncode("hello world");
-    EXPECT_FALSE(encoded.empty());
-}
-
-TEST_F(VercelApiTest, HttpClientJsonEscape) {
-    HttpClient client;
-
-    std::string escaped = client.jsonEscape("hello \"world\"");
-    EXPECT_FALSE(escaped.empty());
-}
-
-// ============================================================================
-// VercelDeployment Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, VercelDeploymentCreation) {
-    VercelDeployment deployment;
-    deployment.id = "dpl-789";
-    deployment.url = "https://my-app-abc123.vercel.app";
-    deployment.project_id = "prj-123";
-    deployment.state = "READY";
-    deployment.target = "PRODUCTION";
-
-    EXPECT_EQ(deployment.id, "dpl-789");
-    EXPECT_EQ(deployment.state, "READY");
-    EXPECT_EQ(deployment.target, "PRODUCTION");
-}
-
-TEST_F(VercelApiTest, VercelDeploymentConstructor) {
-    VercelDeployment deployment("dpl-123", "https://app.vercel.app");
-
-    EXPECT_EQ(deployment.id, "dpl-123");
-    EXPECT_EQ(deployment.url, "https://app.vercel.app");
-}
-
-TEST_F(VercelApiTest, VercelDeploymentStates) {
-    VercelDeployment ready;
-    ready.state = "READY";
-    EXPECT_TRUE(ready.isReady());
-    EXPECT_FALSE(ready.hasError());
-    EXPECT_FALSE(ready.isBuilding());
-
-    VercelDeployment building;
-    building.state = "BUILDING";
-    EXPECT_FALSE(building.isReady());
-    EXPECT_FALSE(building.hasError());
-    EXPECT_TRUE(building.isBuilding());
-
-    VercelDeployment error;
-    error.state = "ERROR";
-    EXPECT_FALSE(error.isReady());
-    EXPECT_TRUE(error.hasError());
-}
-
-TEST_F(VercelApiTest, VercelDeploymentGitInfo) {
-    VercelDeployment deployment;
-    deployment.id = "dpl-789";
-    deployment.git_branch = "main";
-    deployment.git_commit_sha = "abc123def456";
-    deployment.git_commit_message = "Fix: authentication bug";
-
-    EXPECT_EQ(deployment.git_commit_sha, "abc123def456");
-    EXPECT_EQ(deployment.git_branch, "main");
-}
-
-TEST_F(VercelApiTest, VercelDeploymentDomains) {
-    VercelDeployment deployment;
-    deployment.id = "dpl-789";
-    deployment.domains = {"my-app.vercel.app", "custom-domain.com"};
-
-    EXPECT_EQ(deployment.domains.size(), 2);
-    EXPECT_THAT(deployment.domains, Contains("custom-domain.com"));
-}
-
-// ============================================================================
-// VercelProject Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, VercelProjectCreation) {
-    VercelProject project;
-    project.id = "prj-123456";
-    project.name = "my-app";
-    project.framework = "nextjs";
-    project.account_id = "acc-789";
-
-    EXPECT_EQ(project.id, "prj-123456");
-    EXPECT_EQ(project.name, "my-app");
-    EXPECT_EQ(project.framework, "nextjs");
-}
-
-TEST_F(VercelApiTest, VercelProjectConstructor) {
-    VercelProject project("prj-123", "my-project");
-
-    EXPECT_EQ(project.id, "prj-123");
-    EXPECT_EQ(project.name, "my-project");
-}
-
-TEST_F(VercelApiTest, VercelProjectDomains) {
-    VercelProject project;
-    project.id = "prj-123456";
-    project.domains = {"my-app.vercel.app", "custom-domain.com"};
-
-    EXPECT_EQ(project.domains.size(), 2);
-    EXPECT_THAT(project.domains, Contains("custom-domain.com"));
-}
-
-TEST_F(VercelApiTest, VercelProjectEnvVars) {
-    VercelProject project;
-    project.id = "prj-123456";
-    project.env_vars["DATABASE_URL"] = "postgres://...";
-    project.env_vars["API_KEY"] = "secret-key";
-
-    EXPECT_EQ(project.env_vars.size(), 2);
-}
-
-TEST_F(VercelApiTest, VercelProjectBuildConfig) {
-    VercelProject project;
-    project.id = "prj-123";
-    project.build_command = "npm run build";
-    project.install_command = "npm install";
-    project.output_directory = "dist";
-    project.root_directory = "./";
-    project.node_version = "18.x";
-
-    EXPECT_EQ(project.build_command, "npm run build");
-    EXPECT_EQ(project.node_version, "18.x");
-}
-
-// ============================================================================
-// DeploymentFile Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, DeploymentFileCreation) {
-    DeploymentFile file;
-    file.path = "/src/index.js";
-    file.content = "console.log('hello');";
-    file.encoding = "utf-8";
-
-    EXPECT_EQ(file.path, "/src/index.js");
-    EXPECT_EQ(file.encoding, "utf-8");
-}
-
-TEST_F(VercelApiTest, DeploymentFileConstructor) {
-    DeploymentFile file("/index.html", "<html></html>");
-
-    EXPECT_EQ(file.path, "/index.html");
-    EXPECT_EQ(file.content, "<html></html>");
-    EXPECT_EQ(file.size, 13);  // strlen("<html></html>")
-}
-
-// ============================================================================
-// DeploymentRequest Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, DeploymentRequestCreation) {
-    DeploymentRequest request;
-    request.name = "my-deployment";
-    request.target = "PRODUCTION";
-    request.project_id = "prj-123";
-
-    EXPECT_EQ(request.name, "my-deployment");
-    EXPECT_EQ(request.target, "PRODUCTION");
-}
-
-TEST_F(VercelApiTest, DeploymentRequestConstructor) {
-    DeploymentRequest request("test-deployment");
-
-    EXPECT_EQ(request.name, "test-deployment");
-}
-
-TEST_F(VercelApiTest, DeploymentRequestWithFiles) {
-    DeploymentRequest request("my-app");
-
-    DeploymentFile file1("/index.html", "<html></html>");
-    DeploymentFile file2("/style.css", "body {}");
-    request.files.push_back(file1);
-    request.files.push_back(file2);
-
-    EXPECT_EQ(request.files.size(), 2);
-}
-
-TEST_F(VercelApiTest, DeploymentRequestEnvVars) {
-    DeploymentRequest request("my-app");
-    request.env_vars["NODE_ENV"] = "production";
-    request.build_env["CI"] = "true";
-
-    EXPECT_EQ(request.env_vars.size(), 1);
-    EXPECT_EQ(request.build_env.size(), 1);
-}
-
-// ============================================================================
-// VercelDomain Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, VercelDomainCreation) {
-    VercelDomain domain;
-    domain.name = "example.com";
-    domain.apex_name = "example.com";
-    domain.project_id = "prj-123456";
-    domain.verified = true;
-
-    EXPECT_EQ(domain.name, "example.com");
-    EXPECT_TRUE(domain.verified);
-}
-
-TEST_F(VercelApiTest, VercelDomainConstructor) {
-    VercelDomain domain("mydomain.com");
-
-    EXPECT_EQ(domain.name, "mydomain.com");
-}
-
-TEST_F(VercelApiTest, VercelDomainVerificationChallenges) {
-    VercelDomain domain;
-    domain.name = "example.com";
-    domain.verification_challenges = {"challenge1", "challenge2"};
-
-    EXPECT_EQ(domain.verification_challenges.size(), 2);
-}
-
-// ============================================================================
-// VercelAPI Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, ApiCreation) {
-    VercelAPI api(config_);
-
-    EXPECT_FALSE(api.hasError());
-}
-
-TEST_F(VercelApiTest, ApiGetConfig) {
-    VercelAPI api(config_);
-
-    const VercelConfig& cfg = api.getConfig();
-    EXPECT_EQ(cfg.api_token, "test-token");
-}
-
-TEST_F(VercelApiTest, ApiUpdateConfig) {
-    VercelAPI api(config_);
-
-    VercelConfig newConfig;
-    newConfig.api_token = "new-token";
-    api.updateConfig(newConfig);
-
-    EXPECT_EQ(api.getConfig().api_token, "new-token");
-}
-
-TEST_F(VercelApiTest, ApiClearError) {
-    VercelAPI api(config_);
-
-    api.clearError();
-    EXPECT_FALSE(api.hasError());
-}
-
-TEST_F(VercelApiTest, ApiError) {
-    VercelAPI::ApiError error(401, "Unauthorized");
-
-    EXPECT_EQ(error.code, 401);
-    EXPECT_EQ(error.message, "Unauthorized");
-}
-
-// ============================================================================
-// VercelIntegration Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, IntegrationCreation) {
-    VercelIntegration integration(config_);
-
+TEST(VercelIntegration, AdapterFailuresPropagateAndNeverFabricateSuccess) {
+    auto backend = std::make_shared<FakeDeployment>();
+    backend->validation = failed(VercelStatusCode::transport_error, "backend unavailable");
+    VercelIntegration integration(config(), nullptr, backend);
+    EXPECT_FALSE(integration.initialize());
     EXPECT_FALSE(integration.isInitialized());
+    EXPECT_EQ(integration.getLastStatus().message, "backend unavailable");
+
+    backend->validation = {};
+    backend->create_result = badResult<VercelDeployment>(VercelStatusCode::http_error, "rejected");
+    ASSERT_TRUE(integration.initialize());
+    TempDirectory root; std::ofstream(root.path / "index") << "ok";
+    auto result = integration.deployDirectoryResult(root.path.string(), "valid-app");
+    EXPECT_FALSE(result);
+    EXPECT_TRUE(result.value.id.empty());
+    EXPECT_EQ(result.status.message, "rejected");
 }
 
-TEST_F(VercelApiTest, IntegrationGetConfig) {
-    VercelIntegration integration(config_);
-
-    const VercelConfig& cfg = integration.getConfig();
-    EXPECT_EQ(cfg.api_token, "test-token");
+TEST(VercelIntegration, MonitorCallbackIsOutsideLocksAndSeesOrderedStateTransitions) {
+    auto backend = std::make_shared<FakeDeployment>();
+    backend->states = {deployment("BUILDING"), deployment("READY")};
+    VercelIntegration integration(config(), nullptr, backend);
+    ASSERT_TRUE(integration.initialize());
+    std::vector<std::string> messages;
+    EXPECT_TRUE(integration.monitorDeployment("dpl-1", [&](const std::string& message) {
+        messages.push_back(message);
+        EXPECT_TRUE(integration.isInitialized());
+        EXPECT_NE(integration.getAPI(), nullptr);
+    }));
+    ASSERT_EQ(messages.size(), 2U);
+    EXPECT_EQ(messages[0], "Deployment state: BUILDING");
+    EXPECT_EQ(messages[1], "Deployment ready at: app.vercel.app");
 }
 
-TEST_F(VercelApiTest, IntegrationGetAPI) {
-    VercelIntegration integration(config_);
-    integration.initialize();
+TEST(VercelIntegration, ContinuousDeploymentIsAdapterAcknowledgedAndDefaultRejects) {
+    auto backend = std::make_shared<FakeDeployment>();
+    VercelIntegration integration(config(), nullptr, backend);
+    ASSERT_TRUE(integration.initialize());
+    EXPECT_TRUE(integration.enableContinuousDeployment("prj-1", "main"));
+    EXPECT_TRUE(integration.disableContinuousDeployment("prj-1"));
+    {
+        std::lock_guard<std::mutex> lock(backend->mutex);
+        ASSERT_EQ(backend->continuous_calls.size(), 2U);
+        EXPECT_TRUE(backend->continuous_calls[0].enabled);
+        EXPECT_EQ(backend->continuous_calls[0].branch, "main");
+        EXPECT_FALSE(backend->continuous_calls[1].enabled);
+    }
 
-    auto api = integration.getAPI();
-    EXPECT_NE(api, nullptr);
+    backend->continuous_result = failed(VercelStatusCode::transport_error, "not acknowledged");
+    EXPECT_FALSE(integration.enableContinuousDeployment("prj-1", "main"));
+
+    class AuthHttp final : public HttpAdapter {
+        HttpResponse perform(const HttpRequest&) override { return HttpResponse(200, R"({"id":"user"})"); }
+    };
+    VercelIntegration http_only(config(), std::make_shared<AuthHttp>());
+    ASSERT_TRUE(http_only.initialize());
+    EXPECT_FALSE(http_only.enableContinuousDeployment("prj-1", "main"));
+    EXPECT_EQ(http_only.getLastStatus().code, VercelStatusCode::not_configured);
 }
 
-TEST_F(VercelApiTest, IntegrationUpdateConfig) {
-    VercelIntegration integration(config_);
-
-    VercelConfig newConfig;
-    newConfig.api_token = "updated-token";
-    integration.updateConfig(newConfig);
-
-    EXPECT_EQ(integration.getConfig().api_token, "updated-token");
+TEST(VercelIntegration, RecentDeploymentsAreSortedLimitedAndArgumentsCaptured) {
+    auto backend = std::make_shared<FakeDeployment>();
+    backend->list_result = okResult(std::vector<VercelDeployment>{deployment("READY", 1), deployment("READY", 3), deployment("READY", 2)});
+    VercelIntegration integration(config(), nullptr, backend);
+    ASSERT_TRUE(integration.initialize());
+    const auto recent = integration.getRecentDeployments("prj-1", 2);
+    ASSERT_EQ(recent.size(), 2U);
+    EXPECT_GT(recent[0].created_at, recent[1].created_at);
+    EXPECT_EQ(backend->listed_project, "prj-1");
+    EXPECT_EQ(backend->listed_limit, 2);
 }
 
+TEST(VercelIntegration, ConcurrentAccessAndAdapterSwapsCompleteWithoutDeadlock) {
+    auto backend = std::make_shared<FakeDeployment>();
+    VercelIntegration integration(config(), nullptr, backend);
+    ASSERT_TRUE(integration.initialize());
+    std::atomic<int> reads{0};
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 6; ++i) threads.emplace_back([&] {
+        for (int n = 0; n < 100; ++n) {
+            if (integration.getAPI() && integration.getConfigSnapshot().api_token == "integration-token") ++reads;
+            (void)integration.getLastStatus();
+        }
+    });
+    for (int i = 0; i < 20; ++i) integration.setGitAdapter(std::make_shared<FakeGit>());
+    for (auto& thread : threads) thread.join();
+    EXPECT_EQ(reads.load(), 600);
+}

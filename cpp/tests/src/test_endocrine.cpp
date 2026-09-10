@@ -372,8 +372,7 @@ TEST(EndocrineSystem, GenericStimulusHasMildEffect) {
     system.tick();
     
     double after = system.hormoneLevel(HormoneId::Dopamine);
-    // Generic stimulus should have a mild effect (30% of intensity)
-    double expected_change = 0.5 * 0.3 * 1.0;  // intensity * 0.3 * sensitivity
+    // Generic stimulus should have a mild positive effect.
     EXPECT_GT(after, before);
 }
 

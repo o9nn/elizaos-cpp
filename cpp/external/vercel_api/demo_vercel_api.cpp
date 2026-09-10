@@ -213,7 +213,7 @@ void showUsageInstructions() {
     std::cout << "\n=== Getting Started ===\n";
     std::cout << "1. Get a Vercel API token from https://vercel.com/account/tokens\n";
     std::cout << "2. Set environment variable: export VERCEL_TOKEN=\"your_token_here\"\n";
-    std::cout << "3. Include the header: #include \"elizaos/vercel_api.hpp\"\n";
+    std::cout << "3. Include the header: #include \"vercel_api.hpp\"\n";
     std::cout << "4. Link the library: target_link_libraries(your_app elizaos-vercel_api)\n";
     std::cout << "\n📚 Example usage:\n";
     std::cout << R"(

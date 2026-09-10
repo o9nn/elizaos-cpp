@@ -1,6 +1,5 @@
 # Persistence Module - SQLite-backed storage for ElizaOS agents
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SQLITE3 REQUIRED sqlite3)
+find_package(SQLite3 REQUIRED)
 
 add_library(elizaos-persistence STATIC
     src/persistence.cpp
@@ -9,17 +8,12 @@ add_library(elizaos-persistence STATIC
 target_include_directories(elizaos-persistence PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include
-    ${SQLITE3_INCLUDE_DIRS}
 )
 
 target_link_libraries(elizaos-persistence PUBLIC
     elizaos-core
-    ${SQLITE3_LIBRARIES}
+    SQLite::SQLite3
     Threads::Threads
-)
-
-target_link_directories(elizaos-persistence PUBLIC
-    ${SQLITE3_LIBRARY_DIRS}
 )
 
 set_target_properties(elizaos-persistence PROPERTIES

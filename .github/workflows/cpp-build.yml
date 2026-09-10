@@ -48,12 +48,19 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libcurl4-openssl-dev pkg-config
+        sudo apt-get install -y build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
     - name: Install dependencies (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install cmake curl pkg-config
+        brew install cmake curl gumbo-parser sqlite pkg-config
+
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      shell: cmd
+      run: |
+        set "OVERLAY_PORTS=%CD%\.github\vcpkg-overlay-ports"
+        %VCPKG_INSTALLATION_ROOT%\vcpkg install --overlay-ports="%OVERLAY_PORTS%" curl:x64-windows gumbo:x64-windows sqlite3:x64-windows
 
     - name: Check C++ compiler availability
       shell: bash
@@ -110,7 +117,13 @@ jobs:
         python3 tools/check_case_collisions.py || python tools/check_case_collisions.py
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          EXTRA_ARGS="-DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows"
+        fi
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} $EXTRA_ARGS
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }} -j 2
@@ -191,7 +204,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev pkg-config
+        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2

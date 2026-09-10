@@ -7,9 +7,13 @@
 #include <optional>
 #include <fstream>
 #include <sstream>
-#include "core.hpp"
-#include "characters.hpp"
-#include "agentlogger.hpp"
+#include <any>
+#include <chrono>
+#include <functional>
+#include <mutex>
+#include "elizaos/core.hpp"
+#include "elizaos/characters.hpp"
+#include "elizaos/agentlogger.hpp"
 #include "plugin_specification.hpp"
 
 namespace elizaos {
@@ -129,6 +133,7 @@ public:
     
 private:
     std::shared_ptr<AgentLogger> logger_;
+    mutable std::mutex mutex_;
     bool strictValidation_ = true;
     JsonValue validationSchema_;
     
@@ -177,13 +182,39 @@ private:
     std::vector<std::string> getStringArray(const JsonValue& json, const std::string& key);
 };
 
+enum class CharacterFileChangeType {
+    Created,
+    Modified,
+    Deleted
+};
+
+struct CharacterFileChangeEvent {
+    CharacterFileChangeType type = CharacterFileChangeType::Modified;
+    std::string path;
+};
+
+using FileChangeType = CharacterFileChangeType;
+using FileChangeEvent = CharacterFileChangeEvent;
+
+namespace detail {
+struct CharacterFileManagerState;
+}
+
 /**
  * Character file manager for bulk operations
  */
 class CharacterFileManager {
 public:
+    using ChangeCallback = std::function<void(const CharacterFileChangeEvent&)>;
+    using FileChangeCallback = ChangeCallback;
+
     CharacterFileManager();
     ~CharacterFileManager();
+
+    CharacterFileManager(const CharacterFileManager&) = delete;
+    CharacterFileManager& operator=(const CharacterFileManager&) = delete;
+    CharacterFileManager(CharacterFileManager&&) = delete;
+    CharacterFileManager& operator=(CharacterFileManager&&) = delete;
     
     /**
      * Set character manager for integration
@@ -209,6 +240,16 @@ public:
      * Watch directory for character file changes
      */
     bool watchDirectory(const std::string& directory, bool autoImport = true);
+
+    /**
+     * Set the portable polling interval. Values must be positive.
+     */
+    bool setWatchInterval(std::chrono::milliseconds interval);
+
+    /**
+     * Set a callback for create, modify, and delete events.
+     */
+    void setChangeCallback(ChangeCallback callback);
     
     /**
      * Stop directory watching
@@ -236,18 +277,8 @@ public:
     bool backupDirectory(const std::string& sourceDir, const std::string& backupDir);
     
 private:
-    std::shared_ptr<CharacterFileLoader> loader_;
-    std::shared_ptr<CharacterManager> characterManager_;
-    std::shared_ptr<AgentLogger> logger_;
-    
-    bool isWatching_ = false;
-    std::string watchedDirectory_;
-    
-    // Operation statistics
-    size_t importedCount_ = 0;
-    size_t exportedCount_ = 0;
-    size_t errorCount_ = 0;
-    
+    std::shared_ptr<detail::CharacterFileManagerState> state_;
+
     // Helper methods
     std::vector<std::string> findCharacterFiles(const std::string& directory, bool recursive);
     bool isValidCharacterFile(const std::string& filename);

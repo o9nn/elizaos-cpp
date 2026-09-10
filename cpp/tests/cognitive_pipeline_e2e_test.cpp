@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <set>
 #include <sstream>
+#include <unordered_map>
 #include <string>
 #include <thread>
 #include <vector>
