@@ -142,7 +142,7 @@ TEST(TrustScoreboardEvidence, ExplicitEvidenceIsStoredAndReplayRejected) {
 TEST(TrustScoreboardEvidence, ConvenienceIdsAreUniqueUnderConcurrency) {
     TrustScoreboard board(nullptr);
     constexpr int threadCount = 8;
-    constexpr int eventsPerThread = 100;
+    static constexpr int eventsPerThread = 100;
     std::vector<std::thread> threads;
     for (int thread = 0; thread < threadCount; ++thread) {
         threads.emplace_back([&board, thread] {

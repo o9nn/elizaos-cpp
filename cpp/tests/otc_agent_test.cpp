@@ -526,10 +526,10 @@ TEST(OTCConcurrency, MonotonicIdsAreUniqueAndStatusCallbacksAreReentrant) {
         EXPECT_FALSE(agent.getStatus().empty());
     });
     constexpr int threadCount = 8;
-    constexpr int offersPerThread = 25;
+    static constexpr int offersPerThread = 25;
     std::vector<std::thread> threads;
     for (int thread = 0; thread < threadCount; ++thread) {
-        threads.emplace_back([&agent, thread, offersPerThread]() {
+        threads.emplace_back([&agent, thread]() {
             for (int index = 0; index < offersPerThread; ++index) {
                 const auto created = agent.createOfferResult(
                     "TOK" + std::to_string(thread), 1.0, 10.0 + index);

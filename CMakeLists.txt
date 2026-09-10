@@ -35,15 +35,9 @@ endif()
 # Find packages
 find_package(Threads REQUIRED)
 
-# Find libcurl for HTTP operations
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(CURL QUIET libcurl)
-endif()
-
-if(NOT CURL_FOUND)
-    find_package(CURL QUIET)
-endif()
+# Find libcurl for HTTP operations. Use CMake's package module so the
+# imported target carries configuration-specific Windows library paths.
+find_package(CURL REQUIRED)
 
 # Enable testing
 # Bound individual tests so a deadlock fails promptly instead of occupying a
