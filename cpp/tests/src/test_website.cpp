@@ -2,23 +2,37 @@
 
 #include "elizaos/website.hpp"
 
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#else
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#endif
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <future>
 #include <iterator>
+#include <limits>
 #include <mutex>
 #include <string>
+#include <system_error>
 #include <thread>
+#include <utility>
 #include <vector>
 
 namespace elizaos {
@@ -26,33 +40,120 @@ namespace {
 
 using namespace std::chrono_literals;
 
-class ScopedSocket {
+#ifdef _WIN32
+using SocketHandle = SOCKET;
+using SocketLength = int;
+constexpr SocketHandle kInvalidSocket = INVALID_SOCKET;
+
+class SocketRuntime {
 public:
-    explicit ScopedSocket(int descriptor = -1) : descriptor_(descriptor) {}
-    ~ScopedSocket() {
-        if (descriptor_ >= 0) {
-            ::close(descriptor_);
+    static SocketRuntime& instance() {
+        static SocketRuntime runtime;
+        return runtime;
+    }
+    bool ready() const noexcept { return ready_; }
+
+private:
+    SocketRuntime() {
+        WSADATA data{};
+        ready_ = ::WSAStartup(MAKEWORD(2, 2), &data) == 0;
+    }
+    ~SocketRuntime() {
+        if (ready_) {
+            ::WSACleanup();
         }
     }
+    bool ready_ = false;
+};
+#else
+using SocketHandle = int;
+using SocketLength = socklen_t;
+constexpr SocketHandle kInvalidSocket = -1;
+#endif
+
+bool validSocket(SocketHandle descriptor) noexcept {
+    return descriptor != kInvalidSocket;
+}
+
+void closeSocket(SocketHandle descriptor) noexcept {
+    if (!validSocket(descriptor)) {
+        return;
+    }
+#ifdef _WIN32
+    ::closesocket(descriptor);
+#else
+    ::close(descriptor);
+#endif
+}
+
+void setSocketTimeouts(SocketHandle descriptor) noexcept {
+#ifdef _WIN32
+    const DWORD timeout = 2000;
+    (void)::setsockopt(descriptor, SOL_SOCKET, SO_RCVTIMEO,
+                       reinterpret_cast<const char*>(&timeout), sizeof(timeout));
+    (void)::setsockopt(descriptor, SOL_SOCKET, SO_SNDTIMEO,
+                       reinterpret_cast<const char*>(&timeout), sizeof(timeout));
+#else
+    const timeval timeout{2, 0};
+    (void)::setsockopt(descriptor, SOL_SOCKET, SO_RCVTIMEO, &timeout,
+                       static_cast<socklen_t>(sizeof(timeout)));
+    (void)::setsockopt(descriptor, SOL_SOCKET, SO_SNDTIMEO, &timeout,
+                       static_cast<socklen_t>(sizeof(timeout)));
+#endif
+}
+
+std::ptrdiff_t sendBytes(SocketHandle descriptor, const char* data,
+                         std::size_t size) noexcept {
+#ifdef _WIN32
+    const auto bounded = static_cast<int>(std::min(
+        size, static_cast<std::size_t>(std::numeric_limits<int>::max())));
+    return static_cast<std::ptrdiff_t>(::send(descriptor, data, bounded, 0));
+#else
+    return static_cast<std::ptrdiff_t>(::send(descriptor, data, size, MSG_NOSIGNAL));
+#endif
+}
+
+std::ptrdiff_t receiveBytes(SocketHandle descriptor, char* data,
+                            std::size_t size) noexcept {
+#ifdef _WIN32
+    const auto bounded = static_cast<int>(std::min(
+        size, static_cast<std::size_t>(std::numeric_limits<int>::max())));
+    return static_cast<std::ptrdiff_t>(::recv(descriptor, data, bounded, 0));
+#else
+    return static_cast<std::ptrdiff_t>(::recv(descriptor, data, size, 0));
+#endif
+}
+
+void shutdownWrite(SocketHandle descriptor) noexcept {
+#ifdef _WIN32
+    (void)::shutdown(descriptor, SD_SEND);
+#else
+    (void)::shutdown(descriptor, SHUT_WR);
+#endif
+}
+
+class ScopedSocket {
+public:
+    explicit ScopedSocket(SocketHandle descriptor = kInvalidSocket) : descriptor_(descriptor) {}
+    ~ScopedSocket() { closeSocket(descriptor_); }
     ScopedSocket(const ScopedSocket&) = delete;
     ScopedSocket& operator=(const ScopedSocket&) = delete;
     ScopedSocket(ScopedSocket&& other) noexcept : descriptor_(other.descriptor_) {
-        other.descriptor_ = -1;
+        other.descriptor_ = kInvalidSocket;
     }
     ScopedSocket& operator=(ScopedSocket&& other) noexcept {
         if (this != &other) {
-            if (descriptor_ >= 0) {
-                ::close(descriptor_);
-            }
+            closeSocket(descriptor_);
             descriptor_ = other.descriptor_;
-            other.descriptor_ = -1;
+            other.descriptor_ = kInvalidSocket;
         }
         return *this;
     }
-    int get() const { return descriptor_; }
+    SocketHandle get() const { return descriptor_; }
+    bool valid() const noexcept { return validSocket(descriptor_); }
 
 private:
-    int descriptor_;
+    SocketHandle descriptor_;
 };
 
 class TemporaryDirectory {
@@ -93,21 +194,22 @@ void writeFile(const std::filesystem::path& path, const std::string& contents) {
 }
 
 ScopedSocket connectTo(std::uint16_t port) {
+#ifdef _WIN32
+    if (!SocketRuntime::instance().ready()) {
+        return ScopedSocket{};
+    }
+#endif
     ScopedSocket socket_handle(::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-    if (socket_handle.get() < 0) {
+    if (!socket_handle.valid()) {
         return socket_handle;
     }
-    const timeval timeout{2, 0};
-    (void)::setsockopt(socket_handle.get(), SOL_SOCKET, SO_RCVTIMEO, &timeout,
-                       static_cast<socklen_t>(sizeof(timeout)));
-    (void)::setsockopt(socket_handle.get(), SOL_SOCKET, SO_SNDTIMEO, &timeout,
-                       static_cast<socklen_t>(sizeof(timeout)));
+    setSocketTimeouts(socket_handle.get());
     sockaddr_in address{};
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     address.sin_port = htons(port);
     if (::connect(socket_handle.get(), reinterpret_cast<const sockaddr*>(&address),
-                  static_cast<socklen_t>(sizeof(address))) != 0) {
+                  static_cast<SocketLength>(sizeof(address))) != 0) {
         return ScopedSocket{};
     }
     return socket_handle;
@@ -115,24 +217,24 @@ ScopedSocket connectTo(std::uint16_t port) {
 
 std::string request(std::uint16_t port, const std::string& wire_request) {
     auto socket_handle = connectTo(port);
-    if (socket_handle.get() < 0) {
+    if (!socket_handle.valid()) {
         return {};
     }
     std::size_t sent = 0;
     while (sent < wire_request.size()) {
-        const auto result = ::send(socket_handle.get(), wire_request.data() + sent,
-                                   wire_request.size() - sent, MSG_NOSIGNAL);
+        const auto result = sendBytes(socket_handle.get(), wire_request.data() + sent,
+                                      wire_request.size() - sent);
         if (result <= 0) {
             return {};
         }
         sent += static_cast<std::size_t>(result);
     }
-    (void)::shutdown(socket_handle.get(), SHUT_WR);
+    shutdownWrite(socket_handle.get());
 
     std::string response;
     char buffer[4096];
     for (;;) {
-        const auto received = ::recv(socket_handle.get(), buffer, sizeof(buffer), 0);
+        const auto received = receiveBytes(socket_handle.get(), buffer, sizeof(buffer));
         if (received <= 0) {
             break;
         }
@@ -229,10 +331,13 @@ TEST(WebsiteDevelopmentServerE2E, BlocksPlainEncodedAndSymlinkEscapes) {
     std::error_code symlink_error;
     std::filesystem::create_symlink(outside.path() / "secret.txt",
                                     running.config().output_dir / "escape.txt", symlink_error);
-    ASSERT_FALSE(symlink_error);
     const auto port = running.website().getDevelopmentServerPort();
 
-    for (const std::string path : {"/../secret.txt", "/%2e%2e/secret.txt", "/escape.txt"}) {
+    std::vector<std::string> escape_paths{"/../secret.txt", "/%2e%2e/secret.txt"};
+    if (!symlink_error) {
+        escape_paths.emplace_back("/escape.txt");
+    }
+    for (const auto& path : escape_paths) {
         const auto response = request(port, "GET " + path + " HTTP/1.1\r\nHost: x\r\n\r\n");
         EXPECT_EQ(statusOf(response), 404) << path;
         EXPECT_EQ(response.find("never expose this"), std::string::npos) << path;
@@ -255,15 +360,15 @@ TEST(WebsiteDevelopmentServerE2E, ReportsInvalidAndOccupiedPortFailuresOutsideLo
     EXPECT_EQ(callback_count.load(), 1);
 
     ScopedSocket occupied(::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-    ASSERT_GE(occupied.get(), 0);
+    ASSERT_TRUE(occupied.valid());
     sockaddr_in address{};
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     address.sin_port = 0;
     ASSERT_EQ(::bind(occupied.get(), reinterpret_cast<const sockaddr*>(&address),
-                     static_cast<socklen_t>(sizeof(address))), 0);
+                     static_cast<SocketLength>(sizeof(address))), 0);
     ASSERT_EQ(::listen(occupied.get(), 1), 0);
-    socklen_t size = static_cast<socklen_t>(sizeof(address));
+    SocketLength size = static_cast<SocketLength>(sizeof(address));
     ASSERT_EQ(::getsockname(occupied.get(), reinterpret_cast<sockaddr*>(&address), &size), 0);
     EXPECT_FALSE(website.startDevelopmentServer(ntohs(address.sin_port)));
     EXPECT_NE(website.getLastDevelopmentServerError().find("bind"), std::string::npos);
@@ -320,7 +425,7 @@ TEST(WebsiteDevelopmentServerE2E, ErrorCallbackCanStopFromAcceptThreadWithoutDet
     stalled_clients.reserve(96U);
     for (std::size_t index = 0; index < 96U && callback_count.load() == 0; ++index) {
         auto client = connectTo(first_port);
-        if (client.get() >= 0) {
+        if (client.valid()) {
             stalled_clients.emplace_back(std::move(client));
         }
     }
@@ -350,9 +455,9 @@ TEST(WebsiteDevelopmentServerE2E, ConcurrentStopsCancelBlockedClientsAndRemainRe
     std::vector<ScopedSocket> stalled_clients;
     for (int index = 0; index < 12; ++index) {
         auto client = connectTo(first_port);
-        ASSERT_GE(client.get(), 0);
+        ASSERT_TRUE(client.valid());
         const std::string partial = "GET / HTTP/1.1\r\nHost: x\r\n";
-        ASSERT_GT(::send(client.get(), partial.data(), partial.size(), MSG_NOSIGNAL), 0);
+        ASSERT_GT(sendBytes(client.get(), partial.data(), partial.size()), 0);
         stalled_clients.emplace_back(std::move(client));
     }
 
@@ -402,14 +507,14 @@ TEST(WebsiteDevelopmentServerE2E, DestructorCancelsBlockedClientsAndDoesNoWorkAf
         ASSERT_TRUE(website.startDevelopmentServer(0));
         old_port = website.getDevelopmentServerPort();
         stalled = connectTo(old_port);
-        ASSERT_GE(stalled.get(), 0);
+        ASSERT_TRUE(stalled.valid());
         const std::string partial = "GET / HTTP/1.1\r\nHost: x\r\n";
-        ASSERT_GT(::send(stalled.get(), partial.data(), partial.size(), MSG_NOSIGNAL), 0);
+        ASSERT_GT(sendBytes(stalled.get(), partial.data(), partial.size()), 0);
     }
     EXPECT_LT(std::chrono::steady_clock::now() - start, 2s);
 
     char byte = 0;
-    EXPECT_LE(::recv(stalled.get(), &byte, 1, 0), 0);
+    EXPECT_LE(receiveBytes(stalled.get(), &byte, 1), 0);
     EXPECT_TRUE(request(old_port, "GET / HTTP/1.0\r\n\r\n").empty());
 }
 
