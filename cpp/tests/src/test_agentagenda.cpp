@@ -527,6 +527,5 @@ TEST_F(AgentAgendaTest, PlanAgainUpdatesTimestamp) {
     agenda->planAgain(task.id);
     
     auto updated_task = agenda->getTaskById(task.id);
-    EXPECT_GT(updated_task.updated_at, original_updated);
+    EXPECT_TRUE(updated_task.updated_at > original_updated);
 }
-

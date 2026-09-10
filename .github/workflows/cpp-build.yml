@@ -48,12 +48,12 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libcurl4-openssl-dev pkg-config
+        sudo apt-get install -y build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
     - name: Install dependencies (macOS)
       if: runner.os == 'macOS'
       run: |
-        brew install cmake curl pkg-config
+        brew install cmake curl gumbo-parser sqlite pkg-config
 
     - name: Check C++ compiler availability
       shell: bash
@@ -191,7 +191,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev pkg-config
+        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2

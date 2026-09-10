@@ -39,7 +39,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config \
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config \
             lcov gcovr python3-pip
 
       - name: Configure with coverage

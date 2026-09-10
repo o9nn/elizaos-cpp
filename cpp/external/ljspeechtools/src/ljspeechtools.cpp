@@ -4,12 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <regex>
-#define _USE_MATH_DEFINES
 #include <cmath>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 #include <filesystem>
 #include <cstring>
 #include <array>
@@ -756,27 +751,32 @@ public:
         size_t text_hash = hash_fn(text);
         
         // Use text hash to determine voice characteristics
-        float base_freq = 200.0f + (text_hash % 200); // 200-400 Hz base frequency
-        base_freq *= config.pitch; // Adjust for pitch
+        constexpr double kPi = 3.14159265358979323846;
+        const double base_freq =
+            (200.0 + static_cast<double>(text_hash % 200U)) *
+            static_cast<double>(config.pitch);
         
         // Generate speech-like waveform with multiple harmonics
         for (int i = 0; i < duration_samples; ++i) {
-            float t = static_cast<float>(i) / config.sample_rate;
+            const double t = static_cast<double>(i) /
+                             static_cast<double>(config.sample_rate);
             
             // Add formant-like frequencies
-            float sample = 0.0f;
-            sample += 0.4f * std::sin(2.0f * M_PI * base_freq * t); // Fundamental
-            sample += 0.2f * std::sin(2.0f * M_PI * base_freq * 2.0f * t); // Second harmonic
-            sample += 0.1f * std::sin(2.0f * M_PI * base_freq * 3.0f * t); // Third harmonic
+            double sample = 0.0;
+            sample += 0.4 * std::sin(2.0 * kPi * base_freq * t); // Fundamental
+            sample += 0.2 * std::sin(2.0 * kPi * base_freq * 2.0 * t); // Second harmonic
+            sample += 0.1 * std::sin(2.0 * kPi * base_freq * 3.0 * t); // Third harmonic
             
             // Add some variation based on text content
-            float text_variation = std::sin(2.0f * M_PI * t * (text_hash % 50 + 10));
-            sample += 0.1f * text_variation;
+            const double text_variation = std::sin(
+                2.0 * kPi * t *
+                static_cast<double>(text_hash % 50U + 10U));
+            sample += 0.1 * text_variation;
             
             // Add amplitude envelope (attack-sustain-release)
-            float envelope = 1.0f;
-            float attack_time = 0.1f;
-            float release_time = 0.2f;
+            double envelope = 1.0;
+            constexpr double attack_time = 0.1;
+            constexpr double release_time = 0.2;
             
             if (t < attack_time) {
                 envelope = t / attack_time;
@@ -784,11 +784,12 @@ public:
                 envelope = (base_duration - t) / release_time;
             }
             
-            sample *= envelope * 0.3f; // Overall amplitude scaling
+            sample *= envelope * 0.3; // Overall amplitude scaling
             
             // Fill channels
             for (int ch = 0; ch < config.channels; ++ch) {
-                result.samples[i * config.channels + ch] = sample;
+                result.samples[i * config.channels + ch] =
+                    static_cast<float>(sample);
             }
         }
         

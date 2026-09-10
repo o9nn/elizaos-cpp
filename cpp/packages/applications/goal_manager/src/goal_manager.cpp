@@ -49,7 +49,8 @@ std::string hexEncode(const std::string& value) {
     static constexpr char digits[] = "0123456789abcdef";
     std::string encoded;
     encoded.reserve(value.size() * 2);
-    for (const unsigned char byte : value) {
+    for (const char character : value) {
+        const auto byte = static_cast<unsigned char>(character);
         encoded.push_back(digits[byte >> 4]);
         encoded.push_back(digits[byte & 0x0f]);
     }

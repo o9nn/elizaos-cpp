@@ -37,7 +37,7 @@ jobs:
     - name: Install git and dependencies
       run: |
         apt-get update
-        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev pkg-config rpm dpkg-dev ca-certificates
+        DEBIAN_FRONTEND=noninteractive apt-get install -y git cmake g++ build-essential libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config rpm dpkg-dev ca-certificates
     
     - uses: actions/checkout@v4
     
@@ -239,7 +239,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        brew install cmake curl pkg-config
+        brew install cmake curl gumbo-parser sqlite pkg-config
     
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local

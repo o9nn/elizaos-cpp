@@ -2,8 +2,8 @@
 
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GUMBO REQUIRED gumbo)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../../cmake")
+find_package(Gumbo REQUIRED)
 
 add_library(elizaos-agentbrowser STATIC
     src/agentbrowser.cpp
@@ -16,11 +16,7 @@ target_include_directories(elizaos-agentbrowser PUBLIC
 
 target_include_directories(elizaos-agentbrowser PRIVATE
     ${CURL_INCLUDE_DIRS}
-    ${GUMBO_INCLUDE_DIRS}
-)
-
-target_link_directories(elizaos-agentbrowser PRIVATE
-    ${GUMBO_LIBRARY_DIRS}
+    ${Gumbo_INCLUDE_DIRS}
 )
 
 target_link_libraries(elizaos-agentbrowser
@@ -29,7 +25,7 @@ target_link_libraries(elizaos-agentbrowser
     elizaos-agentmemory
     Threads::Threads
     CURL::libcurl
-    ${GUMBO_LIBRARIES}
+    Gumbo::Gumbo
 )
 
 target_compile_definitions(elizaos-agentbrowser PRIVATE

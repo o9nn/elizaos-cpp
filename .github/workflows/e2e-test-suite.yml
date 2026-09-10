@@ -120,6 +120,8 @@ jobs:
             ${{ matrix.cc }} \
             ${{ matrix.cxx }} \
             libcurl4-openssl-dev \
+            libgumbo-dev \
+            libsqlite3-dev \
             pkg-config \
             lcov \
             gcovr
@@ -127,7 +129,7 @@ jobs:
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install cmake curl pkg-config lcov
+          brew install cmake curl gumbo-parser sqlite pkg-config lcov
 
       - name: Configure environment
         shell: bash
@@ -200,7 +202,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config \
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config \
             lcov gcovr
 
       - name: Configure with coverage
@@ -272,7 +274,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
       - name: Build Release
         run: |
@@ -338,7 +340,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
       - name: Build Release
         run: |
@@ -431,7 +433,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config \
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config \
             cppcheck clang-tidy-14
 
       - name: Configure CMake
@@ -489,7 +491,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config
 
       - name: Configure with ${{ matrix.sanitizer }} sanitizer
         run: |
@@ -558,13 +560,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             build-essential g++-11 \
-            libcurl4-openssl-dev pkg-config \
+            libcurl4-openssl-dev libgumbo-dev libsqlite3-dev pkg-config \
             rpm
 
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          brew install cmake curl pkg-config
+          brew install cmake curl gumbo-parser sqlite pkg-config
 
       - name: Build and Package
         run: |
