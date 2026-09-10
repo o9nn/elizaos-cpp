@@ -1,326 +1,245 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+
 #include "elizaos/trust_scoreboard.hpp"
-#include "elizaos/agentmemory.hpp"
-#include <memory>
+
+#include <atomic>
+#include <chrono>
+#include <cmath>
+#include <filesystem>
+#include <fstream>
+#include <random>
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace elizaos;
-using namespace ::testing;
+namespace fs = std::filesystem;
 
-class TrustScoreboardTest : public ::testing::Test {
-protected:
-    void SetUp() override {
-        memoryMgr_ = std::make_shared<AgentMemoryManager>();
-        scoreboard_ = std::make_shared<TrustScoreboard>(memoryMgr_);
+namespace {
+
+fs::path tempPath(const std::string& name) {
+    static std::atomic<unsigned long> sequence{0UL};
+    static const auto processNonce = [] {
+        std::random_device random;
+        return (static_cast<unsigned long long>(random()) << 32U) ^
+               static_cast<unsigned long long>(random());
+    }();
+    const auto directory = fs::temp_directory_path() /
+        ("eliza-trust-integration-" +
+         std::to_string(processNonce) + "-" +
+         std::to_string(sequence.fetch_add(1UL)));
+    fs::create_directories(directory);
+    return directory / name;
+}
+
+TrustEvent observed(const std::string& id, const std::string& agent,
+                    TrustEventType type, TrustOutcome outcome, double impact,
+                    std::chrono::system_clock::time_point when) {
+    TrustEvent event(agent, type, outcome, impact);
+    event.eventId = id;
+    event.timestamp = when;
+    event.context = "integration evidence";
+    return event;
+}
+
+} // namespace
+
+TEST(TrustScoreboardComprehensive, EveryConvenienceRecorderCreatesOneEvidenceRow) {
+    TrustScoreboard board(nullptr);
+    EXPECT_TRUE(board.recordTaskCompletion("agent", true,
+                                           std::chrono::milliseconds(100)));
+    EXPECT_TRUE(board.recordTaskCompletion("agent", false,
+                                           std::chrono::milliseconds(9000)));
+    EXPECT_TRUE(board.recordCollaboration("agent", true));
+    EXPECT_TRUE(board.recordCollaboration("agent", false));
+    EXPECT_TRUE(board.recordCommunication("agent", true));
+    EXPECT_TRUE(board.recordCommunication("agent", false));
+    EXPECT_TRUE(board.recordRuleViolation("agent", "documented breach"));
+    EXPECT_EQ(board.getTotalEvents(), 7);
+    EXPECT_EQ(board.getTrustScore("agent").totalEvents, 7);
+    const auto history = board.getEventHistory("agent", 100);
+    for (const auto& event : history) {
+        EXPECT_FALSE(event.eventId.empty());
+        EXPECT_EQ(event.agentId, "agent");
+        EXPECT_TRUE(std::isfinite(event.impactScore));
     }
-
-    std::shared_ptr<AgentMemoryManager> memoryMgr_;
-    std::shared_ptr<TrustScoreboard> scoreboard_;
-};
-
-// ============================================================================
-// TrustEvent Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustEventCreation) {
-    TrustEvent event("agent-001", TrustEventType::TASK_COMPLETED, TrustOutcome::POSITIVE, 0.1);
-
-    EXPECT_EQ(event.agentId, "agent-001");
-    EXPECT_EQ(event.type, TrustEventType::TASK_COMPLETED);
-    EXPECT_EQ(event.outcome, TrustOutcome::POSITIVE);
-    EXPECT_NEAR(event.impactScore, 0.1, 0.01);
 }
 
-TEST_F(TrustScoreboardTest, TrustEventTypes) {
-    // Verify all event types can be created
-    TrustEvent e1("a", TrustEventType::TASK_COMPLETED, TrustOutcome::POSITIVE, 0.1);
-    TrustEvent e2("a", TrustEventType::TASK_FAILED, TrustOutcome::NEGATIVE, -0.1);
-    TrustEvent e3("a", TrustEventType::TASK_TIMEOUT, TrustOutcome::NEGATIVE, -0.05);
-    TrustEvent e4("a", TrustEventType::RESPONSE_FAST, TrustOutcome::POSITIVE, 0.05);
-    TrustEvent e5("a", TrustEventType::RESPONSE_SLOW, TrustOutcome::NEGATIVE, -0.02);
-    TrustEvent e6("a", TrustEventType::COLLABORATION_GOOD, TrustOutcome::POSITIVE, 0.1);
-    TrustEvent e7("a", TrustEventType::COLLABORATION_POOR, TrustOutcome::NEGATIVE, -0.1);
-
-    EXPECT_EQ(e1.type, TrustEventType::TASK_COMPLETED);
-    EXPECT_EQ(e7.type, TrustEventType::COLLABORATION_POOR);
-}
-
-TEST_F(TrustScoreboardTest, TrustOutcomes) {
-    TrustEvent positive("a", TrustEventType::HELPFUL_ACTION, TrustOutcome::POSITIVE, 0.1);
-    TrustEvent negative("a", TrustEventType::HARMFUL_ACTION, TrustOutcome::NEGATIVE, -0.1);
-    TrustEvent neutral("a", TrustEventType::COMMUNICATION_CLEAR, TrustOutcome::NEUTRAL, 0.0);
-
-    EXPECT_EQ(positive.outcome, TrustOutcome::POSITIVE);
-    EXPECT_EQ(negative.outcome, TrustOutcome::NEGATIVE);
-    EXPECT_EQ(neutral.outcome, TrustOutcome::NEUTRAL);
-}
-
-// ============================================================================
-// TrustScore Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustScoreCreation) {
-    TrustScore score("agent-001");
-
-    EXPECT_EQ(score.agentId, "agent-001");
-    EXPECT_NEAR(score.overallScore, 0.5, 0.01);  // Default starting score
-    EXPECT_NEAR(score.reliabilityScore, 0.5, 0.01);
-    EXPECT_NEAR(score.responsivenessScore, 0.5, 0.01);
-    EXPECT_NEAR(score.qualityScore, 0.5, 0.01);
-    EXPECT_NEAR(score.collaborationScore, 0.5, 0.01);
-    EXPECT_NEAR(score.communicationScore, 0.5, 0.01);
-    EXPECT_NEAR(score.complianceScore, 0.5, 0.01);
-}
-
-TEST_F(TrustScoreboardTest, TrustScoreDefaultConstructor) {
-    TrustScore score;
-
-    EXPECT_TRUE(score.agentId.empty());
-    EXPECT_EQ(score.totalEvents, 0);
-}
-
-TEST_F(TrustScoreboardTest, TrustScoreStatistics) {
-    TrustScore score("agent-002");
-
-    EXPECT_EQ(score.totalEvents, 0);
-    EXPECT_EQ(score.positiveEvents, 0);
-    EXPECT_EQ(score.negativeEvents, 0);
-    EXPECT_EQ(score.neutralEvents, 0);
-    EXPECT_NEAR(score.confidence, 0.0, 0.01);
-}
-
-// ============================================================================
-// TrustComparison Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustComparisonCreation) {
-    TrustComparison comparison;
-    comparison.agent1 = "agent-A";
-    comparison.agent2 = "agent-B";
-    comparison.scoreDifference = 0.2;
-    comparison.recommendation = "Agent A is more reliable";
-
-    EXPECT_EQ(comparison.agent1, "agent-A");
-    EXPECT_EQ(comparison.agent2, "agent-B");
-    EXPECT_NEAR(comparison.scoreDifference, 0.2, 0.01);
-}
-
-// ============================================================================
-// TrustAnomaly Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustAnomalyCreation) {
-    TrustAnomaly anomaly;
-    anomaly.agentId = "agent-001";
-    anomaly.anomalyType = "sudden_drop";
-    anomaly.severity = 0.8;
-    anomaly.description = "Trust score dropped significantly";
-    anomaly.evidence.push_back("Multiple task failures");
-
-    EXPECT_EQ(anomaly.agentId, "agent-001");
-    EXPECT_EQ(anomaly.anomalyType, "sudden_drop");
-    EXPECT_NEAR(anomaly.severity, 0.8, 0.01);
-    EXPECT_FALSE(anomaly.evidence.empty());
-}
-
-// ============================================================================
-// TrustConfig Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustConfigDefaults) {
+TEST(TrustScoreboardComprehensive, DecayUsesElapsedIntervalsAndMinimumFloor) {
     TrustConfig config;
-
-    EXPECT_NEAR(config.reliabilityWeight, 0.25, 0.01);
-    EXPECT_NEAR(config.responsivenessWeight, 0.15, 0.01);
-    EXPECT_NEAR(config.qualityWeight, 0.20, 0.01);
-    EXPECT_NEAR(config.collaborationWeight, 0.20, 0.01);
-    EXPECT_NEAR(config.communicationWeight, 0.10, 0.01);
-    EXPECT_NEAR(config.complianceWeight, 0.10, 0.01);
+    config.decay.enabled = true;
+    config.decay.decayInterval = std::chrono::hours(1);
+    config.decay.decayRate = 0.5;
+    config.decay.minimumScore = 0.2;
+    TrustScoreboard board(nullptr, config);
+    const auto old = std::chrono::system_clock::now() - std::chrono::hours(4);
+    ASSERT_TRUE(board.recordEvent(observed("old", "agent",
+        TrustEventType::TASK_COMPLETED, TrustOutcome::POSITIVE, 1.0, old)));
+    const auto decayed = board.getOverallScore("agent");
+    EXPECT_GE(decayed, 0.2);
+    EXPECT_LT(decayed, 0.3);
+    board.applyDecayForAgent("agent");
+    EXPECT_NEAR(board.getOverallScore("agent"), decayed, 0.01);
+    board.applyDecay();
+    EXPECT_GE(board.getOverallScore("agent"), 0.2);
 }
 
-TEST_F(TrustScoreboardTest, TrustDecayConfigDefaults) {
-    TrustDecayConfig decay;
-
-    EXPECT_TRUE(decay.enabled);
-    EXPECT_NEAR(decay.decayRate, 0.05, 0.01);
-    EXPECT_NEAR(decay.minimumScore, 0.1, 0.01);
+TEST(TrustScoreboardComprehensive, ConfigUpdateRecalculatesExistingRecords) {
+    TrustScoreboard board(nullptr);
+    ASSERT_TRUE(board.recordEvent("agent", TrustEventType::HELPFUL_ACTION,
+                                  TrustOutcome::POSITIVE, 1.0));
+    const double before = board.getOverallScore("agent");
+    TrustConfig config = board.getConfig();
+    config.reliabilityWeight = 0.0;
+    config.responsivenessWeight = 0.0;
+    config.qualityWeight = 1.0;
+    config.collaborationWeight = 0.0;
+    config.communicationWeight = 0.0;
+    config.complianceWeight = 0.0;
+    ASSERT_TRUE(board.updateConfig(config));
+    EXPECT_GT(board.getOverallScore("agent"), before);
 }
 
-// ============================================================================
-// TrustScoreboard Tests
-// ============================================================================
+TEST(TrustScoreboardComprehensive, PersistedReplayIdsRemainRejectedAfterLoad) {
+    const fs::path path = tempPath("trust.json");
+    TrustScoreboard source(nullptr, TrustConfig{}, path);
+    const auto timestamp = std::chrono::system_clock::now();
+    auto event = observed("external-receipt", "agent",
+        TrustEventType::TASK_COMPLETED, TrustOutcome::POSITIVE, 0.5, timestamp);
+    ASSERT_TRUE(source.recordEvent(event));
+    ASSERT_TRUE(source.saveTrustData());
 
-TEST_F(TrustScoreboardTest, ScoreboardCreation) {
-    TrustScoreboard board(memoryMgr_);
-
-    EXPECT_EQ(board.getTotalAgents(), 0);
-    EXPECT_EQ(board.getTotalEvents(), 0);
+    TrustScoreboard loaded(nullptr, TrustConfig{}, path);
+    ASSERT_TRUE(loaded.loadTrustData());
+    EXPECT_FALSE(loaded.recordEvent(event));
+    EXPECT_EQ(loaded.getTotalEvents(), 1);
+    std::error_code error;
+    fs::remove_all(path.parent_path(), error);
 }
 
-TEST_F(TrustScoreboardTest, RecordEvent) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1, "Completed task successfully");
+TEST(TrustScoreboardComprehensive, StrictLoadRejectsDuplicateEvidenceTransactionally) {
+    const fs::path path = tempPath("trust.json");
+    TrustScoreboard source(nullptr, TrustConfig{}, path);
+    ASSERT_TRUE(source.recordEvent("source", TrustEventType::TASK_COMPLETED,
+                                   TrustOutcome::POSITIVE, 0.2));
+    ASSERT_TRUE(source.saveTrustData());
 
-    TrustScore score = scoreboard_->getTrustScore("agent-001");
-    EXPECT_EQ(score.agentId, "agent-001");
-    EXPECT_EQ(score.totalEvents, 1);
-}
-
-TEST_F(TrustScoreboardTest, RecordTaskCompletion) {
-    scoreboard_->recordTaskCompletion("agent-001", true, std::chrono::milliseconds(100));
-
-    TrustScore score = scoreboard_->getTrustScore("agent-001");
-    EXPECT_GE(score.totalEvents, 1);
-}
-
-TEST_F(TrustScoreboardTest, RecordCollaboration) {
-    scoreboard_->recordCollaboration("agent-001", true);
-
-    TrustScore score = scoreboard_->getTrustScore("agent-001");
-    EXPECT_GE(score.totalEvents, 1);
-}
-
-TEST_F(TrustScoreboardTest, RecordCommunication) {
-    scoreboard_->recordCommunication("agent-001", true);
-
-    TrustScore score = scoreboard_->getTrustScore("agent-001");
-    EXPECT_GE(score.totalEvents, 1);
-}
-
-TEST_F(TrustScoreboardTest, RecordRuleViolation) {
-    scoreboard_->recordRuleViolation("agent-001", "Exceeded rate limit");
-
-    TrustScore score = scoreboard_->getTrustScore("agent-001");
-    EXPECT_GE(score.totalEvents, 1);
-}
-
-TEST_F(TrustScoreboardTest, GetOverallScore) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1);
-
-    double overall = scoreboard_->getOverallScore("agent-001");
-    EXPECT_GE(overall, 0.0);
-    EXPECT_LE(overall, 1.0);
-}
-
-TEST_F(TrustScoreboardTest, GetEventHistory) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1);
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_FAILED,
-                             TrustOutcome::NEGATIVE, -0.1);
-
-    auto history = scoreboard_->getEventHistory("agent-001");
-    EXPECT_EQ(history.size(), 2);
-}
-
-TEST_F(TrustScoreboardTest, GetLeaderboard) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.2);
-    scoreboard_->recordEvent("agent-002", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1);
-
-    auto leaderboard = scoreboard_->getLeaderboard(10);
-    EXPECT_EQ(leaderboard.size(), 2);
-}
-
-TEST_F(TrustScoreboardTest, CompareAgents) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.2);
-    scoreboard_->recordEvent("agent-002", TrustEventType::TASK_FAILED,
-                             TrustOutcome::NEGATIVE, -0.1);
-
-    TrustComparison comparison = scoreboard_->compareAgents("agent-001", "agent-002");
-    EXPECT_EQ(comparison.agent1, "agent-001");
-    EXPECT_EQ(comparison.agent2, "agent-002");
-}
-
-TEST_F(TrustScoreboardTest, SelectMostTrusted) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.3);
-    scoreboard_->recordEvent("agent-002", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1);
-    scoreboard_->recordEvent("agent-003", TrustEventType::TASK_FAILED,
-                             TrustOutcome::NEGATIVE, -0.2);
-
-    std::vector<std::string> candidates = {"agent-001", "agent-002", "agent-003"};
-    std::string mostTrusted = scoreboard_->selectMostTrusted(candidates);
-    EXPECT_FALSE(mostTrusted.empty());
-}
-
-TEST_F(TrustScoreboardTest, DetectAnomalies) {
-    // Record multiple events to potentially trigger anomaly
-    for (int i = 0; i < 10; ++i) {
-        scoreboard_->recordEvent("agent-001", TrustEventType::TASK_FAILED,
-                                 TrustOutcome::NEGATIVE, -0.1);
+    std::ifstream input(path);
+    std::string document((std::istreambuf_iterator<char>(input)), {});
+    const auto eventsEnd = document.rfind("\n  ]");
+    ASSERT_NE(eventsEnd, std::string::npos);
+    const auto eventStart = document.find("    {");
+    ASSERT_NE(eventStart, std::string::npos);
+    const auto eventEnd = document.find("\n    }", eventStart);
+    ASSERT_NE(eventEnd, std::string::npos);
+    const auto encodedEvent = document.substr(
+        eventStart, eventEnd + std::string("\n    }").size() - eventStart);
+    document.insert(eventsEnd, ",\n" + encodedEvent);
+    {
+        std::ofstream output(path, std::ios::trunc);
+        output << document;
     }
 
-    auto anomalies = scoreboard_->detectAnomalies();
-    // May or may not detect anomalies depending on implementation
-    EXPECT_TRUE(true);
+    TrustScoreboard target(nullptr, TrustConfig{}, path);
+    ASSERT_TRUE(target.recordEvent("existing", TrustEventType::TASK_FAILED,
+                                   TrustOutcome::NEGATIVE, -0.2));
+    EXPECT_FALSE(target.loadTrustData());
+    EXPECT_EQ(target.getTotalEvents(), 1);
+    EXPECT_EQ(target.getEventHistory("existing", 1).size(), 1U);
+    std::error_code error;
+    fs::remove_all(path.parent_path(), error);
 }
 
-TEST_F(TrustScoreboardTest, IsAnomalous) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.1);
-
-    bool anomalous = scoreboard_->isAnomalous("agent-001");
-    EXPECT_FALSE(anomalous);  // Single positive event shouldn't be anomalous
+TEST(TrustScoreboardComprehensive, SnapshotCopiesDoNotDangleAcrossMutation) {
+    TrustScoreboard board(nullptr);
+    ASSERT_TRUE(board.recordCommunication("agent", true));
+    auto oldHistory = board.getEventHistory("agent", 10);
+    auto oldLeaderboard = board.getLeaderboard(10);
+    ASSERT_TRUE(board.recordRuleViolation("agent", "new evidence"));
+    EXPECT_EQ(oldHistory.size(), 1U);
+    EXPECT_EQ(oldLeaderboard.size(), 1U);
+    EXPECT_EQ(board.getEventHistory("agent", 10).size(), 2U);
 }
 
-TEST_F(TrustScoreboardTest, ApplyDecay) {
-    scoreboard_->recordEvent("agent-001", TrustEventType::TASK_COMPLETED,
-                             TrustOutcome::POSITIVE, 0.5);
+TEST(TrustScoreboardComprehensive, ConcurrentRecordQueryConfigAndSaveStress) {
+    const fs::path path = tempPath("trust.json");
+    TrustScoreboard board(nullptr, TrustConfig{}, path);
+    std::atomic<bool> start{false};
+    std::atomic<int> failures{0};
+    std::vector<std::thread> threads;
 
-    scoreboard_->applyDecay();
-    // Decay applied without error
-    EXPECT_TRUE(true);
+    for (int writer = 0; writer < 4; ++writer) {
+        threads.emplace_back([&, writer] {
+            while (!start.load(std::memory_order_acquire)) {}
+            for (int index = 0; index < 250; ++index) {
+                if (!board.recordEvent(
+                        "agent-" + std::to_string(writer),
+                        (index % 2 == 0) ? TrustEventType::TASK_COMPLETED
+                                         : TrustEventType::TASK_FAILED,
+                        (index % 2 == 0) ? TrustOutcome::POSITIVE
+                                         : TrustOutcome::NEGATIVE,
+                        (index % 2 == 0) ? 0.2 : -0.2)) {
+                    failures.fetch_add(1);
+                }
+            }
+        });
+    }
+    threads.emplace_back([&] {
+        while (!start.load(std::memory_order_acquire)) {}
+        for (int index = 0; index < 300; ++index) {
+            const auto leaders = board.getLeaderboard(10);
+            for (const auto& score : leaders) {
+                if (!std::isfinite(score.overallScore) ||
+                    score.overallScore < 0.0 || score.overallScore > 1.0) {
+                    failures.fetch_add(1);
+                }
+            }
+            (void)board.detectAnomalies();
+            (void)board.getAverageTrustScore();
+        }
+    });
+    threads.emplace_back([&] {
+        while (!start.load(std::memory_order_acquire)) {}
+        for (int index = 0; index < 100; ++index) {
+            TrustConfig config = board.getConfig();
+            config.reliabilityWeight = (index % 2 == 0) ? 3.0 : 1.0;
+            if (!board.updateConfig(config)) failures.fetch_add(1);
+        }
+    });
+    threads.emplace_back([&] {
+        while (!start.load(std::memory_order_acquire)) {}
+        for (int index = 0; index < 80; ++index) {
+            if (!board.saveTrustData()) failures.fetch_add(1);
+        }
+    });
+
+    start.store(true, std::memory_order_release);
+    for (auto& thread : threads) thread.join();
+    EXPECT_EQ(failures.load(), 0);
+    EXPECT_EQ(board.getTotalEvents(), 1000);
+    EXPECT_EQ(board.getTotalAgents(), 4);
+    EXPECT_TRUE(board.saveTrustData());
+
+    TrustScoreboard loaded(nullptr, TrustConfig{}, path);
+    EXPECT_TRUE(loaded.loadTrustData());
+    EXPECT_EQ(loaded.getTotalEvents(), 1000);
+    std::error_code error;
+    fs::remove_all(path.parent_path(), error);
 }
 
-TEST_F(TrustScoreboardTest, GetStatistics) {
-    EXPECT_GE(scoreboard_->getTotalAgents(), 0);
-    EXPECT_GE(scoreboard_->getTotalEvents(), 0);
-    EXPECT_GE(scoreboard_->getAverageTrustScore(), 0.0);
+TEST(TrustScoreboardComprehensive, ConcurrentIndependentLifecyclesAreSafe) {
+    std::atomic<int> completed{0};
+    std::vector<std::thread> threads;
+    for (int worker = 0; worker < 12; ++worker) {
+        threads.emplace_back([&] {
+            for (int iteration = 0; iteration < 100; ++iteration) {
+                TrustScoreboard board(nullptr);
+                EXPECT_TRUE(board.recordCollaboration("agent", true));
+                EXPECT_EQ(board.getTopAgents(1).size(), 1U);
+            }
+            completed.fetch_add(1);
+        });
+    }
+    for (auto& thread : threads) thread.join();
+    EXPECT_EQ(completed.load(), 12);
 }
-
-TEST_F(TrustScoreboardTest, UpdateConfig) {
-    TrustConfig newConfig;
-    newConfig.reliabilityWeight = 0.30;
-
-    scoreboard_->updateConfig(newConfig);
-
-    TrustConfig retrieved = scoreboard_->getConfig();
-    EXPECT_NEAR(retrieved.reliabilityWeight, 0.30, 0.01);
-}
-
-// ============================================================================
-// Utility Functions Tests
-// ============================================================================
-
-TEST_F(TrustScoreboardTest, TrustEventTypeToString) {
-    std::string str = trust_utils::trustEventTypeToString(TrustEventType::TASK_COMPLETED);
-    EXPECT_FALSE(str.empty());
-}
-
-TEST_F(TrustScoreboardTest, StringToTrustEventType) {
-    std::string str = trust_utils::trustEventTypeToString(TrustEventType::TASK_FAILED);
-    TrustEventType type = trust_utils::stringToTrustEventType(str);
-    EXPECT_EQ(type, TrustEventType::TASK_FAILED);
-}
-
-TEST_F(TrustScoreboardTest, TrustOutcomeToString) {
-    std::string str = trust_utils::trustOutcomeToString(TrustOutcome::POSITIVE);
-    EXPECT_FALSE(str.empty());
-}
-
-TEST_F(TrustScoreboardTest, FormatTrustScore) {
-    std::string formatted = trust_utils::formatTrustScore(0.85);
-    EXPECT_FALSE(formatted.empty());
-}
-
-TEST_F(TrustScoreboardTest, GetTrustLevel) {
-    std::string level = trust_utils::getTrustLevel(0.9);
-    EXPECT_FALSE(level.empty());
-}
-

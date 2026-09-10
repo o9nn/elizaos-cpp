@@ -1,33 +1,22 @@
 #pragma once
 
-#include "elizaos/core.hpp"
 #include "elizaos/agentlogger.hpp"
-#include <string>
-#include <memory>
-#include <vector>
-#include <unordered_map>
-#include <optional>
+#include "elizaos/elizaos.hpp"
+
 #include <chrono>
+#include <cstdint>
 #include <functional>
+#include <limits>
+#include <memory>
 #include <mutex>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 namespace elizaos {
 
-/**
- * @brief Otaku AI Agent - Advanced DeFi-focused AI agent
- *
- * Features:
- * - CDP wallet integration (Coinbase Developer Platform)
- * - Multi-chain DeFi operations (Ethereum, Base, Polygon, Arbitrum, Optimism)
- * - Token swaps, transfers, bridging, NFT operations
- * - Liquidity provision and yield farming
- * - Gas optimization and transaction simulation
- * - Real-time market data and analytics
- * - Portfolio management and rebalancing
- * - MEV protection strategies
- */
-
-// Supported blockchain networks
 enum class ChainId {
     ETHEREUM_MAINNET = 1,
     OPTIMISM = 10,
@@ -36,127 +25,118 @@ enum class ChainId {
     ARBITRUM = 42161,
     BASE = 8453,
     AVALANCHE = 43114,
-    SOLANA = 0  // Solana uses different addressing
+    SOLANA = 0
 };
 
-// Token standard types
-enum class TokenStandard {
-    ERC20,
-    ERC721,      // NFT
-    ERC1155,     // Multi-token
-    NATIVE       // Native chain token (ETH, MATIC, etc.)
-};
-
-// Transaction status
-enum class TxStatus {
-    PENDING,
-    CONFIRMED,
-    FAILED,
-    CANCELLED,
-    SIMULATED
-};
-
-// DEX/Protocol types for swap routing
+enum class TokenStandard { ERC20, ERC721, ERC1155, NATIVE };
+enum class TxStatus { PENDING, CONFIRMED, FAILED, CANCELLED, SIMULATED };
 enum class DexProtocol {
-    UNISWAP_V2,
-    UNISWAP_V3,
-    SUSHISWAP,
-    CURVE,
-    BALANCER,
-    ONEINCH,
-    PARASWAP,
-    COWSWAP
+    UNISWAP_V2, UNISWAP_V3, SUSHISWAP, CURVE, BALANCER, ONEINCH, PARASWAP, COWSWAP
 };
-
-// Bridge protocols
-enum class BridgeProtocol {
-    ACROSS,
-    STARGATE,
-    HOP,
-    MULTICHAIN,
-    CBRIDGE,
-    WORMHOLE,
-    LAYERZERO
-};
-
-// Yield strategy types
+enum class BridgeProtocol { ACROSS, STARGATE, HOP, MULTICHAIN, CBRIDGE, WORMHOLE, LAYERZERO };
 enum class YieldStrategy {
-    LIQUIDITY_PROVISION,
-    LENDING,
-    STAKING,
-    YIELD_AGGREGATOR,
-    LEVERAGED_FARMING
+    LIQUIDITY_PROVISION, LENDING, STAKING, YIELD_AGGREGATOR, LEVERAGED_FARMING
 };
 
-// Token information structure
+enum class ResultCode {
+    OK,
+    UNSUPPORTED,
+    INVALID_ARGUMENT,
+    NOT_CONNECTED,
+    NOT_FOUND,
+    EXPIRED,
+    ADAPTER_ERROR,
+    STATE_CONFLICT
+};
+
+template <typename T>
+struct OperationResult {
+    ResultCode code = ResultCode::UNSUPPORTED;
+    T value{};
+    std::string message;
+    std::string evidence;
+
+    bool ok() const noexcept { return code == ResultCode::OK; }
+    explicit operator bool() const noexcept { return ok(); }
+};
+
 struct TokenInfo {
     std::string symbol;
     std::string name;
     std::string contractAddress;
-    ChainId chainId;
-    TokenStandard standard;
-    int decimals;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    TokenStandard standard = TokenStandard::ERC20;
+    int decimals = 0;
     std::optional<std::string> logoUrl;
 };
 
-// Transaction receipt
 struct TransactionReceipt {
     std::string txHash;
-    TxStatus status = TxStatus::PENDING;
+    TxStatus status = TxStatus::FAILED;
     ChainId chainId = ChainId::ETHEREUM_MAINNET;
     std::string from;
     std::string to;
     double gasUsed = 0.0;
     double effectiveGasPrice = 0.0;
-    uint64_t blockNumber = 0;
+    std::uint64_t blockNumber = 0;
     std::chrono::system_clock::time_point timestamp{};
     std::vector<std::string> logs;
+    std::string error;
+    std::string evidence;
+    bool evidenceVerified = false;
 };
 
-// Swap quote/route
 struct SwapQuote {
     std::string fromToken;
     std::string toToken;
-    double inputAmount;
-    double expectedOutput;
-    double minimumOutput;  // With slippage
-    double priceImpact;    // Percentage
-    double estimatedGas;
-    DexProtocol protocol;
-    std::vector<std::string> route;  // Intermediate tokens
-    std::chrono::system_clock::time_point validUntil;
+    double inputAmount = 0.0;
+    double expectedOutput = 0.0;
+    double minimumOutput = 0.0;
+    double priceImpact = 0.0;
+    double estimatedGas = 0.0;
+    DexProtocol protocol = DexProtocol::UNISWAP_V3;
+    std::vector<std::string> route;
+    std::chrono::system_clock::time_point validUntil{};
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    std::string quoteId;
+    std::string evidence;
+    bool evidenceVerified = false;
 };
 
-// Bridge quote
 struct BridgeQuote {
-    ChainId sourceChain;
-    ChainId destChain;
+    ChainId sourceChain = ChainId::ETHEREUM_MAINNET;
+    ChainId destChain = ChainId::ETHEREUM_MAINNET;
     std::string token;
-    double inputAmount;
-    double outputAmount;
-    double bridgeFee;
-    double estimatedTime;  // In seconds
-    BridgeProtocol protocol;
-    std::chrono::system_clock::time_point validUntil;
+    double inputAmount = 0.0;
+    double outputAmount = 0.0;
+    double bridgeFee = 0.0;
+    double estimatedTime = 0.0;
+    BridgeProtocol protocol = BridgeProtocol::ACROSS;
+    std::chrono::system_clock::time_point validUntil{};
+    std::string quoteId;
+    std::string evidence;
+    bool evidenceVerified = false;
 };
 
-// Liquidity position
 struct LiquidityPosition {
     std::string positionId;
     std::string poolAddress;
     std::string token0;
     std::string token1;
-    double amount0;
-    double amount1;
-    double liquidityTokens;
-    double currentValue;
-    double unrealizedPnL;
-    double apr;
-    ChainId chainId;
-    DexProtocol protocol;
+    double amount0 = 0.0;
+    double amount1 = 0.0;
+    double liquidityTokens = 0.0;
+    double currentValue = 0.0;
+    double unrealizedPnL = 0.0;
+    double apr = 0.0;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    DexProtocol protocol = DexProtocol::UNISWAP_V3;
+    std::string owner;
+    std::string receiptTxHash;
+    TxStatus status = TxStatus::FAILED;
+    std::string evidence;
 };
 
-// Yield position
 struct YieldPosition {
     std::string positionId;
     std::string protocol;
@@ -168,9 +148,12 @@ struct YieldPosition {
     YieldStrategy strategy = YieldStrategy::LIQUIDITY_PROVISION;
     ChainId chainId = ChainId::ETHEREUM_MAINNET;
     std::chrono::system_clock::time_point depositedAt{};
+    std::string owner;
+    std::string receiptTxHash;
+    TxStatus status = TxStatus::FAILED;
+    std::string evidence;
 };
 
-// NFT information
 struct NFTInfo {
     std::string contractAddress;
     std::string tokenId;
@@ -179,405 +162,522 @@ struct NFTInfo {
     std::optional<std::string> imageUrl;
     std::optional<std::string> animationUrl;
     std::unordered_map<std::string, std::string> attributes;
-    ChainId chainId;
-    TokenStandard standard;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    TokenStandard standard = TokenStandard::ERC721;
+    std::string owner;
+    std::string receiptTxHash;
+    TxStatus status = TxStatus::FAILED;
+    std::string evidence;
 };
 
-// Portfolio summary
 struct PortfolioSummary {
-    double totalValueUsd;
-    double totalPnL;
-    double pnlPercentage24h;
+    double totalValueUsd = 0.0;
+    double totalPnL = 0.0;
+    double pnlPercentage24h = 0.0;
     std::unordered_map<std::string, double> tokenBalances;
     std::unordered_map<ChainId, double> chainDistribution;
     std::vector<LiquidityPosition> liquidityPositions;
     std::vector<YieldPosition> yieldPositions;
     std::vector<NFTInfo> nfts;
-    std::chrono::system_clock::time_point lastUpdated;
+    std::chrono::system_clock::time_point lastUpdated{};
+    bool available = false;
+    std::string evidence;
 };
 
-// Gas estimate
 struct GasEstimate {
-    double estimatedGas;
-    double baseFee;
-    double priorityFee;
-    double maxFee;
-    double totalCostWei;
-    double totalCostUsd;
-    ChainId chainId;
+    double estimatedGas = 0.0;
+    double baseFee = 0.0;
+    double priorityFee = 0.0;
+    double maxFee = 0.0;
+    double totalCostWei = 0.0;
+    double totalCostUsd = 0.0;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    bool available = false;
+    std::string evidence;
 };
 
-// MEV protection options
 struct MEVProtectionOptions {
     bool useFlashbots = false;
     bool useCowSwap = false;
-    double maxSlippage = 0.5;  // Percentage
-    std::optional<double> deadline;  // Unix timestamp
+    double maxSlippage = 0.5;
+    std::optional<double> deadline;
     bool partialFill = false;
 };
 
-/**
- * @brief Gas Optimizer - Optimizes transaction gas costs
- */
+struct TransactionSimulation {
+    bool success = false;
+    std::string errorMessage;
+    double gasUsed = 0.0;
+    std::vector<std::string> stateChanges;
+    double estimatedPriceImpact = 0.0;
+    std::vector<std::string> warnings;
+    std::string evidence;
+    bool evidenceVerified = false;
+};
+
+enum class BlockchainOperation {
+    SWAP,
+    BRIDGE,
+    TRANSFER,
+    BATCH_TRANSFER,
+    ADD_LIQUIDITY,
+    REMOVE_LIQUIDITY,
+    REBALANCE,
+    YIELD_DEPOSIT,
+    YIELD_WITHDRAW,
+    YIELD_CLAIM,
+    YIELD_COMPOUND,
+    NFT_TRANSFER,
+    NFT_LIST,
+    NFT_BUY,
+    CANCEL_TRANSACTION,
+    SPEED_UP_TRANSACTION
+};
+
+struct BlockchainExecutionRequest {
+    BlockchainOperation operation = BlockchainOperation::TRANSFER;
+    ChainId chainId = ChainId::ETHEREUM_MAINNET;
+    std::string from;
+    std::string to;
+    std::string asset;
+    std::string secondaryAsset;
+    double amount = 0.0;
+    double secondaryAmount = 0.0;
+    std::string referenceId;
+    std::string quoteId;
+    std::unordered_map<std::string, std::string> metadata;
+};
+
+struct BlockchainExecutionResult {
+    TransactionReceipt receipt;
+    std::optional<LiquidityPosition> liquidityPosition;
+    std::optional<YieldPosition> yieldPosition;
+    std::optional<NFTInfo> nft;
+};
+
+class MarketDataAdapter {
+public:
+    virtual ~MarketDataAdapter() = default;
+
+    virtual OperationResult<GasEstimate> getGasEstimate(ChainId chain, const std::string& txData);
+    virtual OperationResult<std::vector<std::pair<std::chrono::system_clock::time_point, double>>>
+        getGasHistory(ChainId chain);
+    virtual OperationResult<std::unordered_map<std::string, double>>
+        getBalances(const std::string& walletAddress, ChainId chain);
+    virtual OperationResult<PortfolioSummary> getPortfolio(const std::string& walletAddress);
+    virtual OperationResult<std::vector<std::pair<std::chrono::system_clock::time_point, double>>>
+        getPortfolioHistory(const std::string& walletAddress, int days);
+    virtual OperationResult<SwapQuote> getSwapQuote(
+        ChainId chain, const std::string& fromToken, const std::string& toToken,
+        double amount, const MEVProtectionOptions& options);
+    virtual OperationResult<std::vector<SwapQuote>> getMultiRouteQuotes(
+        ChainId chain, const std::string& fromToken, const std::string& toToken, double amount);
+    virtual OperationResult<BridgeQuote> getBridgeQuote(
+        ChainId sourceChain, ChainId destChain, const std::string& token, double amount);
+    virtual OperationResult<std::vector<BridgeQuote>> getMultiBridgeQuotes(
+        ChainId sourceChain, ChainId destChain, const std::string& token, double amount);
+    virtual OperationResult<std::vector<SwapQuote>> getRebalanceQuotes(
+        const std::string& walletAddress,
+        const std::vector<std::pair<std::string, double>>& targets);
+    virtual OperationResult<std::vector<YieldPosition>> findBestYields(
+        const std::string& asset, YieldStrategy strategy, double minApy);
+    virtual OperationResult<std::vector<std::string>> getSupportedProtocols(ChainId chain);
+    virtual OperationResult<std::vector<YieldPosition>> getYieldPositions(
+        const std::string& walletAddress, ChainId chain);
+    virtual OperationResult<double> getProtocolRiskScore(const std::string& protocol);
+    virtual OperationResult<bool> isProtocolAudited(const std::string& protocol);
+    virtual OperationResult<double> getImpermanentLossRisk(const std::string& poolAddress);
+    virtual OperationResult<std::vector<NFTInfo>> getOwnedNFTs(
+        const std::string& walletAddress, ChainId chain);
+    virtual OperationResult<NFTInfo> getNFTDetails(
+        const std::string& contractAddress, const std::string& tokenId, ChainId chain);
+    virtual OperationResult<double> getNFTFloorPrice(
+        const std::string& collectionAddress, ChainId chain);
+    virtual OperationResult<std::vector<NFTInfo>> getTrendingCollections(ChainId chain);
+    virtual OperationResult<double> getCollectionVolume24h(const std::string& collectionAddress);
+    virtual OperationResult<double> getPoolApr(const std::string& poolAddress, DexProtocol protocol);
+    virtual OperationResult<double> getTokenPrice(const std::string& token, ChainId chain);
+    virtual OperationResult<std::vector<std::string>> getTrendingTokens(ChainId chain);
+    virtual OperationResult<std::vector<TokenInfo>> searchTokens(const std::string& query, ChainId chain);
+    virtual OperationResult<double> get24hPriceChange(const std::string& token, ChainId chain);
+    virtual OperationResult<double> get24hVolume(const std::string& token, ChainId chain);
+};
+
+class BlockchainExecutionAdapter {
+public:
+    virtual ~BlockchainExecutionAdapter() = default;
+
+    virtual OperationResult<BlockchainExecutionResult> execute(const BlockchainExecutionRequest& request);
+    virtual OperationResult<TransactionReceipt> getTransactionReceipt(
+        const std::string& txHash, ChainId chain);
+    virtual OperationResult<TxStatus> getBridgeStatus(const std::string& txHash, ChainId sourceChain);
+    virtual OperationResult<TransactionSimulation> simulate(
+        const std::string& from, const std::string& to, const std::string& data,
+        double value, ChainId chain);
+    virtual OperationResult<bool> verifyContractSafety(
+        const std::string& contractAddress, ChainId chain);
+    virtual OperationResult<std::vector<std::string>> getContractWarnings(
+        const std::string& contractAddress, ChainId chain);
+};
+
 class GasOptimizer {
 public:
-    GasOptimizer();
+    explicit GasOptimizer(std::shared_ptr<MarketDataAdapter> marketData = {});
     ~GasOptimizer() = default;
 
-    // Gas estimation
+    void setMarketDataAdapter(std::shared_ptr<MarketDataAdapter> marketData);
+    OperationResult<GasEstimate> estimateGasResult(ChainId chain, const std::string& txData);
     GasEstimate estimateGas(ChainId chain, const std::string& txData);
+    OperationResult<double> getOptimalGasPriceResult(ChainId chain);
     double getOptimalGasPrice(ChainId chain);
     double getBaseFee(ChainId chain);
     double getPriorityFee(ChainId chain);
-
-    // Gas price tracking
+    OperationResult<double> updateGasPricesResult(ChainId chain);
     void updateGasPrices(ChainId chain);
     double getHistoricalGasPrice(ChainId chain, int blocksAgo);
     std::vector<std::pair<std::chrono::system_clock::time_point, double>> getGasHistory(ChainId chain);
-
-    // Gas saving strategies
     bool shouldWaitForLowerGas(ChainId chain, double threshold);
     std::chrono::system_clock::time_point predictLowGasTime(ChainId chain);
 
 private:
-    std::unordered_map<ChainId, std::vector<double>> gasPriceHistory_;
-    std::unordered_map<ChainId, double> currentBaseFees_;
-    std::mutex gasMutex_;
+    std::shared_ptr<MarketDataAdapter> marketData_;
+    std::unordered_map<ChainId, std::vector<std::pair<std::chrono::system_clock::time_point, double>>>
+        gasPriceHistory_;
+    std::unordered_map<ChainId, GasEstimate> currentEstimates_;
+    mutable std::mutex gasMutex_;
 };
 
-/**
- * @brief Multi-chain Portfolio Manager
- */
 class PortfolioManager {
 public:
-    PortfolioManager();
+    struct RebalanceTarget {
+        std::string asset;
+        double targetPercentage = 0.0;
+    };
+
+    explicit PortfolioManager(
+        std::shared_ptr<MarketDataAdapter> marketData = {},
+        std::shared_ptr<BlockchainExecutionAdapter> blockchain = {});
     ~PortfolioManager() = default;
 
-    // Portfolio tracking
+    void setAdapters(std::shared_ptr<MarketDataAdapter> marketData,
+                     std::shared_ptr<BlockchainExecutionAdapter> blockchain);
+    OperationResult<PortfolioSummary> getPortfolioSummaryResult(const std::string& walletAddress);
     PortfolioSummary getPortfolioSummary(const std::string& walletAddress);
     double getTotalValue(const std::string& walletAddress);
     std::unordered_map<std::string, double> getAssetAllocation(const std::string& walletAddress);
-
-    // Rebalancing
-    struct RebalanceTarget {
-        std::string asset;
-        double targetPercentage;
-    };
+    OperationResult<std::vector<SwapQuote>> calculateRebalanceTradesResult(
+        const std::string& walletAddress, const std::vector<RebalanceTarget>& targets);
     std::vector<SwapQuote> calculateRebalanceTrades(
-        const std::string& walletAddress,
-        const std::vector<RebalanceTarget>& targets);
-    bool executeRebalance(
-        const std::string& walletAddress,
-        const std::vector<RebalanceTarget>& targets);
-
-    // Performance tracking
+        const std::string& walletAddress, const std::vector<RebalanceTarget>& targets);
+    OperationResult<std::vector<TransactionReceipt>> executeRebalanceResult(
+        const std::string& walletAddress, const std::vector<RebalanceTarget>& targets,
+        ChainId chain = ChainId::ETHEREUM_MAINNET);
+    bool executeRebalance(const std::string& walletAddress,
+                          const std::vector<RebalanceTarget>& targets);
     double getPnL(const std::string& walletAddress, int days = 30);
     std::vector<std::pair<std::chrono::system_clock::time_point, double>> getValueHistory(
         const std::string& walletAddress, int days = 30);
-
-    // Risk analysis
     double calculateVolatility(const std::string& walletAddress);
     double calculateSharpeRatio(const std::string& walletAddress);
     std::vector<std::string> getHighRiskPositions(const std::string& walletAddress);
 
 private:
-    std::unordered_map<std::string, PortfolioSummary> portfolioCache_;
-    std::mutex portfolioMutex_;
+    std::shared_ptr<MarketDataAdapter> marketData_;
+    std::shared_ptr<BlockchainExecutionAdapter> blockchain_;
+    mutable std::mutex portfolioMutex_;
 };
 
-/**
- * @brief Yield Farming Manager
- */
 class YieldManager {
 public:
-    YieldManager();
+    explicit YieldManager(
+        std::shared_ptr<MarketDataAdapter> marketData = {},
+        std::shared_ptr<BlockchainExecutionAdapter> blockchain = {});
     ~YieldManager() = default;
 
-    // Yield discovery
+    void setAdapters(std::shared_ptr<MarketDataAdapter> marketData,
+                     std::shared_ptr<BlockchainExecutionAdapter> blockchain);
+    void setContext(const std::string& walletAddress, ChainId chain);
+    OperationResult<std::vector<YieldPosition>> findBestYieldsResult(
+        const std::string& asset, YieldStrategy strategy, double minApy = 0.0);
     std::vector<YieldPosition> findBestYields(
-        const std::string& asset,
-        YieldStrategy strategy,
-        double minApy = 0.0);
+        const std::string& asset, YieldStrategy strategy, double minApy = 0.0);
     std::vector<std::string> getSupportedProtocols(ChainId chain);
-
-    // Position management
-    bool depositToYield(
-        const std::string& protocol,
-        const std::string& asset,
-        double amount);
-    bool withdrawFromYield(
-        const std::string& positionId,
-        double amount);
+    OperationResult<TransactionReceipt> depositToYieldResult(
+        const std::string& protocol, const std::string& asset, double amount);
+    bool depositToYield(const std::string& protocol, const std::string& asset, double amount);
+    OperationResult<TransactionReceipt> withdrawFromYieldResult(
+        const std::string& positionId, double amount);
+    bool withdrawFromYield(const std::string& positionId, double amount);
+    OperationResult<TransactionReceipt> claimRewardsResult(const std::string& positionId);
     bool claimRewards(const std::string& positionId);
+    OperationResult<TransactionReceipt> compoundRewardsResult(const std::string& positionId);
     bool compoundRewards(const std::string& positionId);
-
-    // Yield tracking
     std::vector<YieldPosition> getActivePositions(const std::string& walletAddress);
     double getTotalYieldEarned(const std::string& walletAddress);
-
-    // Risk assessment
     double getProtocolRiskScore(const std::string& protocol);
     bool isProtocolAudited(const std::string& protocol);
     double getImpermanentLossRisk(const std::string& poolAddress);
 
 private:
-    std::unordered_map<std::string, double> protocolRiskScores_;
-    std::mutex yieldMutex_;
+    OperationResult<TransactionReceipt> executePositionOperation(
+        BlockchainOperation operation, const std::string& positionId, double amount);
+    std::shared_ptr<MarketDataAdapter> marketData_;
+    std::shared_ptr<BlockchainExecutionAdapter> blockchain_;
+    std::string walletAddress_;
+    ChainId chain_ = ChainId::ETHEREUM_MAINNET;
+    std::unordered_map<std::string, YieldPosition> localPositions_;
+    mutable std::mutex yieldMutex_;
 };
 
-/**
- * @brief NFT Manager
- */
 class NFTManager {
 public:
-    NFTManager();
+    explicit NFTManager(
+        std::shared_ptr<MarketDataAdapter> marketData = {},
+        std::shared_ptr<BlockchainExecutionAdapter> blockchain = {});
     ~NFTManager() = default;
 
-    // NFT queries
+    void setAdapters(std::shared_ptr<MarketDataAdapter> marketData,
+                     std::shared_ptr<BlockchainExecutionAdapter> blockchain);
+    void setContext(const std::string& walletAddress, ChainId chain);
     std::vector<NFTInfo> getOwnedNFTs(const std::string& walletAddress, ChainId chain);
     NFTInfo getNFTDetails(const std::string& contractAddress, const std::string& tokenId, ChainId chain);
     double getNFTFloorPrice(const std::string& collectionAddress, ChainId chain);
-
-    // NFT operations
-    bool transferNFT(
-        const std::string& contractAddress,
-        const std::string& tokenId,
-        const std::string& to,
-        ChainId chain);
-    bool listNFTForSale(
-        const std::string& contractAddress,
-        const std::string& tokenId,
-        double price,
-        const std::string& marketplace);
-    bool buyNFT(
-        const std::string& contractAddress,
-        const std::string& tokenId,
-        double maxPrice);
-
-    // Collection analysis
+    OperationResult<TransactionReceipt> transferNFTResult(
+        const std::string& contractAddress, const std::string& tokenId,
+        const std::string& to, ChainId chain);
+    bool transferNFT(const std::string& contractAddress, const std::string& tokenId,
+                     const std::string& to, ChainId chain);
+    OperationResult<TransactionReceipt> listNFTForSaleResult(
+        const std::string& contractAddress, const std::string& tokenId,
+        double price, const std::string& marketplace);
+    bool listNFTForSale(const std::string& contractAddress, const std::string& tokenId,
+                        double price, const std::string& marketplace);
+    OperationResult<TransactionReceipt> buyNFTResult(
+        const std::string& contractAddress, const std::string& tokenId, double maxPrice);
+    bool buyNFT(const std::string& contractAddress, const std::string& tokenId, double maxPrice);
     std::vector<NFTInfo> getTrendingCollections(ChainId chain);
     double getCollectionVolume24h(const std::string& collectionAddress);
 
 private:
-    std::mutex nftMutex_;
+    OperationResult<TransactionReceipt> executeNftOperation(
+        BlockchainOperation operation, const std::string& contractAddress,
+        const std::string& tokenId, const std::string& to, double amount, ChainId chain);
+    std::shared_ptr<MarketDataAdapter> marketData_;
+    std::shared_ptr<BlockchainExecutionAdapter> blockchain_;
+    std::string walletAddress_;
+    ChainId chain_ = ChainId::ETHEREUM_MAINNET;
+    std::unordered_map<std::string, NFTInfo> localNfts_;
+    std::unordered_map<std::string, bool> transferredNfts_;
+    mutable std::mutex nftMutex_;
 };
 
-/**
- * @brief Transaction Simulator
- */
 class TransactionSimulator {
 public:
-    TransactionSimulator();
+    using SimulationResult = TransactionSimulation;
+
+    explicit TransactionSimulator(std::shared_ptr<BlockchainExecutionAdapter> blockchain = {});
     ~TransactionSimulator() = default;
 
-    // Simulation
-    struct SimulationResult {
-        bool success;
-        std::string errorMessage;
-        double gasUsed;
-        std::vector<std::string> stateChanges;
-        double estimatedPriceImpact;
-        std::vector<std::string> warnings;
-    };
-
-    SimulationResult simulateTransaction(
-        const std::string& from,
-        const std::string& to,
-        const std::string& data,
-        double value,
-        ChainId chain);
-
+    void setBlockchainAdapter(std::shared_ptr<BlockchainExecutionAdapter> blockchain);
+    SimulationResult simulateTransaction(const std::string& from, const std::string& to,
+                                         const std::string& data, double value, ChainId chain);
     SimulationResult simulateSwap(const SwapQuote& quote);
     SimulationResult simulateBridge(const BridgeQuote& quote);
-
-    // Risk analysis
     bool detectPotentialScam(const std::string& contractAddress, ChainId chain);
     bool verifyContractSafety(const std::string& contractAddress, ChainId chain);
     std::vector<std::string> getContractWarnings(const std::string& contractAddress, ChainId chain);
 
 private:
-    std::mutex simMutex_;
+    std::shared_ptr<BlockchainExecutionAdapter> blockchain_;
+    mutable std::mutex simMutex_;
 };
 
-/**
- * @brief Main Otaku AI Agent - Advanced DeFi-focused AI agent
- */
 class OtakuAgent {
 public:
-    OtakuAgent(const std::string& agentId);
+    explicit OtakuAgent(const std::string& agentId);
+    OtakuAgent(const std::string& agentId,
+               std::shared_ptr<MarketDataAdapter> marketData,
+               std::shared_ptr<BlockchainExecutionAdapter> blockchain);
     ~OtakuAgent() = default;
 
-    // Wallet operations
+    void setAdapters(std::shared_ptr<MarketDataAdapter> marketData,
+                     std::shared_ptr<BlockchainExecutionAdapter> blockchain);
+
     bool connectWallet(const std::string& walletAddress);
     bool disconnectWallet();
-    std::string getWalletAddress() const { return walletAddress_; }
-    bool isWalletConnected() const { return !walletAddress_.empty(); }
+    std::string getWalletAddress() const;
+    bool isWalletConnected() const;
+    OperationResult<std::string> getBalanceResult(const std::string& token);
     std::string getBalance(const std::string& token);
+    OperationResult<std::unordered_map<std::string, double>> getAllBalancesResult();
     std::unordered_map<std::string, double> getAllBalances();
 
-    // Multi-chain support
     bool switchChain(ChainId chainId);
-    ChainId getCurrentChain() const { return currentChain_; }
+    ChainId getCurrentChain() const;
     std::vector<ChainId> getSupportedChains() const;
 
-    // DeFi operations
+    OperationResult<TransactionReceipt> executeSwapResult(
+        const std::string& fromToken, const std::string& toToken, double amount);
     bool executeSwap(const std::string& fromToken, const std::string& toToken, float amount);
-    SwapQuote getSwapQuote(
-        const std::string& fromToken,
-        const std::string& toToken,
-        double amount,
+    OperationResult<SwapQuote> getSwapQuoteResult(
+        const std::string& fromToken, const std::string& toToken, double amount,
         const MEVProtectionOptions& mevOptions = {});
+    SwapQuote getSwapQuote(const std::string& fromToken, const std::string& toToken,
+                           double amount, const MEVProtectionOptions& mevOptions = {});
+    OperationResult<std::vector<SwapQuote>> getMultiRouteQuotesResult(
+        const std::string& fromToken, const std::string& toToken, double amount);
     std::vector<SwapQuote> getMultiRouteQuotes(
-        const std::string& fromToken,
-        const std::string& toToken,
-        double amount);
+        const std::string& fromToken, const std::string& toToken, double amount);
+    OperationResult<TransactionReceipt> executeSwapWithQuoteResult(const SwapQuote& quote);
     TransactionReceipt executeSwapWithQuote(const SwapQuote& quote);
 
-    // Bridging
+    OperationResult<TransactionReceipt> executeBridgeResult(
+        const std::string& fromChain, const std::string& toChain, double amount);
     bool executeBridge(const std::string& fromChain, const std::string& toChain, float amount);
-    BridgeQuote getBridgeQuote(
-        ChainId sourceChain,
-        ChainId destChain,
-        const std::string& token,
-        double amount);
+    OperationResult<BridgeQuote> getBridgeQuoteResult(
+        ChainId sourceChain, ChainId destChain, const std::string& token, double amount);
+    BridgeQuote getBridgeQuote(ChainId sourceChain, ChainId destChain,
+                               const std::string& token, double amount);
+    OperationResult<std::vector<BridgeQuote>> getMultiBridgeQuotesResult(
+        ChainId sourceChain, ChainId destChain, const std::string& token, double amount);
     std::vector<BridgeQuote> getMultiBridgeQuotes(
-        ChainId sourceChain,
-        ChainId destChain,
-        const std::string& token,
-        double amount);
+        ChainId sourceChain, ChainId destChain, const std::string& token, double amount);
+    OperationResult<TransactionReceipt> executeBridgeWithQuoteResult(const BridgeQuote& quote);
     TransactionReceipt executeBridgeWithQuote(const BridgeQuote& quote);
     TxStatus getBridgeStatus(const std::string& bridgeTxHash);
 
-    // Transfers
+    OperationResult<TransactionReceipt> executeTransferResult(
+        const std::string& to, const std::string& token, double amount);
     bool executeTransfer(const std::string& to, const std::string& token, float amount);
-    TransactionReceipt transferToken(
-        const std::string& to,
-        const std::string& token,
-        double amount);
+    OperationResult<TransactionReceipt> transferTokenResult(
+        const std::string& to, const std::string& token, double amount);
+    TransactionReceipt transferToken(const std::string& to, const std::string& token, double amount);
+    OperationResult<TransactionReceipt> batchTransferResult(
+        const std::vector<std::pair<std::string, double>>& recipients, const std::string& token);
     TransactionReceipt batchTransfer(
-        const std::vector<std::pair<std::string, double>>& recipients,
-        const std::string& token);
+        const std::vector<std::pair<std::string, double>>& recipients, const std::string& token);
 
-    // Liquidity provision
-    LiquidityPosition addLiquidity(
-        const std::string& token0,
-        const std::string& token1,
-        double amount0,
-        double amount1,
-        DexProtocol protocol);
-    bool removeLiquidity(
-        const std::string& positionId,
-        double percentage = 100.0);
+    OperationResult<LiquidityPosition> addLiquidityResult(
+        const std::string& token0, const std::string& token1, double amount0,
+        double amount1, DexProtocol protocol);
+    LiquidityPosition addLiquidity(const std::string& token0, const std::string& token1,
+                                   double amount0, double amount1, DexProtocol protocol);
+    OperationResult<TransactionReceipt> removeLiquidityResult(
+        const std::string& positionId, double percentage = 100.0);
+    bool removeLiquidity(const std::string& positionId, double percentage = 100.0);
     std::vector<LiquidityPosition> getLiquidityPositions();
     double getPoolApr(const std::string& poolAddress, DexProtocol protocol);
 
-    // Market data
+    OperationResult<double> getTokenPriceResult(const std::string& token);
     float getTokenPrice(const std::string& token);
+    OperationResult<double> getTokenPriceInTokenResult(
+        const std::string& token, const std::string& quoteToken);
     double getTokenPriceInToken(const std::string& token, const std::string& quoteToken);
     std::vector<std::string> getTrendingTokens();
     std::vector<TokenInfo> searchTokens(const std::string& query);
     double get24hPriceChange(const std::string& token);
     double get24hVolume(const std::string& token);
 
-    // Portfolio management
+    OperationResult<PortfolioSummary> getPortfolioResult();
     PortfolioSummary getPortfolio();
+    OperationResult<std::vector<TransactionReceipt>> rebalancePortfolioResult(
+        const std::vector<PortfolioManager::RebalanceTarget>& targets);
     bool rebalancePortfolio(const std::vector<PortfolioManager::RebalanceTarget>& targets);
 
-    // Yield farming
     std::vector<YieldPosition> getYieldPositions();
+    OperationResult<TransactionReceipt> depositToYieldResult(
+        const std::string& protocol, const std::string& asset, double amount);
     bool depositToYield(const std::string& protocol, const std::string& asset, double amount);
+    OperationResult<TransactionReceipt> withdrawFromYieldResult(
+        const std::string& positionId, double amount);
     bool withdrawFromYield(const std::string& positionId, double amount);
+    OperationResult<std::vector<TransactionReceipt>> harvestAllRewardsResult();
     bool harvestAllRewards();
 
-    // NFT operations
     std::vector<NFTInfo> getOwnedNFTs();
+    OperationResult<TransactionReceipt> transferNFTResult(
+        const std::string& contract, const std::string& tokenId, const std::string& to);
     bool transferNFT(const std::string& contract, const std::string& tokenId, const std::string& to);
+    OperationResult<TransactionReceipt> buyNFTResult(
+        const std::string& contract, const std::string& tokenId, double maxPrice);
     bool buyNFT(const std::string& contract, const std::string& tokenId, double maxPrice);
 
-    // Transaction management
+    OperationResult<TransactionReceipt> getTransactionReceiptResult(const std::string& txHash);
     TransactionReceipt getTransactionReceipt(const std::string& txHash);
     std::vector<TransactionReceipt> getTransactionHistory(int limit = 50);
+    OperationResult<TransactionReceipt> cancelTransactionResult(const std::string& txHash);
     bool cancelTransaction(const std::string& txHash);
+    OperationResult<TransactionReceipt> speedUpTransactionResult(
+        const std::string& txHash, double additionalGas);
     bool speedUpTransaction(const std::string& txHash, double additionalGas);
 
-    // Gas optimization
+    OperationResult<GasEstimate> getGasEstimateResult(const std::string& txData);
     GasEstimate getGasEstimate(const std::string& txData);
-    bool setGasStrategy(const std::string& strategy); // "fast", "standard", "slow"
+    bool setGasStrategy(const std::string& strategy);
     double getOptimalGasPrice();
 
-    // Simulation and safety
     TransactionSimulator::SimulationResult simulateTransaction(const std::string& txData);
+    OperationResult<bool> verifyContractSafetyResult(const std::string& contractAddress);
     bool verifyContractSafety(const std::string& contractAddress);
     std::vector<std::string> getContractWarnings(const std::string& contractAddress);
 
-    // Agent configuration
+    bool trySetSlippageTolerance(double percentage);
     void setSlippageTolerance(double percentage);
     void setMEVProtection(bool enabled);
     void setPreferredDex(DexProtocol dex);
     void setPreferredBridge(BridgeProtocol bridge);
 
-    // Status and monitoring
-    std::string getAgentId() const { return agentId_; }
+    std::string getAgentId() const;
     std::string getStatus() const;
     void setStatusCallback(std::function<void(const std::string&)> callback);
 
 private:
     std::string agentId_;
     std::string walletAddress_;
-    ChainId currentChain_;
+    ChainId currentChain_ = ChainId::ETHEREUM_MAINNET;
     std::shared_ptr<AgentLogger> logger_;
-
-    // Sub-managers
+    std::shared_ptr<MarketDataAdapter> marketData_;
+    std::shared_ptr<BlockchainExecutionAdapter> blockchain_;
     std::unique_ptr<GasOptimizer> gasOptimizer_;
     std::unique_ptr<PortfolioManager> portfolioManager_;
     std::unique_ptr<YieldManager> yieldManager_;
     std::unique_ptr<NFTManager> nftManager_;
     std::unique_ptr<TransactionSimulator> txSimulator_;
-
-    // Configuration
-    double slippageTolerance_;
-    bool mevProtectionEnabled_;
-    DexProtocol preferredDex_;
-    BridgeProtocol preferredBridge_;
-    std::string gasStrategy_;
-
-    // Callbacks
+    double slippageTolerance_ = 0.5;
+    bool mevProtectionEnabled_ = true;
+    DexProtocol preferredDex_ = DexProtocol::UNISWAP_V3;
+    BridgeProtocol preferredBridge_ = BridgeProtocol::ACROSS;
+    std::string gasStrategy_ = "standard";
     std::function<void(const std::string&)> statusCallback_;
-
-    // Thread safety
+    std::vector<LiquidityPosition> liquidityPositions_;
+    std::vector<TransactionReceipt> transactionHistory_;
+    std::unordered_map<std::string, std::size_t> transactionIndex_;
     mutable std::mutex agentMutex_;
 
-    // Liquidity position tracking
-    std::vector<LiquidityPosition> liquidityPositions_;
-    mutable std::mutex liquidityMutex_;
-
-    // Internal helpers
     void initializeSubManagers();
     void logStatus(const std::string& status);
-    bool validateWalletConnection();
+    OperationResult<BlockchainExecutionResult> executeRequest(
+        const BlockchainExecutionRequest& request);
+    OperationResult<TransactionReceipt> recordExecutionResult(
+        const OperationResult<BlockchainExecutionResult>& result,
+        const BlockchainExecutionRequest& request);
+    OperationResult<TransactionReceipt> updateRecordedReceipt(const TransactionReceipt& receipt);
+    bool validateWalletConnection() const;
     std::string chainIdToString(ChainId chain) const;
-    ChainId stringToChainId(const std::string& chain) const;
+    std::optional<ChainId> stringToChainId(const std::string& chain) const;
 };
 
-// Utility functions
 namespace otaku_utils {
-    // Address utilities
-    bool isValidEthereumAddress(const std::string& address);
-    bool isValidSolanaAddress(const std::string& address);
-    std::string checksumAddress(const std::string& address);
-
-    // Amount conversions
-    double fromWei(const std::string& weiAmount, int decimals = 18);
-    std::string toWei(double amount, int decimals = 18);
-
-    // Chain utilities
-    std::string getChainName(ChainId chainId);
-    std::string getNativeCurrency(ChainId chainId);
-    std::string getBlockExplorerUrl(ChainId chainId, const std::string& txHash);
-
-    // Token utilities
-    TokenInfo getTokenInfo(const std::string& address, ChainId chainId);
-    std::vector<TokenInfo> getCommonTokens(ChainId chainId);
+bool isValidEthereumAddress(const std::string& address);
+bool isValidSolanaAddress(const std::string& address);
+std::string checksumAddress(const std::string& address);
+double fromWei(const std::string& weiAmount, int decimals = 18);
+std::string toWei(double amount, int decimals = 18);
+std::string getChainName(ChainId chainId);
+std::string getNativeCurrency(ChainId chainId);
+std::string getBlockExplorerUrl(ChainId chainId, const std::string& txHash);
+TokenInfo getTokenInfo(const std::string& address, ChainId chainId);
+std::vector<TokenInfo> getCommonTokens(ChainId chainId);
 }
 
 } // namespace elizaos

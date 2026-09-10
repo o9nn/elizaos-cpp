@@ -1,0 +1,75 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Threads)
+find_dependency(SQLite3)
+find_dependency(nlohmann_json CONFIG)
+
+set(ElizaOS_FOUND TRUE)
+
+function(_elizaos_import_static name)
+    if(TARGET ElizaOS::${name})
+        return()
+    endif()
+
+    string(MAKE_C_IDENTIFIER "${name}" key)
+    string(TOUPPER "${key}" key)
+    find_library(ELIZAOS_${key}_LIBRARY
+        NAMES ${ARGN}
+        PATHS "${PACKAGE_PREFIX_DIR}/lib"
+        NO_DEFAULT_PATH
+    )
+    if(NOT ELIZAOS_${key}_LIBRARY)
+        set(ElizaOS_FOUND FALSE PARENT_SCOPE)
+        set(ElizaOS_NOT_FOUND_MESSAGE
+            "ElizaOS installation is incomplete: missing static library for ${name}"
+            PARENT_SCOPE)
+        return()
+    endif()
+
+    add_library(ElizaOS::${name} STATIC IMPORTED)
+    set_target_properties(ElizaOS::${name} PROPERTIES
+        IMPORTED_LOCATION "${ELIZAOS_${key}_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${PACKAGE_PREFIX_DIR}/include"
+    )
+endfunction()
+
+_elizaos_import_static(core elizaos-core)
+_elizaos_import_static(agentloop elizaos-agentloop)
+_elizaos_import_static(agentmemory elizaos-agentmemory)
+_elizaos_import_static(agentshell elizaos-agentshell)
+_elizaos_import_static(agentlogger elizaos-agentlogger)
+_elizaos_import_static(endocrine elizaos-endocrine)
+_elizaos_import_static(autonomous_starter elizaos-autonomous_starter)
+_elizaos_import_static(cognitive_curriculum elizaos-cognitive_curriculum)
+_elizaos_import_static(llama_cpp elizaos-llama_cpp)
+_elizaos_import_static(cognitive_bridge elizaos-cognitive_bridge)
+_elizaos_import_static(persistence elizaos_persistence elizaos-persistence)
+
+if(NOT ElizaOS_FOUND)
+    return()
+endif()
+
+set_property(TARGET ElizaOS::core PROPERTY INTERFACE_LINK_LIBRARIES "Threads::Threads")
+set_property(TARGET ElizaOS::agentloop PROPERTY INTERFACE_LINK_LIBRARIES "ElizaOS::core;Threads::Threads")
+set_property(TARGET ElizaOS::agentmemory PROPERTY INTERFACE_LINK_LIBRARIES "ElizaOS::core;Threads::Threads")
+set_property(TARGET ElizaOS::agentlogger PROPERTY INTERFACE_LINK_LIBRARIES "ElizaOS::core")
+set_property(TARGET ElizaOS::agentshell PROPERTY INTERFACE_LINK_LIBRARIES "ElizaOS::core;ElizaOS::agentlogger")
+set_property(TARGET ElizaOS::endocrine PROPERTY INTERFACE_LINK_LIBRARIES "nlohmann_json::nlohmann_json")
+set_property(TARGET ElizaOS::autonomous_starter PROPERTY INTERFACE_LINK_LIBRARIES
+    "ElizaOS::core;ElizaOS::agentloop;ElizaOS::agentshell;ElizaOS::agentlogger;ElizaOS::agentmemory;ElizaOS::endocrine;Threads::Threads")
+set_property(TARGET ElizaOS::cognitive_curriculum PROPERTY INTERFACE_LINK_LIBRARIES
+    "ElizaOS::autonomous_starter;ElizaOS::core;ElizaOS::agentloop;ElizaOS::agentshell;ElizaOS::agentlogger;Threads::Threads")
+set_property(TARGET ElizaOS::llama_cpp PROPERTY INTERFACE_LINK_LIBRARIES "Threads::Threads")
+set_property(TARGET ElizaOS::cognitive_bridge PROPERTY INTERFACE_LINK_LIBRARIES "Threads::Threads")
+set_property(TARGET ElizaOS::persistence PROPERTY INTERFACE_LINK_LIBRARIES
+    "ElizaOS::core;SQLite::SQLite3;Threads::Threads")
+
+set(ElizaOS_LIBRARIES
+    ElizaOS::cognitive_curriculum
+    ElizaOS::llama_cpp
+    ElizaOS::cognitive_bridge
+    ElizaOS::persistence
+)
+
+check_required_components(ElizaOS)

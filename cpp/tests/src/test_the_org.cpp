@@ -63,11 +63,18 @@ TEST_F(TheOrgTest, PlatformManagement) {
     discordConfig.apiToken = "test_token";
     
     eli5.addPlatform(discordConfig);
-    
-    // Test message sending (mock)
+
+    // A configured platform without a transport adapter must reject delivery.
+    EXPECT_FALSE(eli5.sendMessage(PlatformType::DISCORD, "test_channel", "Hello, world!"));
+    eli5.setPlatformAdapter(PlatformType::DISCORD,
+        [](const PlatformConfig&, const std::string& channel, const std::string& payload) {
+            return channel == "test_channel" && payload == "Hello, world!";
+        });
     bool result = eli5.sendMessage(PlatformType::DISCORD, "test_channel", "Hello, world!");
     EXPECT_TRUE(result);
-    
+    EXPECT_EQ(eli5.getRecentMessages(PlatformType::DISCORD, "test_channel"),
+              std::vector<std::string>({"Hello, world!"}));
+
     // Test platform removal
     eli5.removePlatform(PlatformType::DISCORD);
     result = eli5.sendMessage(PlatformType::DISCORD, "test_channel", "Should fail");
@@ -83,7 +90,9 @@ TEST_F(TheOrgTest, InterAgentCommunication) {
     // Test processing incoming message
     eli5.processMessage("Hello from another agent", "sender_id");
     auto messages = eli5.getIncomingMessages();
-    EXPECT_FALSE(messages.empty());
+    ASSERT_EQ(messages.size(), 2U);
+    EXPECT_EQ(messages.front(), "To test_agent_id [message]: Test inter-agent message");
+    messages.pop();
     EXPECT_EQ(messages.front(), "From sender_id: Hello from another agent");
 }
 

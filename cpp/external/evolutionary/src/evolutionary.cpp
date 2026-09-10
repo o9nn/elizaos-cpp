@@ -1,136 +1,172 @@
 #include "elizaos/evolutionary.hpp"
-#include "elizaos/core.hpp"
-#include <sstream>
-#include <fstream>
-#include <queue>
-#include <cmath>
-#include <thread>
+#include "thread_reaper.hpp"
+
 #include <algorithm>
-#include <iterator>
-#include <random>
+#include <cmath>
+#include <cstdint>
+#include <limits>
 #include <set>
+#include <sstream>
+#include <stdexcept>
+#include <utility>
 
 namespace elizaos {
+namespace {
 
-// ProgramNode implementation
+constexpr std::uint32_t kDeterministicSeed = 0xE11A05u;
+
+std::uint32_t stableSeed(const std::string& text) noexcept {
+    std::uint32_t value = 2166136261u;
+    for (const unsigned char byte : text) {
+        value ^= byte;
+        value *= 16777619u;
+    }
+    return value;
+}
+
+void validateProbability(double value, const char* name) {
+    if (!std::isfinite(value) || value < 0.0 || value > 1.0) {
+        throw std::invalid_argument(std::string(name) + " must be finite and in [0, 1]");
+    }
+}
+
+template <typename Function>
+class ScopeExit {
+public:
+    explicit ScopeExit(Function function) : function_(std::move(function)) {}
+    ~ScopeExit() { function_(); }
+    ScopeExit(const ScopeExit&) = delete;
+    ScopeExit& operator=(const ScopeExit&) = delete;
+
+private:
+    Function function_;
+};
+
+template <typename Function>
+ScopeExit<Function> makeScopeExit(Function function) {
+    return ScopeExit<Function>(std::move(function));
+}
+
+bool scoreLess(const Individual& lhs, const Individual& rhs) {
+    return lhs.getFitness().getOverallScore() < rhs.getFitness().getOverallScore();
+}
+
+bool scoreGreater(const Individual& lhs, const Individual& rhs) {
+    return lhs.getFitness().getOverallScore() > rhs.getFitness().getOverallScore();
+}
+
+} // namespace
+
 std::shared_ptr<ProgramNode> ProgramNode::clone() const {
     auto cloned = std::make_shared<ProgramNode>(type, name);
     cloned->parameters = parameters;
-    
+    cloned->children.reserve(children.size());
     for (const auto& child : children) {
-        cloned->children.push_back(child->clone());
+        cloned->children.push_back(child ? child->clone() : nullptr);
     }
-    
     return cloned;
 }
 
-double ProgramNode::evaluate(const std::unordered_map<std::string, double>& context) const {
+double ProgramNode::evaluate(
+    const std::unordered_map<std::string, double>& context) const {
+    const auto childValue = [&](std::size_t index) {
+        return children[index] ? children[index]->evaluate(context) : 0.0;
+    };
+
     switch (type) {
         case Type::CONSTANT:
-            return parameters.empty() ? 0.0 : parameters[0];
-            
+            return parameters.empty() ? 0.0 : parameters.front();
         case Type::VARIABLE: {
-            auto it = context.find(name);
-            return it != context.end() ? it->second : 0.0;
+            const auto it = context.find(name);
+            return it == context.end() ? 0.0 : it->second;
         }
-        
-        case Type::FUNCTION: {
-            if (name == "add" && children.size() >= 2) {
-                return children[0]->evaluate(context) + children[1]->evaluate(context);
+        case Type::FUNCTION:
+            if (name == "add" && children.size() >= 2) return childValue(0) + childValue(1);
+            if (name == "sub" && children.size() >= 2) return childValue(0) - childValue(1);
+            if (name == "mul" && children.size() >= 2) return childValue(0) * childValue(1);
+            if (name == "div" && children.size() >= 2) {
+                const double divisor = childValue(1);
+                return divisor == 0.0 ? 0.0 : childValue(0) / divisor;
             }
-            else if (name == "sub" && children.size() >= 2) {
-                return children[0]->evaluate(context) - children[1]->evaluate(context);
+            if (name == "sin" && !children.empty()) return std::sin(childValue(0));
+            if (name == "cos" && !children.empty()) return std::cos(childValue(0));
+            if (name == "exp" && !children.empty()) return std::exp(childValue(0));
+            if (name == "log" && !children.empty()) {
+                const double value = childValue(0);
+                return value > 0.0 ? std::log(value) : 0.0;
             }
-            else if (name == "mul" && children.size() >= 2) {
-                return children[0]->evaluate(context) * children[1]->evaluate(context);
-            }
-            else if (name == "div" && children.size() >= 2) {
-                double divisor = children[1]->evaluate(context);
-                return divisor != 0.0 ? children[0]->evaluate(context) / divisor : 0.0;
-            }
-            else if (name == "sin" && children.size() >= 1) {
-                return std::sin(children[0]->evaluate(context));
-            }
-            else if (name == "cos" && children.size() >= 1) {
-                return std::cos(children[0]->evaluate(context));
-            }
-            else if (name == "exp" && children.size() >= 1) {
-                return std::exp(children[0]->evaluate(context));
-            }
-            else if (name == "log" && children.size() >= 1) {
-                double value = children[0]->evaluate(context);
-                return value > 0 ? std::log(value) : 0.0;
-            }
-            else if (name == "max" && children.size() >= 2) {
-                return std::max(children[0]->evaluate(context), children[1]->evaluate(context));
-            }
-            else if (name == "min" && children.size() >= 2) {
-                return std::min(children[0]->evaluate(context), children[1]->evaluate(context));
-            }
+            if (name == "max" && children.size() >= 2) return std::max(childValue(0), childValue(1));
+            if (name == "min" && children.size() >= 2) return std::min(childValue(0), childValue(1));
             return 0.0;
-        }
-        
-        case Type::CONDITIONAL: {
+        case Type::CONDITIONAL:
             if (name == "if" && children.size() >= 3) {
-                double condition = children[0]->evaluate(context);
-                return condition > 0 ? children[1]->evaluate(context) : children[2]->evaluate(context);
+                return childValue(0) > 0.0 ? childValue(1) : childValue(2);
             }
-            else if (name == "gt" && children.size() >= 2) {
-                return children[0]->evaluate(context) > children[1]->evaluate(context) ? 1.0 : 0.0;
+            if (name == "gt" && children.size() >= 2) {
+                return childValue(0) > childValue(1) ? 1.0 : 0.0;
             }
-            else if (name == "lt" && children.size() >= 2) {
-                return children[0]->evaluate(context) < children[1]->evaluate(context) ? 1.0 : 0.0;
+            if (name == "lt" && children.size() >= 2) {
+                return childValue(0) < childValue(1) ? 1.0 : 0.0;
             }
             return 0.0;
-        }
     }
-    
     return 0.0;
 }
 
 std::string ProgramNode::toString() const {
-    std::ostringstream oss;
-    
-    switch (type) {
-        case Type::CONSTANT:
-            oss << (parameters.empty() ? 0.0 : parameters[0]);
-            break;
-            
-        case Type::VARIABLE:
-            oss << name;
-            break;
-            
-        case Type::FUNCTION:
-            oss << "(" << name;
-            for (const auto& child : children) {
-                oss << " " << child->toString();
-            }
-            oss << ")";
-            break;
-            
-        case Type::CONDITIONAL:
-            oss << "(" << name;
-            for (const auto& child : children) {
-                oss << " " << child->toString();
-            }
-            oss << ")";
-            break;
+    std::ostringstream output;
+    if (type == Type::CONSTANT) {
+        output << (parameters.empty() ? 0.0 : parameters.front());
+    } else if (type == Type::VARIABLE) {
+        output << name;
+    } else {
+        output << '(' << name;
+        for (const auto& child : children) {
+            output << ' ' << (child ? child->toString() : "null");
+        }
+        output << ')';
     }
-    
-    return oss.str();
+    return output.str();
 }
 
-// Individual implementation
-Individual::Individual(std::shared_ptr<ProgramNode> program) 
-    : program_(program), age_(0), id_(elizaos::generateUUID()) {
+FitnessResult::FitnessResult() : fitness(0.0), complexity(0.0), novelty(0.0) {}
+
+FitnessResult::FitnessResult(double f, double c, double n)
+    : fitness(f), complexity(c), novelty(n) {
+    validate();
 }
 
-Individual::Individual(const Individual& other) 
+bool FitnessResult::isFinite() const noexcept {
+    if (!std::isfinite(fitness) || !std::isfinite(complexity) ||
+        !std::isfinite(novelty)) {
+        return false;
+    }
+    for (const double value : behaviorSignature) {
+        if (!std::isfinite(value)) return false;
+    }
+    const double score = fitness - 0.1 * complexity + 0.05 * novelty;
+    return std::isfinite(score);
+}
+
+void FitnessResult::validate() const {
+    if (!isFinite()) {
+        throw std::invalid_argument("fitness result must contain only finite values");
+    }
+}
+
+double FitnessResult::getOverallScore() const {
+    validate();
+    return fitness - 0.1 * complexity + 0.05 * novelty;
+}
+
+Individual::Individual(std::shared_ptr<ProgramNode> program)
+    : program_(std::move(program)), id_(elizaos::generateUUID()) {}
+
+Individual::Individual(const Individual& other)
     : program_(other.program_ ? other.program_->clone() : nullptr),
       fitness_(other.fitness_),
       age_(other.age_),
-      id_(elizaos::generateUUID()) {
-}
+      id_(elizaos::generateUUID()) {}
 
 Individual& Individual::operator=(const Individual& other) {
     if (this != &other) {
@@ -142,758 +178,728 @@ Individual& Individual::operator=(const Individual& other) {
     return *this;
 }
 
-Individual Individual::crossover(const Individual& parent1, const Individual& parent2) {
-    if (!parent1.program_ || !parent2.program_) {
-        return Individual(nullptr);
-    }
-    
-    // Create offspring by deep-copying parent1's program. A shallow ProgramNode copy
-    // would alias child subtrees back into parent1, so replacing a descendant during
-    // crossover could mutate a parent and make tests non-deterministic across runs.
+void Individual::setFitness(const FitnessResult& fitness) {
+    fitness.validate();
+    fitness_ = fitness;
+}
+
+Individual Individual::crossover(const Individual& parent1,
+                                 const Individual& parent2) {
+    if (!parent1.program_ || !parent2.program_) return Individual(nullptr);
+
     auto offspring = parent1.program_->clone();
-    
-    // Perform subtree crossover.
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    
-    // Select candidate subtrees from the cloned offspring. Prefer non-root
-    // replacement sites when parent1 has descendants so the offspring keeps a
-    // usable top-level executable structure instead of occasionally collapsing to
-    // a terminal constant.
-    std::vector<std::shared_ptr<ProgramNode>> subtrees1;
-    std::function<void(std::shared_ptr<ProgramNode>)> collectSubtrees1 = 
-        [&](std::shared_ptr<ProgramNode> node) {
-            subtrees1.push_back(node);
-            for (auto& child : node->children) {
-                collectSubtrees1(child);
-            }
+    std::vector<std::shared_ptr<ProgramNode>> targets;
+    std::vector<std::shared_ptr<ProgramNode>> donors;
+    const auto collect = [](const std::shared_ptr<ProgramNode>& root,
+                            std::vector<std::shared_ptr<ProgramNode>>& nodes) {
+        std::function<void(const std::shared_ptr<ProgramNode>&)> visit;
+        visit = [&](const std::shared_ptr<ProgramNode>& node) {
+            if (!node) return;
+            nodes.push_back(node);
+            for (const auto& child : node->children) visit(child);
         };
-    collectSubtrees1(offspring);
-    
-    // Select random subtree from parent2 to insert.
-    std::vector<std::shared_ptr<ProgramNode>> subtrees2;
-    std::function<void(std::shared_ptr<ProgramNode>)> collectSubtrees2 = 
-        [&](std::shared_ptr<ProgramNode> node) {
-            subtrees2.push_back(node);
-            for (auto& child : node->children) {
-                collectSubtrees2(child);
-            }
-        };
-    collectSubtrees2(parent2.program_);
-    
-    if (!subtrees1.empty() && !subtrees2.empty()) {
-        const size_t minReplaceIndex = subtrees1.size() > 1 ? 1 : 0;
-        std::uniform_int_distribution<size_t> dist1(minReplaceIndex, subtrees1.size() - 1);
-        std::uniform_int_distribution<size_t> dist2(0, subtrees2.size() - 1);
-        
-        size_t replaceIndex = dist1(gen);
-        size_t insertIndex = dist2(gen);
-        
-        // Replace subtree contents with an independent clone from parent2.
-        auto& replaceNode = subtrees1[replaceIndex];
-        auto& insertNode = subtrees2[insertIndex];
-        
-        *replaceNode = *insertNode->clone();
+        visit(root);
+    };
+    collect(offspring, targets);
+    collect(parent2.program_, donors);
+
+    if (!targets.empty() && !donors.empty()) {
+        const std::uint32_t seed = stableSeed(parent1.program_->toString() + "|" +
+                                              parent2.program_->toString());
+        std::mt19937 generator(seed);
+        const std::size_t firstTarget = targets.size() > 1 ? 1 : 0;
+        std::uniform_int_distribution<std::size_t> targetDistribution(
+            firstTarget, targets.size() - 1);
+        std::uniform_int_distribution<std::size_t> donorDistribution(
+            0, donors.size() - 1);
+        const auto target = targets[targetDistribution(generator)];
+        const auto donor = donors[donorDistribution(generator)];
+        *target = *donor->clone();
     }
-    
     return Individual(offspring);
 }
 
 Individual Individual::mutate(double mutationRate) const {
-    if (!program_) {
-        return Individual(nullptr);
-    }
-    
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> prob(0.0, 1.0);
-    
+    validateProbability(mutationRate, "mutationRate");
+    if (!program_) return Individual(nullptr);
+
     auto mutated = program_->clone();
-    
-    std::function<void(std::shared_ptr<ProgramNode>)> mutateNode = 
-        [&](std::shared_ptr<ProgramNode> node) {
-            if (prob(gen) < mutationRate) {
-                // Mutate this node
-                if (node->type == ProgramNode::Type::CONSTANT && !node->parameters.empty()) {
-                    // Mutate constant value
-                    std::normal_distribution<double> dist(node->parameters[0], 0.1);
-                    node->parameters[0] = dist(gen);
-                }
-                else if (node->type == ProgramNode::Type::FUNCTION) {
-                    // Change std::function type
-                    std::vector<std::string> functions = {"add", "sub", "mul", "div", "sin", "cos", "max", "min"};
-                    std::uniform_int_distribution<size_t> funcDist(0, functions.size() - 1);
-                    node->name = functions[funcDist(gen)];
-                }
+    std::mt19937 generator(stableSeed(program_->toString()) ^
+                           static_cast<std::uint32_t>(mutationRate * 1000000.0));
+    std::uniform_real_distribution<double> probability(0.0, 1.0);
+    std::function<void(const std::shared_ptr<ProgramNode>&)> mutateNode;
+    mutateNode = [&](const std::shared_ptr<ProgramNode>& node) {
+        if (!node) return;
+        if (probability(generator) < mutationRate) {
+            if (node->type == ProgramNode::Type::CONSTANT &&
+                !node->parameters.empty()) {
+                std::normal_distribution<double> value(node->parameters.front(), 0.1);
+                node->parameters.front() = value(generator);
+            } else if (node->type == ProgramNode::Type::FUNCTION) {
+                static const std::vector<std::string> functions{
+                    "add", "sub", "mul", "div", "sin", "cos", "max", "min"};
+                std::uniform_int_distribution<std::size_t> functionDistribution(
+                    0, functions.size() - 1);
+                node->name = functions[functionDistribution(generator)];
             }
-            
-            // Recursively mutate children
-            for (auto& child : node->children) {
-                mutateNode(child);
-            }
-        };
-    
+        }
+        for (const auto& child : node->children) mutateNode(child);
+    };
     mutateNode(mutated);
-    
     return Individual(mutated);
 }
 
 double Individual::similarity(const Individual& other) const {
-    if (!program_ || !other.program_) {
-        return 0.0;
-    }
-    
-    // Simple structural similarity based on program std::string representation
-    std::string str1 = program_->toString();
-    std::string str2 = other.program_->toString();
-    
-    // Calculate edit distance (simplified)
-    if (str1 == str2) {
-        return 1.0;
-    }
-    
-    // Calculate Jaccard similarity on tokens
-    std::set<std::string> tokens1, tokens2;
-    
-    std::stringstream ss1(str1), ss2(str2);
+    if (!program_ || !other.program_) return 0.0;
+    const std::string first = program_->toString();
+    const std::string second = other.program_->toString();
+    if (first == second) return 1.0;
+
+    std::set<std::string> firstTokens;
+    std::set<std::string> secondTokens;
+    std::istringstream firstStream(first);
+    std::istringstream secondStream(second);
     std::string token;
-    
-    while (ss1 >> token) {
-        tokens1.insert(token);
-    }
-    
-    while (ss2 >> token) {
-        tokens2.insert(token);
-    }
-    
-    std::set<std::string> intersection, union_set;
-    
-    std::set_intersection(tokens1.begin(), tokens1.end(),
-                         tokens2.begin(), tokens2.end(),
-                         std::inserter(intersection, intersection.begin()));
-    
-    std::set_union(tokens1.begin(), tokens1.end(),
-                   tokens2.begin(), tokens2.end(),
-                   std::inserter(union_set, union_set.begin()));
-    
-    if (union_set.empty()) {
-        return 0.0;
-    }
-    
-    return static_cast<double>(intersection.size()) / union_set.size();
+    while (firstStream >> token) firstTokens.insert(token);
+    while (secondStream >> token) secondTokens.insert(token);
+
+    std::vector<std::string> intersection;
+    std::vector<std::string> unionSet;
+    std::set_intersection(firstTokens.begin(), firstTokens.end(),
+                          secondTokens.begin(), secondTokens.end(),
+                          std::back_inserter(intersection));
+    std::set_union(firstTokens.begin(), firstTokens.end(),
+                   secondTokens.begin(), secondTokens.end(),
+                   std::back_inserter(unionSet));
+    return unionSet.empty()
+               ? 0.0
+               : static_cast<double>(intersection.size()) /
+                     static_cast<double>(unionSet.size());
 }
 
 std::string Individual::serialize() const {
-    std::ostringstream oss;
-    oss << "Individual{";
-    oss << "id:" << id_ << ",";
-    oss << "age:" << age_ << ",";
-    oss << "fitness:" << fitness_.fitness << ",";
-    oss << "program:" << (program_ ? program_->toString() : "null");
-    oss << "}";
-    return oss.str();
+    std::ostringstream output;
+    output << "Individual{id:" << id_ << ",age:" << age_
+           << ",fitness:" << fitness_.fitness
+           << ",program:" << (program_ ? program_->toString() : "null") << '}';
+    return output.str();
 }
 
 Individual Individual::deserialize(const std::string& data) {
-    // Simplified deserialization - in practice this would be more robust
-    Individual individual(nullptr);
-    
-    // Extract fields from serialized std::string
-    size_t idPos = data.find("id:");
-    size_t agePos = data.find("age:");
-    size_t fitnessPos = data.find("fitness:");
-    
-    if (idPos != std::string::npos && agePos != std::string::npos && fitnessPos != std::string::npos) {
-        // Extract values (simplified parsing)
-        std::string idStr = data.substr(idPos + 3, agePos - idPos - 4);
-        std::string ageStr = data.substr(agePos + 4, fitnessPos - agePos - 5);
-        std::string fitnessStr = data.substr(fitnessPos + 8);
-        
-        // Find the end of fitness value
-        size_t commaPos = fitnessStr.find(',');
-        if (commaPos != std::string::npos) {
-            fitnessStr = fitnessStr.substr(0, commaPos);
-        }
-        
-        individual.id_ = idStr;
-        individual.age_ = std::stoi(ageStr);
-        individual.fitness_.fitness = std::stod(fitnessStr);
+    const std::size_t idPosition = data.find("id:");
+    const std::size_t agePosition = data.find(",age:");
+    const std::size_t fitnessPosition = data.find(",fitness:");
+    const std::size_t programPosition = data.find(",program:");
+    if (idPosition == std::string::npos || agePosition == std::string::npos ||
+        fitnessPosition == std::string::npos || programPosition == std::string::npos ||
+        !(idPosition < agePosition && agePosition < fitnessPosition &&
+          fitnessPosition < programPosition)) {
+        throw std::invalid_argument("malformed serialized individual");
     }
-    
+
+    Individual individual(nullptr);
+    try {
+        individual.id_ = data.substr(idPosition + 3,
+                                     agePosition - (idPosition + 3));
+        individual.age_ = std::stoi(data.substr(agePosition + 5,
+                                                fitnessPosition - (agePosition + 5)));
+        individual.setFitness(FitnessResult(std::stod(data.substr(
+            fitnessPosition + 9, programPosition - (fitnessPosition + 9)))));
+    } catch (const std::exception&) {
+        throw std::invalid_argument("malformed serialized individual");
+    }
     return individual;
 }
 
-// Population implementation
-Population::Population(size_t maxSize) : maxSize_(maxSize) {
+Population::Population(std::size_t maxSize) : maxSize_(maxSize) {
+    if (maxSize_ == 0) throw std::invalid_argument("population maximum size must be nonzero");
+}
+
+Population::Population(const Population& other) : maxSize_(other.maxSize()) {
+    individuals_ = other.getIndividuals();
+}
+
+Population& Population::operator=(const Population& other) {
+    if (this == &other) return *this;
+    const auto snapshot = other.getIndividuals();
+    const std::size_t newMaximum = other.maxSize();
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    maxSize_ = newMaximum;
+    individuals_ = snapshot;
+    return *this;
 }
 
 void Population::addIndividual(const Individual& individual) {
+    individual.getFitness().validate();
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
     if (individuals_.size() < maxSize_) {
         individuals_.push_back(individual);
-    } else {
-        // Replace worst individual if new one is better
-        auto worst = std::min_element(individuals_.begin(), individuals_.end(),
-                                     [](const Individual& a, const Individual& b) {
-                                         return a.getFitness().getOverallScore() < b.getFitness().getOverallScore();
-                                     });
-        
-        if (worst != individuals_.end() && 
-            individual.getFitness().getOverallScore() > worst->getFitness().getOverallScore()) {
-            *worst = individual;
-        }
+        return;
+    }
+    const auto worst = std::min_element(individuals_.begin(), individuals_.end(), scoreLess);
+    if (worst != individuals_.end() && scoreGreater(individual, *worst)) {
+        *worst = individual;
     }
 }
 
-void Population::removeIndividual(size_t index) {
+void Population::removeIndividual(std::size_t index) {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    if (index < individuals_.size()) {
-        individuals_.erase(individuals_.begin() + index);
-    }
+    if (index >= individuals_.size()) throw std::out_of_range("population index");
+    individuals_.erase(individuals_.begin() + static_cast<std::ptrdiff_t>(index));
 }
 
-const Individual& Population::getIndividual(size_t index) const {
+void Population::setIndividual(std::size_t index, const Individual& individual) {
+    individual.getFitness().validate();
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    if (index >= individuals_.size()) throw std::out_of_range("population index");
+    individuals_[index] = individual;
+}
+
+void Population::replaceIndividuals(const std::vector<Individual>& individuals) {
+    if (individuals.size() > maxSize_) {
+        throw std::invalid_argument("replacement population exceeds maximum size");
+    }
+    for (const auto& individual : individuals) individual.getFitness().validate();
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    individuals_ = individuals;
+}
+
+std::size_t Population::size() const {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    return individuals_.size();
+}
+
+std::size_t Population::maxSize() const {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    return maxSize_;
+}
+
+bool Population::empty() const {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    return individuals_.empty();
+}
+
+Individual Population::getIndividual(std::size_t index) const {
     std::lock_guard<std::mutex> lock(populationMutex_);
     return individuals_.at(index);
 }
 
-Individual& Population::getIndividual(size_t index) {
+std::vector<Individual> Population::getIndividuals() const {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    return individuals_.at(index);
+    return individuals_;
 }
 
 FitnessResult Population::getBestFitness() const {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    if (individuals_.empty()) {
-        return FitnessResult();
-    }
-    
-    auto best = std::max_element(individuals_.begin(), individuals_.end(),
-                                [](const Individual& a, const Individual& b) {
-                                    return a.getFitness().getOverallScore() < b.getFitness().getOverallScore();
-                                });
-    
-    return best->getFitness();
+    if (individuals_.empty()) return FitnessResult{};
+    return std::max_element(individuals_.begin(), individuals_.end(), scoreLess)->getFitness();
 }
 
 FitnessResult Population::getAverageFitness() const {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    if (individuals_.empty()) {
-        return FitnessResult();
-    }
-    
-    double totalFitness = 0.0;
-    double totalComplexity = 0.0;
-    double totalNovelty = 0.0;
-    
+    if (individuals_.empty()) return FitnessResult{};
+    FitnessResult average;
     for (const auto& individual : individuals_) {
-        const auto& fitness = individual.getFitness();
-        totalFitness += fitness.fitness;
-        totalComplexity += fitness.complexity;
-        totalNovelty += fitness.novelty;
+        const FitnessResult fitness = individual.getFitness();
+        average.fitness += fitness.fitness;
+        average.complexity += fitness.complexity;
+        average.novelty += fitness.novelty;
     }
-    
-    size_t size = individuals_.size();
-    return FitnessResult(totalFitness / size, totalComplexity / size, totalNovelty / size);
+    const double count = static_cast<double>(individuals_.size());
+    average.fitness /= count;
+    average.complexity /= count;
+    average.novelty /= count;
+    average.validate();
+    return average;
 }
 
 double Population::getDiversity() const {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    if (individuals_.size() < 2) {
-        return 0.0;
-    }
-    
-    double totalSimilarity = 0.0;
-    int comparisons = 0;
-    
-    for (size_t i = 0; i < individuals_.size(); ++i) {
-        for (size_t j = i + 1; j < individuals_.size(); ++j) {
-            totalSimilarity += individuals_[i].similarity(individuals_[j]);
-            comparisons++;
+    if (individuals_.size() < 2) return 0.0;
+    double similarity = 0.0;
+    std::size_t comparisons = 0;
+    for (std::size_t i = 0; i < individuals_.size(); ++i) {
+        for (std::size_t j = i + 1; j < individuals_.size(); ++j) {
+            similarity += individuals_[i].similarity(individuals_[j]);
+            ++comparisons;
         }
     }
-    
-    return comparisons > 0 ? 1.0 - (totalSimilarity / comparisons) : 0.0;
+    return 1.0 - similarity / static_cast<double>(comparisons);
 }
 
-std::vector<Individual> Population::tournamentSelection(size_t tournamentSize, size_t numSelected) const {
+std::vector<Individual> Population::tournamentSelection(
+    std::size_t tournamentSize, std::size_t numSelected) const {
+    if (tournamentSize == 0) throw std::invalid_argument("tournament size must be nonzero");
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
+    if (numSelected == 0) return {};
+    if (individuals_.empty()) throw std::logic_error("cannot select from an empty population");
+
+    std::mt19937 generator(kDeterministicSeed);
+    std::uniform_int_distribution<std::size_t> distribution(0, individuals_.size() - 1);
     std::vector<Individual> selected;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<size_t> dist(0, individuals_.size() - 1);
-    
-    for (size_t i = 0; i < numSelected; ++i) {
-        Individual best = individuals_[dist(gen)];
-        
-        for (size_t j = 1; j < tournamentSize; ++j) {
-            const Individual& candidate = individuals_[dist(gen)];
-            if (candidate.getFitness().getOverallScore() > best.getFitness().getOverallScore()) {
-                best = candidate;
-            }
+    selected.reserve(numSelected);
+    for (std::size_t i = 0; i < numSelected; ++i) {
+        Individual best = individuals_[distribution(generator)];
+        for (std::size_t candidateIndex = 1; candidateIndex < tournamentSize;
+             ++candidateIndex) {
+            const Individual& candidate = individuals_[distribution(generator)];
+            if (scoreGreater(candidate, best)) best = candidate;
         }
-        
         selected.push_back(best);
     }
-    
     return selected;
 }
 
-std::vector<Individual> Population::eliteSelection(size_t numElite) const {
+std::vector<Individual> Population::rouletteWheelSelection(
+    std::size_t numSelected) const {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    std::vector<Individual> sorted = individuals_;
-    std::sort(sorted.begin(), sorted.end(),
-              [](const Individual& a, const Individual& b) {
-                  return a.getFitness().getOverallScore() > b.getFitness().getOverallScore();
-              });
-    
-    std::vector<Individual> elite;
-    for (size_t i = 0; i < std::min(numElite, sorted.size()); ++i) {
-        elite.push_back(sorted[i]);
+    if (numSelected == 0) return {};
+    if (individuals_.empty()) throw std::logic_error("cannot select from an empty population");
+
+    double minimum = std::numeric_limits<double>::infinity();
+    for (const auto& individual : individuals_) {
+        minimum = std::min(minimum, individual.getFitness().getOverallScore());
     }
-    
-    return elite;
-}
-
-std::vector<Individual> Population::rouletteWheelSelection(size_t numSelected) const {
-    std::lock_guard<std::mutex> lock(populationMutex_);
-    std::vector<Individual> selected;
-    if (individuals_.empty() || numSelected == 0) return selected;
-
-    // Build cumulative fitness array (shift to non-negative)
-    double minScore = 0.0;
-    for (const auto& ind : individuals_) {
-        double s = ind.getFitness().getOverallScore();
-        if (s < minScore) minScore = s;
-    }
-    double shift = (minScore < 0.0) ? -minScore + 1e-9 : 0.0;
-
+    const double shift = minimum <= 0.0 ? -minimum + 1.0 : 0.0;
     std::vector<double> cumulative;
     cumulative.reserve(individuals_.size());
     double total = 0.0;
-    for (const auto& ind : individuals_) {
-        total += ind.getFitness().getOverallScore() + shift;
+    for (const auto& individual : individuals_) {
+        total += individual.getFitness().getOverallScore() + shift;
         cumulative.push_back(total);
     }
+    if (!std::isfinite(total) || total <= 0.0) {
+        throw std::invalid_argument("population scores cannot form selection weights");
+    }
 
-    std::mt19937 rng{std::random_device{}()};
-    std::uniform_real_distribution<double> dist(0.0, total);
-
+    std::mt19937 generator(kDeterministicSeed);
+    std::uniform_real_distribution<double> distribution(0.0, total);
+    std::vector<Individual> selected;
     selected.reserve(numSelected);
-    for (size_t i = 0; i < numSelected; ++i) {
-        double r = dist(rng);
-        auto it = std::lower_bound(cumulative.begin(), cumulative.end(), r);
-        size_t idx = (it == cumulative.end()) ? individuals_.size() - 1
-                                              : static_cast<size_t>(it - cumulative.begin());
-        selected.push_back(individuals_[idx]);
+    for (std::size_t i = 0; i < numSelected; ++i) {
+        const double draw = distribution(generator);
+        const auto it = std::lower_bound(cumulative.begin(), cumulative.end(), draw);
+        const std::size_t index = it == cumulative.end()
+                                      ? individuals_.size() - 1
+                                      : static_cast<std::size_t>(it - cumulative.begin());
+        selected.push_back(individuals_[index]);
     }
     return selected;
+}
+
+std::vector<Individual> Population::eliteSelection(std::size_t numElite) const {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    std::vector<Individual> elite = individuals_;
+    std::stable_sort(elite.begin(), elite.end(), scoreGreater);
+    if (elite.size() > numElite) {
+        elite.erase(elite.begin() + static_cast<std::ptrdiff_t>(numElite),
+                    elite.end());
+    }
+    return elite;
 }
 
 void Population::sort() {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    std::sort(individuals_.begin(), individuals_.end(),
-              [](const Individual& a, const Individual& b) {
-                  return a.getFitness().getOverallScore() > b.getFitness().getOverallScore();
-              });
+    std::stable_sort(individuals_.begin(), individuals_.end(), scoreGreater);
 }
 
 void Population::ageIndividuals() {
     std::lock_guard<std::mutex> lock(populationMutex_);
-    
-    for (auto& individual : individuals_) {
-        individual.incrementAge();
-    }
+    for (auto& individual : individuals_) individual.incrementAge();
 }
 
-// EvolutionaryOptimizer implementation
-EvolutionaryOptimizer::EvolutionaryOptimizer(const Config& config) 
-    : config_(config), population_(config.populationSize) {
+void Population::clear() {
+    std::lock_guard<std::mutex> lock(populationMutex_);
+    individuals_.clear();
+}
+
+struct EvolutionaryOptimizer::SharedState {
+    explicit SharedState(const Config& initialConfig)
+        : config(initialConfig), population(initialConfig.populationSize), rng(kDeterministicSeed) {}
+
+    mutable std::mutex mutex;
+    std::condition_variable controlCv;
+    Config config;
+    Population population;
+    std::vector<Statistics> history;
+    bool running = false;
+    bool paused = false;
+    bool stopped = false;
+    bool shuttingDown = false;
+    std::mt19937 rng;
+};
+
+EvolutionaryOptimizer::EvolutionaryOptimizer(const Config& config) {
+    validateConfig(config);
+    shared_ = std::make_shared<SharedState>(config);
 }
 
 EvolutionaryOptimizer::~EvolutionaryOptimizer() {
-    stop();
+    {
+        std::lock_guard<std::mutex> lock(shared_->mutex);
+        shared_->shuttingDown = true;
+        shared_->stopped = true;
+        shared_->paused = false;
+    }
+    shared_->controlCv.notify_all();
+    joinAsyncTasks();
 }
 
-Individual EvolutionaryOptimizer::optimize(const FitnessFunction& fitnessFunc, const State& state) {
-    running_ = true;
-    stopped_ = false;
-    paused_ = false;
-    
-    // Initialize population if empty
-    if (population_.empty()) {
-        for (size_t i = 0; i < config_.populationSize; ++i) {
-            auto program = generateRandomProgram();
-            population_.addIndividual(Individual(program));
-        }
+void EvolutionaryOptimizer::validateConfig(const Config& config) {
+    if (config.populationSize == 0) {
+        throw std::invalid_argument("populationSize must be nonzero");
     }
-    
-    // Main evolution loop
-    for (size_t generation = 0; generation < config_.maxGenerations && !stopped_; ++generation) {
-        while (paused_ && !stopped_) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-        
-        if (stopped_) break;
-        
-        auto startTime = std::chrono::steady_clock::now();
-        
-        // Evaluate fitness
-        evaluateFitness(fitnessFunc, state);
-        
-        // Check for convergence
-        if (checkStagnation()) {
-            break;
-        }
-        
-        // Evolve to next generation
-        evolveGeneration(fitnessFunc, state);
-        
-        // Update statistics
-        updateStatistics(generation);
-        
-        // Age individuals
-        population_.ageIndividuals();
-        
-        auto endTime = std::chrono::steady_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-        
-        if (!history_.empty()) {
-            history_.back().generationTime = duration;
-        }
+    if (config.maxGenerations == 0) {
+        throw std::invalid_argument("maxGenerations must be nonzero");
     }
-    
-    running_ = false;
-    
-    // Return best individual
-    population_.sort();
-    return population_.size() > 0 ? population_.getIndividual(0) : Individual(nullptr);
-}
-
-void EvolutionaryOptimizer::evaluateFitness(const FitnessFunction& fitnessFunc, const State& state) {
-    // Evaluate fitness for all individuals
-    for (size_t i = 0; i < population_.size(); ++i) {
-        Individual& individual = population_.getIndividual(i);
-        FitnessResult fitness = fitnessFunc(individual, state);
-        individual.setFitness(fitness);
+    validateProbability(config.mutationRate, "mutationRate");
+    validateProbability(config.crossoverRate, "crossoverRate");
+    validateProbability(config.eliteRatio, "eliteRatio");
+    validateProbability(config.diversityThreshold, "diversityThreshold");
+    if (config.tournamentSize == 0) {
+        throw std::invalid_argument("tournamentSize must be nonzero");
+    }
+    if (config.maxComplexity <= 0) {
+        throw std::invalid_argument("maxComplexity must be positive");
+    }
+    if (!std::isfinite(config.stagnationThreshold) ||
+        config.stagnationThreshold < 0.0) {
+        throw std::invalid_argument("stagnationThreshold must be finite and nonnegative");
+    }
+    if (config.maxStagnationGenerations <= 0) {
+        throw std::invalid_argument("maxStagnationGenerations must be positive");
     }
 }
 
-void EvolutionaryOptimizer::evolveGeneration(const FitnessFunction& fitnessFunc, const State& state) {
-    // Selection
-    std::vector<Individual> parents;
-    selectParents(parents);
-    
-    // Reproduction
-    std::vector<Individual> offspring;
-    reproduction(parents, offspring);
-    
-    // Evaluate offspring
-    for (auto& individual : offspring) {
-        FitnessResult fitness = fitnessFunc(individual, state);
-        individual.setFitness(fitness);
-    }
-    
-    // Environmental selection
-    environmentalSelection(offspring);
-    
-    // Apply MOSES-specific techniques
-    if (config_.useDemeSplitting) {
-        demeSplitting();
-    }
-    
-    if (config_.useNoveltySearch) {
-        noveltySearch();
-    }
-    
-    complexityControl();
-}
-
-void EvolutionaryOptimizer::selectParents(std::vector<Individual>& parents) {
-    size_t numParents = config_.populationSize;
-    parents = population_.tournamentSelection(config_.tournamentSize, numParents);
-}
-
-void EvolutionaryOptimizer::reproduction(const std::vector<Individual>& parents, std::vector<Individual>& offspring) {
-    std::uniform_real_distribution<double> prob(0.0, 1.0);
-    
-    for (size_t i = 0; i < parents.size(); i += 2) {
-        const Individual& parent1 = parents[i];
-        const Individual& parent2 = parents[i + 1 < parents.size() ? i + 1 : 0];
-        
-        if (prob(rng_) < config_.crossoverRate) {
-            // Crossover
-            offspring.push_back(Individual::crossover(parent1, parent2));
-            if (i + 1 < parents.size()) {
-                offspring.push_back(Individual::crossover(parent2, parent1));
-            }
-        } else {
-            // Direct copy
-            offspring.push_back(parent1);
-            if (i + 1 < parents.size()) {
-                offspring.push_back(parent2);
-            }
-        }
-    }
-    
-    // Mutation
-    for (auto& individual : offspring) {
-        if (prob(rng_) < config_.mutationRate) {
-            individual = individual.mutate(config_.mutationRate);
-        }
-    }
-}
-
-void EvolutionaryOptimizer::environmentalSelection(const std::vector<Individual>& offspring) {
-    // Combine population and offspring
-    std::vector<Individual> combined;
-    
-    // Add elite individuals
-    auto elite = population_.eliteSelection(static_cast<size_t>(config_.populationSize * config_.eliteRatio));
-    combined.insert(combined.end(), elite.begin(), elite.end());
-    
-    // Add offspring
-    combined.insert(combined.end(), offspring.begin(), offspring.end());
-    
-    // Sort by fitness
-    std::sort(combined.begin(), combined.end(),
-              [](const Individual& a, const Individual& b) {
-                  return a.getFitness().getOverallScore() > b.getFitness().getOverallScore();
-              });
-    
-    // Replace population with best individuals
-    population_.clear();
-    for (size_t i = 0; i < std::min(config_.populationSize, combined.size()); ++i) {
-        population_.addIndividual(combined[i]);
-    }
-}
-
-void EvolutionaryOptimizer::demeSplitting() {
-    // Implement deme splitting if diversity is low
-    if (population_.getDiversity() < config_.diversityThreshold) {
-        // Split population into sub-populations and evolve separately
-        // This is a simplified implementation
-        
-        size_t halfSize = population_.size() / 2;
-        std::vector<Individual> deme1, deme2;
-        
-        for (size_t i = 0; i < halfSize; ++i) {
-            deme1.push_back(population_.getIndividual(i));
-        }
-        
-        for (size_t i = halfSize; i < population_.size(); ++i) {
-            deme2.push_back(population_.getIndividual(i));
-        }
-        
-        // Add some random individuals to increase diversity
-        for (size_t i = 0; i < halfSize / 4; ++i) {
-            auto randomProgram = generateRandomProgram();
-            deme1.push_back(Individual(randomProgram));
-            
-            randomProgram = generateRandomProgram();
-            deme2.push_back(Individual(randomProgram));
-        }
-        
-        // Replace population with combined demes
-        population_.clear();
-        for (const auto& individual : deme1) {
-            population_.addIndividual(individual);
-        }
-        for (const auto& individual : deme2) {
-            population_.addIndividual(individual);
-        }
-    }
-}
-
-void EvolutionaryOptimizer::noveltySearch() {
-    // Implement novelty search to maintain diversity
-    // This is a simplified implementation that rewards individuals with unique behavior signatures
-    
-    for (size_t i = 0; i < population_.size(); ++i) {
-        Individual& individual = population_.getIndividual(i);
-        FitnessResult fitness = individual.getFitness();
-        
-        // Calculate novelty based on behavior signature uniqueness
-        double novelty = 0.0;
-        for (size_t j = 0; j < population_.size(); ++j) {
-            if (i != j) {
-                double similarity = individual.similarity(population_.getIndividual(j));
-                novelty += (1.0 - similarity);
-            }
-        }
-        
-        if (population_.size() > 1) {
-            novelty /= (population_.size() - 1);
-        }
-        
-        // Update fitness with novelty component
-        fitness.novelty = novelty;
-        individual.setFitness(fitness);
-    }
-}
-
-void EvolutionaryOptimizer::complexityControl() {
-    // Control complexity to prevent bloat
-    for (size_t i = 0; i < population_.size(); ++i) {
-        Individual& individual = population_.getIndividual(i);
-        FitnessResult fitness = individual.getFitness();
-        
-        // Calculate complexity based on program size
-        if (individual.getProgram()) {
-            std::string programStr = individual.getProgram()->toString();
-            fitness.complexity = static_cast<double>(programStr.length());
-            
-            // Penalize overly complex programs
-            if (fitness.complexity > config_.maxComplexity) {
-                fitness.fitness *= 0.5; // Reduce fitness for complex programs
-            }
-        }
-        
-        individual.setFitness(fitness);
-    }
-}
-
-std::shared_ptr<ProgramNode> EvolutionaryOptimizer::generateRandomProgram(int maxDepth) const {
-    std::uniform_int_distribution<int> typeDist(0, 3);
-    std::uniform_real_distribution<double> valueDist(-10.0, 10.0);
-    
-    ProgramNode::Type type = static_cast<ProgramNode::Type>(typeDist(rng_));
-    
+std::shared_ptr<ProgramNode> EvolutionaryOptimizer::generateRandomProgram(
+    SharedState& shared, int maxDepth) {
+    std::uniform_int_distribution<int> typeDistribution(0, 3);
+    std::uniform_real_distribution<double> valueDistribution(-10.0, 10.0);
+    ProgramNode::Type type = static_cast<ProgramNode::Type>(typeDistribution(shared.rng));
     if (maxDepth <= 0) {
-        // Force terminal nodes at maximum depth
-        type = (typeDist(rng_) % 2 == 0) ? ProgramNode::Type::CONSTANT : ProgramNode::Type::VARIABLE;
+        type = typeDistribution(shared.rng) % 2 == 0
+                   ? ProgramNode::Type::CONSTANT
+                   : ProgramNode::Type::VARIABLE;
     }
-    
-    switch (type) {
-        case ProgramNode::Type::CONSTANT: {
-            auto node = std::make_shared<ProgramNode>(ProgramNode::Type::CONSTANT, "const");
-            node->parameters.push_back(valueDist(rng_));
-            return node;
+
+    if (type == ProgramNode::Type::CONSTANT) {
+        auto node = std::make_shared<ProgramNode>(type, "const");
+        node->parameters.push_back(valueDistribution(shared.rng));
+        return node;
+    }
+    if (type == ProgramNode::Type::VARIABLE) {
+        static const std::vector<std::string> variables{
+            "x", "y", "z", "t", "fitness", "age"};
+        std::uniform_int_distribution<std::size_t> distribution(0, variables.size() - 1);
+        return std::make_shared<ProgramNode>(type, variables[distribution(shared.rng)]);
+    }
+    if (type == ProgramNode::Type::FUNCTION) {
+        static const std::vector<std::string> functions{
+            "add", "sub", "mul", "div", "sin", "cos", "exp", "log", "max", "min"};
+        std::uniform_int_distribution<std::size_t> distribution(0, functions.size() - 1);
+        auto node = std::make_shared<ProgramNode>(type, functions[distribution(shared.rng)]);
+        const int arity = node->name == "sin" || node->name == "cos" ||
+                                  node->name == "exp" || node->name == "log"
+                              ? 1
+                              : 2;
+        for (int index = 0; index < arity; ++index) {
+            node->children.push_back(generateRandomProgram(shared, maxDepth - 1));
         }
-        
-        case ProgramNode::Type::VARIABLE: {
-            std::vector<std::string> vars = {"x", "y", "z", "t", "fitness", "age"};
-            std::uniform_int_distribution<size_t> varDist(0, vars.size() - 1);
-            return std::make_shared<ProgramNode>(ProgramNode::Type::VARIABLE, vars[varDist(rng_)]);
-        }
-        
-        case ProgramNode::Type::FUNCTION: {
-            std::vector<std::string> functions = {"add", "sub", "mul", "div", "sin", "cos", "exp", "log", "max", "min"};
-            std::uniform_int_distribution<size_t> funcDist(0, functions.size() - 1);
-            
-            auto node = std::make_shared<ProgramNode>(ProgramNode::Type::FUNCTION, functions[funcDist(rng_)]);
-            
-            // Add children based on std::function arity
-            int arity = (node->name == "sin" || node->name == "cos" || node->name == "exp" || node->name == "log") ? 1 : 2;
-            
-            for (int i = 0; i < arity; ++i) {
-                node->children.push_back(generateRandomProgram(maxDepth - 1));
-            }
-            
-            return node;
-        }
-        
-        case ProgramNode::Type::CONDITIONAL: {
-            std::vector<std::string> conditionals = {"if", "gt", "lt"};
-            std::uniform_int_distribution<size_t> condDist(0, conditionals.size() - 1);
-            
-            auto node = std::make_shared<ProgramNode>(ProgramNode::Type::CONDITIONAL, conditionals[condDist(rng_)]);
-            
-            // Add children based on conditional arity
-            int arity = (node->name == "if") ? 3 : 2;
-            
-            for (int i = 0; i < arity; ++i) {
-                node->children.push_back(generateRandomProgram(maxDepth - 1));
-            }
-            
-            return node;
-        }
+        return node;
     }
-    
-    return nullptr;
-}
 
-bool EvolutionaryOptimizer::checkStagnation() const {
-    if (history_.size() < static_cast<size_t>(config_.maxStagnationGenerations)) {
-        return false;
+    static const std::vector<std::string> conditionals{"if", "gt", "lt"};
+    std::uniform_int_distribution<std::size_t> distribution(0, conditionals.size() - 1);
+    auto node = std::make_shared<ProgramNode>(type, conditionals[distribution(shared.rng)]);
+    const int arity = node->name == "if" ? 3 : 2;
+    for (int index = 0; index < arity; ++index) {
+        node->children.push_back(generateRandomProgram(shared, maxDepth - 1));
     }
-    
-    // Check if fitness has improved significantly in recent generations
-    double recentBest = history_.back().bestFitness.fitness;
-    double oldBest = history_[history_.size() - config_.maxStagnationGenerations].bestFitness.fitness;
-    
-    return (recentBest - oldBest) < config_.stagnationThreshold;
-}
-
-void EvolutionaryOptimizer::updateStatistics(size_t generation) {
-    Statistics stats;
-    stats.generation = generation;
-    stats.bestFitness = population_.getBestFitness();
-    stats.averageFitness = population_.getAverageFitness();
-    stats.diversity = population_.getDiversity();
-    stats.stagnationCount = 0;
-    
-    // Calculate convergence rate
-    if (history_.size() > 0) {
-        double currentBest = stats.bestFitness.fitness;
-        double previousBest = history_.back().bestFitness.fitness;
-        stats.convergenceRate = currentBest - previousBest;
-        
-        // Update stagnation count
-        if (stats.convergenceRate < config_.stagnationThreshold) {
-            stats.stagnationCount = history_.back().stagnationCount + 1;
-        }
-    }
-    
-    history_.push_back(stats);
-}
-
-EvolutionaryOptimizer::Statistics EvolutionaryOptimizer::getStatistics() const {
-    return history_.empty() ? Statistics{} : history_.back();
-}
-
-std::vector<EvolutionaryOptimizer::Statistics> EvolutionaryOptimizer::getHistory() const {
-    return history_;
-}
-
-void EvolutionaryOptimizer::setPopulation(const Population& population) {
-    population_.clear();
-    for (size_t i = 0; i < population.size(); ++i) {
-        population_.addIndividual(population.getIndividual(i));
-    }
-}
-
-std::shared_ptr<Population> EvolutionaryOptimizer::getPopulation() const {
-    auto copy = std::make_shared<Population>(population_.size());
-    for (size_t i = 0; i < population_.size(); ++i) {
-        copy->addIndividual(population_.getIndividual(i));
-    }
-    return copy;
+    return node;
 }
 
 Individual EvolutionaryOptimizer::optimize(const FitnessFunction& fitnessFunc,
-                                            const State& state,
-                                            const std::vector<Individual>& initialPopulation) {
-    // Seed the population with the provided individuals then run normally
-    for (const auto& ind : initialPopulation) {
-        population_.addIndividual(ind);
+                                            const State& state) {
+    return optimizeImpl(shared_, fitnessFunc, state, nullptr);
+}
+
+Individual EvolutionaryOptimizer::optimize(
+    const FitnessFunction& fitnessFunc, const State& state,
+    const std::vector<Individual>& initialPopulation) {
+    return optimizeImpl(shared_, fitnessFunc, state, &initialPopulation);
+}
+
+Individual EvolutionaryOptimizer::optimizeImpl(
+    const std::shared_ptr<SharedState>& shared, const FitnessFunction& fitnessFunc,
+    const State& state, const std::vector<Individual>* initialPopulation) {
+    if (!fitnessFunc) throw std::invalid_argument("fitness function must be callable");
+
+    Config config;
+    {
+        std::lock_guard<std::mutex> lock(shared->mutex);
+        if (shared->shuttingDown) {
+            throw std::logic_error("optimizer is shutting down");
+        }
+        if (shared->running) throw std::logic_error("optimizer is already running");
+        validateConfig(shared->config);
+        shared->running = true;
+        shared->paused = false;
+        shared->stopped = false;
+        shared->history.clear();
+        shared->rng.seed(kDeterministicSeed);
+        config = shared->config;
     }
-    return optimize(fitnessFunc, state);
+    const auto finishRun = makeScopeExit([&] {
+        std::lock_guard<std::mutex> lock(shared->mutex);
+        shared->running = false;
+        shared->paused = false;
+        shared->controlCv.notify_all();
+    });
+
+    Population population(config.populationSize);
+    if (initialPopulation) {
+        if (initialPopulation->size() > config.populationSize) {
+            throw std::invalid_argument("initial population exceeds configured size");
+        }
+        population.replaceIndividuals(*initialPopulation);
+    } else {
+        const auto existing = shared->population.getIndividuals();
+        if (existing.size() <= config.populationSize) population.replaceIndividuals(existing);
+    }
+    while (population.size() < config.populationSize) {
+        population.addIndividual(Individual(generateRandomProgram(*shared)));
+    }
+
+    bool evaluatedAnyGeneration = false;
+    for (std::size_t generation = 0; generation < config.maxGenerations; ++generation) {
+        {
+            std::unique_lock<std::mutex> lock(shared->mutex);
+            shared->controlCv.wait(lock, [&] { return !shared->paused || shared->stopped; });
+            if (shared->stopped) break;
+        }
+
+        const auto generationStart = std::chrono::steady_clock::now();
+        auto individuals = population.getIndividuals();
+        for (auto& individual : individuals) {
+            FitnessResult fitness = fitnessFunc(individual, state);
+            fitness.validate();
+            if (individual.getProgram()) {
+                fitness.complexity = static_cast<double>(
+                    individual.getProgram()->toString().size());
+                if (fitness.complexity > static_cast<double>(config.maxComplexity)) {
+                    fitness.fitness *= 0.5;
+                }
+            }
+            fitness.validate();
+            individual.setFitness(fitness);
+        }
+
+        if (config.useNoveltySearch && individuals.size() > 1) {
+            for (std::size_t i = 0; i < individuals.size(); ++i) {
+                double novelty = 0.0;
+                for (std::size_t j = 0; j < individuals.size(); ++j) {
+                    if (i != j) novelty += 1.0 - individuals[i].similarity(individuals[j]);
+                }
+                FitnessResult fitness = individuals[i].getFitness();
+                fitness.novelty = novelty / static_cast<double>(individuals.size() - 1);
+                individuals[i].setFitness(fitness);
+            }
+        }
+        population.replaceIndividuals(individuals);
+        evaluatedAnyGeneration = true;
+
+        Statistics statistics;
+        statistics.generation = generation;
+        statistics.bestFitness = population.getBestFitness();
+        statistics.averageFitness = population.getAverageFitness();
+        statistics.diversity = population.getDiversity();
+        statistics.generationTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - generationStart);
+
+        {
+            std::lock_guard<std::mutex> lock(shared->mutex);
+            if (!shared->history.empty()) {
+                const double previous = shared->history.back().bestFitness.getOverallScore();
+                const double current = statistics.bestFitness.getOverallScore();
+                statistics.convergenceRate = current - previous;
+                statistics.stagnationCount =
+                    statistics.convergenceRate < config.stagnationThreshold
+                        ? shared->history.back().stagnationCount + 1
+                        : 0;
+            }
+            shared->history.push_back(statistics);
+            shared->population = population;
+        }
+
+        const bool convergenceEvidence =
+            !population.empty() &&
+            (statistics.diversity <= config.diversityThreshold ||
+             statistics.stagnationCount >= config.maxStagnationGenerations);
+        if (convergenceEvidence || generation + 1 == config.maxGenerations) break;
+
+        std::stable_sort(individuals.begin(), individuals.end(), scoreGreater);
+        const std::size_t requestedElite = static_cast<std::size_t>(
+            static_cast<double>(config.populationSize) * config.eliteRatio);
+        const std::size_t eliteCount = std::min(requestedElite, individuals.size());
+        std::vector<Individual> nextGeneration;
+        nextGeneration.reserve(config.populationSize);
+        nextGeneration.insert(nextGeneration.end(), individuals.begin(),
+                              individuals.begin() + static_cast<std::ptrdiff_t>(eliteCount));
+
+        std::uniform_int_distribution<std::size_t> parentDistribution(
+            0, individuals.size() - 1);
+        std::uniform_real_distribution<double> probability(0.0, 1.0);
+        const auto tournamentParent = [&]() -> Individual {
+            Individual best = individuals[parentDistribution(shared->rng)];
+            for (std::size_t index = 1; index < config.tournamentSize; ++index) {
+                const Individual& candidate = individuals[parentDistribution(shared->rng)];
+                if (scoreGreater(candidate, best)) best = candidate;
+            }
+            return best;
+        };
+
+        while (nextGeneration.size() < config.populationSize) {
+            const Individual first = tournamentParent();
+            const Individual second = tournamentParent();
+            Individual child = probability(shared->rng) < config.crossoverRate
+                                   ? Individual::crossover(first, second)
+                                   : first;
+            if (probability(shared->rng) < config.mutationRate) {
+                child = child.mutate(config.mutationRate);
+            }
+            nextGeneration.push_back(child);
+        }
+
+        if (config.useDemeSplitting && statistics.diversity < config.diversityThreshold &&
+            nextGeneration.size() > 3) {
+            const std::size_t replacements = nextGeneration.size() / 4;
+            for (std::size_t index = 0; index < replacements; ++index) {
+                nextGeneration[nextGeneration.size() - 1 - index] =
+                    Individual(generateRandomProgram(*shared));
+            }
+        }
+        population.replaceIndividuals(nextGeneration);
+        population.ageIndividuals();
+    }
+
+    if (!evaluatedAnyGeneration) return Individual(nullptr);
+    population.sort();
+    {
+        std::lock_guard<std::mutex> lock(shared->mutex);
+        shared->population = population;
+    }
+    return population.getIndividual(0);
 }
 
 std::future<Individual> EvolutionaryOptimizer::optimizeAsync(
-        const FitnessFunction& fitnessFunc, const State& state) {
-    return std::async(std::launch::async, [this, fitnessFunc, state]() {
-        return optimize(fitnessFunc, state);
+    const FitnessFunction& fitnessFunc, const State& state) {
+    auto promise = std::make_shared<std::promise<Individual>>();
+    std::future<Individual> future = promise->get_future();
+    const auto shared = shared_;
+    const State stateCopy = state;
+    std::thread worker([shared, fitnessFunc, stateCopy, promise] {
+        try {
+            promise->set_value(optimizeImpl(shared, fitnessFunc, stateCopy, nullptr));
+        } catch (...) {
+            promise->set_exception(std::current_exception());
+        }
     });
+    {
+        std::lock_guard<std::mutex> lock(asyncMutex_);
+        asyncThreads_.push_back(std::move(worker));
+    }
+    return future;
+}
+
+void EvolutionaryOptimizer::setPopulation(const Population& population) {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    if (shared_->running) throw std::logic_error("cannot replace population while running");
+    if (population.size() > shared_->config.populationSize) {
+        throw std::invalid_argument("population exceeds configured size");
+    }
+    Population replacement(shared_->config.populationSize);
+    replacement.replaceIndividuals(population.getIndividuals());
+    shared_->population = replacement;
+}
+
+std::shared_ptr<Population> EvolutionaryOptimizer::getPopulation() const {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    return std::make_shared<Population>(shared_->population);
+}
+
+void EvolutionaryOptimizer::setConfig(const Config& config) {
+    validateConfig(config);
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    if (shared_->running) throw std::logic_error("cannot change config while running");
+    const auto current = shared_->population.getIndividuals();
+    Population replacement(config.populationSize);
+    std::vector<Individual> retained = current;
+    if (retained.size() > config.populationSize) {
+        retained.erase(retained.begin() +
+                           static_cast<std::ptrdiff_t>(config.populationSize),
+                       retained.end());
+    }
+    replacement.replaceIndividuals(retained);
+    shared_->population = replacement;
+    shared_->config = config;
+}
+
+EvolutionaryOptimizer::Config EvolutionaryOptimizer::getConfig() const {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    return shared_->config;
+}
+
+void EvolutionaryOptimizer::pause() {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    if (shared_->running) shared_->paused = true;
+}
+
+void EvolutionaryOptimizer::resume() {
+    {
+        std::lock_guard<std::mutex> lock(shared_->mutex);
+        shared_->paused = false;
+    }
+    shared_->controlCv.notify_all();
+}
+
+void EvolutionaryOptimizer::stop() {
+    {
+        std::lock_guard<std::mutex> lock(shared_->mutex);
+        shared_->stopped = true;
+        shared_->paused = false;
+    }
+    shared_->controlCv.notify_all();
+}
+
+bool EvolutionaryOptimizer::isRunning() const {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    return shared_->running;
+}
+
+EvolutionaryOptimizer::Statistics EvolutionaryOptimizer::getStatistics() const {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    return shared_->history.empty() ? Statistics{} : shared_->history.back();
+}
+
+std::vector<EvolutionaryOptimizer::Statistics> EvolutionaryOptimizer::getHistory() const {
+    std::lock_guard<std::mutex> lock(shared_->mutex);
+    return shared_->history;
+}
+
+void EvolutionaryOptimizer::joinAsyncTasks() noexcept {
+    std::vector<std::thread> threads;
+    {
+        std::lock_guard<std::mutex> lock(asyncMutex_);
+        threads.swap(asyncThreads_);
+    }
+    for (auto& thread : threads) {
+        if (!thread.joinable()) continue;
+        if (thread.get_id() == std::this_thread::get_id()) {
+            evolutionary_detail::joinWithoutDetach(std::move(thread));
+        } else {
+            thread.join();
+        }
+    }
 }
 
 } // namespace elizaos

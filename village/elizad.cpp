@@ -113,7 +113,7 @@ static std::mutex g_actionMutex;
 static std::vector<VillageAction> g_pendingActions;
 
 // Parse [ACTION:type]{json} blocks from a thought
-static std::vector<VillageAction> parse_actions(const std::string& resident, const std::string& thought, int inf_id,
+[[maybe_unused]] static std::vector<VillageAction> parse_actions(const std::string& resident, const std::string& thought, int inf_id,
                                                 const std::string& correlation_id = "") {
     std::vector<VillageAction> actions;
     size_t pos = 0;
@@ -139,59 +139,201 @@ static std::vector<VillageAction> parse_actions(const std::string& resident, con
     return actions;
 }
 
-// Execute a village action (called from main loop, thread-safe)
-static std::string execute_action(const VillageAction& action, VillageEventBusClient& bus) {
+struct ActionExecutionResult {
+    bool success = false;
+    std::string message;
+    std::string effect_evidence;
+};
+
+[[maybe_unused]] static ActionExecutionResult rejected_action(const std::string& message) {
+    return {false, message, ""};
+}
+
+namespace elizad_detail {
+
+// Testable state-action boundary: no network/model dependency and every success
+// carries evidence of a bounded mutation or an observation injected into the
+// AtomSpace event stream.
+nlohmann::json execute_state_action_for_test(
+    const std::string& action_type, const nlohmann::json& params,
+    const std::string& resident, AntikytheraEngine& antikythera,
+    ::village::atomspace::VillageAtomSpace& atomspace) {
     try {
-        auto params = nlohmann::json::parse(action.params_json);
+        if (action_type == "adjust_gear") {
+            if (!params.is_object() || !params.contains("train") ||
+                !params["train"].is_string() || !params.contains("factor") ||
+                !params["factor"].is_number()) {
+                return {{"success", false}, {"message", "adjust_gear requires train and numeric factor"}};
+            }
+            const std::string train = params["train"].get<std::string>();
+            const double factor = params["factor"].get<double>();
+            if (train.empty() || !std::isfinite(factor) || factor < 0.5 ||
+                factor > 2.0 || std::abs(factor - 1.0) < 1e-12) {
+                return {{"success", false}, {"message", "adjust_gear factor must change state within [0.5, 2.0]"}};
+            }
+
+            const json before_state = json::parse(antikythera.toJson());
+            std::vector<std::string> members;
+            for (const auto& candidate : before_state.at("trains")) {
+                if (candidate.value("name", "") == train) {
+                    members = candidate.value("gears", std::vector<std::string>{});
+                    break;
+                }
+            }
+            if (members.empty()) {
+                return {{"success", false}, {"message", "unknown or empty gear train: " + train}};
+            }
+
+            std::map<std::string, Gear> proposed;
+            json before_rpm = json::object();
+            json after_rpm = json::object();
+            for (const auto& member : members) {
+                for (const auto& raw : before_state.at("gears")) {
+                    if (raw.value("resident", "") != member) continue;
+                    Gear gear{member, raw.at("teeth").get<int>(),
+                              raw.at("rpm").get<double>(),
+                              raw.at("phase").get<double>(),
+                              raw.at("level").get<int>()};
+                    before_rpm[member] = gear.rpm;
+                    gear.rpm = std::clamp(gear.rpm * factor, 0.1, 120.0);
+                    after_rpm[member] = gear.rpm;
+                    proposed.emplace(member, gear);
+                    break;
+                }
+            }
+            if (proposed.size() != members.size()) {
+                return {{"success", false}, {"message", "gear train contains an unavailable member"}};
+            }
+            bool changed = false;
+            for (const auto& [member, gear] : proposed) {
+                changed = changed || std::abs(gear.rpm - before_rpm.at(member).get<double>()) > 1e-12;
+            }
+            if (!changed) {
+                return {{"success", false}, {"message", "gear adjustment was bounded to a no-op"}};
+            }
+            for (const auto& [_, gear] : proposed) antikythera.addGear(gear);
+
+            json evidence = {{"train", train}, {"factor", factor},
+                             {"members", members}, {"before_rpm", before_rpm},
+                             {"after_rpm", after_rpm}};
+            return {{"success", true},
+                    {"message", "Adjusted gear train " + train},
+                    {"effect_evidence", evidence.dump()}};
+        }
+
+        if (action_type == "observe_state") {
+            if (!params.is_object() || !params.contains("target") ||
+                !params["target"].is_string()) {
+                return {{"success", false}, {"message", "observe_state requires a target"}};
+            }
+            const std::string target = params["target"].get<std::string>();
+            json observation;
+            if (target == "atomspace") {
+                observation = json::parse(atomspace.get_stats_json());
+            } else if (target == "gears") {
+                observation = json::parse(antikythera.toJson());
+            } else if (target == "residents") {
+                observation = json::array();
+                const auto residents = atomspace.residents_snapshot();
+                for (const auto& [name, atom] : residents) {
+                    observation.push_back({{"name", name}, {"sti", atom.sti},
+                                           {"gear_train", atom.gear_train}});
+                }
+            } else {
+                return {{"success", false}, {"message", "unsupported observation target: " + target}};
+            }
+
+            const auto before = json::parse(atomspace.get_stats_json()).value("event_count", 0u);
+            ::village::atomspace::CognitiveEvent event;
+            event.type = "observation";
+            event.participants = {resident};
+            event.content = observation.dump().substr(0, 4096);
+            event.emotional_valence = 0.0;
+            event.information_gain = 0.4;
+            atomspace.process_event(event);
+            const auto after = json::parse(atomspace.get_stats_json()).value("event_count", 0u);
+            if (after != before + 1) {
+                return {{"success", false}, {"message", "observation injection could not be verified"}};
+            }
+            json evidence = {{"target", target}, {"event_count_before", before},
+                             {"event_count_after", after}, {"snapshot", observation}};
+            std::string serialized = evidence.dump();
+            if (serialized.size() > 16 * 1024) serialized = serialized.substr(0, 16 * 1024);
+            return {{"success", true},
+                    {"message", "Observed and injected state: " + target},
+                    {"effect_evidence", serialized}};
+        }
+        return {{"success", false}, {"message", "not a state action: " + action_type}};
+    } catch (const std::exception& e) {
+        return {{"success", false}, {"message", std::string("state action error: ") + e.what()}};
+    }
+}
+
+bool record_ksm_learning_event_for_test(
+    const std::string& type, const nlohmann::json& data,
+    ::village::atomspace::VillageAtomSpace& atomspace) {
+    if (type != "ksm.learning" || !data.is_object()) return false;
+    const std::string teacher = data.value("teacher", "");
+    const std::string student = data.value("student", "");
+    const std::string artifact = data.value("artifact_id", "");
+    const double comprehension = data.value("comprehension", 0.0);
+    if (teacher.empty() || student.empty() || artifact.empty() ||
+        !std::isfinite(comprehension)) return false;
+    atomspace.record_learning(teacher, student, artifact,
+                              std::clamp(comprehension, 0.0, 1.0));
+    return true;
+}
+
+} // namespace elizad_detail
+
+#ifndef ELIZAD_ACTION_TEST_ONLY
+// Execute a village action from the main loop. Success is reported only after
+// its effect has been checked at the closest authoritative boundary.
+static ActionExecutionResult execute_action(
+    const VillageAction& action, VillageEventBusClient& bus,
+    AntikytheraEngine& antikythera,
+    ::village::atomspace::VillageAtomSpace& atomspace) {
+    try {
+        const auto params = nlohmann::json::parse(action.params_json);
+        if (action.action_type == "adjust_gear" || action.action_type == "observe_state") {
+            const auto result = elizad_detail::execute_state_action_for_test(
+                action.action_type, params, action.resident, antikythera, atomspace);
+            return {result.value("success", false), result.value("message", ""),
+                    result.value("effect_evidence", "")};
+        }
         if (action.action_type == "write_stone") {
-            std::string title = params.value("title", "untitled");
-            std::string content = params.value("content", "");
-            // Sanitize title for filename
+            const std::string title = params.value("title", "untitled");
+            const std::string content = params.value("content", "");
             std::string filename;
-            for (char c : title) {
-                if (std::isalnum(c) || c == '_' || c == '-') filename += c;
+            for (unsigned char c : title) {
+                if (std::isalnum(c) || c == '_' || c == '-') filename += static_cast<char>(c);
                 else if (c == ' ') filename += '_';
             }
             if (filename.empty()) filename = "stone";
-            std::string path = "/var/agi_neighborhood/manuscog/song_stones/" + filename + ".txt";
-            std::ofstream f(path);
-            if (f.is_open()) {
-                f << "# " << title << "\n\n";
-                f << "Author: " << action.resident << "\n";
-                f << "Date: " << time(nullptr) << "\n\n";
-                f << content << "\n";
-                f.close();
-                fprintf(stderr, "[ACTION] write_stone: %s -> %s\n", action.resident.c_str(), path.c_str());
-                return "Stone written: " + path;
-            }
-            return "ERROR: Could not write to " + path;
+            const std::string path = "/var/agi_neighborhood/manuscog/song_stones/" + filename + ".txt";
+            std::ofstream file(path, std::ios::trunc);
+            if (!file) return rejected_action("Could not write to " + path);
+            file << "# " << title << "\n\nAuthor: " << action.resident
+                 << "\nDate: " << time(nullptr) << "\n\n" << content << "\n";
+            file.close();
+            if (!file || !std::filesystem::is_regular_file(path))
+                return rejected_action("Stone write could not be verified: " + path);
+            json evidence = {{"path", path}, {"bytes", std::filesystem::file_size(path)}};
+            return {true, "Stone written: " + path, evidence.dump()};
         }
-        else if (action.action_type == "adjust_gear") {
-            std::string train = params.value("train", "");
-            double factor = params.value("factor", 1.0);
-            // Clamp factor to safe range
-            if (factor < 0.5) factor = 0.5;
-            if (factor > 2.0) factor = 2.0;
-            fprintf(stderr, "[ACTION] adjust_gear: %s requests %s *= %.2f\n",
-                    action.resident.c_str(), train.c_str(), factor);
-            return "Gear adjustment requested: " + train + " *= " + std::to_string(factor);
+        if (action.action_type == "emit_event") {
+            const std::string event_type = params.value("type", "resident.custom");
+            if (event_type.empty()) return rejected_action("Event type is empty");
+            const std::string payload = params.contains("payload") ? params["payload"].dump() : "{}";
+            const int64_t tic = bus.publish(event_type, payload, action.resident);
+            if (tic < 0) return rejected_action("Event bus rejected: " + event_type);
+            return {true, "Event emitted: " + event_type,
+                    json({{"event_type", event_type}, {"tic", tic}}).dump()};
         }
-        else if (action.action_type == "emit_event") {
-            std::string event_type = params.value("type", "resident.custom");
-            std::string payload_str = params.contains("payload") ? params["payload"].dump() : "{}";
-            bus.publish(event_type, payload_str, action.resident);
-            fprintf(stderr, "[ACTION] emit_event: %s -> %s\n", action.resident.c_str(), event_type.c_str());
-            return "Event emitted: " + event_type;
-        }
-        else if (action.action_type == "observe_state") {
-            std::string target = params.value("target", "");
-            fprintf(stderr, "[ACTION] observe_state: %s wants %s\n", action.resident.c_str(), target.c_str());
-            return "Observation requested: " + target + " (will be provided in next stimulus)";
-        }
-        return "Unknown action type: " + action.action_type;
+        return rejected_action("Unknown action type: " + action.action_type);
     } catch (const std::exception& e) {
         fprintf(stderr, "[ACTION] ERROR: %s\n", e.what());
-        return std::string("Action error: ") + e.what();
+        return rejected_action(std::string("Action error: ") + e.what());
     }
 }
 static std::atomic<int> g_cogCycleCount{0};
@@ -562,7 +704,8 @@ static int runElizad(int argc, char* argv[]) {
     ::village::atomspace::AtomSpaceConfig asConfig;
     asConfig.af_size = 20;
     asConfig.spreading_rate = 0.3;
-    asConfig.persist_path = "/var/agi_neighborhood/atomspace/village.scm";
+    asConfig.persist_path = config.persistPath;
+    asConfig.scheme_export_path = "/var/agi_neighborhood/atomspace/village.scm";
     ::village::atomspace::VillageAtomSpace villageAtomSpace(asConfig);
     
     // === Cycle 007/008: MEMORY initialization ===
@@ -592,7 +735,7 @@ static int runElizad(int argc, char* argv[]) {
         }
     }
     std::cout << "[elizad] VillageAtomSpace initialized: "
-              << villageAtomSpace.residents().size() << " residents seeded\n";
+              << villageAtomSpace.resident_count() << " residents seeded\n";
 
     // Configure event bus (MUST be before KSM/Bridge callbacks that reference it)
     VillageEventBusClient::Config busConfig;
@@ -629,8 +772,11 @@ static int runElizad(int argc, char* argv[]) {
     // ---- Initialize KSM Transfer Engine ----
     cogvillage::ksm::KSMTransferEngine ksmEngine;
     ksmEngine.loadRegistry("/var/agi_neighborhood/agnai/resident_registry.json");
-    ksmEngine.setEventCallback([&bus](const std::string& type, const json& data) {
-        bus.publish("ksm." + type, data.dump());
+    ksmEngine.setEventCallback([&bus, &villageAtomSpace](const std::string& type,
+                                                           const json& data) {
+        (void)elizad_detail::record_ksm_learning_event_for_test(
+            type, data, villageAtomSpace);
+        bus.publish(type, data.dump());
         std::cout << "[ksm] " << type << ": " << data.dump().substr(0, 80) << "\n";
     });
     std::cout << "[elizad] KSM Transfer Engine loaded (Dan's Relational Principle)\n";
@@ -793,7 +939,7 @@ static int runElizad(int argc, char* argv[]) {
                 std::string thinker = j.value("resident", "");
                 std::string thought = j.value("thought", "");
                 if (!thinker.empty() && !thought.empty()) {
-                    const auto& residents = villageAtomSpace.residents();
+                    const auto residents = villageAtomSpace.residents_snapshot();
                     auto it = residents.find(thinker);
                     if (it != residents.end()) {
                         std::string train = it->second.gear_train;
@@ -906,12 +1052,17 @@ static int runElizad(int argc, char* argv[]) {
                 pendingActions.swap(g_pendingActions);
             }
             for (auto& action : pendingActions) {
-                std::string result = execute_action(action, bus);
-                villageAtomSpace.add_action(action.resident, action.action_type, result,
-                                            action.inference_id, action.correlation_id);
+                ActionExecutionResult result = execute_action(
+                    action, bus, antikythera, villageAtomSpace);
+                villageAtomSpace.add_action(
+                    action.resident, action.action_type, result.message,
+                    action.inference_id, action.correlation_id, result.success,
+                    result.effect_evidence);
                 json resultPayload = {
                     {"resident", action.resident}, {"action_type", action.action_type},
-                    {"result", result}, {"inference_id", action.inference_id}
+                    {"result", result.message}, {"success", result.success},
+                    {"effect_evidence", result.effect_evidence},
+                    {"inference_id", action.inference_id}
                 };
                 if (!action.correlation_id.empty()) resultPayload["correlation_id"] = action.correlation_id;
                 bus.publish("resident.action_result", resultPayload.dump());
@@ -945,19 +1096,25 @@ static int runElizad(int argc, char* argv[]) {
             // Map STI-derived gear states to Antikythera RPMs
             // Key insight: gs.rpm = mean_STI/100 for the train
             // So gs.rpm=1.0 means "normal attention", >1 means "elevated"
-            auto gearStates = villageAtomSpace.get_gear_states();
+            const auto gearStates = villageAtomSpace.get_gear_states();
+            const json antikytheraSnapshot = json::parse(antikythera.toJson());
+            std::map<std::string, Gear> gearsByResident;
+            for (const auto& raw : antikytheraSnapshot.at("gears")) {
+                const std::string id = raw.at("resident").get<std::string>();
+                gearsByResident.emplace(id, Gear{
+                    id, raw.at("teeth").get<int>(), raw.at("rpm").get<double>(),
+                    raw.at("phase").get<double>(), raw.at("level").get<int>()});
+            }
             for (const auto& gs : gearStates) {
                 for (const auto& member : gs.members) {
-                    auto* gear = const_cast<Gear*>(antikythera.getGear(member));
-                    if (gear) {
-                        // Base RPM derived from gear teeth ratio (fixed reference)
-                        double baseRpm = 60.0 * 30.0 / std::max(1, gear->teeth);
-                        // Target = base * ECAN attention factor (clamped 0.5x to 3x)
-                        double attnFactor = std::max(0.5, std::min(3.0, gs.rpm * gs.modulation));
-                        double targetRpm = baseRpm * attnFactor;
-                        // Smooth blend: 95% current + 5% target (slow adaptation)
-                        gear->rpm = 0.95 * gear->rpm + 0.05 * targetRpm;
-                    }
+                    auto it = gearsByResident.find(member);
+                    if (it == gearsByResident.end()) continue;
+                    Gear updated = it->second;
+                    const double baseRpm = 60.0 * 30.0 / std::max(1, updated.teeth);
+                    const double attnFactor = std::clamp(gs.rpm * gs.modulation, 0.5, 3.0);
+                    const double targetRpm = baseRpm * attnFactor;
+                    updated.rpm = 0.95 * updated.rpm + 0.05 * targetRpm;
+                    antikythera.addGear(updated);
                 }
             }
 
@@ -1011,6 +1168,9 @@ static int runElizad(int argc, char* argv[]) {
               << " Published: " << bus.getPublishedCount()
               << " Received: " << bus.getReceivedCount()
               << " Groups: " << dynamics.groups().groupCount() << "\n";
+    // Stop accepting inference and join all owned workers before persistence;
+    // no callback can race the final snapshot or outlive referenced daemon state.
+    aphroditeBridge.shutdown();
     // Cycle 007/008: persist AtomSpace + memory on graceful shutdown (SIGTERM/SIGINT
     // flip g_running, so this runs for systemd stop/restart as well).
     if (villageAtomSpace.persist()) {
@@ -1022,6 +1182,7 @@ static int runElizad(int argc, char* argv[]) {
     return 0;
 }
 
+#ifndef ELIZAD_NO_MAIN
 int main(int argc, char* argv[]) noexcept {
     try {
         return runElizad(argc, argv);
@@ -1032,3 +1193,5 @@ int main(int argc, char* argv[]) noexcept {
     }
     return EXIT_FAILURE;
 }
+#endif // ELIZAD_NO_MAIN
+#endif // ELIZAD_ACTION_TEST_ONLY

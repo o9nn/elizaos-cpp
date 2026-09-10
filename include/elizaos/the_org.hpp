@@ -14,6 +14,9 @@
 #include <mutex>
 #include <queue>
 #include <future>
+#include <condition_variable>
+#include <set>
+#include <cstdint>
 
 namespace elizaos {
 
@@ -250,6 +253,16 @@ struct CommunityMetrics {
  */
 class TheOrgAgent {
 public:
+    using PlatformAdapter = std::function<bool(const PlatformConfig&, const std::string&, const std::string&)>;
+
+    struct DeliveryEvidence {
+        UUID recipientId;
+        std::string message;
+        std::string type;
+        Timestamp attemptedAt{};
+        bool accepted = false;
+    };
+
     TheOrgAgent(const AgentConfig& config, AgentRole role);
     virtual ~TheOrgAgent() = default;
 
@@ -276,6 +289,8 @@ public:
     // Platform integration
     virtual void addPlatform(const PlatformConfig& platform);
     virtual void removePlatform(PlatformType type);
+    virtual void setPlatformAdapter(PlatformType type, PlatformAdapter adapter);
+    virtual void clearPlatformAdapter(PlatformType type);
     virtual bool sendMessage(PlatformType platform, const std::string& channelId, const std::string& message);
     virtual std::vector<std::string> getRecentMessages(PlatformType platform, const std::string& channelId, size_t count = 50);
 
@@ -283,6 +298,7 @@ public:
     virtual void sendToAgent(const UUID& agentId, const std::string& message, const std::string& type = "message");
     virtual std::queue<std::string> getIncomingMessages();
     virtual void processMessage(const std::string& message, const std::string& senderId);
+    virtual std::vector<DeliveryEvidence> getDeliveryEvidence() const;
 
     // Task management integration
     virtual UUID createTask(const std::string& name, const std::string& description, int priority = 0);
@@ -292,6 +308,7 @@ public:
     // Configuration and settings
     virtual void updateConfig(const std::unordered_map<std::string, std::string>& settings);
     virtual std::string getConfigValue(const std::string& key) const;
+    std::size_t getProcessedWorkCount() const { return processedWorkCount_.load(); }
 
 protected:
     AgentConfig config_;
@@ -299,20 +316,42 @@ protected:
     State state_;
     std::vector<std::shared_ptr<Memory>> memoryStore_;
     std::unordered_map<PlatformType, PlatformConfig> platforms_;
+    std::unordered_map<PlatformType, PlatformAdapter> platformAdapters_;
+    std::unordered_map<PlatformType, std::unordered_map<std::string, std::vector<std::string>>> channelMessages_;
     std::queue<std::string> incomingMessages_;
+    std::vector<DeliveryEvidence> deliveryEvidence_;
+    std::unordered_map<UUID, std::shared_ptr<Task>> tasks_;
     std::atomic<bool> running_{false};
     std::atomic<bool> paused_{false};
+    std::atomic<std::size_t> processedWorkCount_{0};
+    mutable std::atomic<std::uint64_t> sequence_{0};
     std::unordered_map<std::string, std::string> settings_;
     
     mutable std::mutex memoryMutex_;
     mutable std::mutex platformMutex_;
     mutable std::mutex messageMutex_;
+    mutable std::mutex taskMutex_;
     mutable std::mutex settingsMutex_;
+    mutable std::mutex lifecycleMutex_;
+    mutable std::mutex threadMutex_;
+    std::condition_variable lifecycleCv_;
     
     // Internal helper methods
     virtual void processLoop() = 0;
     virtual bool validateMessage(const std::string& message) const;
     virtual std::string formatResponse(const std::string& response, PlatformType platform) const;
+    std::vector<std::string> drainIncomingMessages();
+    void waitForWork(std::chrono::milliseconds duration = std::chrono::milliseconds(25));
+    void noteProcessedWork(std::size_t count = 1) { processedWorkCount_.fetch_add(count); }
+};
+
+struct CommunityEventRecord {
+    UUID id;
+    std::string name;
+    std::string description;
+    Timestamp scheduledTime{};
+    std::vector<std::string> announcedChannels;
+    std::set<std::string> participants;
 };
 
 /**
@@ -322,6 +361,7 @@ protected:
 class CommunityManagerAgent : public TheOrgAgent {
 public:
     CommunityManagerAgent(const AgentConfig& config);
+    ~CommunityManagerAgent() override;
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -358,6 +398,14 @@ public:
     void scheduleEvent(const std::string& eventName, const std::string& description, Timestamp scheduledTime);
     void announceEvent(const std::string& eventId, const std::vector<std::string>& channelIds);
     void trackEventParticipation(const std::string& eventId, const std::string& userId);
+    void recordNewUser(const std::string& userId, const std::string& serverId);
+    void recordCommunityMessage(const std::string& message, const std::string& userId, const std::string& channelId);
+    std::vector<ModerationEvent> getModerationHistory() const;
+    std::vector<std::string> getEscalations() const;
+    std::vector<std::string> getConflictCases() const;
+    std::vector<CommunityEventRecord> getScheduledEvents() const;
+    std::string generateDailyCommunityReport();
+    std::vector<std::string> getDailyReports() const;
 
 private:
     void processLoop() override;
@@ -372,12 +420,19 @@ private:
     std::unordered_map<std::string, std::pair<ModerationAction, std::string>> moderationRules_;
     std::vector<ModerationEvent> moderationHistory_;
     CommunityMetrics currentMetrics_;
-    std::unordered_map<std::string, std::vector<Timestamp>> userActivity_;
+    std::unordered_map<std::string, std::vector<std::pair<Timestamp, std::string>>> userActivity_;
+    std::unordered_map<UUID, CommunityEventRecord> communityEvents_;
+    std::vector<std::string> conflictCases_;
+    std::vector<std::string> escalations_;
+    std::vector<std::string> dailyReports_;
+    std::set<std::string> knownUsers_;
+    std::set<std::string> greetedUsers_;
     std::thread processingThread_;
     
     mutable std::mutex rulesMutex_;
     mutable std::mutex metricsMutex_;
     mutable std::mutex activityMutex_;
+    mutable std::mutex communityStateMutex_;
 };
 
 /**
@@ -387,6 +442,7 @@ private:
 class DeveloperRelationsAgent : public TheOrgAgent {
 public:
     DeveloperRelationsAgent(const AgentConfig& config);
+    ~DeveloperRelationsAgent() override;
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -469,6 +525,7 @@ private:
 class CommunityLiaisonAgent : public TheOrgAgent {
 public:
     CommunityLiaisonAgent(const AgentConfig& config);
+    ~CommunityLiaisonAgent() override;
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -556,6 +613,7 @@ private:
 class ProjectManagerAgent : public TheOrgAgent {
 public:
     ProjectManagerAgent(const AgentConfig& config);
+    ~ProjectManagerAgent() override;
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -609,6 +667,7 @@ public:
     void resolveBlocker(const UUID& blockerId, const std::string& resolution);
     std::vector<std::string> getActiveBlockers(const UUID& projectId) const;
     void assessProjectRisk(const UUID& projectId);
+    std::vector<std::string> getCheckinReminders() const;
 
 private:
     void processLoop() override;
@@ -645,6 +704,10 @@ private:
     std::vector<Blocker> blockers_;
     std::unordered_map<UUID, ProjectMetrics> projectMetrics_;
     std::unordered_map<UUID, std::vector<std::pair<UUID, std::chrono::minutes>>> workHours_; // teamMemberId -> [(projectId, hours)]
+    std::unordered_map<UUID, std::vector<UUID>> memberTasks_;
+    std::set<UUID> checkinProjects_;
+    std::vector<std::string> checkinReminders_;
+    std::set<UUID> processedCheckinUpdateIds_;
     std::thread processingThread_;
     
     mutable std::mutex projectMutex_;
@@ -652,6 +715,7 @@ private:
     mutable std::mutex updateMutex_;
     mutable std::mutex blockerMutex_;
     mutable std::mutex metricsMutex_;
+    mutable std::mutex checkinMutex_;
 };
 
 /**
@@ -661,6 +725,7 @@ private:
 class SocialMediaManagerAgent : public TheOrgAgent {
 public:
     SocialMediaManagerAgent(const AgentConfig& config);
+    ~SocialMediaManagerAgent() override;
     
     // TheOrgAgent interface implementation
     void initialize() override;
@@ -681,7 +746,8 @@ public:
     // Content scheduling and publishing
     void scheduleContent(const UUID& contentId, Timestamp publishTime);
     void publishContent(const UUID& contentId);
-    void publishContentToPlatform(const UUID& contentId, PlatformType platform);
+    bool publishContentToPlatform(const UUID& contentId, PlatformType platform);
+    bool tryPublishContentToPlatform(const UUID& contentId, PlatformType platform);
     std::vector<UUID> getScheduledContent(std::chrono::hours timeWindow = std::chrono::hours(24)) const;
     
     // Content generation and AI assistance
@@ -698,10 +764,10 @@ public:
     std::string analyzeContentPerformance(std::chrono::hours timeWindow = std::chrono::hours(168)) const;
     
     // Engagement and interaction
-    void monitorMentions(PlatformType platform);
-    void respondToComment(const std::string& commentId, const std::string& response, PlatformType platform);
-    void likePost(const std::string& postId, PlatformType platform);
-    void sharePost(const std::string& postId, const std::string& comment, PlatformType platform);
+    bool monitorMentions(PlatformType platform);
+    bool respondToComment(const std::string& commentId, const std::string& response, PlatformType platform);
+    bool likePost(const std::string& postId, PlatformType platform);
+    bool sharePost(const std::string& postId, const std::string& comment, PlatformType platform);
     std::vector<std::string> getRecentMentions(PlatformType platform, std::chrono::hours timeWindow = std::chrono::hours(24)) const;
     
     // Analytics and insights
@@ -725,7 +791,7 @@ public:
     UUID createCampaign(const std::string& name, const std::string& description, 
                        const std::vector<PlatformType>& platforms, Timestamp startDate, Timestamp endDate);
     void addContentToCampaign(const UUID& campaignId, const UUID& contentId);
-    void launchCampaign(const UUID& campaignId);
+    bool launchCampaign(const UUID& campaignId);
     std::string analyzeCampaignPerformance(const UUID& campaignId) const;
 
 private:
@@ -804,6 +870,7 @@ public:
     void saveConfiguration(const std::string& configPath) const;
     void updateGlobalSetting(const std::string& key, const std::string& value);
     std::string getGlobalSetting(const std::string& key) const;
+    std::string getLastConfigurationError() const;
     
     // Platform integration coordination
     void addGlobalPlatform(const PlatformConfig& platform);
@@ -872,6 +939,7 @@ private:
     std::unordered_map<std::string, std::string> globalSettings_;
     
     std::atomic<bool> running_{false};
+    std::atomic<std::uint64_t> workflowSequence_{0};
     std::thread coordinationThread_;
     SystemMetrics currentMetrics_;
     
@@ -881,12 +949,19 @@ private:
     mutable std::mutex settingsMutex_;
     mutable std::mutex metricsMutex_;
     mutable std::mutex eventMutex_;
+    mutable std::mutex lifecycleMutex_;
+    mutable std::mutex operationMutex_;
+    std::condition_variable lifecycleCv_;
+    std::condition_variable operationCv_;
+    bool lifecycleOperationInProgress_ = false;
     
     // Event logging
     bool eventLoggingEnabled_ = false;
     std::string logPath_;
     std::string logLevel_ = "INFO";
     std::vector<std::string> eventLog_;
+    std::vector<std::pair<Timestamp, std::string>> timedEventLog_;
+    mutable std::string lastConfigurationError_;
     mutable std::mutex logMutex_;
 };
 

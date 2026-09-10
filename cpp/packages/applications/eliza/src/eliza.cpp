@@ -664,7 +664,6 @@ std::string ElizaCore::processInput(const std::string& input,
                          "warning", "eliza");
         }
     }
-    
     std::string response = responseGenerator_->generateResponse(processedInput, context, character);
     
     // Postprocess response

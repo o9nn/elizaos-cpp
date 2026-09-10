@@ -217,9 +217,20 @@ private:
     GitHubPagesConfig config_;
     DeploymentStatus last_deployment_status_;
     std::filesystem::path temp_repo_dir_;
-    
+
+    struct CommandResult {
+        int exit_code = -1;
+        std::string output;
+
+        bool succeeded() const noexcept { return exit_code == 0; }
+    };
+
     bool validateConfiguration() const;
-    std::string executeGitCommand(const std::string& command, const std::filesystem::path& working_dir) const;
+    CommandResult executeCommand(
+        const std::vector<std::string>& arguments,
+        const std::filesystem::path& working_dir = {},
+        const std::unordered_map<std::string, std::string>& environment = {}) const;
+    bool validateGitRef(const std::string& ref_name) const;
     bool makeHttpRequest(const std::string& method, const std::string& url, 
                         const std::string& data, std::string& response) const;
     std::string buildGitHubApiUrl(const std::string& endpoint) const;

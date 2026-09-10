@@ -1303,6 +1303,253 @@ TEST(PersistenceStorageManager, GlobalInitKvRoundTripAndShutdown) {
     removeDbFiles(path);
 }
 
+
+// ===========================================================================
+// SQLite lifetime, transaction serialization, and pool lifecycle audit tests
+// ===========================================================================
+
+TEST(PersistenceAsyncAudit, AcceptedQueryOutlivesBackendDestruction) {
+    std::future<StorageResult<ResultSet>> future;
+    {
+        auto backend = std::make_unique<SQLiteBackend>(StorageConfig::inMemory());
+        ASSERT_TRUE(backend->connect());
+        future = backend->queryAsync(
+            "WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM n WHERE x<200000) "
+            "SELECT sum(x) FROM n");
+        backend.reset();
+    }
+
+    ASSERT_EQ(future.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    auto result = future.get();
+    ASSERT_TRUE(result.success) << result.error.value_or("");
+    ASSERT_TRUE(result.value.has_value());
+    EXPECT_EQ(result.value->front()[0].asInt(), int64_t{20000100000LL});
+}
+
+TEST(PersistenceAsyncAudit, DisconnectWaitsForAcceptedWorkAndRejectsNewWork) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+
+    auto accepted = backend.queryAsync(
+        "WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM n WHERE x<500000) "
+        "SELECT sum(x) FROM n");
+    auto disconnect = std::async(std::launch::async, [&backend]() {
+        return backend.disconnect();
+    });
+
+    for (int i = 0; i < 100 && backend.isConnected(); ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    EXPECT_FALSE(backend.isConnected());
+    EXPECT_FALSE(backend.queryAsync("SELECT 1").get().success);
+    ASSERT_EQ(accepted.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    EXPECT_TRUE(accepted.get().success);
+    ASSERT_EQ(disconnect.wait_for(std::chrono::seconds(5)), std::future_status::ready);
+    EXPECT_TRUE(disconnect.get());
+}
+
+TEST(PersistenceAsyncAudit, ExplicitDisconnectCanPrecedeBackendDestruction) {
+    auto backend = std::make_unique<SQLiteBackend>(StorageConfig::inMemory());
+    ASSERT_TRUE(backend->connect());
+    auto future = backend->queryAsync(
+        "WITH RECURSIVE n(x) AS (VALUES(1) UNION ALL SELECT x+1 FROM n WHERE x<200000) "
+        "SELECT sum(x) FROM n");
+    ASSERT_TRUE(backend->disconnect());
+    backend.reset();
+    EXPECT_TRUE(future.get().success);
+}
+
+TEST(PersistenceTransactionAudit, DisconnectRejectsWhileTransactionIsLive) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.execute("CREATE TABLE txn_race (v INTEGER)").success);
+    auto transaction = backend.beginTransaction();
+    ASSERT_NE(transaction, nullptr);
+    ASSERT_TRUE(transaction->execute("INSERT INTO txn_race VALUES (1)").success);
+
+    auto disconnect = std::async(std::launch::async, [&]() {
+        return backend.disconnect();
+    });
+    ASSERT_EQ(disconnect.wait_for(std::chrono::seconds(2)), std::future_status::ready);
+    EXPECT_FALSE(disconnect.get());
+    EXPECT_TRUE(backend.isConnected());
+    EXPECT_TRUE(transaction->isActive());
+    EXPECT_TRUE(transaction->commit());
+    EXPECT_TRUE(backend.disconnect());
+    EXPECT_FALSE(backend.isConnected());
+}
+
+TEST(PersistenceTransactionAudit, TransactionSafelyOutlivesBackend) {
+    std::shared_ptr<Transaction> transaction;
+    {
+        auto backend = std::make_unique<SQLiteBackend>(StorageConfig::inMemory());
+        ASSERT_TRUE(backend->connect());
+        ASSERT_TRUE(backend->execute("CREATE TABLE txn_lifetime (v INTEGER)").success);
+        transaction = backend->beginTransaction();
+        ASSERT_NE(transaction, nullptr);
+        ASSERT_TRUE(transaction->execute("INSERT INTO txn_lifetime VALUES (7)").success);
+        backend.reset();
+    }
+    EXPECT_TRUE(transaction->isActive());
+    EXPECT_TRUE(transaction->rollback());
+}
+
+TEST(PersistenceTransactionAudit, ScopeMoveAssignmentRollsBackOwnedTransaction) {
+    SQLiteBackend first(StorageConfig::inMemory());
+    SQLiteBackend second(StorageConfig::inMemory());
+    ASSERT_TRUE(first.connect());
+    ASSERT_TRUE(second.connect());
+    ASSERT_TRUE(first.execute("CREATE TABLE moved (v INTEGER)").success);
+    ASSERT_TRUE(second.execute("CREATE TABLE moved (v INTEGER)").success);
+
+    TransactionScope destination(first.beginTransaction());
+    ASSERT_TRUE(destination.execute("INSERT INTO moved VALUES (1)").success);
+    TransactionScope source(second.beginTransaction());
+    ASSERT_TRUE(source.execute("INSERT INTO moved VALUES (2)").success);
+    destination = std::move(source);
+    destination.commit();
+
+    auto firstRows = first.query("SELECT COUNT(*) FROM moved");
+    auto secondRows = second.query("SELECT COUNT(*) FROM moved");
+    ASSERT_TRUE(firstRows.success && secondRows.success);
+    EXPECT_EQ(firstRows.value->front()[0].asInt(), 0);
+    EXPECT_EQ(secondRows.value->front()[0].asInt(), 1);
+}
+
+TEST(PersistenceTransactionAudit, FailedScopeCommitRemainsRollbackEligible) {
+    class FailingCommitTransaction final : public Transaction {
+    public:
+        bool commit() override { ++commitCalls; return false; }
+        bool rollback() override { ++rollbackCalls; active = false; return true; }
+        bool isActive() const override { return active; }
+        StorageResult<ResultSet> execute(const std::string&, const QueryParams&) override {
+            return StorageResult<ResultSet>::ok({});
+        }
+        bool active = true;
+        int commitCalls = 0;
+        int rollbackCalls = 0;
+    };
+
+    auto transaction = std::make_shared<FailingCommitTransaction>();
+    {
+        TransactionScope scope(transaction);
+        scope.commit();
+        EXPECT_TRUE(scope.isActive());
+        EXPECT_EQ(transaction->commitCalls, 1);
+    }
+    EXPECT_EQ(transaction->rollbackCalls, 1);
+    EXPECT_FALSE(transaction->isActive());
+}
+
+TEST(PersistenceSQLiteAudit, BatchFailureRollsBackEveryRow) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.execute("CREATE TABLE atomic_batch (id INTEGER PRIMARY KEY)").success);
+    const std::vector<QueryParams> rows = {
+        {int64_t{1}}, {int64_t{2}}, {int64_t{1}}, {int64_t{3}}
+    };
+    EXPECT_FALSE(backend.executeBatch("INSERT INTO atomic_batch VALUES (?)", rows).success);
+    auto count = backend.query("SELECT COUNT(*) FROM atomic_batch");
+    ASSERT_TRUE(count.success);
+    EXPECT_EQ(count.value->front()[0].asInt(), 0);
+}
+
+TEST(PersistenceSQLiteAudit, EmptyBlobRemainsDistinctFromNull) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.execute("CREATE TABLE blob_edges (v BLOB)").success);
+    ASSERT_TRUE(backend.executeBatch("INSERT INTO blob_edges VALUES (?)",
+        {{std::vector<uint8_t>{}}, {QueryParam(nullptr)}}).success);
+
+    auto rows = backend.query("SELECT v, typeof(v), length(v) FROM blob_edges ORDER BY rowid");
+    ASSERT_TRUE(rows.success);
+    ASSERT_EQ(rows.value->size(), 2u);
+    EXPECT_TRUE(rows.value->at(0)[0].isBlob());
+    EXPECT_TRUE(rows.value->at(0)[0].asBlob().empty());
+    EXPECT_EQ(rows.value->at(0)[1].asString(), "blob");
+    EXPECT_EQ(rows.value->at(0)[2].asInt(), 0);
+    EXPECT_TRUE(rows.value->at(1)[0].isNull());
+}
+
+TEST(PersistenceSQLiteAudit, BindCountFailureDoesNotExecuteStatement) {
+    SQLiteBackend backend(StorageConfig::inMemory());
+    ASSERT_TRUE(backend.connect());
+    ASSERT_TRUE(backend.execute("CREATE TABLE bind_failure (v INTEGER)").success);
+    EXPECT_FALSE(backend.execute("INSERT INTO bind_failure VALUES (?)",
+                                 {int64_t{1}, int64_t{2}}).success);
+    auto count = backend.query("SELECT COUNT(*) FROM bind_failure");
+    ASSERT_TRUE(count.success);
+    EXPECT_EQ(count.value->front()[0].asInt(), 0);
+}
+
+TEST(PersistencePoolAudit, AcquireHonorsTimeout) {
+    const std::string path = makeTempDbPath("pool_timeout");
+    removeDbFiles(path);
+    StorageConfig config = StorageConfig::file(path);
+    config.maxConnections = 1;
+    config.connectionTimeout = 40;
+    ConnectionPool pool(config);
+    auto lease = pool.acquire();
+    ASSERT_NE(lease, nullptr);
+
+    const auto start = std::chrono::steady_clock::now();
+    auto unavailable = pool.acquire();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::steady_clock::now() - start);
+    EXPECT_EQ(unavailable, nullptr);
+    EXPECT_GE(elapsed.count(), 25);
+    EXPECT_LT(elapsed.count(), 1000);
+    pool.release(lease);
+    removeDbFiles(path);
+}
+
+TEST(PersistencePoolAudit, ClearPreservesActiveLeaseUntilRelease) {
+    const std::string path = makeTempDbPath("pool_clear");
+    removeDbFiles(path);
+    StorageConfig config = StorageConfig::file(path);
+    config.maxConnections = 2;
+    config.connectionTimeout = 20;
+    ConnectionPool pool(config);
+    auto lease = pool.acquire();
+    ASSERT_NE(lease, nullptr);
+    ASSERT_TRUE(lease->execute("CREATE TABLE still_leased (v INTEGER)").success);
+
+    pool.clear();
+    EXPECT_TRUE(lease->isConnected());
+    EXPECT_TRUE(lease->execute("INSERT INTO still_leased VALUES (1)").success);
+    EXPECT_EQ(pool.activeConnections(), 1u);
+    EXPECT_EQ(pool.acquire(), nullptr);
+    pool.release(lease);
+    EXPECT_FALSE(lease->isConnected());
+    EXPECT_EQ(pool.totalConnections(), 0u);
+    removeDbFiles(path);
+}
+
+TEST(PersistencePoolAudit, ResizeShrinksIdleAndRetiresExcessLease) {
+    const std::string path = makeTempDbPath("pool_shrink");
+    removeDbFiles(path);
+    StorageConfig config = StorageConfig::file(path);
+    config.maxConnections = 4;
+    ConnectionPool pool(config);
+    auto first = pool.acquire();
+    auto second = pool.acquire();
+    ASSERT_NE(first, nullptr);
+    ASSERT_NE(second, nullptr);
+
+    pool.resize(1);
+    EXPECT_EQ(pool.availableConnections(), 0u);
+    EXPECT_EQ(pool.totalConnections(), 2u);
+    EXPECT_TRUE(first->isConnected());
+    EXPECT_TRUE(second->isConnected());
+    pool.release(first);
+    EXPECT_FALSE(first->isConnected());
+    EXPECT_EQ(pool.totalConnections(), 1u);
+    pool.release(second);
+    EXPECT_TRUE(second->isConnected());
+    EXPECT_EQ(pool.availableConnections(), 1u);
+    removeDbFiles(path);
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -48,13 +48,24 @@ void AgentLoop::start() {
         [this] { return started_.load(); });
     
     if (!startSucceeded) {
-        // Loop thread failed to start in time - clean up and throw
-        // Note: Thread detach leaves it running but is preferable to blocking forever
+        // Loop thread failed to publish startup in time. Keep ownership: request
+        // cancellation, release startedMutex_ so runLoop can finish its startup
+        // handshake, wake any paused wait, and join before exposing failure. A
+        // detached thread would retain a raw `this` past destruction.
         stopRequested_ = true;
         running_ = false;
-        if (loopThread_ && loopThread_->joinable()) {
-            loopThread_->detach();
+        lock.unlock();
+        {
+            std::lock_guard<std::mutex> stepLock(stepMutex_);
+            stepSignaled_ = true;
         }
+        stepEvent_.notify_all();
+        if (loopThread_ && loopThread_->joinable()) {
+            loopThread_->join();
+        }
+        loopThread_.reset();
+        oldStatus = healthStatus_.exchange(HealthStatus::STOPPED);
+        notifyHealthChange(oldStatus, HealthStatus::STOPPED);
         throw std::runtime_error("AgentLoop failed to start within 5 seconds");
     }
 

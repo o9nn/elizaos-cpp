@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core.hpp"
+#include "elizaos/core.hpp"
 #include <string>
 #include <vector>
 #include <memory>
@@ -9,6 +9,8 @@
 #include <thread>
 #include <mutex>
 #include <future>
+#include <atomic>
+#include <cstddef>
 
 namespace elizaos {
 
@@ -32,6 +34,7 @@ enum class PluginStatus {
 struct PluginMetadata {
     std::string name;
     std::string version;
+    std::string apiVersion = "1.0";
     std::string description;
     std::string author;
     std::vector<std::string> dependencies;
@@ -54,6 +57,13 @@ public:
     virtual std::string getVersion() const = 0;
     virtual PluginStatus getStatus() const = 0;
     virtual std::vector<std::string> getDependencies() const = 0;
+
+    // Initialized plugins are healthy before and after activation by default.
+    virtual bool healthCheck() const {
+        const auto status = getStatus();
+        return status == PluginStatus::LOADED || status == PluginStatus::ACTIVE ||
+               status == PluginStatus::INACTIVE;
+    }
 };
 
 // Plugin registry for managing loaded plugins
@@ -67,6 +77,12 @@ public:
     bool unregisterPlugin(const std::string& name);
     std::shared_ptr<Plugin> getPlugin(const std::string& name);
     std::vector<std::string> getPluginNames() const;
+
+    // Validated lifecycle transitions; plugin callbacks run outside registry locks.
+    bool initializePlugin(const std::string& name);
+    bool activatePlugin(const std::string& name);
+    bool deactivatePlugin(const std::string& name);
+    bool checkPluginHealth(const std::string& name) const;
     
     // Status queries
     PluginStatus getPluginStatus(const std::string& name) const;
@@ -80,9 +96,13 @@ public:
 private:
     std::unordered_map<std::string, std::shared_ptr<Plugin>> plugins_;
     std::unordered_map<std::string, PluginMetadata> metadata_;
+    std::unordered_map<std::string, PluginStatus> states_;
+    std::unordered_map<std::string, PluginStatus> stableStates_;
+    std::unordered_map<std::string, bool> transitions_;
     mutable std::mutex registryMutex_;
     
     bool checkDependencies(const PluginMetadata& metadata) const;
+    bool hasDependents(const std::string& name) const;
 };
 
 // CI/CD pipeline integration
@@ -130,6 +150,19 @@ private:
 // Automated testing framework for plugins
 class PluginTester {
 public:
+    class StopToken {
+    public:
+        StopToken() = default;
+        bool stopRequested() const noexcept;
+
+    private:
+        explicit StopToken(std::shared_ptr<std::atomic<bool>> stopRequested);
+        std::shared_ptr<std::atomic<bool>> stopRequested_;
+        friend class PluginTester;
+    };
+
+    using CooperativeTestFunction = std::function<bool(const StopToken&)>;
+
     PluginTester();
     ~PluginTester();
     
@@ -139,6 +172,8 @@ public:
         bool passed;
         std::string message;
         double executionTime;
+        bool timedOut = false;
+        bool admissionRejected = false;
         
         TestResult(const std::string& name = "", bool success = false, 
                   const std::string& msg = "", double time = 0.0)
@@ -147,6 +182,7 @@ public:
     
     // Test suite management
     void addTestCase(const std::string& testName, std::function<bool()> testFunc);
+    void addTestCase(const std::string& testName, CooperativeTestFunction testFunc);
     void removeTestCase(const std::string& testName);
     std::vector<TestResult> runTests(const std::string& pluginName);
     std::vector<TestResult> runAllTests();
@@ -154,14 +190,18 @@ public:
     // Test configuration
     void setTimeout(int seconds);
     void setVerbose(bool verbose);
+    void setMaxPendingTests(std::size_t maxPendingTests);
     
 private:
-    std::unordered_map<std::string, std::function<bool()>> testCases_;
+    struct ExecutorState;
+    std::unordered_map<std::string, CooperativeTestFunction> testCases_;
     int timeoutSeconds_;
     bool verbose_;
+    std::size_t maxPendingTests_;
     mutable std::mutex testMutex_;
+    std::shared_ptr<ExecutorState> executor_;
     
-    TestResult executeTest(const std::string& testName, std::function<bool()> testFunc);
+    TestResult executeTest(const std::string& testName, CooperativeTestFunction testFunc);
 };
 
 // Development workflow automation

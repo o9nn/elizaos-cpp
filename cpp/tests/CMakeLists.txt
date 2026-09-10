@@ -47,6 +47,13 @@ add_test(NAME agentmemory_test COMMAND agentmemory_test)
 add_executable(agentshell_test agentshell_test.cpp)
 target_link_libraries(agentshell_test elizaos-agentshell gtest gtest_main Threads::Threads)
 add_test(NAME agentshell_test COMMAND agentshell_test)
+set_tests_properties(agentshell_test PROPERTIES TIMEOUT 30)
+if(MSVC)
+    target_compile_options(agentshell_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(agentshell_test PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror)
+endif()
 
 add_executable(auto_fun_test auto_fun_test.cpp)
 target_link_libraries(auto_fun_test elizaos-auto_fun gtest gtest_main Threads::Threads)
@@ -136,11 +143,18 @@ add_executable(discord_summarizer_test discord_summarizer_test.cpp)
 target_link_libraries(discord_summarizer_test elizaos-discord_summarizer gtest gtest_main Threads::Threads)
 add_test(NAME discord_summarizer_test COMMAND discord_summarizer_test)
 
-# discrub_ext lib has a broken static initializer that crashes at process load.
-# Tests use header-only API surface (sizes/enums) without linking the lib.
 add_executable(discrub_ext_test discrub_ext_test.cpp)
-target_link_libraries(discrub_ext_test gtest gtest_main Threads::Threads)
+target_link_libraries(discrub_ext_test
+    elizaos-discrub_ext gtest gtest_main Threads::Threads)
+target_compile_features(discrub_ext_test PRIVATE cxx_std_17)
+if(MSVC)
+    target_compile_options(discrub_ext_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(discrub_ext_test PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror)
+endif()
 add_test(NAME discrub_ext_test COMMAND discrub_ext_test)
+set_tests_properties(discrub_ext_test PROPERTIES TIMEOUT 30)
 
 add_executable(easycompletion_test easycompletion_test.cpp)
 target_link_libraries(easycompletion_test elizaos-easycompletion gtest gtest_main Threads::Threads)
@@ -184,7 +198,13 @@ add_test(NAME embodiment_test COMMAND embodiment_test)
 
 add_executable(evolutionary_test evolutionary_test.cpp)
 target_link_libraries(evolutionary_test elizaos-evolutionary gtest gtest_main Threads::Threads)
+if(MSVC)
+    target_compile_options(evolutionary_test PRIVATE /WX)
+else()
+    target_compile_options(evolutionary_test PRIVATE -Werror)
+endif()
 add_test(NAME evolutionary_test COMMAND evolutionary_test)
+set_tests_properties(evolutionary_test PROPERTIES TIMEOUT 30)
 
 add_executable(hat_test hat_test.cpp)
 target_link_libraries(hat_test elizaos-hat gtest gtest_main Threads::Threads)
@@ -201,6 +221,16 @@ add_test(NAME knowledge_test COMMAND knowledge_test)
 add_executable(livevideochat_test livevideochat_test.cpp)
 target_link_libraries(livevideochat_test elizaos-livevideochat gtest gtest_main Threads::Threads)
 add_test(NAME livevideochat_test COMMAND livevideochat_test)
+
+add_executable(livevideochat_server_test livevideochat_server_test.cpp)
+target_link_libraries(livevideochat_server_test
+    elizaos-livevideochat
+    gtest
+    gtest_main
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+add_test(NAME livevideochat_server_test COMMAND livevideochat_server_test)
 
 add_executable(ljspeechtools_test ljspeechtools_test.cpp)
 target_link_libraries(ljspeechtools_test elizaos-ljspeechtools gtest gtest_main Threads::Threads)
@@ -224,6 +254,11 @@ add_test(NAME otaku_liquidity_test COMMAND otaku_liquidity_test)
 
 add_executable(otc_agent_test otc_agent_test.cpp)
 target_link_libraries(otc_agent_test elizaos-otc_agent gtest gtest_main Threads::Threads)
+if(MSVC)
+    target_compile_options(otc_agent_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(otc_agent_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
 add_test(NAME otc_agent_test COMMAND otc_agent_test)
 
 add_executable(plugin_specification_test plugin_specification_test.cpp)
@@ -263,6 +298,15 @@ target_link_libraries(website_test elizaos-website gtest gtest_main Threads::Thr
 add_test(NAME website_test COMMAND website_test)
 
 add_executable(workgroups_test workgroups_test.cpp)
+set_target_properties(workgroups_test PROPERTIES
+    CXX_STANDARD ${ELIZAOS_WORKGROUPS_CXX_STANDARD}
+    CXX_STANDARD_REQUIRED ON
+    CXX_EXTENSIONS OFF)
+if(MSVC)
+    target_compile_options(workgroups_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(workgroups_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
 target_link_libraries(workgroups_test elizaos-workgroups gtest gtest_main Threads::Threads)
 add_test(NAME workgroups_test COMMAND workgroups_test)
 
@@ -370,34 +414,89 @@ add_real_test(real_embodiment_test          src/test_embodiment.cpp)
 add_real_test(real_livevideochat_comprehensive_test src/test_livevideochat.cpp)
 target_link_libraries(real_livevideochat_comprehensive_test elizaos-livevideochat)
 add_real_test(real_evolutionary_test        src/test_evolutionary.cpp)
+if(MSVC)
+    target_compile_options(real_evolutionary_test PRIVATE /WX)
+else()
+    target_compile_options(real_evolutionary_test PRIVATE -Werror)
+endif()
+set_tests_properties(real_evolutionary_test PROPERTIES TIMEOUT 30)
 add_real_test(real_ontogenesis_test         src/test_ontogenesis.cpp)
 add_real_test(real_cognitive_primitives_test src/test_cognitive_primitives.cpp)
 
 # Comprehensive suites that existed in source but were previously absent from
-# the build graph. Keep each standalone so failures identify the affected organ.
-add_real_test(real_elizas_list_unit_test elizas_list_unit_test.cpp)
-target_link_libraries(real_elizas_list_unit_test elizaos-elizas_list)
+# the build graph. Registry/List suites intentionally use only their focused
+# dependencies so unrelated optional organs cannot block their validation.
+add_executable(real_elizas_list_unit_test elizas_list_unit_test.cpp)
+target_link_libraries(real_elizas_list_unit_test PRIVATE
+    elizaos-elizas_list gtest gtest_main nlohmann_json::nlohmann_json Threads::Threads)
+add_test(NAME real_elizas_list_unit_test COMMAND real_elizas_list_unit_test)
+set_tests_properties(real_elizas_list_unit_test PROPERTIES LABELS "ksm;real")
 add_real_test(real_agentshell_comprehensive_test src/test_agentshell.cpp)
 target_link_libraries(real_agentshell_comprehensive_test elizaos-agentshell)
+set_tests_properties(real_agentshell_comprehensive_test PROPERTIES TIMEOUT 30)
+if(MSVC)
+    target_compile_options(real_agentshell_comprehensive_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(real_agentshell_comprehensive_test PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror)
+endif()
 add_real_test(real_characterfile_comprehensive_test src/test_characterfile.cpp)
 target_link_libraries(real_characterfile_comprehensive_test elizaos-characterfile)
 add_real_test(real_easycompletion_comprehensive_test src/test_easycompletion.cpp)
 target_link_libraries(real_easycompletion_comprehensive_test elizaos-easycompletion)
 add_real_test(real_eliza_comprehensive_test src/test_eliza.cpp)
 target_link_libraries(real_eliza_comprehensive_test elizaos-eliza)
-add_real_test(real_elizas_list_comprehensive_test src/test_elizas_list.cpp)
-target_link_libraries(real_elizas_list_comprehensive_test elizaos-elizas_list)
+add_executable(real_elizas_list_comprehensive_test src/test_elizas_list.cpp)
+target_link_libraries(real_elizas_list_comprehensive_test PRIVATE
+    elizaos-elizas_list gtest gtest_main nlohmann_json::nlohmann_json Threads::Threads)
+add_test(NAME real_elizas_list_comprehensive_test COMMAND real_elizas_list_comprehensive_test)
+set_tests_properties(real_elizas_list_comprehensive_test PROPERTIES LABELS "ksm;real")
 add_real_test(real_cross_module_integration_test src/test_integration.cpp)
-add_real_test(real_ljspeechtools_comprehensive_test src/test_ljspeechtools.cpp)
-target_link_libraries(real_ljspeechtools_comprehensive_test elizaos-ljspeechtools)
+# This focused suite intentionally avoids add_real_test(), whose all-module
+# dependency set makes LJ validation depend on unrelated optional modules.
+add_executable(real_ljspeechtools_comprehensive_test
+    src/test_ljspeechtools.cpp
+    src/shim_main.cpp
+)
+target_link_libraries(real_ljspeechtools_comprehensive_test PRIVATE
+    elizaos-ljspeechtools
+    gtest
+    Threads::Threads
+)
+if(MSVC)
+    target_compile_options(real_ljspeechtools_comprehensive_test PRIVATE /WX)
+else()
+    target_compile_options(real_ljspeechtools_comprehensive_test PRIVATE -Werror)
+endif()
+add_test(NAME real_ljspeechtools_comprehensive_test
+         COMMAND real_ljspeechtools_comprehensive_test)
+set_tests_properties(real_ljspeechtools_comprehensive_test PROPERTIES
+    LABELS "ksm;real")
 add_real_test(real_mcp_gateway_comprehensive_test src/test_mcp_gateway.cpp)
 target_link_libraries(real_mcp_gateway_comprehensive_test elizaos-mcp_gateway)
 add_real_test(real_the_org_comprehensive_test src/test_the_org.cpp)
 target_link_libraries(real_the_org_comprehensive_test elizaos-the_org)
-add_real_test(real_trust_scoreboard_comprehensive_test src/test_trust_scoreboard.cpp)
-target_link_libraries(real_trust_scoreboard_comprehensive_test elizaos-trust_scoreboard)
+add_real_test(real_the_org_repair_comprehensive_test src/test_the_org_comprehensive.cpp)
+target_link_libraries(real_the_org_repair_comprehensive_test elizaos-the_org)
+set_tests_properties(real_the_org_repair_comprehensive_test PROPERTIES TIMEOUT 45)
+add_executable(real_trust_scoreboard_comprehensive_test
+    src/test_trust_scoreboard.cpp)
+target_link_libraries(real_trust_scoreboard_comprehensive_test PRIVATE
+    elizaos-trust-scoreboard gtest gtest_main Threads::Threads)
+add_test(NAME real_trust_scoreboard_comprehensive_test
+    COMMAND real_trust_scoreboard_comprehensive_test)
+set_tests_properties(real_trust_scoreboard_comprehensive_test PROPERTIES
+    LABELS "ksm;real" TIMEOUT 45)
 add_real_test(real_vercel_api_comprehensive_test src/test_vercel_api.cpp)
 target_link_libraries(real_vercel_api_comprehensive_test elizaos-vercel_api)
+add_executable(real_website_comprehensive_test src/test_website.cpp)
+target_include_directories(real_website_comprehensive_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/cpp/include)
+target_link_libraries(real_website_comprehensive_test
+    elizaos-website gtest gtest_main Threads::Threads)
+add_test(NAME real_website_comprehensive_test COMMAND real_website_comprehensive_test)
+set_tests_properties(real_website_comprehensive_test PROPERTIES TIMEOUT 45)
 
 # Additional dormant suites. Some own main(), so register them without shim_main.
 function(add_standalone_gtest name src_file)
@@ -410,13 +509,31 @@ function(add_standalone_gtest name src_file)
     add_test(NAME ${name} COMMAND ${name})
 endfunction()
 
-add_real_test(real_elizas_list_roundtrip_test elizas_list_real_test.cpp)
-target_link_libraries(real_elizas_list_roundtrip_test elizaos-elizas_list)
+add_executable(real_elizas_list_roundtrip_test elizas_list_real_test.cpp)
+target_link_libraries(real_elizas_list_roundtrip_test PRIVATE
+    elizaos-elizas_list gtest gtest_main nlohmann_json::nlohmann_json Threads::Threads)
+add_test(NAME real_elizas_list_roundtrip_test COMMAND real_elizas_list_roundtrip_test)
+set_tests_properties(real_elizas_list_roundtrip_test PROPERTIES LABELS "ksm;real")
 add_standalone_gtest(real_brandkit_comprehensive_test src/test_brandkit.cpp elizaos-brandkit)
 add_real_test(real_elizas_world_comprehensive_test src/test_elizas_world.cpp)
 target_link_libraries(real_elizas_world_comprehensive_test elizaos-elizas_world)
 add_standalone_gtest(real_hat_comprehensive_test src/test_hat.cpp elizaos-hat)
 add_standalone_gtest(real_registry_comprehensive_test src/test_registry.cpp elizaos-registry elizaos-agentlogger)
+foreach(_registry_list_test
+    registry_test
+    real_registry_comprehensive_test
+    elizas_list_test
+    real_elizas_list_unit_test
+    real_elizas_list_comprehensive_test
+    real_elizas_list_roundtrip_test
+)
+    if(MSVC)
+        target_compile_options(${_registry_list_test} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${_registry_list_test} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    endif()
+    set_tests_properties(${_registry_list_test} PROPERTIES TIMEOUT 60)
+endforeach()
 add_real_test(real_spartan_comprehensive_test src/test_spartan.cpp)
 target_link_libraries(real_spartan_comprehensive_test elizaos-spartan)
 add_real_test(real_stage6_automation_comprehensive_test src/test_stage6_automation.cpp)
@@ -475,6 +592,48 @@ target_link_libraries(api_client_real_test
     Threads::Threads
 )
 add_test(NAME api_client_real_test COMMAND api_client_real_test)
+
+# Deterministic provider boundary tests. All network behavior is supplied by an
+# injectable fake transport; this target never makes external requests.
+add_executable(dgen_kobold_provider_test dgen_kobold_provider_test.cpp)
+target_link_libraries(dgen_kobold_provider_test PRIVATE
+    elizaos-dgen_kobold_provider
+    gtest
+    gtest_main
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+if(MSVC)
+    target_compile_options(dgen_kobold_provider_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(dgen_kobold_provider_test PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror)
+endif()
+add_test(NAME dgen_kobold_provider_test COMMAND dgen_kobold_provider_test)
+set_tests_properties(dgen_kobold_provider_test PROPERTIES TIMEOUT 30)
+
+# Compile the HTTP implementation itself with the production adapter disabled.
+add_executable(dgen_kobold_no_libcurl_test
+    dgen_kobold_no_libcurl_test.cpp
+    ${CMAKE_SOURCE_DIR}/cpp/packages/plugins/dgen_kobold_provider/src/http_client.cpp
+)
+target_include_directories(dgen_kobold_no_libcurl_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/cpp/packages/plugins/dgen_kobold_provider/src
+)
+target_compile_definitions(dgen_kobold_no_libcurl_test PRIVATE
+    ELIZAOS_DGEN_KOBOLD_HAS_LIBCURL=0
+)
+target_link_libraries(dgen_kobold_no_libcurl_test PRIVATE
+    gtest gtest_main nlohmann_json::nlohmann_json Threads::Threads
+)
+if(MSVC)
+    target_compile_options(dgen_kobold_no_libcurl_test PRIVATE /W4 /WX)
+else()
+    target_compile_options(dgen_kobold_no_libcurl_test PRIVATE
+        -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror)
+endif()
+add_test(NAME dgen_kobold_no_libcurl_test COMMAND dgen_kobold_no_libcurl_test)
+set_tests_properties(dgen_kobold_no_libcurl_test PROPERTIES TIMEOUT 30)
 
 # Targeted api-client Feature Garden Ledger tests: truthful BaseClient + ServerService vertical slice.
 add_executable(real_api_client_test src/test_api_client.cpp src/shim_main.cpp)
@@ -613,8 +772,10 @@ set(ELIZAOS_KSM_CANONICAL_TEST_TARGETS
     real_ljspeechtools_comprehensive_test
     real_mcp_gateway_comprehensive_test
     real_the_org_comprehensive_test
+    real_the_org_repair_comprehensive_test
     real_trust_scoreboard_comprehensive_test
     real_vercel_api_comprehensive_test
+    real_website_comprehensive_test
     real_elizas_list_roundtrip_test
     real_brandkit_comprehensive_test
     real_elizas_world_comprehensive_test
@@ -814,7 +975,12 @@ endif()
 # Village Module E2E: KSM Transfer Engine, AgnAI Bridge, Group Dynamics,
 # Antikythera Temporal Coupling — full village subsystem integration.
 add_real_test(real_village_e2e_test src/test_village_e2e.cpp)
-target_include_directories(real_village_e2e_test PRIVATE ${CMAKE_SOURCE_DIR}/village)
+target_sources(real_village_e2e_test PRIVATE ${CMAKE_SOURCE_DIR}/village/elizad.cpp)
+target_compile_definitions(real_village_e2e_test PRIVATE ELIZAD_ACTION_TEST_ONLY)
+target_include_directories(real_village_e2e_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/village
+    ${CMAKE_SOURCE_DIR}/village/include
+)
 target_link_libraries(real_village_e2e_test village_group_dynamics antikythera_coupling nlohmann_json::nlohmann_json)
 if(TARGET real_village_e2e_test)
     list(APPEND ELIZAOS_KSM_CANONICAL_TEST_TARGETS real_village_e2e_test)

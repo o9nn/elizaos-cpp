@@ -11,6 +11,8 @@
 #include <optional>
 #include <variant>
 #include <mutex>
+#include <condition_variable>
+#include <cstdint>
 
 namespace elizaos {
 
@@ -228,11 +230,32 @@ struct TaskOptions {
     std::unordered_map<std::string, std::string> data;
 };
 
+/**
+ * Coherent value snapshot of a Task. Prefer this API when a task may be
+ * observed while TaskManager is running.
+ */
+struct TaskSnapshot {
+    UUID id;
+    std::string name;
+    std::string description;
+    UUID roomId;
+    UUID worldId;
+    TaskStatus status = TaskStatus::PENDING;
+    std::vector<std::string> tags;
+    TaskOptions options;
+    Timestamp createdAt;
+    Timestamp updatedAt;
+    std::optional<Timestamp> scheduledTime;
+    int priority = 0;
+};
+
 class Task {
 public:
     Task(const UUID& id, const std::string& name, const std::string& description);
     Task(const UUID& id, const std::string& name, const std::string& description,
          const UUID& roomId, const UUID& worldId);
+    Task(const Task& other);
+    Task& operator=(const Task& other);
     
     const UUID& getId() const { return id_; }
     const std::string& getName() const { return name_; }
@@ -240,25 +263,34 @@ public:
     const UUID& getRoomId() const { return roomId_; }
     const UUID& getWorldId() const { return worldId_; }
     
-    TaskStatus getStatus() const { return status_; }
-    void setStatus(TaskStatus status) { status_ = status; }
+    TaskStatus getStatus() const;
+    void setStatus(TaskStatus status);
+    bool transitionStatus(TaskStatus expected, TaskStatus desired);
     
+    // Legacy reference accessor retained for source compatibility. It is safe
+    // only while no thread mutates tags; use getTagsSnapshot() concurrently.
     const std::vector<std::string>& getTags() const { return tags_; }
-    void addTag(const std::string& tag) { tags_.push_back(tag); }
+    std::vector<std::string> getTagsSnapshot() const;
+    void addTag(const std::string& tag);
     
+    // Legacy reference accessor retained for source compatibility. It is safe
+    // only while no thread mutates options; use getOptionsSnapshot() concurrently.
     const TaskOptions& getOptions() const { return options_; }
-    void setOptions(const TaskOptions& options) { options_ = options; }
+    TaskOptions getOptionsSnapshot() const;
+    void setOptions(const TaskOptions& options);
     
     Timestamp getCreatedAt() const { return createdAt_; }
-    Timestamp getUpdatedAt() const { return updatedAt_; }
-    void updateTimestamp() { updatedAt_ = std::chrono::system_clock::now(); }
+    Timestamp getUpdatedAt() const;
+    void updateTimestamp();
     
     // Task scheduling properties
-    std::optional<Timestamp> getScheduledTime() const { return scheduledTime_; }
-    void setScheduledTime(const Timestamp& time) { scheduledTime_ = time; }
+    std::optional<Timestamp> getScheduledTime() const;
+    void setScheduledTime(const Timestamp& time);
     
-    int getPriority() const { return priority_; }
-    void setPriority(int priority) { priority_ = priority; }
+    int getPriority() const;
+    void setPriority(int priority);
+
+    TaskSnapshot snapshot() const;
     
 private:
     UUID id_;
@@ -273,6 +305,7 @@ private:
     Timestamp updatedAt_;
     std::optional<Timestamp> scheduledTime_;
     int priority_ = 0;
+    mutable std::mutex mutex_;
 };
 
 /**
@@ -291,7 +324,11 @@ public:
  */
 class TaskManager {
 public:
+    using StateFactory = std::function<std::shared_ptr<State>(const TaskSnapshot&)>;
+
     TaskManager();
+    explicit TaskManager(AgentConfig config);
+    explicit TaskManager(StateFactory stateFactory);
     ~TaskManager();
     
     // Task management
@@ -300,6 +337,7 @@ public:
     bool scheduleTask(const UUID& taskId, const Timestamp& scheduledTime);
     bool cancelTask(const UUID& taskId);
     std::shared_ptr<Task> getTask(const UUID& taskId);
+    std::optional<TaskSnapshot> getTaskSnapshot(const UUID& taskId) const;
     std::vector<std::shared_ptr<Task>> getPendingTasks();
     std::vector<std::shared_ptr<Task>> getTasksByTag(const std::string& tag);
     
@@ -312,10 +350,12 @@ public:
     void stop();
     void pause();
     void resume();
-    bool isRunning() const { return running_; }
+    bool isRunning() const;
     
     // Configuration
-    void setTickInterval(std::chrono::milliseconds interval) { tickInterval_ = interval; }
+    void setTickInterval(std::chrono::milliseconds interval);
+    void setAgentConfig(const AgentConfig& config);
+    void setStateFactory(StateFactory stateFactory);
     
 private:
     void executionLoop();
@@ -324,14 +364,22 @@ private:
     
     std::unordered_map<UUID, std::shared_ptr<Task>> tasks_;
     std::unordered_map<std::string, std::shared_ptr<TaskWorker>> workers_;
-    
-    std::atomic<bool> running_{false};
-    std::atomic<bool> paused_{false};
+
     std::thread executionThread_;
     std::chrono::milliseconds tickInterval_{1000}; // 1 second default
-    
+
     mutable std::mutex tasksMutex_;
     mutable std::mutex workersMutex_;
+    mutable std::mutex stateFactoryMutex_;
+    StateFactory stateFactory_;
+
+    mutable std::mutex controlMutex_;
+    mutable std::mutex lifecycleMutex_;
+    std::condition_variable lifecycleCv_;
+    bool running_ = false;
+    bool paused_ = false;
+    std::thread::id executionThreadId_;
+    std::uint64_t wakeGeneration_ = 0;
 };
 /**
  * State represents the complete context for agent decision making

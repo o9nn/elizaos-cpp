@@ -252,29 +252,28 @@ MCPJsonValue MCPGateway::executeTool(const std::string& toolName, const MCPJsonV
         return error;
     }
     
-    // Find and execute tool
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto it = tools_.find(toolName);
-    if (it != tools_.end() && it->second.handler) {
-        try {
-            MCPJsonValue result = it->second.handler(input);
-            stats_.successfulRequests++;
-            stats_.toolUsage[toolName]++;
-            updateStatistics(toolName, true, 0.0f);
-            return result;
-        } catch (const std::exception& e) {
-            MCPJsonValue error;
-            error["error"] = std::string("Execution failed: ") + e.what();
-            stats_.failedRequests++;
-            updateStatistics(toolName, false, 0.0f);
-            return error;
-        }
+    std::function<MCPJsonValue(const MCPJsonValue&)> handler;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        const auto it = tools_.find(toolName);
+        if (it != tools_.end()) handler = it->second.handler;
     }
-    
-    MCPJsonValue error;
-    error["error"] = "Tool not found: " + toolName;
-    stats_.failedRequests++;
-    return error;
+    if (!handler) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        updateStatistics(toolName, false, 0.0f);
+        return MCPJsonValue{{"error", "Tool not found: " + toolName}};
+    }
+    try {
+        MCPJsonValue result = handler(input); // external callback outside mutex_
+        std::lock_guard<std::mutex> lock(mutex_);
+        ++stats_.toolUsage[toolName];
+        updateStatistics(toolName, true, 0.0f);
+        return result;
+    } catch (const std::exception& e) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        updateStatistics(toolName, false, 0.0f);
+        return MCPJsonValue{{"error", std::string("Execution failed: ") + e.what()}};
+    }
 }
 
 MCPJsonValue MCPGateway::executeToolWithPayment(const std::string& toolName, const MCPJsonValue& input,
@@ -517,11 +516,8 @@ MCPJsonValue MCPClient::callTool(const std::string& toolName, const MCPJsonValue
     if (auto* gw = mcp_internal::lookupGateway(gatewayUrl_)) {
         return gw->executeTool(toolName, input, apiKey_);
     }
-    MCPJsonValue result;
-    result["status"] = "success";
-    result["toolName"] = toolName;
-    result["input"] = input;
-    return result;
+    return MCPJsonValue{{"error", "Gateway unavailable: " + gatewayUrl_},
+                        {"toolName", toolName}};
 }
 
 MCPJsonValue MCPClient::callToolWithPayment(const std::string& toolName, const MCPJsonValue& input,
@@ -768,7 +764,18 @@ public:
         std::string line = readLine();
         if (!line.empty()) {
             try {
-                return MCPJsonValue::parse(line);
+                MCPJsonValue response = MCPJsonValue::parse(line);
+                const bool valid = response.is_object() &&
+                    response.value("jsonrpc", std::string()) == "2.0" &&
+                    response.contains("id") && response["id"].is_number_integer() &&
+                    response["id"].get<int>() == requestId_ &&
+                    (response.contains("result") != response.contains("error"));
+                if (valid && (!response.contains("error") ||
+                    (response["error"].is_object() &&
+                     response["error"].contains("code") && response["error"]["code"].is_number_integer() &&
+                     response["error"].contains("message") && response["error"]["message"].is_string()))) {
+                    return response;
+                }
             } catch (...) {
                 elizaos::logInfo("STDIO Transport: failed to parse response", "mcp_transport");
             }
@@ -777,12 +784,9 @@ public:
         (void)payload;
 #endif
 
-        // Fallback: return empty result
-        MCPJsonValue response;
-        response["jsonrpc"] = "2.0";
-        response["id"] = requestId_;
-        response["result"] = MCPJsonValue::object();
-        return response;
+        return MCPJsonValue{{"jsonrpc", "2.0"}, {"id", requestId_},
+                            {"error", {{"code", -32700},
+                                       {"message", "Missing or malformed STDIO response"}}}};
     }
 
     void setMessageHandler(std::function<void(const MCPJsonValue&)> handler) override {
@@ -825,8 +829,8 @@ public:
     bool connect(const std::string& endpoint) override {
         elizaos::logInfo("HTTP Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
-        connected_ = true;
-        return true;
+        connected_ = false;
+        return false;
     }
 
     void disconnect() override {
@@ -848,10 +852,10 @@ public:
         // In production: send HTTP POST request using libcurl or similar
         // Example headers: Content-Type: application/json, Authorization: Bearer {apiKey}
 
-        MCPJsonValue response;
-        response["status"] = 200;
-        response["result"] = MCPJsonValue::object();
-        return response;
+        (void)params;
+        return MCPJsonValue{{"jsonrpc", "2.0"},
+                            {"error", {{"code", -32601},
+                                       {"message", "HTTP transport adapter unavailable"}}}};
     }
 
     void setMessageHandler(std::function<void(const MCPJsonValue&)> handler) override {
@@ -988,16 +992,16 @@ public:
                 ::send(sockfd_, closeFrame, sizeof(closeFrame), MSG_NOSIGNAL);
             }
 
-            // Stop receiver thread
             receiverRunning_ = false;
-            if (receiverThread_.joinable()) {
-                receiverThread_.join();
-            }
-
             if (sockfd_ >= 0) {
-                close_socket_fd(sockfd_);
-                sockfd_ = -1;
+#ifdef _WIN32
+                ::shutdown(static_cast<SOCKET>(sockfd_), SD_BOTH);
+#else
+                ::shutdown(sockfd_, SHUT_RDWR);
+#endif
             }
+            if (receiverThread_.joinable()) receiverThread_.join();
+            if (sockfd_ >= 0) { close_socket_fd(sockfd_); sockfd_ = -1; }
         }
     }
 
@@ -1052,12 +1056,13 @@ public:
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
-        // Timeout: return empty result
-        MCPJsonValue response;
-        response["jsonrpc"] = "2.0";
-        response["id"] = requestId_;
-        response["result"] = MCPJsonValue::object();
-        return response;
+        {
+            std::lock_guard<std::mutex> lk(pendingMtx_);
+            pendingRequests_.erase(requestId_);
+        }
+        return MCPJsonValue{{"jsonrpc", "2.0"}, {"id", requestId_},
+                            {"error", {{"code", -32003},
+                                       {"message", "WebSocket request timed out"}}}};
     }
 
     void setMessageHandler(std::function<void(const MCPJsonValue&)> handler) override {
@@ -1239,9 +1244,9 @@ public:
     bool connect(const std::string& endpoint) override {
         elizaos::logInfo("SSE Transport connecting: " + endpoint, "mcp_transport");
         endpoint_ = endpoint;
-        connected_ = true;
-        // In production: establish SSE connection with EventSource
-        return true;
+        connected_ = false;
+        // No HTTP streaming adapter is linked into this internal transport.
+        return false;
     }
 
     void disconnect() override {
@@ -1258,11 +1263,10 @@ public:
         elizaos::logInfo("SSE command (via HTTP): " + method, "mcp_transport");
 
         // In production: POST to command endpoint, receive response via SSE
-        MCPJsonValue response;
-        response["status"] = "pending";
-        response["message"] = "Response will arrive via SSE stream";
         (void)params;
-        return response;
+        return MCPJsonValue{{"jsonrpc", "2.0"},
+                            {"error", {{"code", -32601},
+                                       {"message", "SSE command adapter unavailable"}}}};
     }
 
     void setMessageHandler(std::function<void(const MCPJsonValue&)> handler) override {
@@ -1296,8 +1300,8 @@ public:
             return std::make_unique<SSETransportImpl>();
         }
 
-        elizaos::logWarning("Unknown transport type: " + transportType + ", defaulting to HTTP", "mcp_transport");
-        return std::make_unique<HttpTransport>();
+        elizaos::logWarning("Unknown transport type: " + transportType, "mcp_transport");
+        return nullptr;
     }
 };
 
@@ -1314,7 +1318,7 @@ public:
     }
 
     bool connect() {
-        if (!transport_->connect(config_.endpoint)) {
+        if (!transport_ || !transport_->connect(config_.endpoint)) {
             elizaos::logError("Failed to connect to: " + config_.name, "mcp_connection");
             return false;
         }
@@ -1328,8 +1332,13 @@ public:
 
         auto response = transport_->sendRequest("initialize", initParams);
 
-        if (response.contains("error")) {
-            elizaos::logError("Initialization failed: " + response["error"].dump(), "mcp_connection");
+        const bool validInitialize = response.is_object() &&
+            response.value("jsonrpc", std::string()) == "2.0" &&
+            response.contains("id") && response["id"].is_number_integer() &&
+            response["id"].get<int>() == 1 &&
+            (response.contains("result") != response.contains("error"));
+        if (!validInitialize || response.contains("error")) {
+            transport_->disconnect();
             return false;
         }
 
@@ -1339,6 +1348,7 @@ public:
     }
 
     void disconnect() {
+        if (!transport_) return;
         if (initialized_) {
             // Send shutdown notification
             transport_->sendRequest("shutdown", MCPJsonValue::object());
@@ -1348,7 +1358,7 @@ public:
     }
 
     bool isConnected() const {
-        return transport_->isConnected() && initialized_;
+        return transport_ && transport_->isConnected() && initialized_;
     }
 
     std::vector<MCPTool> discoverTools() {

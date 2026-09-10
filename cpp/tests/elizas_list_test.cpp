@@ -1,139 +1,165 @@
-// elizas_list_test.cpp - E2E tests for ElizasList project & collection registry.
 #include <gtest/gtest.h>
+
 #include "elizaos/elizas_list.hpp"
+
 #include <nlohmann/json.hpp>
-#include <cstdio>
 
 using namespace elizaos;
 
 namespace {
-Project mkProject(const std::string& id,
-                  const std::string& tag = "ai",
-                  int stars = 0) {
-    Project p;
-    p.id = id;
-    p.name = id;
-    p.description = "desc";
-    p.projectUrl = "https://example.com/" + id;
-    p.github = "elizaos/" + id;
-    p.author.name = "alice";
-    p.author.github = "alice";
-    p.tags = {tag};
-    p.metrics = Metrics{};
-    p.metrics->stars = stars;
-    return p;
+Project project(std::string id, int stars = 0, std::string date = "2025-01-01") {
+    Project value;
+    value.id = std::move(id);
+    value.name = "Project " + value.id;
+    value.description = "Local AI agent";
+    value.projectUrl = "https://example.com/" + value.id;
+    value.github = "elizaos/" + value.id;
+    value.image = "https://example.com/images/" + value.id + ".png";
+    value.author = {"Alice", "alice", std::optional<std::string>("alice_ai")};
+    value.donation = {"transaction01", "1.25", "2025-01-02"};
+    value.tags = {"agent", "local"};
+    value.addedOn = std::move(date);
+    value.metrics = Metrics{stars, stars / 2};
+    return value;
+}
+
+Collection collection(std::string id, std::vector<std::string> projects = {}, bool featured = false) {
+    Collection value;
+    value.id = std::move(id);
+    value.name = "Collection " + value.id;
+    value.description = "Curated local projects";
+    value.projects = std::move(projects);
+    value.curator = {"Curator", "curator"};
+    value.featured = featured;
+    return value;
 }
 }
 
-TEST(ElizasListJson, AuthorRoundtrip) {
-    Author a; a.name = "Alice"; a.github = "alice"; a.twitter = "@alice";
-    nlohmann::json j = a;
-    Author back = j.get<Author>();
-    EXPECT_EQ(back.name, "Alice");
-    EXPECT_EQ(back.github, "alice");
-    ASSERT_TRUE(back.twitter.has_value());
-    EXPECT_EQ(*back.twitter, "@alice");
+TEST(ElizasListJson, EveryPublicModelStrictlyRoundTripsAllFields) {
+    Author author{"Alice", "alice", std::optional<std::string>("alice_ai")};
+    Donation donation{"transaction01", "2.50", "2025-01-01"};
+    Metrics metrics{10, 3};
+    Project original = project("alpha", 10);
+    Collection originalCollection = collection("featured", {"alpha"}, true);
+    Curator curator{"Curator", "curator"};
+
+    EXPECT_EQ(nlohmann::json(author).get<Author>().twitter, author.twitter);
+    EXPECT_EQ(nlohmann::json(donation).get<Donation>().amount, donation.amount);
+    EXPECT_EQ(nlohmann::json(metrics).get<Metrics>().forks, metrics.forks);
+    const auto projectRoundtrip = nlohmann::json(original).get<Project>();
+    EXPECT_EQ(projectRoundtrip.donation.transactionHash, original.donation.transactionHash);
+    EXPECT_EQ(projectRoundtrip.metrics->stars, 10);
+    EXPECT_EQ(nlohmann::json(curator).get<Curator>().github, curator.github);
+    EXPECT_EQ(nlohmann::json(originalCollection).get<Collection>().projects,
+              originalCollection.projects);
+
+    auto invalid = nlohmann::json(original);
+    invalid["unknown"] = true;
+    EXPECT_THROW((void)invalid.get<Project>(), nlohmann::json::exception);
+    invalid = nlohmann::json(original);
+    invalid["metrics"]["stars"] = -1;
+    EXPECT_THROW((void)invalid.get<Project>(), nlohmann::json::exception);
 }
 
-TEST(ElizasListJson, ProjectRoundtrip) {
-    Project p = mkProject("foo", "ai", 42);
-    nlohmann::json j = p;
-    Project back = j.get<Project>();
-    EXPECT_EQ(back.id, "foo");
-    ASSERT_TRUE(back.metrics.has_value());
-    EXPECT_EQ(back.metrics->stars, 42);
-}
-
-TEST(ElizasListJson, CollectionRoundtrip) {
-    Collection c;
-    c.id = "c-1";
-    c.name = "fav";
-    c.description = "favs";
-    c.projects = {"a", "b"};
-    c.curator.name = "X";
-    c.curator.github = "x";
-    c.featured = true;
-    nlohmann::json j = c;
-    Collection back = j.get<Collection>();
-    EXPECT_EQ(back.id, "c-1");
-    EXPECT_EQ(back.projects.size(), 2u);
-    EXPECT_TRUE(back.featured);
-}
-
-class ElizasListTest : public ::testing::Test {
-protected:
+TEST(ElizasList, ProjectCrudRejectsInvalidAndConflictingDuplicates) {
     ElizasList list;
-};
+    auto alpha = project("alpha");
+    EXPECT_TRUE(list.addProject(alpha));
+    EXPECT_TRUE(list.addProject(alpha));
+    EXPECT_EQ(list.getProjectCount(), 1U);
 
-TEST_F(ElizasListTest, AddAndRetrieveProject) {
-    EXPECT_TRUE(list.addProject(mkProject("p1")));
-    EXPECT_EQ(list.getProjectCount(), 1u);
-    EXPECT_TRUE(list.getProject("p1").has_value());
+    auto conflict = alpha;
+    conflict.name = "Conflict";
+    EXPECT_FALSE(list.addProject(conflict));
+    EXPECT_EQ(list.getProject("alpha")->name, alpha.name);
+    EXPECT_TRUE(list.updateProject(conflict));
+    EXPECT_EQ(list.getProject("alpha")->name, "Conflict");
+    EXPECT_FALSE(list.updateProject(project("missing")));
+
+    auto invalid = project("bad id");
+    EXPECT_FALSE(list.addProject(invalid));
+    invalid = project("bad-url");
+    invalid.projectUrl = "file:///tmp/project";
+    EXPECT_FALSE(list.addProject(invalid));
+    invalid = project("bad-date");
+    invalid.addedOn = "2025-02-30";
+    EXPECT_FALSE(list.addProject(invalid));
+    invalid = project("bad-tags");
+    invalid.tags = {"agent", "agent"};
+    EXPECT_FALSE(list.addProject(invalid));
+    invalid = project("bad-donation");
+    invalid.donation = {"onlyhash01", "", ""};
+    EXPECT_FALSE(list.addProject(invalid));
+
+    EXPECT_TRUE(list.removeProject("alpha"));
+    EXPECT_FALSE(list.removeProject("alpha"));
 }
 
-TEST_F(ElizasListTest, RejectDuplicate) {
-    list.addProject(mkProject("p1"));
-    // Either silently ignore or fail; either way, count must remain 1.
-    list.addProject(mkProject("p1"));
-    EXPECT_EQ(list.getProjectCount(), 1u);
+TEST(ElizasList, CollectionsRequireExistingUniqueProjectsAndProtectReferences) {
+    ElizasList list;
+    ASSERT_TRUE(list.addProject(project("alpha")));
+    ASSERT_TRUE(list.addProject(project("beta")));
+    auto curated = collection("curated", {"alpha", "beta"}, true);
+    EXPECT_TRUE(list.addCollection(curated));
+    EXPECT_TRUE(list.addCollection(curated));
+    EXPECT_EQ(list.getCollectionCount(), 1U);
+
+    auto conflict = curated;
+    conflict.featured = false;
+    EXPECT_FALSE(list.addCollection(conflict));
+    auto missing = collection("missing", {"absent"});
+    EXPECT_FALSE(list.addCollection(missing));
+    auto duplicate = collection("duplicate", {"alpha", "alpha"});
+    EXPECT_FALSE(list.addCollection(duplicate));
+    EXPECT_FALSE(list.removeProject("alpha"));
+
+    curated.projects = {"beta"};
+    EXPECT_TRUE(list.updateCollection(curated));
+    EXPECT_TRUE(list.removeProject("alpha"));
+    EXPECT_TRUE(list.removeCollection("curated"));
+    EXPECT_FALSE(list.removeCollection("curated"));
 }
 
-TEST_F(ElizasListTest, RemoveProject) {
-    list.addProject(mkProject("p1"));
-    EXPECT_TRUE(list.removeProject("p1"));
-    EXPECT_FALSE(list.getProject("p1").has_value());
+TEST(ElizasList, FilteringSearchAndOrderAreDeterministic) {
+    ElizasList list;
+    auto zeta = project("zeta", 5, "2025-01-03");
+    zeta.author.github = "bob";
+    zeta.author.name = "Bob";
+    zeta.tags = {"tools"};
+    auto alpha = project("alpha", 10, "2025-01-02");
+    alpha.description = "C++ [agent]";
+    auto beta = project("beta", 10, "2025-01-02");
+    ASSERT_TRUE(list.addProject(zeta));
+    ASSERT_TRUE(list.addProject(alpha));
+    ASSERT_TRUE(list.addProject(beta));
+
+    EXPECT_EQ(list.getAllProjects().at(0).id, "alpha");
+    EXPECT_EQ(list.getProjectsByTag("agent").at(0).id, "alpha");
+    EXPECT_EQ(list.getProjectsByAuthor("alice").size(), 2U);
+    EXPECT_EQ(list.searchProjects("[AGENT]").at(0).id, "alpha");
+    EXPECT_EQ(list.searchProjects("").size(), 3U);
+
+    const auto byStars = list.getProjectsSortedByStars();
+    EXPECT_EQ(byStars[0].id, "alpha");
+    EXPECT_EQ(byStars[1].id, "beta");
+    const auto recent = list.getRecentProjects(2);
+    EXPECT_EQ(recent[0].id, "zeta");
+    EXPECT_EQ(recent[1].id, "alpha");
+    EXPECT_TRUE(list.getRecentProjects(0).empty());
+    EXPECT_TRUE(list.getRecentProjects(-1).empty());
+    EXPECT_EQ(list.getAllTags(), (std::vector<std::string>{"agent", "local", "tools"}));
 }
 
-TEST_F(ElizasListTest, GetProjectsByTagAndAuthor) {
-    list.addProject(mkProject("p1", "ai"));
-    list.addProject(mkProject("p2", "tools"));
-    EXPECT_EQ(list.getProjectsByTag("ai").size(), 1u);
-    EXPECT_GE(list.getProjectsByAuthor("alice").size(), 2u);
-}
-
-TEST_F(ElizasListTest, AddAndRetrieveCollection) {
-    Collection c;
-    c.id = "c-1"; c.name = "Top"; c.curator.name = "Z"; c.curator.github = "z";
-    EXPECT_TRUE(list.addCollection(c));
-    EXPECT_EQ(list.getCollectionCount(), 1u);
-    EXPECT_TRUE(list.getCollection("c-1").has_value());
-}
-
-TEST_F(ElizasListTest, FeaturedCollectionsFilter) {
-    Collection a, b;
-    a.id = "a"; a.featured = false;
-    b.id = "b"; b.featured = true;
-    list.addCollection(a); list.addCollection(b);
-    EXPECT_EQ(list.getFeaturedCollections().size(), 1u);
-}
-
-TEST_F(ElizasListTest, SearchAndSortByStars) {
-    list.addProject(mkProject("low",  "x", 1));
-    list.addProject(mkProject("high", "x", 99));
-    auto sorted = list.getProjectsSortedByStars();
-    ASSERT_GE(sorted.size(), 2u);
-    if (sorted[0].metrics && sorted[1].metrics) {
-        EXPECT_GE(sorted[0].metrics->stars, sorted[1].metrics->stars);
-    }
-    auto results = list.searchProjects("high");
-    EXPECT_GE(results.size(), 1u);
-}
-
-TEST_F(ElizasListTest, AllTagsAggregation) {
-    list.addProject(mkProject("a", "alpha"));
-    list.addProject(mkProject("b", "beta"));
-    auto tags = list.getAllTags();
-    EXPECT_GE(tags.size(), 2u);
-}
-
-TEST_F(ElizasListTest, JsonExportImport) {
-    list.addProject(mkProject("p1"));
-    auto json = list.exportProjectsToJson();
-    EXPECT_FALSE(json.empty());
-
-    ElizasList other;
-    if (other.loadProjectsFromJson(json)) {
-        EXPECT_GE(other.getProjectCount(), 1u);
-    }
-    SUCCEED();
+TEST(ElizasList, CollectionQueriesAreSortedAndFeatured) {
+    ElizasList list;
+    ASSERT_TRUE(list.addCollection(collection("zeta", {}, false)));
+    ASSERT_TRUE(list.addCollection(collection("alpha", {}, true)));
+    const auto all = list.getAllCollections();
+    ASSERT_EQ(all.size(), 2U);
+    EXPECT_EQ(all[0].id, "alpha");
+    EXPECT_EQ(all[1].id, "zeta");
+    ASSERT_EQ(list.getFeaturedCollections().size(), 1U);
+    EXPECT_EQ(list.getFeaturedCollections()[0].id, "alpha");
+    EXPECT_TRUE(list.getCollection("alpha").has_value());
+    EXPECT_FALSE(list.getCollection("missing").has_value());
 }

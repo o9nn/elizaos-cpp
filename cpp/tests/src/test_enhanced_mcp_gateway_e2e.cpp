@@ -52,9 +52,11 @@ TEST(EnhancedMCPGatewayE2E, WebSocketLoopbackConnectSendEchoDisconnect) {
     msg["jsonrpc"] = "2.0";
     msg["method"] = "tools/list";
     msg["id"] = 1;
-    transport.send(msg);
-    transport.send(msg);
-    EXPECT_EQ(received.load(), 2);
+    auto first = transport.request("tools/list", MCPJsonValue::object());
+    auto second = transport.request("tools/list", MCPJsonValue::object());
+    EXPECT_EQ(first["result"]["method"], "tools/list");
+    EXPECT_EQ(second["result"]["method"], "tools/list");
+    EXPECT_EQ(received.load(), 0);
 
     auto stats = transport.getStats();
     EXPECT_EQ(stats.messagesSent, 2u);
@@ -175,15 +177,28 @@ TEST(EnhancedMCPGatewayE2E, MultiplexerRoutesAndBroadcasts) {
     EXPECT_EQ(mux.getFailoverOrder().size(), 3u);
 
     MCPJsonValue msg;
+    msg["jsonrpc"] = "2.0";
     msg["method"] = "ping";
+    msg["params"] = MCPJsonValue::object();
     mux.send("stdio-main", msg);       // stdio routes through the handler
     EXPECT_GE(handled.load(), 1);
 
     const int beforeBroadcast = handled.load();
-    mux.broadcast(msg);                // ws echo + sse ack + stdio handler
+    mux.broadcast(msg);
+    // The explicitly selected deterministic loopback adapters echo
+    // asynchronously; wait only for bounded local evidence.
+    for (int attempt = 0; attempt < 100 && handled.load() == beforeBroadcast; ++attempt) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    }
     EXPECT_GT(handled.load(), beforeBroadcast);
 
     auto counts = mux.getMessageCounts();
+    for (int attempt = 0;
+         attempt < 100 && (counts["ws-main"] == 0u || counts["sse-main"] == 0u);
+         ++attempt) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        counts = mux.getMessageCounts();
+    }
     EXPECT_GE(counts["stdio-main"], 2u);
     EXPECT_GE(counts["ws-main"], 1u);
     EXPECT_GE(counts["sse-main"], 1u);
@@ -231,7 +246,9 @@ TEST(EnhancedMCPGatewayE2E, GatewayTransportsAndPooling) {
     mux.broadcast(msg);
 
     auto stats = gateway.getEnhancedStatistics();
-    EXPECT_GE(stats.failoverEvents, 1u);
+    // Enabling failover and broadcasting over healthy transports is not itself
+    // a failover event. The counter changes only after a real route failure.
+    EXPECT_EQ(stats.failoverEvents, 0u);
     EXPECT_GE(stats.connectionPoolHits, 1u);
     uint64_t total = 0;
     for (const auto& kv : stats.transportMessageCounts) total += kv.second;
@@ -242,14 +259,12 @@ TEST(EnhancedMCPGatewayE2E, GatewayTransportsAndPooling) {
 TEST(EnhancedMCPGatewayE2E, X402PaymentVerification) {
     EnhancedMCPGateway gateway("e2e-gateway-pay");
 
-    // Valid deterministic x402 proof: "txhash:payer:amount".
+    // No chain adapter/receipt is configured, so even syntactically plausible
+    // text must not be promoted to a verified blockchain payment.
     auto ok = gateway.verifyBlockchainPayment("0xabc123:0xPayerAddress:0.005");
-    EXPECT_TRUE(ok.verified);
-    EXPECT_EQ(ok.transactionHash, "0xabc123");
-    EXPECT_EQ(ok.payer, "0xPayerAddress");
-    EXPECT_DOUBLE_EQ(ok.amount, 0.005);
+    EXPECT_FALSE(ok.verified);
 
-    // Malformed proofs must be rejected without throwing.
+    // Malformed proofs must also be rejected without throwing.
     EXPECT_FALSE(gateway.verifyBlockchainPayment("").verified);
     EXPECT_FALSE(gateway.verifyBlockchainPayment("garbage").verified);
     EXPECT_FALSE(gateway.verifyBlockchainPayment("nohash:payer:1.0").verified);

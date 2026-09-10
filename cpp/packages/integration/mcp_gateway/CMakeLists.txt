@@ -4,7 +4,7 @@ add_library(elizaos-mcp_gateway STATIC
     src/mcp_gateway.cpp
     src/mcp_gateway_enhanced.cpp
 )
-
+target_compile_features(elizaos-mcp_gateway PUBLIC cxx_std_17)
 target_include_directories(elizaos-mcp_gateway PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/cpp/include

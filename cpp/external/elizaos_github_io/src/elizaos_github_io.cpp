@@ -6,6 +6,20 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstdio>
+#include <array>
+#include <cerrno>
+#include <cctype>
+#include <cstdint>
+#include <cstring>
+#include <system_error>
+
+#ifdef _WIN32
+#include <process.h>
+#else
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
 
 namespace elizaos {
 
@@ -671,69 +685,305 @@ bool GitHubPagesDeployer::validateConfiguration() const {
     if (config_.access_token.empty()) {
         return false;
     }
-    return true;
+    static const std::regex github_name(R"(^[A-Za-z0-9][A-Za-z0-9_.-]*$)");
+    return std::regex_match(config_.repository_owner, github_name) &&
+           std::regex_match(config_.repository_name, github_name) &&
+           validateGitRef(config_.branch) &&
+           std::filesystem::is_directory(config_.output_dir);
 }
 
 bool GitHubPagesDeployer::cloneRepository(const std::filesystem::path& target_dir) {
+    if (target_dir.empty() || config_.repository_owner.empty() ||
+        config_.repository_name.empty() || config_.access_token.empty() ||
+        !validateGitRef(config_.branch)) {
+        return false;
+    }
+
     try {
         // Clean up existing directory
         if (std::filesystem::exists(target_dir)) {
             std::filesystem::remove_all(target_dir);
         }
-        
-        std::string repo_url = "https://" + config_.access_token + "@github.com/" + 
-            config_.repository_owner + "/" + config_.repository_name + ".git";
-        
-        std::string command = "git clone --branch " + config_.branch + " " + repo_url + " " + target_dir.string();
-        
-        // For demo purposes, we'll simulate this
-        std::filesystem::create_directories(target_dir);
-        std::filesystem::create_directories(target_dir / ".git");
-        
+
+        if (!target_dir.parent_path().empty()) {
+            std::filesystem::create_directories(target_dir.parent_path());
+        }
+
+        const std::string repo_url = "https://github.com/" + config_.repository_owner +
+            "/" + config_.repository_name + ".git";
+        const std::unordered_map<std::string, std::string> auth_env = {
+            {"ELIZA_GITHUB_HEADER", "Authorization: Bearer " + config_.access_token}
+        };
+
+        auto result = executeCommand(
+            {"git", "--config-env=http.extraHeader=ELIZA_GITHUB_HEADER", "clone",
+             "--single-branch", "--branch", config_.branch, repo_url, target_dir.string()},
+            {}, auth_env);
+
+        // A fresh repository may not yet have the configured Pages branch. In
+        // that case clone the default branch and create the Pages branch locally.
+        if (!result.succeeded()) {
+            std::error_code cleanup_error;
+            std::filesystem::remove_all(target_dir, cleanup_error);
+            result = executeCommand(
+                {"git", "--config-env=http.extraHeader=ELIZA_GITHUB_HEADER", "clone",
+                 repo_url, target_dir.string()}, {}, auth_env);
+            if (!result.succeeded()) {
+                last_deployment_status_.errors.push_back("git clone failed: " + result.output);
+                return false;
+            }
+            result = executeCommand({"git", "checkout", "-B", config_.branch}, target_dir);
+            if (!result.succeeded()) {
+                last_deployment_status_.errors.push_back("failed to create deployment branch: " + result.output);
+                return false;
+            }
+        }
+
+        temp_repo_dir_ = target_dir;
         g_github_logger.log("Repository cloned to: " + target_dir.string(),
                            "", "elizaos_github_io", LogLevel::INFO);
-        
         return true;
-    } catch (const std::exception&) {
+    } catch (const std::exception& e) {
+        last_deployment_status_.errors.push_back(std::string("clone error: ") + e.what());
         return false;
     }
 }
 
 bool GitHubPagesDeployer::copyFilesToRepo(const std::filesystem::path& source_dir, const std::filesystem::path& repo_dir) {
     try {
+        if (!std::filesystem::is_directory(source_dir) ||
+            !std::filesystem::is_directory(repo_dir / ".git")) {
+            return false;
+        }
+
+        const auto source = std::filesystem::weakly_canonical(source_dir);
+        const auto destination = std::filesystem::weakly_canonical(repo_dir);
+        auto is_prefix = [](const std::filesystem::path& prefix, const std::filesystem::path& value) {
+            return std::mismatch(prefix.begin(), prefix.end(), value.begin(), value.end()).first == prefix.end();
+        };
+        if (source == destination || is_prefix(source, destination) || is_prefix(destination, source)) {
+            return false;
+        }
+
+        // Remove stale deployment content while preserving repository metadata.
+        for (const auto& entry : std::filesystem::directory_iterator(repo_dir)) {
+            if (entry.path().filename() != ".git") {
+                std::filesystem::remove_all(entry.path());
+            }
+        }
+
         for (const auto& entry : std::filesystem::recursive_directory_iterator(source_dir)) {
-            if (entry.is_regular_file()) {
-                auto relative_path = std::filesystem::relative(entry.path(), source_dir);
-                auto target_path = repo_dir / relative_path;
-                
+            auto relative_path = std::filesystem::relative(entry.path(), source_dir);
+            if (!relative_path.empty() && *relative_path.begin() == ".git") {
+                continue;
+            }
+            if (entry.is_symlink()) {
+                last_deployment_status_.errors.push_back(
+                    "refusing to deploy symbolic link: " + entry.path().string());
+                return false;
+            }
+
+            auto target_path = repo_dir / relative_path;
+            if (entry.is_directory()) {
+                std::filesystem::create_directories(target_path);
+            } else if (entry.is_regular_file()) {
                 std::filesystem::create_directories(target_path.parent_path());
-                std::filesystem::copy_file(entry.path(), target_path, 
+                std::filesystem::copy_file(entry.path(), target_path,
                     std::filesystem::copy_options::overwrite_existing);
             }
         }
         return true;
-    } catch (const std::exception&) {
+    } catch (const std::exception& e) {
+        last_deployment_status_.errors.push_back(std::string("copy error: ") + e.what());
         return false;
     }
 }
 
-std::string GitHubPagesDeployer::executeGitCommand(const std::string& command, const std::filesystem::path& working_dir) const {
-    // In a real implementation, this would execute the git command
-    // For now, we'll simulate successful git operations
-    g_github_logger.log("Executing git command: " + command + " in " + working_dir.string(),
-                       "", "elizaos_github_io", LogLevel::INFO);
-    return "success";
+GitHubPagesDeployer::CommandResult GitHubPagesDeployer::executeCommand(
+    const std::vector<std::string>& arguments,
+    const std::filesystem::path& working_dir,
+    const std::unordered_map<std::string, std::string>& environment) const {
+    CommandResult result;
+    if (arguments.empty() || arguments.front().empty()) {
+        result.output = "empty command";
+        return result;
+    }
+    if (!working_dir.empty() && !std::filesystem::is_directory(working_dir)) {
+        result.output = "working directory does not exist";
+        return result;
+    }
+
+    g_github_logger.log("Executing process " + arguments.front() + " (" +
+                        std::to_string(arguments.size()) + " arguments)",
+                        "", "elizaos_github_io", LogLevel::INFO);
+
+#ifdef _WIN32
+    // Windows fallback. Reject cmd.exe metacharacters before constructing the
+    // command line; POSIX builds below never invoke a shell.
+    auto safe_arg = [](const std::string& arg) {
+        return arg.find_first_of("\r\n&|<>^%\"") == std::string::npos;
+    };
+    std::ostringstream command;
+    for (const auto& argument : arguments) {
+        if (!safe_arg(argument)) {
+            result.output = "unsafe command argument";
+            return result;
+        }
+        if (command.tellp() > 0) command << ' ';
+        command << '"' << argument << '"';
+    }
+    std::filesystem::path previous;
+    if (!working_dir.empty()) {
+        previous = std::filesystem::current_path();
+        std::filesystem::current_path(working_dir);
+    }
+    std::unordered_map<std::string, std::string> old_environment;
+    for (const auto& [key, value] : environment) {
+        const char* old = std::getenv(key.c_str());
+        old_environment[key] = old ? old : "";
+        _putenv_s(key.c_str(), value.c_str());
+    }
+    FILE* pipe = _popen((command.str() + " 2>&1").c_str(), "r");
+    if (pipe) {
+        std::array<char, 4096> buffer{};
+        while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe)) {
+            result.output += buffer.data();
+        }
+        result.exit_code = _pclose(pipe);
+    } else {
+        result.output = "unable to start process";
+    }
+    for (const auto& [key, value] : old_environment) {
+        _putenv_s(key.c_str(), value.c_str());
+    }
+    if (!working_dir.empty()) std::filesystem::current_path(previous);
+#else
+    int output_pipe[2];
+    if (pipe(output_pipe) != 0) {
+        result.output = std::string("pipe failed: ") + std::strerror(errno);
+        return result;
+    }
+
+    const pid_t child = fork();
+    if (child < 0) {
+        close(output_pipe[0]);
+        close(output_pipe[1]);
+        result.output = std::string("fork failed: ") + std::strerror(errno);
+        return result;
+    }
+    if (child == 0) {
+        close(output_pipe[0]);
+        dup2(output_pipe[1], STDOUT_FILENO);
+        dup2(output_pipe[1], STDERR_FILENO);
+        close(output_pipe[1]);
+        if (!working_dir.empty() && chdir(working_dir.c_str()) != 0) {
+            _exit(126);
+        }
+        for (const auto& [key, value] : environment) {
+            if (setenv(key.c_str(), value.c_str(), 1) != 0) {
+                _exit(126);
+            }
+        }
+        std::vector<char*> argv;
+        argv.reserve(arguments.size() + 1);
+        for (const auto& argument : arguments) {
+            argv.push_back(const_cast<char*>(argument.c_str()));
+        }
+        argv.push_back(nullptr);
+        execvp(argv.front(), argv.data());
+        _exit(127);
+    }
+
+    close(output_pipe[1]);
+    std::array<char, 4096> buffer{};
+    while (true) {
+        const ssize_t count = read(output_pipe[0], buffer.data(), buffer.size());
+        if (count > 0) {
+            result.output.append(buffer.data(), static_cast<std::size_t>(count));
+        } else if (count == 0) {
+            break;
+        } else if (errno != EINTR) {
+            break;
+        }
+    }
+    close(output_pipe[0]);
+
+    int status = 0;
+    while (waitpid(child, &status, 0) < 0 && errno == EINTR) {}
+    if (WIFEXITED(status)) {
+        result.exit_code = WEXITSTATUS(status);
+    } else if (WIFSIGNALED(status)) {
+        result.exit_code = 128 + WTERMSIG(status);
+    }
+#endif
+    return result;
+}
+
+bool GitHubPagesDeployer::validateGitRef(const std::string& ref_name) const {
+    if (ref_name.empty()) return false;
+    return executeCommand({"git", "check-ref-format", "--branch", ref_name}).succeeded();
 }
 
 bool GitHubPagesDeployer::commitChanges(const std::string& commit_message) {
-    auto result1 = executeGitCommand("git add .", temp_repo_dir_);
-    auto result2 = executeGitCommand("git commit -m \"" + commit_message + "\"", temp_repo_dir_);
-    return !result1.empty() && !result2.empty();
+    if (commit_message.empty() || !std::filesystem::is_directory(temp_repo_dir_ / ".git")) {
+        return false;
+    }
+    if (!executeCommand({"git", "add", "--all"}, temp_repo_dir_).succeeded()) {
+        return false;
+    }
+
+    const auto staged = executeCommand({"git", "diff", "--cached", "--quiet"}, temp_repo_dir_);
+    if (staged.exit_code == 0) {
+        last_deployment_status_.warnings.push_back("No deployment changes to commit");
+        return true;
+    }
+    if (staged.exit_code != 1) {
+        last_deployment_status_.errors.push_back("Unable to inspect staged changes: " + staged.output);
+        return false;
+    }
+
+    if (!executeCommand({"git", "config", "user.name"}, temp_repo_dir_).succeeded()) {
+        if (!executeCommand({"git", "config", "user.name", "ElizaOS"}, temp_repo_dir_).succeeded()) {
+            return false;
+        }
+    }
+    if (!executeCommand({"git", "config", "user.email"}, temp_repo_dir_).succeeded()) {
+        if (!executeCommand({"git", "config", "user.email", "elizaos@localhost"}, temp_repo_dir_).succeeded()) {
+            return false;
+        }
+    }
+
+    const auto committed = executeCommand({"git", "commit", "--message", commit_message}, temp_repo_dir_);
+    if (!committed.succeeded()) {
+        last_deployment_status_.errors.push_back("git commit failed: " + committed.output);
+        return false;
+    }
+    const auto revision = executeCommand({"git", "rev-parse", "HEAD"}, temp_repo_dir_);
+    if (revision.succeeded()) {
+        last_deployment_status_.commit_sha = revision.output;
+        while (!last_deployment_status_.commit_sha.empty() &&
+               std::isspace(static_cast<unsigned char>(last_deployment_status_.commit_sha.back()))) {
+            last_deployment_status_.commit_sha.pop_back();
+        }
+    }
+    return true;
 }
 
 bool GitHubPagesDeployer::pushToGitHub() {
-    auto result = executeGitCommand("git push origin " + config_.branch, temp_repo_dir_);
-    return !result.empty();
+    if (!validateGitRef(config_.branch) || config_.access_token.empty() ||
+        !std::filesystem::is_directory(temp_repo_dir_ / ".git")) {
+        return false;
+    }
+    const std::unordered_map<std::string, std::string> auth_env = {
+        {"ELIZA_GITHUB_HEADER", "Authorization: Bearer " + config_.access_token}
+    };
+    const auto result = executeCommand(
+        {"git", "--config-env=http.extraHeader=ELIZA_GITHUB_HEADER", "push",
+         "--set-upstream", "origin", config_.branch}, temp_repo_dir_, auth_env);
+    if (!result.succeeded()) {
+        last_deployment_status_.errors.push_back("git push failed: " + result.output);
+    }
+    return result.succeeded();
 }
 
 bool GitHubPagesDeployer::createGitHubPagesRepo() {
@@ -763,13 +1013,21 @@ bool GitHubPagesDeployer::updateGitHubPagesRepo() {
 
 bool GitHubPagesDeployer::initializeGitRepo(const std::filesystem::path& repo_dir) {
     try {
+        if (repo_dir.empty() || !validateGitRef(config_.branch)) {
+            return false;
+        }
         std::filesystem::create_directories(repo_dir);
-        auto result = executeGitCommand("git init", repo_dir);
-        if (result.empty()) {
+        auto result = executeCommand({"git", "init"}, repo_dir);
+        if (!result.succeeded()) {
             last_deployment_status_.errors.push_back("Failed to initialize git repository at: " + repo_dir.string());
             return false;
         }
-        executeGitCommand("git checkout -b " + config_.branch, repo_dir);
+        result = executeCommand({"git", "checkout", "-B", config_.branch}, repo_dir);
+        if (!result.succeeded()) {
+            last_deployment_status_.errors.push_back("Failed to initialize branch: " + result.output);
+            return false;
+        }
+        temp_repo_dir_ = repo_dir;
         g_github_logger.log("Git repository initialized at: " + repo_dir.string(),
                            "", "elizaos_github_io", LogLevel::INFO);
         return true;
@@ -780,8 +1038,11 @@ bool GitHubPagesDeployer::initializeGitRepo(const std::filesystem::path& repo_di
 }
 
 bool GitHubPagesDeployer::createBranch(const std::string& branch_name) {
-    auto result = executeGitCommand("git checkout -b " + branch_name, temp_repo_dir_);
-    if (result.empty()) {
+    if (!validateGitRef(branch_name) || !std::filesystem::is_directory(temp_repo_dir_ / ".git")) {
+        return false;
+    }
+    auto result = executeCommand({"git", "checkout", "-b", branch_name}, temp_repo_dir_);
+    if (!result.succeeded()) {
         last_deployment_status_.errors.push_back("Failed to create branch: " + branch_name);
         return false;
     }
@@ -790,8 +1051,11 @@ bool GitHubPagesDeployer::createBranch(const std::string& branch_name) {
 }
 
 bool GitHubPagesDeployer::switchToBranch(const std::string& branch_name) {
-    auto result = executeGitCommand("git checkout " + branch_name, temp_repo_dir_);
-    if (result.empty()) {
+    if (!validateGitRef(branch_name) || !std::filesystem::is_directory(temp_repo_dir_ / ".git")) {
+        return false;
+    }
+    auto result = executeCommand({"git", "checkout", branch_name}, temp_repo_dir_);
+    if (!result.succeeded()) {
         last_deployment_status_.errors.push_back("Failed to switch to branch: " + branch_name);
         return false;
     }
@@ -851,7 +1115,8 @@ bool GitHubPagesDeployer::checkDeploymentStatus() {
 
 bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::string& url,
                                           const std::string& data, std::string& response) const {
-    // Validate HTTP method against whitelist to prevent command injection
+    response.clear();
+    // Validate HTTP method and destination before launching curl.
     static const std::vector<std::string> allowed_methods = {"GET", "POST", "PUT", "PATCH", "DELETE"};
     if (std::find(allowed_methods.begin(), allowed_methods.end(), method) == allowed_methods.end()) {
         return false;
@@ -863,10 +1128,14 @@ bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::
         return false;
     }
 
-    std::filesystem::path body_file;
-    std::filesystem::path header_file;
-    bool has_data = !data.empty();
+    const bool has_data = !data.empty();
     std::error_code ec;
+    std::ostringstream unique_name;
+    unique_name << "elizaos_github_" << reinterpret_cast<std::uintptr_t>(this) << "_"
+                << std::chrono::steady_clock::now().time_since_epoch().count();
+    const auto temp_root = std::filesystem::temp_directory_path();
+    const auto body_file = temp_root / (unique_name.str() + ".json");
+    const auto header_file = temp_root / (unique_name.str() + ".header");
 
     auto cleanup = [&]() {
         if (has_data) std::filesystem::remove(body_file, ec);
@@ -876,67 +1145,57 @@ bool GitHubPagesDeployer::makeHttpRequest(const std::string& method, const std::
     // Write request body to a file and use @filename to avoid embedding
     // user-controlled data in the shell command string
     if (has_data) {
-        body_file = config_.output_dir / ".github_request_body.json";
         try {
             std::ofstream out(body_file, std::ios::binary);
             if (!out) { return false; }
             out << data;
+            if (!out.good()) { cleanup(); return false; }
         } catch (const std::exception&) {
+            cleanup();
             return false;
         }
     }
 
     // Write the Authorization header to a file and use curl's -H @file syntax
     // so the access token is never embedded directly in the shell command string
-    header_file = config_.output_dir / ".github_auth_header.txt";
     try {
         std::ofstream hout(header_file, std::ios::binary);
         if (!hout) { cleanup(); return false; }
         hout << getAuthorizationHeader() << "\n";
+        if (!hout.good()) { cleanup(); return false; }
+        std::filesystem::permissions(
+            header_file,
+            std::filesystem::perms::owner_read | std::filesystem::perms::owner_write,
+            std::filesystem::perm_options::replace,
+            ec);
     } catch (const std::exception&) {
         cleanup();
         return false;
     }
 
-    // Construct curl command. All user-controlled values come from validated
-    // files via @filename or from hard-coded safe strings.
-    std::string cmd = "curl -s -w \"\\n%{http_code}\" -X " + method +
-                      " -H \"Accept: application/vnd.github+json\"" +
-                      " -H @" + header_file.string() +
-                      " -H \"X-GitHub-Api-Version: 2022-11-28\"";
+    std::vector<std::string> arguments = {
+        "curl", "--silent", "--show-error", "--write-out", "\n%{http_code}",
+        "--request", method,
+        "--header", "Accept: application/vnd.github+json",
+        "--header", "@" + header_file.string(),
+        "--header", "X-GitHub-Api-Version: 2022-11-28"
+    };
     if (has_data) {
-        cmd += " -H \"Content-Type: application/json\"";
-        cmd += " --data-binary @" + body_file.string();
+        arguments.insert(arguments.end(), {
+            "--header", "Content-Type: application/json",
+            "--data-binary", "@" + body_file.string()
+        });
     }
-    cmd += " " + url;
-#ifdef _WIN32
-    cmd += " 2>NUL";
-#else
-    cmd += " 2>/dev/null";
-#endif
+    arguments.push_back(url);
 
-    FILE* pipe = nullptr;
-#ifdef _WIN32
-    pipe = _popen(cmd.c_str(), "r");
-#else
-    pipe = popen(cmd.c_str(), "r");
-#endif
-    if (!pipe) {
-        cleanup();
+    const auto command_result = executeCommand(arguments);
+    cleanup();
+    if (!command_result.succeeded()) {
+        response = command_result.output;
         return false;
     }
 
-    char buffer[256];
-    std::string raw;
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        raw += buffer;
-    }
-#ifdef _WIN32
-    _pclose(pipe);
-#else
-    pclose(pipe);
-#endif
-    cleanup();
+    const std::string& raw = command_result.output;
 
     // The last line from curl -w "\n%{http_code}" is the HTTP status code
     auto last_newline = raw.rfind('\n', raw.size() > 1 ? raw.size() - 2 : 0);

@@ -98,7 +98,16 @@ TEST_F(DiscordSummarizerTest, ChannelSummaryGeneration) {
     
     auto now = std::chrono::system_clock::now();
     auto yesterday = now - std::chrono::hours(24);
-    
+
+    DiscordMessage first("test_msg_1", "test_channel_123", "TestUser", "Great AI update");
+    first.authorId = "user_1";
+    first.timestamp = now - std::chrono::hours(2);
+    DiscordMessage second("test_msg_2", "test_channel_123", "OtherUser", "Machine learning notes");
+    second.authorId = "user_2";
+    second.timestamp = now - std::chrono::hours(1);
+    ASSERT_TRUE(summarizer->getDataManager().storeMessages({first, second}));
+    summarizer->getSummarizer().setMinimumMessages(1);
+
     // Generate channel summary
     auto future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
     auto summary = future.get();
@@ -131,6 +140,7 @@ TEST_F(DiscordSummarizerTest, MessageAnalyzer) {
 TEST_F(DiscordSummarizerTest, MonitoringControl) {
     // Test monitoring start/stop
     EXPECT_FALSE(summarizer->isMonitoring());
+    ASSERT_TRUE(summarizer->initializeWithToken("test_token_123"));
     
     std::vector<std::string> channels = {"channel1", "channel2", "channel3"};
     summarizer->startMonitoring(channels);
@@ -227,7 +237,7 @@ TEST_F(DiscrubExtensionTest, MonitoringOperations) {
     // Test monitoring control
     EXPECT_FALSE(extension->isMonitoring());
     
-    std::vector<std::string> channels = {"channel1", "channel2"};
+    std::vector<std::string> channels = {"12345678901234567", "23456789012345678"};
     extension->startMonitoring(channels);
     EXPECT_TRUE(extension->isMonitoring());
     

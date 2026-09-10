@@ -19,6 +19,7 @@
 #include <chrono>
 #include <deque>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -51,23 +52,31 @@ public:
     ShellCommandResult executeShellCommand(const std::string& command);
     void enableShellAccess(bool enabled) { shellAccessEnabled_ = enabled; }
     bool isShellAccessEnabled() const { return shellAccessEnabled_; }
+    // Legacy reference access is only safe while execution is quiescent. Prefer
+    // getCurrentWorkingDirectorySnapshot() while cycles or task workers may run.
     const std::string& getCurrentWorkingDirectory() const { return currentWorkingDirectory_; }
+    std::string getCurrentWorkingDirectorySnapshot() const;
 
     // Autonomous loop control
     void startAutonomousLoop();
     void stopAutonomousLoop();
     bool isAutonomousLoopRunning() const;
     void setLoopInterval(std::chrono::milliseconds interval);
-    std::chrono::milliseconds getLoopInterval() const { return loopInterval_; }
+    std::chrono::milliseconds getLoopInterval() const;
 
     // Deterministic single-cycle autonomy controls for tests, supervisors, and
     // embedding runtimes that need bounded observe-reason-act stepping.
     // Each cycle now runs the full perceive -> reason -> act -> reflect loop.
     std::size_t runCognitiveCycleOnce();
-    std::size_t getCognitiveCycleCount() const { return cognitiveCycle_; }
-    std::size_t getActionCount() const { return actionCounter_; }
+    std::size_t getCognitiveCycleCount() const;
+    std::size_t getActionCount() const;
+    // Legacy reference accessors are unsafe during active execution because a
+    // returned reference outlives the protecting lock. Snapshot accessors below
+    // return owned values and are safe for concurrent supervisors.
     const std::string& getLastObservationSummary() const { return lastObservationSummary_; }
     const std::string& getLastPlan() const { return lastPlan_; }
+    std::string getLastObservationSummarySnapshot() const;
+    std::string getLastPlanSnapshot() const;
 
     // Closed-loop goal-progression introspection. These expose the convergence
     // signals an autonomy supervisor needs: how many seeded goals are still open
@@ -76,22 +85,26 @@ public:
     // plan (a stagnation signal). A healthy autonomous agent drives open goals to
     // completion rather than looping a single plan indefinitely.
     std::size_t getOpenGoalCount() const;
+    // Legacy reference access is unsafe during active execution; prefer the
+    // value-returning getActiveGoalIdSnapshot().
     const UUID& getActiveGoalId() const { return activeGoalId_; }
-    std::size_t getStagnationCounter() const { return stagnationCounter_; }
+    UUID getActiveGoalIdSnapshot() const;
+    std::size_t getStagnationCounter() const;
     // Reflection / learning surface. After each cycle the agent records whether
     // the executed action succeeded and the reflective conclusion it drew.
     const std::string& getLastReflection() const { return lastReflection_; }
-    std::size_t getReflectionCount() const { return reflectionCount_; }
-    bool getLastActionSucceeded() const { return lastActionSucceeded_; }
+    std::string getLastReflectionSnapshot() const;
+    std::size_t getReflectionCount() const;
+    bool getLastActionSucceeded() const;
     // Backwards-compatible alias retained for tests and embedders that adopted
     // the shorter accessor name before the loop was unified.
-    bool lastActionSucceeded() const { return lastActionSucceeded_; }
-    int getLastActionExitCode() const { return lastActionExitCode_; }
+    bool lastActionSucceeded() const { return getLastActionSucceeded(); }
+    int getLastActionExitCode() const;
 
     // Attention-weighted autonomy introspection. Returns the goal id the agent
     // is currently focused on (highest attention composite score among open
     // goals), or an empty string when no goals exist.
-    UUID getFocusedGoalId() const { return focusedGoalId_; }
+    UUID getFocusedGoalId() const;
 
     // Returns the success ratio (0.0-1.0) of every plan label the agent has
     // executed so far. Used by supervisors and tests to confirm that the agent
@@ -102,21 +115,26 @@ public:
 
     // Bounded competence estimate in [0, 1]; rises after successful actions and
     // falls after failures. Drives plan fallback selection on the next cycle.
-    double getCompetenceSignal() const { return competenceSignal_; }
-    std::size_t getSuccessfulActionCount() const { return successfulActionCount_; }
-    std::size_t getFailedActionCount() const { return failedActionCount_; }
+    double getCompetenceSignal() const;
+    std::size_t getSuccessfulActionCount() const;
+    std::size_t getFailedActionCount() const;
     std::size_t getCompletedGoalCount() const;
-    std::size_t getConsecutiveActionFailures() const { return consecutiveActionFailures_; }
+    std::size_t getConsecutiveActionFailures() const;
 
     // Attention-weighted goal selection. Exposes the goal the attention
     // allocator currently considers highest priority. Empty when no goals.
     std::string getAttentionPrioritizedGoal() const;
 
-    // State access
+    // State access. These legacy references preserve source compatibility but
+    // cannot remain protected after return; callers must use them only while the
+    // starter is quiescent or under their own external synchronization. Prefer
+    // getStateSnapshot()/getEndocrineSystemSnapshot() for concurrent reads.
     State& getState() { return state_; }
     const State& getState() const { return state_; }
+    State getStateSnapshot() const;
     const AgentConfig& getConfig() const { return config_; }
     const EndocrineSystem& getEndocrineSystem() const { return endocrine_; }
+    EndocrineSystem getEndocrineSystemSnapshot() const;
 
     // Task management
     UUID executeShellCommandAsTask(const std::string& command);
@@ -169,6 +187,19 @@ public:
     AutonomyHealthReport getAutonomyHealthReport() const;
 
 private:
+    // Locking contract:
+    //   * lifecycleMutex_ serializes public start/stop/restart/manual-cycle and
+    //     task-scheduling operations.
+    //   * stateMutex_ is the single-writer gate for State, endocrine state, the
+    //     working directory, cognitive phases, memories, and telemetry.
+    //   * lock order is lifecycleMutex_ -> stateMutex_. Background cycles and
+    //     task workers take only stateMutex_, allowing lifecycle code to release
+    //     stateMutex_ before joining workers that may be finishing a write.
+    // No callback or worker is joined while stateMutex_ is held.
+    std::size_t runCognitiveCycleLocked();
+    void startAutonomousLoopLocked();
+    void stopAutonomousLoopLocked();
+
     // Goal-driven autonomy helpers
     void ensureCoreAutonomyGoals();
     std::string selectGoalContext() const;
@@ -207,6 +238,9 @@ private:
     // biases future plan selection toward historically successful plans.
     void recordPlanOutcome(const std::string& plan, bool success);
     double planBias(const std::string& plan) const;
+    double planSuccessRatioLocked(const std::string& plan) const;
+    std::size_t openGoalCountLocked() const;
+    std::size_t completedGoalCountLocked() const;
 
     // Goal lifecycle transition driven by accomplished plans.
     void advanceGoalLifecycle(const std::string& plan, bool actionSucceeded);
@@ -228,13 +262,15 @@ private:
     std::string activeGoalDescriptionForPlan() const;
 
     // Memory helpers
-    void appendMemory(const std::string& content);
+    void appendMemoryLocked(const std::string& content);
     std::string summarizeRecentExperience(std::size_t maxItems = 4) const;
 
     // Shell helpers
     ShellCommandResult validateShellCommand(const std::string& command) const;
+    ShellCommandResult executeShellCommandLocked(const std::string& command);
     ShellCommandResult executeInternalCd(const std::string& command);
     ShellCommandResult executeExternalShellCommand(const std::string& command);
+    bool executeShellTaskLocked(Task& task, const TaskOptions& options);
 
     class ShellCommandWorker : public TaskWorker {
     public:
@@ -248,6 +284,9 @@ private:
     private:
         AutonomousStarter* starter_;
     };
+
+    mutable std::mutex lifecycleMutex_;
+    mutable std::mutex stateMutex_;
 
     AgentConfig config_;
     State state_;

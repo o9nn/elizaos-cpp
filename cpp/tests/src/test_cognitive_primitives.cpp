@@ -3,6 +3,11 @@
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <atomic>
+#include <condition_variable>
+#include <future>
+#include <mutex>
+#include <stdexcept>
 
 using namespace elizaos;
 
@@ -61,7 +66,7 @@ TEST_F(CognitivePrimitivesTest, MemoryEmbeddingSupport) {
     
     ASSERT_TRUE(memory->getEmbedding().has_value());
     auto retrievedEmbedding = memory->getEmbedding().value();
-    EXPECT_EQ(retrievedEmbedding.size(), 5);
+    EXPECT_EQ(retrievedEmbedding.size(), std::size_t{5});
     EXPECT_FLOAT_EQ(retrievedEmbedding[0], 0.1f);
     EXPECT_FLOAT_EQ(retrievedEmbedding[4], 0.5f);
 }
@@ -82,8 +87,8 @@ TEST_F(CognitivePrimitivesTest, MemoryHypergraphConnections) {
     auto nodes = memory->getHypergraphNodes();
     auto edges = memory->getHypergraphEdges();
     
-    EXPECT_EQ(nodes.size(), 2);
-    EXPECT_EQ(edges.size(), 1);
+    EXPECT_EQ(nodes.size(), std::size_t{2});
+    EXPECT_EQ(edges.size(), std::size_t{1});
     EXPECT_EQ(nodes[0], "node-1");
     EXPECT_EQ(nodes[1], "node-2");
     EXPECT_EQ(edges[0], "edge-1");
@@ -117,7 +122,7 @@ TEST_F(CognitivePrimitivesTest, HypergraphEdgeCreation) {
     
     EXPECT_EQ(edge.getId(), "edge-1");
     EXPECT_EQ(edge.getLabel(), "RelationEdge");
-    EXPECT_EQ(edge.getNodeIds().size(), 3);
+    EXPECT_EQ(edge.getNodeIds().size(), std::size_t{3});
     EXPECT_EQ(edge.getWeight(), 1.0);
     
     edge.setWeight(0.7);
@@ -147,7 +152,7 @@ TEST_F(CognitivePrimitivesTest, TaskTagsAndOptions) {
     task.addTag("test");
     
     auto tags = task.getTags();
-    EXPECT_EQ(tags.size(), 3);
+    EXPECT_EQ(tags.size(), std::size_t{3});
     EXPECT_EQ(tags[0], "queue");
     EXPECT_EQ(tags[2], "test");
     
@@ -158,7 +163,7 @@ TEST_F(CognitivePrimitivesTest, TaskTagsAndOptions) {
     task.setOptions(options);
     
     auto retrievedOptions = task.getOptions();
-    EXPECT_EQ(retrievedOptions.data.size(), 2);
+    EXPECT_EQ(retrievedOptions.data.size(), std::size_t{2});
     EXPECT_EQ(retrievedOptions.data.at("param1"), "value1");
 }
 
@@ -197,6 +202,89 @@ public:
     bool executed = false;
     std::string executedTaskId;
 };
+
+namespace {
+
+using namespace std::chrono_literals;
+
+template <typename Predicate>
+bool waitUntil(Predicate predicate,
+               std::chrono::milliseconds timeout = 2000ms) {
+    const auto deadline = std::chrono::steady_clock::now() + timeout;
+    while (std::chrono::steady_clock::now() < deadline) {
+        if (predicate()) {
+            return true;
+        }
+        std::this_thread::sleep_for(1ms);
+    }
+    return predicate();
+}
+
+class RecordingTaskWorker : public TaskWorker {
+public:
+    explicit RecordingTaskWorker(std::string name) : name_(std::move(name)) {}
+
+    std::string getName() const override { return name_; }
+
+    bool validate(const Task& task,
+                  const State& state,
+                  std::shared_ptr<Memory> message) const override {
+        ++validationCount;
+        validatedAgent = state.getAgentId();
+        validatedTask = task.getId();
+        if (message) {
+            messageContent = message->getContent();
+            messageRoom = message->getRoomId();
+            messageWorld = message->getWorldId();
+        }
+        return validationResult;
+    }
+
+    bool execute(Task& task, State& state, const TaskOptions& options) override {
+        ++executionCount;
+        executedAgent = state.getAgentId();
+        executedTask = task.getId();
+        executedRoom = task.getRoomId();
+        executedWorld = task.getWorldId();
+        executedOptions = options;
+        if (throwOnExecute) {
+            throw std::runtime_error("worker failure");
+        }
+        if (onExecute) {
+            onExecute();
+        }
+        return executionResult;
+    }
+
+    std::string name_;
+    bool validationResult = true;
+    bool executionResult = true;
+    bool throwOnExecute = false;
+    std::function<void()> onExecute;
+    mutable std::atomic<int> validationCount{0};
+    std::atomic<int> executionCount{0};
+    mutable std::string validatedAgent;
+    mutable std::string validatedTask;
+    mutable std::string messageContent;
+    mutable std::string messageRoom;
+    mutable std::string messageWorld;
+    std::string executedAgent;
+    std::string executedTask;
+    std::string executedRoom;
+    std::string executedWorld;
+    TaskOptions executedOptions;
+};
+
+std::shared_ptr<Task> createQueuedTask(TaskManager& manager,
+                                       const std::string& workerName,
+                                       const std::string& description = "work") {
+    const auto id = manager.createTask(workerName, description, "room-42", "world-7");
+    auto task = manager.getTask(id);
+    task->addTag("queue");
+    return task;
+}
+
+} // namespace
 
 TEST_F(CognitivePrimitivesTest, TaskManagerBasicOperations) {
     TaskManager manager;
@@ -238,6 +326,285 @@ TEST_F(CognitivePrimitivesTest, TaskManagerWorkerRegistration) {
     
     // Should be safe to unregister non-existent worker
     manager.unregisterWorker("NonExistentWorker");
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerWorkerReceivesConfiguredContext) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("ContextWorker");
+    manager.registerWorker(worker);
+
+    auto task = createQueuedTask(manager, "ContextWorker", "context payload");
+    TaskOptions options;
+    options.data["mode"] = "careful";
+    task->setOptions(options);
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] { return worker->executionCount.load() == 1; }));
+    manager.stop();
+
+    EXPECT_EQ(worker->validationCount.load(), 1);
+    EXPECT_EQ(worker->validatedAgent, config_.agentId);
+    EXPECT_EQ(worker->executedAgent, config_.agentId);
+    EXPECT_EQ(worker->validatedTask, task->getId());
+    EXPECT_EQ(worker->executedTask, task->getId());
+    EXPECT_EQ(worker->messageContent, "context payload");
+    EXPECT_EQ(worker->messageRoom, "room-42");
+    EXPECT_EQ(worker->messageWorld, "world-7");
+    EXPECT_EQ(worker->executedRoom, "room-42");
+    EXPECT_EQ(worker->executedWorld, "world-7");
+    EXPECT_EQ(worker->executedOptions.data.at("mode"), "careful");
+    EXPECT_EQ(task->getStatus(), TaskStatus::COMPLETED);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerUsesPerTaskStateFactory) {
+    std::atomic<int> factoryCalls{0};
+    TaskManager manager(TaskManager::StateFactory(
+        [&](const TaskSnapshot& task) {
+            ++factoryCalls;
+            EXPECT_EQ(task.roomId, "room-42");
+            EXPECT_EQ(task.worldId, "world-7");
+            auto state = std::make_shared<State>(config_);
+            state->addActor(Actor{task.roomId, "room actor", task.worldId});
+            return state;
+        }));
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("FactoryWorker");
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "FactoryWorker");
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] { return worker->executionCount.load() == 1; }));
+    manager.stop();
+
+    EXPECT_EQ(factoryCalls.load(), 1);
+    EXPECT_EQ(worker->executedAgent, config_.agentId);
+    EXPECT_EQ(task->getStatus(), TaskStatus::COMPLETED);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerValidationRejectsWithoutExecution) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("RejectWorker");
+    worker->validationResult = false;
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "RejectWorker");
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] {
+        return task->getStatus() == TaskStatus::FAILED;
+    }));
+    manager.stop();
+
+    EXPECT_EQ(worker->validationCount.load(), 1);
+    EXPECT_EQ(worker->executionCount.load(), 0);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerWorkerExceptionMarksTaskFailed) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("ThrowWorker");
+    worker->throwOnExecute = true;
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "ThrowWorker");
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] {
+        return task->getStatus() == TaskStatus::FAILED;
+    }));
+    manager.stop();
+
+    EXPECT_EQ(worker->validationCount.load(), 1);
+    EXPECT_EQ(worker->executionCount.load(), 1);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerRepeatReturnsToPending) {
+    TaskManager manager(config_);
+    manager.setTickInterval(5ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("RepeatWorker");
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "RepeatWorker");
+    task->addTag("repeat");
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] { return worker->executionCount.load() >= 3; }));
+    manager.pause();
+    ASSERT_TRUE(waitUntil([&] {
+        return task->getStatus() == TaskStatus::PENDING;
+    }));
+    manager.stop();
+
+    EXPECT_GE(worker->validationCount.load(), 3);
+    EXPECT_EQ(worker->validationCount.load(), worker->executionCount.load());
+    EXPECT_EQ(task->getStatus(), TaskStatus::PENDING);
+    ASSERT_TRUE(manager.getTaskSnapshot(task->getId()).has_value());
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerCallbacksCanReenterRegistryAndTasks) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("ReentrantWorker");
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "ReentrantWorker");
+    const auto taskId = task->getId();
+
+    worker->onExecute = [&] {
+        manager.unregisterWorker("ReentrantWorker");
+        manager.registerWorker(worker);
+        EXPECT_NE(manager.getTask(taskId), nullptr);
+        EXPECT_FALSE(manager.createTask("NestedWorker", "nested").empty());
+    };
+
+    auto run = std::async(std::launch::async, [&] {
+        manager.start();
+        const bool completed = waitUntil([&] {
+            return worker->executionCount.load() == 1;
+        });
+        manager.stop();
+        return completed;
+    });
+
+    ASSERT_EQ(run.wait_for(2s), std::future_status::ready);
+    EXPECT_TRUE(run.get());
+    EXPECT_EQ(task->getStatus(), TaskStatus::COMPLETED);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerConcurrentRegistryAndProcessingStress) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto stableWorker = std::make_shared<RecordingTaskWorker>("StableWorker");
+    auto transientWorker = std::make_shared<RecordingTaskWorker>("TransientWorker");
+    manager.registerWorker(stableWorker);
+    manager.start();
+
+    constexpr int taskCount = 100;
+    std::thread producer([&] {
+        for (int i = 0; i < taskCount; ++i) {
+            auto task = createQueuedTask(manager, "StableWorker");
+            task->setPriority(i % 7);
+        }
+    });
+    std::thread registry([&] {
+        for (int i = 0; i < 1000; ++i) {
+            manager.registerWorker(transientWorker);
+            manager.unregisterWorker("TransientWorker");
+        }
+    });
+
+    producer.join();
+    registry.join();
+    ASSERT_TRUE(waitUntil([&] {
+        return stableWorker->executionCount.load() == taskCount;
+    }, 5000ms));
+    manager.stop();
+
+    EXPECT_EQ(stableWorker->validationCount.load(), taskCount);
+    EXPECT_EQ(stableWorker->executionCount.load(), taskCount);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerLifecycleWakesPromptly) {
+    TaskManager manager(config_);
+    manager.setTickInterval(10s);
+    manager.start();
+
+    const auto stopStart = std::chrono::steady_clock::now();
+    manager.stop();
+    EXPECT_LT(std::chrono::steady_clock::now() - stopStart, 500ms);
+
+    auto worker = std::make_shared<RecordingTaskWorker>("WakeWorker");
+    manager.registerWorker(worker);
+    createQueuedTask(manager, "WakeWorker");
+    manager.start();
+    manager.pause();
+    std::this_thread::sleep_for(20ms);
+    EXPECT_EQ(worker->executionCount.load(), 0);
+    manager.resume();
+    ASSERT_TRUE(waitUntil([&] { return worker->executionCount.load() == 1; }));
+    manager.stop();
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerWorkerCanRequestStopAndRestart) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("SelfStopWorker");
+    manager.registerWorker(worker);
+    auto firstTask = createQueuedTask(manager, "SelfStopWorker");
+    worker->onExecute = [&] { manager.stop(); };
+
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] { return !manager.isRunning(); }));
+    EXPECT_EQ(firstTask->getStatus(), TaskStatus::COMPLETED);
+
+    worker->onExecute = nullptr;
+    auto secondTask = createQueuedTask(manager, "SelfStopWorker");
+    manager.start();
+    ASSERT_TRUE(waitUntil([&] { return worker->executionCount.load() == 2; }));
+    manager.stop();
+
+    EXPECT_EQ(secondTask->getStatus(), TaskStatus::COMPLETED);
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerConcurrentLifecycleControlStress) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+
+    constexpr int iterations = 100;
+    auto control = [&] {
+        for (int i = 0; i < iterations; ++i) {
+            manager.start();
+            if ((i % 3) == 0) {
+                manager.pause();
+                manager.resume();
+            }
+            manager.stop();
+        }
+    };
+
+    std::thread first(control);
+    std::thread second(control);
+    first.join();
+    second.join();
+    manager.stop();
+
+    EXPECT_FALSE(manager.isRunning());
+}
+
+TEST_F(CognitivePrimitivesTest, TaskManagerShutdownWaitsForActiveWorker) {
+    TaskManager manager(config_);
+    manager.setTickInterval(1ms);
+    auto worker = std::make_shared<RecordingTaskWorker>("BlockingWorker");
+    manager.registerWorker(worker);
+    auto task = createQueuedTask(manager, "BlockingWorker");
+
+    std::mutex gateMutex;
+    std::condition_variable gateCv;
+    bool entered = false;
+    bool release = false;
+    worker->onExecute = [&] {
+        std::unique_lock<std::mutex> lock(gateMutex);
+        entered = true;
+        gateCv.notify_all();
+        gateCv.wait(lock, [&] { return release; });
+    };
+
+    manager.start();
+    {
+        std::unique_lock<std::mutex> lock(gateMutex);
+        ASSERT_TRUE(gateCv.wait_for(lock, 2s, [&] { return entered; }));
+    }
+
+    auto stopped = std::async(std::launch::async, [&] { manager.stop(); });
+    EXPECT_EQ(stopped.wait_for(50ms), std::future_status::timeout);
+    {
+        std::lock_guard<std::mutex> lock(gateMutex);
+        release = true;
+    }
+    gateCv.notify_all();
+
+    ASSERT_EQ(stopped.wait_for(2s), std::future_status::ready);
+    stopped.get();
+    EXPECT_FALSE(manager.isRunning());
+    EXPECT_EQ(task->getStatus(), TaskStatus::COMPLETED);
 }
 
 // ============================================================================
@@ -419,8 +786,8 @@ TEST_F(CognitivePrimitivesTest, CognitiveFusionEngineQueryProcessing) {
     // Process a query
     auto result = engine.processQuery(state, "test_query");
     
-    EXPECT_EQ(result.symbolicResults.size(), 1);
-    EXPECT_EQ(result.connectionistResults.size(), 1);
+    EXPECT_EQ(result.symbolicResults.size(), std::size_t{1});
+    EXPECT_EQ(result.connectionistResults.size(), std::size_t{1});
     EXPECT_EQ(result.symbolicResults[0], "symbolic_result_test_query");
     EXPECT_EQ(result.connectionistResults[0], "connectionist_response");
     EXPECT_GT(result.confidence, 0.0);
@@ -442,7 +809,7 @@ TEST_F(CognitivePrimitivesTest, CognitiveFusionEngineMemoryIntegration) {
     // Retrieve relevant memories
     auto relevantMemories = engine.retrieveRelevantMemories("test", 5);
     
-    EXPECT_EQ(relevantMemories.size(), 2); // memory1 and memory3 contain "test"
+    EXPECT_EQ(relevantMemories.size(), std::size_t{2}); // memory1 and memory3 contain "test"
     EXPECT_EQ(relevantMemories[0]->getId(), "mem-1");
     EXPECT_EQ(relevantMemories[1]->getId(), "mem-3");
 }
@@ -505,13 +872,13 @@ TEST_F(CognitivePrimitivesTest, HypergraphMemoryTaskFusion) {
     task->addTag("analysis");
     
     // Verify integration
-    EXPECT_EQ(memory->getHypergraphNodes().size(), 1);
-    EXPECT_EQ(memory->getHypergraphEdges().size(), 1);
+    EXPECT_EQ(memory->getHypergraphNodes().size(), std::size_t{1});
+    EXPECT_EQ(memory->getHypergraphEdges().size(), std::size_t{1});
     EXPECT_TRUE(memory->getEmbedding().has_value());
-    EXPECT_EQ(task->getTags().size(), 2);
+    EXPECT_EQ(task->getTags().size(), std::size_t{2});
     
     auto relevantMemories = engine.retrieveRelevantMemories("content", 1);
-    EXPECT_EQ(relevantMemories.size(), 1);
+    EXPECT_EQ(relevantMemories.size(), std::size_t{1});
     EXPECT_EQ(relevantMemories[0]->getId(), "complex-mem-1");
 }
 
@@ -562,15 +929,15 @@ TEST_F(CognitivePrimitivesTest, PLNInferenceEngineBasicOperations) {
     
     // Test rule retrieval
     auto applicableRules = engine.getApplicableRules("test_query");
-    EXPECT_GE(applicableRules.size(), 1);
+    EXPECT_GE(applicableRules.size(), std::size_t{1});
     
     // Test forward chaining
     auto forwardResults = engine.forwardChain(state, "test_query", 2);
-    EXPECT_GE(forwardResults.size(), 0);
+    EXPECT_TRUE(forwardResults.empty() || !forwardResults.front().conclusion.empty());
     
     // Test backward chaining
     auto backwardResults = engine.backwardChain(state, "valid_result", 2);
-    EXPECT_GE(backwardResults.size(), 0);
+    EXPECT_TRUE(backwardResults.empty() || !backwardResults.front().conclusion.empty());
     
     // Test best inference
     auto bestResult = engine.bestInference(state, "test_query");
@@ -625,10 +992,10 @@ TEST_F(CognitivePrimitivesTest, PLNInferenceEngineAtomSpaceIntegration) {
     
     // Test AtomSpace querying
     auto queryResults = engine.queryAtomSpace("concept");
-    EXPECT_EQ(queryResults.size(), 2);
+    EXPECT_EQ(queryResults.size(), std::size_t{2});
     
     auto specificResults = engine.queryAtomSpace("concept_A");
-    EXPECT_EQ(specificResults.size(), 1);
+    EXPECT_EQ(specificResults.size(), std::size_t{1});
     EXPECT_EQ(specificResults[0]->getLabel(), "concept_A");
 }
 
@@ -673,13 +1040,13 @@ TEST_F(CognitivePrimitivesTest, EnhancedCognitiveFusionEngineUncertainReasoning)
     // Test uncertainty-aware reasoning
     auto result = engine.processQueryWithUncertainty(state, "test_query");
     
-    EXPECT_GE(result.symbolicResults.size(), 1);
-    EXPECT_GE(result.connectionistResults.size(), 1);
-    EXPECT_GE(result.plnResults.size(), 0);
+    EXPECT_GE(result.symbolicResults.size(), std::size_t{1});
+    EXPECT_GE(result.connectionistResults.size(), std::size_t{1});
+    EXPECT_TRUE(result.plnResults.empty() || result.plnResults.front().truth.isValid());
     
     // Confidence should be > 0 even if just based on fused results count
     // Since we have symbolic and connectionist results, fusedResults should have content
-    EXPECT_GE(result.fusedResults.size(), 2);  // At least symbolic + connectionist results
+    EXPECT_GE(result.fusedResults.size(), std::size_t{2});  // At least symbolic + connectionist results
     EXPECT_GT(result.confidence, 0.0);  // Should be > 0 with the baseline confidence fix
     EXPECT_LE(result.confidence, 1.0);
     
@@ -717,11 +1084,11 @@ TEST_F(CognitivePrimitivesTest, AtomSpacePatternMatching) {
     
     // Test finding all matches
     auto allMatches = patternMatcher->findAllMatches(pattern, nodes, edges);
-    EXPECT_GE(allMatches.size(), 1);
+    EXPECT_GE(allMatches.size(), std::size_t{1});
     
     // Test AtomSpace traversal
     if (!nodes.empty()) {
         auto traversalResult = patternMatcher->traverseAtomSpace(pattern, nodes[0]);
-        EXPECT_GE(traversalResult.size(), 0);
+        EXPECT_TRUE(traversalResult.empty() || traversalResult.front() != nullptr);
     }
 }

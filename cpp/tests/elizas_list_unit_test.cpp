@@ -1,70 +1,79 @@
-// elizas_list_unit_test.cpp - Pure unit tests for individual ElizasList APIs.
 #include <gtest/gtest.h>
+
 #include "elizaos/elizas_list.hpp"
-#include <nlohmann/json.hpp>
+
+#include <filesystem>
 
 using namespace elizaos;
 
 namespace {
-Project mkProject(const std::string& id) {
-    Project p;
-    p.id = id;
-    p.name = id;
-    p.author.name = "x";
-    p.author.github = "x";
-    return p;
+Project validProject(const std::string& id) {
+    Project value;
+    value.id = id;
+    value.name = "Name";
+    value.description = "Description";
+    value.projectUrl = "https://example.com/" + id;
+    value.github = "owner/" + id;
+    value.author = {"Owner", "owner", std::nullopt};
+    value.addedOn = "2025-01-01";
+    return value;
 }
-Collection mkCollection(const std::string& id, bool featured = false) {
-    Collection c;
-    c.id = id;
-    c.name = id;
-    c.curator.name = "y";
-    c.curator.github = "y";
-    c.featured = featured;
-    return c;
+
+Collection validCollection(const std::string& id) {
+    Collection value;
+    value.id = id;
+    value.name = "Name";
+    value.description = "Description";
+    value.curator = {"Owner", "owner"};
+    return value;
 }
 }
 
-TEST(ElizasListUnit, AddRemoveProject) {
-    ElizasList l;
-    EXPECT_TRUE(l.addProject(mkProject("p")));
-    EXPECT_EQ(l.getProjectCount(), 1u);
-    EXPECT_TRUE(l.removeProject("p"));
-    EXPECT_EQ(l.getProjectCount(), 0u);
+TEST(ElizasListUnit, EmptyStateAllAccessorsAreDefined) {
+    ElizasList list;
+    EXPECT_EQ(list.getProjectCount(), 0U);
+    EXPECT_EQ(list.getCollectionCount(), 0U);
+    EXPECT_TRUE(list.getAllProjects().empty());
+    EXPECT_TRUE(list.getAllCollections().empty());
+    EXPECT_TRUE(list.getProjectsByTag("tag").empty());
+    EXPECT_TRUE(list.getProjectsByAuthor("owner").empty());
+    EXPECT_TRUE(list.searchProjects("query").empty());
+    EXPECT_TRUE(list.getProjectsSortedByStars().empty());
+    EXPECT_TRUE(list.getRecentProjects().empty());
+    EXPECT_TRUE(list.getFeaturedCollections().empty());
+    EXPECT_TRUE(list.getAllTags().empty());
+    EXPECT_FALSE(list.getProject("missing"));
+    EXPECT_FALSE(list.getCollection("missing"));
+    EXPECT_FALSE(list.removeProject("missing"));
+    EXPECT_FALSE(list.removeCollection("missing"));
+    EXPECT_FALSE(list.updateProject(validProject("missing")));
+    EXPECT_FALSE(list.updateCollection(validCollection("missing")));
 }
 
-TEST(ElizasListUnit, RemoveMissingProjectReturnsFalse) {
-    ElizasList l;
-    EXPECT_FALSE(l.removeProject("nope"));
+TEST(ElizasListUnit, PersistenceRootIsAbsoluteAndStable) {
+    const auto relative = std::filesystem::path("relative-list-root");
+    ElizasList list(relative);
+    EXPECT_TRUE(list.getPersistenceRoot().is_absolute());
+    EXPECT_EQ(list.getPersistenceRoot().filename(), relative.filename());
 }
 
-TEST(ElizasListUnit, UpdateProject) {
-    ElizasList l;
-    auto p = mkProject("p");
-    l.addProject(p);
-    p.description = "updated";
-    EXPECT_TRUE(l.updateProject(p));
-    auto got = l.getProject("p");
-    ASSERT_TRUE(got.has_value());
-    EXPECT_EQ(got->description, "updated");
+TEST(ElizasListUnit, ProjectSnapshotsDoNotExposeMutableStorage) {
+    ElizasList list;
+    ASSERT_TRUE(list.addProject(validProject("alpha")));
+    auto snapshot = list.getProject("alpha");
+    ASSERT_TRUE(snapshot);
+    snapshot->name = "mutated copy";
+    EXPECT_EQ(list.getProject("alpha")->name, "Name");
+    auto all = list.getAllProjects();
+    all[0].name = "also a copy";
+    EXPECT_EQ(list.getProject("alpha")->name, "Name");
 }
 
-TEST(ElizasListUnit, AddRemoveCollection) {
-    ElizasList l;
-    EXPECT_TRUE(l.addCollection(mkCollection("c")));
-    EXPECT_EQ(l.getCollectionCount(), 1u);
-    EXPECT_TRUE(l.removeCollection("c"));
-}
-
-TEST(ElizasListUnit, FeaturedFilter) {
-    ElizasList l;
-    l.addCollection(mkCollection("a", false));
-    l.addCollection(mkCollection("b", true));
-    EXPECT_EQ(l.getFeaturedCollections().size(), 1u);
-}
-
-TEST(ElizasListUnit, RecentProjectsRespectsLimit) {
-    ElizasList l;
-    for (int i = 0; i < 5; ++i) l.addProject(mkProject("p" + std::to_string(i)));
-    EXPECT_LE(l.getRecentProjects(3).size(), 3u);
+TEST(ElizasListUnit, CollectionSnapshotsDoNotExposeMutableStorage) {
+    ElizasList list;
+    ASSERT_TRUE(list.addCollection(validCollection("alpha")));
+    auto snapshot = list.getCollection("alpha");
+    ASSERT_TRUE(snapshot);
+    snapshot->name = "mutated copy";
+    EXPECT_EQ(list.getCollection("alpha")->name, "Name");
 }

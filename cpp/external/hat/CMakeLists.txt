@@ -8,6 +8,8 @@ target_include_directories(elizaos-hat PUBLIC
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
+target_compile_features(elizaos-hat PUBLIC cxx_std_17)
+
 target_link_libraries(elizaos-hat 
     elizaos-core
 )

@@ -5,10 +5,15 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <chrono>
 #include <future>
 #include <functional>
 #include <mutex>
+#include <atomic>
+#include <condition_variable>
+#include <deque>
+#include <thread>
 
 namespace elizaos {
 
@@ -170,7 +175,7 @@ private:
     int toxicityThreshold_;
     std::string sentimentModelPath_;
     std::unordered_map<std::string, std::vector<std::string>> topicCategories_;
-    mutable std::mutex analyzerMutex_;
+    mutable std::recursive_mutex analyzerMutex_;
     
     // Internal analysis helpers
     std::vector<std::string> tokenizeText(const std::string& text);
@@ -181,6 +186,11 @@ private:
 // Channel summarization engine
 class ChannelSummarizer {
 public:
+    using MessageProvider = std::function<std::vector<DiscordMessage>(const std::string&)>;
+    using AnalysisProvider = std::function<MessageAnalysis(const std::string&)>;
+    using ChannelProvider = std::function<DiscordChannel(const std::string&)>;
+    using GuildChannelsProvider = std::function<std::vector<DiscordChannel>(const std::string&)>;
+
     ChannelSummarizer();
     ~ChannelSummarizer();
     
@@ -205,12 +215,24 @@ public:
     void setTopUsersLimit(int limit);
     void setTopTopicsLimit(int limit);
     void setMinimumMessages(int minimum);
+
+    // Supplies the local client/data path used by the ID-based summary API.
+    // Providers are copied before invocation so callbacks never run while the
+    // summarizer mutex is held.
+    void setDataProviders(MessageProvider messages,
+                          AnalysisProvider analyses,
+                          ChannelProvider channels,
+                          GuildChannelsProvider guildChannels);
     
 private:
     int topUsersLimit_;
     int topTopicsLimit_;
     int minimumMessages_;
     mutable std::mutex summarizerMutex_;
+    MessageProvider messageProvider_;
+    AnalysisProvider analysisProvider_;
+    ChannelProvider channelProvider_;
+    GuildChannelsProvider guildChannelsProvider_;
     
     // Analysis helpers
     std::vector<std::string> findTopUsers(const std::vector<DiscordMessage>& messages, int limit);
@@ -248,6 +270,9 @@ private:
     std::unordered_map<std::string, DiscordMessage> messageCache_;
     std::unordered_map<std::string, MessageAnalysis> analysisCache_;
     std::unordered_map<std::string, std::vector<ChannelSummary>> summaryCache_;
+    std::deque<std::string> messageOrder_;
+    std::deque<std::string> analysisOrder_;
+    std::deque<std::string> summaryOrder_;
     
     size_t maxCacheSize_;
     std::string persistencePath_;
@@ -257,6 +282,10 @@ private:
     // Persistence helpers
     bool saveToFile(const std::string& filePath, const std::string& data);
     std::string loadFromFile(const std::string& filePath);
+    bool persistLocked();
+    bool loadSnapshotLocked(const std::string& data);
+    std::string serializeLocked() const;
+    void enforceBoundsLocked();
 };
 
 // Main Discord summarizer
@@ -298,6 +327,12 @@ private:
     std::vector<std::string> monitoredChannels_;
     std::atomic<bool> monitoring_;
     std::thread monitoringThread_;
+    std::unordered_map<std::string, std::chrono::system_clock::time_point> monitoringCursors_;
+    std::unordered_map<std::string, std::unordered_set<std::string>> monitoringCursorMessageIds_;
+    std::chrono::milliseconds monitoringInterval_;
+    std::mutex monitoringLifecycleMutex_;
+    std::mutex monitoringWaitMutex_;
+    std::condition_variable monitoringCv_;
     
     std::unordered_map<std::string, std::string> config_;
     mutable std::mutex configMutex_;

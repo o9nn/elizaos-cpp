@@ -187,8 +187,139 @@ Task::Task(const UUID& id, const std::string& name, const std::string& descripti
       updatedAt_(std::chrono::system_clock::now()) {
 }
 
+Task::Task(const Task& other) {
+    std::lock_guard<std::mutex> lock(other.mutex_);
+    id_ = other.id_;
+    name_ = other.name_;
+    description_ = other.description_;
+    roomId_ = other.roomId_;
+    worldId_ = other.worldId_;
+    status_ = other.status_;
+    tags_ = other.tags_;
+    options_ = other.options_;
+    createdAt_ = other.createdAt_;
+    updatedAt_ = other.updatedAt_;
+    scheduledTime_ = other.scheduledTime_;
+    priority_ = other.priority_;
+}
+
+Task& Task::operator=(const Task& other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    std::scoped_lock lock(mutex_, other.mutex_);
+    id_ = other.id_;
+    name_ = other.name_;
+    description_ = other.description_;
+    roomId_ = other.roomId_;
+    worldId_ = other.worldId_;
+    status_ = other.status_;
+    tags_ = other.tags_;
+    options_ = other.options_;
+    createdAt_ = other.createdAt_;
+    updatedAt_ = other.updatedAt_;
+    scheduledTime_ = other.scheduledTime_;
+    priority_ = other.priority_;
+    return *this;
+}
+
+TaskStatus Task::getStatus() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return status_;
+}
+
+void Task::setStatus(TaskStatus status) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    status_ = status;
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+bool Task::transitionStatus(TaskStatus expected, TaskStatus desired) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (status_ != expected) {
+        return false;
+    }
+    status_ = desired;
+    updatedAt_ = std::chrono::system_clock::now();
+    return true;
+}
+
+std::vector<std::string> Task::getTagsSnapshot() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return tags_;
+}
+
+void Task::addTag(const std::string& tag) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    tags_.push_back(tag);
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+TaskOptions Task::getOptionsSnapshot() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return options_;
+}
+
+void Task::setOptions(const TaskOptions& options) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    options_ = options;
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+Timestamp Task::getUpdatedAt() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return updatedAt_;
+}
+
+void Task::updateTimestamp() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+std::optional<Timestamp> Task::getScheduledTime() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return scheduledTime_;
+}
+
+void Task::setScheduledTime(const Timestamp& time) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    scheduledTime_ = time;
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+int Task::getPriority() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return priority_;
+}
+
+void Task::setPriority(int priority) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    priority_ = priority;
+    updatedAt_ = std::chrono::system_clock::now();
+}
+
+TaskSnapshot Task::snapshot() const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return TaskSnapshot{id_, name_, description_, roomId_, worldId_, status_,
+                        tags_, options_, createdAt_, updatedAt_, scheduledTime_,
+                        priority_};
+}
+
 // TaskManager implementation
-TaskManager::TaskManager() {
+TaskManager::TaskManager()
+    : TaskManager(AgentConfig{"task-manager", "TaskManager",
+                              "Core task orchestration context",
+                              "Executes validated managed tasks",
+                              "orchestrating"}) {
+}
+
+TaskManager::TaskManager(AgentConfig config) {
+    setAgentConfig(config);
+}
+
+TaskManager::TaskManager(StateFactory stateFactory) {
+    setStateFactory(std::move(stateFactory));
 }
 
 TaskManager::~TaskManager() {
@@ -207,25 +338,29 @@ UUID TaskManager::createTask(const std::string& name, const std::string& descrip
 }
 
 bool TaskManager::scheduleTask(const UUID& taskId, const Timestamp& scheduledTime) {
-    std::lock_guard<std::mutex> lock(tasksMutex_);
-    
-    auto it = tasks_.find(taskId);
-    if (it != tasks_.end()) {
+    {
+        std::lock_guard<std::mutex> lock(tasksMutex_);
+        auto it = tasks_.find(taskId);
+        if (it == tasks_.end()) {
+            return false;
+        }
         it->second->setScheduledTime(scheduledTime);
-        return true;
     }
-    return false;
+    lifecycleCv_.notify_all();
+    return true;
 }
 
 bool TaskManager::cancelTask(const UUID& taskId) {
-    std::lock_guard<std::mutex> lock(tasksMutex_);
-    
-    auto it = tasks_.find(taskId);
-    if (it != tasks_.end()) {
-        it->second->setStatus(TaskStatus::CANCELLED);
-        return true;
+    std::shared_ptr<Task> task;
+    {
+        std::lock_guard<std::mutex> lock(tasksMutex_);
+        auto it = tasks_.find(taskId);
+        if (it == tasks_.end()) {
+            return false;
+        }
+        task = it->second;
     }
-    return false;
+    return task->transitionStatus(TaskStatus::PENDING, TaskStatus::CANCELLED);
 }
 
 std::shared_ptr<Task> TaskManager::getTask(const UUID& taskId) {
@@ -238,11 +373,25 @@ std::shared_ptr<Task> TaskManager::getTask(const UUID& taskId) {
     return nullptr;
 }
 
+std::optional<TaskSnapshot> TaskManager::getTaskSnapshot(const UUID& taskId) const {
+    std::shared_ptr<Task> task;
+    {
+        std::lock_guard<std::mutex> lock(tasksMutex_);
+        auto it = tasks_.find(taskId);
+        if (it == tasks_.end()) {
+            return std::nullopt;
+        }
+        task = it->second;
+    }
+    return task->snapshot();
+}
+
 std::vector<std::shared_ptr<Task>> TaskManager::getPendingTasks() {
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> pendingTasks;
-    for (const auto& [id, task] : tasks_) {
+    for (const auto& entry : tasks_) {
+        const auto& task = entry.second;
         if (task->getStatus() == TaskStatus::PENDING) {
             pendingTasks.push_back(task);
         }
@@ -261,8 +410,9 @@ std::vector<std::shared_ptr<Task>> TaskManager::getTasksByTag(const std::string&
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> taggedTasks;
-    for (const auto& [id, task] : tasks_) {
-        const auto& tags = task->getTags();
+    for (const auto& entry : tasks_) {
+        const auto& task = entry.second;
+        const auto tags = task->getTagsSnapshot();
         if (std::find(tags.begin(), tags.end(), tag) != tags.end()) {
             taggedTasks.push_back(task);
         }
@@ -271,8 +421,12 @@ std::vector<std::shared_ptr<Task>> TaskManager::getTasksByTag(const std::string&
 }
 
 void TaskManager::registerWorker(std::shared_ptr<TaskWorker> worker) {
+    if (!worker) {
+        return;
+    }
+    const auto workerName = worker->getName();
     std::lock_guard<std::mutex> lock(workersMutex_);
-    workers_[worker->getName()] = worker;
+    workers_[workerName] = std::move(worker);
 }
 
 void TaskManager::unregisterWorker(const std::string& workerName) {
@@ -281,37 +435,137 @@ void TaskManager::unregisterWorker(const std::string& workerName) {
 }
 
 void TaskManager::start() {
-    if (!running_) {
-        running_ = true;
-        paused_ = false;
-        executionThread_ = std::thread(&TaskManager::executionLoop, this);
+    std::lock_guard<std::mutex> controlLock(controlMutex_);
+    std::thread staleThread;
+    std::unique_lock<std::mutex> lock(lifecycleMutex_);
+    if (running_) {
+        return;
     }
+    if (executionThread_.joinable()) {
+        if (executionThreadId_ == std::this_thread::get_id()) {
+            return;
+        }
+        // A callback may have requested self-stop, leaving its now-finished
+        // thread joinable. Move it out while holding lifecycleMutex_ before
+        // joining so no other caller can race over executionThread_.
+        staleThread = std::move(executionThread_);
+        lock.unlock();
+        staleThread.join();
+        lock.lock();
+        if (running_) {
+            return;
+        }
+    }
+    running_ = true;
+    paused_ = false;
+    ++wakeGeneration_;
+    executionThread_ = std::thread(&TaskManager::executionLoop, this);
+    lock.unlock();
+    lifecycleCv_.notify_all();
 }
 
 void TaskManager::stop() {
-    if (running_) {
-        running_ = false;
-        if (executionThread_.joinable()) {
-            executionThread_.join();
+    std::unique_lock<std::mutex> controlLock(controlMutex_);
+    std::thread threadToJoin;
+    {
+        std::unique_lock<std::mutex> lock(lifecycleMutex_);
+        if (executionThreadId_ == std::this_thread::get_id()) {
+            running_ = false;
+            paused_ = false;
+            ++wakeGeneration_;
+            lock.unlock();
+            lifecycleCv_.notify_all();
+            return;
         }
+
+        if (!executionThread_.joinable()) {
+            running_ = false;
+            paused_ = false;
+            return;
+        }
+
+        running_ = false;
+        paused_ = false;
+        ++wakeGeneration_;
+        threadToJoin = std::move(executionThread_);
     }
+    lifecycleCv_.notify_all();
+
+    threadToJoin.join();
+
+    {
+        std::lock_guard<std::mutex> lock(lifecycleMutex_);
+        executionThreadId_ = std::thread::id{};
+    }
+    lifecycleCv_.notify_all();
 }
 
 void TaskManager::pause() {
-    paused_ = true;
+    {
+        std::lock_guard<std::mutex> lock(lifecycleMutex_);
+        paused_ = true;
+        ++wakeGeneration_;
+    }
+    lifecycleCv_.notify_all();
 }
 
 void TaskManager::resume() {
-    paused_ = false;
+    {
+        std::lock_guard<std::mutex> lock(lifecycleMutex_);
+        paused_ = false;
+        ++wakeGeneration_;
+    }
+    lifecycleCv_.notify_all();
+}
+
+bool TaskManager::isRunning() const {
+    std::lock_guard<std::mutex> lock(lifecycleMutex_);
+    return running_;
+}
+
+void TaskManager::setTickInterval(std::chrono::milliseconds interval) {
+    {
+        std::lock_guard<std::mutex> lock(lifecycleMutex_);
+        tickInterval_ = std::max(interval, std::chrono::milliseconds(1));
+        ++wakeGeneration_;
+    }
+    lifecycleCv_.notify_all();
+}
+
+void TaskManager::setAgentConfig(const AgentConfig& config) {
+    setStateFactory([config](const TaskSnapshot&) {
+        return std::make_shared<State>(config);
+    });
+}
+
+void TaskManager::setStateFactory(StateFactory stateFactory) {
+    std::lock_guard<std::mutex> lock(stateFactoryMutex_);
+    stateFactory_ = std::move(stateFactory);
 }
 
 void TaskManager::executionLoop() {
+    std::unique_lock<std::mutex> lock(lifecycleMutex_);
+    executionThreadId_ = std::this_thread::get_id();
+
     while (running_) {
-        if (!paused_) {
-            processPendingTasks();
+        if (paused_) {
+            lifecycleCv_.wait(lock, [this] { return !running_ || !paused_; });
+            continue;
         }
-        std::this_thread::sleep_for(tickInterval_);
+
+        const auto interval = tickInterval_;
+        const auto generation = wakeGeneration_;
+        lock.unlock();
+        processPendingTasks();
+        lock.lock();
+
+        lifecycleCv_.wait_for(lock, interval, [this, generation] {
+            return !running_ || paused_ || wakeGeneration_ != generation;
+        });
     }
+
+    executionThreadId_ = std::thread::id{};
+    lifecycleCv_.notify_all();
 }
 
 void TaskManager::processPendingTasks() {
@@ -319,14 +573,15 @@ void TaskManager::processPendingTasks() {
     auto now = std::chrono::system_clock::now();
     
     for (auto& task : pendingTasks) {
+        const auto taskSnapshot = task->snapshot();
         // Check if task should be executed now
-        auto scheduledTime = task->getScheduledTime();
+        const auto& scheduledTime = taskSnapshot.scheduledTime;
         if (scheduledTime && scheduledTime.value() > now) {
             continue; // Not time yet
         }
         
         // Check if task has 'queue' tag (required for processing)
-        const auto& tags = task->getTags();
+        const auto& tags = taskSnapshot.tags;
         if (std::find(tags.begin(), tags.end(), "queue") == tags.end()) {
             continue;
         }
@@ -336,43 +591,94 @@ void TaskManager::processPendingTasks() {
 }
 
 bool TaskManager::executeTask(std::shared_ptr<Task> task) {
-    std::lock_guard<std::mutex> lock(workersMutex_);
-    
-    auto workerIt = workers_.find(task->getName());
-    if (workerIt == workers_.end()) {
-        // No worker found for this task
+    if (!task) {
         return false;
     }
-    
-    auto worker = workerIt->second;
-    task->setStatus(TaskStatus::RUNNING);
-    task->updateTimestamp();
-    
+
+    const auto initialSnapshot = task->snapshot();
+    std::shared_ptr<TaskWorker> worker;
+    {
+        std::lock_guard<std::mutex> lock(workersMutex_);
+        auto workerIt = workers_.find(initialSnapshot.name);
+        if (workerIt == workers_.end()) {
+            // A task with no matching worker remains pending for a future
+            // registration rather than reporting work that never ran as failed.
+            return false;
+        }
+        worker = workerIt->second;
+    }
+
+    // Claim exactly one pending task before creating context or invoking user
+    // code. Cancellation racing with this transition wins cleanly.
+    if (!task->transitionStatus(TaskStatus::PENDING, TaskStatus::RUNNING)) {
+        return false;
+    }
+
     try {
-        // Create a dummy state for now - in real usage this would come from context
-        AgentConfig dummyConfig{"", "", "", "", ""};
-        State dummyState(dummyConfig);
-        
-        bool success = worker->execute(*task, dummyState, task->getOptions());
-        
+        StateFactory stateFactory;
+        {
+            std::lock_guard<std::mutex> lock(stateFactoryMutex_);
+            stateFactory = stateFactory_;
+        }
+        if (!stateFactory) {
+            task->transitionStatus(TaskStatus::RUNNING, TaskStatus::FAILED);
+            return false;
+        }
+
+        const auto claimedSnapshot = task->snapshot();
+        auto state = stateFactory(claimedSnapshot);
+        if (!state) {
+            task->transitionStatus(TaskStatus::RUNNING, TaskStatus::FAILED);
+            return false;
+        }
+
+        MessageMetadata metadata;
+        metadata.source = "task_manager";
+        metadata.scope = MemoryScope::ROOM;
+        metadata.tags = {"task", claimedSnapshot.name};
+        auto message = std::make_shared<Memory>(
+            claimedSnapshot.id,
+            claimedSnapshot.description,
+            claimedSnapshot.roomId,
+            state->getAgentId(),
+            metadata);
+        message->setRoomId(claimedSnapshot.roomId);
+        message->setWorldId(claimedSnapshot.worldId);
+        state->addRecentMessage(message);
+
+        // Validation is a real gate and receives the same state/message context
+        // that execution will use. Rejection is terminal for this attempt.
+        if (!worker->validate(*task, *state, message)) {
+            task->transitionStatus(TaskStatus::RUNNING, TaskStatus::FAILED);
+            return false;
+        }
+
+        const bool success = worker->execute(
+            *task, *state, claimedSnapshot.options);
+
         if (success) {
             // Check if task should repeat
-            const auto& tags = task->getTags();
+            const auto tags = task->getTagsSnapshot();
             if (std::find(tags.begin(), tags.end(), "repeat") != tags.end()) {
-                task->setStatus(TaskStatus::PENDING);
-                task->updateTimestamp();
+                task->transitionStatus(TaskStatus::RUNNING, TaskStatus::PENDING);
             } else {
-                task->setStatus(TaskStatus::COMPLETED);
-                // Remove completed non-repeating tasks
-                std::lock_guard<std::mutex> taskLock(tasksMutex_);
-                tasks_.erase(task->getId());
+                if (task->transitionStatus(TaskStatus::RUNNING,
+                                           TaskStatus::COMPLETED)) {
+                    // Remove completed non-repeating tasks without holding a
+                    // manager mutex while user code runs.
+                    std::lock_guard<std::mutex> taskLock(tasksMutex_);
+                    auto it = tasks_.find(initialSnapshot.id);
+                    if (it != tasks_.end() && it->second == task) {
+                        tasks_.erase(it);
+                    }
+                }
             }
         } else {
-            task->setStatus(TaskStatus::FAILED);
+            task->transitionStatus(TaskStatus::RUNNING, TaskStatus::FAILED);
         }
         return success;
     } catch (...) {
-        task->setStatus(TaskStatus::FAILED);
+        task->transitionStatus(TaskStatus::RUNNING, TaskStatus::FAILED);
         return false;
     }
 }

@@ -9,8 +9,9 @@
 #include <any>
 #include <mutex>
 #include <chrono>
-#include "elizaos/core.hpp"
-#include "elizaos/agentmemory.hpp"
+#include <atomic>
+#include "core.hpp"
+#include "agentmemory.hpp"
 
 namespace elizaos {
 
@@ -43,7 +44,7 @@ struct PluginVersion {
 struct PluginDependency {
     std::string pluginName;
     PluginVersion minVersion;
-    PluginVersion maxVersion;
+    PluginVersion maxVersion{0, 0, 0};
     bool required = true;
     
     bool isSatisfiedBy(const PluginVersion& version) const;
@@ -91,6 +92,7 @@ struct PluginMetadata {
     std::string website;
     std::string license;
     PluginVersion version;
+    PluginVersion apiVersion{1, 0, 0};
     std::vector<PluginDependency> dependencies;
     std::vector<PluginCapability> capabilities;
     std::vector<PluginParameter> parameters;
@@ -199,6 +201,10 @@ public:
      * Get plugin status and health information
      */
     virtual JsonValue getStatus() const;
+
+    /** Initialized plugins are healthy by default, including before first execution. */
+    virtual bool healthCheck() const;
+    bool isInitialized() const noexcept;
     
     /**
      * Validate plugin configuration
@@ -211,7 +217,8 @@ public:
     virtual std::vector<PluginCapability> getCapabilities() const;
     
 protected:
-    bool initialized_ = false;
+    std::atomic<bool> initialized_{false};
+    friend class PluginManager;
     std::chrono::system_clock::time_point lastExecuted_;
     size_t executionCount_ = 0;
     std::chrono::milliseconds totalExecutionTime_{0};
@@ -306,6 +313,7 @@ public:
     
 private:
     std::unordered_map<std::string, std::shared_ptr<PluginInterface>> plugins_;
+    std::unordered_map<std::string, PluginMetadata> pluginMetadata_;
     mutable std::mutex pluginsMutex_;
     
     // Dynamic plugin tracking
@@ -315,6 +323,7 @@ private:
         std::chrono::system_clock::time_point loadTime;
     };
     std::unordered_map<std::string, DynamicPluginInfo> dynamicPlugins_;
+    std::unordered_set<std::string> unloading_;
     
     bool validatePlugin(std::shared_ptr<PluginInterface> plugin) const;
 };
@@ -371,6 +380,9 @@ public:
      * Check if plugin is enabled
      */
     bool isPluginEnabled(const std::string& pluginName) const;
+
+    /** Check manager state and the plugin's service-specific health callback. */
+    bool checkPluginHealth(const std::string& pluginName) const;
     
     /**
      * Get plugin configuration
@@ -386,6 +398,7 @@ private:
     std::shared_ptr<PluginRegistry> registry_;
     std::unordered_map<std::string, bool> enabledPlugins_;
     std::unordered_map<std::string, std::unordered_map<std::string, std::any>> configurations_;
+    std::unordered_set<std::string> transitioningPlugins_;
     mutable std::mutex managerMutex_;
     
     // Execution statistics

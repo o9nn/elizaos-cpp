@@ -198,40 +198,44 @@ AutonomousStarter::~AutonomousStarter() {
 }
 
 void AutonomousStarter::start() {
-    if (running_) {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    if (running_.exchange(true)) {
         logWarning("AutonomousStarter already running");
         return;
     }
 
-    running_ = true;
     taskManager_->start();
-    ensureCoreAutonomyGoals();
-
+    {
+        std::lock_guard<std::mutex> stateLock(stateMutex_);
+        ensureCoreAutonomyGoals();
+        appendMemoryLocked(
+            "Awakening: I am " + config_.agentName +
+            ", an autonomous ElizaOS C++ agent. Current working directory: " +
+            currentWorkingDirectory_ +
+            ". Operating mode: observe, reason, act, remember, and remain bounded by shell safety controls.");
+    }
     logInfo("AutonomousStarter started for agent: " + config_.agentName);
-    appendMemory(
-        "Awakening: I am " + config_.agentName +
-        ", an autonomous ElizaOS C++ agent. Current working directory: " +
-        currentWorkingDirectory_ +
-        ". Operating mode: observe, reason, act, remember, and remain bounded by shell safety controls.");
 }
 
 void AutonomousStarter::stop() {
-    if (!running_) {
-        return;
-    }
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    const bool wasRunning = running_.exchange(false);
 
-    running_ = false;
-    stopAutonomousLoop();
-
+    // AgentLoop::stop() and TaskManager::stop() join worker threads whose final
+    // callbacks may be waiting for stateMutex_. Never hold that mutex here.
+    stopAutonomousLoopLocked();
     if (taskManager_) {
         taskManager_->stop();
     }
 
-    appendMemory("Shutdown: AutonomousStarter stopped cleanly.");
-    logInfo("AutonomousStarter stopped");
+    if (wasRunning) {
+        std::lock_guard<std::mutex> stateLock(stateMutex_);
+        appendMemoryLocked("Shutdown: AutonomousStarter stopped cleanly.");
+        logInfo("AutonomousStarter stopped");
+    }
 }
 
-void AutonomousStarter::appendMemory(const std::string& content) {
+void AutonomousStarter::appendMemoryLocked(const std::string& content) {
     auto memory = std::make_shared<Memory>(
         generateUUID(),
         content,
@@ -260,6 +264,101 @@ std::string AutonomousStarter::summarizeRecentExperience(std::size_t maxItems) c
         }
     }
     return summary.str();
+}
+
+std::string AutonomousStarter::getCurrentWorkingDirectorySnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return currentWorkingDirectory_;
+}
+
+std::chrono::milliseconds AutonomousStarter::getLoopInterval() const {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    return loopInterval_;
+}
+
+std::size_t AutonomousStarter::getCognitiveCycleCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return cognitiveCycle_;
+}
+
+std::size_t AutonomousStarter::getActionCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return actionCounter_;
+}
+
+std::string AutonomousStarter::getLastObservationSummarySnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return lastObservationSummary_;
+}
+
+std::string AutonomousStarter::getLastPlanSnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return lastPlan_;
+}
+
+UUID AutonomousStarter::getActiveGoalIdSnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return activeGoalId_;
+}
+
+std::size_t AutonomousStarter::getStagnationCounter() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return stagnationCounter_;
+}
+
+std::string AutonomousStarter::getLastReflectionSnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return lastReflection_;
+}
+
+std::size_t AutonomousStarter::getReflectionCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return reflectionCount_;
+}
+
+bool AutonomousStarter::getLastActionSucceeded() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return lastActionSucceeded_;
+}
+
+int AutonomousStarter::getLastActionExitCode() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return lastActionExitCode_;
+}
+
+UUID AutonomousStarter::getFocusedGoalId() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return focusedGoalId_;
+}
+
+double AutonomousStarter::getCompetenceSignal() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return competenceSignal_;
+}
+
+std::size_t AutonomousStarter::getSuccessfulActionCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return successfulActionCount_;
+}
+
+std::size_t AutonomousStarter::getFailedActionCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return failedActionCount_;
+}
+
+std::size_t AutonomousStarter::getConsecutiveActionFailures() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return consecutiveActionFailures_;
+}
+
+State AutonomousStarter::getStateSnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return state_;
+}
+
+EndocrineSystem AutonomousStarter::getEndocrineSystemSnapshot() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return endocrine_;
 }
 
 void AutonomousStarter::ensureCoreAutonomyGoals() {
@@ -512,7 +611,7 @@ void AutonomousStarter::seedAdaptiveGoal() {
     // keeping the agent's curiosity drive active and preventing premature
     // convergence into Exploitation when all goals are satisfied.
     endocrine_.submitStimulus(Stimulus("novelty_detected", 0.5));
-    appendMemory("Adaptive goal seeded: " + description +
+    appendMemoryLocked("Adaptive goal seeded: " + description +
                  " (all prior goals satisfied; autonomy continues exploring).");
 }
 
@@ -545,14 +644,14 @@ void AutonomousStarter::evaluateGoalProgress(const std::string& plan,
         // a stable multi-cycle pursuit window before it converges, while a set of
         // goals still drives every member to completion well within a normal run.
         const bool planIsReliable =
-            planStats_[plan].attempts >= 3 && getPlanSuccessRatio(plan) >= 0.5;
+            planStats_[plan].attempts >= 3 && planSuccessRatioLocked(plan) >= 0.5;
         if (activeGoal != nullptr && planSatisfiesGoal(*activeGoal, plan, result) &&
             planIsReliable) {
             const std::string completedDescription = activeGoal->description;
             state_.updateGoalStatus(activeGoalId_, "completed");
             lastCompletedGoalDescription_ = completedDescription;
             goalCompletedThisCycleById_ = true;
-            appendMemory("Goal completed: " + completedDescription +
+            appendMemoryLocked("Goal completed: " + completedDescription +
                          " (satisfied by reliable plan='" + plan + "').");
             activeGoalId_ = "";
         }
@@ -560,12 +659,17 @@ void AutonomousStarter::evaluateGoalProgress(const std::string& plan,
 
     // If every goal is now complete, seed a fresh adaptive goal so the agent
     // never dead-ends into a no-open-goal idle loop.
-    if (getOpenGoalCount() == 0) {
+    if (openGoalCountLocked() == 0) {
         seedAdaptiveGoal();
     }
 }
 
 std::size_t AutonomousStarter::getOpenGoalCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return openGoalCountLocked();
+}
+
+std::size_t AutonomousStarter::openGoalCountLocked() const {
     std::size_t open = 0;
     for (const auto& goal : state_.getGoals()) {
         std::string status = toLowerAscii(goal.status);
@@ -577,6 +681,11 @@ std::size_t AutonomousStarter::getOpenGoalCount() const {
 }
 
 std::size_t AutonomousStarter::getCompletedGoalCount() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return completedGoalCountLocked();
+}
+
+std::size_t AutonomousStarter::completedGoalCountLocked() const {
     std::size_t completed = 0;
     for (const auto& goal : state_.getGoals()) {
         if (toLowerAscii(goal.status) == "completed") {
@@ -661,6 +770,7 @@ std::string AutonomousStarter::scoreAndSelectGoal() const {
 }
 
 std::string AutonomousStarter::getAttentionPrioritizedGoal() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
     return scoreAndSelectGoal();
 }
 
@@ -770,13 +880,13 @@ ShellCommandResult AutonomousStarter::executeInternalCd(const std::string& comma
     targetPath = std::filesystem::weakly_canonical(targetPath, ec);
     if (ec || !std::filesystem::exists(targetPath) || !std::filesystem::is_directory(targetPath)) {
         std::string error = "cd: no such directory: " + target;
-        appendMemory("Command rejected: " + command + "\nReason: " + error);
+        appendMemoryLocked("Command rejected: " + command + "\nReason: " + error);
         return ShellCommandResult(false, "", error, 1);
     }
 
     currentWorkingDirectory_ = targetPath.string();
     const std::string output = currentWorkingDirectory_ + "\n";
-    appendMemory("Command executed: " + command + "\nExit code: 0\nOutput:\n" + output);
+    appendMemoryLocked("Command executed: " + command + "\nExit code: 0\nOutput:\n" + output);
     logInfo("Working directory changed to: " + currentWorkingDirectory_);
     return ShellCommandResult(true, output, "", 0);
 }
@@ -793,7 +903,7 @@ ShellCommandResult AutonomousStarter::executeExternalShellCommand(const std::str
         const std::string error =
             "Failed to execute command: " +
             std::error_code(errno, std::generic_category()).message();
-        appendMemory("Command failed to launch: " + command + "\nReason: " + error);
+        appendMemoryLocked("Command failed to launch: " + command + "\nReason: " + error);
         return ShellCommandResult(false, "", error, -1);
     }
 
@@ -824,16 +934,21 @@ ShellCommandResult AutonomousStarter::executeExternalShellCommand(const std::str
     if (!success && output.empty()) {
         memoryContent << "Error: command failed without output\n";
     }
-    appendMemory(memoryContent.str());
+    appendMemoryLocked(memoryContent.str());
 
     logInfo("Command completed with exit code: " + std::to_string(exitCode));
     return ShellCommandResult(success, output, error, exitCode);
 }
 
 ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& command) {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return executeShellCommandLocked(command);
+}
+
+ShellCommandResult AutonomousStarter::executeShellCommandLocked(const std::string& command) {
     auto validation = validateShellCommand(command);
     if (!validation.success) {
-        appendMemory("Command rejected: " + command + "\nReason: " + validation.error);
+        appendMemoryLocked("Command rejected: " + command + "\nReason: " + validation.error);
         return validation;
     }
 
@@ -846,12 +961,17 @@ ShellCommandResult AutonomousStarter::executeShellCommand(const std::string& com
         return executeExternalShellCommand(command);
     } catch (const std::exception& e) {
         const std::string error = "Exception during command execution: " + std::string(e.what());
-        appendMemory("Command exception: " + command + "\nReason: " + error);
+        appendMemoryLocked("Command exception: " + command + "\nReason: " + error);
         return ShellCommandResult(false, "", error, -1);
     }
 }
 
 void AutonomousStarter::startAutonomousLoop() {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    startAutonomousLoopLocked();
+}
+
+void AutonomousStarter::startAutonomousLoopLocked() {
     if (autonomousLoop_ && autonomousLoop_->isRunning()) {
         logWarning("Autonomous loop already running");
         return;
@@ -859,16 +979,9 @@ void AutonomousStarter::startAutonomousLoop() {
 
     std::vector<LoopStep> steps = {
         LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return perceptionStep(std::move(input));
-        }),
-        LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return reasoningStep(std::move(input));
-        }),
-        LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return actionStep(std::move(input));
-        }),
-        LoopStep([this](std::shared_ptr<void> input) -> std::shared_ptr<void> {
-            return reflectionStep(std::move(input));
+            std::lock_guard<std::mutex> stateLock(stateMutex_);
+            runCognitiveCycleLocked();
+            return input;
         })
     };
 
@@ -878,25 +991,41 @@ void AutonomousStarter::startAutonomousLoop() {
         std::make_unique<AgentLoop>(steps, false, loopIntervalSeconds);
     autonomousLoop_->start();
 
-    logInfo("Autonomous loop started with interval: " + std::to_string(loopInterval_.count()) + "ms");
-    appendMemory("Autonomous mode activated: perception, reasoning, and action steps are running every " +
-                 std::to_string(loopInterval_.count()) + "ms.");
+    {
+        std::lock_guard<std::mutex> stateLock(stateMutex_);
+        logInfo("Autonomous loop started with interval: " + std::to_string(loopInterval_.count()) + "ms");
+        appendMemoryLocked("Autonomous mode activated: perception, reasoning, action, and reflection are running every " +
+                     std::to_string(loopInterval_.count()) + "ms.");
+    }
 }
 
 void AutonomousStarter::stopAutonomousLoop() {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    stopAutonomousLoopLocked();
+}
+
+void AutonomousStarter::stopAutonomousLoopLocked() {
     if (autonomousLoop_) {
+        // The loop callback may be waiting for or holding stateMutex_. Joining
+        // while holding that mutex would deadlock, so lifecycle synchronization
+        // deliberately remains independent from cognitive-state serialization.
         autonomousLoop_->stop();
         autonomousLoop_.reset();
-        logInfo("Autonomous loop stopped");
-        appendMemory("Autonomous mode deactivated: cognitive loop stopped for manual control or shutdown.");
+        {
+            std::lock_guard<std::mutex> stateLock(stateMutex_);
+            logInfo("Autonomous loop stopped");
+            appendMemoryLocked("Autonomous mode deactivated: cognitive loop stopped for manual control or shutdown.");
+        }
     }
 }
 
 bool AutonomousStarter::isAutonomousLoopRunning() const {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
     return autonomousLoop_ && autonomousLoop_->isRunning();
 }
 
 void AutonomousStarter::setLoopInterval(std::chrono::milliseconds interval) {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
     if (interval.count() <= 0) {
         logWarning("Loop interval must be positive; keeping previous interval");
         return;
@@ -904,12 +1033,18 @@ void AutonomousStarter::setLoopInterval(std::chrono::milliseconds interval) {
 
     loopInterval_ = interval;
     if (autonomousLoop_ && autonomousLoop_->isRunning()) {
-        stopAutonomousLoop();
-        startAutonomousLoop();
+        stopAutonomousLoopLocked();
+        startAutonomousLoopLocked();
     }
 }
 
 std::size_t AutonomousStarter::runCognitiveCycleOnce() {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return runCognitiveCycleLocked();
+}
+
+std::size_t AutonomousStarter::runCognitiveCycleLocked() {
     ensureCoreAutonomyGoals();
     std::shared_ptr<void> token = std::make_shared<int>(0);
     token = perceptionStep(token);
@@ -927,13 +1062,18 @@ std::size_t AutonomousStarter::runCognitiveCycleOnce() {
     // dead-ended. We reconcile here, after the cycle has fully settled, so a
     // freshly-seeded exploratory goal never swaps a dominant goal's objective
     // mid-window -- it only fires once no open goal remains at all.
-    if (getOpenGoalCount() == 0) {
+    if (openGoalCountLocked() == 0) {
         seedAdaptiveGoal();
     }
     return cognitiveCycle_;
 }
 
 double AutonomousStarter::getPlanSuccessRatio(const std::string& plan) const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
+    return planSuccessRatioLocked(plan);
+}
+
+double AutonomousStarter::planSuccessRatioLocked(const std::string& plan) const {
     auto it = planStats_.find(plan);
     if (it == planStats_.end() || it->second.attempts == 0) {
         return 0.0;
@@ -943,11 +1083,13 @@ double AutonomousStarter::getPlanSuccessRatio(const std::string& plan) const {
 }
 
 std::size_t AutonomousStarter::getPlanAttemptCount(const std::string& plan) const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
     const auto it = planStats_.find(plan);
     return it == planStats_.end() ? 0u : it->second.attempts;
 }
 
 std::size_t AutonomousStarter::getPlanSuccessCount(const std::string& plan) const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
     const auto it = planStats_.find(plan);
     return it == planStats_.end() ? 0u : it->second.successes;
 }
@@ -1145,10 +1287,10 @@ void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actio
     // its plan for that goal.
     if (lower == "pending") {
         state_.updateGoalStatus(focusedGoalId_, "active");
-        appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+        appendMemoryLocked("Goal lifecycle: goal " + focusedGoalId_ +
                      " advanced pending -> active after successful plan '" + plan + "'.");
     } else if (lower == "active" || lower == "in_progress") {
-        if (getPlanSuccessRatio(plan) >= 0.5 &&
+        if (planSuccessRatioLocked(plan) >= 0.5 &&
             planStats_[plan].attempts >= 3) {
             // Capture the description before mutation so the completion evidence
             // token matches the one evaluateGoalProgress emits (single vocabulary
@@ -1161,10 +1303,10 @@ void AutonomousStarter::advanceGoalLifecycle(const std::string& plan, bool actio
                 }
             }
             state_.updateGoalStatus(focusedGoalId_, "completed");
-            appendMemory("Goal lifecycle: goal " + focusedGoalId_ +
+            appendMemoryLocked("Goal lifecycle: goal " + focusedGoalId_ +
                          " advanced active -> completed after reliable plan '" + plan + "'.");
             if (!completedDescription.empty()) {
-                appendMemory("Goal completed: " + completedDescription +
+                appendMemoryLocked("Goal completed: " + completedDescription +
                              " (satisfied by reliable plan='" + plan + "').");
             }
             // Invariant repair: the active-goal pointer must never name a completed
@@ -1199,8 +1341,8 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
     // anchored to a single concrete intent.
     selectActiveGoal();
 
-    const auto pwd = executeShellCommand("pwd");
-    const auto listing = executeShellCommand("ls -1 | head -20");
+    const auto pwd = executeShellCommandLocked("pwd");
+    const auto listing = executeShellCommandLocked("ls -1 | head -20");
 
     std::ostringstream observation;
     observation << "Cycle " << cognitiveCycle_ << " perception: ";
@@ -1220,7 +1362,7 @@ std::shared_ptr<void> AutonomousStarter::perceptionStep(std::shared_ptr<void> in
     }
 
     lastObservationSummary_ = observation.str();
-    appendMemory(lastObservationSummary_);
+    appendMemoryLocked(lastObservationSummary_);
     return input;
 }
 
@@ -1299,7 +1441,7 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
 
     if (strugglingNow) {
         lastPlan_ = "establish situational awareness with pwd and directory inspection";
-        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+        appendMemoryLocked("Cycle " + std::to_string(cognitiveCycle_) +
                      " reasoning: goal = " + goalContext +
                      "; recent experience summary = " + summarizeRecentExperience() +
                      "; competence = " + std::to_string(competenceSignal_) +
@@ -1342,14 +1484,14 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
     if (cogMode == CognitiveMode::Alarm) {
         // Under alarm: override to safe fallback regardless of goal
         lastPlan_ = "establish situational awareness with pwd and directory inspection";
-        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+        appendMemoryLocked("Cycle " + std::to_string(cognitiveCycle_) +
                      " reasoning: endocrine alarm mode detected, overriding to safe plan.");
         logInfo("Reasoning: endocrine alarm override to safe plan");
         return input;
     } else if (cogMode == CognitiveMode::Rest && competenceSignal_ > 0.8) {
         // High competence + rest mode: lightweight maintenance
         lastPlan_ = "maintain lightweight environmental awareness";
-        appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+        appendMemoryLocked("Cycle " + std::to_string(cognitiveCycle_) +
                      " reasoning: endocrine rest mode + high competence, selecting maintenance plan.");
         logInfo("Reasoning: endocrine rest mode, maintenance plan");
         return input;
@@ -1422,7 +1564,7 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
                 break;
             }
         }
-        appendMemory("Stagnation detected after " + std::to_string(stagnationCounter_) +
+        appendMemoryLocked("Stagnation detected after " + std::to_string(stagnationCounter_) +
                      " repeats of plan '" + lastPlan_ + "'; escalating to '" + escalated + "'.");
         lastPlan_ = escalated;
         stagnationCounter_ = 0;
@@ -1430,13 +1572,13 @@ std::shared_ptr<void> AutonomousStarter::reasoningStep(std::shared_ptr<void> inp
         // Purposeful repetition: keep pursuing the goal-aligned plan but reset the
         // counter so the bounded-stagnation invariant (<= 2) is preserved and the
         // guard remains armed for genuinely aimless loops later.
-        appendMemory("Sustained goal-aligned pursuit of plan '" + lastPlan_ +
+        appendMemoryLocked("Sustained goal-aligned pursuit of plan '" + lastPlan_ +
                      "' (convergence, not stagnation); resetting stagnation counter.");
         stagnationCounter_ = 0;
     }
     previousPlan_ = lastPlan_;
 
-    appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+    appendMemoryLocked("Cycle " + std::to_string(cognitiveCycle_) +
                  " reasoning: focus_goal_id = " + (focus ? focus->id : std::string("none")) +
                  "; goal = " + goalContext +
                  "; recent experience summary = " + summarizeRecentExperience() +
@@ -1451,7 +1593,7 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     const std::string command = buildActionCommandForPlan(lastPlan_);
 
     ++actionCounter_;
-    const auto result = executeShellCommand(command);
+    const auto result = executeShellCommandLocked(command);
 
     // Capture the outcome so the reflection phase and the next reasoning cycle
     // can adapt. This closes the observe->reason->act->reflect feedback loop.
@@ -1460,7 +1602,7 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     lastActionOutput_ = result.output;
     lastActionExitCode_ = result.exitCode;
 
-    appendMemory("Cycle " + std::to_string(cognitiveCycle_) +
+    appendMemoryLocked("Cycle " + std::to_string(cognitiveCycle_) +
                  " action: command='" + command + "', success=" +
                  std::string(result.success ? "true" : "false") +
                  ", exitCode=" + std::to_string(result.exitCode) + ".");
@@ -1469,13 +1611,13 @@ std::shared_ptr<void> AutonomousStarter::actionStep(std::shared_ptr<void> input)
     // current action part of the reliability gate instead of forcing goal
     // completion to lag one cycle behind its third successful observation.
     recordPlanOutcome(lastPlan_, result.success);
-    const std::size_t completedBefore = getCompletedGoalCount();
+    const std::size_t completedBefore = completedGoalCountLocked();
 
     // Close the loop: feed the action outcome back into goal state so successful,
     // aligned actions complete the active goal and promote the next one. This is
     // what turns the goal list from a static seed into a converging drive.
     evaluateGoalProgress(lastPlan_, command, result);
-    const bool completedGoalThisCycle = getCompletedGoalCount() > completedBefore;
+    const bool completedGoalThisCycle = completedGoalCountLocked() > completedBefore;
 
     // Endocrine stimulus follows convergence evaluation so goal-completion
     // feedback is delivered in the same cycle. For failures, include the current
@@ -1571,7 +1713,7 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
         if (!ok) ++windowFailures;
     }
 
-    const double ratio = getPlanSuccessRatio(lastPlan_);
+    const double ratio = planSuccessRatioLocked(lastPlan_);
     std::ostringstream reflection;
     reflection << "Cycle " << cognitiveCycle_ << " reflection: plan='" << lastPlan_ << "'"
                << ", action='" << lastActionCommand_ << "'"
@@ -1597,7 +1739,7 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
         // goal is handled deterministically by selectActiveGoal() on the next
         // perception step, keeping exactly one goal in flight without a duplicate
         // rotation mechanism.
-        completedGoalCount_ = getCompletedGoalCount();
+        completedGoalCount_ = completedGoalCountLocked();
         reflection << "completed_total=" << completedGoalCount_;
     } else {
         ++consecutiveActionFailures_;
@@ -1672,7 +1814,7 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
 
     lastReflection_ = reflection.str();
     ++reflectionCount_;
-    appendMemory(lastReflection_);
+    appendMemoryLocked(lastReflection_);
     logInfo("Reflection: competence=" + std::to_string(competenceSignal_) +
             " outcome=" + std::string(lastActionSucceeded_ ? "succeeded" : "failed"));
     logInfo(lastReflection_);
@@ -1680,6 +1822,8 @@ std::shared_ptr<void> AutonomousStarter::reflectionStep(std::shared_ptr<void> in
 }
 
 UUID AutonomousStarter::executeShellCommandAsTask(const std::string& command) {
+    std::lock_guard<std::mutex> lifecycleLock(lifecycleMutex_);
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
     if (!taskManager_) {
         logError("Task manager not initialized");
         return "";
@@ -1687,7 +1831,7 @@ UUID AutonomousStarter::executeShellCommandAsTask(const std::string& command) {
 
     auto validation = validateShellCommand(command);
     if (!validation.success) {
-        appendMemory("Task command rejected before scheduling: " + command + "\nReason: " + validation.error);
+        appendMemoryLocked("Task command rejected before scheduling: " + command + "\nReason: " + validation.error);
         return "";
     }
 
@@ -1703,7 +1847,7 @@ UUID AutonomousStarter::executeShellCommandAsTask(const std::string& command) {
     task->setOptions(options);
     task->addTag("queue");
 
-    appendMemory("Task scheduled: " + taskId + " command='" + command + "'.");
+    appendMemoryLocked("Task scheduled: " + taskId + " command='" + command + "'.");
     logInfo("Created shell command task: " + taskId);
     return taskId;
 }
@@ -1719,25 +1863,29 @@ bool AutonomousStarter::ShellCommandWorker::execute(Task& task, State& state,
                                                    const TaskOptions& options) {
     (void)state;
 
-    auto it = options.data.find("command");
-    if (it == options.data.end()) {
-        logError("Shell command task missing 'command' option");
-        if (starter_) {
-            starter_->appendMemory("Task failed: " + task.getId() + " missing command option.");
-        }
-        return false;
-    }
-
     if (!starter_) {
         logError("Shell command task has no starter context");
         return false;
     }
 
-    auto result = starter_->executeShellCommand(it->second);
-    starter_->appendMemory("Task completed: " + task.getId() +
-                           " command='" + it->second + "', success=" +
-                           std::string(result.success ? "true" : "false") +
-                           ", exitCode=" + std::to_string(result.exitCode) + ".");
+    std::lock_guard<std::mutex> stateLock(starter_->stateMutex_);
+    return starter_->executeShellTaskLocked(task, options);
+}
+
+bool AutonomousStarter::executeShellTaskLocked(Task& task, const TaskOptions& options) {
+
+    auto it = options.data.find("command");
+    if (it == options.data.end()) {
+        logError("Shell command task missing 'command' option");
+        appendMemoryLocked("Task failed: " + task.getId() + " missing command option.");
+        return false;
+    }
+
+    auto result = executeShellCommandLocked(it->second);
+    appendMemoryLocked("Task completed: " + task.getId() +
+                       " command='" + it->second + "', success=" +
+                       std::string(result.success ? "true" : "false") +
+                       ", exitCode=" + std::to_string(result.exitCode) + ".");
     return result.success;
 }
 
@@ -1796,10 +1944,11 @@ bool autonomous_starter_self_check() {
 }
 
 AutonomousStarter::AutonomyHealthReport AutonomousStarter::getAutonomyHealthReport() const {
+    std::lock_guard<std::mutex> stateLock(stateMutex_);
     AutonomyHealthReport report;
     report.competence = competenceSignal_;
-    report.openGoals = getOpenGoalCount();
-    report.completedGoals = getCompletedGoalCount();
+    report.openGoals = openGoalCountLocked();
+    report.completedGoals = completedGoalCountLocked();
     report.totalCycles = cognitiveCycle_;
     report.totalActions = actionCounter_;
     report.successfulActions = successfulActionCount_;

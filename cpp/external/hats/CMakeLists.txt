@@ -10,6 +10,7 @@ target_include_directories(elizaos-hats PUBLIC
 
 target_link_libraries(elizaos-hats 
     elizaos-core
+    nlohmann_json::nlohmann_json
 )
 
 # Add test executable

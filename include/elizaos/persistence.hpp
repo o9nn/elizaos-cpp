@@ -1,10 +1,11 @@
 #pragma once
+
 /**
  * ElizaOS C++ - Persistence Module
  *
  * Provides persistent storage backends for agent memory and state.
- * Implements SQLite integration for durable storage.
- * 
+ * Implements Task 1.2.1: SQLite/RocksDB integration for durable storage.
+ *
  * Features:
  * - Abstract storage interface for backend flexibility
  * - SQLite backend for relational data
@@ -14,6 +15,7 @@
  * - Async operations with futures
  */
 
+#include "elizaos/elizaos.hpp"
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>
@@ -26,12 +28,7 @@
 #include <future>
 #include <queue>
 #include <condition_variable>
-#include <variant>
-#include <chrono>
-#include <cstdint>
-#include <cstring>
-#include <sstream>
-#include <fstream>
+#include <any>
 
 namespace elizaos {
 
@@ -40,6 +37,7 @@ class StorageBackend;
 class SQLiteBackend;
 class TransactionScope;
 class ConnectionPool;
+struct SQLiteDatabaseState;
 
 // ============================================================================
 // Storage Result Types
@@ -55,9 +53,11 @@ struct StorageResult {
     static StorageResult<T> ok(T val, int64_t rows = 0) {
         return {true, std::move(val), std::nullopt, rows};
     }
+
     static StorageResult<T> fail(const std::string& err) {
         return {false, std::nullopt, err, 0};
     }
+
     explicit operator bool() const { return success; }
 };
 
@@ -71,9 +71,11 @@ struct StorageResult<void> {
     static StorageResult<void> ok(int64_t rows = 0) {
         return {true, std::nullopt, rows};
     }
+
     static StorageResult<void> fail(const std::string& err) {
         return {false, err, 0};
     }
+
     explicit operator bool() const { return success; }
 };
 
@@ -88,6 +90,7 @@ using QueryParam = std::variant<
     std::string,
     std::vector<uint8_t>  // BLOB data
 >;
+
 using QueryParams = std::vector<QueryParam>;
 
 // ============================================================================
@@ -109,12 +112,15 @@ struct ColumnValue {
     int64_t asInt(int64_t def = 0) const {
         return isInt() ? std::get<int64_t>(value) : def;
     }
+
     double asDouble(double def = 0.0) const {
         return isDouble() ? std::get<double>(value) : def;
     }
+
     std::string asString(const std::string& def = "") const {
         return isString() ? std::get<std::string>(value) : def;
     }
+
     std::vector<uint8_t> asBlob() const {
         return isBlob() ? std::get<std::vector<uint8_t>>(value) : std::vector<uint8_t>{};
     }
@@ -149,6 +155,7 @@ struct StorageConfig {
     static StorageConfig inMemory() {
         return StorageConfig(":memory:");
     }
+
     static StorageConfig file(const std::string& path) {
         StorageConfig cfg(path);
         cfg.enableWAL = true;
@@ -162,20 +169,25 @@ struct StorageConfig {
 
 enum class IsolationLevel {
     DEFERRED,      // Default SQLite behavior
-    IMMEDIATE,     // Acquire write lock immediately
-    EXCLUSIVE      // Exclusive lock
+    IMMEDIATE,     // Lock on first write
+    EXCLUSIVE      // Lock immediately
 };
 
 class Transaction {
 public:
     virtual ~Transaction() = default;
+
     virtual bool commit() = 0;
     virtual bool rollback() = 0;
     virtual bool isActive() const = 0;
+
+    // Execute within transaction
     virtual StorageResult<ResultSet> execute(
-        const std::string& sql, const QueryParams& params = {}) = 0;
+        const std::string& sql,
+        const QueryParams& params = {}) = 0;
 };
 
+// RAII transaction scope
 class TransactionScope {
 public:
     TransactionScope(std::shared_ptr<Transaction> txn);
@@ -189,11 +201,12 @@ public:
     TransactionScope(TransactionScope&& other) noexcept;
     TransactionScope& operator=(TransactionScope&& other) noexcept;
 
+    // Marks the scope committed only when Transaction::commit() succeeds.
+    // On failure the transaction remains active and destructor rollback applies.
     void commit();
     void rollback();
-
-    Transaction& get() { return *txn_; }
     bool isActive() const { return active_ && txn_ && txn_->isActive(); }
+    Transaction& get() { return *txn_; }
 
     StorageResult<ResultSet> execute(
         const std::string& sql,
@@ -222,6 +235,7 @@ public:
     virtual StorageResult<ResultSet> query(
         const std::string& sql,
         const QueryParams& params = {}) = 0;
+
     virtual StorageResult<void> execute(
         const std::string& sql,
         const QueryParams& params = {}) = 0;
@@ -239,8 +253,11 @@ public:
     virtual StorageResult<void> createTable(
         const std::string& name,
         const std::vector<std::string>& columns) = 0;
+
     virtual StorageResult<void> dropTable(const std::string& name) = 0;
+
     virtual bool tableExists(const std::string& name) = 0;
+
     virtual std::vector<std::string> listTables() = 0;
 
     // Utility
@@ -252,6 +269,7 @@ public:
     virtual std::future<StorageResult<ResultSet>> queryAsync(
         const std::string& sql,
         const QueryParams& params = {}) = 0;
+
     virtual std::future<StorageResult<void>> executeAsync(
         const std::string& sql,
         const QueryParams& params = {}) = 0;
@@ -283,6 +301,7 @@ public:
     StorageResult<ResultSet> query(
         const std::string& sql,
         const QueryParams& params = {}) override;
+
     StorageResult<void> execute(
         const std::string& sql,
         const QueryParams& params = {}) override;
@@ -300,8 +319,11 @@ public:
     StorageResult<void> createTable(
         const std::string& name,
         const std::vector<std::string>& columns) override;
+
     StorageResult<void> dropTable(const std::string& name) override;
+
     bool tableExists(const std::string& name) override;
+
     std::vector<std::string> listTables() override;
 
     // Utility
@@ -313,6 +335,7 @@ public:
     std::future<StorageResult<ResultSet>> queryAsync(
         const std::string& sql,
         const QueryParams& params = {}) override;
+
     std::future<StorageResult<void>> executeAsync(
         const std::string& sql,
         const QueryParams& params = {}) override;
@@ -328,16 +351,9 @@ public:
 
 private:
     StorageConfig config_;
-    void* db_ = nullptr;  // sqlite3* handle
-    mutable std::mutex mutex_;
-    bool connected_ = false;
-
-    // Helper methods
-    void applyPragmas();
-    bool prepareStatement(const std::string& sql, void** stmt);
-    bool bindParameters(void* stmt, const QueryParams& params);
-    ResultSet extractResults(void* stmt);
-    std::string getErrorMessage() const;
+    // Shared independently of the backend object so accepted asynchronous work
+    // and live transactions never retain or dereference a raw `this` pointer.
+    std::shared_ptr<SQLiteDatabaseState> state_;
 };
 
 // ============================================================================
@@ -366,9 +382,11 @@ private:
     StorageConfig config_;
     std::queue<std::shared_ptr<StorageBackend>> available_;
     std::vector<std::shared_ptr<StorageBackend>> all_;
+    std::unordered_set<StorageBackend*> leased_;
     mutable std::mutex mutex_;
     std::condition_variable cv_;
     bool shutdown_ = false;
+    size_t targetSize_ = 0;
 
     std::shared_ptr<StorageBackend> createConnection();
 };
@@ -378,7 +396,8 @@ private:
 // ============================================================================
 
 /**
- * Provides persistent storage for agent memories with SQLite backend
+ * Provides persistent storage for agent memories
+ * Integrates with AgentMemoryManager for durable storage
  */
 class MemoryPersistence {
 public:
@@ -396,7 +415,7 @@ public:
         const std::string& roomId,
         const std::string& tableName,
         const std::vector<float>& embedding = {},
-        const std::string& metadata = "");
+        const std::string& metadata = "{}");
 
     StorageResult<std::unordered_map<std::string, std::string>> loadMemory(
         const UUID& memoryId,
@@ -520,8 +539,8 @@ public:
     std::shared_ptr<KeyValueStore> getKeyValueStore();
 
     // Status
-    bool isInitialized() const { return initialized_; }
-    StorageConfig getConfig() const { return config_; }
+    bool isInitialized() const;
+    StorageConfig getConfig() const;
 
 private:
     StorageManager() = default;
@@ -536,7 +555,7 @@ private:
     std::shared_ptr<MemoryPersistence> memoryPersistence_;
     std::shared_ptr<KeyValueStore> kvStore_;
     bool initialized_ = false;
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
 };
 
 // ============================================================================

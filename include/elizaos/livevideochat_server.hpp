@@ -1,16 +1,15 @@
 #pragma once
 
 #include "elizaos/livevideochat.hpp"
-#include <string>
+
 #include <functional>
 #include <map>
 #include <memory>
+#include <string>
 
 namespace elizaos {
 
-/**
- * HTTP request structure
- */
+/** A bounded HTTP request as presented to a registered route handler. */
 struct HttpRequest {
     std::string method;
     std::string path;
@@ -19,14 +18,12 @@ struct HttpRequest {
     std::map<std::string, std::string> query_params;
 };
 
-/**
- * HTTP response structure
- */
+/** An HTTP response. Server-owned framing headers override handler values. */
 struct HttpResponse {
     int status_code = 200;
     std::string body;
     std::map<std::string, std::string> headers;
-    
+
     HttpResponse() {
         headers["Content-Type"] = "application/json";
         headers["Access-Control-Allow-Origin"] = "*";
@@ -35,127 +32,90 @@ struct HttpResponse {
     }
 };
 
-/**
- * HTTP request handler function type
- */
 using HttpHandler = std::function<HttpResponse(const HttpRequest&)>;
+using AgentMessageHandler = std::function<HttpResponse(const HttpRequest&)>;
+using TranscriptionHandler = std::function<HttpResponse(const HttpRequest&)>;
+using SignalingHandler = std::function<HttpResponse(const HttpRequest&)>;
+using WebSocketHandler =
+    std::function<void(const std::string& client_id, const std::string& message)>;
+
+/** Injectable acknowledged outbound WebSocket connection boundary. */
+class WebSocketClientAdapter {
+public:
+    virtual ~WebSocketClientAdapter() = default;
+    virtual bool send(const std::string& message) = 0;
+};
 
 /**
- * WebSocket message handler function type
- */
-using WebSocketHandler = std::function<void(const std::string& client_id, const std::string& message)>;
-
-/**
- * HTTP Server interface for LiveVideoChat
+ * Small loopback HTTP/1.1 server. initialize(0) requests an ephemeral port.
+ * Requests are bounded and each connection is closed after one response.
  */
 class LiveVideoChatServer {
 public:
     LiveVideoChatServer();
     ~LiveVideoChatServer();
-    
-    /**
-     * Initialize the server
-     */
+
+    LiveVideoChatServer(const LiveVideoChatServer&) = delete;
+    LiveVideoChatServer& operator=(const LiveVideoChatServer&) = delete;
+
     bool initialize(int port = 3000);
-    
-    /**
-     * Start the server
-     */
     bool start();
-    
-    /**
-     * Stop the server
-     */
     void stop();
-    
-    /**
-     * Set the LiveVideoChat instance to handle requests
-     */
+
+    /** Stores only a weak reference; callers retain ownership. */
     void setVideoChatInstance(std::shared_ptr<LiveVideoChat> video_chat);
-    
-    /**
-     * Register HTTP route handler
-     */
+
+    /** Registers an exact or ECMAScript-regex path for an uppercase method. */
     void registerRoute(const std::string& method, const std::string& path, HttpHandler handler);
-    
-    /**
-     * Register WebSocket handler
-     */
+
+    /** Direct dispatch through the same validation and routes as socket requests. */
+    HttpResponse handleRequest(const HttpRequest& request) const;
+
     void setWebSocketHandler(WebSocketHandler handler);
-    
-    /**
-     * Send message to WebSocket client
-     */
+
+    /** Registration and acknowledgment are deliberately separate operations. */
+    bool registerWebSocketClient(
+        const std::string& client_id,
+        std::shared_ptr<WebSocketClientAdapter> adapter);
+    bool acknowledgeWebSocketClient(const std::string& client_id);
+    void unregisterWebSocketClient(const std::string& client_id);
+    bool handleWebSocketMessage(const std::string& client_id, const std::string& message);
+
+    /** Returns true only when an acknowledged adapter accepts the message. */
     bool sendWebSocketMessage(const std::string& client_id, const std::string& message);
-    
-    /**
-     * Broadcast message to all WebSocket clients
-     */
     void broadcastMessage(const std::string& message);
-    
-    /**
-     * Check if server is running
-     */
+
     bool isRunning() const;
-    
-    /**
-     * Get server port
-     */
     int getPort() const;
-    
+
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
 };
 
-/**
- * Enhanced LiveVideoChat with HTTP server integration
- */
+/** LiveVideoChat plus synchronized local HTTP API state. */
 class LiveVideoChatWithServer : public LiveVideoChat {
 public:
     LiveVideoChatWithServer();
     ~LiveVideoChatWithServer();
-    
-    /**
-     * Initialize with HTTP server support
-     */
+
+    LiveVideoChatWithServer(const LiveVideoChatWithServer&) = delete;
+    LiveVideoChatWithServer& operator=(const LiveVideoChatWithServer&) = delete;
+
     bool initialize(const VideoChatConfig& config = {}, int server_port = 3000);
-    
-    /**
-     * Start the HTTP server
-     */
     bool startServer();
-    
-    /**
-     * Stop the HTTP server
-     */
     void stopServer();
-    
-    /**
-     * Get server instance
-     */
     std::shared_ptr<LiveVideoChatServer> getServer();
-    
-    /**
-     * Handle agent message API call
-     */
+
+    void setAgentMessageHandler(AgentMessageHandler handler);
+    void setTranscriptionHandler(TranscriptionHandler handler);
+    void setSignalingHandler(SignalingHandler handler);
+
     HttpResponse handleAgentMessage(const HttpRequest& request);
-    
-    /**
-     * Handle Whisper transcription API call
-     */
     HttpResponse handleWhisperTranscription(const HttpRequest& request);
-    
-    /**
-     * Handle WebRTC signaling
-     */
     HttpResponse handleWebRTCSignaling(const HttpRequest& request);
-    
-    /**
-     * Handle session management
-     */
     HttpResponse handleSessionManagement(const HttpRequest& request);
-    
+
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

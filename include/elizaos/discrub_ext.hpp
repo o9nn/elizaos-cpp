@@ -1,400 +1,527 @@
 #pragma once
 
-#include "elizaos/core.hpp"
 #include "elizaos/discord_summarizer.hpp"
-#include <string>
-#include <vector>
+
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <cstddef>
+#include <cstdint>
+#include <filesystem>
+#include <functional>
+#include <future>
 #include <memory>
+#include <mutex>
+#include <optional>
+#include <regex>
+#include <string>
+#include <thread>
 #include <unordered_map>
 #include <unordered_set>
-#include <chrono>
-#include <functional>
-#include <regex>
-#include <mutex>
-#include <atomic>
+#include <vector>
 
 namespace elizaos {
 
-/**
- * Discord scrubbing and content management extension
- * Provides content filtering, moderation, and cleanup capabilities
- */
+constexpr std::size_t DISCRUB_MAX_CONTENT_LENGTH = 4000;
+constexpr std::size_t DISCRUB_MAX_REASON_LENGTH = 512;
+constexpr std::size_t DISCRUB_MAX_PAGE_SIZE = 100;
 
-// Content filtering rules
-enum class FilterAction {
-    NONE,
-    WARN,
-    DELETE,
-    TIMEOUT,
-    KICK,
-    BAN
+enum class FilterAction { NONE, WARN, DELETE, TIMEOUT, KICK, BAN };
+
+enum class DiscordOperationStatus {
+    ACKNOWLEDGED,
+    LOCAL_ONLY,
+    INVALID_INPUT,
+    NO_ADAPTER,
+    PERMISSION_DENIED,
+    RATE_LIMITED,
+    NOT_FOUND,
+    REMOTE_REJECTED,
+    IO_ERROR,
+    PARSE_ERROR,
+    ADAPTER_ERROR
+};
+
+struct DiscordAcknowledgement {
+    DiscordOperationStatus status{DiscordOperationStatus::INVALID_INPUT};
+    std::string operation;
+    std::string resourceId;
+    std::string receiptId;
+    std::string detail;
+    std::chrono::milliseconds retryAfter{0};
+    int attempts{0};
+    bool acknowledged() const noexcept {
+        return status == DiscordOperationStatus::ACKNOWLEDGED;
+    }
+    bool retryable() const noexcept {
+        return status == DiscordOperationStatus::RATE_LIMITED ||
+               status == DiscordOperationStatus::ADAPTER_ERROR;
+    }
+};
+
+struct MessageQuery {
+    std::string guildId;
+    std::string channelId;
+    std::string searchText;
+    std::string cursor;
+    std::size_t limit{50};
+    std::optional<std::chrono::system_clock::time_point> after;
+    std::optional<std::chrono::system_clock::time_point> before;
+    bool includeBots{true};
+};
+
+struct MessagePage {
+    DiscordAcknowledgement acknowledgement;
+    std::vector<DiscordMessage> messages;
+    std::string nextCursor;
+    bool hasMore{false};
+};
+
+struct ChannelPage {
+    DiscordAcknowledgement acknowledgement;
+    std::vector<DiscordChannel> channels;
+    std::string nextCursor;
+    bool hasMore{false};
+};
+
+class DiscordDataAdapter {
+public:
+    virtual ~DiscordDataAdapter() = default;
+    virtual MessagePage fetchMessages(const MessageQuery& query) = 0;
+    virtual MessagePage searchMessages(const MessageQuery& query) = 0;
+    virtual ChannelPage fetchGuildChannels(const std::string& guildId,
+                                           const std::string& cursor,
+                                           std::size_t limit) = 0;
+};
+
+class DiscordMutationAdapter {
+public:
+    virtual ~DiscordMutationAdapter() = default;
+    virtual DiscordAcknowledgement warnUser(const std::string& guildId,
+                                             const std::string& userId,
+                                             const std::string& channelId,
+                                             const std::string& reason) = 0;
+    virtual DiscordAcknowledgement timeoutUser(const std::string& guildId,
+                                                const std::string& userId,
+                                                int minutes,
+                                                const std::string& reason) = 0;
+    virtual DiscordAcknowledgement kickUser(const std::string& guildId,
+                                             const std::string& userId,
+                                             const std::string& reason) = 0;
+    virtual DiscordAcknowledgement banUser(const std::string& guildId,
+                                            const std::string& userId,
+                                            const std::string& reason,
+                                            int deleteMessageDays) = 0;
+    virtual DiscordAcknowledgement deleteMessage(const std::string& channelId,
+                                                   const std::string& messageId,
+                                                   const std::string& reason) = 0;
+    virtual DiscordAcknowledgement bulkDeleteMessages(
+        const std::string& channelId,
+        const std::vector<std::string>& messageIds,
+        const std::string& reason) = 0;
+    virtual DiscordAcknowledgement restoreMessages(
+        const std::string& channelId,
+        const std::vector<DiscordMessage>& messages) = 0;
 };
 
 struct ContentFilter {
     std::string name;
     std::string description;
     std::regex pattern;
-    FilterAction action;
-    int severity;               // 1-10 scale
-    bool enabled;
+    FilterAction action{FilterAction::NONE};
+    int severity{1};
+    bool enabled{true};
     std::string reason;
-    
-    ContentFilter() : action(FilterAction::NONE), severity(1), enabled(true) {}
-    ContentFilter(const std::string& n, const std::string& patternStr, FilterAction a, int sev = 1)
-        : name(n), pattern(patternStr), action(a), severity(sev), enabled(true) {}
+    ContentFilter() = default;
+    ContentFilter(const std::string& filterName, const std::string& patternString,
+                  FilterAction filterAction, int filterSeverity = 1)
+        : name(filterName), pattern(patternString), action(filterAction),
+          severity(filterSeverity) {}
 };
 
-// Moderation action record
 struct ModerationAction {
     std::string id;
+    std::string guildId;
     std::string userId;
     std::string moderatorId;
     std::string channelId;
     std::string messageId;
-    FilterAction action;
+    FilterAction action{FilterAction::NONE};
     std::string reason;
-    std::chrono::system_clock::time_point timestamp;
-    bool appealed;
+    std::chrono::system_clock::time_point timestamp{};
+    bool appealed{false};
+    bool appealReviewed{false};
+    bool appealApproved{false};
     std::string appealReason;
-    
-    ModerationAction() : action(FilterAction::NONE), appealed(false) {
-        timestamp = std::chrono::system_clock::now();
-    }
+    DiscordAcknowledgement acknowledgement;
 };
 
-// User reputation system
 struct UserReputation {
     std::string userId;
-    int reputationScore;        // Can be negative
-    int warningCount;
-    int timeoutCount;
-    int kickCount;
-    int banCount;
-    std::chrono::system_clock::time_point lastIncident;
+    int reputationScore{100};
+    int warningCount{0};
+    int timeoutCount{0};
+    int kickCount{0};
+    int banCount{0};
+    std::chrono::system_clock::time_point lastIncident{};
     std::vector<std::string> violations;
-    bool isTrusted;
-    
-    UserReputation() : reputationScore(100), warningCount(0), timeoutCount(0), 
-                       kickCount(0), banCount(0), isTrusted(false) {}
-    UserReputation(const std::string& uid) : UserReputation() { userId = uid; }
+    bool isTrusted{false};
+    UserReputation() = default;
+    explicit UserReputation(const std::string& userIdentifier) : userId(userIdentifier) {}
 };
 
-// Content cleanup configuration
 struct CleanupConfig {
-    bool deleteSpam;
-    bool deleteBot;
-    bool deleteDuplicates;
-    bool deleteEmpty;
-    bool deleteOldMessages;
-    std::chrono::hours maxAge;
-    int maxDuplicateCount;
+    bool deleteSpam{true};
+    bool deleteBot{false};
+    bool deleteDuplicates{true};
+    bool deleteEmpty{true};
+    bool deleteOldMessages{false};
+    std::chrono::hours maxAge{24 * 30};
+    int maxDuplicateCount{3};
     std::vector<std::string> preserveChannels;
-    
-    CleanupConfig() : deleteSpam(true), deleteBot(false), deleteDuplicates(true),
-                      deleteEmpty(true), deleteOldMessages(false), maxAge(24 * 30),
-                      maxDuplicateCount(3) {}
 };
 
-// Content scanner for detecting violations
 class ContentScanner {
 public:
+    struct ScanResult {
+        bool validInput{true};
+        bool violation{false};
+        std::vector<std::string> triggeredFilters;
+        FilterAction recommendedAction{FilterAction::NONE};
+        int totalSeverity{0};
+        std::string reason;
+        std::vector<std::string> evidence;
+    };
     ContentScanner();
     ~ContentScanner();
-    
-    // Filter management
     void addFilter(const ContentFilter& filter);
     void removeFilter(const std::string& name);
     void updateFilter(const std::string& name, const ContentFilter& filter);
     std::vector<ContentFilter> getFilters() const;
-    
-    // Content scanning
-    struct ScanResult {
-        bool violation;
-        std::vector<std::string> triggeredFilters;
-        FilterAction recommendedAction;
-        int totalSeverity;
-        std::string reason;
-        
-        ScanResult() : violation(false), recommendedAction(FilterAction::NONE), totalSeverity(0) {}
-    };
-    
     ScanResult scanMessage(const DiscordMessage& message);
     ScanResult scanContent(const std::string& content);
     std::vector<ScanResult> scanMessages(const std::vector<DiscordMessage>& messages);
-    
-    // Built-in filter categories
     void enableProfanityFilter(bool enable = true);
     void enableSpamFilter(bool enable = true);
     void enablePhishingFilter(bool enable = true);
     void enableInviteFilter(bool enable = true);
     void enableMentionSpamFilter(bool enable = true, int maxMentions = 5);
-    
-    // Custom pattern management
     void addProfanityWords(const std::vector<std::string>& words);
     void addAllowedDomains(const std::vector<std::string>& domains);
     void addBlockedDomains(const std::vector<std::string>& domains);
-    
+
 private:
     std::vector<ContentFilter> filters_;
     std::unordered_set<std::string> profanityWords_;
     std::unordered_set<std::string> allowedDomains_;
     std::unordered_set<std::string> blockedDomains_;
-    
-    bool profanityFilterEnabled_;
-    bool spamFilterEnabled_;
-    bool phishingFilterEnabled_;
-    bool inviteFilterEnabled_;
-    bool mentionSpamEnabled_;
-    int maxMentions_;
-    
+    bool profanityFilterEnabled_{true};
+    bool spamFilterEnabled_{true};
+    bool phishingFilterEnabled_{true};
+    bool inviteFilterEnabled_{true};
+    bool mentionSpamEnabled_{true};
+    int maxMentions_{5};
     mutable std::mutex scannerMutex_;
-    
-    // Built-in detection methods
-    bool detectProfanity(const std::string& content);
-    bool detectSpam(const DiscordMessage& message);
-    bool detectPhishing(const std::string& content);
-    bool detectInviteLinks(const std::string& content);
-    bool detectMentionSpam(const DiscordMessage& message);
-    
-    // Helper methods
-    std::vector<std::string> extractUrls(const std::string& content);
-    int countMentions(const std::string& content);
+    ScanResult scanLocked(const std::string& content,
+                          const DiscordMessage* message) const;
+    bool detectProfanityLocked(const std::string& content) const;
+    bool detectSpamLocked(const DiscordMessage& message) const;
+    bool detectPhishingLocked(const std::string& content) const;
+    bool detectInviteLinksLocked(const std::string& content) const;
+    bool detectMentionSpamLocked(const DiscordMessage& message) const;
+    static std::vector<std::string> extractUrls(const std::string& content);
+    static int countMentions(const std::string& content);
 };
 
-// Automated moderation system
 class AutoModerator {
 public:
+    struct ModerationResult {
+        ContentScanner::ScanResult classification;
+        std::optional<ModerationAction> action;
+        DiscordAcknowledgement acknowledgement;
+    };
+    using Clock = std::function<std::chrono::system_clock::time_point()>;
+    using ActionObserver = std::function<void(const ModerationAction&)>;
     AutoModerator();
+    explicit AutoModerator(std::shared_ptr<DiscordMutationAdapter> adapter);
     ~AutoModerator();
-    
-    // Moderation operations
+    void setMutationAdapter(std::shared_ptr<DiscordMutationAdapter> adapter);
+    void setRetryPolicy(int maxAttempts, std::chrono::milliseconds maximumDelay);
+    void setClock(Clock clock);
+    void setActionObserver(ActionObserver observer);
+    ModerationResult processMessageAcknowledged(const DiscordMessage& message);
+    ModerationResult processEditAcknowledged(const DiscordMessage& oldMessage,
+                                              const DiscordMessage& newMessage);
     bool processMessage(const DiscordMessage& message);
     bool processEdit(const DiscordMessage& oldMessage, const DiscordMessage& newMessage);
     bool reviewUser(const std::string& userId);
-    
-    // Action execution
+    ContentScanner& getScanner() { return scanner_; }
+    DiscordAcknowledgement executeActionAcknowledged(const ModerationAction& action);
+    DiscordAcknowledgement warnUserAcknowledged(const std::string& guildId,
+                                                 const std::string& userId,
+                                                 const std::string& reason,
+                                                 const std::string& channelId = "");
+    DiscordAcknowledgement timeoutUserAcknowledged(const std::string& guildId,
+                                                    const std::string& userId,
+                                                    int minutes,
+                                                    const std::string& reason);
+    DiscordAcknowledgement kickUserAcknowledged(const std::string& guildId,
+                                                 const std::string& userId,
+                                                 const std::string& reason);
+    DiscordAcknowledgement banUserAcknowledged(const std::string& guildId,
+                                                const std::string& userId,
+                                                const std::string& reason,
+                                                int deleteMessageDays = 0);
+    DiscordAcknowledgement deleteMessageAcknowledged(const std::string& channelId,
+                                                       const std::string& messageId,
+                                                       const std::string& reason = "");
     bool executeAction(const ModerationAction& action);
-    bool warnUser(const std::string& userId, const std::string& reason, const std::string& channelId = "");
+    bool warnUser(const std::string& userId, const std::string& reason,
+                  const std::string& channelId = "");
     bool timeoutUser(const std::string& userId, int minutes, const std::string& reason);
     bool kickUser(const std::string& userId, const std::string& reason);
-    bool banUser(const std::string& userId, const std::string& reason, int deleteMessageDays = 0);
-    bool deleteMessage(const std::string& channelId, const std::string& messageId, const std::string& reason = "");
-    
-    // Reputation management
-    void updateUserReputation(const std::string& userId, int change, const std::string& reason);
+    bool banUser(const std::string& userId, const std::string& reason,
+                 int deleteMessageDays = 0);
+    bool deleteMessage(const std::string& channelId, const std::string& messageId,
+                       const std::string& reason = "");
+    void setGuildContext(const std::string& guildId);
+    void updateUserReputation(const std::string& userId, int change,
+                              const std::string& reason);
     UserReputation getUserReputation(const std::string& userId);
     void setTrustedUser(const std::string& userId, bool trusted);
-    
-    // Configuration
     void setStrictMode(bool strict);
     void setAutoEscalation(bool enable);
     void setReputationThreshold(int threshold);
     void setActionCooldown(int seconds);
-    
-    // Action history
     std::vector<ModerationAction> getUserActions(const std::string& userId);
     std::vector<ModerationAction> getChannelActions(const std::string& channelId);
     std::vector<ModerationAction> getRecentActions(int hours = 24);
-    
-    // Appeals system
     bool submitAppeal(const std::string& actionId, const std::string& reason);
-    bool reviewAppeal(const std::string& actionId, bool approved, const std::string& moderatorId);
+    bool reviewAppeal(const std::string& actionId, bool approved,
+                      const std::string& moderatorId);
     std::vector<ModerationAction> getPendingAppeals();
-    
+
 private:
     ContentScanner scanner_;
     std::unordered_map<std::string, UserReputation> userReputations_;
     std::unordered_map<std::string, ModerationAction> actionHistory_;
-    
-    bool strictMode_;
-    bool autoEscalation_;
-    int reputationThreshold_;
-    int actionCooldownSeconds_;
-    
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter_;
+    std::string guildContext_;
+    bool strictMode_{false};
+    bool autoEscalation_{true};
+    int reputationThreshold_{50};
+    int actionCooldownSeconds_{300};
+    int maxAttempts_{3};
+    std::chrono::milliseconds maximumRetryDelay_{100};
+    Clock clock_;
+    ActionObserver actionObserver_;
+    std::atomic<std::uint64_t> nextActionId_{1};
     mutable std::mutex moderatorMutex_;
-    
-    // Internal moderation logic
-    FilterAction determineAction(const ContentScanner::ScanResult& scanResult, const UserReputation& reputation);
-    bool shouldEscalate(const UserReputation& reputation);
-    bool isOnCooldown(const std::string& userId);
-    void logAction(const ModerationAction& action);
+    FilterAction determineAction(const ContentScanner::ScanResult& scanResult,
+                                 const UserReputation& reputation) const;
+    bool shouldEscalate(const UserReputation& reputation) const;
+    bool isOnCooldownLocked(const std::string& userId,
+                            std::chrono::system_clock::time_point now) const;
+    DiscordAcknowledgement invokeMutation(
+        const std::string& operation,
+        const std::string& resourceId,
+        const std::function<DiscordAcknowledgement(DiscordMutationAdapter&)>& call);
+    ModerationAction makeAction(FilterAction action, const std::string& guildId,
+                                const std::string& userId,
+                                const std::string& channelId,
+                                const std::string& messageId,
+                                const std::string& reason);
+    void commitAcknowledgedAction(ModerationAction action);
 };
 
-// Content cleanup and maintenance
 class ContentCleaner {
 public:
-    ContentCleaner();
-    ~ContentCleaner();
-    
-    // Cleanup operations
     struct CleanupResult {
-        int messagesDeleted;
-        int duplicatesRemoved;
-        int spamRemoved;
-        int emptyRemoved;
-        int oldRemoved;
+        int messagesScanned{0};
+        int messagesDeleted{0};
+        int duplicatesRemoved{0};
+        int spamRemoved{0};
+        int emptyRemoved{0};
+        int oldRemoved{0};
+        DiscordOperationStatus status{DiscordOperationStatus::INVALID_INPUT};
+        std::vector<DiscordAcknowledgement> acknowledgements;
         std::vector<std::string> errors;
-        
-        CleanupResult() : messagesDeleted(0), duplicatesRemoved(0), spamRemoved(0),
-                         emptyRemoved(0), oldRemoved(0) {}
+        bool acknowledged() const noexcept {
+            return status == DiscordOperationStatus::ACKNOWLEDGED;
+        }
     };
-    
+    ContentCleaner();
+    ContentCleaner(std::shared_ptr<DiscordDataAdapter> dataAdapter,
+                   std::shared_ptr<DiscordMutationAdapter> mutationAdapter);
+    ~ContentCleaner();
+    void setAdapters(std::shared_ptr<DiscordDataAdapter> dataAdapter,
+                     std::shared_ptr<DiscordMutationAdapter> mutationAdapter);
+    void setRetryPolicy(int maxAttempts, std::chrono::milliseconds maximumDelay);
+    bool setStorageRoot(const std::string& rootPath);
+    std::string getStorageRoot() const;
+    MessagePage fetchMessages(const MessageQuery& query);
+    MessagePage searchMessages(const MessageQuery& query);
     CleanupResult cleanChannel(const std::string& channelId, const CleanupConfig& config);
     CleanupResult cleanGuild(const std::string& guildId, const CleanupConfig& config);
     std::vector<CleanupResult> cleanAllChannels(const CleanupConfig& config);
-    
-    // Scheduled cleanup
-    void scheduleCleanup(const std::string& channelId, const CleanupConfig& config, 
-                        const std::chrono::hours& interval);
+    void scheduleCleanup(const std::string& channelId, const CleanupConfig& config,
+                         const std::chrono::hours& interval);
     void cancelScheduledCleanup(const std::string& channelId);
     std::vector<std::string> getScheduledCleanups() const;
-    
-    // Duplicate detection
-    std::vector<std::vector<DiscordMessage>> findDuplicateMessages(const std::string& channelId);
-    bool areDuplicates(const DiscordMessage& msg1, const DiscordMessage& msg2, double threshold = 0.8);
-    
-    // Bulk operations
-    bool bulkDeleteMessages(const std::string& channelId, const std::vector<std::string>& messageIds);
+    void observeMessage(const DiscordMessage& message);
+    void observeMessageDelete(const std::string& channelId, const std::string& messageId);
+    std::vector<std::vector<DiscordMessage>> findDuplicateMessages(
+        const std::string& channelId);
+    bool areDuplicates(const DiscordMessage& first, const DiscordMessage& second,
+                       double threshold = 0.8);
+    DiscordAcknowledgement bulkDeleteMessagesAcknowledged(
+        const std::string& channelId, const std::vector<std::string>& messageIds,
+        const std::string& reason = "cleanup");
+    DiscordAcknowledgement archiveChannelAcknowledged(const std::string& channelId,
+                                                       const std::string& archivePath);
+    DiscordAcknowledgement restoreFromArchiveAcknowledged(
+        const std::string& channelId, const std::string& archivePath);
+    bool bulkDeleteMessages(const std::string& channelId,
+                            const std::vector<std::string>& messageIds);
     bool archiveChannel(const std::string& channelId, const std::string& archivePath);
     bool restoreFromArchive(const std::string& channelId, const std::string& archivePath);
-    
+
 private:
     std::unordered_map<std::string, CleanupConfig> scheduledCleanups_;
     std::unordered_map<std::string, std::chrono::system_clock::time_point> nextCleanupTimes_;
-    std::vector<std::thread> cleanupThreads_;
-    std::atomic<bool> cleanupRunning_;
-    
+    std::unordered_map<std::string, std::chrono::hours> cleanupIntervals_;
+    std::unordered_map<std::string, std::vector<DiscordMessage>> messageCache_;
+    std::shared_ptr<DiscordDataAdapter> dataAdapter_;
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter_;
+    std::filesystem::path storageRoot_;
+    std::thread cleanupThread_;
+    std::atomic<bool> cleanupRunning_{false};
+    std::condition_variable cleanupCv_;
+    int maxAttempts_{3};
+    std::chrono::milliseconds maximumRetryDelay_{100};
     mutable std::mutex cleanerMutex_;
-    
-    // Cleanup implementation
-    std::vector<DiscordMessage> findMessagesToDelete(const std::string& channelId, const CleanupConfig& config);
-    bool isSpamMessage(const DiscordMessage& message);
-    bool isEmptyMessage(const DiscordMessage& message);
-    bool isOldMessage(const DiscordMessage& message, const std::chrono::hours& maxAge);
-    double calculateMessageSimilarity(const DiscordMessage& msg1, const DiscordMessage& msg2);
-    
-    // Scheduled cleanup thread
+    std::vector<DiscordMessage> fetchAllMessages(const MessageQuery& query,
+                                                 DiscordAcknowledgement& result);
+    bool isSpamMessage(const DiscordMessage& message) const;
+    static bool isEmptyMessage(const DiscordMessage& message);
+    static bool isOldMessage(const DiscordMessage& message,
+                             const std::chrono::hours& maxAge);
+    static double calculateMessageSimilarity(const DiscordMessage& first,
+                                             const DiscordMessage& second);
+    DiscordAcknowledgement invokeMutation(
+        const std::string& operation,
+        const std::string& resourceId,
+        const std::function<DiscordAcknowledgement(DiscordMutationAdapter&)>& call);
     void cleanupLoop();
 };
 
-// Analytics and reporting
 class ModerationAnalytics {
 public:
-    ModerationAnalytics();
-    ~ModerationAnalytics();
-    
-    // Report generation
     struct ModerationReport {
-        std::chrono::system_clock::time_point periodStart;
-        std::chrono::system_clock::time_point periodEnd;
-        
-        int totalActions;
-        int warningsIssued;
-        int timeoutsIssued;
-        int kicksIssued;
-        int bansIssued;
-        int messagesDeleted;
-        
+        std::chrono::system_clock::time_point periodStart{};
+        std::chrono::system_clock::time_point periodEnd{};
+        int totalActions{0};
+        int warningsIssued{0};
+        int timeoutsIssued{0};
+        int kicksIssued{0};
+        int bansIssued{0};
+        int messagesDeleted{0};
         std::vector<std::string> topViolators;
         std::vector<std::string> commonViolations;
         std::unordered_map<std::string, int> violationsByChannel;
-        double averageResponseTime;
-        
-        ModerationReport() : totalActions(0), warningsIssued(0), timeoutsIssued(0),
-                           kicksIssued(0), bansIssued(0), messagesDeleted(0), averageResponseTime(0.0) {}
+        double averageResponseTime{0.0};
     };
-    
-    ModerationReport generateReport(const std::chrono::system_clock::time_point& startTime,
-                                   const std::chrono::system_clock::time_point& endTime);
+    ModerationAnalytics();
+    ~ModerationAnalytics();
+    void recordAction(const ModerationAction& action);
+    bool setStorageRoot(const std::string& rootPath);
+    ModerationReport generateReport(
+        const std::chrono::system_clock::time_point& startTime,
+        const std::chrono::system_clock::time_point& endTime);
     ModerationReport generateDailyReport();
     ModerationReport generateWeeklyReport();
     ModerationReport generateMonthlyReport();
-    
-    // Trend analysis
     std::vector<double> getViolationTrends(int days = 30);
     std::vector<std::string> getTopViolationTypes(int limit = 10);
     std::unordered_map<std::string, double> getChannelRiskScores();
-    
-    // Export capabilities
     std::string exportReportAsJson(const ModerationReport& report);
     std::string exportReportAsHtml(const ModerationReport& report);
-    bool exportReportToFile(const ModerationReport& report, const std::string& filePath);
-    
+    DiscordAcknowledgement exportReportToFileAcknowledged(
+        const ModerationReport& report, const std::string& filePath);
+    bool exportReportToFile(const ModerationReport& report,
+                            const std::string& filePath);
+
 private:
+    std::vector<ModerationAction> actions_;
+    std::filesystem::path storageRoot_;
     mutable std::mutex analyticsMutex_;
-    
-    // Data aggregation
-    std::vector<ModerationAction> getActionsInPeriod(const std::chrono::system_clock::time_point& start,
-                                                     const std::chrono::system_clock::time_point& end);
-    std::vector<std::string> findTopViolators(const std::vector<ModerationAction>& actions, int limit = 5);
-    std::vector<std::string> findCommonViolations(const std::vector<ModerationAction>& actions, int limit = 5);
+    std::vector<ModerationAction> getActionsInPeriod(
+        const std::chrono::system_clock::time_point& start,
+        const std::chrono::system_clock::time_point& end) const;
+    static std::vector<std::string> findTopViolators(
+        const std::vector<ModerationAction>& actions, int limit = 5);
+    static std::vector<std::string> findCommonViolations(
+        const std::vector<ModerationAction>& actions, int limit = 5);
 };
 
-// Main discrub extension
 class DiscrubExtension {
 public:
     DiscrubExtension();
     ~DiscrubExtension();
-    
-    // Component access
-    ContentScanner& getScanner() { return scanner_; }
+    ContentScanner& getScanner() { return moderator_.getScanner(); }
     AutoModerator& getModerator() { return moderator_; }
     ContentCleaner& getCleaner() { return cleaner_; }
     ModerationAnalytics& getAnalytics() { return analytics_; }
-    
-    // High-level operations
     bool initializeWithDiscord(std::shared_ptr<DiscordClient> client);
+    bool initializeWithAdapters(std::shared_ptr<DiscordDataAdapter> dataAdapter,
+                                std::shared_ptr<DiscordMutationAdapter> mutationAdapter);
     void startMonitoring(const std::vector<std::string>& channelIds);
     void stopMonitoring();
     bool isMonitoring() const;
-    
-    // Real-time processing
+    AutoModerator::ModerationResult processIncomingMessageAcknowledged(
+        const DiscordMessage& message);
     void processIncomingMessage(const DiscordMessage& message);
-    void processMessageEdit(const DiscordMessage& oldMessage, const DiscordMessage& newMessage);
-    void processMessageDelete(const std::string& channelId, const std::string& messageId);
-    
-    // Batch operations
-    std::future<ContentCleaner::CleanupResult> scheduleBatchCleanup(const std::string& channelId, 
-                                                                    const CleanupConfig& config);
+    void processMessageEdit(const DiscordMessage& oldMessage,
+                            const DiscordMessage& newMessage);
+    void processMessageDelete(const std::string& channelId,
+                              const std::string& messageId);
+    std::future<ContentCleaner::CleanupResult> scheduleBatchCleanup(
+        const std::string& channelId, const CleanupConfig& config);
     std::future<ModerationAnalytics::ModerationReport> generateReport(
         const std::chrono::system_clock::time_point& startTime,
         const std::chrono::system_clock::time_point& endTime);
-    
-    // Configuration management
+    bool setStorageRoot(const std::string& rootPath);
+    DiscordAcknowledgement loadConfigurationAcknowledged(const std::string& configPath);
+    DiscordAcknowledgement saveConfigurationAcknowledged(const std::string& configPath);
     void loadConfiguration(const std::string& configPath);
     void saveConfiguration(const std::string& configPath);
     void setDefaultModerationSettings();
-    
-    // Event handlers
-    void setViolationHandler(std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler);
+    void setViolationHandler(
+        std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> handler);
     void setActionHandler(std::function<void(const ModerationAction&)> handler);
-    void setCleanupHandler(std::function<void(const ContentCleaner::CleanupResult&)> handler);
-    
+    void setCleanupHandler(
+        std::function<void(const ContentCleaner::CleanupResult&)> handler);
+
 private:
-    ContentScanner scanner_;
     AutoModerator moderator_;
     ContentCleaner cleaner_;
     ModerationAnalytics analytics_;
-    
     std::shared_ptr<DiscordClient> discordClient_;
+    std::shared_ptr<DiscordDataAdapter> dataAdapter_;
+    std::shared_ptr<DiscordMutationAdapter> mutationAdapter_;
     std::vector<std::string> monitoredChannels_;
-    std::atomic<bool> monitoring_;
-    std::thread monitoringThread_;
-    
-    // Event handlers
-    std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)> violationHandler_;
+    std::atomic<bool> monitoring_{false};
+    std::function<void(const DiscordMessage&, const ContentScanner::ScanResult&)>
+        violationHandler_;
     std::function<void(const ModerationAction&)> actionHandler_;
     std::function<void(const ContentCleaner::CleanupResult&)> cleanupHandler_;
-    
     std::unordered_map<std::string, std::string> config_;
+    std::filesystem::path storageRoot_;
     mutable std::mutex configMutex_;
-    
-    // Internal processing
-    void monitoringLoop();
-    void handleViolation(const DiscordMessage& message, const ContentScanner::ScanResult& result);
+    void handleViolation(const DiscordMessage& message,
+                         const ContentScanner::ScanResult& result);
 };
 
-// Global extension instance
 extern std::shared_ptr<DiscrubExtension> globalDiscrubExtension;
 
 } // namespace elizaos

@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <condition_variable>
+#include <deque>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -12,6 +14,7 @@
 #include <stdexcept>
 #include <system_error>
 #include <thread>
+#include <unordered_set>
 
 #ifndef _WIN32
 #include <sys/wait.h>
@@ -103,6 +106,89 @@ std::string trim(const std::string& value) {
     return value.substr(first, last - first + 1);
 }
 
+
+bool parseVersion(const std::string& value, int& major, int& minor, int& patch) {
+    major = minor = patch = 0;
+    if (value.empty()) return false;
+    const auto suffix = value.find_first_of("-+");
+    const std::string core = value.substr(0, suffix);
+    std::istringstream stream(core);
+    std::string component;
+    int* outputs[] = {&major, &minor, &patch};
+    int count = 0;
+    while (std::getline(stream, component, '.')) {
+        if (count == 3 || component.empty() ||
+            !std::all_of(component.begin(), component.end(), [](unsigned char ch) {
+                return ch >= '0' && ch <= '9';
+            })) return false;
+        try {
+            std::size_t consumed = 0;
+            const int parsed = std::stoi(component, &consumed);
+            if (consumed != component.size() || parsed < 0) return false;
+            *outputs[count++] = parsed;
+        } catch (...) {
+            return false;
+        }
+    }
+    return count >= 2;
+}
+
+bool validMetadata(const PluginMetadata& metadata) {
+    int major = 0, minor = 0, patch = 0;
+    if (metadata.name.empty() || !parseVersion(metadata.version, major, minor, patch) ||
+        (major == 0 && minor == 0 && patch == 0)) return false;
+    if (!parseVersion(metadata.apiVersion, major, minor, patch) || major != 1) return false;
+    std::unordered_set<std::string> seen;
+    for (const auto& dependency : metadata.dependencies) {
+        if (dependency.empty() || dependency == metadata.name || !seen.insert(dependency).second) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool sameDependencies(std::vector<std::string> lhs, std::vector<std::string> rhs) {
+    std::sort(lhs.begin(), lhs.end());
+    std::sort(rhs.begin(), rhs.end());
+    return lhs == rhs;
+}
+
+
+bool restorePluginState(const std::shared_ptr<Plugin>& plugin,
+                        const PluginMetadata& metadata,
+                        PluginStatus target) {
+    try {
+        PluginStatus current = plugin->getStatus();
+        if (current == target) return true;
+        if (target == PluginStatus::ACTIVE &&
+            (current == PluginStatus::LOADED || current == PluginStatus::INACTIVE)) {
+            return plugin->activate() && plugin->getStatus() == PluginStatus::ACTIVE;
+        }
+        if (target == PluginStatus::INACTIVE && current == PluginStatus::ACTIVE) {
+            return plugin->deactivate() && plugin->getStatus() == PluginStatus::INACTIVE;
+        }
+        if (target == PluginStatus::LOADED && current == PluginStatus::ACTIVE) {
+            if (!plugin->deactivate() || plugin->getStatus() != PluginStatus::INACTIVE) return false;
+            current = PluginStatus::INACTIVE;
+        }
+        if (current != PluginStatus::UNKNOWN &&
+            (!plugin->shutdown() || plugin->getStatus() != PluginStatus::UNKNOWN)) return false;
+        if (target == PluginStatus::UNKNOWN) return true;
+        if (!plugin->initialize(metadata) || plugin->getStatus() != PluginStatus::LOADED) return false;
+        if (target == PluginStatus::LOADED) return true;
+        if (!plugin->activate() || plugin->getStatus() != PluginStatus::ACTIVE) return false;
+        if (target == PluginStatus::ACTIVE) return true;
+        return target == PluginStatus::INACTIVE && plugin->deactivate() &&
+               plugin->getStatus() == PluginStatus::INACTIVE;
+    } catch (...) {
+        return false;
+    }
+}
+
+PluginStatus reportedStatus(const std::shared_ptr<Plugin>& plugin) {
+    try { return plugin->getStatus(); } catch (...) { return PluginStatus::FAILED; }
+}
+
 } // namespace
 
 std::shared_ptr<PluginsAutomation> globalPluginAutomation = std::make_shared<PluginsAutomation>();
@@ -110,48 +196,251 @@ std::shared_ptr<PluginsAutomation> globalPluginAutomation = std::make_shared<Plu
 PluginRegistry::PluginRegistry() = default;
 
 PluginRegistry::~PluginRegistry() {
-    std::lock_guard<std::mutex> lock(registryMutex_);
-    for (auto& [name, plugin] : plugins_) {
-        (void)name;
+    std::vector<std::pair<std::string, std::shared_ptr<Plugin>>> plugins;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        plugins.reserve(plugins_.size());
+        for (auto& entry : plugins_) plugins.emplace_back(entry.first, entry.second);
+        plugins_.clear();
+        metadata_.clear();
+        states_.clear();
+        stableStates_.clear();
+        transitions_.clear();
+    }
+    std::sort(plugins.begin(), plugins.end(), [](const auto& lhs, const auto& rhs) {
+        return lhs.first > rhs.first;
+    });
+    for (auto& entry : plugins) {
+        auto& plugin = entry.second;
         if (!plugin) continue;
-        if (plugin->getStatus() == PluginStatus::ACTIVE) plugin->deactivate();
-        plugin->shutdown();
+        try {
+            if (plugin->getStatus() == PluginStatus::ACTIVE) plugin->deactivate();
+        } catch (...) {}
+        try { plugin->shutdown(); } catch (...) {}
     }
 }
 
-bool PluginRegistry::registerPlugin(std::shared_ptr<Plugin> plugin, const PluginMetadata& metadata) {
-    std::lock_guard<std::mutex> lock(registryMutex_);
-    if (!plugin || metadata.name.empty()) {
-        logError("Invalid plugin or metadata", "plugins_automation");
+bool PluginRegistry::registerPlugin(std::shared_ptr<Plugin> plugin,
+                                    const PluginMetadata& metadata) {
+    if (!plugin || !validMetadata(metadata)) return false;
+
+    std::string actualName;
+    std::string actualVersion;
+    std::vector<std::string> actualDependencies;
+    PluginStatus initialStatus = PluginStatus::FAILED;
+    try {
+        actualName = plugin->getName();
+        actualVersion = plugin->getVersion();
+        actualDependencies = plugin->getDependencies();
+        initialStatus = plugin->getStatus();
+    } catch (...) {
         return false;
     }
-    if (plugins_.find(metadata.name) != plugins_.end()) {
-        logWarning("Plugin " + metadata.name + " already registered", "plugins_automation");
-        return false;
+    if (actualName != metadata.name || actualVersion != metadata.version ||
+        !sameDependencies(actualDependencies, metadata.dependencies) ||
+        initialStatus != PluginStatus::UNKNOWN) return false;
+
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        if (plugins_.count(metadata.name) != 0 || transitions_.count(metadata.name) != 0 ||
+            !checkDependencies(metadata)) return false;
+        plugins_[metadata.name] = plugin;
+        metadata_[metadata.name] = metadata;
+        states_[metadata.name] = PluginStatus::LOADING;
+        stableStates_[metadata.name] = PluginStatus::UNKNOWN;
+        transitions_[metadata.name] = true;
     }
-    if (!checkDependencies(metadata)) {
-        logError("Dependencies not satisfied for plugin " + metadata.name, "plugins_automation");
+
+    bool initialized = false;
+    PluginStatus reported = PluginStatus::FAILED;
+    try {
+        initialized = plugin->initialize(metadata);
+        reported = plugin->getStatus();
+    } catch (...) {
+        initialized = false;
+    }
+
+    if (!initialized || reported != PluginStatus::LOADED) {
+        try { plugin->shutdown(); } catch (...) {}
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        plugins_.erase(metadata.name);
+        metadata_.erase(metadata.name);
+        states_.erase(metadata.name);
+        stableStates_.erase(metadata.name);
+        transitions_.erase(metadata.name);
         return false;
     }
 
-    plugins_[metadata.name] = std::move(plugin);
-    metadata_[metadata.name] = metadata;
-    logInfo("Registered plugin: " + metadata.name + " v" + metadata.version,
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        states_[metadata.name] = PluginStatus::LOADED;
+        stableStates_[metadata.name] = PluginStatus::LOADED;
+        transitions_.erase(metadata.name);
+    }
+    logInfo("Registered and initialized plugin: " + metadata.name + " v" + metadata.version,
             "plugins_automation");
     return true;
 }
 
-bool PluginRegistry::unregisterPlugin(const std::string& name) {
-    std::lock_guard<std::mutex> lock(registryMutex_);
-    auto it = plugins_.find(name);
-    if (it == plugins_.end()) return false;
-
-    if (it->second) {
-        if (it->second->getStatus() == PluginStatus::ACTIVE) it->second->deactivate();
-        it->second->shutdown();
+bool PluginRegistry::initializePlugin(const std::string& name) {
+    std::shared_ptr<Plugin> plugin;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        auto it = plugins_.find(name);
+        if (it == plugins_.end() || transitions_.count(name) != 0) return false;
+        auto state = states_.find(name);
+        if (state != states_.end() && state->second == PluginStatus::LOADED) {
+            plugin = it->second;
+        } else {
+            return false;
+        }
     }
-    plugins_.erase(it);
-    metadata_.erase(name);
+    try {
+        return plugin && plugin->getStatus() == PluginStatus::LOADED && plugin->healthCheck();
+    } catch (...) {
+        return false;
+    }
+}
+
+bool PluginRegistry::activatePlugin(const std::string& name) {
+    std::shared_ptr<Plugin> plugin;
+    PluginMetadata metadata;
+    PluginStatus previous = PluginStatus::UNKNOWN;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        auto it = plugins_.find(name);
+        if (it == plugins_.end() || transitions_.count(name) != 0) return false;
+        previous = states_[name];
+        if (previous != PluginStatus::LOADED && previous != PluginStatus::INACTIVE) return false;
+        const auto& dependencies = metadata_.at(name).dependencies;
+        for (const auto& dependency : dependencies) {
+            auto state = states_.find(dependency);
+            if (state == states_.end() || state->second != PluginStatus::ACTIVE) return false;
+        }
+        plugin = it->second;
+        metadata = metadata_.at(name);
+        stableStates_[name] = previous;
+        transitions_[name] = true;
+    }
+
+    bool activated = false;
+    PluginStatus reported = PluginStatus::FAILED;
+    try {
+        activated = plugin->activate();
+        reported = plugin->getStatus();
+    } catch (...) {
+        activated = false;
+    }
+    if (!activated || reported != PluginStatus::ACTIVE) {
+        const bool rolledBack = restorePluginState(plugin, metadata, previous);
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        states_[name] = rolledBack ? previous : reportedStatus(plugin);
+        stableStates_[name] = states_[name];
+        transitions_.erase(name);
+        return false;
+    }
+
+    std::lock_guard<std::mutex> lock(registryMutex_);
+    states_[name] = PluginStatus::ACTIVE;
+    stableStates_[name] = PluginStatus::ACTIVE;
+    transitions_.erase(name);
+    return true;
+}
+
+bool PluginRegistry::deactivatePlugin(const std::string& name) {
+    std::shared_ptr<Plugin> plugin;
+    PluginMetadata metadata;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        auto it = plugins_.find(name);
+        if (it == plugins_.end() || transitions_.count(name) != 0 ||
+            states_[name] != PluginStatus::ACTIVE) return false;
+        plugin = it->second;
+        metadata = metadata_.at(name);
+        stableStates_[name] = PluginStatus::ACTIVE;
+        transitions_[name] = true;
+    }
+
+    bool deactivated = false;
+    PluginStatus reported = PluginStatus::FAILED;
+    try {
+        deactivated = plugin->deactivate();
+        reported = plugin->getStatus();
+    } catch (...) {
+        deactivated = false;
+    }
+    if (!deactivated || reported != PluginStatus::INACTIVE) {
+        const bool rolledBack = restorePluginState(plugin, metadata, PluginStatus::ACTIVE);
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        states_[name] = rolledBack ? PluginStatus::ACTIVE : reportedStatus(plugin);
+        stableStates_[name] = states_[name];
+        transitions_.erase(name);
+        return false;
+    }
+
+    std::lock_guard<std::mutex> lock(registryMutex_);
+    states_[name] = PluginStatus::INACTIVE;
+    stableStates_[name] = PluginStatus::INACTIVE;
+    transitions_.erase(name);
+    return true;
+}
+
+bool PluginRegistry::unregisterPlugin(const std::string& name) {
+    std::shared_ptr<Plugin> plugin;
+    PluginMetadata metadata;
+    PluginStatus previous = PluginStatus::UNKNOWN;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        auto it = plugins_.find(name);
+        if (it == plugins_.end() || transitions_.count(name) != 0 || hasDependents(name)) {
+            return false;
+        }
+        plugin = it->second;
+        metadata = metadata_.at(name);
+        previous = states_[name];
+        states_[name] = PluginStatus::UNLOADING;
+        stableStates_[name] = previous;
+        transitions_[name] = true;
+    }
+
+    bool deactivated = previous != PluginStatus::ACTIVE;
+    if (!deactivated) {
+        try { deactivated = plugin->deactivate() && plugin->getStatus() == PluginStatus::INACTIVE; }
+        catch (...) { deactivated = false; }
+    }
+    if (!deactivated) {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        states_[name] = previous;
+        stableStates_[name] = previous;
+        transitions_.erase(name);
+        return false;
+    }
+
+    bool shutdown = false;
+    PluginStatus reported = PluginStatus::FAILED;
+    try {
+        shutdown = plugin->shutdown();
+        reported = plugin->getStatus();
+    } catch (...) {
+        shutdown = false;
+    }
+    if (!shutdown || reported != PluginStatus::UNKNOWN) {
+        const bool rolledBack = restorePluginState(plugin, metadata, previous);
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        states_[name] = rolledBack ? previous : reportedStatus(plugin);
+        stableStates_[name] = states_[name];
+        transitions_.erase(name);
+        return false;
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        plugins_.erase(name);
+        metadata_.erase(name);
+        states_.erase(name);
+        stableStates_.erase(name);
+        transitions_.erase(name);
+    }
     logInfo("Unregistered plugin: " + name, "plugins_automation");
     return true;
 }
@@ -166,25 +455,44 @@ std::vector<std::string> PluginRegistry::getPluginNames() const {
     std::lock_guard<std::mutex> lock(registryMutex_);
     std::vector<std::string> names;
     names.reserve(plugins_.size());
-    for (const auto& [name, plugin] : plugins_) {
-        (void)plugin;
-        names.push_back(name);
-    }
+    for (const auto& entry : plugins_) names.push_back(entry.first);
     std::sort(names.begin(), names.end());
     return names;
 }
 
 PluginStatus PluginRegistry::getPluginStatus(const std::string& name) const {
     std::lock_guard<std::mutex> lock(registryMutex_);
-    auto it = plugins_.find(name);
-    return it != plugins_.end() && it->second ? it->second->getStatus() : PluginStatus::UNKNOWN;
+    auto it = states_.find(name);
+    return it != states_.end() ? it->second : PluginStatus::UNKNOWN;
+}
+
+bool PluginRegistry::checkPluginHealth(const std::string& name) const {
+    std::shared_ptr<Plugin> plugin;
+    PluginStatus expected = PluginStatus::UNKNOWN;
+    {
+        std::lock_guard<std::mutex> lock(registryMutex_);
+        auto it = plugins_.find(name);
+        auto state = states_.find(name);
+        if (it == plugins_.end() || state == states_.end() || transitions_.count(name) != 0) {
+            return false;
+        }
+        expected = state->second;
+        if (expected != PluginStatus::LOADED && expected != PluginStatus::ACTIVE &&
+            expected != PluginStatus::INACTIVE) return false;
+        plugin = it->second;
+    }
+    try {
+        return plugin->getStatus() == expected && plugin->healthCheck();
+    } catch (...) {
+        return false;
+    }
 }
 
 std::vector<std::string> PluginRegistry::getActivePlugins() const {
     std::lock_guard<std::mutex> lock(registryMutex_);
     std::vector<std::string> active;
-    for (const auto& [name, plugin] : plugins_) {
-        if (plugin && plugin->getStatus() == PluginStatus::ACTIVE) active.push_back(name);
+    for (const auto& entry : states_) {
+        if (entry.second == PluginStatus::ACTIVE) active.push_back(entry.first);
     }
     std::sort(active.begin(), active.end());
     return active;
@@ -193,8 +501,8 @@ std::vector<std::string> PluginRegistry::getActivePlugins() const {
 std::vector<std::string> PluginRegistry::getFailedPlugins() const {
     std::lock_guard<std::mutex> lock(registryMutex_);
     std::vector<std::string> failed;
-    for (const auto& [name, plugin] : plugins_) {
-        if (plugin && plugin->getStatus() == PluginStatus::FAILED) failed.push_back(name);
+    for (const auto& entry : states_) {
+        if (entry.second == PluginStatus::FAILED) failed.push_back(entry.first);
     }
     std::sort(failed.begin(), failed.end());
     return failed;
@@ -204,16 +512,9 @@ bool PluginRegistry::resolveDependencies(const std::string& pluginName) {
     std::lock_guard<std::mutex> lock(registryMutex_);
     auto metaIt = metadata_.find(pluginName);
     if (metaIt == metadata_.end()) return false;
-
     for (const auto& dependency : metaIt->second.dependencies) {
-        auto pluginIt = plugins_.find(dependency);
-        if (pluginIt == plugins_.end() || !pluginIt->second ||
-            pluginIt->second->getStatus() != PluginStatus::ACTIVE) {
-            std::string error = "Dependency ";
-            error.append(dependency).append(" not active for plugin ").append(pluginName);
-            logError(error, "plugins_automation");
-            return false;
-        }
+        auto state = states_.find(dependency);
+        if (state == states_.end() || state->second != PluginStatus::ACTIVE) return false;
     }
     return true;
 }
@@ -225,10 +526,23 @@ std::vector<std::string> PluginRegistry::getDependencyChain(const std::string& p
 }
 
 bool PluginRegistry::checkDependencies(const PluginMetadata& metadata) const {
-    return std::all_of(metadata.dependencies.begin(), metadata.dependencies.end(),
-                       [this](const std::string& dependency) {
-                           return plugins_.find(dependency) != plugins_.end();
-                       });
+    for (const auto& dependency : metadata.dependencies) {
+        auto plugin = plugins_.find(dependency);
+        auto state = states_.find(dependency);
+        if (plugin == plugins_.end() || state == states_.end() ||
+            (state->second != PluginStatus::LOADED && state->second != PluginStatus::ACTIVE &&
+             state->second != PluginStatus::INACTIVE)) return false;
+    }
+    return true;
+}
+
+bool PluginRegistry::hasDependents(const std::string& name) const {
+    for (const auto& entry : metadata_) {
+        if (entry.first == name) continue;
+        if (std::find(entry.second.dependencies.begin(), entry.second.dependencies.end(), name) !=
+            entry.second.dependencies.end()) return true;
+    }
+    return false;
 }
 
 CIPipeline::CIPipeline()
@@ -357,10 +671,92 @@ bool CIPipeline::runStage(const std::string& pluginName,
     return success;
 }
 
-PluginTester::PluginTester() : timeoutSeconds_(30), verbose_(false) {}
-PluginTester::~PluginTester() = default;
+struct PluginTester::ExecutorState {
+    struct Job {
+        CooperativeTestFunction function;
+        std::shared_ptr<std::atomic<bool>> stopRequested;
+        std::promise<bool> completion;
+    };
+
+    std::mutex mutex;
+    std::condition_variable condition;
+    std::deque<std::shared_ptr<Job>> queue;
+    std::shared_ptr<std::atomic<bool>> activeStop;
+    std::size_t outstanding = 0;
+    bool accepting = true;
+    std::thread worker;
+};
+
+PluginTester::StopToken::StopToken(std::shared_ptr<std::atomic<bool>> stopRequested)
+    : stopRequested_(std::move(stopRequested)) {}
+
+bool PluginTester::StopToken::stopRequested() const noexcept {
+    return stopRequested_ && stopRequested_->load(std::memory_order_acquire);
+}
+
+PluginTester::PluginTester()
+    : timeoutSeconds_(30), verbose_(false), maxPendingTests_(1),
+      executor_(std::make_shared<ExecutorState>()) {
+    const auto state = executor_;
+    state->worker = std::thread([state] {
+        for (;;) {
+            std::shared_ptr<ExecutorState::Job> job;
+            {
+                std::unique_lock<std::mutex> lock(state->mutex);
+                state->condition.wait(lock, [&] {
+                    return !state->accepting || !state->queue.empty();
+                });
+                if (state->queue.empty()) {
+                    if (!state->accepting) break;
+                    continue;
+                }
+                job = std::move(state->queue.front());
+                state->queue.pop_front();
+                state->activeStop = job->stopRequested;
+            }
+            try {
+                const bool value = job->function(StopToken(job->stopRequested));
+                {
+                    std::lock_guard<std::mutex> lock(state->mutex);
+                    state->activeStop.reset();
+                    if (state->outstanding > 0) --state->outstanding;
+                }
+                job->completion.set_value(value);
+            } catch (...) {
+                {
+                    std::lock_guard<std::mutex> lock(state->mutex);
+                    state->activeStop.reset();
+                    if (state->outstanding > 0) --state->outstanding;
+                }
+                try { job->completion.set_exception(std::current_exception()); } catch (...) {}
+            }
+            state->condition.notify_all();
+        }
+    });
+}
+
+PluginTester::~PluginTester() {
+    auto state = executor_;
+    if (!state) return;
+    {
+        std::lock_guard<std::mutex> lock(state->mutex);
+        state->accepting = false;
+        if (state->activeStop) state->activeStop->store(true, std::memory_order_release);
+        for (const auto& job : state->queue) {
+            job->stopRequested->store(true, std::memory_order_release);
+        }
+    }
+    state->condition.notify_all();
+    if (state->worker.joinable()) state->worker.join();
+}
 
 void PluginTester::addTestCase(const std::string& testName, std::function<bool()> testFunc) {
+    if (!testFunc) return;
+    addTestCase(testName, [test = std::move(testFunc)](const StopToken&) { return test(); });
+}
+
+void PluginTester::addTestCase(const std::string& testName,
+                               CooperativeTestFunction testFunc) {
     if (testName.empty() || !testFunc) return;
     std::lock_guard<std::mutex> lock(testMutex_);
     testCases_[testName] = std::move(testFunc);
@@ -372,38 +768,37 @@ void PluginTester::removeTestCase(const std::string& testName) {
 }
 
 std::vector<PluginTester::TestResult> PluginTester::runTests(const std::string& pluginName) {
-    std::vector<std::pair<std::string, std::function<bool()>>> selected;
+    std::vector<std::pair<std::string, CooperativeTestFunction>> selected;
     {
         std::lock_guard<std::mutex> lock(testMutex_);
-        for (const auto& [name, test] : testCases_) {
+        for (const auto& entry : testCases_) {
+            const auto& name = entry.first;
             if (name == pluginName || name.rfind(pluginName + "::", 0) == 0 ||
-                name.rfind(pluginName + ".", 0) == 0) {
-                selected.emplace_back(name, test);
-            }
+                name.rfind(pluginName + ".", 0) == 0) selected.emplace_back(entry);
         }
     }
-
-    std::sort(selected.begin(), selected.end(),
-              [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+    std::sort(selected.begin(), selected.end(), [](const auto& lhs, const auto& rhs) {
+        return lhs.first < rhs.first;
+    });
     std::vector<TestResult> results;
     results.reserve(selected.size());
-    for (auto& [name, test] : selected) results.push_back(executeTest(name, std::move(test)));
+    for (auto& entry : selected) results.push_back(executeTest(entry.first, std::move(entry.second)));
     return results;
 }
 
 std::vector<PluginTester::TestResult> PluginTester::runAllTests() {
-    std::vector<std::pair<std::string, std::function<bool()>>> tests;
+    std::vector<std::pair<std::string, CooperativeTestFunction>> tests;
     {
         std::lock_guard<std::mutex> lock(testMutex_);
         tests.reserve(testCases_.size());
-        for (const auto& [name, test] : testCases_) tests.emplace_back(name, test);
+        for (const auto& entry : testCases_) tests.emplace_back(entry);
     }
-
-    std::sort(tests.begin(), tests.end(),
-              [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+    std::sort(tests.begin(), tests.end(), [](const auto& lhs, const auto& rhs) {
+        return lhs.first < rhs.first;
+    });
     std::vector<TestResult> results;
     results.reserve(tests.size());
-    for (auto& [name, test] : tests) results.push_back(executeTest(name, std::move(test)));
+    for (auto& entry : tests) results.push_back(executeTest(entry.first, std::move(entry.second)));
     return results;
 }
 
@@ -417,45 +812,63 @@ void PluginTester::setVerbose(bool verbose) {
     verbose_ = verbose;
 }
 
+void PluginTester::setMaxPendingTests(std::size_t maxPendingTests) {
+    std::lock_guard<std::mutex> lock(testMutex_);
+    maxPendingTests_ = std::max<std::size_t>(1, maxPendingTests);
+}
+
 PluginTester::TestResult PluginTester::executeTest(const std::string& testName,
-                                                    std::function<bool()> testFunc) {
+                                                    CooperativeTestFunction testFunc) {
     const auto started = std::chrono::steady_clock::now();
     int timeout = 0;
     bool verbose = false;
+    std::size_t maxPending = 1;
     {
         std::lock_guard<std::mutex> lock(testMutex_);
         timeout = timeoutSeconds_;
         verbose = verbose_;
+        maxPending = maxPendingTests_;
     }
 
-    std::packaged_task<bool()> task(std::move(testFunc));
-    auto future = task.get_future();
-    std::thread worker(std::move(task));
+    auto job = std::make_shared<ExecutorState::Job>();
+    job->function = std::move(testFunc);
+    job->stopRequested = std::make_shared<std::atomic<bool>>(false);
+    auto future = job->completion.get_future();
+    {
+        std::lock_guard<std::mutex> lock(executor_->mutex);
+        if (!executor_->accepting || executor_->outstanding >= maxPending) {
+            TestResult result(testName, false, "executor admission rejected: capacity reached", 0.0);
+            result.admissionRejected = true;
+            return result;
+        }
+        ++executor_->outstanding;
+        executor_->queue.push_back(job);
+    }
+    executor_->condition.notify_one();
 
-    bool passed = false;
-    std::string message;
+    TestResult result(testName, false);
     const auto waitResult = future.wait_for(std::chrono::seconds(timeout));
     if (waitResult == std::future_status::ready) {
         try {
-            passed = future.get();
-            message = passed ? "passed" : "returned false";
+            result.passed = future.get();
+            result.message = result.passed ? "passed" : "returned false";
         } catch (const std::exception& ex) {
-            message = std::string("exception: ") + ex.what();
+            result.message = std::string("exception: ") + ex.what();
         } catch (...) {
-            message = "unknown exception";
+            result.message = "unknown exception";
         }
-        worker.join();
     } else {
-        message = "timed out after " + std::to_string(timeout) + " seconds";
-        worker.detach();
+        job->stopRequested->store(true, std::memory_order_release);
+        result.timedOut = true;
+        result.message = "timed out after " + std::to_string(timeout) +
+                         " seconds; cooperative stop requested";
     }
 
-    const double elapsed = std::chrono::duration<double>(
+    result.executionTime = std::chrono::duration<double>(
         std::chrono::steady_clock::now() - started).count();
-    if (verbose) {
-        logInfo("Plugin test " + testName + ": " + message, "plugins_automation");
-    }
-    return TestResult(testName, passed, message, elapsed);
+    if (verbose) logInfo("Plugin test " + testName + ": " + result.message,
+                         "plugins_automation");
+    return result;
 }
 
 WorkflowAutomation::WorkflowAutomation() : templateDirectory_("templates") {}

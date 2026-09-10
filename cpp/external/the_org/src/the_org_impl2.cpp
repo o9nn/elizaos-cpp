@@ -13,6 +13,8 @@
 #include <set>
 #include <ctime>
 #include <regex>
+#include <filesystem>
+#include <nlohmann/json.hpp>
 
 namespace elizaos {
 
@@ -175,17 +177,21 @@ void DeveloperRelationsAgent::trackDeveloperProgress(
 
 void DeveloperRelationsAgent::shareWeeklyTechUpdates(
     const std::vector<std::string>& channelIds) {
-    std::lock_guard<std::mutex> lock(knowledgeMutex_);
+    std::vector<std::pair<std::string, std::string>> knowledge;
+    {
+        std::lock_guard<std::mutex> lock(knowledgeMutex_);
+        for (const auto& [topic, entry] : knowledgeBase_) knowledge.emplace_back(topic, entry.content);
+    }
 
     std::ostringstream update;
     update << "📚 **Weekly Tech Updates**\n\n";
     update << "Here are this week's highlights from the ElizaOS developer community:\n\n";
 
     size_t count = 0;
-    for (const auto& [topic, entry] : knowledgeBase_) {
+    for (const auto& [topic, content] : knowledge) {
         if (count >= 5) break;
-        update << "• **" << topic << "**: " << entry.content.substr(0, 120);
-        if (entry.content.length() > 120) update << "...";
+        update << "• **" << topic << "**: " << content.substr(0, 120);
+        if (content.length() > 120) update << "...";
         update << "\n";
         ++count;
     }
@@ -211,11 +217,13 @@ void DeveloperRelationsAgent::processQuestion(
     if (!isCodeRelated(question)) return;
 
     std::string answer;
-    // First check knowledge base
-    for (const auto& [topic, entry] : knowledgeBase_) {
-        if (question.find(topic) != std::string::npos) {
-            answer = entry.content;
-            break;
+    {
+        std::lock_guard<std::mutex> lock(knowledgeMutex_);
+        for (const auto& [topic, entry] : knowledgeBase_) {
+            if (question.find(topic) != std::string::npos) {
+                answer = entry.content;
+                break;
+            }
         }
     }
 
@@ -339,42 +347,32 @@ double CommunityLiaisonAgent::calculateTopicRelevance(
 
 CrossOrgReport CommunityLiaisonAgent::generateTopicSpecificReport(
     const std::string& topic, const std::vector<UUID>& recipientOrgIds) const {
-    std::lock_guard<std::mutex> lock(discussionMutex_);
-
+    std::vector<DiscussionEntry> discussions;
+    {
+        std::lock_guard<std::mutex> lock(discussionMutex_);
+        discussions = discussionHistory_;
+    }
     CrossOrgReport report;
-    report.id = config_.agentId + "-report-topic-" +
-                std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+    report.id = config_.agentId + "-report-topic-" + std::to_string(sequence_.fetch_add(1));
     report.type = ReportType::TOPIC_SPECIFIC;
     report.generatedAt = std::chrono::system_clock::now();
     report.recipientOrgIds = recipientOrgIds;
-
-    // Build overview from discussion history
     std::ostringstream overview;
     overview << "Topic Report: " << topic << "\n\n";
-    size_t count = 0;
-    for (const auto& entry : discussionHistory_) {
-        if (entry.topic.find(topic) != std::string::npos ||
-            topic.find(entry.topic) != std::string::npos) {
+    for (const auto& entry : discussions) {
+        if (entry.topic.find(topic) != std::string::npos || topic.find(entry.topic) != std::string::npos) {
             overview << "- [Org " << entry.orgId << "] " << entry.summary << "\n";
             report.content.knowledgeGaps.push_back(entry.summary);
-            ++count;
         }
     }
-
-    if (count == 0) {
-        overview << "No recent discussions found on this topic.\n";
-    }
-
+    if (report.content.knowledgeGaps.empty()) overview << "No recent discussions found on this topic.\n";
     report.content.overview = overview.str();
-    std::vector<UUID> collabOrgIds = recipientOrgIds;
-    if (collabOrgIds.empty()) {
-        for (const auto& [id, _] : organizations_) {
-            collabOrgIds.push_back(id);
-        }
+    std::vector<UUID> collaboratorIds = recipientOrgIds;
+    if (collaboratorIds.empty()) {
+        const auto organizations = getMonitoredOrganizations();
+        for (const auto& organization : organizations) collaboratorIds.push_back(organization.id);
     }
-    report.content.collaborationOpportunities =
-        findCollaborationOpportunities(collabOrgIds);
-
+    report.content.collaborationOpportunities = findCollaborationOpportunities(collaboratorIds);
     return report;
 }
 
@@ -397,15 +395,17 @@ void CommunityLiaisonAgent::distributeReport(const CrossOrgReport& report) {
         }
     }
 
-    // Send to each recipient org's general channel (using org ID as channel placeholder)
-    std::lock_guard<std::mutex> lock(orgMutex_);
-    for (const auto& orgId : report.recipientOrgIds) {
-        auto it = organizations_.find(orgId);
-        if (it != organizations_.end() && !it->second.platforms.empty()) {
-            const auto& platform = it->second.platforms.front();
-            sendMessage(platform.type, orgId, msg.str());
+    std::vector<std::pair<PlatformType, UUID>> deliveries;
+    {
+        std::lock_guard<std::mutex> lock(orgMutex_);
+        for (const auto& orgId : report.recipientOrgIds) {
+            auto it = organizations_.find(orgId);
+            if (it != organizations_.end() && !it->second.platforms.empty())
+                deliveries.emplace_back(it->second.platforms.front().type, orgId);
         }
     }
+    const std::string payload = msg.str();
+    for (const auto& [platform, channel] : deliveries) sendMessage(platform, channel, payload);
 
     AgentLogger logger;
     logger.log("Distributed " + std::to_string(report.recipientOrgIds.size()) +
@@ -418,11 +418,14 @@ void CommunityLiaisonAgent::shareKnowledge(
     std::string msg = "🔗 **Knowledge Share** from org " + sourceOrgId + "\n\n"
                       "**Topic:** " + topic + "\n\n" + content;
 
-    std::lock_guard<std::mutex> lock(orgMutex_);
-    auto it = organizations_.find(targetOrgId);
-    if (it != organizations_.end() && !it->second.platforms.empty()) {
-        sendMessage(it->second.platforms.front().type, targetOrgId, msg);
+    std::optional<PlatformType> platform;
+    {
+        std::lock_guard<std::mutex> lock(orgMutex_);
+        auto it = organizations_.find(targetOrgId);
+        if (it != organizations_.end() && !it->second.platforms.empty())
+            platform = it->second.platforms.front().type;
     }
+    if (platform) sendMessage(*platform, targetOrgId, msg);
 
     AgentLogger logger;
     logger.log("Shared knowledge on '" + topic + "' from " + sourceOrgId + " to " + targetOrgId);
@@ -430,26 +433,27 @@ void CommunityLiaisonAgent::shareKnowledge(
 
 void CommunityLiaisonAgent::facilitateIntroduction(
     const UUID& org1Id, const UUID& org2Id, const std::string& sharedInterest) {
-    std::lock_guard<std::mutex> lock(orgMutex_);
-
-    auto it1 = organizations_.find(org1Id);
-    auto it2 = organizations_.find(org2Id);
-
-    std::string org1Name = (it1 != organizations_.end()) ? it1->second.name : org1Id;
-    std::string org2Name = (it2 != organizations_.end()) ? it2->second.name : org2Id;
-
-    std::string msg = "👋 **Introduction**\n\n"
-                      "I'd like to connect **" + org1Name + "** and **" + org2Name + "**.\n"
-                      "Both communities share a strong interest in **" + sharedInterest + "**.\n\n"
-                      "I believe there are great collaboration opportunities here! Feel free to reach out.";
-
-    // Send to both orgs
-    for (const auto& orgId : {org1Id, org2Id}) {
-        auto it = organizations_.find(orgId);
-        if (it != organizations_.end() && !it->second.platforms.empty()) {
-            sendMessage(it->second.platforms.front().type, orgId, msg);
+    std::string org1Name = org1Id;
+    std::string org2Name = org2Id;
+    std::vector<std::pair<PlatformType, UUID>> deliveries;
+    {
+        std::lock_guard<std::mutex> lock(orgMutex_);
+        auto it1 = organizations_.find(org1Id);
+        auto it2 = organizations_.find(org2Id);
+        if (it1 != organizations_.end()) {
+            org1Name = it1->second.name;
+            if (!it1->second.platforms.empty()) deliveries.emplace_back(it1->second.platforms.front().type, org1Id);
+        }
+        if (it2 != organizations_.end()) {
+            org2Name = it2->second.name;
+            if (!it2->second.platforms.empty()) deliveries.emplace_back(it2->second.platforms.front().type, org2Id);
         }
     }
+    const std::string msg = "👋 **Introduction**\n\n"
+        "I'd like to connect **" + org1Name + "** and **" + org2Name + "**.\n"
+        "Both communities share a strong interest in **" + sharedInterest + "**.\n\n"
+        "I believe there are great collaboration opportunities here! Feel free to reach out.";
+    for (const auto& [platform, channel] : deliveries) sendMessage(platform, channel, msg);
 
     AgentLogger logger;
     logger.log("Facilitated introduction between " + org1Name + " and " + org2Name +
@@ -645,10 +649,11 @@ double CommunityLiaisonAgent::calculateOrganizationSimilarity(
 
 // Private helpers
 void CommunityLiaisonAgent::monitorOrganizations() {
-    std::lock_guard<std::mutex> lock(orgMutex_);
-    for (const auto& [id, org] : organizations_) {
-        AgentLogger logger;
-        logger.log("Monitoring org: " + org.name + " (" + std::to_string(org.subscribedTopics.size()) + " topics)");
+    const auto organizations = getMonitoredOrganizations();
+    AgentLogger logger;
+    for (const auto& organization : organizations) {
+        logger.log("Monitoring org: " + organization.name + " (" +
+                   std::to_string(organization.subscribedTopics.size()) + " topics)");
     }
 }
 
@@ -684,36 +689,29 @@ std::string CommunityLiaisonAgent::formatReportForPlatform(
 }
 
 void CommunityLiaisonAgent::updateTopicTrends() {
-    std::lock_guard<std::mutex> lock(trendMutex_);
-    auto now = std::chrono::system_clock::now();
-
-    // Build trend scores from discussion history
-    std::unordered_map<std::string, TopicTrend> trendMap;
-
+    std::vector<DiscussionEntry> discussions;
     {
-        std::lock_guard<std::mutex> dLock(discussionMutex_);
-        for (const auto& entry : discussionHistory_) {
-            auto& trend = trendMap[entry.topic];
-            trend.topic = entry.topic;
-            trend.trendScore += entry.engagementLevel;
-            if (std::find(trend.activeOrganizations.begin(),
-                          trend.activeOrganizations.end(), entry.orgId) ==
-                trend.activeOrganizations.end()) {
-                trend.activeOrganizations.push_back(entry.orgId);
-            }
-            if (trend.firstSeen == Timestamp{} || entry.timestamp < trend.firstSeen)
-                trend.firstSeen = entry.timestamp;
-            if (entry.timestamp > trend.lastSeen)
-                trend.lastSeen = entry.timestamp;
-        }
+        std::lock_guard<std::mutex> lock(discussionMutex_);
+        discussions = discussionHistory_;
     }
-
-    topicTrends_.clear();
-    for (auto& [_, trend] : trendMap) {
-        auto age = std::chrono::duration_cast<std::chrono::hours>(now - trend.firstSeen);
-        trend.duration = age;
-        topicTrends_.push_back(std::move(trend));
+    const auto now = std::chrono::system_clock::now();
+    std::unordered_map<std::string, TopicTrend> trendMap;
+    for (const auto& entry : discussions) {
+        auto& trend = trendMap[entry.topic];
+        trend.topic = entry.topic;
+        trend.trendScore += entry.engagementLevel;
+        if (std::find(trend.activeOrganizations.begin(), trend.activeOrganizations.end(), entry.orgId) ==
+            trend.activeOrganizations.end()) trend.activeOrganizations.push_back(entry.orgId);
+        if (trend.firstSeen == Timestamp{} || entry.timestamp < trend.firstSeen) trend.firstSeen = entry.timestamp;
+        if (entry.timestamp > trend.lastSeen) trend.lastSeen = entry.timestamp;
     }
+    std::vector<TopicTrend> trends;
+    for (auto& [topic, trend] : trendMap) {
+        trend.duration = std::chrono::duration_cast<std::chrono::hours>(now - trend.firstSeen);
+        trends.push_back(std::move(trend));
+    }
+    std::lock_guard<std::mutex> lock(trendMutex_);
+    topicTrends_ = std::move(trends);
 }
 
 // ============================================================================
@@ -722,12 +720,14 @@ void CommunityLiaisonAgent::updateTopicTrends() {
 
 void ProjectManagerAgent::assignTaskToMember(
     const UUID& taskId, const UUID& teamMemberId) {
-    // Store assignment in work-hours map (0 minutes initially)
+    if (taskId.empty() || !getTeamMember(teamMemberId)) return;
+    {
+        std::lock_guard<std::mutex> lock(taskMutex_);
+        if (!tasks_.count(taskId)) return;
+    }
     std::lock_guard<std::mutex> lock(teamMutex_);
-    workHours_[teamMemberId].emplace_back(taskId, std::chrono::minutes(0));
-
-    AgentLogger logger;
-    logger.log("Task " + taskId + " assigned to member " + teamMemberId);
+    auto& assignments = memberTasks_[teamMemberId];
+    if (std::find(assignments.begin(), assignments.end(), taskId) == assignments.end()) assignments.push_back(taskId);
 }
 
 std::vector<UUID> ProjectManagerAgent::getProjectTasks(const UUID& projectId) const {
@@ -739,14 +739,8 @@ std::vector<UUID> ProjectManagerAgent::getProjectTasks(const UUID& projectId) co
 
 std::vector<UUID> ProjectManagerAgent::getMemberTasks(const UUID& teamMemberId) const {
     std::lock_guard<std::mutex> lock(teamMutex_);
-    std::vector<UUID> tasks;
-    auto it = workHours_.find(teamMemberId);
-    if (it != workHours_.end()) {
-        for (const auto& [taskId, _] : it->second) {
-            tasks.push_back(taskId);
-        }
-    }
-    return tasks;
+    auto it = memberTasks_.find(teamMemberId);
+    return it == memberTasks_.end() ? std::vector<UUID>{} : it->second;
 }
 
 bool ProjectManagerAgent::isTeamMemberAvailable(
@@ -779,6 +773,7 @@ std::vector<Timestamp> ProjectManagerAgent::findTeamMeetingTime(
 void ProjectManagerAgent::trackWorkHours(
     const UUID& teamMemberId, const UUID& projectId,
     std::chrono::minutes duration) {
+    if (duration.count() <= 0 || !getTeamMember(teamMemberId) || !getProject(projectId)) return;
     std::lock_guard<std::mutex> lock(metricsMutex_);
     workHours_[teamMemberId].emplace_back(projectId, duration);
 
@@ -790,11 +785,9 @@ void ProjectManagerAgent::trackWorkHours(
 }
 
 void ProjectManagerAgent::assessProjectRisk(const UUID& projectId) {
-    std::lock_guard<std::mutex> lock(projectMutex_);
-    auto it = projects_.find(projectId);
-    if (it == projects_.end()) return;
-
-    const auto& project = it->second;
+    const auto projectValue = getProject(projectId);
+    if (!projectValue) return;
+    const auto project = *projectValue;
     std::ostringstream risk;
     risk << "Risk Assessment for project: " << project.name << "\n";
 
@@ -829,28 +822,24 @@ void ProjectManagerAgent::assessProjectRisk(const UUID& projectId) {
 
 // Private helpers
 void ProjectManagerAgent::sendDailyCheckins() {
-    std::lock_guard<std::mutex> lock(teamMutex_);
-    for (const auto& [id, member] : teamMembers_) {
-        // Find all projects this member is on
-        std::lock_guard<std::mutex> pLock(projectMutex_);
-        for (const auto& [projId, proj] : projects_) {
-            if (std::find(proj.teamMemberIds.begin(), proj.teamMemberIds.end(), id) !=
-                proj.teamMemberIds.end()) {
-                sendCheckinReminder(id, projId);
-            }
-        }
+    std::vector<std::pair<UUID, UUID>> reminders;
+    const auto projects = getActiveProjects();
+    for (const auto& project : projects) {
+        for (const auto& memberId : project.teamMemberIds) reminders.emplace_back(memberId, project.id);
     }
+    for (const auto& [memberId, projectId] : reminders) sendCheckinReminder(memberId, projectId);
 }
 
 void ProjectManagerAgent::processCheckinResponses() {
-    std::lock_guard<std::mutex> lock(updateMutex_);
-    // Process any pending updates
-    for (const auto& update : dailyUpdates_) {
-        if (!update.blockers.empty()) {
-            for (const auto& blocker : update.blockers) {
-                reportBlocker(update.projectId, update.teamMemberId, blocker);
-            }
+    std::vector<DailyUpdate> pending;
+    {
+        std::lock_guard<std::mutex> lock(updateMutex_);
+        for (const auto& update : dailyUpdates_) {
+            if (processedCheckinUpdateIds_.insert(update.id).second) pending.push_back(update);
         }
+    }
+    for (const auto& update : pending) {
+        for (const auto& blocker : update.blockers) reportBlocker(update.projectId, update.teamMemberId, blocker);
     }
 }
 
@@ -892,19 +881,26 @@ std::string ProjectManagerAgent::formatMemberAvailability(
 
 bool ProjectManagerAgent::isInWorkingHours(
     const UUID& teamMemberId, Timestamp time) const {
-    std::lock_guard<std::mutex> lock(teamMutex_);
-    auto it = teamMembers_.find(teamMemberId);
-    if (it == teamMembers_.end()) return true; // Assume available if unknown
-
-    const auto& avail = it->second.availability;
+    TeamMemberAvailability avail;
+    {
+        std::lock_guard<std::mutex> lock(teamMutex_);
+        auto it = teamMembers_.find(teamMemberId);
+        if (it == teamMembers_.end()) return false;
+        avail = it->second.availability;
+    }
     if (avail.workDays.empty()) return true;
 
     // Check day of week
     auto time_t = std::chrono::system_clock::to_time_t(time);
-    std::tm* tm_info = std::localtime(&time_t);
+    std::tm local{};
+#if defined(_WIN32)
+    localtime_s(&local, &time_t);
+#else
+    localtime_r(&time_t, &local);
+#endif
     static const std::vector<std::string> days = {
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-    const std::string& dayName = days[tm_info->tm_wday];
+    const std::string& dayName = days[local.tm_wday];
 
     if (std::find(avail.workDays.begin(), avail.workDays.end(), dayName) == avail.workDays.end()) {
         return false;
@@ -919,7 +915,7 @@ bool ProjectManagerAgent::isInWorkingHours(
         try { endHour = std::stoi(avail.workHours.end.substr(0, 2)); } catch (...) {}
     }
 
-    return (tm_info->tm_hour >= startHour && tm_info->tm_hour < endHour);
+    return (local.tm_hour >= startHour && local.tm_hour < endHour);
 }
 
 // ============================================================================
@@ -959,22 +955,40 @@ std::vector<SocialMediaContent> SocialMediaManagerAgent::getContentByStatus(
     return result;
 }
 
-void SocialMediaManagerAgent::publishContentToPlatform(
+bool SocialMediaManagerAgent::tryPublishContentToPlatform(
     const UUID& contentId, PlatformType platform) {
-    std::lock_guard<std::mutex> lock(contentMutex_);
-    auto it = content_.find(contentId);
-    if (it == content_.end()) return;
+    SocialMediaContent snapshot;
+    {
+        std::lock_guard<std::mutex> lock(contentMutex_);
+        auto it = content_.find(contentId);
+        if (it == content_.end() ||
+            std::find(it->second.targetPlatforms.begin(), it->second.targetPlatforms.end(), platform) ==
+                it->second.targetPlatforms.end()) return false;
+        snapshot = it->second;
+    }
+    const bool accepted = sendMessage(platform, "general", formatContentForPlatform(snapshot, platform));
+    {
+        std::lock_guard<std::mutex> lock(contentMutex_);
+        auto it = content_.find(contentId);
+        if (it == content_.end()) return false;
+        it->second.platformSpecificData["delivery." + std::to_string(static_cast<int>(platform))] =
+            accepted ? "accepted" : "rejected";
+        bool allAccepted = !it->second.targetPlatforms.empty();
+        for (const auto target : it->second.targetPlatforms) {
+            auto evidence = it->second.platformSpecificData.find(
+                "delivery." + std::to_string(static_cast<int>(target)));
+            allAccepted = allAccepted && evidence != it->second.platformSpecificData.end() &&
+                          evidence->second == "accepted";
+        }
+        it->second.status = allAccepted ? ContentStatus::PUBLISHED : ContentStatus::FAILED;
+        it->second.updatedAt = std::chrono::system_clock::now();
+    }
+    return accepted;
+}
 
-    const auto& c = it->second;
-    std::string formatted = formatContentForPlatform(c, platform);
-    sendMessage(platform, "general", formatted);
-
-    AgentLogger logger;
-    logger.log("Published content '" + c.title + "' to " + the_org_utils::platformTypeToString(platform));
-
-    // Mark as published if all platforms have been published
-    it->second.status = ContentStatus::PUBLISHED;
-    it->second.updatedAt = std::chrono::system_clock::now();
+bool SocialMediaManagerAgent::publishContentToPlatform(
+    const UUID& contentId, PlatformType platform) {
+    return tryPublishContentToPlatform(contentId, platform);
 }
 
 std::vector<UUID> SocialMediaManagerAgent::getScheduledContent(
@@ -1052,6 +1066,7 @@ std::string SocialMediaManagerAgent::generateCaption(
 
 void SocialMediaManagerAgent::createContentCalendar(
     const std::vector<std::string>& topics, std::chrono::hours planningWindow) {
+    if (topics.empty() || planningWindow.count() <= 0) return;
     auto now = std::chrono::system_clock::now();
     size_t postsPerTopic = planningWindow.count() / static_cast<size_t>(HOURS_PER_DAY); // 1 post per day per topic
 
@@ -1107,17 +1122,17 @@ void SocialMediaManagerAgent::setPostingSchedule(
 
 std::string SocialMediaManagerAgent::analyzeContentPerformance(
     std::chrono::hours timeWindow) const {
-    std::lock_guard<std::mutex> lock(contentMutex_);
-    auto cutoff = std::chrono::system_clock::now() - timeWindow;
-
+    const auto cutoff = std::chrono::system_clock::now() - timeWindow;
     size_t published = 0, scheduled = 0, draft = 0, failed = 0;
-    for (const auto& [id, c] : content_) {
-        if (c.updatedAt >= cutoff) {
-            switch (c.status) {
-                case ContentStatus::PUBLISHED:  ++published; break;
-                case ContentStatus::SCHEDULED:  ++scheduled; break;
-                case ContentStatus::DRAFT:      ++draft;     break;
-                case ContentStatus::FAILED:     ++failed;    break;
+    {
+        std::lock_guard<std::mutex> lock(contentMutex_);
+        for (const auto& [id, content] : content_) {
+            if (content.updatedAt < cutoff) continue;
+            switch (content.status) {
+                case ContentStatus::PUBLISHED: ++published; break;
+                case ContentStatus::SCHEDULED: ++scheduled; break;
+                case ContentStatus::DRAFT: ++draft; break;
+                case ContentStatus::FAILED: ++failed; break;
             }
         }
     }
@@ -1148,31 +1163,23 @@ std::string SocialMediaManagerAgent::analyzeContentPerformance(
     return report.str();
 }
 
-void SocialMediaManagerAgent::monitorMentions(PlatformType platform) {
-    // In production would call platform API; log for now
-    AgentLogger logger;
-    logger.log("Monitoring mentions on " + the_org_utils::platformTypeToString(platform));
+bool SocialMediaManagerAgent::monitorMentions(PlatformType /* platform */) {
+    return false;
 }
 
-void SocialMediaManagerAgent::respondToComment(
+bool SocialMediaManagerAgent::respondToComment(
     const std::string& commentId, const std::string& response, PlatformType platform) {
-    sendMessage(platform, commentId, response);
-    AgentLogger logger;
-    logger.log("Responded to comment " + commentId + " on " +
-               the_org_utils::platformTypeToString(platform));
+    return !commentId.empty() && sendMessage(platform, commentId, response);
 }
 
-void SocialMediaManagerAgent::likePost(
-    const std::string& postId, PlatformType platform) {
-    AgentLogger logger;
-    logger.log("Liked post " + postId + " on " + the_org_utils::platformTypeToString(platform));
+bool SocialMediaManagerAgent::likePost(
+    const std::string& /* postId */, PlatformType /* platform */) {
+    return false;
 }
 
-void SocialMediaManagerAgent::sharePost(
+bool SocialMediaManagerAgent::sharePost(
     const std::string& postId, const std::string& comment, PlatformType platform) {
-    sendMessage(platform, "feed", comment + " [shared post: " + postId + "]");
-    AgentLogger logger;
-    logger.log("Shared post " + postId + " with comment: " + comment);
+    return !postId.empty() && sendMessage(platform, "feed", comment + " [shared post: " + postId + "]");
 }
 
 std::vector<std::string> SocialMediaManagerAgent::getRecentMentions(
@@ -1251,33 +1258,39 @@ void SocialMediaManagerAgent::addContentToCampaign(
     }
 }
 
-void SocialMediaManagerAgent::launchCampaign(const UUID& campaignId) {
-    std::lock_guard<std::mutex> lock(campaignMutex_);
-    auto it = campaigns_.find(campaignId);
-    if (it == campaigns_.end()) return;
-
-    it->second.isActive = true;
-    const auto& campaign = it->second;
-
-    // Publish all content in the campaign
+bool SocialMediaManagerAgent::launchCampaign(const UUID& campaignId) {
+    Campaign campaign;
+    {
+        std::lock_guard<std::mutex> lock(campaignMutex_);
+        auto it = campaigns_.find(campaignId);
+        if (it == campaigns_.end() || it->second.contentIds.empty() || it->second.platforms.empty()) return false;
+        campaign = it->second;
+    }
+    bool allAccepted = true;
     for (const auto& contentId : campaign.contentIds) {
-        for (const auto& platform : campaign.platforms) {
-            publishContentToPlatform(contentId, platform);
+        for (const auto platform : campaign.platforms)
+            allAccepted = tryPublishContentToPlatform(contentId, platform) && allAccepted;
+    }
+    {
+        std::lock_guard<std::mutex> lock(campaignMutex_);
+        auto it = campaigns_.find(campaignId);
+        if (it != campaigns_.end()) {
+            it->second.isActive = allAccepted;
+            it->second.metrics["launchStatus"] = allAccepted ? "accepted" : "rejected";
         }
     }
-
-    AgentLogger logger;
-    logger.log("Launched campaign: " + campaign.name + " (" +
-               std::to_string(campaign.contentIds.size()) + " pieces of content)");
+    return allAccepted;
 }
 
 std::string SocialMediaManagerAgent::analyzeCampaignPerformance(
     const UUID& campaignId) const {
-    std::lock_guard<std::mutex> lock(campaignMutex_);
-    auto it = campaigns_.find(campaignId);
-    if (it == campaigns_.end()) return "Campaign not found.";
-
-    const auto& campaign = it->second;
+    Campaign campaign;
+    {
+        std::lock_guard<std::mutex> lock(campaignMutex_);
+        auto it = campaigns_.find(campaignId);
+        if (it == campaigns_.end()) return "Campaign not found.";
+        campaign = it->second;
+    }
     std::ostringstream report;
     report << "# Campaign Performance: " << campaign.name << "\n\n";
     report << "Status: " << (campaign.isActive ? "Active" : "Inactive") << "\n";
@@ -1312,43 +1325,51 @@ std::string SocialMediaManagerAgent::analyzeCampaignPerformance(
 
 // Private helpers
 void SocialMediaManagerAgent::publishScheduledContent() {
-    auto scheduled = getScheduledContent(std::chrono::hours(1)); // due in next hour
-    auto now = std::chrono::system_clock::now();
-
+    auto scheduled = getScheduledContent(std::chrono::hours(1));
+    const auto now = std::chrono::system_clock::now();
     for (const auto& id : scheduled) {
-        std::lock_guard<std::mutex> lock(contentMutex_);
-        auto it = content_.find(id);
-        if (it == content_.end()) continue;
-        if (it->second.scheduledTime.has_value() && it->second.scheduledTime.value() <= now) {
-            it->second.status = ContentStatus::PUBLISHED;
-            it->second.updatedAt = now;
-            AgentLogger logger;
-            logger.log("Auto-published scheduled content: " + it->second.title);
+        bool due = false;
+        {
+            std::lock_guard<std::mutex> lock(contentMutex_);
+            auto it = content_.find(id);
+            due = it != content_.end() && it->second.scheduledTime && *it->second.scheduledTime <= now;
         }
+        if (due) publishContent(id);
     }
 }
 
 void SocialMediaManagerAgent::monitorEngagement() {
+    std::unordered_map<PlatformType, size_t> acceptedPosts;
+    {
+        std::lock_guard<std::mutex> lock(platformMutex_);
+        for (const auto& [platform, channels] : channelMessages_) {
+            for (const auto& [channel, messages] : channels) {
+                (void)channel;
+                acceptedPosts[platform] += messages.size();
+            }
+        }
+    }
+    const auto observedAt = std::chrono::system_clock::now();
     std::lock_guard<std::mutex> lock(metricsMutex_);
-    for (auto& [platform, metrics] : platformMetrics_) {
-        // Simulate engagement metric refresh
-        metrics.lastUpdated = std::chrono::system_clock::now();
+    for (const auto& [platform, count] : acceptedPosts) {
+        auto& metrics = platformMetrics_[platform];
+        metrics.platform = platform;
+        metrics.totalPosts = count;
+        metrics.lastUpdated = observedAt;
     }
 }
 
 void SocialMediaManagerAgent::updateMetrics() {
-    std::lock_guard<std::mutex> lock(metricsMutex_);
-    std::lock_guard<std::mutex> cLock(contentMutex_);
-
     std::unordered_map<PlatformType, size_t> postCounts;
-    for (const auto& [id, c] : content_) {
-        if (c.status == ContentStatus::PUBLISHED) {
-            for (const auto& platform : c.targetPlatforms) {
-                postCounts[platform]++;
+    {
+        std::lock_guard<std::mutex> lock(contentMutex_);
+        for (const auto& [id, content] : content_) {
+            if (content.status == ContentStatus::PUBLISHED) {
+                for (const auto platform : content.targetPlatforms) ++postCounts[platform];
             }
         }
     }
-
+    std::lock_guard<std::mutex> lock(metricsMutex_);
     for (const auto& [platform, count] : postCounts) {
         auto& m = platformMetrics_[platform];
         m.platform = platform;
@@ -1391,10 +1412,14 @@ bool SocialMediaManagerAgent::isOptimalPostingTime(PlatformType platform) const 
     auto times = getOptimalPostingTimes(platform);
     auto now = std::chrono::system_clock::now();
     auto time_t = std::chrono::system_clock::to_time_t(now);
-    std::tm* tm_info = std::localtime(&time_t);
-
+    std::tm local{};
+#if defined(_WIN32)
+    localtime_s(&local, &time_t);
+#else
+    localtime_r(&time_t, &local);
+#endif
     char buf[6];
-    std::snprintf(buf, sizeof(buf), "%02d:%02d", tm_info->tm_hour, tm_info->tm_min);
+    std::snprintf(buf, sizeof(buf), "%02d:%02d", local.tm_hour, local.tm_min);
     std::string currentTime(buf);
 
     for (const auto& t : times) {
@@ -1410,30 +1435,60 @@ bool SocialMediaManagerAgent::isOptimalPostingTime(PlatformType platform) const 
 
 void TheOrgManager::subscribeToEvents(
     const UUID& agentId, const std::vector<std::string>& eventTypes) {
+    if (agentId.empty()) return;
+    std::vector<std::string> normalized;
+    for (const auto& eventType : eventTypes) {
+        if (!eventType.empty() &&
+            std::find(normalized.begin(), normalized.end(), eventType) == normalized.end()) {
+            normalized.push_back(eventType);
+        }
+    }
     std::lock_guard<std::mutex> lock(eventMutex_);
-    eventSubscriptions_.push_back({agentId, eventTypes});
+    auto it = std::find_if(eventSubscriptions_.begin(), eventSubscriptions_.end(),
+                           [&](const EventSubscription& subscription) {
+                               return subscription.agentId == agentId;
+                           });
+    if (normalized.empty()) {
+        if (it != eventSubscriptions_.end()) eventSubscriptions_.erase(it);
+    } else if (it == eventSubscriptions_.end()) {
+        eventSubscriptions_.push_back({agentId, std::move(normalized)});
+    } else {
+        it->eventTypes = std::move(normalized);
+    }
 }
 
 void TheOrgManager::publishEvent(
     const std::string& eventType, const std::string& data, const UUID& sourceAgentId) {
-    std::lock_guard<std::mutex> lock(eventMutex_);
-
-    // Log event
-    if (eventLoggingEnabled_) {
-        std::lock_guard<std::mutex> lLock(logMutex_);
-        eventLog_.push_back("[" + eventType + "] from " + sourceAgentId + ": " + data);
-    }
-
-    // Deliver to subscribers
-    for (const auto& sub : eventSubscriptions_) {
-        if (std::find(sub.eventTypes.begin(), sub.eventTypes.end(), eventType) !=
-            sub.eventTypes.end()) {
-            auto agent = getAgent(sub.agentId);
-            if (agent) {
-                agent->processMessage(eventType + ":" + data, sourceAgentId);
+    if (eventType.empty()) return;
+    std::vector<UUID> recipients;
+    {
+        std::lock_guard<std::mutex> lock(eventMutex_);
+        for (const auto& subscription : eventSubscriptions_) {
+            if (std::find(subscription.eventTypes.begin(), subscription.eventTypes.end(), eventType) !=
+                subscription.eventTypes.end()) {
+                recipients.push_back(subscription.agentId);
             }
         }
     }
+    const std::string payload = eventType + ":" + data;
+    const std::string logEntry = "[" + eventType + "] from " + sourceAgentId + ": " + data;
+    {
+        std::lock_guard<std::mutex> lock(logMutex_);
+        if (eventLoggingEnabled_) {
+            eventLog_.push_back(logEntry);
+            timedEventLog_.emplace_back(std::chrono::system_clock::now(), logEntry);
+            constexpr std::size_t capacity = 1000;
+            if (eventLog_.size() > capacity) eventLog_.erase(eventLog_.begin(), eventLog_.begin() + (eventLog_.size() - capacity));
+            if (timedEventLog_.size() > capacity) timedEventLog_.erase(timedEventLog_.begin(), timedEventLog_.begin() + (timedEventLog_.size() - capacity));
+        }
+    }
+    std::vector<std::shared_ptr<TheOrgAgent>> agents;
+    agents.reserve(recipients.size());
+    for (const auto& recipient : recipients) {
+        auto agent = getAgent(recipient);
+        if (agent) agents.push_back(std::move(agent));
+    }
+    for (const auto& agent : agents) agent->processMessage(payload, sourceAgentId);
 }
 
 void TheOrgManager::addGlobalPlatform(const PlatformConfig& platform) {
@@ -1448,17 +1503,17 @@ void TheOrgManager::removeGlobalPlatform(PlatformType type) {
 
 void TheOrgManager::propagatePlatformToAgents(
     PlatformType type, const std::vector<AgentRole>& targetRoles) {
-    std::lock_guard<std::mutex> lock(platformMutex_);
-    auto it = globalPlatforms_.find(type);
-    if (it == globalPlatforms_.end()) return;
-
-    const auto& platform = it->second;
-
-    std::lock_guard<std::mutex> aLock(agentMutex_);
-    for (const auto& [id, agent] : agents_) {
+    PlatformConfig platform;
+    {
+        std::lock_guard<std::mutex> lock(platformMutex_);
+        auto it = globalPlatforms_.find(type);
+        if (it == globalPlatforms_.end()) return;
+        platform = it->second;
+    }
+    auto agents = getAllAgents();
+    for (const auto& agent : agents) {
         if (targetRoles.empty() ||
-            std::find(targetRoles.begin(), targetRoles.end(), agent->getRole()) !=
-                targetRoles.end()) {
+            std::find(targetRoles.begin(), targetRoles.end(), agent->getRole()) != targetRoles.end()) {
             agent->addPlatform(platform);
         }
     }
@@ -1466,222 +1521,300 @@ void TheOrgManager::propagatePlatformToAgents(
 
 UUID TheOrgManager::createCrossAgentWorkflow(
     const std::string& name, const std::vector<AgentRole>& involvedRoles) {
-    std::lock_guard<std::mutex> lock(workflowMutex_);
-
+    if (name.empty() || involvedRoles.empty()) return {};
     Workflow workflow;
-    workflow.id = "workflow-" + std::to_string(workflows_.size() + 1);
+    workflow.id = "workflow-" + std::to_string(workflowSequence_.fetch_add(1) + 1);
     workflow.name = name;
     workflow.involvedRoles = involvedRoles;
     workflow.isActive = false;
     workflow.createdAt = std::chrono::system_clock::now();
 
-    // Map roles to agents
-    for (const auto& role : involvedRoles) {
+    std::vector<std::shared_ptr<TheOrgAgent>> agents;
+    agents.reserve(involvedRoles.size());
+    for (const auto role : involvedRoles) {
         auto agent = getAgentByRole(role);
-        if (agent) {
-            workflow.taskIds.push_back(agent->createTask(name, "Workflow: " + name));
-        }
+        if (agent) agents.push_back(std::move(agent));
     }
-
-    workflows_[workflow.id] = workflow;
-
-    AgentLogger logger;
-    logger.log("Created workflow '" + name + "' with " +
-               std::to_string(involvedRoles.size()) + " roles");
-
+    for (const auto& agent : agents) {
+        const auto taskId = agent->createTask(name, "Workflow: " + name);
+        if (!taskId.empty()) workflow.taskIds.push_back(taskId);
+    }
+    {
+        std::lock_guard<std::mutex> lock(workflowMutex_);
+        workflows_[workflow.id] = workflow;
+    }
     return workflow.id;
 }
 
 void TheOrgManager::executeWorkflow(
     const UUID& workflowId,
     const std::unordered_map<std::string, std::string>& parameters) {
-    std::lock_guard<std::mutex> lock(workflowMutex_);
-    auto it = workflows_.find(workflowId);
-    if (it == workflows_.end()) return;
-
-    auto& workflow = it->second;
-    workflow.isActive = true;
-    workflow.lastExecuted = std::chrono::system_clock::now();
-    workflow.parameters = parameters;
-
-    // Broadcast start event to involved agents
-    for (const auto& role : workflow.involvedRoles) {
-        auto agent = getAgentByRole(role);
-        if (agent) {
-            std::string msg = "workflow_start:" + workflowId + ":" + workflow.name;
-            for (const auto& [k, v] : parameters) msg += ";" + k + "=" + v;
-            agent->processMessage(msg, "manager");
-        }
+    std::string name;
+    std::vector<AgentRole> roles;
+    {
+        std::lock_guard<std::mutex> lock(workflowMutex_);
+        auto it = workflows_.find(workflowId);
+        if (it == workflows_.end()) return;
+        it->second.isActive = true;
+        it->second.lastExecuted = std::chrono::system_clock::now();
+        it->second.parameters = parameters;
+        name = it->second.name;
+        roles = it->second.involvedRoles;
     }
-
-    AgentLogger logger;
-    logger.log("Executing workflow: " + workflow.name);
+    std::string payload = "workflow_start:" + workflowId + ":" + name;
+    std::vector<std::pair<std::string, std::string>> ordered(parameters.begin(), parameters.end());
+    std::sort(ordered.begin(), ordered.end());
+    for (const auto& [key, value] : ordered) payload += ";" + key + "=" + value;
+    std::vector<std::shared_ptr<TheOrgAgent>> agents;
+    for (const auto role : roles) {
+        auto agent = getAgentByRole(role);
+        if (agent) agents.push_back(std::move(agent));
+    }
+    for (const auto& agent : agents) agent->processMessage(payload, "manager");
 }
 
 void TheOrgManager::monitorWorkflows() {
-    std::lock_guard<std::mutex> lock(workflowMutex_);
-    for (const auto& [id, workflow] : workflows_) {
-        if (workflow.isActive) {
-            AgentLogger logger;
-            logger.log("Active workflow: " + workflow.name +
-                       " (last executed: " +
-                       the_org_utils::formatTimestamp(workflow.lastExecuted) + ")");
+    std::vector<std::pair<std::string, Timestamp>> active;
+    {
+        std::lock_guard<std::mutex> lock(workflowMutex_);
+        for (const auto& [id, workflow] : workflows_) {
+            if (workflow.isActive) active.emplace_back(workflow.name, workflow.lastExecuted);
         }
+    }
+    AgentLogger logger;
+    for (const auto& [name, lastExecuted] : active) {
+        logger.log("Active workflow: " + name + " (last executed: " +
+                   the_org_utils::formatTimestamp(lastExecuted) + ")");
     }
 }
 
 void TheOrgManager::saveSystemState(const std::string& backupPath) const {
-    std::ofstream ofs(backupPath);
-    if (!ofs.is_open()) {
-        AgentLogger logger;
-        logger.log("Failed to open backup path: " + backupPath, "", "Backup", LogLevel::ERROR);
-        return;
-    }
-
-    std::lock_guard<std::mutex> lock(settingsMutex_);
-    ofs << "# TheOrg System State Backup\n";
-    ofs << "agents=" << agents_.size() << "\n";
-    for (const auto& [key, val] : globalSettings_) {
-        ofs << "setting:" << key << "=" << val << "\n";
-    }
-
-    {
-        std::lock_guard<std::mutex> wLock(workflowMutex_);
-        for (const auto& [id, wf] : workflows_) {
-            ofs << "workflow:" << id << "=" << wf.name << "\n";
+    try {
+        if (backupPath.empty()) throw std::runtime_error("empty state path");
+        nlohmann::json document = {
+            {"schema", "elizaos.the_org.system_state"},
+            {"version", 1},
+            {"globalSettings", nlohmann::json::object()},
+            {"platforms", nlohmann::json::array()},
+            {"workflows", nlohmann::json::array()}
+        };
+        {
+            std::scoped_lock lock(settingsMutex_, platformMutex_, workflowMutex_);
+            document["globalSettings"] = globalSettings_;
+            std::vector<int> types;
+            for (const auto& [type, config] : globalPlatforms_) types.push_back(static_cast<int>(type));
+            std::sort(types.begin(), types.end());
+            for (const int raw : types) {
+                const auto& config = globalPlatforms_.at(static_cast<PlatformType>(raw));
+                document["platforms"].push_back({{"type", raw}, {"applicationId", config.applicationId},
+                    {"apiToken", config.apiToken}, {"webhookUrl", config.webhookUrl},
+                    {"additionalSettings", config.additionalSettings}});
+            }
+            std::vector<UUID> ids;
+            for (const auto& [id, workflow] : workflows_) ids.push_back(id);
+            std::sort(ids.begin(), ids.end());
+            for (const auto& id : ids) {
+                const auto& workflow = workflows_.at(id);
+                std::vector<int> roles;
+                for (const auto role : workflow.involvedRoles) roles.push_back(static_cast<int>(role));
+                const auto toMillis = [](Timestamp value) {
+                    return std::chrono::duration_cast<std::chrono::milliseconds>(value.time_since_epoch()).count();
+                };
+                document["workflows"].push_back({{"id", workflow.id}, {"name", workflow.name},
+                    {"involvedRoles", roles}, {"taskIds", workflow.taskIds},
+                    {"parameters", workflow.parameters}, {"isActive", workflow.isActive},
+                    {"createdAtMs", toMillis(workflow.createdAt)},
+                    {"lastExecutedMs", toMillis(workflow.lastExecuted)}});
+            }
         }
+        const std::filesystem::path target(backupPath);
+        const std::filesystem::path temporary = target.string() + ".tmp";
+        if (target.has_parent_path()) std::filesystem::create_directories(target.parent_path());
+        {
+            std::ofstream output(temporary, std::ios::trunc);
+            if (!output) throw std::runtime_error("cannot open temporary state file");
+            output << document.dump(2) << '\n';
+            output.flush();
+            if (!output) throw std::runtime_error("state write failed");
+        }
+        std::error_code error;
+        std::filesystem::rename(temporary, target, error);
+        if (error) {
+            std::filesystem::remove(temporary);
+            throw std::runtime_error("state commit failed: " + error.message());
+        }
+        std::lock_guard<std::mutex> lock(settingsMutex_);
+        lastConfigurationError_.clear();
+    } catch (const std::exception& error) {
+        std::lock_guard<std::mutex> lock(settingsMutex_);
+        lastConfigurationError_ = error.what();
     }
-
-    AgentLogger logger;
-    logger.log("System state saved to: " + backupPath);
 }
 
 void TheOrgManager::loadSystemState(const std::string& backupPath) {
-    std::ifstream ifs(backupPath);
-    if (!ifs.is_open()) {
-        AgentLogger logger;
-        logger.log("Failed to load state from: " + backupPath, "", "Backup", LogLevel::WARNING);
-        return;
-    }
-
-    std::string line;
-    while (std::getline(ifs, line)) {
-        if (line.empty() || line[0] == '#') continue;
-        auto sep = line.find('=');
-        if (sep == std::string::npos) continue;
-
-        std::string key = line.substr(0, sep);
-        std::string val = line.substr(sep + 1);
-
-        if (key.substr(0, 8) == "setting:") {
-            updateGlobalSetting(key.substr(8), val);
+    try {
+        if (backupPath.empty()) throw std::runtime_error("empty state path");
+        std::ifstream input(backupPath);
+        if (!input) throw std::runtime_error("cannot open state file");
+        nlohmann::json document;
+        input >> document;
+        if (!document.is_object() || document.value("schema", "") != "elizaos.the_org.system_state" ||
+            document.value("version", 0) != 1 || !document.contains("globalSettings") ||
+            !document["globalSettings"].is_object() || !document.contains("platforms") ||
+            !document["platforms"].is_array() || !document.contains("workflows") ||
+            !document["workflows"].is_array()) {
+            throw std::runtime_error("invalid state schema");
         }
+        std::unordered_map<std::string, std::string> settings;
+        for (auto it = document["globalSettings"].begin(); it != document["globalSettings"].end(); ++it) {
+            if (it.key().empty() || !it.value().is_string()) throw std::runtime_error("invalid state setting");
+            settings.emplace(it.key(), it.value().get<std::string>());
+        }
+        std::unordered_map<PlatformType, PlatformConfig> platforms;
+        std::set<int> seenPlatforms;
+        for (const auto& item : document["platforms"]) {
+            if (!item.is_object() || !item.contains("type") || !item["type"].is_number_integer() ||
+                !item.contains("applicationId") || !item["applicationId"].is_string() ||
+                !item.contains("apiToken") || !item["apiToken"].is_string() ||
+                !item.contains("webhookUrl") || !item["webhookUrl"].is_string() ||
+                !item.contains("additionalSettings") || !item["additionalSettings"].is_object())
+                throw std::runtime_error("invalid state platform");
+            const int raw = item["type"].get<int>();
+            if (raw < 0 || raw > static_cast<int>(PlatformType::GITHUB) || !seenPlatforms.insert(raw).second)
+                throw std::runtime_error("invalid or duplicate state platform type");
+            PlatformConfig config{};
+            config.type = static_cast<PlatformType>(raw);
+            config.applicationId = item["applicationId"].get<std::string>();
+            config.apiToken = item["apiToken"].get<std::string>();
+            config.webhookUrl = item["webhookUrl"].get<std::string>();
+            for (auto setting = item["additionalSettings"].begin(); setting != item["additionalSettings"].end(); ++setting) {
+                if (setting.key().empty() || !setting.value().is_string())
+                    throw std::runtime_error("invalid state platform setting");
+                config.additionalSettings.emplace(setting.key(), setting.value().get<std::string>());
+            }
+            platforms.emplace(config.type, std::move(config));
+        }
+        std::unordered_map<UUID, Workflow> workflows;
+        std::uint64_t maxSequence = 0;
+        for (const auto& item : document["workflows"]) {
+            if (!item.is_object() || !item.contains("id") || !item["id"].is_string() ||
+                !item.contains("name") || !item["name"].is_string() ||
+                !item.contains("involvedRoles") || !item["involvedRoles"].is_array() ||
+                !item.contains("taskIds") || !item["taskIds"].is_array() ||
+                !item.contains("parameters") || !item["parameters"].is_object() ||
+                !item.contains("isActive") || !item["isActive"].is_boolean() ||
+                !item.contains("createdAtMs") || !item["createdAtMs"].is_number_integer() ||
+                !item.contains("lastExecutedMs") || !item["lastExecutedMs"].is_number_integer())
+                throw std::runtime_error("invalid workflow");
+            Workflow workflow;
+            workflow.id = item["id"].get<std::string>();
+            workflow.name = item["name"].get<std::string>();
+            if (workflow.id.empty() || workflow.name.empty() || workflows.count(workflow.id))
+                throw std::runtime_error("invalid or duplicate workflow id");
+            for (const auto& roleValue : item["involvedRoles"]) {
+                if (!roleValue.is_number_integer()) throw std::runtime_error("invalid workflow role");
+                const int raw = roleValue.get<int>();
+                if (raw < 0 || raw > static_cast<int>(AgentRole::SOCIAL_MEDIA_MANAGER))
+                    throw std::runtime_error("invalid workflow role");
+                workflow.involvedRoles.push_back(static_cast<AgentRole>(raw));
+            }
+            for (const auto& taskId : item["taskIds"]) {
+                if (!taskId.is_string()) throw std::runtime_error("invalid workflow task");
+                workflow.taskIds.push_back(taskId.get<std::string>());
+            }
+            for (auto parameter = item["parameters"].begin(); parameter != item["parameters"].end(); ++parameter) {
+                if (parameter.key().empty() || !parameter.value().is_string())
+                    throw std::runtime_error("invalid workflow parameter");
+                workflow.parameters.emplace(parameter.key(), parameter.value().get<std::string>());
+            }
+            workflow.isActive = item["isActive"].get<bool>();
+            workflow.createdAt = Timestamp(std::chrono::milliseconds(item["createdAtMs"].get<std::int64_t>()));
+            workflow.lastExecuted = Timestamp(std::chrono::milliseconds(item["lastExecutedMs"].get<std::int64_t>()));
+            const std::string prefix = "workflow-";
+            if (workflow.id.rfind(prefix, 0) == 0) {
+                try { maxSequence = std::max(maxSequence, static_cast<std::uint64_t>(std::stoull(workflow.id.substr(prefix.size())))); }
+                catch (...) {}
+            }
+            workflows.emplace(workflow.id, std::move(workflow));
+        }
+        {
+            std::scoped_lock lock(settingsMutex_, platformMutex_, workflowMutex_);
+            globalSettings_ = std::move(settings);
+            globalPlatforms_ = std::move(platforms);
+            workflows_ = std::move(workflows);
+            lastConfigurationError_.clear();
+        }
+        workflowSequence_.store(maxSequence);
+    } catch (const std::exception& error) {
+        std::lock_guard<std::mutex> lock(settingsMutex_);
+        lastConfigurationError_ = error.what();
     }
-
-    AgentLogger logger;
-    logger.log("System state loaded from: " + backupPath);
 }
 
 void TheOrgManager::scheduleAutoBackup(std::chrono::minutes interval) {
-    // Store interval as a setting for the coordination loop to pick up
-    updateGlobalSetting("autoBackupInterval",
-                        std::to_string(interval.count()));
-    updateGlobalSetting("autoBackupPath", "theorg_backup.txt");
-
-    AgentLogger logger;
-    logger.log("Auto-backup scheduled every " + std::to_string(interval.count()) + " minutes");
+    if (interval.count() <= 0) return;
+    updateGlobalSetting("autoBackupInterval", std::to_string(interval.count()));
+    updateGlobalSetting("autoBackupPath", "theorg_backup.json");
 }
 
-// Private helpers
 void TheOrgManager::coordinationLoop() {
     int backupTickCount = 0;
     int backupIntervalTicks = DEFAULT_BACKUP_INTERVAL_TICKS;
-
     while (running_) {
-        // Check auto-backup setting
-        std::string backupIntervalStr = getGlobalSetting("autoBackupInterval");
-        if (!backupIntervalStr.empty()) {
-            try {
-                backupIntervalTicks = std::stoi(backupIntervalStr);
-            } catch (...) {}
+        const std::string backupInterval = getGlobalSetting("autoBackupInterval");
+        if (!backupInterval.empty()) {
+            try { backupIntervalTicks = std::max(1, std::stoi(backupInterval)); }
+            catch (...) { backupIntervalTicks = DEFAULT_BACKUP_INTERVAL_TICKS; }
         }
-
         processInterAgentMessages();
         monitorAgentHealth();
         executeScheduledTasks();
         updateSystemMetrics();
-
-        ++backupTickCount;
-        if (backupTickCount >= backupIntervalTicks) {
-            std::string path = getGlobalSetting("autoBackupPath");
+        if (++backupTickCount >= backupIntervalTicks) {
+            const std::string path = getGlobalSetting("autoBackupPath");
             if (!path.empty()) saveSystemState(path);
             backupTickCount = 0;
         }
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::unique_lock<std::mutex> lock(lifecycleMutex_);
+        lifecycleCv_.wait_for(lock, std::chrono::seconds(1), [this] { return !running_.load(); });
     }
 }
 
 void TheOrgManager::processInterAgentMessages() {
-    // Deliver any queued messages between agents
-    std::lock_guard<std::mutex> lock(agentMutex_);
-    for (const auto& [id, agent] : agents_) {
-        auto messages = agent->getIncomingMessages();
-        while (!messages.empty()) {
-            messages.pop(); // Messages have already been processed by the agent
-        }
-    }
+    const auto agents = getAllAgents();
+    for (const auto& agent : agents) (void)agent->getIncomingMessages();
 }
 
 void TheOrgManager::monitorAgentHealth() {
-    std::lock_guard<std::mutex> lock(agentMutex_);
-    for (const auto& [id, agent] : agents_) {
-        if (!agent->isRunning()) {
-            AgentLogger logger;
-            logger.log("Agent " + id + " (" +
-                       the_org_utils::agentRoleToString(agent->getRole()) +
-                       ") is not running – attempting restart",
-                       "", "Health", LogLevel::WARNING);
-            agent->start();
-        }
+    const auto agents = getAllAgents();
+    for (const auto& agent : agents) {
+        if (!agent->isRunning() && running_) agent->start();
     }
 }
 
 void TheOrgManager::executeScheduledTasks() {
-    // Trigger periodic agent actions
-    std::lock_guard<std::mutex> lock(agentMutex_);
-    static size_t tick = 0;
-    ++tick;
-
-    if (tick % SCHEDULED_TASK_INTERVAL_TICKS == 0) { // every ~60 seconds
-        for (const auto& [id, agent] : agents_) {
-            // Ask each agent to perform its scheduled activity
-            agent->processMessage("scheduled_tick", "manager");
-        }
-    }
+    static std::atomic<std::size_t> tick{0};
+    if ((tick.fetch_add(1) + 1) % SCHEDULED_TASK_INTERVAL_TICKS != 0) return;
+    const auto agents = getAllAgents();
+    const std::string payload = "scheduled_tick";
+    for (const auto& agent : agents) agent->processMessage(payload, "manager");
 }
 
 void TheOrgManager::updateSystemMetrics() {
-    std::lock_guard<std::mutex> lock(metricsMutex_);
-    currentMetrics_.totalAgents = agents_.size();
-    currentMetrics_.activeAgents = 0;
-    currentMetrics_.totalTasks = 0;
-    currentMetrics_.pendingTasks = 0;
-
-    {
-        std::lock_guard<std::mutex> aLock(agentMutex_);
-        for (const auto& [id, agent] : agents_) {
-            if (agent->isRunning()) ++currentMetrics_.activeAgents;
-            auto pending = agent->getPendingTasks();
-            currentMetrics_.pendingTasks += pending.size();
-        }
+    const auto agents = getAllAgents();
+    SystemMetrics next;
+    next.totalAgents = agents.size();
+    for (const auto& agent : agents) {
+        if (agent->isRunning()) ++next.activeAgents;
+        const auto pending = agent->getPendingTasks();
+        next.pendingTasks += pending.size();
+        next.totalTasks += pending.size();
     }
-
-    currentMetrics_.systemLoad = currentMetrics_.totalAgents > 0
-                                     ? static_cast<double>(currentMetrics_.activeAgents) /
-                                           static_cast<double>(currentMetrics_.totalAgents)
-                                     : 0.0;
-    currentMetrics_.lastUpdated = std::chrono::system_clock::now();
+    next.systemLoad = next.totalAgents == 0 ? 0.0 :
+        static_cast<double>(next.activeAgents) / static_cast<double>(next.totalAgents);
+    next.lastUpdated = std::chrono::system_clock::now();
+    std::lock_guard<std::mutex> lock(metricsMutex_);
+    currentMetrics_ = next;
 }
 
 // ============================================================================

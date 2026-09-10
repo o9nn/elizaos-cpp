@@ -8,27 +8,27 @@ target_include_directories(elizaos-vercel_api PUBLIC
     ${CMAKE_SOURCE_DIR}/cpp/include
 )
 
-target_link_libraries(elizaos-vercel_api 
+target_link_libraries(elizaos-vercel_api
     elizaos-core
     elizaos-agentlogger
     nlohmann_json::nlohmann_json
 )
 
-# Link curl if available
-if(CURL_FOUND)
-    if(TARGET CURL::libcurl)
-        target_link_libraries(elizaos-vercel_api CURL::libcurl)
-        target_compile_definitions(elizaos-vercel_api PRIVATE CURL_FOUND)
-    elseif(CURL_LIBRARIES)
-        target_link_libraries(elizaos-vercel_api ${CURL_LIBRARIES})
-        target_include_directories(elizaos-vercel_api PRIVATE ${CURL_INCLUDE_DIRS})
-        target_compile_definitions(elizaos-vercel_api PRIVATE CURL_FOUND)
-    endif()
+target_compile_features(elizaos-vercel_api PUBLIC cxx_std_17)
+if(MSVC)
+    target_compile_options(elizaos-vercel_api PRIVATE /W4)
+else()
+    target_compile_options(elizaos-vercel_api PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # Add test executable
 add_executable(test_vercel_api test_vercel_api.cpp)
 target_link_libraries(test_vercel_api elizaos-vercel_api)
+if(MSVC)
+    target_compile_options(test_vercel_api PRIVATE /W4)
+else()
+    target_compile_options(test_vercel_api PRIVATE -Wall -Wextra -Wpedantic)
+endif()
 
 # Add demo executable
 add_executable(demo_vercel_api demo_vercel_api.cpp)

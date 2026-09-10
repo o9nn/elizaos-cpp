@@ -1,9 +1,20 @@
 #include "elizaos/embodiment.hpp"
 #include "elizaos/agentlogger.hpp"
+#include <algorithm>
 #include <iostream>
 #include <thread>
 #include <chrono>
-#ifndef _WIN32
+
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+// Suppress Windows ERROR macro that collides with LogLevel::ERROR.
+#ifdef ERROR
+#undef ERROR
+#endif
+#else
 #include <poll.h>
 #include <unistd.h>
 #endif
@@ -43,16 +54,16 @@ ConsoleTextInput::ConsoleTextInput() {}
 
 bool ConsoleTextInput::initialize() {
     elogInfo("Initializing Console Text Input Interface");
-    
+
     if (active_) {
         return true; // Already initialized
     }
-    
+
     active_ = true;
-    
+
     // Start input std::thread for sensory input
     inputThread_ = std::make_unique<std::thread>(&ConsoleTextInput::inputThread, this);
-    
+
     elogSuccess("Console Text Input Interface initialized");
     return true;
 }
@@ -61,40 +72,40 @@ void ConsoleTextInput::shutdown() {
     if (!active_) {
         return;
     }
-    
+
     elogInfo("Shutting down Console Text Input Interface");
-    
+
     active_ = false;
-    
+
     if (inputThread_ && inputThread_->joinable()) {
         inputThread_->join();
     }
-    
+
     elogInfo("Console Text Input Interface shutdown complete");
 }
 
 std::shared_ptr<SensoryData> ConsoleTextInput::readData() {
     std::lock_guard<std::mutex> lock(bufferMutex_);
-    
+
     if (inputBuffer_.empty()) {
         return nullptr;
     }
-    
+
     std::string input = inputBuffer_.front();
     inputBuffer_.erase(inputBuffer_.begin());
-    
+
     auto textData = std::make_shared<TextualData>(input);
     textData->source = "console";
     textData->confidence = 1.0; // Console input is always certain
-    
+
     return textData;
 }
 
 std::vector<std::shared_ptr<SensoryData>> ConsoleTextInput::readDataBuffer(size_t maxItems) {
     std::vector<std::shared_ptr<SensoryData>> result;
-    
+
     std::lock_guard<std::mutex> lock(bufferMutex_);
-    
+
     size_t count = std::min(maxItems, inputBuffer_.size());
     for (size_t i = 0; i < count; ++i) {
         auto textData = std::make_shared<TextualData>(inputBuffer_[i]);
@@ -102,10 +113,10 @@ std::vector<std::shared_ptr<SensoryData>> ConsoleTextInput::readDataBuffer(size_
         textData->confidence = 1.0;
         result.push_back(textData);
     }
-    
+
     // Remove processed items
     inputBuffer_.erase(inputBuffer_.begin(), inputBuffer_.begin() + count);
-    
+
     return result;
 }
 
@@ -134,49 +145,62 @@ void ConsoleTextInput::enableRealTimeProcessing(bool enable) {
 
 void ConsoleTextInput::inputThread() {
     elogSystem("Console input std::thread started");
-    
+
     std::cout << std::endl;
     std::cout << "=== ElizaOS Console Interface ===" << std::endl;
     std::cout << "Type messages to interact with the agent. Type 'quit' to exit." << std::endl;
     std::cout << std::endl;
-    
+
     while (active_) {
-        // Non-blocking stdin check: use poll() on Unix to avoid blocking on getline
-#ifndef _WIN32
+        // Platform-aware non-blocking stdin check with timeout.
+#ifdef _WIN32
+        HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD waitResult = WaitForSingleObject(hStdin, 250); // 250ms timeout
+        if (waitResult != WAIT_OBJECT_0) {
+            continue;
+        }
+#else
+        // Use poll() to check stdin readiness with timeout (non-blocking)
         struct pollfd pfd;
         pfd.fd = STDIN_FILENO;
         pfd.events = POLLIN;
-        int ret = poll(&pfd, 1, 100); // 100ms timeout
+
+        int ret = poll(&pfd, 1, 250); // 250ms timeout
         if (ret <= 0) {
-            // Timeout or error - check active_ and loop
+            // Timeout or error - loop back and check active_
+            continue;
+        }
+
+        if (!(pfd.revents & POLLIN)) {
             continue;
         }
 #endif
+
         std::cout << "> ";
         std::cout.flush();
-        
+
         std::string input;
         if (std::getline(std::cin, input)) {
             if (!active_) break; // Check if shutdown was requested
-            
+
             if (input == "quit" || input == "exit") {
                 elogInfo("User requested exit");
                 break;
             }
-            
+
             if (!input.empty()) {
                 // Add to input buffer
                 {
                     std::lock_guard<std::mutex> lock(bufferMutex_);
                     inputBuffer_.push_back(input);
                 }
-                
+
                 // If real-time processing is enabled, call callback immediately
                 if (realTimeProcessing_ && dataCallback_) {
                     auto textData = std::make_shared<TextualData>(input);
                     textData->source = "console";
                     textData->confidence = 1.0;
-                    
+
                     try {
                         dataCallback_(textData);
                     } catch (const std::exception& e) {
@@ -188,11 +212,11 @@ void ConsoleTextInput::inputThread() {
             // EOF or error condition
             break;
         }
-        
+
         // Small delay to prevent CPU spinning
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    
+
     elogSystem("Console input std::thread ended");
 }
 
@@ -203,11 +227,11 @@ ConsoleTextOutput::ConsoleTextOutput() {}
 
 bool ConsoleTextOutput::initialize() {
     elogInfo("Initializing Console Text Output Interface");
-    
+
     if (active_) {
         return true; // Already initialized
     }
-    
+
     active_ = true;
     elogSuccess("Console Text Output Interface initialized");
     return true;
@@ -217,7 +241,7 @@ void ConsoleTextOutput::shutdown() {
     if (!active_) {
         return;
     }
-    
+
     elogInfo("Shutting down Console Text Output Interface");
     active_ = false;
     elogInfo("Console Text Output Interface shutdown complete");
@@ -227,20 +251,20 @@ bool ConsoleTextOutput::executeAction(std::shared_ptr<MotorAction> action) {
     if (!active_) {
         return false;
     }
-    
+
     // Handle communication actions (text output)
     if (action->type == MotorActionType::COMMUNICATION) {
         auto commAction = std::dynamic_pointer_cast<CommunicationAction>(action);
         if (commAction) {
             AgentLogger logger;
-            
+
             // Use panel display for agent responses
             logger.log(commAction->message, "", "Agent Response", LogLevel::INFO, LogColor::GREEN, true, true);
-            
+
             return true;
         }
     }
-    
+
     // Handle display actions
     if (action->type == MotorActionType::DISPLAY) {
         auto displayAction = std::dynamic_pointer_cast<DisplayAction>(action);
@@ -249,7 +273,7 @@ bool ConsoleTextOutput::executeAction(std::shared_ptr<MotorAction> action) {
             return true;
         }
     }
-    
+
     // Handle speech actions (as text output)
     if (action->type == MotorActionType::SPEECH) {
         auto speechAction = std::dynamic_pointer_cast<SpeechAction>(action);
@@ -258,13 +282,13 @@ bool ConsoleTextOutput::executeAction(std::shared_ptr<MotorAction> action) {
             return true;
         }
     }
-    
+
     return false;
 }
 
 bool ConsoleTextOutput::canExecute(std::shared_ptr<MotorAction> action) const {
     if (!action) return false;
-    
+
     // Console interface can handle communication, display, and speech actions
     return (action->type == MotorActionType::COMMUNICATION ||
             action->type == MotorActionType::DISPLAY ||

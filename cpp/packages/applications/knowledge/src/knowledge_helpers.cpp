@@ -7,7 +7,7 @@
 // content sniffing, deterministic chunking with sliding-window overlap,
 // and confidence/source heuristics.
 
-#include "elizaos/knowledge_helpers.hpp"
+#include <elizaos/knowledge_helpers.hpp>
 #include "elizaos/core.hpp"
 
 #include <algorithm>
@@ -202,6 +202,7 @@ bool knowledge_helpers_self_check() {
         return false;
     }
 }
+
 
 // Backwards-compat token to keep CMake / linker symbol stable while still
 // exercising the real helper path when legacy smoke tests call this symbol.
