@@ -549,7 +549,7 @@ TEST_F(GoalManagerTest, ConcurrentCreateUpdateQueryAndRemoveIsRaceSafe) {
     constexpr int goalsPerThread = 40;
     std::vector<std::thread> creators;
     for (int thread = 0; thread < threadCount; ++thread) {
-        creators.emplace_back([this, thread] {
+        creators.emplace_back([this, thread, goalsPerThread] {
             for (int index = 0; index < goalsPerThread; ++index) {
                 manager.createGoal("goal-" + std::to_string(thread) + "-" + std::to_string(index),
                                    "concurrent");
@@ -572,7 +572,7 @@ TEST_F(GoalManagerTest, ConcurrentCreateUpdateQueryAndRemoveIsRaceSafe) {
     });
     std::vector<std::thread> workers;
     for (int thread = 0; thread < threadCount; ++thread) {
-        workers.emplace_back([this, &goals, thread] {
+        workers.emplace_back([this, &goals, thread, threadCount] {
             for (std::size_t index = static_cast<std::size_t>(thread); index < goals.size();
                  index += threadCount) {
                 EXPECT_TRUE(manager.updateProgress(goals[index]->getId(), 0.5));
