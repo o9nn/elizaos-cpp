@@ -558,8 +558,6 @@ jobs:
         include:
           - os: ubuntu-22.04
             package_type: DEB
-          - os: ubuntu-20.04
-            package_type: DEB
           - os: windows-latest
             package_type: ZIP
           - os: macos-latest
